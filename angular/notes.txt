@@ -1,0 +1,5 @@
+projeyi start etmek için
+npm run start:proxy
+
+development ortamı için api yönlendirmesi 
+proxy.config.json dosyasından yapılır

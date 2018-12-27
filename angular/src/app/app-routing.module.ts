@@ -2,10 +2,18 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PagenotfoundRoutingModule } from './modules/pagenotfound/pagenotfound-routing.module';
 
+
 const routes: Routes = [
   {
-    path:'',redirectTo:'/login',pathMatch:'full'
+    
+      path: '',
+      loadChildren: './modules/layouts/auth/authlayout.module#AuthLayoutModule'
+  },
+  {
+    path:'admin',
+    loadChildren:'./modules/layouts/admin/adminlayout.module#AdminLayoutModule'
   }
+  
 ];
 
 @NgModule({

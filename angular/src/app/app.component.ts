@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ConfigService } from './core/services/config.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-  title = 'angular';
+  title = 'Dnssense';
+  constructor(private config: ConfigService) {
+    config.initLanguages();
+  }
 }
