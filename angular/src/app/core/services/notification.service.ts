@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Router, NavigationStart } from '@angular/router';
+import { SpinnerService } from './spinner.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
+
 
   private subject = new Subject<any>();
     private keepAfterNavigationChange = false;
@@ -27,6 +29,7 @@ export class NotificationService {
 
     success(message: string, keepAfterNavigationChange = false) {
         if(message){
+            
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ type: 'success', text: message });
         }
@@ -35,12 +38,14 @@ export class NotificationService {
     error(message: string, keepAfterNavigationChange = false) {
         
         if(message){
+            
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ type: 'danger', text: message });
         }
     }
     info(message: string, keepAfterNavigationChange = false) {
         if(message){
+            
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ type: 'info', text: message });
         }
@@ -48,6 +53,7 @@ export class NotificationService {
 
     warning(message: string, keepAfterNavigationChange = false) {
         if(message){
+            
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ type: 'warning', text: message });
         }
@@ -55,6 +61,7 @@ export class NotificationService {
 
     danger(message: string, keepAfterNavigationChange = false) {
         if(message){
+            
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({ type: 'danger', text: message });
         }

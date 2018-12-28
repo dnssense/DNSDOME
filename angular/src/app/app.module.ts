@@ -33,7 +33,7 @@ import { ErrorInterceptor } from './core/interceptors/ErrorInterceptor';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { translateHttpLoaderFactory } from './core/translationhelper';
-
+import { NgxUiLoaderModule, NgxUiLoaderRouterModule,NgxUiLoaderHttpModule, NgxUiLoaderConfig, POSITION, SPINNER, PB_DIRECTION, NgxUiLoaderHttpConfig } from  'ngx-ui-loader';
 
 
 
@@ -61,6 +61,10 @@ import { translateHttpLoaderFactory } from './core/translationhelper';
     PagenotfoundModule,
     AppRoutingModule,
     NotificationModule,
+    NgxUiLoaderModule.forRoot({fgsPosition:'center-center'}),
+    NgxUiLoaderHttpModule.forRoot({showForeground:true}),
+    NgxUiLoaderRouterModule,   
+    
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -79,14 +83,15 @@ import { translateHttpLoaderFactory } from './core/translationhelper';
     CookieService,
     NotificationService,
     
-    {
-      provide: ErrorHandler, useClass: ErrorInterceptor
-    },
+    
     {
       provide: HTTP_INTERCEPTORS,useClass: JwtInterceptor,multi: true
     },
     {
       provide: HTTP_INTERCEPTORS,useClass: HttpErrorInterceptor, multi: true 
+    },
+    {
+      provide: ErrorHandler, useClass: ErrorInterceptor
     }
   ],
   bootstrap: [AppComponent]

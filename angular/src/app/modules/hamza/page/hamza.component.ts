@@ -2,7 +2,8 @@ import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from 'src/app/core/services/config.service';
-import { Messages } from 'src/app/core/messages';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
+
 
 
 
@@ -23,7 +24,7 @@ export class HamzaComponent implements OnInit, OnDestroy {
     /**
      *
      */
-    constructor(private config:ConfigService,private notificationService:NotificationService,private http:HttpClient) {
+    constructor(private config:ConfigService,private notificationService:NotificationService,private http:HttpClient,private spinner:SpinnerService) {
         
         
     }
@@ -77,6 +78,17 @@ export class HamzaComponent implements OnInit, OnDestroy {
     language2(){
        this.invalidmsg= this.config.getTranslator().instant('InvalidUrl')
     }
+
+    spin(){
+
+        this.spinner.show();
+        setTimeout(() => {
+            this.spinner.hide()
+        }, 5000);
+
+    }
+
+   
 
     
 

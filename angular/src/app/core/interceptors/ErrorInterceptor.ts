@@ -1,6 +1,8 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../services/notification.service';
+import { SpinnerService } from '../services/spinner.service';
+
 
 // errors-handler.ts
 @Injectable()
@@ -11,9 +13,10 @@ export class ErrorInterceptor implements ErrorHandler {
   ) { }
 
   handleError(error: Error | HttpErrorResponse) {
-    debugger;
-
-    const notificationService = this.injector.get(NotificationService);
+    
+          
+    
+    const notificationService = this.injector.get(NotificationService);    
     
     if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
