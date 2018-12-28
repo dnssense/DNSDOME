@@ -8,25 +8,23 @@ import { Subject } from 'rxjs';
 })
 export class SpinnerService {
   private subject:Subject<boolean>;
-  counter=0;
+  
   constructor(private spinner:NgxUiLoaderService) {
     console.log('constructor spinnerservice');
     this.subject=new Subject<boolean>();
     this.subject.asObservable().subscribe((val)=>{
       if(val){
-        this.counter++;
-    if(this.counter==1){
-      this.spinner.start();
-    console.log('spinner start:'+this.counter);
-    }
+        console.log('spinner start check:'+this.spinner.hasForeground());
+        if(!this.spinner.hasForeground())
+             this.spinner.start();
+    console.log('spinner start:'+this.spinner.hasForeground());
+    
       }else{
-        this.counter--;
-
-    if(this.counter==0){
-      
+        console.log('spinner stop check:'+this.spinner.hasForeground());
+        if(this.spinner.hasForeground())
        this.spinner.stop();
-       console.log('spinner stop:'+this.counter);
-    }
+       console.log('spinner stop:'+this.spinner.hasForeground());
+    
 
       }
 

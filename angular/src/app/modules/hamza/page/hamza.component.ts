@@ -93,7 +93,7 @@ export class HamzaComponent implements OnInit, OnDestroy {
             this.spinner.show();
             throw new Error('aha');
         }finally{
-            this.spinner.hide();
+           // this.spinner.hide();
 
         }
         

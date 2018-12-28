@@ -16,8 +16,9 @@ export class ErrorInterceptor implements ErrorHandler {
     
           
     
-    const notificationService = this.injector.get(NotificationService);    
-    
+    const notificationService = this.injector.get(NotificationService); 
+    const spinnerService = this.injector.get(SpinnerService);    
+    spinnerService.hide();
     if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
       if (!navigator.onLine) {
