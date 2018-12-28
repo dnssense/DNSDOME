@@ -3,6 +3,8 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { TranslatorService } from 'src/app/core/services/translator.service';
+import { Messages } from 'src/app/core/messages';
 
 
 
@@ -24,7 +26,7 @@ export class HamzaComponent implements OnInit, OnDestroy {
     /**
      *
      */
-    constructor(private config:ConfigService,private notificationService:NotificationService,private http:HttpClient,private spinner:SpinnerService) {
+    constructor(private config:ConfigService,private notificationService:NotificationService,private http:HttpClient,private spinner:SpinnerService,private translator:TranslatorService) {
         
         
     }
@@ -76,7 +78,11 @@ export class HamzaComponent implements OnInit, OnDestroy {
     }
     invalidmsg="invalid url";
     language2(){
-       this.invalidmsg= this.config.getTranslator().instant('InvalidUrl')
+       this.invalidmsg= this.translator.translate('InvalidUrl')
+    }
+
+    throwex(){
+        throw new Error(Messages.InvalidEmailOrPassword);
     }
 
     spin(){

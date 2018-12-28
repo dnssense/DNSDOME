@@ -2,6 +2,7 @@ import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../services/notification.service';
 import { SpinnerService } from '../services/spinner.service';
+import { TranslatorService } from '../services/translator.service';
 
 
 // errors-handler.ts
@@ -19,6 +20,7 @@ export class ErrorInterceptor implements ErrorHandler {
     const notificationService = this.injector.get(NotificationService); 
     const spinnerService = this.injector.get(SpinnerService);    
     spinnerService.hide();
+    const translatorService=this.injector.get(TranslatorService);
     if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
       if (!navigator.onLine) {
@@ -26,11 +28,14 @@ export class ErrorInterceptor implements ErrorHandler {
         notificationService.danger('No Internet Connection');
       } else {
         // Handle Http Error (error.status === 403, 404...)
-        notificationService.error(`${error.status} - ${error.message}`);
+        const status=error.status;
+        const message=translatorService.translate(error.message);
+        notificationService.error(`${status} - ${message}`);
       }
     } else
       {
-        notificationService.error(error.message);
+        const message=translatorService.translate(error.message);
+        notificationService.error(message);
       }
     // Log the error anyway
     //console.error(error.name);

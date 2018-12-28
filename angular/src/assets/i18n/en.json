@@ -2,5 +2,6 @@
     "Title": "Translation demo",
     "Welcome": "Welcome to the international demo application",
     "ExceptionOccured":"Exception occured",
-    "InvalidUrl":"Invalid url"
+    "InvalidUrl":"Invalid url",
+    "InvalidEmailOrPassword":"Invalid email or password"
 }

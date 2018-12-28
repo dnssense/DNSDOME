@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { TranslateService } from '@ngx-translate/core';
+
+import { TranslatorService } from './translator.service';
 
 
 @Injectable({
@@ -8,34 +9,29 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ConfigService {
 
-  constructor(private translation:TranslateService) {
+  constructor(private translationservice:TranslatorService) {
     console.log('constructor configservice');
       
    
    }
-   initLanguages(){
-    this.translation.addLangs(['en','tr']);
-    this.translation.setDefaultLang('en');
 
-    const browserLang = this.translation.getBrowserLang();
-    this.translation.use(browserLang.match(/en|tr/) ? browserLang : 'en'); 
-   }
+  init(){
+    this.translationservice.initLanguages();
+  }
 
   getApiUrl():string{
     return environment.production?"https://management.dnssense.com/api":"http://localhost:4200/api";
   }
   setDefaultLanguage(lang:string){
-    this.translation.setDefaultLang(lang);
+    this.translationservice.setDefaultLang(lang);
   }
   getTranslationLanguage(){
-    return this.translation.currentLang;;
+    return this.translationservice.getCurrentLang();
   }
 
   setTranslationLanguage(lang:string){
     
-    this.translation.use(lang);
+    this.translationservice.use(lang);
   }
-  getTranslator():TranslateService{
-    return this.translation;
-  }
+  
 }

@@ -2,5 +2,6 @@
     "Title": "Çeviri demo",
     "Welcome": "hoşgeldiniz demo application",
     "ExceptionOccured":"Hata oluştu",
-    "InvalidUrl":"Hatalı url"
+    "InvalidUrl":"Hatalı url",
+    "InvalidEmailOrPassword":"Hatalı email yada şifre"
 }

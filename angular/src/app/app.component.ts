@@ -9,6 +9,6 @@ import { ConfigService } from './core/services/config.service';
 export class AppComponent {
   title = 'Dnssense';
   constructor(private config: ConfigService) {
-    config.initLanguages();
+    config.init();
   }
 }
