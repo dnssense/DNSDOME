@@ -1,5 +1,25 @@
+
+projenin ilk yapılandırılması
+$baseFolder=proje kök dizini
+
+cd $baseFolder/angular
+npm init
+
+cd $baseFolder/fakeapi
+npm init
+
+
+
 projeyi start etmek için
+cd $baseFolder/fakeapi
+npm run
+cd $baseFolder/angular
 npm run start:proxy
 
+
+
+////////////notlar/////////////////////////
 development ortamı için api yönlendirmesi 
 proxy.config.json dosyasından yapılır
+
+
