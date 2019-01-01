@@ -1,10 +1,18 @@
+import { Role } from './Role';
 
 export class User {
-    id: number;
-    email:string;
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    token: string;
+    active: boolean;
+    emailVerification: boolean
+    gsm: string
+    gsmCode: string
+    gsmVerification: boolean
+    id: number
+    language: string
+    locked: boolean
+    name: string
+    roles: Array<Role>
+    surname: string
+    twoFactorAuthentication: boolean
+    usageType: number
+    userName: string
 }

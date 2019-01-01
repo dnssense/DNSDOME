@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ConfigService } from './core/services/config.service';
+import { AuthenticationService } from './core/services/authentication.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,9 @@ import { ConfigService } from './core/services/config.service';
 })
 export class AppComponent {
   title = 'Dnssense';
-  constructor(private config: ConfigService) {
+  constructor(private config: ConfigService,private authenticationService:AuthenticationService) {
     config.init();
+   // authenticationService.checkSessionIsValid();
+
   }
 }

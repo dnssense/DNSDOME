@@ -18,7 +18,7 @@ export class ConfigService {
   }
 
   getApiUrl(): string {
-    return environment.production ? "https://management.dnssense.com/api" : "http://localhost:4200/api";
+    return environment.production ? "https://management.dnssense.com" : "http://localhost:4200";
   }
   setDefaultLanguage(lang: string) {
     this.translationservice.setDefaultLang(lang);

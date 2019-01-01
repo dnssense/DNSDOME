@@ -35,8 +35,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   ]);
 
 
-  validEmailLogin: false;
-  validPasswordLogin: false;
+  validEmailLogin:true| false;
+  validPasswordLogin: true|false;
   matcher = new MyErrorStateMatcher();
   login: FormGroup;
   isFailed: boolean;
@@ -107,11 +107,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   authenticate() {
     this.authService.login(this.email, this.password).subscribe(
       val => {
-           debugger;
+           
         this.router.navigateByUrl('/admin');
       },
       (err) => {
-         debugger;
+         
         this.isFailed = true;
       }
     );
