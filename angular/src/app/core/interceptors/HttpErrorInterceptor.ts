@@ -13,7 +13,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     constructor(private authenticationService: AuthenticationService,private injector:Injector) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        //debugger;
+        
         
         return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {
@@ -26,11 +26,14 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 return event;
             }),
             catchError(err => {
-            
+            debugger;
             if (err.status === 401) {
                 // auto logout if 401 response returned from api
                 this.authenticationService.logout();
-                location.reload(true);
+                if (err.url.indexOf('login') === -1) {
+                     location.reload(true);
+                }
+               
             }
             
             throw err;

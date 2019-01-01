@@ -14,7 +14,7 @@ export class ErrorInterceptor implements ErrorHandler {
   ) { }
 
   handleError(error: Error | HttpErrorResponse) {
-    
+    debugger;
           
     
     const notificationService = this.injector.get(NotificationService); 

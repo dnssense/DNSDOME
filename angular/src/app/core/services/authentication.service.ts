@@ -12,41 +12,36 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  
-  
-  loginUrl:string;
-  authenticatedUser:User;
 
-  constructor(private configuration:ConfigService,private http:HttpClient,private cookieService:CookieService,private router:Router) { 
-    
-    console.log("constructor authenticationservice")
-    this.loginUrl=this.configuration.getApiUrl()+"/login";
+  loginUrl: string;
+  authenticatedUser: User;
+
+  constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService, private router: Router) {
+    console.log('constructor authenticationservice');
+    this.loginUrl = this.configuration.getApiUrl() + '/login';
   }
 
-  login(email:string,pass:string):Observable<User>{
-   
-    return this.http.post<User>(this.loginUrl,{email:email,password:pass})
-    .pipe(map(user => {
-      //debugger;
-      // login successful if there's a jwt token in the response
-      if (user && user.token) {
-          this.authenticatedUser=user;
+  login(email: string, pass: string): Observable<User> {
+
+    return this.http.post<User>(this.loginUrl, { email: email, password: pass })
+      .pipe(map(user => {
+        // login successful if there's a jwt token in the response
+        if (user && user.token) {
+          this.authenticatedUser = user;
           // store user details and jwt token in local storage to keep user logged in between page refreshes
           localStorage.setItem('currentUser', JSON.stringify(user));
-      }
+        }
+        return user;
+      }));
 
-      return user;
-  }));
-
-  /* ,catchError(err=>{
-    debugger;
-    throw err;}) */
+    /* ,catchError(err=>{
+      debugger;
+      throw err;}) */
   }
-  
 
-  logout(){
+  logout() {
     localStorage.clear();
     this.cookieService.clear();
-    this.router.navigateByUrl("/login");
+    this.router.navigateByUrl('/login');
   }
 }

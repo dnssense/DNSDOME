@@ -1,13 +1,13 @@
 <div class="wrapper wrapper-full-page">
-  <div class="page-header login-page header-filter" filter-color="black" style="background-image: url('./assets/img/login.jpg'); background-size: cover; background-position: top center;">
+  <div class="page-header login-page header-filter" filter-color="white" data-color="blue" style="background-image: url('./assets/img/login.jpg'); background-size: cover; background-position: top center;">
     <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
     <div class="container">
       <div class="row">
         <div class="col-lg-4 col-md-6 col-sm-6 ml-auto mr-auto">
-          <form [formGroup]="login">
+          <form [formGroup]="login" novalidate ng-submit="loginform.$valid && login.submit()">
             <div class="card card-login card-hidden">
-              <div class="card-header card-header-rose text-center">
-                <h4 class="card-title">Log in</h4>
+              <div class="card-header card-header-info text-center">
+                <h4 class="card-title">{{'Login' | translate}}</h4>
                 <div class="social-line">
                   <a href="#pablo" class="btn btn-just-icon btn-link btn-white">
                     <i class="fa fa-facebook-square"></i>
@@ -21,39 +21,31 @@
                 </div>
               </div>
               <div class="card-body ">
-                <p class="card-description text-center">Or Be Classical</p>
-                
-                  
-                    
-                    
-                    <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
-
-                      <input type="email" matInput placeholder="Email Address *" [errorStateMatcher]="matcher"
-                        (ngModelChange)="emailValidationLogin($event)" formControlName="email">
-                      <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-                        Please enter a valid email address
-                      </mat-error>
-                      <mat-error *ngIf="emailFormControl.hasError('required')">
-                        Email is <strong>required</strong>
-                      </mat-error>
-                    </mat-form-field>
-              
-
+                <p class="card-description text-center">Easiest way to be secure!</p>
+                <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
+                  <input type="email" matInput placeholder="{{'Email' | translate}} *" [errorStateMatcher]="matcher"
+                    (ngModelChange)="emailValidationLogin($event)" formControlName="email">
+                  <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                    Please enter a valid email address
+                  </mat-error>
+                  <mat-error *ngIf="emailFormControl.hasError('required')">
+                    <strong>{{'EmailRequired' | translate}}</strong>
+                  </mat-error>
+                </mat-form-field>
                 <mat-form-field class="example-full-width" [ngClass]="{'has-success':validPasswordLogin===true}"
                   [ngClass]="displayFieldCss(login, 'password')">
-                  <input type="password" matInput placeholder="Password *" (ngModelChange)="passwordValidationLogin($event)"
+                  <input type="password" matInput placeholder="{{'Password' | translate}} *" (ngModelChange)="passwordValidationLogin($event)"
                     formControlName="password">
-                  <app-field-error-display [displayError]="isFieldValid(login, 'password')" errorMsg="Enter a valid password.">
+                  <app-field-error-display [displayError]="isFieldValid(login, 'password')" errorMsg="{{'PasswordRequired' | translate}}">
                   </app-field-error-display>
                 </mat-form-field>
-                <div class="category form-category">* Required fields</div>
-                <div class="ui-state-error-text" *ngIf="isFailed">
-                  Email or password is wrong,try again
-                </div>
-              </div>
-              <div class="card-footer text-right">
-                <div class="form-group">
-                  <button mat-raised-button type="submit" class="btn btn-rose btn-fill btn-wd" (click)="onLogin()">Login</button>
+                <div class="category form-category">* {{'RequiredFields' | translate}}</div>
+                <mat-error class="ui-state-error-text" *ngIf="isFailed">
+                  {{'WrongEmailOrPassword' | translate}}
+                </mat-error>
+                <div class="form-group text-center">
+                  <br />
+                  <button mat-button class="btn btn-info align-center" (click)="onLogin()">Login</button>
                 </div>
               </div>
             </div>
@@ -65,32 +57,23 @@
       <div class="container">
         <nav class="pull-left">
           <ul>
+            <li></li>
             <li>
-              <a href="https://www.creative-tim.com">
-                Creative Tim
+              <a href="https://www.roksit.com" target="_blank">
+                Roksit
               </a>
             </li>
             <li>
-              <a href="https://creative-tim.com/about-us">
+              <a href="https://www.roksit.com/about-us" target="_blank">
                 About Us
-              </a>
-            </li>
-            <li>
-              <a href="http://blog.creative-tim.com">
-                Blog
-              </a>
-            </li>
-            <li>
-              <a href="https://www.creative-tim.com/license">
-                Licenses
               </a>
             </li>
           </ul>
         </nav>
         <div class="copyright pull-right">
           &copy;
-          {{test | date: 'yyyy'}}, made with <i class="material-icons">favorite</i> by
-          <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
+          {{test | date: 'yyyy'}}, made by
+          <a href="https://roksit.com" target="_blank"><strong>Roksit</strong></a> for a better world.
         </div>
       </div>
     </footer>

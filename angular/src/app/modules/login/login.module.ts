@@ -8,9 +8,14 @@ import { SelectModule } from 'ng2-select';
 import { MaterialModule } from 'src/app/shared/components/material.module';
 import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
 import { LoginRoutingModule } from './login-routing.module';
+import { TranslatorService } from 'src/app/core/services/translator.service';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
+import { HttpClient } from '@angular/common/http';
+
 
 @NgModule({
-  declarations: [LoginComponent,FieldErrorDisplayComponent],
+  declarations: [LoginComponent, FieldErrorDisplayComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -18,9 +23,16 @@ import { LoginRoutingModule } from './login-routing.module';
     NouisliderModule,
     TagInputModule,
     MaterialModule,
-    LoginRoutingModule
-    
+    LoginRoutingModule,
+    TranslateModule.forChild({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: translateHttpLoaderFactory,
+          deps: [HttpClient]
+      }
+  })
+
   ]
-  
+
 })
 export class LoginModule { }

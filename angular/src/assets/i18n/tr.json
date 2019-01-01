@@ -1,7 +1,15 @@
 {
-    "Title": "Çeviri demo",
-    "Welcome": "hoşgeldiniz demo application",
+    "Title": "DNS Sense",
+    "Welcome": "Hoşgeldiniz",
     "ExceptionOccured":"Hata oluştu",
     "InvalidUrl":"Hatalı url",
-    "InvalidEmailOrPassword":"Hatalı email yada şifre"
+    "InvalidEmailOrPassword":"Hatalı email yada şifre",
+    "Register":"Kaydol",
+    "Login": "Oturum Aç",
+    "WrongEmailOrPassword": "Email yada parolanız hatalı, lütfen tekrar deneyin!",
+    "RequiredFields": "Gerekli alanlar",
+    "Email": "Eposta Adresi",
+    "EmailRequired": "Eposta adresi gereklidir",
+    "Password": "Parola",
+    "PasswordRequired": "Lütfen doğru bir şifre giriniz"
 }

@@ -1,7 +1,15 @@
 {
-    "Title": "Translation demo",
-    "Welcome": "Welcome to the international demo application",
+    "Title": "DNS Sense",
+    "Welcome": "Welcome!",
     "ExceptionOccured":"Exception occured",
     "InvalidUrl":"Invalid url",
-    "InvalidEmailOrPassword":"Invalid email or password"
+    "InvalidEmailOrPassword":"Invalid email or password",
+    "Register":"Register",
+    "Login": "Login",
+    "WrongEmailOrPassword": "Email or password is wrong,try again",
+    "RequiredFields": "Required fields",
+    "Email": "Email Address",
+    "EmailRequired": "Email is required",
+    "Password": "Password",
+    "PasswordRequired": "Please enter a valid password."
 }

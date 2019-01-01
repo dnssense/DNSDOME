@@ -8,12 +8,6 @@ import { Messages } from 'src/app/core/messages';
 
 
 
-
-
-
-
-
-
 @Component({
     selector: 'app-hamza',
     templateUrl: 'hamza.component.html'
@@ -21,71 +15,65 @@ import { Messages } from 'src/app/core/messages';
 
 export class HamzaComponent implements OnInit, OnDestroy {
 
-     
-    
     /**
      *
      */
-    constructor(private config:ConfigService,private notificationService:NotificationService,private http:HttpClient,private spinner:SpinnerService,private translator:TranslatorService) {
-        
-        
+    constructor(private config: ConfigService, private notificationService: NotificationService, private http: HttpClient, private spinner: SpinnerService, private translator: TranslatorService) {
+
+
     }
     ngOnDestroy(): void {
 
-        
+
     }
     ngOnInit(): void {
-        
-        
+
+
     }
 
-    
-
-   
-
-    info(){
+    info() {
         this.notificationService.info("info msg");
     }
-    error(){
+    error() {
         this.notificationService.error("error msg");
     }
-    warning(){
+    warning() {
         this.notificationService.warning("warning msg");
     }
-    success(){
+    success() {
         this.notificationService.success("success msg");
     }
-    danger(){
+    danger() {
         this.notificationService.danger("danger msg");
     }
 
-    errorHttp(){
-        this.http.post('http://localhost:100/api',{}).subscribe(
-            x=>{
+    errorHttp() {
+        this.http.post('http://localhost:100/api', {}).subscribe(
+            x => {
 
             }
         )
-        
-    }
-    
 
-    throwException(){
+    }
+
+
+    throwException() {
         throw new Error("hamza error");
     }
 
-    language(lang:string){
+    language(lang: string) {
         this.config.setTranslationLanguage(lang);
     }
-    invalidmsg="invalid url";
-    language2(){
-       this.invalidmsg= this.translator.translate('InvalidUrl')
+    invalidmsg = 'invalid url';
+    language2() {
+        this.invalidmsg = this.translator.translate('InvalidUrl')
     }
 
-    throwex(){
+    throwex() {
         throw new Error(Messages.InvalidEmailOrPassword);
     }
 
-    spin(){
+    spin() {
 
         this.spinner.show();
         setTimeout(() => {
@@ -94,24 +82,24 @@ export class HamzaComponent implements OnInit, OnDestroy {
 
     }
 
-    spinexception(){
-        try{
+    spinexception() {
+        try {
             this.spinner.show();
             throw new Error('aha');
-        }finally{
-           // this.spinner.hide();
+        } finally {
+            // this.spinner.hide();
 
         }
-        
-        
+
+
     }
 
-    
 
-    
 
-  
 
-  
+
+
+
+
 
 }

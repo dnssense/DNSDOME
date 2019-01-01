@@ -9,29 +9,26 @@ import { TranslatorService } from './translator.service';
 })
 export class ConfigService {
 
-  constructor(private translationservice:TranslatorService) {
+  constructor(private translationservice: TranslatorService) {
     console.log('constructor configservice');
-      
-   
-   }
+  }
 
-  init(){
+  init() {
     this.translationservice.initLanguages();
   }
 
-  getApiUrl():string{
-    return environment.production?"https://management.dnssense.com/api":"http://localhost:4200/api";
+  getApiUrl(): string {
+    return environment.production ? "https://management.dnssense.com/api" : "http://localhost:4200/api";
   }
-  setDefaultLanguage(lang:string){
+  setDefaultLanguage(lang: string) {
     this.translationservice.setDefaultLang(lang);
   }
-  getTranslationLanguage(){
+  getTranslationLanguage() {
     return this.translationservice.getCurrentLang();
   }
 
-  setTranslationLanguage(lang:string){
-    
+  setTranslationLanguage(lang: string) {
     this.translationservice.use(lang);
   }
-  
+
 }

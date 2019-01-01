@@ -13,19 +13,16 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 @NgModule({
   declarations: [HamzaComponent],
   imports: [
-    CommonModule,    
-   
+    CommonModule,
     HamzaRoutingModule,
-   
     TranslateModule.forChild({
       loader: {
-          provide: TranslateLoader,
-          useFactory: translateHttpLoaderFactory,
-          deps: [HttpClient]
+        provide: TranslateLoader,
+        useFactory: translateHttpLoaderFactory,
+        deps: [HttpClient]
       }
-  })
-    
+    })
   ]
-  
+
 })
 export class HamzaModule { }
