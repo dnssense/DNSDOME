@@ -11,37 +11,36 @@ export class JwtInterceptor implements HttpInterceptor {
     /**
      *
      */
-    constructor(private inject:Injector) {
-        
-        
+    constructor(private inject: Injector) {
+
+
     }
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-         
+
         request = request.clone({
-            setHeaders:{"X-Requested-With":"XMLHttpRequest"}
+            setHeaders: { 'X-Requested-With': 'XMLHttpRequest' }
         });
-        const authService=this.inject.get(AuthenticationService);
+        const authService = this.inject.get(AuthenticationService);
         // add authorization header with jwt token if available
-        let currentSession =authService.currentSession;
+        const currentSession = authService.currentSession;
         if (currentSession && currentSession.token) {
-             
-            if(request.url.indexOf("/token")>-1)
-            request = request.clone({
-                setHeaders: { 
-                    "X-Authorization": `Bearer ${currentSession.refreshToken}`,
-                    
-                }
-            });
-            else
-             request = request.clone({
-                setHeaders: { 
-                    "X-Authorization": `Bearer ${currentSession.token}`,
-                    
-                }
-            });
+
+            if (request.url.indexOf('/token') > -1) {
+                request = request.clone({
+                    setHeaders: {
+                        'X-Authorization': `Bearer ${currentSession.refreshToken}`,
+                    }
+                });
+            } else {
+                request = request.clone({
+                    setHeaders: {
+                        'X-Authorization': `Bearer ${currentSession.token}`,
+                    }
+                });
+            }
         }
 
         return next.handle(request);
-	    
+
     }
 }

@@ -20,6 +20,18 @@ app.post('/api/login', (req, res) => {
 
 });
 
+
+app.post('/api/captive', (req, res) => {
+  var statistics =
+  {
+    rushDay : "Pazar",
+    newUserCount : 12,
+    totalUserCount: 130,
+    onlineUserCount: 5
+  }
+  res.status(200).send(statistics);
+});
+
 app.listen(port);
 
 console.log('RESTful API server started on: ' + port);

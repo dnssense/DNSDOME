@@ -33,16 +33,13 @@ export class NotificationService {
     }
 
     error(message: string, keepAfterNavigationChange = false) {
-
         if (message) {
-
             this.keepAfterNavigationChange = keepAfterNavigationChange;
             this.subject.next({ type: 'danger', text: message });
         }
     }
     info(message: string, keepAfterNavigationChange = false) {
         if (message) {
-
             this.keepAfterNavigationChange = keepAfterNavigationChange;
             this.subject.next({ type: 'info', text: message });
         }
@@ -50,7 +47,6 @@ export class NotificationService {
 
     warning(message: string, keepAfterNavigationChange = false) {
         if (message) {
-
             this.keepAfterNavigationChange = keepAfterNavigationChange;
             this.subject.next({ type: 'warning', text: message });
         }
@@ -58,7 +54,6 @@ export class NotificationService {
 
     danger(message: string, keepAfterNavigationChange = false) {
         if (message) {
-
             this.keepAfterNavigationChange = keepAfterNavigationChange;
             this.subject.next({ type: 'danger', text: message });
         }

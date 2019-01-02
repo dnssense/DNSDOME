@@ -7,41 +7,35 @@ import { AuthenticationService } from '../services/authentication.service';
 import { SpinnerService } from '../services/spinner.service';
 
 
-
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
-    constructor(private authenticationService: AuthenticationService,private injector:Injector) {}
+    constructor(private authenticationService: AuthenticationService, private injector: Injector) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        
-        
         return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {
                 if (event instanceof HttpResponse) {
-                    
-                    
-                    
-                     console.log('event--->>>', event);
+                    //console.log('event--->>>', event);
                 }
                 return event;
             }),
             catchError(err => {
-            debugger;
-            if (err.status === 401) {
-                // auto logout if 401 response returned from api
-                this.authenticationService.logout();
-                if (err.url.indexOf('login') === -1) {
-                     location.reload(true);
-                }
-               
-            }
-            
-            throw err;
-            //const error = err.error.message || err.statusText;
-            //return throwError(error);
-        }),finalize(()=>{
-            
+                debugger;
+                if (err.status === 401) {
+                    // auto logout if 401 response returned from api
+                    this.authenticationService.logout();
+                    if (err.url.indexOf('login') === -1) { // reload if not login page
+                        location.reload(true);
+                    }
 
-        }))
+                }
+
+                throw err;
+                //const error = err.error.message || err.statusText;
+                //return throwError(error);
+            }), finalize(() => {
+
+
+            }))
     }
 }

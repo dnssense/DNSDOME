@@ -8,8 +8,9 @@ export class LoggerService {
 
   constructor() { }
 
-  console(msg:any){
-    if(environment.production==false)
-    console.log(msg);
+  console(msg: any) {
+    if (environment.production === false) {
+      console.log(msg);
+    }
   }
 }

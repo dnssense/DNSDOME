@@ -7,42 +7,32 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class SpinnerService {
-  private subject:Subject<boolean>;
-  
-  constructor(private spinner:NgxUiLoaderService) {
+  private subject: Subject<boolean>;
+
+  constructor(private spinner: NgxUiLoaderService) {
     console.log('constructor spinnerservice');
-    this.subject=new Subject<boolean>();
-    this.subject.asObservable().subscribe((val)=>{
-      if(val){
-        console.log('spinner start check:'+this.spinner.hasForeground());
-        if(!this.spinner.hasForeground())
-             this.spinner.start();
-    console.log('spinner start:'+this.spinner.hasForeground());
-    
-      }else{
-        console.log('spinner stop check:'+this.spinner.hasForeground());
-        if(this.spinner.hasForeground())
-       this.spinner.stop();
-       console.log('spinner stop:'+this.spinner.hasForeground());
-    
-
+    this.subject = new Subject<boolean>();
+    this.subject.asObservable().subscribe((val) => {
+      if (val) {
+        console.log('spinner start check:' + this.spinner.hasForeground());
+        if (!this.spinner.hasForeground()) {
+          this.spinner.start();
+        }
+        console.log('spinner start:' + this.spinner.hasForeground());
+      } else {
+        console.log('spinner stop check:' + this.spinner.hasForeground());
+        if (this.spinner.hasForeground()) {
+          this.spinner.stop();
+        }
+        console.log('spinner stop:' + this.spinner.hasForeground());
       }
-
-    })
+    });
   }
-  show(){
-    
+  show() {
     this.subject.next(true);
-    
-    
-    
-    
-    
   }
-  hide(){
+
+  hide() {
     this.subject.next(false);
-    
-    
-    
   }
 }
