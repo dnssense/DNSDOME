@@ -8,60 +8,42 @@ import { Messages } from 'src/app/core/messages';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { LoggerService } from 'src/app/core/services/logger.service';
 import * as Chartist from 'chartist';
+import { CaptivestatsService } from 'src/app/core/services/captivestats.service';
+import { CaptiveStatistic } from 'src/app/core/models/CaptiveStatistic';
 
 @Component({
     selector: 'app-captive',
-    templateUrl: 'captive.component.html'
+    templateUrl: 'captive.component.html',
+    providers: [CaptivestatsService]
 })
 export class CaptiveComponent implements OnInit, OnDestroy {
-    newUserCount: number;
-    totalUserCount: number;
-    rushDay: string;
-    onlineUserCount: number;
+    stats: CaptiveStatistic;
 
     constructor(private notificationService: NotificationService, private config: ConfigService,
-        private http: HttpClient, private translator: TranslatorService) {
+        private http: HttpClient, private translator: TranslatorService, private captiveStats: CaptivestatsService) {
 
-        this.getStatistics();
-
-    }
-
-    getStatistics() {
-        this.http.post<any>(this.config.getApiUrl() + '/api/captive', {}).subscribe(
+        this.captiveStats.getStatistics().subscribe(
             data => {
-            this.notificationService.success(data);
-            this.newUserCount = data.newUserCount;
-            this.totalUserCount = data.totalUserCount;
-            this.rushDay = data.rushDay;
-            this.onlineUserCount = data.onlineUserCount;
-                },
-            err => {
-
-            });
+                this.stats = data;
+                this.createConnectedUserChart();
+                this.createPieCharts();
+            }
+        )
     }
 
     ngOnDestroy(): void {
     }
     ngOnInit(): void {
+    }
 
-        const dataPreferences = {
-            labels: ['62%', '32%', '6%'],
-            series: [62, 32, 6]
-        };
 
-        const optionsPreferences = {
-            height: '230px'
-        };
-
-        new Chartist.Pie('#chartPreferences', dataPreferences, optionsPreferences);
+    createConnectedUserChart() {
 
         const dataColouredRoundedLineChart = {
             labels: ['Pzt', 'Sa', 'Çar', 'Per', 'Cu', 'Cts', 'Paz'],
-            series: [
-                [287, 480, 290, 554, 220, 690, 500]
-            ]
-        };
+            series: [this.stats.weeklyUsers]
 
+        };
         const optionsColouredRoundedLineChart: any = {
             lineSmooth: Chartist.Interpolation.cardinal({
                 tension: 5
@@ -76,6 +58,7 @@ export class CaptiveComponent implements OnInit, OnDestroy {
             low: 0,
             high: 1000,
             showPoint: true,
+            fullWidth: true,
             height: '300px'
         };
 
@@ -83,8 +66,6 @@ export class CaptiveComponent implements OnInit, OnDestroy {
             optionsColouredRoundedLineChart);
 
         this.startAnimationForLineChart(colouredRoundedLineChart);
-
-
     }
 
     startAnimationForLineChart(chart: any) {
@@ -121,46 +102,59 @@ export class CaptiveComponent implements OnInit, OnDestroy {
         seq = 0;
     }
 
-    info() {
-        this.notificationService.info("info msg");
-    }
-    error() {
-        this.notificationService.error("error msg");
-    }
-    warning() {
-        this.notificationService.warning("warning msg");
-    }
-    success() {
-        this.notificationService.success("success msg");
-    }
-    danger() {
-        this.notificationService.danger("danger msg");
+    startAnimationForBarChart(chart: any) {
+        let seq2: number, delays2: number, durations2: number;
+        seq2 = 0;
+        delays2 = 80;
+        durations2 = 500;
+        chart.on('draw', function(data: any) {
+          if (data.type === 'bar') {
+              seq2++;
+              data.element.animate({
+                opacity: {
+                  begin: seq2 * delays2,
+                  dur: durations2,
+                  from: 0,
+                  to: 1,
+                  easing: 'ease'
+                }
+              });
+          }
+        });
+
+        seq2 = 0;
     }
 
-    errorHttp() {
-        this.http.post('http://localhost:100/api', {}).subscribe(
-            x => {
+    createPieCharts() {
 
-            }
-        );
+        const dataPreferences = {
+            labels: ['62%', '32%', '6%'],
+            series: [62, 32, 6]
+        };
 
-    }
+        const optionsPreferences = {
+            donut: true,
+            height: '255px'
+        };
 
+        new Chartist.Pie('#birincipasta', dataPreferences, optionsPreferences);
 
-    throwException() {
-        throw new Error("captive error");
+        // new Chartist.Pie('#ikincipasta', {
+        //     labels: ['Erkek', 'Kadın'],
+        //     series: [this.stats.maleGenderRatio, (100 - this.stats.maleGenderRatio)]
+        // }, {
+        //         donut: true,
+        //         donutWidth: 40,
+        //         startAngle: 270,
+        //         total: 200,
+        //         showLabel: true
+        //     });
     }
 
     language(lang: string) {
         this.config.setTranslationLanguage(lang);
     }
-    invalidmsg = 'invalid url';
-    language2() {
-        this.invalidmsg = this.translator.translate('InvalidUrl')
-    }
-
-
-
+ 
     getcategory() {
         this.http.post<any>(this.config.getApiUrl() + "/dashboard/list", {}).subscribe(data => {
             debugger;
@@ -169,14 +163,6 @@ export class CaptiveComponent implements OnInit, OnDestroy {
                 debugger;
             });
     }
-
-
-
-
-
-
-
-
 
 
 }

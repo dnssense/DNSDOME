@@ -1,129 +1,133 @@
 <div class="main-content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-6">
-          <div class="col-md-12">
-              <div class="card card-stats">
-                <div class="card-header card-header-icon card-header-info">
-                  <div class="card-icon">
-                    <i class="material-icons">timeline</i>
-                  </div>
-                  <h4 class="card-title">Bağlanan Kullanıcı Sayısı
-                    <small> - Günlük</small>
-                  </h4>
-                </div>
-                <div class="card-body">
-                  <div id="colouredRoundedLineChart" class="ct-chart"></div>
-                </div>
-              </div>
+      <div class="col-md-3">
+        <div class="card card-stats">
+          <div class="card-header card-header-info card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">group_add</i>
             </div>
-      </div>
-      <div class="col-md-6">
-       <div class="row">
-         <div class="col-md-7">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card card-stats">
-              <div class="card-header card-header-info card-header-icon">
-                <div class="card-icon">
-                  <i class="material-icons">group_add</i>
-                </div>
-                <p class="card-category"><strong>Yeni Kullanıcılar</strong> </p>
-                <h3 class="card-title">
-                  {{newUserCount}}
-                </h3>
+            <p class="card-category"><strong>Yeni Kullanıcılar</strong> </p>
+            <h3 class="card-title">
+              {{stats?.newUserCount}}
+            </h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats"> 
                 <h4 class="card-title">
-                  <small>Toplam: {{totalUserCount}}</small>
+                  <small>Bu Hafta Toplam: {{stats?.totalUserCount}}</small>
                 </h4>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                  <a href="#">Detaylara Git</a>
-                  <i class="material-icons text-info">more_vert</i>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="card card-stats">
-              <div class="card-header card-header-warning card-header-icon">
-                <div class="card-icon">
-                  <i class="material-icons">date_range</i>
-                </div>
-                <p class="card-category">En Yoğun Gün</p>
-                <h3 class="card-title">
-                  <small>{{rushDay}}</small>
-                </h3>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                  <i class="material-icons text-danger">warning</i>
-                  <a href="#pablo">Get More Space...</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-              <div class="card card-stats">
-                <div class="card-header card-header-success card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">person</i>
-                  </div>
-                  <p class="card-category">Bağlı Kullanıcı</p>
-                  <h3 class="card-title">5</h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                    <i class="material-icons">date_range</i> Last 24 Hours
-                  </div>
-                </div>
-              </div>
-            </div>
-        </div>
-        </div>
-          <div class="col-md-5">
-            <div class="card card-chart">
-              <div class="card-header card-header-icon card-header-danger">
-                <div class="card-icon">
-                  <i class="material-icons">power</i>
-                </div>
-                <h4 class="card-title">Giriş Yöntemleri</h4>
-              </div>
-              <div class="card-body">
-                <div id="chartPreferences" class="ct-chart"></div>
-              </div>
-              <div class="card-footer">
-                <div class="row">
-                  <div class="col-md-12">
-                    <h6 class="card-category">Legend</h6>
-                  </div>
-                  <div class="col-md-12">
-                    <i class="fa fa-circle text-info"></i> GSM
-                    <i class="fa fa-circle text-warning"></i> Mail
-                    <i class="fa fa-circle text-danger"></i> Facebook
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
-
+      <div class="col-md-3">
+        <div class="card card-stats">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">date_range</i>
+            </div>
+            <p class="card-category">En Yoğun Gün</p>
+            <h3 class="card-title">
+              <small>{{stats?.rushDay}}</small>
+            </h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <i class="material-icons text-danger">warning</i>
+              <a href="#pablo">Get More Space...</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-stats">
+          <div class="card-header card-header-success card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">person</i>
+            </div>
+            <p class="card-category">Bağlı Kullanıcı</p>
+            <h3 class="card-title">{{stats?.onlineUserCount}}</h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <i class="material-icons">timer</i> Anlık
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-stats">
+          <div class="card-header card-header-secondary card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">signal_cellular_alt</i>
+            </div>
+            <p class="card-category">Kullanıcı Cinsiyet Oranı</p>
+            <h3 class="card-title">%{{stats?.maleGenderRatio}}E - %{{100-stats?.maleGenderRatio}}K</h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <i class="material-icons">timer</i> Toplam Kullanıcılar İçinde
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="row">
-      <div class="col">
-
-        <div class="card">
-          <div class="card-header">
-            Tests Notifications
+      <div class="col-md-7">
+        <div class="card card-stats">
+          <div class="card-header card-header-icon card-header-info">
+            <div class="card-icon">
+              <i class="material-icons">timeline</i>
+            </div>
+            <h4 class="card-title">Bağlanan Kullanıcı Sayısı
+              <small> - Günlük</small>
+            </h4>
           </div>
           <div class="card-body">
-            <button class="btn mat-raised-button" (click)="info()">Test info</button>
-            <button class="btn mat-raised-button" (click)="success()">Test success</button>
-            <button class="btn mat-raised-button" (click)="danger()">Test danger</button>
-            <button class="btn mat-raised-button" (click)="error()">Test error</button>
-            <button class="btn mat-raised-button" (click)="warning()">Test warning</button>
+            <div id="colouredRoundedLineChart" class="ct-chart"></div>
           </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="card card-chart">
+          <div class="card-header card-header-icon card-header-danger">
+            <div class="card-icon">
+              <i class="material-icons">power</i>
+            </div>
+            <h4 class="card-title">Giriş Yöntemleri</h4>
+          </div>
+          <div class="card-body">
+            <div id="birincipasta" class="ct-chart"></div>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-md-12">
+                <h6 class="card-category">Yöntemler</h6>
+              </div>
+              <div class="col-md-12">
+                <i class="fa fa-circle text-info"></i> GSM
+                <i class="fa fa-circle text-warning"></i> Mail
+                <i class="fa fa-circle text-danger"></i> Facebook
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          Tests Notifications
+        </div>
+        <div class="card-body">
+          <button class="btn mat-raised-button" (click)="info()">Test info</button>
+          <button class="btn mat-raised-button" (click)="success()">Test success</button>
+          <button class="btn mat-raised-button" (click)="danger()">Test danger</button>
+          <button class="btn mat-raised-button" (click)="error()">Test error</button>
+          <button class="btn mat-raised-button" (click)="warning()">Test warning</button>
         </div>
       </div>
     </div>
