@@ -34,7 +34,13 @@ export const ROUTES: RouteInfo[] = [{
     title: 'Captive',
     type: 'link',
     icontype: 'timeline'
-}, {
+},  {
+    path: '/admin/hamza',
+    title: 'hamza',
+    type: 'link',
+    icontype: 'date_range'
+}
+/*,{
     path: '/components',
     title: 'Components',
     type: 'sub',
@@ -114,12 +120,8 @@ export const ROUTES: RouteInfo[] = [{
         { path: 'lock', title: 'Lock Screen Page', ab: 'LSP' },
         { path: 'user', title: 'User Page', ab: 'UP' }
     ]
-}, {
-    path: '/admin/hamza',
-    title: 'hamza',
-    type: 'link',
-    icontype: 'date_range'
-},
+}
+*/
 ];
 
 @Component({
