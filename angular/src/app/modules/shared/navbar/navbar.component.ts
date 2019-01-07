@@ -4,6 +4,8 @@ import { Router, ActivatedRoute, NavigationEnd, NavigationStart } from '@angular
 import { Subscription } from 'rxjs/Subscription';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { ROUTES } from '../sidebar/sidebar.component';
+import { AlertService } from 'src/app/core/services/alert.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 const misc: any = {
     navbar_menu_visible: 0,
     active_collapse: true,
@@ -27,67 +29,68 @@ export class NavbarComponent implements OnInit {
 
     @ViewChild('app-navbar-cmp') button: any;
 
-    constructor(location: Location, private renderer: Renderer, private element: ElementRef, private router: Router,) {
+    constructor(location: Location, private renderer: Renderer, private element: ElementRef, private router: Router,
+        private alert: AlertService, private auth: AuthenticationService) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
     }
-    minimizeSidebar(){
-      const body = document.getElementsByTagName('body')[0];
+    minimizeSidebar() {
+        const body = document.getElementsByTagName('body')[0];
 
-      if (misc.sidebar_mini_active === true) {
-          body.classList.remove('sidebar-mini');
-          misc.sidebar_mini_active = false;
+        if (misc.sidebar_mini_active === true) {
+            body.classList.remove('sidebar-mini');
+            misc.sidebar_mini_active = false;
 
-      } else {
-          setTimeout(function() {
-              body.classList.add('sidebar-mini');
+        } else {
+            setTimeout(function () {
+                body.classList.add('sidebar-mini');
 
-              misc.sidebar_mini_active = true;
-          }, 300);
-      }
+                misc.sidebar_mini_active = true;
+            }, 300);
+        }
 
-      // we simulate the window Resize so the charts will get updated in realtime.
-      const simulateWindowResize = setInterval(function() {
-          window.dispatchEvent(new Event('resize'));
-      }, 180);
+        // we simulate the window Resize so the charts will get updated in realtime.
+        const simulateWindowResize = setInterval(function () {
+            window.dispatchEvent(new Event('resize'));
+        }, 180);
 
-      // we stop the simulation of Window Resize after the animations are completed
-      setTimeout(function() {
-          clearInterval(simulateWindowResize);
-      }, 1000);
+        // we stop the simulation of Window Resize after the animations are completed
+        setTimeout(function () {
+            clearInterval(simulateWindowResize);
+        }, 1000);
     }
-    hideSidebar(){
-      const body = document.getElementsByTagName('body')[0];
-      const sidebar = document.getElementsByClassName('sidebar')[0];
+    hideSidebar() {
+        const body = document.getElementsByTagName('body')[0];
+        const sidebar = document.getElementsByClassName('sidebar')[0];
 
-      if (misc.hide_sidebar_active === true) {
-          setTimeout(function() {
-              body.classList.remove('hide-sidebar');
-              misc.hide_sidebar_active = false;
-          }, 300);
-          setTimeout(function () {
-              sidebar.classList.remove('animation');
-          }, 600);
-          sidebar.classList.add('animation');
+        if (misc.hide_sidebar_active === true) {
+            setTimeout(function () {
+                body.classList.remove('hide-sidebar');
+                misc.hide_sidebar_active = false;
+            }, 300);
+            setTimeout(function () {
+                sidebar.classList.remove('animation');
+            }, 600);
+            sidebar.classList.add('animation');
 
-      } else {
-          setTimeout(function() {
-            body.classList.add('hide-sidebar');
-              // $('.sidebar').addClass('animation');
-              misc.hide_sidebar_active = true;
-          }, 300);
-      }
+        } else {
+            setTimeout(function () {
+                body.classList.add('hide-sidebar');
+                // $('.sidebar').addClass('animation');
+                misc.hide_sidebar_active = true;
+            }, 300);
+        }
 
-      // we simulate the window Resize so the charts will get updated in realtime.
-      const simulateWindowResize = setInterval(function() {
-          window.dispatchEvent(new Event('resize'));
-      }, 180);
+        // we simulate the window Resize so the charts will get updated in realtime.
+        const simulateWindowResize = setInterval(function () {
+            window.dispatchEvent(new Event('resize'));
+        }, 180);
 
-      // we stop the simulation of Window Resize after the animations are completed
-      setTimeout(function() {
-          clearInterval(simulateWindowResize);
-      }, 1000);
+        // we stop the simulation of Window Resize after the animations are completed
+        setTimeout(function () {
+            clearInterval(simulateWindowResize);
+        }, 1000);
     }
 
     ngOnInit() {
@@ -103,29 +106,29 @@ export class NavbarComponent implements OnInit {
             misc.hide_sidebar_active = true;
         }
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
-          this.sidebarClose();
+            this.sidebarClose();
 
-          const $layer = document.getElementsByClassName('close-layer')[0];
-          if ($layer) {
-            $layer.remove();
-          }
+            const $layer = document.getElementsByClassName('close-layer')[0];
+            if ($layer) {
+                $layer.remove();
+            }
         });
     }
     onResize(event) {
-      if ($(window).width() > 991) {
-        return false;
-      }
-      return true;
+        if ($(window).width() > 991) {
+            return false;
+        }
+        return true;
     }
     sidebarOpen() {
-      var $toggle = document.getElementsByClassName('navbar-toggler')[0];
+        var $toggle = document.getElementsByClassName('navbar-toggler')[0];
         const toggleButton = this.toggleButton;
         const body = document.getElementsByTagName('body')[0];
-        setTimeout(function(){
+        setTimeout(function () {
             toggleButton.classList.add('toggled');
         }, 500);
         body.classList.add('nav-open');
-        setTimeout(function() {
+        setTimeout(function () {
             $toggle.classList.add('toggled');
         }, 430);
 
@@ -135,24 +138,24 @@ export class NavbarComponent implements OnInit {
 
         if (body.querySelectorAll('.main-panel')) {
             document.getElementsByClassName('main-panel')[0].appendChild($layer);
-        }else if (body.classList.contains('off-canvas-sidebar')) {
+        } else if (body.classList.contains('off-canvas-sidebar')) {
             document.getElementsByClassName('wrapper-full-page')[0].appendChild($layer);
         }
 
-        setTimeout(function() {
+        setTimeout(function () {
             $layer.classList.add('visible');
         }, 100);
 
-        $layer.onclick = function() { //asign a function
-          body.classList.remove('nav-open');
-          this.mobile_menu_visible = 0;
-          this.sidebarVisible = false;
+        $layer.onclick = function () { //asign a function
+            body.classList.remove('nav-open');
+            this.mobile_menu_visible = 0;
+            this.sidebarVisible = false;
 
-          $layer.classList.remove('visible');
-          setTimeout(function() {
-              $layer.remove();
-              $toggle.classList.remove('toggled');
-          }, 400);
+            $layer.classList.remove('visible');
+            setTimeout(function () {
+                $layer.remove();
+                $toggle.classList.remove('toggled');
+            }, 400);
         }.bind(this);
 
         body.classList.add('nav-open');
@@ -160,7 +163,7 @@ export class NavbarComponent implements OnInit {
         this.sidebarVisible = true;
     };
     sidebarClose() {
-      var $toggle = document.getElementsByClassName('navbar-toggler')[0];
+        var $toggle = document.getElementsByClassName('navbar-toggler')[0];
         const body = document.getElementsByTagName('body')[0];
         this.toggleButton.classList.remove('toggled');
         var $layer = document.createElement('div');
@@ -174,7 +177,7 @@ export class NavbarComponent implements OnInit {
             $layer.remove();
         }
 
-        setTimeout(function() {
+        setTimeout(function () {
             $toggle.classList.remove('toggled');
         }, 400);
 
@@ -206,5 +209,16 @@ export class NavbarComponent implements OnInit {
     }
     getPath() {
         return this.location.prepareExternalUrl(this.location.path());
+    }
+
+    logout() {
+        this.alert.alertWarningAndCancel('Emin misiniz?', 'Gerçekten çıkış yapmak istiyor musunuz?').subscribe(
+            res => {
+                if (res) {
+                    this.alert.alertAutoClose('Çıkış Yapılıyor', 'Sistemden güvenli bir şekilde çıkış yapılıyor', 1000);
+                    this.auth.logout();
+                }
+            }
+        );
     }
 }
