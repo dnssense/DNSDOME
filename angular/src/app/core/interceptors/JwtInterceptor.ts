@@ -12,8 +12,6 @@ export class JwtInterceptor implements HttpInterceptor {
      *
      */
     constructor(private inject: Injector) {
-
-
     }
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
