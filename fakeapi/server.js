@@ -27,7 +27,22 @@ app.post('/api/captive', (req, res) => {
     rushDay : "Pazar",
     newUserCount : 12,
     totalUserCount: 130,
-    onlineUserCount: 5
+    onlineUserCount: 5,
+    maleGenderRatio: 56,
+    weeklyUsers: [334,456,766,635,189,389,891]
+  }
+  res.status(200).send(statistics);
+});
+
+app.get('/api/captive', (req, res) => {
+  var statistics =
+  {
+    rushDay : "Pazar",
+    newUserCount : 12,
+    totalUserCount: 130,
+    onlineUserCount: 5,
+    maleGenderRatio: 56,
+    weeklyUsers: [334,456,766,635,189,389,891]
   }
   res.status(200).send(statistics);
 });
