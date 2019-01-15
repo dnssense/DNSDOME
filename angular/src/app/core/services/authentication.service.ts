@@ -24,7 +24,8 @@ export class AuthenticationService {
   private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
 
-  constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService, private router: Router, private logger: LoggerService) {
+  constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService, 
+    private router: Router, private logger: LoggerService) {
     logger.console('constructor authenticationservice');
     this.loginUrl = this.configuration.getApiUrl() + '/auth/login';
     this.logoutUrl = this.configuration.getApiUrl() + '/auth/logout';
@@ -35,22 +36,18 @@ export class AuthenticationService {
       this.refreshToken();
     });
 
-
   }
 
   checkSessionIsValid() {
-
     let sessionString = localStorage.getItem(this.STORAGENAME);
     if (sessionString) {
-
       let session: Session = JSON.parse(sessionString);
       if (session) {
         if (!this.jwtHelper.isTokenExpired(session.token)) {
           this.logger.console('token valid');
           this.currentSession = session;
-          this.logger.console(session.refreshToken);
-          this.logger.console(session.token);
-
+         // this.logger.console(session.refreshToken);
+         // this.logger.console(session.token);
         } else {
           this.http.post<any>(this.refreshTokenUrl, {}).subscribe((res: any) => {
            // debugger;
@@ -67,14 +64,10 @@ export class AuthenticationService {
             //console yaz geç
             this.logger.console(err);
             this.logout();
-
           });
 
         }
-
-
       }
-
     }
   }
 
@@ -97,38 +90,18 @@ export class AuthenticationService {
 
   }
 
-
-
-
   login(email: string, pass: string): Observable<Session> {
 
     return this.http.post<Session>(this.loginUrl, { username: email, password: pass })
       .pipe(
         map(res => {
-          this.logger.console(res);
+          // this.logger.console(res);
           localStorage.setItem(this.STORAGENAME, JSON.stringify(res));
           this.currentSession = res;
-          this.logger.console(res.refreshToken);
-          this.logger.console(res.token);
+          // this.logger.console(res.refreshToken);
+          // this.logger.console(res.token);
           return res;
         }));
-
-
-
-
-    /* .pipe(map(user => {
-      // login successful if there's a jwt token in the response
-      if (user && user.token) {
-        this.authenticatedUser = user;
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('currentUser', JSON.stringify(user));
-      }
-      return user; */
-    // }));
-
-    /* ,catchError(err=>{
-      debugger;
-      throw err;}) */
   }
 
   logout() {
