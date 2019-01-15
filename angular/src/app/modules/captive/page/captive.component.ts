@@ -36,7 +36,6 @@ export class CaptiveComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
     }
 
-
     createConnectedUserChart() {
 
         const dataColouredRoundedLineChart = {
@@ -164,5 +163,20 @@ export class CaptiveComponent implements OnInit, OnDestroy {
             });
     }
 
+    info() {
+        this.notificationService.info("info msg");
+    }
+    error() {
+        this.notificationService.error("error msg");
+    }
+    warning() {
+        this.notificationService.warning("warning msg");
+    }
+    success() {
+        this.notificationService.success("success msg");
+    }
+    danger() {
+        this.notificationService.danger("danger msg");
+    }
 
 }
