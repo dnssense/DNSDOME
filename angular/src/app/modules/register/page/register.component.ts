@@ -1,0 +1,285 @@
+import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { FormBuilder, AbstractControl } from '@angular/forms';
+import { PasswordValidation } from './password-validator.component';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { CompileTemplateMetadata } from '@angular/compiler';
+import { Router } from '@angular/router';
+import { User } from 'src/app/core/models/User';
+import { first } from 'rxjs/operators';
+import { vld } from 'validator';
+import { ConfigService } from 'src/app/core/services/config.service';
+import * as countryList from "src/app/core/models/Countries";
+import * as phoneNumberCodesList from "src/app/core/models/PhoneNumberCodes";
+import { SignupBean } from 'src/app/core/models/SignupBean';
+import { ValidationService } from 'src/app/core/services/validation.service';
+import { Company } from 'src/app/core/models/Company';
+import { environment } from 'src/environments/environment';
+import { CaptchaService } from 'src/app/core/services/captcha.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
+import { OperationResult } from 'src/app/core/models/OperationResult';
+import { Observable } from 'rxjs/Observable';
+import { Headers, Http, RequestOptions } from '@angular/http';
+import { ReCaptchaComponent } from 'angular2-recaptcha';
+
+
+declare var $: any;
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
+
+@Component({
+  selector: 'app-register',
+  templateUrl: 'register.component.html'
+})
+export class RegisterComponent implements OnInit, OnDestroy {
+  public _serviceURL = this.config.getApiUrl() + "/signup/";
+  private toggleButton: any;
+  private sidebarVisible: boolean;
+  private nativeElement: Node;
+  matcher = new MyErrorStateMatcher();
+  isFailed: boolean;
+  registerForm: FormGroup;
+  public user: SignupBean;
+  public message: string;
+  public status: number = null;
+  public passwordStrengthLabel: string = "";
+  public privacyPolicy: boolean = false;
+  public smsMessageActive: boolean = false;
+  public countries = countryList.countries;
+  public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
+  public captcha: string;
+  public captcha_key: string;
+  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
+  public company: string = 'roksit';
+  public companyLogo: string = 'roksit_logo_small.png';
+
+  emailFormControl = new FormControl('', [
+    Validators.required,
+    Validators.email,
+  ]);
+  validEmailRegister: true | false;
+  validPasswordRegister: true | false;
+  public usageType: boolean = true;
+
+  constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
+    private element: ElementRef, private config: ConfigService, private notification: NotificationService) {
+    this.isFailed = false;
+    this.nativeElement = element.nativeElement;
+    this.sidebarVisible = false;
+
+    this.createRegisterForm();
+
+  }
+
+  createRegisterForm() {
+    const number = `[0-9]+`;
+    const site = `(http(s)?://)?([\\w-]+\\.)+[\\w-]+(/[\\w- ;,./?%&=]*)?`;
+
+    this.registerForm =
+      this.formBuilder.group({
+        "username": ["", [Validators.required, ValidationService.emailValidator]],
+        "confirmEmail": ["", [Validators.required, ValidationService.emailValidator]],
+        "name": ["", [Validators.required, Validators.minLength(2)]],
+        "surname": ["", [Validators.required, Validators.minLength(2)]],
+        "gsm": ["", [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(number)]],
+        "company": ["", [Validators.required]],
+        "password": ["", [Validators.required, Validators.minLength(6)]],
+        "passwordAgain": ["", [Validators.required, Validators.minLength(6)]],
+        "webSite": ["", [Validators.required, Validators.pattern(site)]],
+        "industry": ["", [Validators.required]],
+        "companyCountry": ["", []],
+        "personnelCount": ["", [Validators.required]],
+        "usageType": ["", [Validators.required]],
+        "source": ["", []],
+        "address1": [""],
+        "address2": [""],
+        "city": [""],
+        "postCode": [""],
+        "regionState": [""],
+        "gsmCode": ["", [Validators.required]],
+      }
+        , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain"), ValidationService.matchingEmail("username", "confirmEmail")]) }
+      );
+
+    this.user = new SignupBean();
+    this.user.company = new Company();
+    this.user.company.name = " ";
+    this.captcha_key = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// environment.API_CAPTCHA_KEY;
+  }
+
+  ngOnInit() {
+    const navbar: HTMLElement = this.element.nativeElement;
+    this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
+    const body = document.getElementsByTagName('body')[0];
+    body.classList.add('register-page');
+    body.classList.add('off-canvas-sidebar');
+    const card = document.getElementsByClassName('card')[0];
+    setTimeout(function () {
+      // after 1000 ms we add the class animated to the login/register card
+      card.classList.remove('card-hidden');
+    }, 700);
+
+  }
+
+  sidebarToggle() {
+    const toggleButton = this.toggleButton;
+    const body = document.getElementsByTagName('body')[0];
+    const sidebar = document.getElementsByClassName('navbar-collapse')[0];
+    if (this.sidebarVisible === false) {
+      setTimeout(function () {
+        toggleButton.classList.add('toggled');
+      }, 500);
+      body.classList.add('nav-open');
+      this.sidebarVisible = true;
+    } else {
+      this.toggleButton.classList.remove('toggled');
+      this.sidebarVisible = false;
+      body.classList.remove('nav-open');
+    }
+  }
+
+  ngOnDestroy() {
+    const body = document.getElementsByTagName('body')[0];
+    body.classList.remove('register-page');
+    body.classList.remove('off-canvas-sidebar');
+  }
+
+  isFieldValid(form: FormGroup, field: string) {
+    return !form.get(field).valid && form.get(field).touched;
+  }
+
+  displayFieldCss(form: FormGroup, field: string) {
+    return {
+      'has-error': this.isFieldValid(form, field),
+      'has-feedback': this.isFieldValid(form, field)
+    };
+  }
+
+  onRegister() {
+    if (this.registerForm.valid) {
+      //this.authenticate();
+    } else {
+      this.validateAllFormFields(this.registerForm);
+    }
+  }
+
+  validateAllFormFields(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      if (control instanceof FormControl) {
+        control.markAsTouched({ onlySelf: true });
+      } else if (control instanceof FormGroup) {
+        this.validateAllFormFields(control);
+      }
+    });
+  }
+
+  emailValidationRegister(e) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (re.test(String(e).toLowerCase())) {
+      this.validEmailRegister = true;
+    } else {
+      this.validEmailRegister = false;
+    }
+  }
+
+  passwordValidationRegister(e) {
+    if (e.length > 5) {
+      this.validPasswordRegister = true;
+    } else {
+      this.validPasswordRegister = false;
+    }
+  }
+
+  public onSelectionChange(type: string) {
+    this.user.usageType = type;
+    if (type === "Business Account") {
+      $("#companyInfoDiv").show(500);
+    } else {
+      $("#companyInfoDiv").hide(400);
+    }
+  }
+
+  checkisTelNumber(event: KeyboardEvent) {
+    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight"];
+    let isValid: boolean = false;
+
+    for (let i = 0; i < allowedChars.length; i++) {
+      if (allowedChars[i] == event.key) {
+        isValid = true;
+        break;
+      }
+    }
+
+    if (!isValid) {
+      event.preventDefault();
+    }
+  }
+
+  public handleCaptcha($event) {
+    this.captcha = $event;
+  }
+
+  isRegisterFormValid(){
+    debugger;
+    if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.privacyPolicy){
+      return true;
+    }
+    return false;
+  }
+
+  resolved(captchaResponse: string) {
+    console.log(`Resolved captcha with response ${captchaResponse}:`);
+  }
+
+  public pPolicy() {
+    this.privacyPolicy = this.privacyPolicy === true ? false : true;
+  }
+
+  // public saveUser() {
+  //   if (!CaptchaService.validCaptcha(this.captcha)) {
+  //     return;
+  //   } else {
+  //     this.user.c_answer = this.captcha;
+  //   }
+
+  //   if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.privacyPolicy) {
+  //     //Loaderı çalıştır
+  //     //let id = this.notification.showWait(OperationResult.getResult("wait", "User Save", " User is being saved."));
+  //     this.subscribeUser(this.user).subscribe((res: OperationResult) => {
+  //       if (res.status == 200) {
+  //         this.status = res.status;
+  //         this.message = res.message;
+  //         this.router.navigate(["/success"]);
+  //       } else {
+  //         this.status = res.status;
+  //         this.message = res.message;
+  //         this.captchaComponent.reset();
+  //       }
+  //     //  this.notification.clearNotify(res, id);
+  //     //loaderı kapat
+  //     });
+  //   }
+  // }
+
+  // public subscribeUser(user: SignupBean): Observable<OperationResult> {
+  //   let headers = new Headers({"Content-Type": "application/json"});
+  //   let options = new RequestOptions({headers: headers});
+  //   // return this.http.post<Response>(`${this._serviceURL}`, JSON.stringify(user), options)
+  //   // .pipe(
+  //   //   map(res => {
+
+  //   //   })
+  //   //   //map((res: Response) => res.json())
+  //   //   );
+
+  //     return null;
+  // }
+
+}
