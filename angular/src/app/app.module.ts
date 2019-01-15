@@ -25,6 +25,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { translateHttpLoaderFactory } from './core/translationhelper';
 import { NgxUiLoaderModule, NgxUiLoaderRouterModule, NgxUiLoaderHttpModule, NgxUiLoaderConfig, POSITION, SPINNER, PB_DIRECTION, NgxUiLoaderHttpConfig } from 'ngx-ui-loader';
+import {ReCaptchaModule} from "angular2-recaptcha"; 
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import { NgxUiLoaderModule, NgxUiLoaderRouterModule, NgxUiLoaderHttpModule, NgxU
     NgxUiLoaderModule.forRoot({ fgsPosition: 'center-center' }),
     NgxUiLoaderHttpModule.forRoot({ showForeground: true }),
     NgxUiLoaderRouterModule,
+    ReCaptchaModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

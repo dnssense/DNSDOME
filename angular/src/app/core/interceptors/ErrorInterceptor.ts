@@ -10,7 +10,7 @@ import { TranslatorService } from '../services/translator.service';
 export class ErrorInterceptor implements ErrorHandler {
   constructor(
     // Because the ErrorHandler is created before the providers, we’ll have to use the Injector to get them.
-    private injector: Injector,
+    private injector: Injector
   ) { }
 
   handleError(error: Error | HttpErrorResponse) {
