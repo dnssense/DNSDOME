@@ -6,6 +6,9 @@ import { Location, LocationStrategy, PathLocationStrategy } from '@angular/commo
 import { ROUTES } from '../sidebar/sidebar.component';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { ConfigService } from 'src/app/core/services/config.service';
+import { TranslatorService } from 'src/app/core/services/translator.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 const misc: any = {
     navbar_menu_visible: 0,
     active_collapse: true,
@@ -29,8 +32,8 @@ export class NavbarComponent implements OnInit {
 
     @ViewChild('app-navbar-cmp') button: any;
 
-    constructor(location: Location, private renderer: Renderer, private element: ElementRef, private router: Router,
-        private alert: AlertService, private auth: AuthenticationService) {
+    constructor(location: Location, private renderer: Renderer, private element: ElementRef, private router: Router,private notification:NotificationService,
+        private alert: AlertService, private auth: AuthenticationService, private config: ConfigService, private translator: TranslatorService) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
@@ -212,13 +215,23 @@ export class NavbarComponent implements OnInit {
     }
 
     logout() {
-        this.alert.alertWarningAndCancel('Emin misiniz?', 'Gerçekten çıkış yapmak istiyor musunuz?').subscribe(
+        this.alert.alertWarningAndCancel(
+            this.translator.translate('AreYouSure'), 
+            this.translator.translate('LOGOUT.LogoutMessage')
+            ).subscribe(
             res => {
                 if (res) {
-                    this.alert.alertAutoClose('Çıkış Yapılıyor', 'Sistemden güvenli bir şekilde çıkış yapılıyor', 1000);
+                    this.alert.alertAutoClose(
+                        this.translator.translate('LOGOUT.LoggingOut'),
+                        this.translator.translate('LOGOUT.LoggingOutMessage'), 1000);
                     this.auth.logout();
                 }
             }
         );
     }
+
+    language(lang: string) {
+        this.config.setTranslationLanguage(lang);
+        this.notification.success(this.translator.translate('LanguageChanged'));
+      }
 }
