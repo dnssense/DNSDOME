@@ -19,7 +19,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-cmp',
   templateUrl: 'login.component.html'
 })
 export class LoginComponent implements OnInit, OnDestroy {
@@ -43,7 +43,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   email: string;
   password: string;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router, private element: ElementRef) {
+  constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, 
+    private router: Router, private element: ElementRef) {
     this.isFailed = false;
     this.nativeElement = element.nativeElement;
     this.sidebarVisible = false;

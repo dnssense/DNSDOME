@@ -4,52 +4,60 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-4 col-md-6 col-sm-6 ml-auto mr-auto">
-          <form [formGroup]="login" novalidate ng-submit="loginform.$valid && login.submit()">
-            <div class="card card-login card-hidden">
-              <div class="card-header card-header-info text-center">
-                <h4 class="card-title">{{'Login' | translate}}</h4>
-                <div class="social-line">
-                  <a href="#pablo" class="btn btn-just-icon btn-link btn-white">
-                    <i class="fa fa-facebook-square"></i>
-                  </a>
-                  <a href="#pablo" class="btn btn-just-icon btn-link btn-white">
-                    <i class="fa fa-twitter"></i>
-                  </a>
-                  <a href="#pablo" class="btn btn-just-icon btn-link btn-white">
-                    <i class="fa fa-google-plus"></i>
-                  </a>
+          <div class="card card-signup mt-0">
+            <div class="card-title">
+              <h2 class="card-title text-center">{{'LOGIN.Login' | translate}}</h2>
+              <div class="row">
+                <div class="col text-right">
+                  <div class="icon text-rose">
+                    <i class="material-icons">cloud_queue</i>
+                  </div>
+                </div>
+                <div class="col text-center">
+                  <div class="icon text-primary">
+                    <i class="material-icons">wifi_tethering</i>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="icon text-info">
+                    <i class="material-icons">bar_chart</i>
+                  </div>
                 </div>
               </div>
-              <div class="card-body ">
+            </div>
+            <div class="card-body">
+              <form [formGroup]="login" novalidate ng-submit="loginform.$valid && login.submit()">
                 <p class="card-description text-center">Easiest way to be secure!</p>
                 <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
-                  <input type="email" matInput placeholder="{{'Email' | translate}} *" [errorStateMatcher]="matcher"
+                  <input type="email" matInput placeholder="{{'LOGIN.Email' | translate}} *" [errorStateMatcher]="matcher"
                     (ngModelChange)="emailValidationLogin($event)" formControlName="email">
                   <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-                    Please enter a valid email address
+                    {{'LOGIN.EmailRequired' | translate}}
                   </mat-error>
                   <mat-error *ngIf="emailFormControl.hasError('required')">
-                    <strong>{{'EmailRequired' | translate}}</strong>
+                    <strong>{{'LOGIN.EmailRequired' | translate}}</strong>
                   </mat-error>
                 </mat-form-field>
                 <mat-form-field class="example-full-width" [ngClass]="{'has-success':validPasswordLogin===true}"
                   [ngClass]="displayFieldCss(login, 'password')">
-                  <input type="password" matInput placeholder="{{'Password' | translate}} *" (ngModelChange)="passwordValidationLogin($event)"
+                  <input type="password" matInput placeholder="{{'LOGIN.Password' | translate}} *" (ngModelChange)="passwordValidationLogin($event)"
                     formControlName="password">
-                  <app-field-error-display [displayError]="isFieldValid(login, 'password')" errorMsg="{{'PasswordRequired' | translate}}">
+                  <app-field-error-display [displayError]="isFieldValid(login, 'password')" errorMsg="{{'LOGIN.PasswordRequired' | translate}}">
                   </app-field-error-display>
                 </mat-form-field>
-                <div class="category form-category">* {{'RequiredFields' | translate}}</div>
+                <div class="category form-category">* {{'LOGIN.RequiredFields' | translate}}</div>
                 <mat-error class="ui-state-error-text" *ngIf="isFailed">
-                  {{'WrongEmailOrPassword' | translate}}
+                  {{ 'LOGIN.WrongEmailOrPassword' | translate}}
                 </mat-error>
                 <div class="form-group text-center">
                   <br />
-                  <button mat-button class="btn btn-info align-center" (click)="onLogin()">Login</button>
+                  <button mat-button class="btn btn-rose btn-secondary align-center" (click)="onLogin()">
+                    {{'LOGIN.Login'|translate}}
+                  </button>
                 </div>
-              </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
@@ -65,7 +73,7 @@
             </li>
             <li>
               <a href="https://www.roksit.com/about-us" target="_blank">
-                About Us
+                {{ 'AboutUs' | translate}}
               </a>
             </li>
           </ul>
