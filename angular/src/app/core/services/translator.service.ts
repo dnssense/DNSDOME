@@ -14,11 +14,11 @@ export class TranslatorService {
 
   initLanguages() {
 
-    this.translationService.addLangs(['en', 'tr']);
+    this.translationService.addLangs(['en']);
     this.translationService.setDefaultLang('en');
 
     const browserLang = this.translationService.getBrowserLang();
-    this.translationService.use(browserLang.match(/en|tr/) ? browserLang : 'en');
+    this.translationService.use('en'); //browserLang.match(/en|tr/) ? browserLang : 'en');
 
   }
 
