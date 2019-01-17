@@ -84,33 +84,27 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.registerForm =
       this.formBuilder.group({
         "username": ["", [Validators.required, ValidationService.emailValidator]],
-        "confirmEmail": ["", [Validators.required, ValidationService.emailValidator]],
         "name": ["", [Validators.required, Validators.minLength(2)]],
         "surname": ["", [Validators.required, Validators.minLength(2)]],
+        "gsmCode": ["", [Validators.required]],
         "gsm": ["", [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(number)]],
-        "company": ["", [Validators.required]],
         "password": ["", [Validators.required, Validators.minLength(6)]],
         "passwordAgain": ["", [Validators.required, Validators.minLength(6)]],
-        "webSite": ["", [Validators.required, Validators.pattern(site)]],
-        "industry": ["", [Validators.required]],
-        "companyCountry": ["", []],
-        "personnelCount": ["", [Validators.required]],
-        "usageType": ["", [Validators.required]],
-        "source": ["", []],
-        "address1": [""],
-        "address2": [""],
-        "city": [""],
-        "postCode": [""],
-        "regionState": [""],
-        "gsmCode": ["", [Validators.required]],
+        "company": ["", []],
+        "webSite": ["", []],
+        "industry": ["", []],
+        "personnelCount": ["", []],
+        "usageType": ["", [Validators.required]]
       }
-        , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain"), ValidationService.matchingEmail("username", "confirmEmail")]) }
+        , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
       );
+
+      
 
     this.user = new SignupBean();
     this.user.company = new Company();
     this.user.company.name = " ";
-    this.captcha_key = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// environment.API_CAPTCHA_KEY;
+    this.captcha_key = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY;
   }
 
   ngOnInit() {
@@ -201,9 +195,34 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.user.usageType = type;
     if (type === "Business Account") {
       $("#companyInfoDiv").show(500);
+      const site = `(http(s)?://)?([\\w-]+\\.)+[\\w-]+(/[\\w- ;,./?%&=]*)?`;
+      this.registerForm.controls["webSite"].setValidators([Validators.required, Validators.pattern(site)]);
+      this.registerForm.controls["webSite"].updateValueAndValidity();
+
+      this.registerForm.controls["industry"].setValidators(Validators.required);
+      this.registerForm.controls["industry"].updateValueAndValidity();
+
+      this.registerForm.controls["personnelCount"].setValidators(Validators.required);
+      this.registerForm.controls["personnelCount"].updateValueAndValidity();
+
+      this.registerForm.controls["company"].setValidators(Validators.required);     
+      this.registerForm.controls["company"].updateValueAndValidity();
+
     } else {
       $("#companyInfoDiv").hide(400);
+      this.registerForm.controls["webSite"].clearValidators();
+      this.registerForm.controls["webSite"].updateValueAndValidity();
+
+      this.registerForm.controls["industry"].clearAsyncValidators();
+      this.registerForm.controls["industry"].updateValueAndValidity();
+
+      this.registerForm.controls["personnelCount"].clearValidators();
+      this.registerForm.controls["personnelCount"].updateValueAndValidity();
+
+      this.registerForm.controls["company"].clearValidators();
+      this.registerForm.controls["company"].updateValueAndValidity();
     }
+    
   }
 
   checkisTelNumber(event: KeyboardEvent) {
@@ -227,8 +246,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   isRegisterFormValid(){
-    debugger;
-    if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.privacyPolicy){
+    if (this.user != null && this.registerForm.dirty && this.registerForm.valid 
+      && this.privacyPolicy && this.captcha != null){
       return true;
     }
     return false;
@@ -242,44 +261,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.privacyPolicy = this.privacyPolicy === true ? false : true;
   }
 
-  // public saveUser() {
-  //   if (!CaptchaService.validCaptcha(this.captcha)) {
-  //     return;
-  //   } else {
-  //     this.user.c_answer = this.captcha;
-  //   }
+  register(){
+    this.notification.warning("Register button clicked");
 
-  //   if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.privacyPolicy) {
-  //     //Loaderı çalıştır
-  //     //let id = this.notification.showWait(OperationResult.getResult("wait", "User Save", " User is being saved."));
-  //     this.subscribeUser(this.user).subscribe((res: OperationResult) => {
-  //       if (res.status == 200) {
-  //         this.status = res.status;
-  //         this.message = res.message;
-  //         this.router.navigate(["/success"]);
-  //       } else {
-  //         this.status = res.status;
-  //         this.message = res.message;
-  //         this.captchaComponent.reset();
-  //       }
-  //     //  this.notification.clearNotify(res, id);
-  //     //loaderı kapat
-  //     });
-  //   }
-  // }
+    if (!CaptchaService.validCaptcha(this.captcha)) {
+      return;
+    } else {
+      this.user.c_answer = this.captcha;
+    }
 
-  // public subscribeUser(user: SignupBean): Observable<OperationResult> {
-  //   let headers = new Headers({"Content-Type": "application/json"});
-  //   let options = new RequestOptions({headers: headers});
-  //   // return this.http.post<Response>(`${this._serviceURL}`, JSON.stringify(user), options)
-  //   // .pipe(
-  //   //   map(res => {
-
-  //   //   })
-  //   //   //map((res: Response) => res.json())
-  //   //   );
-
-  //     return null;
-  // }
+    if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.privacyPolicy) {
+      this.notification.success(JSON.stringify(this.registerForm.value));
+    }
+    
+  }
 
 }
