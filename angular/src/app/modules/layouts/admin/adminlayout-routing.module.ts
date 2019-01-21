@@ -18,6 +18,9 @@ const adminlayoutRoutes: Routes = [
     },{
       path: 'dashboard',
       loadChildren: '../../dashboard/dashboard.module#DashboardModule'
+    },{
+      path: 'reports',
+      loadChildren: '../../reports/reports.module#ReportsModule'
     }]
     /*,{
      path:'',
