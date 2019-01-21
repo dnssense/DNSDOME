@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CaptiveComponent } from './page/captive.component';
-import { CaptiveRoutingModule } from './captive-routing.module';
+import { DashboardComponent } from './page/dashboard.component';
+import { DashboardRoutingModule } from './dashboard-routing.module';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 
 @NgModule({
-  declarations: [CaptiveComponent],
+  declarations: [DashboardComponent],
   imports: [
     CommonModule,
-    CaptiveRoutingModule,
+    DashboardRoutingModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
@@ -21,4 +21,4 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
     })
   ]
 })
-export class CaptiveModule { }
+export class DashboardModule { }

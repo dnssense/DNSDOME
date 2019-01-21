@@ -16,8 +16,8 @@ const adminlayoutRoutes: Routes = [
       path: 'hamza',
       loadChildren: '../../hamza/hamza.module#HamzaModule'
     },{
-      path: 'captive',
-      loadChildren: '../../captive/captive.module#CaptiveModule'
+      path: 'dashboard',
+      loadChildren: '../../dashboard/dashboard.module#DashboardModule'
     }]
     /*,{
      path:'',

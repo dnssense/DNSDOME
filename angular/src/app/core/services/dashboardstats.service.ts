@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { Observable } from 'rxjs';
-import { CaptiveStatistic } from '../models/CaptiveStatistic';
+import { DashboardStatistic } from '../models/DashboardStatistic';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CaptivestatsService {
+export class DashboardStatsService {
 
-  path = '/api/captive';
+  path = '/api/dashboard';
   constructor(private httpClient: HttpClient, private config: ConfigService) { }
 
-  getStatistics(): Observable<CaptiveStatistic> {
-    return this.httpClient.get<CaptiveStatistic>(this.config.getApiUrl() + this.path);
+  getStatistics(): Observable<DashboardStatistic> {
+    return this.httpClient.get<DashboardStatistic>(this.config.getApiUrl() + this.path);
   }
 }

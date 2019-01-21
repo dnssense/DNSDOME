@@ -21,7 +21,7 @@ app.post('/api/login', (req, res) => {
 });
 
 
-app.post('/api/captive', (req, res) => {
+app.post('/api/dashboard', (req, res) => {
   var statistics =
   {
     rushDay : "Pazar",
@@ -34,7 +34,7 @@ app.post('/api/captive', (req, res) => {
   res.status(200).send(statistics);
 });
 
-app.get('/api/captive', (req, res) => {
+app.get('/api/dashboard', (req, res) => {
   var statistics =
   {
     rushDay : "Pazar",

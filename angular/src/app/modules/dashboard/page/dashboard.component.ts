@@ -8,21 +8,21 @@ import { Messages } from 'src/app/core/messages';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { LoggerService } from 'src/app/core/services/logger.service';
 import * as Chartist from 'chartist';
-import { CaptivestatsService } from 'src/app/core/services/captivestats.service';
-import { CaptiveStatistic } from 'src/app/core/models/CaptiveStatistic';
+import { DashboardStatsService } from 'src/app/core/services/dashboardstats.service';
+import { DashboardStatistic } from 'src/app/core/models/DashboardStatistic';
 
 @Component({
-    selector: 'app-captive',
-    templateUrl: 'captive.component.html',
-    providers: [CaptivestatsService]
+    selector: 'app-dashboard',
+    templateUrl: 'dashboard.component.html',
+    providers: [DashboardStatsService]
 })
-export class CaptiveComponent implements OnInit, OnDestroy {
-    stats: CaptiveStatistic;
+export class DashboardComponent implements OnInit, OnDestroy {
+    stats: DashboardStatistic;
 
     constructor(private notificationService: NotificationService, private config: ConfigService,
-        private http: HttpClient, private translator: TranslatorService, private captiveStats: CaptivestatsService) {
+        private http: HttpClient, private translator: TranslatorService, private dashboardStats: DashboardStatsService) {
 
-        this.captiveStats.getStatistics().subscribe(
+        this.dashboardStats.getStatistics().subscribe(
             data => {
                 this.stats = data;
                 this.createConnectedUserChart();

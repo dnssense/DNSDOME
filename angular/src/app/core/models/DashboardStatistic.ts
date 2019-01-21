@@ -1,4 +1,4 @@
-export class CaptiveStatistic {
+export class DashboardStatistic {
     newUserCount: number;
     totalUserCount: number;
     rushDay: string;

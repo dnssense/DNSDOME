@@ -69,8 +69,8 @@ export class AlertService {
       text: message,
       type: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Tamam',
-      cancelButtonText: 'İptal',
+      confirmButtonText: 'Okey',
+      cancelButtonText: 'Cancel',
       confirmButtonClass: "btn btn-success",
       cancelButtonClass: "btn btn-danger",
       buttonsStyling: false
