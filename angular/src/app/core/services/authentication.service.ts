@@ -95,7 +95,7 @@ export class AuthenticationService {
     return this.http.post<Session>(this.loginUrl, { username: email, password: pass })
       .pipe(
         map(res => {
-          // this.logger.console(res);
+          this.logger.console(res);
           localStorage.setItem(this.STORAGENAME, JSON.stringify(res));
           this.currentSession = res;
           // this.logger.console(res.refreshToken);
@@ -105,7 +105,6 @@ export class AuthenticationService {
   }
 
   logout() {
-    debugger;
     this.currentSession = null;
     localStorage.clear();
     this.cookieService.clear();

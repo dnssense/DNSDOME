@@ -5,15 +5,14 @@ import { PagenotfoundRoutingModule } from './modules/pagenotfound/pagenotfound-r
 
 const routes: Routes = [
   {
-    
-      path: '',
-      loadChildren: './modules/layouts/auth/authlayout.module#AuthLayoutModule'
+    path: '',
+    loadChildren: './modules/layouts/auth/authlayout.module#AuthLayoutModule'
   },
   {
-    path:'admin',
-    loadChildren:'./modules/layouts/admin/adminlayout.module#AdminLayoutModule'
+    path: 'admin',
+    loadChildren: './modules/layouts/admin/adminlayout.module#AdminLayoutModule'
   }
-  
+
 ];
 
 @NgModule({
