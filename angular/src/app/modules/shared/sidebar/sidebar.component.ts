@@ -182,24 +182,6 @@ export class SidebarComponent implements OnInit {
                 )
             );
         }
-
-
-        //this.menuItems = filteredMenus;
-    }
-
-    checkMenuRole(menuRole: string): boolean {
-
-        if (this.authService.currentSession.roles != null) {
-            debugger;
-            for (let i = 0; i < this.authService.currentSession.roles.length; i++) {
-                if (menuRole == this.authService.currentSession.roles[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return true;
     }
 
     updatePS(): void {
