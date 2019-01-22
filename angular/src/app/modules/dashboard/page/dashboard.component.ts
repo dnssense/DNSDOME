@@ -22,22 +22,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
     constructor(private notificationService: NotificationService, private config: ConfigService,
         private http: HttpClient, private translator: TranslatorService, private dashboardStats: DashboardStatsService) {
 
-        this.dashboardStats.getStatistics().subscribe(
-            data => {
-                this.stats = data;
-                this.createConnectedUserChart();
-                this.createPieCharts();
-            }
-        )
+        // this.dashboardStats.getStatistics().subscribe(
+        //     data => {
+        //         this.stats = data;
+        //         this.createConnectedUserChart();
+        //         this.createPieCharts();
+        //     }
+        // )
+        let data: DashboardStatistic = {
+            rushDay: "Pazar",
+            newUserCount: 12,
+            totalUserCount: 130,
+            onlineUserCount: 5,
+            maleGenderRatio: 56,
+            weeklyUsers: [334, 456, 766, 635, 189, 389, 891]
+        };
+
+        this.stats = data;        
+
     }
 
     ngOnDestroy(): void {
     }
     ngOnInit(): void {
+        //constructordaki metod acilinca burasi silinecek
+        this.createConnectedUserChart();
+        this.createPieCharts();
     }
 
     createConnectedUserChart() {
-
         const dataColouredRoundedLineChart = {
             labels: ['Pzt', 'Sa', 'Çar', 'Per', 'Cu', 'Cts', 'Paz'],
             series: [this.stats.weeklyUsers]
@@ -106,19 +119,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
         seq2 = 0;
         delays2 = 80;
         durations2 = 500;
-        chart.on('draw', function(data: any) {
-          if (data.type === 'bar') {
-              seq2++;
-              data.element.animate({
-                opacity: {
-                  begin: seq2 * delays2,
-                  dur: durations2,
-                  from: 0,
-                  to: 1,
-                  easing: 'ease'
-                }
-              });
-          }
+        chart.on('draw', function (data: any) {
+            if (data.type === 'bar') {
+                seq2++;
+                data.element.animate({
+                    opacity: {
+                        begin: seq2 * delays2,
+                        dur: durations2,
+                        from: 0,
+                        to: 1,
+                        easing: 'ease'
+                    }
+                });
+            }
         });
 
         seq2 = 0;
@@ -138,22 +151,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         new Chartist.Pie('#birincipasta', dataPreferences, optionsPreferences);
 
-        // new Chartist.Pie('#ikincipasta', {
-        //     labels: ['Erkek', 'Kadın'],
-        //     series: [this.stats.maleGenderRatio, (100 - this.stats.maleGenderRatio)]
-        // }, {
-        //         donut: true,
-        //         donutWidth: 40,
-        //         startAngle: 270,
-        //         total: 200,
-        //         showLabel: true
-        //     });
     }
 
     language(lang: string) {
         this.config.setTranslationLanguage(lang);
     }
- 
+
     getcategory() {
         this.http.post<any>(this.config.getApiUrl() + "/dashboard/list", {}).subscribe(data => {
             debugger;

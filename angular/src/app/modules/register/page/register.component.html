@@ -198,7 +198,7 @@
                                         <mat-form-field>
                                           <mat-select placeholder="{{'REGISTER.Industry' | translate}}" name="Industry"
                                             [(ngModel)]="user.industry" formControlName="industry">
-                                            <mat-option [value]="PleaseSpecify">PleaseSpecify</mat-option>
+                                            <mat-option value="PleaseSpecify">PleaseSpecify</mat-option>
                                             <mat-option value="Cloud Computing/Saas">Cloud Computing/Saas</mat-option>
                                             <mat-option value="Computer HW, SW">Computer HW, SW</mat-option>
                                             <mat-option value="Consumer Goods/Retail">Consumer Goods/Retail</mat-option>
@@ -249,7 +249,7 @@
                                                     <mat-form-field>
                                                       <mat-select placeholder="{{'REGISTER.PersonnelCount' | translate}}" [(ngModel)]="user.personnelCount"
                                                         formControlName="personnelCount">
-                                                        <mat-option [value]="PleaseSpecify">{{'PleaseSpecify' | translate}}</mat-option>
+                                                        <mat-option value="PleaseSpecify">{{'PleaseSpecify' | translate}}</mat-option>
                                                         <mat-option value="1-50">1-50</mat-option>
                                                         <mat-option value="50-99">50-99</mat-option>
                                                         <mat-option value="100-249">100-249</mat-option>
@@ -327,7 +327,7 @@
         </nav>
         <div class="copyright pull-right">
           &copy;
-          {{test | date: 'yyyy'}}, made by
+          2019, made by
           <a href="https://roksit.com" target="_blank"><strong>Roksit</strong></a> for a better world.
         </div>
       </div>
