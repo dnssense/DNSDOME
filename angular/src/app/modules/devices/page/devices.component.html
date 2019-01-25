@@ -9,19 +9,19 @@
                 <span class="nav-tabs-title">Devices:</span>
                 <ul class="nav nav-tabs" data-tabs="tabs">
                   <li class="nav-item">
-                    <a class="nav-link active" href="#profile" data-toggle="tab">
+                    <a class="nav-link active" href="#alldevices" data-toggle="tab">
                       <i class="material-icons">select_all</i> All
                       <div class="ripple-container"></div>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#messages" data-toggle="tab">
+                    <a class="nav-link" href="#registered" data-toggle="tab">
                       <i class="material-icons">save</i> Registered
                       <div class="ripple-container"></div>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#settings" data-toggle="tab">
+                    <a class="nav-link" href="#unregistered" data-toggle="tab">
                       <i class="material-icons">waves</i> Unregistered
                       <div class="ripple-container"></div>
                     </a>
@@ -32,7 +32,7 @@
           </div>
           <div class="card-body">
             <div class="tab-content">
-              <div class="tab-pane active" id="profile">
+              <div class="tab-pane active" id="alldevices">
                 <table class="table">
                   <tbody>
                     <tr *ngFor="let device of devices">
@@ -76,7 +76,7 @@
                   </tbody>
                 </table>
               </div>
-              <div class="tab-pane" id="messages">
+              <div class="tab-pane" id="registered">
                 <table class="table">
                   <tbody>
                     <ng-container *ngFor="let device of devices">
@@ -123,7 +123,7 @@
                   </tbody>
                 </table>
               </div>
-              <div class="tab-pane" id="settings">
+              <div class="tab-pane" id="unregistered">
                 <table class="table">
                   <tbody>
                     <ng-container *ngFor="let device of devices">
