@@ -18,7 +18,8 @@ export class ConfigService {
   }
 
   getApiUrl(): string {
-    return environment.production ? "https://"+window.location.hostname+"/services" : "http://localhost:8080/services";
+    
+    return environment.production ?    window.location.protocol+"//"+window.location.hostname+(window.location.port!=""?(":"+window.location.port):"")+"/services" : "http://localhost:8080/services";
   }
   setDefaultLanguage(lang: string) {
     this.translationservice.setDefaultLang(lang);
