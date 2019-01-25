@@ -7,10 +7,9 @@ sudo iptables -F
 sudo iptables -X
 sudo iptables -t nat -L
 sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-sudo iptables -t nat -A PREROUTING -p tcp -d 192.168.43.238 --dport 80 -j DNAT --to 192.168.43.238:8080
-sudo iptables -t nat -A PREROUTING -p tcp -d 192.168.43.238 --dport 21 -j DNAT --to 192.168.43.238:8080
-sudo iptables -t nat -A PREROUTING -p tcp -d 192.168.43.238 --dport 443 -j DNAT --to 192.168.43.238:8443
-#sudo iptables -t nat -A PREROUTING -p tcp --dport 800 -j REDIRECT --to-port 8080
-#sudo iptables -t nat -I OUTPUT -p tcp -o lo --dport 80 -j REDIRECT --to-ports 80
-sudo iptables -t nat -A POSTROUTING -o wlo1:0 -j MASQUERADE
+iptables -t nat -A OUTPUT -o lo -p tcp --dport 80 -j REDIRECT --to-ports 8080
+iptables -t nat -A OUTPUT -o lo -p tcp --dport 443 -j REDIRECT --to-ports 8443
+iptables -t nat -A OUTPUT -o wlo1 -p tcp --dport 80 -j REDIRECT --to-ports 8080
+iptables -t nat -A OUTPUT -o wlo1 -p tcp --dport 443 -j REDIRECT --to-ports 8443
+
 sudo iptables -t nat -L
