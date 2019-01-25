@@ -6,6 +6,8 @@ import { User } from 'src/app/core/models/User';
 import { forEach } from '@angular/router/src/utils/collection';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { Role } from 'src/app/core/models/Role';
+import { TranslatorService } from 'src/app/core/services/translator.service';
+import { AlertService } from 'src/app/core/services/alert.service';
 
 declare const $: any;
 
@@ -30,6 +32,12 @@ export interface ChildrenItems {
 //Menu Items
 export const ROUTES: RouteInfo[] = [
     {
+        path: '/admin/devices',
+        title: 'Devices',
+        type: 'link',
+        icontype: 'select_all',
+        role: 'ROLE_CUSTOMER'
+    },{
         path: '/admin/dashboard',
         title: 'Dashboard',
         type: 'link',
@@ -154,7 +162,8 @@ export class SidebarComponent implements OnInit {
     public menuItems: any[];
     currentUser: User;
 
-    constructor(private logger: LoggerService, private authService: AuthenticationService) {
+    constructor(private logger: LoggerService, private authService: AuthenticationService,
+        private translator: TranslatorService, private alert: AlertService) {
         this.getUserName();
 
     }
@@ -182,6 +191,22 @@ export class SidebarComponent implements OnInit {
                 )
             );
         }
+    }
+
+    logout() {
+        this.alert.alertWarningAndCancel(
+            this.translator.translate('AreYouSure'),
+            this.translator.translate('LOGOUT.LogoutMessage')
+        ).subscribe(
+            res => {
+                if (res) {
+                    this.alert.alertAutoClose(
+                        this.translator.translate('LOGOUT.LoggingOut'),
+                        this.translator.translate('LOGOUT.LoggingOutMessage'), 1000);
+                    this.authService.logout();
+                }
+            }
+        );
     }
 
     updatePS(): void {
