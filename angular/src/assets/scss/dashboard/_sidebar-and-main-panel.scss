@@ -12,9 +12,8 @@
     left: 0;
     z-index: 2;
     width: 260px;
-    // background: $white-color;
-    background: linear-gradient(0deg,#1e1e25,#197dc5);
-    box-shadow: 0 0 45px 0 rgba(0,0,0,.6);
+    background: $white-color;
+    
     @include shadow-big();
 
     .logo-img{
@@ -43,6 +42,11 @@
 
     &[data-background-color="black"]{
         background-color: #191919;
+    }
+
+    &[data-background-color="blueice"]{
+        background: linear-gradient(0deg,#1e2525,#1d8cf8);
+        box-shadow: 0 0 45px 0 rgba(0,0,0,.6);
     }
 
     &[data-background-color="red"]{
@@ -377,6 +381,13 @@
         }
     }
     &[data-background-color="black"]{
+        @include sidebar-background-color($gray-base, $white-color);
+
+        .nav li .dropdown-menu .dropdown-item{
+          color: $white-color;
+        }
+    }
+    &[data-background-color="blueice"]{
         @include sidebar-background-color($gray-base, $white-color);
 
         .nav li .dropdown-menu .dropdown-item{
