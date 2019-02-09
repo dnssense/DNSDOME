@@ -73,3 +73,7 @@
         position: absolute;
     }
 }
+
+.histogram-chart {
+    height: auto;
+  }

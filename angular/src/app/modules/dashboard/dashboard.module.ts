@@ -6,9 +6,10 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
+import { DashboardTopPanelComponent } from './components/dashboard-top-panel/dashboard-top-panel.component';
 
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [DashboardComponent, DashboardTopPanelComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,

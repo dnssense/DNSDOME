@@ -26,6 +26,11 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { translateHttpLoaderFactory } from './core/translationhelper';
 import { NgxUiLoaderModule, NgxUiLoaderRouterModule, NgxUiLoaderHttpModule, NgxUiLoaderConfig, POSITION, SPINNER, PB_DIRECTION, NgxUiLoaderHttpConfig } from 'ngx-ui-loader';
 import {ReCaptchaModule} from "angular2-recaptcha"; 
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { DashBoardService } from './core/services/DashBoardService';
+import { SearchSettingService } from './core/services/SearchSettingService';
+import { FastReportService } from './core/services/FastReportService';
+import { CustomReportService } from './core/services/CustomReportService';
 
 
 @NgModule({
@@ -33,6 +38,7 @@ import {ReCaptchaModule} from "angular2-recaptcha";
     AppComponent
   ],
   imports: [
+    ModalModule.forRoot(),
     BrowserModule,
     FormsModule,
     HttpClientModule,
@@ -57,8 +63,13 @@ import {ReCaptchaModule} from "angular2-recaptcha";
   providers: [
     AuthGuard,
     AuthenticationService,
+    SearchSettingService,
+    FastReportService,
+    CustomReportService,
     ConfigService,
     CookieService,
+    BsModalService,
+    DashBoardService,
     NotificationService,
     {
       provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true

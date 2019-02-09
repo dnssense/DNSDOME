@@ -5,15 +5,15 @@
     "InvalidUrl": "Invalid url",
     "AboutUs": "About Us",
     "AreYouSure": "Are you sure?",
-    "LanguageChanged":"Language Changed",
+    "LanguageChanged": "Language Changed",
     "CaptchaMessage": "You must click to prove you're not a bot or a robot.",
-    "Required" :"is Required",
-    "PleaseSpecify" :"Please Specify",
-    "LOGOUT":{ 
-       "Logout":"Logout",
-       "LogoutMessage": "Do you want to log out?",
-       "LoggingOut":"Logging out...",
-       "LoggingOutMessage": "The system is safely logged out."
+    "Required": "is Required",
+    "PleaseSpecify": "Please Specify",
+    "LOGOUT": {
+        "Logout": "Logout",
+        "LogoutMessage": "Do you want to log out?",
+        "LoggingOut": "Logging out...",
+        "LoggingOutMessage": "The system is safely logged out."
     },
     "LOGIN": {
         "InvalidEmailOrPassword": "Invalid email or password",
@@ -56,5 +56,11 @@
         "City": "City",
         "PostCode": "Postal / Zip Code",
         "RegionState": "Region / State"
+    },
+    "DASHBOARD": {
+        "SETTING_EXISTS": "Your current dashboard contains this report. Please Select another one.",
+        "SELECT_SETTING": "You must select a setting to add. Please Select a saved report from options.",
+        "DELETEMESSAGE": "Are you sure to delete dashboard ",
+        "DELETEDASHBOARD": "Delete Dashboard"
     }
 }

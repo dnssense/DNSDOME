@@ -1,5 +1,26 @@
 <div class="main-content">
   <div class="container-fluid">
+      <!-- <div class="row">
+          <div class="col-md-12">
+            <section id="demo" style="padding-bottom: 20px; min-height: 100px;" #component>
+              <div *ngIf="dashboard!=null">
+                <div class="grid grid-stack" #gridstack *ngIf="dashboard!=null">
+                  <app-dashboard-top-panel [setting]="xx" *ngFor="let xx of dashboard.setting" [dashboard]="dashboard"
+                                           (onResize)="onResizeStop($event,xx)" (onDragStop)="onDragStop($event,xx)"
+                                           (removeReportEmitter)="removeReport($event)"
+                                           (currentSettingEmitter)="setCurrentSetting($event)"
+                                           (settingConfigUpdateEmitter)="updateSettingConfig($event)">
+          
+                  </app-dashboard-top-panel>
+                </div>
+              </div>
+            </section>
+          </div>
+      </div> -->
+      <div class="row">
+          <div class="col-md-6"></div>
+          <div class="col-md-6"></div>
+      </div>
     <div class="row">
       <div class="col-md-3">
         <div class="card card-stats">
@@ -112,22 +133,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <div class="card">
-        <div class="card-header">
-          Tests Notifications
-        </div>
-        <div class="card-body">
-          <button class="btn mat-raised-button" (click)="info()">Test info</button>
-          <button class="btn mat-raised-button" (click)="success()">Test success</button>
-          <button class="btn mat-raised-button" (click)="danger()">Test danger</button>
-          <button class="btn mat-raised-button" (click)="error()">Test error</button>
-          <button class="btn mat-raised-button" (click)="warning()">Test warning</button>
         </div>
       </div>
     </div>

@@ -14,17 +14,17 @@ export class SpinnerService {
     this.subject = new Subject<boolean>();
     this.subject.asObservable().subscribe((val) => {
       if (val) {
-        console.log('spinner start check:' + this.spinner.hasForeground());
+        //console.log('spinner start check:' + this.spinner.hasForeground());
         if (!this.spinner.hasForeground()) {
           this.spinner.start();
         }
-        console.log('spinner start:' + this.spinner.hasForeground());
+        //console.log('spinner start:' + this.spinner.hasForeground());
       } else {
-        console.log('spinner stop check:' + this.spinner.hasForeground());
+        //console.log('spinner stop check:' + this.spinner.hasForeground());
         if (this.spinner.hasForeground()) {
           this.spinner.stop();
         }
-        console.log('spinner stop:' + this.spinner.hasForeground());
+       // console.log('spinner stop:' + this.spinner.hasForeground());
       }
     });
   }

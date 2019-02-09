@@ -1,172 +1,72 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
-    <div class="row">
-      <div class="col-lg-12 col-md-12">
-        <div class="card">
-          <div class="card-header card-header-tabs card-header-info">
-            <div class="nav-tabs-navigation">
-              <div class="nav-tabs-wrapper">
-                <span class="nav-tabs-title">Devices:</span>
-                <ul class="nav nav-tabs" data-tabs="tabs">
-                  <li class="nav-item">
-                    <a class="nav-link active" href="#alldevices" data-toggle="tab">
-                      <i class="material-icons">select_all</i> All
-                      <div class="ripple-container"></div>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#registered" data-toggle="tab">
-                      <i class="material-icons">save</i> Registered
-                      <div class="ripple-container"></div>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#unregistered" data-toggle="tab">
-                      <i class="material-icons">waves</i> Unregistered
-                      <div class="ripple-container"></div>
-                    </a>
-                  </li>
-                </ul>
+    <section id="devicePanel" class="devicePanel">
+      <div class="row">
+        <div class="col-md-6 ml-auto mr-auto">
+          <div class="card">
+            <div class="card-header card-header-icon card-header-warning">
+              <div class="card-icon">
+                <i class="material-icons">assignment</i>
               </div>
+              <h4 class="card-title ">Unregistered Agents</h4>
             </div>
-          </div>
-          <div class="card-body">
-            <div class="tab-content">
-              <div class="tab-pane active" id="alldevices">
+            <div class="card-body">
+              <div class="table-responsive">
                 <table class="table">
+                  <thead class="text-warning">
+                    <tr>
+                      <th>Agent Id</th>
+                      <th>Agent Code</th>
+                      <th>Register</th>
+                    </tr>
+                  </thead>
                   <tbody>
-                    <tr *ngFor="let device of devices">
-                      <td>
-                        <div [ngSwitch]="device.checked">
-                          <div *ngSwitchCase="true">
-                            <div class="form-check">
-                              <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" value="" checked>
-                                <span class="form-check-sign">
-                                  <span class="check"></span>
-                                </span>
-                              </label>
-                            </div>
-                          </div>
-                          <div *ngSwitchDefault>
-                            <div class="form-check">
-                              <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" value="">
-                                <span class="form-check-sign">
-                                  <span class="check"></span>
-                                </span>
-                              </label>
-                            </div>
-                          </div>
-
-                        </div>
-                      </td>
-                      <td>{{device.title}}</td>
-                      <td>{{device.macid}}</td>
+                    <tr *ngFor="let agent of unregistered">
+                      <td>{{agent.agentAlias}}</td>
+                      <td>{{agent.agentCode}}</td>
                       <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Device" [matTooltipPosition]="'left'"
-                          class="btn btn-primary btn-link btn-sm">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'left'" class="btn btn-danger btn-link btn-sm">
-                          <i class="material-icons">close</i>
+                        <button mat-raised-button type="button" class="btn btn-warning"
+                          (click)="showNewWizard(agent.agentCode)">
+                          <i class="material-icons">add_circle_outline</i>
                         </button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="tab-pane" id="registered">
-                <table class="table">
-                  <tbody>
-                    <ng-container *ngFor="let device of devices">
-                      <tr *ngIf="device.checked">
-                        <td>
-                          <div [ngSwitch]="device.checked">
-                            <div *ngSwitchCase="true">
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" type="checkbox" value="" checked>
-                                  <span class="form-check-sign">
-                                    <span class="check"></span>
-                                  </span>
-                                </label>
-                              </div>
-                            </div>
-                            <div *ngSwitchDefault>
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" type="checkbox" value="">
-                                  <span class="form-check-sign">
-                                    <span class="check"></span>
-                                  </span>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>{{device.title}}</td>
-                        <td>{{device.macid}}</td>
-                        <td class="td-actions text-right">
-                          <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                            class="btn btn-primary btn-link btn-sm">
-                            <i class="material-icons">edit</i>
-                          </button>
-                          <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                            class="btn btn-danger btn-link btn-sm">
-                            <i class="material-icons">close</i>
-                          </button>
-                        </td>
-                      </tr>
-                    </ng-container>
-
-                  </tbody>
-                </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 ml-auto mr-auto">
+          <div class="card">
+            <div class="card-header card-header-icon card-header-success">
+              <div class="card-icon">
+                <i class="material-icons">save</i>
               </div>
-              <div class="tab-pane" id="unregistered">
+              <h4 class="card-title ">Registered Agents</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
                 <table class="table">
+                  <thead class="text-success">
+                    <tr>
+                      <th>Agent Id</th>
+                      <th>Agent Code</th>
+                      <th>Profile</th>
+                      <th>Register</th>
+                    </tr>
+                  </thead>
                   <tbody>
-                    <ng-container *ngFor="let device of devices">
-                      <tr *ngIf="!device.checked">
-                        <td>
-                          <div [ngSwitch]="device.checked">
-                            <div *ngSwitchCase="true">
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" type="checkbox" value="" checked>
-                                  <span class="form-check-sign">
-                                    <span class="check"></span>
-                                  </span>
-                                </label>
-                              </div>
-                            </div>
-                            <div *ngSwitchDefault>
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" type="checkbox" value="">
-                                  <span class="form-check-sign">
-                                    <span class="check"></span>
-                                  </span>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>{{device.title}}</td>
-                        <td>{{device.macid}}</td>
-                        <td class="td-actions text-right">
-                          <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                            class="btn btn-primary btn-link btn-sm">
-                            <i class="material-icons">edit</i>
-                          </button>
-                          <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                            class="btn btn-primary btn-link btn-sm">
-                            <i class="material-icons">close</i>
-                          </button>
-                        </td>
-                      </tr>
-                    </ng-container>
-
+                    <tr *ngFor="let agent of registered">
+                      <td>{{agent.agentAlias}}</td>
+                      <td>{{agent.agentCode}}</td>
+                      <td>---</td>
+                      <td class="td-actions text-center">
+                        <button mat-raised-button type="button" class="btn btn-info" (click)="showEditWizard(agent.id)">
+                          <i class="material-icons">edit</i>
+                        </button>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -174,6 +74,227 @@
           </div>
         </div>
       </div>
-    </div>
+    </section>
+    <section id="wizardPanel" class="wizardPanel" style="display: none;">
+      <div class="row">
+        <div class="col-md-12">
+          <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
+            <i class="material-icons">arrow_back</i>
+          </button>
+          <div class="wizard-container">
+            <div class="card card-wizard" data-color="blue" id="wizardProfile">
+              <form [formGroup]="deviceForm" action="" method="">
+                <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
+                <div class="card-header text-center">
+                  <h3 class="card-title">
+                    {{device.agentAlias}} - {{device.agentCode}}
+                  </h3>
+                  <h5 class="card-description">Manage this device</h5>
+                </div>
+                <div class="wizard-navigation">
+                  <ul class="nav nav-pills">
+                    <li class="nav-item">
+                      <a class="nav-link active" href="#name" data-toggle="tab" role="tab">
+                        Device Name
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#content" data-toggle="tab" role="tab">
+                        Content Filtering
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#applications" data-toggle="tab" role="tab">
+                        Applications
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#security" data-toggle="tab" role="tab">
+                        Security
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="name">
+                      <h5 class="info-text">Define name of this device</h5>
+                      <div class="row justify-content-center">
+                        <div class="col-sm-6">
+                          <div class="input-group form-control-lg">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="material-icons">face</i>
+                              </span>
+                            </div>
+                            <mat-form-field class="example-full-width has-label">
+                              <input type="text" name="deviceName" matInput id="text" placeholder="Device Name"
+                              value="{{device.agentAlias}}">
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane" id="content">
+                      <h5 class="info-text">Manage Content Filtering</h5>
+                      <div class="row justify-content-center">
+                        <div class="col-md-12">
+                          <div class="item-wrapper">
+                            <div class="item" *ngFor="let cat of mobileCategories">
+                              <div class="row align-items-center">
+                                <div class="col-sm-12 text-center">{{cat.categoryName}}
+                                  <br />
+                                  <button class="btn btn-sm btn-success">Enable</button>
+                                  <button class="btn btn-sm btn-warning">Disable</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane" id="applications">
+                      <h5 class="info-text">Manage Applications</h5>
+                      <div class="row justify-content-center">
+                        <div class="col-md-12">
+                          <div class="row">
+                            <div class="col-sm-3">
+                              <div class="item-wrapper">
+                                <div class="item">
+                                  <div class="row align-items-center">
+                                    <div class="col-sm-12 text-center">Google Play
+                                      <br />
+                                      <button class="btn btn-sm btn-success">Enable</button>
+                                      <button class="btn btn-sm btn-warning">Disable</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-sm-3">
+                              <div class="item-wrapper">
+                                <div class="item">
+                                  <div class="row align-items-center">
+                                    <div class="col-sm-12 text-center">Video Applications
+                                      <br />
+                                      <button class="btn btn-sm btn-success">Enable</button>
+                                      <button class="btn btn-sm btn-warning">Disable</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-sm-3">
+                              <div class="item-wrapper">
+                                <div class="item">
+                                  <div class="row align-items-center">
+                                    <div class="col-sm-12 text-center">Chat Social Media vs.
+                                      <br />
+                                      <button class="btn btn-sm btn-success">Enable</button>
+                                      <button class="btn btn-sm btn-warning">Disable</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-sm-3">
+                              <div class="item-wrapper">
+                                <div class="item">
+                                  <div class="row align-items-center">
+                                    <div class="col-sm-12 text-center"> Advertisement Services
+                                      <br />
+                                      <button class="btn btn-sm btn-success">Enable</button>
+                                      <button class="btn btn-sm btn-warning">Disable</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane" id="security">
+                      <div class="row justify-content-center">
+                        <div class="col-sm-12">
+                          <h5 class="info-text">Manage Security Options</h5>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="item-wrapper">
+                            <div class="item">
+                              <div class="row align-items-center">
+                                <div class="col-sm-12 text-center">Malware/Virus
+                                  <br />
+                                  <button class="btn btn-sm btn-success">Enable</button>
+                                  <button class="btn btn-sm btn-warning">Disable</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="item-wrapper">
+                            <div class="item">
+                              <div class="row align-items-center">
+                                <div class="col-sm-12 text-center"> Phishing/Spam
+                                  <br />
+                                  <button class="btn btn-sm btn-success">Enable</button>
+                                  <button class="btn btn-sm btn-warning">Disable</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="item-wrapper">
+                            <div class="item">
+                              <div class="row align-items-center">
+                                <div class="col-sm-12 text-center"> Potentially Dangerous
+                                  <br />
+                                  <button class="btn btn-sm btn-success">Enable</button>
+                                  <button class="btn btn-sm btn-warning">Disable</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="item-wrapper">
+                            <div class="item">
+                              <div class="row align-items-center">
+                                <div class="col-sm-12 text-center">Hacking Proxy vs.
+                                  <br />
+                                  <button class="btn btn-sm btn-success">Enable</button>
+                                  <button class="btn btn-sm btn-warning">Disable</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="mr-auto">
+                    <input type="button" class="btn btn-previous btn-fill btn-default btn-wd disabled" name="previous"
+                      value="Previous">
+                  </div>
+                  <div class="ml-auto">
+                    <input type="button" class="btn btn-next btn-fill btn-info btn-wd" name="next" value="Next">
+                    <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" name="finish" value="Finish"
+                    (click)="saveAgent()"
+                      style="display: none;">
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 </div>

@@ -92,6 +92,8 @@ export class AuthenticationService {
 
   login(email: string, pass: string): Observable<Session> {
 
+  //  this.loginUrl = 'https://management.dnssense.com/services/auth/login';
+debugger;
     return this.http.post<Session>(this.loginUrl, { username: email, password: pass })
       .pipe(
         map(res => {

@@ -35,7 +35,9 @@
               "src/assets/scss/material-dashboard.scss"
             ],
             "scripts": [
+              "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.js",
+              "node_modules/jquery-ui-dist/jquery-ui.js",
               "node_modules/popper.js/dist/umd/popper.js",
               "node_modules/bootstrap-material-design/dist/js/bootstrap-material-design.min.js",
               "node_modules/moment/moment.js",
@@ -57,7 +59,10 @@
               "node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js",
               "node_modules/jqvmap/dist/jquery.vmap.min.js",
               "node_modules/jqvmap/dist/maps/jquery.vmap.world.js",
-              "node_modules/jquery-validation/dist/jquery.validate.min.js"
+              "node_modules/jquery-validation/dist/jquery.validate.min.js",
+              "node_modules/gridstack/dist/gridstack.js",
+              "node_modules/highcharts/js/highcharts.js",
+              "node_modules/highcharts/js/modules/exporting.js"
             ]
           },
           "configurations": {
@@ -120,7 +125,9 @@
               "src/assets/scss/material-dashboard.scss"
             ],
             "scripts": [
+              "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.js",
+              "node_modules/jquery-ui-dist/jquery-ui.js",
               "node_modules/popper.js/dist/umd/popper.js",
               "node_modules/bootstrap-material-design/dist/js/bootstrap-material-design.min.js",
               "node_modules/moment/moment.js",
@@ -142,7 +149,10 @@
               "node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js",
               "node_modules/jqvmap/dist/jquery.vmap.min.js",
               "node_modules/jqvmap/dist/maps/jquery.vmap.world.js",
-              "node_modules/jquery-validation/dist/jquery.validate.min.js"
+              "node_modules/jquery-validation/dist/jquery.validate.min.js",
+              "node_modules/gridstack/dist/gridstack.js",
+              "node_modules/highcharts/js/highcharts.js",
+              "node_modules/highcharts/js/modules/exporting.js"
             ],
             "assets": [
               "src/favicon.ico",
