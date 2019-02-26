@@ -1,17 +1,15 @@
 import { Component, OnInit, SimpleChanges, OnChanges, AfterViewInit } from '@angular/core';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { HttpClient } from '@angular/common/http';
-import { ConfigService } from 'src/app/core/services/config.service';
-import { SpinnerService } from 'src/app/core/services/spinner.service';
-import { TranslatorService } from 'src/app/core/services/translator.service';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AgentResponse } from 'src/app/core/models/AgentResponse';
-import { Observable } from 'rxjs';
-import { ValidationService } from 'src/app/core/services/validation.service';
 import { MobileCategory } from 'src/app/core/models/MobileCategory';
 import { AlertService } from 'src/app/core/services/alert.service';
+import { TimeProfileResponse } from 'src/app/core/models/TimeProfileResponse';
+import { CollectiveBlockRequest } from 'src/app/core/models/CollectiveBlockRequest';
+import { CollectiveCategory } from 'src/app/core/models/CollectiveCategory';
+import { DayProfile } from 'src/app/core/models/DayProfile';
+import { DayProfileGroup } from 'src/app/core/models/DayProfileGroup';
+import { TimeProfileViewModel } from 'src/app/core/models/TimeProfileViewModel';
 
 declare var $: any;
 
@@ -22,21 +20,45 @@ declare var $: any;
 })
 export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
 
-    public registered: AgentResponse[];
-    public unregistered: AgentResponse[];
+    registeredCount: number = 0;
+    unregisteredCount: number = 0;
+    registered: AgentResponse[];
+    unregistered: AgentResponse[];
+    profiles: TimeProfileResponse;
     mobileCategories: MobileCategory[];
+    notUpdatedCategories: MobileCategory[] = [];
     device: AgentResponse;
     deviceForm: FormGroup;
+    collectiveBlockReq: CollectiveBlockRequest = new CollectiveBlockRequest();
+    selectedProfile: DayProfileGroup;
+    dayProfiles: TimeProfileViewModel[];
+    monProfile: DayProfile;
 
-    constructor(private agentService: AgentService, private formBuilder: FormBuilder, private notification: NotificationService,
-         private alert: AlertService) {
+    constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService) {
+
+        this.initializeVariables();
+
+        this.agentService.getRegisteredAgents().subscribe(data => { this.registered = data; this.registeredCount = data.length });
+        this.agentService.getUnRegisteredAgents().subscribe(data => { this.unregistered = data; this.unregisteredCount = data.length; });
+        this.agentService.getProfiles().subscribe(data => this.profiles = data);
+
+    }
+
+    initializeVariables() {
         this.device = new AgentResponse();
         this.device.id = null;
         this.device.agentAlias = null;
         this.device.agentCode = null;
 
-        this.agentService.getRegisteredAgents().subscribe(data => this.registered = data);
-        this.agentService.getUnRegisteredAgents().subscribe(data => this.unregistered = data);
+        this.dayProfiles = [
+            { id: 0, startDate: null, endDate: null, status: 0 },
+            { id: 1, startDate: null, endDate: null, status: 0 },
+            { id: 2, startDate: null, endDate: null, status: 0 },
+            { id: 3, startDate: null, endDate: null, status: 0 },
+            { id: 4, startDate: null, endDate: null, status: 0 },
+            { id: 5, startDate: null, endDate: null, status: 0 },
+            { id: 6, startDate: null, endDate: null, status: 0 }
+        ]
     }
 
     isFieldValid(form: FormGroup, field: string) {
@@ -55,8 +77,6 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
                 deviceName: ["", [Validators.required, Validators.minLength(2)]]
             }
             );
-
-
     }
 
     installWizard() {
@@ -87,7 +107,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
             'nextSelector': '.btn-next',
             'previousSelector': '.btn-previous',
 
-            onNext: function (tab, navigation, index) {
+            onNext: function () {
                 var $valid = $('.card-wizard form').valid();
                 document.getElementById('wizardPanel').scrollIntoView();
                 if (!$valid) {
@@ -150,7 +170,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
                 $('.moving-tab').css('transition', 'transform 0s');
             },
 
-            onTabClick: function (tab: any, navigation: any, index: any) {
+            onTabClick: function () {
 
                 const $valid = $('.card-wizard form').valid();
 
@@ -241,20 +261,6 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
         });
 
 
-        // Prepare the preview for profile picture
-        $('#wizard-picture').change(function () {
-            const input = $(this);
-
-            if (input[0].files && input[0].files[0]) {
-                const reader = new FileReader();
-
-                reader.onload = function (e: any) {
-                    $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
-                };
-                reader.readAsDataURL(input[0].files[0]);
-            }
-        });
-
         $('[data-toggle="wizard-radio"]').click(function () {
             const wizard = $(this).closest('.card-wizard');
             wizard.find('[data-toggle="wizard-radio"]').removeClass('active');
@@ -274,6 +280,10 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
         });
 
         $('.set-full-height').css('height', 'auto');
+
+        document.getElementById("previous").onclick = function () {
+            document.getElementById('wizardPanel').scrollIntoView();
+        };
 
     }
 
@@ -346,49 +356,206 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     showNewWizard(agentCode: string) {
-
         this.device = this.unregistered.find(d => d.agentCode == agentCode);
         this.agentService.getMobileCategories(0).subscribe(data => this.mobileCategories = data);
 
-        //TODO: Reset wizard form
+        this.collectiveBlockReq = new CollectiveBlockRequest();
+        this.collectiveBlockReq.agent = new AgentResponse();
+        this.collectiveBlockReq.agent = this.device;
+        this.collectiveBlockReq.collectiveCategories = new Array;
 
         $('#devicePanel').toggle("slide", { direction: "left" }, 600);
         $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
 
         document.getElementById('wizardPanel').scrollIntoView();
+
         this.installWizard();
+        $('#contentLink').click();
+
+        console.log(this.collectiveBlockReq);
     }
 
     showEditWizard(id: string) {
-
         this.device = this.registered.find(d => d.id == Number(id));
-        this.agentService.getMobileCategories(Number(id)).subscribe(data => this.mobileCategories = data);
 
-        //TODO: Restart Wizard Form
+        this.collectiveBlockReq = new CollectiveBlockRequest();
+        this.collectiveBlockReq.agent = new AgentResponse();
+        this.collectiveBlockReq.agent = this.device;
+        this.collectiveBlockReq.collectiveCategories = new Array;
+
+        this.agentService.getMobileCategories(Number(id)).subscribe(data => {
+            this.mobileCategories = data;
+            this.mobileCategories.forEach(i => {
+                if (i.blocked == true || i.profile) {
+                    let cc = new CollectiveCategory();
+                    cc.block = i.blocked;
+                    cc.category = i;
+                    if (i.profile) {
+                        cc.profileId = i.profile.id;
+                    }
+                    this.collectiveBlockReq.collectiveCategories.push(cc);
+                }
+
+            });
+        });
 
         $('#devicePanel').toggle("slide", { direction: "left" }, 600);
         $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
-
         document.getElementById('wizardPanel').scrollIntoView();
         this.installWizard();
+        $('#contentLink').click();
+
+        console.log(this.collectiveBlockReq);
     }
 
     hideWizard() {
-        this.alert.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
+        this.alertService.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
             res => {
                 if (res) {
                     $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
-                    $('#devicePanel').toggle("slide", { direction: "left" }, 1000);            
+                    $('#devicePanel').toggle("slide", { direction: "left" }, 1000);
                 }
             }
-        );       
+        );
     }
 
-    saveAgent() {
-        this.alert.alertSuccessMessage("Agent Register Operation","You Clicked finish button");
+    allowCategory(id: number) {
+        this.mobileCategories.find(m => m.id == id).blocked = false;
+
+        if (this.collectiveBlockReq.agent.id && this.collectiveBlockReq.agent.id > 0) {
+            if (this.notUpdatedCategories.find(m => m.id == id)) {
+                this.collectiveBlockReq.collectiveCategories.splice(this.collectiveBlockReq.collectiveCategories.findIndex(c => c.category.id == id), 1);
+                this.notUpdatedCategories.splice(this.notUpdatedCategories.findIndex(n => n.id == id));
+            } else {
+                this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id).block = false;
+            }
+        } else {
+            this.collectiveBlockReq.collectiveCategories.splice(this.collectiveBlockReq.collectiveCategories.findIndex(c => c.category.id == id), 1);
+            this.notUpdatedCategories.splice(this.notUpdatedCategories.findIndex(n => n.id == id));
+        }
+
+        $('#profilePanel').hide();
+        console.log(this.collectiveBlockReq);
+    }
+    blockCategory(id: number) {
+        this.mobileCategories.find(m => m.id == id).blocked = true;
+        let mc: MobileCategory = this.mobileCategories.find(m => m.id == id);
+        debugger;
+        if (this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id)) {
+            this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id).block = true;
+            if (this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id).category.categoryType == 1) {
+                this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id).profileId = null;
+            }
+        } else {
+            let cc = new CollectiveCategory();
+            cc.block = true;
+            cc.category = mc;
+            // cc.profileId = null;
+            this.collectiveBlockReq.collectiveCategories.push(cc);
+            this.notUpdatedCategories.push(cc.category);
+        }
+
+        $('#profilePanel').hide();
+
+        console.log(this.collectiveBlockReq);
+    }
+
+    postCollectiveBlock() {
+
+        this.collectiveBlockReq.agent.agentAlias = this.device.agentAlias;
+
+        this.agentService.collectiveBlock(this.collectiveBlockReq).subscribe(d => {
+            this.alertService.alertSuccessMessage("Operation Successful", "Options changed for agent: " + this.collectiveBlockReq.agent.agentAlias);
+
+            $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
+            $('#devicePanel').toggle("slide", { direction: "left" }, 1000);
+        });
 
     }
 
+    openEditProfilePanel(id: number) {
+
+        this.selectedProfile = this.profiles.profileDay.find(p => p.id == id);
+
+        this.dayProfiles.forEach(dp => {
+            if (this.selectedProfile.dayProfiles[dp.id]) {
+                dp.status = 1;
+                dp.startDate = new Date(this.selectedProfile.dayProfiles[dp.id].startDate).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
+                dp.endDate = new Date(this.selectedProfile.dayProfiles[dp.id].endDate).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
+            } else {
+                dp.status = 0;
+                dp.startDate = null;
+                dp.endDate = null;
+            }
+        })
+
+        console.log(this.dayProfiles);
+
+
+        $('#profilePanel').show(500);
+
+    }
+
+    selectCategoryProfile(catId: number, pId: number) {
+        debugger;
+        if (pId == 0) { // remove profile
+            this.mobileCategories.find(m => m.id == catId).profile = null;
+            if (this.notUpdatedCategories.find(n => n.id == catId)) {
+                this.collectiveBlockReq.collectiveCategories.splice(this.collectiveBlockReq.collectiveCategories.findIndex(c => c.category.id == catId), 1);
+                this.notUpdatedCategories.splice(this.notUpdatedCategories.findIndex(n => n.id == catId));
+            }
+
+        } else {
+            this.mobileCategories.find(m => m.id == catId).profile = this.profiles.profileDay.find(p => p.id == pId);
+
+            if (this.collectiveBlockReq.collectiveCategories.find(cc => cc.category.id == catId)) {
+                this.collectiveBlockReq.collectiveCategories.find(cc => cc.category.id == catId).profileId = pId;
+            } else {
+                let cc = new CollectiveCategory();
+                cc.block = false;
+                cc.category = this.mobileCategories.find(m => m.id == catId);
+                cc.profileId = pId;
+                this.collectiveBlockReq.collectiveCategories.push(cc)
+                this.notUpdatedCategories.push(cc.category);
+            }
+
+        }
+
+        console.log(this.collectiveBlockReq);
+
+        $(".dropdown-menu").removeClass("show");
+        this.closeProfilePanel();
+    }
+
+    deleteAgent(agent: AgentResponse) {
+        this.alertService.alertWarningAndCancel('Are You Sure?', 'Settings for this device will be deleted!').subscribe(
+            res => {
+                if (res) {
+                    this.agentService.deleteAgent(agent);
+                }
+            }
+        );
+
+    }
+
+    deleteProfile(id: number) {
+
+        alert("you clicked delete" + id);
+    }
+
+    closeProfilePanel() {
+        $('#profilePanel').hide(300);
+    }
+
+    addNewProfile() {
+        $('#profilePanel').show(300);
+    }
+
+    saveTimeProfile(){
+        this.alertService.alertSuccessMessage("Operation Successful", "Profile Changes committed");
+
+        this.closeProfilePanel();
+    }
 
 
 

@@ -60,8 +60,8 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'settings',
         children: [
             { path: 'publicIp', title: 'Public IP', ab: 'PI' },
-            { path: 'boxes', title: 'Boxes', ab: 'B' },
-            { path: 'devices', title: 'Hosts', ab: 'H' }
+            { path: 'devices', title: 'Local Devices', ab: 'LD' },
+            { path: 'roaming', title: 'Roaming Clients', ab: 'RC' }
         ]
     }
     /*, {

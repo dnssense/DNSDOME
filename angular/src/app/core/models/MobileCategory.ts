@@ -1,4 +1,4 @@
-import { DayProfileRequest } from './DayProfileRequest';
+import { DayProfileGroup } from './DayProfileGroup';
 
 export class MobileCategory {
     id: number;
@@ -12,5 +12,5 @@ export class MobileCategory {
     names: string[];
     ids: number[];
     blocked: boolean;
-    profile: DayProfileRequest;
+    profile: DayProfileGroup;
 }

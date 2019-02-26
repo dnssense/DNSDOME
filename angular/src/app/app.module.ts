@@ -32,7 +32,6 @@ import { SearchSettingService } from './core/services/SearchSettingService';
 import { FastReportService } from './core/services/FastReportService';
 import { CustomReportService } from './core/services/CustomReportService';
 
-
 @NgModule({
   declarations: [
     AppComponent

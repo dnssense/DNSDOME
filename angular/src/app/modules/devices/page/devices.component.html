@@ -2,28 +2,54 @@
   <div class="container-fluid col-md-11">
     <section id="devicePanel" class="devicePanel">
       <div class="row">
+          <div class="col-md-12 ml-auto mr-auto">
+              <div class="card">
+                <div class="card-header card-header-icon card-header-info">
+                  <div class="card-icon">
+                    <i class="material-icons">all_inbox</i>
+                  </div>
+                  <h4 class="card-title ">Boxes (Who am I, What am I)</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class="text-warning">
+                        <tr>
+                          <th>Box Headers</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Box information</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+      </div>
+      <div class="row">
         <div class="col-md-6 ml-auto mr-auto">
           <div class="card">
             <div class="card-header card-header-icon card-header-warning">
               <div class="card-icon">
                 <i class="material-icons">assignment</i>
               </div>
-              <h4 class="card-title ">Unregistered Agents</h4>
+              <h4 class="card-title ">Unregistered Agents ({{unregisteredCount}})</h4>
             </div>
             <div class="card-body">
-              <div class="table-responsive">
-                <table class="table">
+              <div class="table-responsive" style="max-height: 300px;">
+                <table class="table" >
                   <thead class="text-warning">
                     <tr>
                       <th>Agent Id</th>
-                      <th>Agent Code</th>
                       <th>Register</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let agent of unregistered">
                       <td>{{agent.agentAlias}}</td>
-                      <td>{{agent.agentCode}}</td>
                       <td class="td-actions text-right">
                         <button mat-raised-button type="button" class="btn btn-warning"
                           (click)="showNewWizard(agent.agentCode)">
@@ -43,25 +69,34 @@
               <div class="card-icon">
                 <i class="material-icons">save</i>
               </div>
-              <h4 class="card-title ">Registered Agents</h4>
+              <h4 class="card-title ">Registered Agents ({{registeredCount}})</h4>
             </div>
             <div class="card-body">
-              <div class="table-responsive">
+              <div class="table-responsive" style="max-height: 300px;">
                 <table class="table">
                   <thead class="text-success">
                     <tr>
-                      <th>Agent Id</th>
-                      <th>Agent Code</th>
-                      <th>Profile</th>
+                      <th>Agent Id</th> 
+                      <th>Security Profile</th>
                       <th>Register</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let agent of registered">
                       <td>{{agent.agentAlias}}</td>
-                      <td>{{agent.agentCode}}</td>
-                      <td>---</td>
+                      <td>
+                        <select>
+                          <option>-Select-</option>
+                          <option>AAAA</option>
+                          <option>BBBB</option>
+                          <option>CCCC</option>
+                        </select>
+                      </td>
                       <td class="td-actions text-center">
+                        <button mat-raised-button type="button" class="btn btn-danger mr-1"
+                          (click)="deleteAgent(agent)">
+                          <i class="material-icons">close</i>
+                        </button>
                         <button mat-raised-button type="button" class="btn btn-info" (click)="showEditWizard(agent.id)">
                           <i class="material-icons">edit</i>
                         </button>
@@ -87,19 +122,28 @@
                 <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
                 <div class="card-header text-center">
                   <h3 class="card-title">
-                    {{device.agentAlias}} - {{device.agentCode}}
+                    <div class="row">
+                      <div class="col-md-4"></div>
+                      <div class="col-md-4 text-center input-group form-control-lg">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="material-icons">face</i>
+                          </span>
+                        </div>
+                        <mat-form-field>
+                          <input type="text" name="deviceName" matInput id="text" placeholder="Device Name"
+                            value="{{device.agentAlias}}">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4"></div>
+                    </div>
                   </h3>
                   <h5 class="card-description">Manage this device</h5>
                 </div>
                 <div class="wizard-navigation">
                   <ul class="nav nav-pills">
                     <li class="nav-item">
-                      <a class="nav-link active" href="#name" data-toggle="tab" role="tab">
-                        Device Name
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#content" data-toggle="tab" role="tab">
+                      <a class="nav-link active" id="contentLink" href="#content" data-toggle="tab" role="tab">
                         Content Filtering
                       </a>
                     </li>
@@ -117,99 +161,362 @@
                 </div>
                 <div class="card-body">
                   <div class="tab-content">
-                    <div class="tab-pane active" id="name">
-                      <h5 class="info-text">Define name of this device</h5>
-                      <div class="row justify-content-center">
-                        <div class="col-sm-6">
-                          <div class="input-group form-control-lg">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text">
-                                <i class="material-icons">face</i>
-                              </span>
-                            </div>
-                            <mat-form-field class="example-full-width has-label">
-                              <input type="text" name="deviceName" matInput id="text" placeholder="Device Name"
-                              value="{{device.agentAlias}}">
-                            </mat-form-field>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="tab-pane" id="content">
-                      <h5 class="info-text">Manage Content Filtering</h5>
+                    <div class="tab-pane active" id="content">
                       <div class="row justify-content-center">
                         <div class="col-md-12">
                           <div class="item-wrapper">
-                            <div class="item" *ngFor="let cat of mobileCategories">
-                              <div class="row align-items-center">
-                                <div class="col-sm-12 text-center">{{cat.categoryName}}
-                                  <br />
-                                  <button class="btn btn-sm btn-success">Enable</button>
-                                  <button class="btn btn-sm btn-warning">Disable</button>
+                            <ng-container *ngFor="let cat of mobileCategories">
+                              <div class="item" *ngIf="cat.categoryType==0;">
+                                <div class="row align-items-center">
+                                  <div class="col-sm-12 text-center mt-1">
+                                    <strong>{{cat.categoryName}}</strong>
+                                    <br />
+                                    <ng-container *ngIf="cat.blocked; else elseTemplate">
+                                      <button class="btn btn-sm btn-warning" (click)="allowCategory(cat.id)">Not
+                                        Allowed</button>
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                      <button class="btn btn-sm btn-success"
+                                        (click)="blockCategory(cat.id)">Allowed</button>
+                                    </ng-template>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            </ng-container>
                           </div>
-
                         </div>
                       </div>
                     </div>
                     <div class="tab-pane" id="applications">
-                      <h5 class="info-text">Manage Applications</h5>
                       <div class="row justify-content-center">
                         <div class="col-md-12">
+                          <div class="item-wrapper">
+                            <ng-container *ngFor="let cat of mobileCategories">
+                              <div class="item" *ngIf="cat.categoryType==1;">
+                                <div class="row align-items-center">
+                                  <div class="col-sm-12 text-center mt-1">
+                                    <strong>{{cat.categoryName}}</strong>
+                                    <br />
+                                    <ng-container *ngIf="cat.blocked; else elseTemplate">
+                                      <button class="btn btn-sm btn-warning" (click)="allowCategory(cat.id)">Not
+                                        Allowed</button>
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                      <button class="btn btn-sm btn-success"
+                                        (click)="blockCategory(cat.id)">Allowed</button>
+                                      <br />
+                                      <ng-container *ngIf="profiles">
+                                        <div class="dropdown">
+                                          <ng-container *ngIf="cat.profile && cat.profile.name; else elseTemplate">
+                                            <button mat-raised-button class="dropdown-toggle btn btn-success btn-sm"
+                                              data-toggle="dropdown"> {{cat.profile.name}}
+                                              <b class="caret"></b>
+                                            </button>
+                                          </ng-container>
+                                          <ng-template #elseTemplate>
+                                            <button mat-raised-button class="dropdown-toggle btn btn-default btn-sm"
+                                              data-toggle="dropdown">
+                                              No Profile
+                                              <b class="caret"></b>
+                                            </button>
+                                          </ng-template>
+                                          <ul class="dropdown-menu dropdown-menu-left">
+                                            <li class="dropdown-header">Profiles</li>
+                                            <li>
+                                              <button mat-raised-button
+                                                class="btn btn-link btn-info btn-sm"
+                                                (click)="selectCategoryProfile(cat.id, 0)">Remove Profile
+                                              </button>
+                                            </li>
+                                            <li *ngFor="let profile of profiles.profileDay">
+                                              <div class="row"> 
+                                                  <div class="table-responsive">
+                                                    <table class="table">
+                                                      <tbody>
+                                                        <tr>
+                                                          <td class="col-md-7">
+                                                            <button mat-raised-button
+                                                              class="btn btn-link btn-primary btn-sm"
+                                                              data-toggle="dropdown"
+                                                              (click)="selectCategoryProfile(cat.id, profile.id)">
+                                                              {{profile.name}}
+                                                            </button>
+                                                          </td>
+                                                          <td class="td-actions text-center col-md-5">
+                                                            <button mat-raised-button type="button"
+                                                              class="btn btn-success btn-link"
+                                                              (click)="openEditProfilePanel(profile.id)">
+                                                              <i class="material-icons">edit</i>
+                                                            </button>
+                                                            <button mat-raised-button type="button"
+                                                              class="btn btn-danger btn-link"
+                                                              (click)="deleteProfile(profile.id)">
+                                                              <i class="material-icons">close</i>
+                                                            </button>
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                 
+                                              </div>
+                                            </li>
+                                            <li><button mat-raised-button class="btn btn-link btn-info btn-sm"
+                                                (click)="addNewProfile()">Add New Profile
+                                              </button>
+                                            </li>
+                                          </ul>
+                                        </div>
+                                      </ng-container>
+                                    </ng-template>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row" id="profilePanel"
+                        style="display: none; border-style: groove; border-radius: 6px;">
+                        <div class="col-md-12">
                           <div class="row">
-                            <div class="col-sm-3">
-                              <div class="item-wrapper">
-                                <div class="item">
-                                  <div class="row align-items-center">
-                                    <div class="col-sm-12 text-center">Google Play
-                                      <br />
-                                      <button class="btn btn-sm btn-success">Enable</button>
-                                      <button class="btn btn-sm btn-warning">Disable</button>
+                            <div class="col text-right">
+                              <button class="btn btn-link btn-warning" (click)="closeProfilePanel()">Close</button>
+                            </div>
+                          </div>
+                          <ng-container *ngIf="selectedProfile">
+                            <div class="row">
+                              <div class="col-md-4"></div>
+                              <div class="col-md-4">
+                                <mat-form-field>
+                                  <input type="text" name="profileName" matInput id="text" placeholder="Profile Name"
+                                    value="{{selectedProfile.name}}">
+                                </mat-form-field>
+                              </div>
+                              <div class="col-md-4"></div>
+                            </div>
+                            <div class="row">
+                              <div class="col">
+                                <div class="card">
+                                  <div class="card-header card-header-icon" 
+                                  [ngClass]="{
+                                    'card-header-success' : dayProfiles[4].status == 1, 
+                                    'card-header-default' : dayProfiles[4].status == 0,
+                                    'card-header-warning' : dayProfiles[4].status == 2 }">
+                                    <div class="card-icon">
+                                      MON
+                                    </div>
+                                  </div>
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        Start Date:
+                                        <input atp-time-picker changetominutes="true" type="time"
+                                          value="{{dayProfiles[0].startDate}}">
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        End Date:
+                                        <input atp-time-picker changetominutes="true" type="time"
+                                          value="{{dayProfiles[0].endDate}}">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="card">
+                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
+                                    'card-header-default' : dayProfiles[4].status == 0,
+                                    'card-header-warning' : dayProfiles[4].status == 2 }">
+                                    <div class="card-icon">
+                                      TUE
+                                    </div>
+                                  </div>
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            Start Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[1].startDate}}">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            End Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[1].endDate}}">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="card">
+                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
+                                    'card-header-default' : dayProfiles[4].status == 0,
+                                    'card-header-warning' : dayProfiles[4].status == 2 }">
+                                    <div class="card-icon">
+                                      WED
+                                    </div>
+                                  </div>
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            Start Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[2].startDate}}">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            End Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[2].endDate}}">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="card">
+                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
+                                    'card-header-default' : dayProfiles[4].status == 0,
+                                    'card-header-warning' : dayProfiles[4].status == 2 }">
+                                    <div class="card-icon">
+                                      THU
+                                    </div>
+                                  </div>
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            Start Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[3].startDate}}">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            End Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[3].endDate}}">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="card">
+                                  <div class="card-header card-header-icon" [ngClass]="{
+                                      'card-header-success' : dayProfiles[4].status == 1, 
+                                      'card-header-default' : dayProfiles[4].status == 0,
+                                      'card-header-warning' : dayProfiles[4].status == 2  }">
+                                    <div class="card-icon">
+                                      FRI
+                                    </div>
+                                  </div>
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            Start Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[4].startDate}}">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            End Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[4].endDate}}">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="card">
+                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
+                                    'card-header-default' : dayProfiles[4].status == 0,
+                                    'card-header-warning' : dayProfiles[4].status == 2  }">
+                                    <div class="card-icon">
+                                      SAT
+                                    </div>
+                                  </div>
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            Start Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[5].startDate}}">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            End Date:
+                                            <input atp-time-picker changetominutes="true" type="time"
+                                              value="{{dayProfiles[5].endDate}}">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="card">
+                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
+                                    'card-header-default' : dayProfiles[4].status == 0,
+                                    'card-header-warning' : dayProfiles[4].status == 2 }">
+                                    <div class="card-icon">
+                                      SUN
+                                    </div>
+                                  </div>
+                                  <div class="card-body">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            Start Date:
+                                            <input atp-time-picker id="sunstart" changetominutes="true" type="time"
+                                              value="{{dayProfiles[6].startDate}}">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            End Date:
+                                            <input atp-time-picker id="sunend" changetominutes="true" type="time"
+                                              value="{{dayProfiles[6].endDate}}">
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                            <div class="col-sm-3">
-                              <div class="item-wrapper">
-                                <div class="item">
-                                  <div class="row align-items-center">
-                                    <div class="col-sm-12 text-center">Video Applications
-                                      <br />
-                                      <button class="btn btn-sm btn-success">Enable</button>
-                                      <button class="btn btn-sm btn-warning">Disable</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-sm-3">
-                              <div class="item-wrapper">
-                                <div class="item">
-                                  <div class="row align-items-center">
-                                    <div class="col-sm-12 text-center">Chat Social Media vs.
-                                      <br />
-                                      <button class="btn btn-sm btn-success">Enable</button>
-                                      <button class="btn btn-sm btn-warning">Disable</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-sm-3">
-                              <div class="item-wrapper">
-                                <div class="item">
-                                  <div class="row align-items-center">
-                                    <div class="col-sm-12 text-center"> Advertisement Services
-                                      <br />
-                                      <button class="btn btn-sm btn-success">Enable</button>
-                                      <button class="btn btn-sm btn-warning">Disable</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                          </ng-container>
+                          <div class="row">
+                            <div class="col text-right">
+                              <button class="btn btn-info" (click)="saveTimeProfile()">Save</button>
                             </div>
                           </div>
                         </div>
@@ -217,75 +524,42 @@
                     </div>
                     <div class="tab-pane" id="security">
                       <div class="row justify-content-center">
-                        <div class="col-sm-12">
-                          <h5 class="info-text">Manage Security Options</h5>
-                        </div>
-                        <div class="col-sm-3">
+                        <div class="col-md-12">
                           <div class="item-wrapper">
-                            <div class="item">
-                              <div class="row align-items-center">
-                                <div class="col-sm-12 text-center">Malware/Virus
-                                  <br />
-                                  <button class="btn btn-sm btn-success">Enable</button>
-                                  <button class="btn btn-sm btn-warning">Disable</button>
+                            <ng-container *ngFor="let cat of mobileCategories">
+                              <div class="item" *ngIf="cat.categoryType==2;">
+                                <div class="row align-items-center">
+                                  <div class="col-sm-12 text-center mt-1">
+                                    <strong>{{cat.categoryName}}</strong>
+                                    <br />
+                                    <ng-container *ngIf="cat.blocked; else elseTemplate">
+                                      <button class="btn btn-sm btn-warning" (click)="allowCategory(cat.id)">Not
+                                        Allowed</button>
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                      <button class="btn btn-sm btn-success"
+                                        (click)="blockCategory(cat.id)">Allowed</button>
+                                    </ng-template>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="item-wrapper">
-                            <div class="item">
-                              <div class="row align-items-center">
-                                <div class="col-sm-12 text-center"> Phishing/Spam
-                                  <br />
-                                  <button class="btn btn-sm btn-success">Enable</button>
-                                  <button class="btn btn-sm btn-warning">Disable</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="item-wrapper">
-                            <div class="item">
-                              <div class="row align-items-center">
-                                <div class="col-sm-12 text-center"> Potentially Dangerous
-                                  <br />
-                                  <button class="btn btn-sm btn-success">Enable</button>
-                                  <button class="btn btn-sm btn-warning">Disable</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="item-wrapper">
-                            <div class="item">
-                              <div class="row align-items-center">
-                                <div class="col-sm-12 text-center">Hacking Proxy vs.
-                                  <br />
-                                  <button class="btn btn-sm btn-success">Enable</button>
-                                  <button class="btn btn-sm btn-warning">Disable</button>
-                                </div>
-                              </div>
-                            </div>
+                            </ng-container>
                           </div>
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </div>
                 <div class="card-footer">
                   <div class="mr-auto">
-                    <input type="button" class="btn btn-previous btn-fill btn-default btn-wd disabled" name="previous"
-                      value="Previous">
+                    <input type="button" class="btn btn-previous btn-fill btn-default btn-wd disabled" id="previous"
+                      name="previous" value="Previous">
                   </div>
                   <div class="ml-auto">
                     <input type="button" class="btn btn-next btn-fill btn-info btn-wd" name="next" value="Next">
                     <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" name="finish" value="Finish"
-                    (click)="saveAgent()"
-                      style="display: none;">
+                      (click)="postCollectiveBlock()" style="display: none;">
                   </div>
                   <div class="clearfix"></div>
                 </div>

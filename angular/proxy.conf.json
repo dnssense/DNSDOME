@@ -1,16 +1,6 @@
 {
-    "/auth/*": {
-        "target": "https://management.dnssense.com/services",
-        "secure": false,
-        "changeOrigin": true
-    },
-    "/dashboard/*": {
-        "target": "https://management.dnssense.com/services",
-        "secure": false,
-        "changeOrigin": true
-    },
-    "/api/*": {
-        "target": "http://localhost:3000",
+    "/services/*": {
+        "target": "http://localhost:8080",
         "secure": false,
         "changeOrigin": true
     }

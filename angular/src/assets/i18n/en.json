@@ -19,7 +19,7 @@
         "InvalidEmailOrPassword": "Invalid email or password",
         "Register": "Register",
         "Login": "Login",
-        "WrongEmailOrPassword": "Email or password is wrong,try again",
+        "WrongEmailOrPassword": "Email or password is wrong, try again",
         "RequiredFields": "Required fields",
         "Email": "Email Address",
         "EmailRequired": "Email is required",

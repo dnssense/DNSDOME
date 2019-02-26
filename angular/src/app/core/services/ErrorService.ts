@@ -40,7 +40,7 @@ export class ErrorService {
     } else {
       switch (status) {
         case 0: {
-          message = 'An error occurred while processing your request.Please try again later:' + statusText;
+          message = 'An error occurred while processing your request. Please try again later:' + statusText;
           break;
         }
         case 200: {

@@ -10,6 +10,7 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/shared/components/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
+import { AmazingTimePickerModule } from 'amazing-time-picker';
 
 
 
@@ -22,6 +23,7 @@ import { NouisliderModule } from 'ng2-nouislider';
     NouisliderModule,
     MaterialModule,
     DevicesRoutingModule,
+    AmazingTimePickerModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

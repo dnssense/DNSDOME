@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AgentResponse } from '../models/AgentResponse';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { Observable } from 'rxjs';
 import { MobileCategory } from '../models/MobileCategory';
+import { TimeProfileResponse } from '../models/TimeProfileResponse';
+import { RequestOptions } from '@angular/http';
+import { CollectiveBlockRequest } from '../models/CollectiveBlockRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +15,11 @@ export class AgentService {
   private unRegisteredAgentsURL = this.config.getApiUrl() + '/home-controller/unregistered';
   private registeredAgentsURL = this.config.getApiUrl() + '/home-controller/registered';
   private mobileCategoriesURL = this.config.getApiUrl() + '/home-controller/categories?agentId=';
-  
+  private profilesURL = this.config.getApiUrl() + '/home-controller/profiles';
+  private bedTimesURL = this.config.getApiUrl() + '/home-controller/bed-time';
+  private collectiveBlockURL = this.config.getApiUrl() + "/home-controller/collective-block";
+  private deleteAgentURL = this.config.getApiUrl() + "/home-controller/agent";
+
 
   constructor(private http: HttpClient, private config: ConfigService) { }
 
@@ -21,12 +28,46 @@ export class AgentService {
   }
 
   getUnRegisteredAgents(): Observable<AgentResponse[]> {
+debugger;
+    // let headers = new HttpHeaders({
+    //   'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    //   'Access-Control-Allow-Origin': '*',
+    //   'Access-Control-Allow-Methods': 'GET'
+    // });
+    // let options = {
+    //   headers: headers
+    // }
+
     return this.http.get<AgentResponse[]>(this.unRegisteredAgentsURL).map(data => data);
   }
 
-  getMobileCategories(agetId: number): Observable<MobileCategory[]>{
+  getMobileCategories(agetId: number): Observable<MobileCategory[]> {
     return this.http.get<MobileCategory[]>(this.mobileCategoriesURL + agetId).map(data => data);
   }
 
+  getProfiles(): Observable<TimeProfileResponse> {
+    return this.http.get<TimeProfileResponse>(this.profilesURL).map(data => data);
+  }
 
+  getBedTimes(): Observable<TimeProfileResponse> {
+    return this.http.get<TimeProfileResponse>(this.bedTimesURL).map(data => data);
+  }
+
+  collectiveBlock(cbr : CollectiveBlockRequest): Observable<AgentResponse>{
+    
+    debugger;
+    let options = {
+      headers: new HttpHeaders({'Content-Type': 'application/json'})
+    }
+    let body = JSON.stringify(cbr, null, " ");
+    return this.http.post<AgentResponse>(this.collectiveBlockURL, body, options).map(d=> d);
+  }
+
+  deleteAgent(agent: AgentResponse){
+    let options = {
+      headers: new HttpHeaders({'Content-Type': 'application/json'})
+    };
+    debugger;
+    this.http.request('DELETE', this.deleteAgentURL, {body: JSON.stringify(agent, null, " ")});
+  }
 }
