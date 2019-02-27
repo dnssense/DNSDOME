@@ -7,6 +7,8 @@ import { MobileCategory } from '../models/MobileCategory';
 import { TimeProfileResponse } from '../models/TimeProfileResponse';
 import { RequestOptions } from '@angular/http';
 import { CollectiveBlockRequest } from '../models/CollectiveBlockRequest';
+import { DayProfile } from '../models/DayProfile';
+import { DayProfileGroup } from '../models/DayProfileGroup';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,7 @@ export class AgentService {
   private bedTimesURL = this.config.getApiUrl() + '/home-controller/bed-time';
   private collectiveBlockURL = this.config.getApiUrl() + "/home-controller/collective-block";
   private deleteAgentURL = this.config.getApiUrl() + "/home-controller/agent";
+  private createProfileURL = this.config.getApiUrl() + "/home-controller/profile";
 
 
   constructor(private http: HttpClient, private config: ConfigService) { }
@@ -28,16 +31,6 @@ export class AgentService {
   }
 
   getUnRegisteredAgents(): Observable<AgentResponse[]> {
-debugger;
-    // let headers = new HttpHeaders({
-    //   'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-    //   'Access-Control-Allow-Origin': '*',
-    //   'Access-Control-Allow-Methods': 'GET'
-    // });
-    // let options = {
-    //   headers: headers
-    // }
-
     return this.http.get<AgentResponse[]>(this.unRegisteredAgentsURL).map(data => data);
   }
 
@@ -53,21 +46,28 @@ debugger;
     return this.http.get<TimeProfileResponse>(this.bedTimesURL).map(data => data);
   }
 
-  collectiveBlock(cbr : CollectiveBlockRequest): Observable<AgentResponse>{
-    
+  collectiveBlock(cbr: CollectiveBlockRequest): Observable<AgentResponse> {
+
     debugger;
     let options = {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     }
     let body = JSON.stringify(cbr, null, " ");
-    return this.http.post<AgentResponse>(this.collectiveBlockURL, body, options).map(d=> d);
+    return this.http.post<AgentResponse>(this.collectiveBlockURL, body, options).map(d => d);
   }
 
-  deleteAgent(agent: AgentResponse){
+  deleteAgent(agent: AgentResponse) {
     let options = {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
     debugger;
-    this.http.request('DELETE', this.deleteAgentURL, {body: JSON.stringify(agent, null, " ")});
+    this.http.request('DELETE', this.deleteAgentURL, { body: JSON.stringify(agent, null, " ") });
+  }
+
+  saveProfile(profile: DayProfileGroup): Observable<DayProfileGroup> {
+    let options = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+    return this.http.post<DayProfileGroup>(this.createProfileURL, JSON.stringify(profile, null, ""), options).map(d => d);
   }
 }

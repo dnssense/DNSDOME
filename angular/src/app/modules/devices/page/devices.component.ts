@@ -31,8 +31,8 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     deviceForm: FormGroup;
     collectiveBlockReq: CollectiveBlockRequest = new CollectiveBlockRequest();
     selectedProfile: DayProfileGroup;
-    dayProfiles: TimeProfileViewModel[];
-    monProfile: DayProfile;
+
+
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService) {
 
@@ -49,16 +49,6 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
         this.device.id = null;
         this.device.agentAlias = null;
         this.device.agentCode = null;
-
-        this.dayProfiles = [
-            { id: 0, startDate: null, endDate: null, status: 0 },
-            { id: 1, startDate: null, endDate: null, status: 0 },
-            { id: 2, startDate: null, endDate: null, status: 0 },
-            { id: 3, startDate: null, endDate: null, status: 0 },
-            { id: 4, startDate: null, endDate: null, status: 0 },
-            { id: 5, startDate: null, endDate: null, status: 0 },
-            { id: 6, startDate: null, endDate: null, status: 0 }
-        ]
     }
 
     isFieldValid(form: FormGroup, field: string) {
@@ -356,6 +346,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     showNewWizard(agentCode: string) {
+        this.agentService.getProfiles().subscribe(data => this.profiles = data);
         this.device = this.unregistered.find(d => d.agentCode == agentCode);
         this.agentService.getMobileCategories(0).subscribe(data => this.mobileCategories = data);
 
@@ -376,6 +367,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     showEditWizard(id: string) {
+        this.agentService.getProfiles().subscribe(data => this.profiles = data);
         this.device = this.registered.find(d => d.id == Number(id));
 
         this.collectiveBlockReq = new CollectiveBlockRequest();
@@ -414,6 +406,10 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
                 if (res) {
                     $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
                     $('#devicePanel').toggle("slide", { direction: "left" }, 1000);
+                    $('#profilePanel').slideUp(300);
+
+                    this.agentService.getRegisteredAgents().subscribe(data => { this.registered = data; this.registeredCount = data.length });
+                    this.agentService.getUnRegisteredAgents().subscribe(data => { this.unregistered = data; this.unregisteredCount = data.length; });
                 }
             }
         );
@@ -450,7 +446,6 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
             let cc = new CollectiveCategory();
             cc.block = true;
             cc.category = mc;
-            // cc.profileId = null;
             this.collectiveBlockReq.collectiveCategories.push(cc);
             this.notUpdatedCategories.push(cc.category);
         }
@@ -469,35 +464,13 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
 
             $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
             $('#devicePanel').toggle("slide", { direction: "left" }, 1000);
+            this.agentService.getProfiles().subscribe(d=> this.profiles= d);
         });
 
     }
 
-    openEditProfilePanel(id: number) {
-
-        this.selectedProfile = this.profiles.profileDay.find(p => p.id == id);
-
-        this.dayProfiles.forEach(dp => {
-            if (this.selectedProfile.dayProfiles[dp.id]) {
-                dp.status = 1;
-                dp.startDate = new Date(this.selectedProfile.dayProfiles[dp.id].startDate).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
-                dp.endDate = new Date(this.selectedProfile.dayProfiles[dp.id].endDate).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
-            } else {
-                dp.status = 0;
-                dp.startDate = null;
-                dp.endDate = null;
-            }
-        })
-
-        console.log(this.dayProfiles);
-
-
-        $('#profilePanel').show(500);
-
-    }
-
     selectCategoryProfile(catId: number, pId: number) {
-        debugger;
+
         if (pId == 0) { // remove profile
             this.mobileCategories.find(m => m.id == catId).profile = null;
             if (this.notUpdatedCategories.find(n => n.id == catId)) {
@@ -537,6 +510,13 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
         );
 
     }
+    
+    openEditProfilePanel(id: number) {
+
+        this.agentService.getProfiles().subscribe(d=> this.selectedProfile = d.profileDay.find(p=> p.id == id));
+        
+        $('#profilePanel').slideDown(300);
+    }
 
     deleteProfile(id: number) {
 
@@ -544,19 +524,16 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     closeProfilePanel() {
-        $('#profilePanel').hide(300);
+        $('#profilePanel').slideUp(300);
     }
 
     addNewProfile() {
-        $('#profilePanel').show(300);
+
+        this.selectedProfile = new DayProfileGroup();
+
+        $('#profilePanel').slideDown(300);
+
     }
-
-    saveTimeProfile(){
-        this.alertService.alertSuccessMessage("Operation Successful", "Profile Changes committed");
-
-        this.closeProfilePanel();
-    }
-
 
 
 }

@@ -2,32 +2,32 @@
   <div class="container-fluid col-md-11">
     <section id="devicePanel" class="devicePanel">
       <div class="row">
-          <div class="col-md-12 ml-auto mr-auto">
-              <div class="card">
-                <div class="card-header card-header-icon card-header-info">
-                  <div class="card-icon">
-                    <i class="material-icons">all_inbox</i>
-                  </div>
-                  <h4 class="card-title ">Boxes (Who am I, What am I)</h4>
-                </div>
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table">
-                      <thead class="text-warning">
-                        <tr>
-                          <th>Box Headers</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Box information</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+        <div class="col-md-12 ml-auto mr-auto">
+          <div class="card">
+            <div class="card-header card-header-icon card-header-info">
+              <div class="card-icon">
+                <i class="material-icons">all_inbox</i>
+              </div>
+              <h4 class="card-title ">Boxes (Who am I, What am I)</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="text-warning">
+                    <tr>
+                      <th>Box Headers</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Box information</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="col-md-6 ml-auto mr-auto">
@@ -40,7 +40,7 @@
             </div>
             <div class="card-body">
               <div class="table-responsive" style="max-height: 300px;">
-                <table class="table" >
+                <table class="table">
                   <thead class="text-warning">
                     <tr>
                       <th>Agent Id</th>
@@ -76,7 +76,7 @@
                 <table class="table">
                   <thead class="text-success">
                     <tr>
-                      <th>Agent Id</th> 
+                      <th>Agent Id</th>
                       <th>Security Profile</th>
                       <th>Register</th>
                     </tr>
@@ -138,7 +138,7 @@
                       <div class="col-md-4"></div>
                     </div>
                   </h3>
-                  <h5 class="card-description">Manage this device</h5>
+                  <!-- <h5 class="card-description">Manage this device</h5> -->
                 </div>
                 <div class="wizard-navigation">
                   <ul class="nav nav-pills">
@@ -166,7 +166,8 @@
                         <div class="col-md-12">
                           <div class="item-wrapper">
                             <ng-container *ngFor="let cat of mobileCategories">
-                              <div class="item" *ngIf="cat.categoryType==0;">
+                              <div class="item"
+                                *ngIf="cat.categoryType==0 && (cat.id == 35 || cat.id == 36 ||cat.id == 21 || cat.id == 26  || cat.id == 20 )">
                                 <div class="row align-items-center">
                                   <div class="col-sm-12 text-center mt-1">
                                     <strong>{{cat.categoryName}}</strong>
@@ -183,6 +184,42 @@
                                 </div>
                               </div>
                             </ng-container>
+                            <div>
+                              <div id="cleanCategoriesAccordion" role="tablist">
+                                <div class="card-collapse">
+                                  <div class="card-header" role="tab" id="headingOne">
+                                    <h5 class="mb-0">
+                                      <a data-toggle="collapse" href="#cleanCategories" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                                        Clean Categories
+                                        <i class="material-icons">keyboard_arrow_down</i>
+                                      </a>
+                                    </h5>
+                                  </div>
+                                  <div id="cleanCategories" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#cleanCategoriesAccordion" style="">
+                                      <ng-container *ngFor="let cat of mobileCategories">
+                                        <div class="item" *ngIf="cat.categoryType==0 &&
+                                         !(cat.id == 35 || cat.id == 36 ||cat.id == 21 || cat.id == 26  || cat.id == 20 )">
+                                          <div class="row align-items-center">
+                                            <div class="col-sm-12 text-center mt-1">
+                                              <strong>{{cat.categoryName}}</strong>
+                                              <br />
+                                              <ng-container *ngIf="cat.blocked; else elseTemplate">
+                                                <button class="btn btn-sm btn-warning"
+                                                  (click)="allowCategory(cat.id)">Not
+                                                  Allowed</button>
+                                              </ng-container>
+                                              <ng-template #elseTemplate>
+                                                <button class="btn btn-sm btn-success"
+                                                  (click)="blockCategory(cat.id)">Allowed</button>
+                                              </ng-template>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </ng-container>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -223,42 +260,41 @@
                                           <ul class="dropdown-menu dropdown-menu-left">
                                             <li class="dropdown-header">Profiles</li>
                                             <li>
-                                              <button mat-raised-button
-                                                class="btn btn-link btn-info btn-sm"
+                                              <button mat-raised-button class="btn btn-link btn-info btn-sm"
                                                 (click)="selectCategoryProfile(cat.id, 0)">Remove Profile
                                               </button>
                                             </li>
-                                            <li *ngFor="let profile of profiles.profileDay">
-                                              <div class="row"> 
-                                                  <div class="table-responsive">
-                                                    <table class="table">
-                                                      <tbody>
-                                                        <tr>
-                                                          <td class="col-md-7">
-                                                            <button mat-raised-button
-                                                              class="btn btn-link btn-primary btn-sm"
-                                                              data-toggle="dropdown"
-                                                              (click)="selectCategoryProfile(cat.id, profile.id)">
-                                                              {{profile.name}}
-                                                            </button>
-                                                          </td>
-                                                          <td class="td-actions text-center col-md-5">
-                                                            <button mat-raised-button type="button"
-                                                              class="btn btn-success btn-link"
-                                                              (click)="openEditProfilePanel(profile.id)">
-                                                              <i class="material-icons">edit</i>
-                                                            </button>
-                                                            <button mat-raised-button type="button"
-                                                              class="btn btn-danger btn-link"
-                                                              (click)="deleteProfile(profile.id)">
-                                                              <i class="material-icons">close</i>
-                                                            </button>
-                                                          </td>
-                                                        </tr>
-                                                      </tbody>
-                                                    </table>
-                                                  </div>
-                                                 
+                                            <li>
+                                              <div class="row">
+                                                <div class="table-responsive">
+                                                  <table class="table">
+                                                    <tbody>
+                                                      <tr *ngFor="let profile of profiles.profileDay">
+                                                        <td class="col-md-7">
+                                                          <button mat-raised-button
+                                                            class="btn btn-link btn-primary btn-sm"
+                                                            data-toggle="dropdown"
+                                                            (click)="selectCategoryProfile(cat.id, profile.id)">
+                                                            {{profile.name}}
+                                                          </button>
+                                                        </td>
+                                                        <td class="td-actions text-center col-md-5">
+                                                          <button mat-raised-button type="button"
+                                                            class="btn btn-success btn-link"
+                                                            (click)="openEditProfilePanel(profile.id)">
+                                                            <i class="material-icons">edit</i>
+                                                          </button>
+                                                          <button mat-raised-button type="button"
+                                                            class="btn btn-danger btn-link"
+                                                            (click)="deleteProfile(profile.id)">
+                                                            <i class="material-icons">close</i>
+                                                          </button>
+                                                        </td>
+                                                      </tr>
+                                                    </tbody>
+                                                  </table>
+                                                </div>
+
                                               </div>
                                             </li>
                                             <li><button mat-raised-button class="btn btn-link btn-info btn-sm"
@@ -278,246 +314,10 @@
                       </div>
                       <div class="row" id="profilePanel"
                         style="display: none; border-style: groove; border-radius: 6px;">
-                        <div class="col-md-12">
-                          <div class="row">
-                            <div class="col text-right">
-                              <button class="btn btn-link btn-warning" (click)="closeProfilePanel()">Close</button>
-                            </div>
-                          </div>
-                          <ng-container *ngIf="selectedProfile">
-                            <div class="row">
-                              <div class="col-md-4"></div>
-                              <div class="col-md-4">
-                                <mat-form-field>
-                                  <input type="text" name="profileName" matInput id="text" placeholder="Profile Name"
-                                    value="{{selectedProfile.name}}">
-                                </mat-form-field>
-                              </div>
-                              <div class="col-md-4"></div>
-                            </div>
-                            <div class="row">
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-header card-header-icon" 
-                                  [ngClass]="{
-                                    'card-header-success' : dayProfiles[4].status == 1, 
-                                    'card-header-default' : dayProfiles[4].status == 0,
-                                    'card-header-warning' : dayProfiles[4].status == 2 }">
-                                    <div class="card-icon">
-                                      MON
-                                    </div>
-                                  </div>
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                        Start Date:
-                                        <input atp-time-picker changetominutes="true" type="time"
-                                          value="{{dayProfiles[0].startDate}}">
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                        End Date:
-                                        <input atp-time-picker changetominutes="true" type="time"
-                                          value="{{dayProfiles[0].endDate}}">
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
-                                    'card-header-default' : dayProfiles[4].status == 0,
-                                    'card-header-warning' : dayProfiles[4].status == 2 }">
-                                    <div class="card-icon">
-                                      TUE
-                                    </div>
-                                  </div>
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            Start Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[1].startDate}}">
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            End Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[1].endDate}}">
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
-                                    'card-header-default' : dayProfiles[4].status == 0,
-                                    'card-header-warning' : dayProfiles[4].status == 2 }">
-                                    <div class="card-icon">
-                                      WED
-                                    </div>
-                                  </div>
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            Start Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[2].startDate}}">
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            End Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[2].endDate}}">
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
-                                    'card-header-default' : dayProfiles[4].status == 0,
-                                    'card-header-warning' : dayProfiles[4].status == 2 }">
-                                    <div class="card-icon">
-                                      THU
-                                    </div>
-                                  </div>
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            Start Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[3].startDate}}">
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            End Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[3].endDate}}">
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-header card-header-icon" [ngClass]="{
-                                      'card-header-success' : dayProfiles[4].status == 1, 
-                                      'card-header-default' : dayProfiles[4].status == 0,
-                                      'card-header-warning' : dayProfiles[4].status == 2  }">
-                                    <div class="card-icon">
-                                      FRI
-                                    </div>
-                                  </div>
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            Start Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[4].startDate}}">
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            End Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[4].endDate}}">
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
-                                    'card-header-default' : dayProfiles[4].status == 0,
-                                    'card-header-warning' : dayProfiles[4].status == 2  }">
-                                    <div class="card-icon">
-                                      SAT
-                                    </div>
-                                  </div>
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            Start Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[5].startDate}}">
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            End Date:
-                                            <input atp-time-picker changetominutes="true" type="time"
-                                              value="{{dayProfiles[5].endDate}}">
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col">
-                                <div class="card">
-                                  <div class="card-header card-header-icon" [ngClass]="{'card-header-success' : dayProfiles[4].status == 1, 
-                                    'card-header-default' : dayProfiles[4].status == 0,
-                                    'card-header-warning' : dayProfiles[4].status == 2 }">
-                                    <div class="card-icon">
-                                      SUN
-                                    </div>
-                                  </div>
-                                  <div class="card-body">
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            Start Date:
-                                            <input atp-time-picker id="sunstart" changetominutes="true" type="time"
-                                              value="{{dayProfiles[6].startDate}}">
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-12">
-                                            End Date:
-                                            <input atp-time-picker id="sunend" changetominutes="true" type="time"
-                                              value="{{dayProfiles[6].endDate}}">
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </ng-container>
-                          <div class="row">
-                            <div class="col text-right">
-                              <button class="btn btn-info" (click)="saveTimeProfile()">Save</button>
-                            </div>
+                        <div class="col">
+                          <div *ngIf="selectedProfile">
+                            <app-time-profile [selectedProfile]="selectedProfile" [profilePanelId]="'profilePanel'">
+                            </app-time-profile>
                           </div>
                         </div>
                       </div>
