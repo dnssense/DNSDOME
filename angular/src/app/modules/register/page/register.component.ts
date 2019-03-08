@@ -1,26 +1,15 @@
 import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { FormBuilder, AbstractControl } from '@angular/forms';
-import { PasswordValidation } from './password-validator.component';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { CompileTemplateMetadata } from '@angular/compiler';
-import { Router } from '@angular/router';
-import { User } from 'src/app/core/models/User';
-import { first } from 'rxjs/operators';
-import { vld } from 'validator';
+import { FormBuilder } from '@angular/forms';
 import { ConfigService } from 'src/app/core/services/config.service';
 import * as countryList from "src/app/core/models/Countries";
 import * as phoneNumberCodesList from "src/app/core/models/PhoneNumberCodes";
 import { SignupBean } from 'src/app/core/models/SignupBean';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { Company } from 'src/app/core/models/Company';
-import { environment } from 'src/environments/environment';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { OperationResult } from 'src/app/core/models/OperationResult';
-import { Observable } from 'rxjs/Observable';
-import { Headers, Http, RequestOptions } from '@angular/http';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 
 
@@ -41,7 +30,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   public _serviceURL = this.config.getApiUrl() + "/signup/";
   private toggleButton: any;
   private sidebarVisible: boolean;
-  private nativeElement: Node;
   matcher = new MyErrorStateMatcher();
   isFailed: boolean;
   registerForm: FormGroup;
@@ -56,8 +44,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   public captcha: string;
   public captcha_key: string;
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
-  public company: string = 'roksit';
-  public companyLogo: string = 'roksit_logo_small.png';
+  public company: string = 'dnssense';
+  public companyLogo: string = 'dnssense_logo_small.png';
 
   emailFormControl = new FormControl('', [
     Validators.required,
@@ -67,10 +55,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   validPasswordRegister: true | false;
   public usageType: boolean = true;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
-    private element: ElementRef, private config: ConfigService, private notification: NotificationService) {
+  constructor(private formBuilder: FormBuilder, private element: ElementRef, private config: ConfigService, private notification: NotificationService) {
     this.isFailed = false;
-    this.nativeElement = element.nativeElement;
     this.sidebarVisible = false;
 
     this.createRegisterForm();
@@ -79,7 +65,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   createRegisterForm() {
     const number = `[0-9]+`;
-    const site = `(http(s)?://)?([\\w-]+\\.)+[\\w-]+(/[\\w- ;,./?%&=]*)?`;
 
     this.registerForm =
       this.formBuilder.group({
@@ -124,7 +109,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   sidebarToggle() {
     const toggleButton = this.toggleButton;
     const body = document.getElementsByTagName('body')[0];
-    const sidebar = document.getElementsByClassName('navbar-collapse')[0];
     if (this.sidebarVisible === false) {
       setTimeout(function () {
         toggleButton.classList.add('toggled');

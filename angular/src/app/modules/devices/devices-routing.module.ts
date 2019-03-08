@@ -14,8 +14,7 @@ const devicesRoutes: Routes = [
     RouterModule.forChild(devicesRoutes)
   ],
   exports: [
-    RouterModule,
-
+    RouterModule
   ]
 })
 export class DevicesRoutingModule { }

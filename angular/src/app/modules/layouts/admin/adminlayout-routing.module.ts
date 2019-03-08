@@ -5,8 +5,6 @@ import { AdminLayoutComponent } from './page/adminlayout.component';
 import { AuthGuard } from 'src/app/core/guards/AuthGuard';
 
 
-
-
 const adminlayoutRoutes: Routes = [
   {
     path: 'admin',
@@ -24,6 +22,12 @@ const adminlayoutRoutes: Routes = [
     },{
       path: 'devices',
       loadChildren: '../../devices/devices.module#DevicesModule'
+    },{
+      path: 'publicip',
+      loadChildren: '../../publicip/publicip.module#PublicipModule'
+    },{
+      path: 'profiles',
+      loadChildren: '../../securityprofiles/securityprofiles.module#SecurityProfilesModule'
     }]
     /*,{
      path:'',
@@ -32,7 +36,6 @@ const adminlayoutRoutes: Routes = [
 
    ]*/
   }
-
 
 ];
 

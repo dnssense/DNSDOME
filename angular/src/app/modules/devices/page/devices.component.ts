@@ -7,9 +7,7 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { TimeProfileResponse } from 'src/app/core/models/TimeProfileResponse';
 import { CollectiveBlockRequest } from 'src/app/core/models/CollectiveBlockRequest';
 import { CollectiveCategory } from 'src/app/core/models/CollectiveCategory';
-import { DayProfile } from 'src/app/core/models/DayProfile';
 import { DayProfileGroup } from 'src/app/core/models/DayProfileGroup';
-import { TimeProfileViewModel } from 'src/app/core/models/TimeProfileViewModel';
 
 declare var $: any;
 
@@ -31,8 +29,6 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     deviceForm: FormGroup;
     collectiveBlockReq: CollectiveBlockRequest = new CollectiveBlockRequest();
     selectedProfile: DayProfileGroup;
-
-
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService) {
 
@@ -60,6 +56,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
             'has-feedback': this.isFieldValid(form, field)
         };
     }
+    
     ngOnInit() {
 
         this.deviceForm =

@@ -4,8 +4,8 @@ export const environment = {
   environment: 'prod',
   BACKEND_API_ROOT_URL: 'https://management.dnssense.com/services',
   API_CAPTCHA_KEY: '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58',
-  COMPANY: 'roksit',
-  COMPANY_LOGO: 'roksit_logo_small.png',
+  COMPANY: 'dnssense',
+  COMPANY_LOGO: 'dnssense_logo_small.png',
 };
 
 

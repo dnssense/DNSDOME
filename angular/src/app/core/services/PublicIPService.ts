@@ -1,0 +1,116 @@
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs/Rx";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ConfigService } from './config.service';
+import { PublicIP } from '../models/PublicIP';
+
+
+@Injectable({ providedIn: 'root' })
+export class PublicIPService {
+
+  public _agentsListURL = this.config.getApiUrl() + '/mylocations/agent-list';
+  public _locationsListURL = this.config.getApiUrl() + '/mylocations/location-list';
+  public _appUserProfilesListURL = this.config.getApiUrl() + '/application-profiles/profile-list';
+  public _domainProfilesListURL = this.config.getApiUrl() + '/domain-profiles/profile-list';
+  public _agentDeleteURL = this.config.getApiUrl() + '/mylocations/delete';
+  public _agentUpdateURL = this.config.getApiUrl() + '/mylocations/update';
+  public _agentSaveURL = this.config.getApiUrl() + '/mylocations/save';
+
+
+  constructor(private http: HttpClient, private config: ConfigService) {
+
+  }
+
+  public getAgents() {
+    return this.http.get(this._agentsListURL).map(res => res);
+  }
+
+  public getPublicIPs(): Observable<PublicIP[]> {
+    return this.http.get<PublicIP[]>(this._locationsListURL).map(res => res);
+  }
+
+  public getAppUserProfiles() {
+    return this.http.get(this._appUserProfilesListURL).map(res => res);
+  }
+
+  public getDomainProfiles() {
+    return this.http.get(this._domainProfilesListURL).map(res => res);
+  }
+
+  public save(agent: PublicIP): Observable<any> {
+    debugger;
+    /*
+    fatihin commenti
+     for (let ip of agent.agentIpGroups){
+     ip.initIpBlocks();
+     ip.ips=null;
+     //todo . burda valuyu düzenlemen gerkeebilir..Burda agentip groups u basacaz...
+     }
+     */
+    let body = JSON.stringify(agent, null, ' ');
+
+    return this.http.post(this._agentSaveURL, body, this.getOptions()).map(res => res);
+  }
+
+
+  public delete(agent: Location): Observable<any> {
+
+    let body = JSON.stringify(agent, null, ' ');
+   
+
+    return this.http.post(this._agentDeleteURL, body, this.getOptions()).map(res => res);
+  }
+
+  private getOptions() {
+    let options = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json; charset=utf8', 'Accept':'application/json' })
+    }
+
+    return options;
+  }
+
+  public getRangeOrSubnetMask(type: number, mask: number) {
+    //type==1: mask to range 
+    //type==2: range to mask
+    if (type == 1) {
+      if (mask == 255) {
+        return 24;
+      } else if (mask == 127) {
+        return 25;
+      } else if (mask == 63) {
+        return 26;
+      } else if (mask == 31) {
+        return 27;
+      } else if (mask == 15) {
+        return 28;
+      } else if (mask == 7) {
+        return 29;
+      } else if (mask == 3) {
+        return 30;
+      } else {
+        return 32;
+      }
+    } else {
+      if (mask == 24) {
+        return 255;
+      } else if (mask == 25) {
+        return 127;
+      } else if (mask == 26) {
+        return 63;
+      } else if (mask == 27) {
+        return 31;
+      } else if (mask == 28) {
+        return 15;
+      } else if (mask == 29) {
+        return 7;
+      } else if (mask == 30) {
+        return 3;
+      } else {
+        return 0;
+      }
+    }
+  }
+
+}
+
+

@@ -31,13 +31,6 @@ export interface ChildrenItems {
 
 //Menu Items
 export const ROUTES: RouteInfo[] = [
-    // {
-    //     path: '/admin/devices',
-    //     title: 'Devices',
-    //     type: 'link',
-    //     icontype: 'select_all',
-    //     role: 'ROLE_CUSTOMER'
-    // },
     {
         path: '/admin/dashboard',
         title: 'Dashboard',
@@ -53,13 +46,14 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/admin',
-        title: 'Security',
+        title: 'Settings',
         type: 'sub',
         icontype: 'settings',
         role: 'ROLE_CUSTOMER',
         collapse: 'settings',
         children: [
-            { path: 'publicIp', title: 'Public IP', ab: 'PI' },
+            { path: 'profiles', title: 'Security Profiles', ab: 'SP' },
+            { path: 'publicip', title: 'Public IP', ab: 'PI' },
             { path: 'devices', title: 'Local Devices', ab: 'LD' },
             { path: 'roaming', title: 'Roaming Clients', ab: 'RC' }
         ]

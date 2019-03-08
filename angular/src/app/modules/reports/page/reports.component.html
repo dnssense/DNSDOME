@@ -1,5 +1,5 @@
 <div class="main-content">
-  <div class="container-fluid col-md-10">
+  <div class="container-fluid col-md-11">
     <div class="row">
       <form [formGroup]="searchForm" class="form-horizontal card" (ngSubmit)="search()">
         <div class="col-md-12">
@@ -61,7 +61,7 @@
             <div class="col-md-2">
               <legend>Top</legend>
               <nouislider [connect]="true" formControlName="slider" [min]="0" [max]="500" [step]="10" [(ngModel)]="topSlider"
-                [tooltips]="true" class="slider ml-3">
+                [tooltips]="true" class="slider ml-3" >
               </nouislider>
             </div>
             <div class="col-md-2">

@@ -47,8 +47,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
             "-time: " + this.time + 
             "-refreshOff: " + this.refreshOff);
     }
-
-
+     
 
 
 

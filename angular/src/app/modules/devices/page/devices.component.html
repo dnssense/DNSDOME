@@ -76,22 +76,13 @@
                 <table class="table">
                   <thead class="text-success">
                     <tr>
-                      <th>Agent Id</th>
-                      <th>Security Profile</th>
+                      <th>Agent Id</th> 
                       <th>Register</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let agent of registered">
                       <td>{{agent.agentAlias}}</td>
-                      <td>
-                        <select>
-                          <option>-Select-</option>
-                          <option>AAAA</option>
-                          <option>BBBB</option>
-                          <option>CCCC</option>
-                        </select>
-                      </td>
                       <td class="td-actions text-center">
                         <button mat-raised-button type="button" class="btn btn-danger mr-1"
                           (click)="deleteAgent(agent)">

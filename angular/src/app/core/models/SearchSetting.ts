@@ -10,7 +10,7 @@ export class SearchSetting {
   public name: string = "";
   public refresh: number = -1;
   public dateInterval: string = "5";
-  public type: string = "roksit";
+  public type: string = "dnssense";
   public topNumber: number = 10;
   public query: string;
   public must: ColumnTagInput[] = [];
