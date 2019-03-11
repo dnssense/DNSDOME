@@ -8,6 +8,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { Role } from 'src/app/core/models/Role';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { AlertService } from 'src/app/core/services/alert.service';
+import { Router } from '@angular/router';
 
 declare const $: any;
 
@@ -28,6 +29,16 @@ export interface ChildrenItems {
     ab: string;
     type?: string;
 }
+
+export const ProfileRoutes: RouteInfo[] = [
+    {
+        path: '/admin/accountsettings',
+        title: 'Account Settings',
+        type: 'link',
+        icontype: 'settings',
+        role: 'ROLE_CUSTOMER' 
+    }
+]
 
 //Menu Items
 export const ROUTES: RouteInfo[] = [
@@ -73,9 +84,10 @@ export const ROUTES: RouteInfo[] = [
 })
 export class SidebarComponent implements OnInit {
     public menuItems: any[];
+    public profileMenuItems: any[];
     currentUser: User;
 
-    constructor(private logger: LoggerService, private authService: AuthenticationService,
+    constructor(private authService: AuthenticationService, private router: Router,
         private translator: TranslatorService, private alert: AlertService) {
         this.getUserName();
 
@@ -103,6 +115,8 @@ export class SidebarComponent implements OnInit {
                 )
             );
         }
+
+        this.profileMenuItems= ProfileRoutes;
     }
 
     logout() {

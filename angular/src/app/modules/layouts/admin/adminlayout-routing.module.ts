@@ -28,6 +28,9 @@ const adminlayoutRoutes: Routes = [
     },{
       path: 'profiles',
       loadChildren: '../../securityprofiles/securityprofiles.module#SecurityProfilesModule'
+    },{
+      path: 'accountsettings',
+      loadChildren: '../../accountsettings/accountsettings.module#AccountSettingsModule'
     }]
     /*,{
      path:'',
