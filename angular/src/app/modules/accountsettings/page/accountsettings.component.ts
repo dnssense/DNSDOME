@@ -7,14 +7,17 @@ import { User } from 'src/app/core/models/User';
 import { Company } from 'src/app/core/models/Company';
 import { SignupBean } from 'src/app/core/models/SignupBean';
 import { ErrorStateMatcher } from '@angular/material';
+import { AccountService } from 'src/app/core/services/AccountService';
+import { AlertService } from 'src/app/core/services/alert.service';
+import { CompanyService } from 'src/app/core/services/CompanyService';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-      const isSubmitted = form && form.submitted;
-      return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+        const isSubmitted = form && form.submitted;
+        return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
     }
-  }
-
+}
+declare var $: any;
 @Component({
     selector: 'app-accountsettings',
     templateUrl: 'accountsettings.component.html',
@@ -30,26 +33,28 @@ export class AccountSettingsComponent implements OnInit {
     currentPassword: string;
     validPasswordRegister: true | false;
     matcher = new MyErrorStateMatcher();
+    current2FAPreference: boolean;
 
     public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
 
-    constructor(private formBuilder: FormBuilder, private authService: AuthenticationService) {
+    constructor(private formBuilder: FormBuilder, private authService: AuthenticationService,
+        private accountService: AccountService, private alert: AlertService, private companyService: CompanyService) {
         this.signupUser = new SignupBean();
         this.signupUser.company = new Company();
-        this.signupUser.name = "";
+        this.signupUser.company.name = "";
+        this.companyService.getCompany().subscribe(res => {
+            this.signupUser.company = res; console.log(this.signupUser.company);
+        });
     }
 
     createForms() {
         if (this.authService.currentSession) {
             this.user = this.authService.currentSession.currentUser;
-
+            this.current2FAPreference = this.user.twoFactorAuthentication;
         }
         debugger;
 
-        this.user.company = new Company();
-        this.user.company.name = "";
         const number = `[0-9]+`;
-        this.user.twoFactorAuthentication = true;
         this.userInfoForm =
             this.formBuilder.group({
                 "name": ["", [Validators.required, Validators.minLength(2)]],
@@ -61,10 +66,12 @@ export class AccountSettingsComponent implements OnInit {
 
         this.companyInfoForm =
             this.formBuilder.group({
-                "company": ["", []],
-                "webSite": ["", []],
-                "industry": ["", []],
-                "personnelCount": ["", []]
+                'companyName': ['', [Validators.required, Validators.minLength(3)]],
+                'url': ['', [Validators.minLength(3), ValidationService.domainValidation]],
+                'blockMessage': ['', [Validators.minLength(3)]],
+                'industry': ['', [Validators.required, Validators.minLength(2)]],
+                'personnelCount': ['', [Validators.required, Validators.minLength(2)]],
+                'logo': ['', []]
             });
 
         this.changePasswordForm =
@@ -122,10 +129,91 @@ export class AccountSettingsComponent implements OnInit {
 
     }
 
+    selectFile($event) {
+        var inputValue = $event.target;
+        let file = inputValue.files[0];
+        let reader = new FileReader();
+        let ag = this.signupUser.company;
+        if (typeof file !== 'undefined') {
 
-    userFormSubmit(){}
-    companyFormSubmit(){}
-    changePasswordFormSubmit(){}
+        }
+
+        reader.addEventListener("load", function () {
+            ag.logo = reader.result;
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+
+    userFormSubmit() {
+        if (this.user && this.userInfoForm.dirty && this.userInfoForm.valid) {
+
+            this.accountService.savePersonalSettings(this.user).subscribe(res => {
+                this.user = res.object;
+                if (res.status == 200) {
+                    this.alert.alertSuccessMessage("Operation Successful", "User information updated.");
+                    console.log(res);
+
+                }
+
+            });
+        }
+    }
+
+    companyFormSubmit() {
+        if (!this.signupUser.company || !this.signupUser.company.name || !this.signupUser.company.industry ||
+            !this.signupUser.company.personnelCount || !this.signupUser.company.url || !this.signupUser.company.blockMessage) {
+            return;
+        }
+
+        console.log(this.signupUser.company);
+        this.companyService.save(this.signupUser.company).subscribe(res => {
+            console.log(res);
+            this.alert.alertSuccessMessage("Operation Successful", "Company information updated.");
+            console.log(this.companyService.getCompany());
+
+        });
+
+    }
+
+    changePasswordFormSubmit() {
+        debugger;
+        if (!this.currentPassword || !this.signupUser.password || !this.signupUser.passwordAgain) {
+            return;
+        } else {
+            this.accountService.savePassword(this.currentPassword, this.signupUser.password, this.signupUser.passwordAgain)
+                .subscribe(res => {
+                    console.log(res.message);
+                    console.log(res.status);
+                    if (res.status == 500) {
+                        this.alert.alertWarningAndCancel('Error Occured!', res.message);
+                    } else {
+                        this.alert.alertSuccessMessage("Operation Successful", "Password changed.");
+                    }
+
+                });
+
+        }
+    }
+
+    change2FA() {
+        debugger;
+        if (this.current2FAPreference == this.user.twoFactorAuthentication) {
+            return;
+        } else {
+            this.accountService.save(this.user).subscribe(res => {
+                this.user = res.object;
+                if (res.status == 200) {
+                    this.alert.alertSuccessMessage("Operation Successful", "Two factor authentication updated.");
+                    console.log(res);
+
+                }
+
+            });
+        }
+    }
 
 
 }

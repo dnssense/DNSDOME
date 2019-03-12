@@ -1,296 +1,348 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
     <div class="row">
-      <div class="col-md-6 ml-auto mr-auto">
-        <div class="card">
-          <div class="card-header card-header-icon card-header-info">
-            <div class="card-icon">
-              <i class="material-icons">assignment_ind</i>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12 ml-auto mr-auto">
+            <div class="card">
+              <div class="card-header card-header-icon card-header-info">
+                <div class="card-icon">
+                  <i class="material-icons">assignment_ind</i>
+                </div>
+                <h4 class="card-title ">User Info</h4>
+              </div>
+              <div class="card-body">
+                <form [formGroup]="userInfoForm" (ngSubmit)="userFormSubmit()" class="form-horizontal">
+                  <div class="form-group-sm has-default">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <div class="input-group-prepend" style="width:100%;">
+                            <mat-form-field class="example-full-width">
+                              <input type="text" matInput placeholder="{{'REGISTER.FirstName' | translate}}"
+                                [(ngModel)]="user.name" formControlName="name">
+                              <mat-error *ngIf="userInfoForm.get('name').hasError('required')">
+                                First Name <strong>is Required</strong>
+                              </mat-error>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <div class="input-group-prepend" style="width:100%;">
+                            <mat-form-field class="example-full-width">
+                              <input type="text" matInput placeholder="{{'REGISTER.LastName' | translate}}"
+                                [(ngModel)]="user.surname" formControlName="surname">
+                              <mat-error *ngIf="userInfoForm.get('surname').hasError('required')">
+                                {{'REGISTER.LastName' | translate}} <strong>{{'Required' | translate}}</strong>
+                              </mat-error>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group-sm has-default">
+                    <div class="input-group">
+                      <div class="input-group-prepend" style="width:100%;">
+                        <div class="col-md-4" style="padding-left:0px;">
+                          <mat-form-field>
+                            <mat-select placeholder="GSM Code" [(ngModel)]="user.gsmCode" formControlName="gsmCode">
+                              <mat-option *ngFor="let pc of phoneNumberCodes" [value]="pc.dial_code">
+                                {{pc.name}} ( {{pc.dial_code}} )
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-8" style="padding-right:0px;">
+                          <mat-form-field class="example-full-width has-label">
+                            <input type="tel" #gsm maxlength="10" name="gsm" (keydown)="checkisTelNumber($event)"
+                              placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="user.gsm"
+                              formControlName="gsm">
+                            <mat-hint align="end">{{gsm.value.length}}/ 10</mat-hint>
+                            <app-field-error-display errorMsg="Add a number!">
+                            </app-field-error-display>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group-sm has-default">
+                    <div class="input-group">
+                      <div class="input-group-prepend" style="width:100%;">
+                        <mat-form-field class="example-full-width"
+                          [ngClass]="{'has-success':validEmailRegister===true}">
+                          <input type="email" matInput placeholder="{{'REGISTER.Email' | translate}}"
+                            [(ngModel)]="user.userName" (ngModelChange)="emailValidationRegister($event)"
+                            formControlName="email">
+                          <mat-error *ngIf="userInfoForm.get('email').hasError('email')">
+                            Email is Required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group-sm has-default">
+                    <div class="input-group">
+                      <div class="col-md-12 text-right" style="width:100%;">
+                        <button type="submit" class="btn btn-info btn-sm">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
-            <h4 class="card-title ">User Info</h4>
           </div>
-          <div class="card-body">
-            <form [formGroup]="userInfoForm" (ngSubmit)="userFormSubmit()" class="form-horizontal">
-              <div class="form-group-sm has-default">
-                <div class="row">
-                  <div class="col-md-6">
+        </div>
+        <div class="row">
+          <div class="col-md-12 ml-auto mr-auto">
+            <div class="card">
+              <div class="card-header card-header-icon card-header-success">
+                <div class="card-icon">
+                  <i class="material-icons">fingerprint</i>
+                </div>
+                <h4 class="card-title ">Change Password</h4>
+              </div>
+              <div class="card-body">
+                <form [formGroup]="changePasswordForm" (ngSubmit)="changePasswordFormSubmit()" class="form-horizontal">
+                  <div class="form-group-sm has-default">
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
                         <mat-form-field class="example-full-width">
-                          <input type="text" matInput placeholder="{{'REGISTER.FirstName' | translate}}"
-                            [(ngModel)]="user.name" formControlName="name">
-                          <mat-error *ngIf="userInfoForm.get('name').hasError('required')">
-                            First Name <strong>is Required</strong>
+                          <input type="password" matInput placeholder="Current Password" [(ngModel)]="currentPassword"
+                            formControlName="currentPassword">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group-sm has-default">
+                    <div class="input-group">
+                      <div class="input-group-prepend" style="width:100%;">
+                        <mat-form-field class="example-full-width"
+                          [ngClass]="{'has-success':validPasswordRegister===true}">
+                          <input type="password" matInput placeholder="New Password" [errorStateMatcher]="matcher"
+                            [(ngModel)]="signupUser.password" formControlName="password">
+                          <mat-error *ngIf="changePasswordForm.get('password').hasError('required')">
+                            New Password is <strong>Required!</strong>
                           </mat-error>
                         </mat-form-field>
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="form-group-sm has-default">
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
-                        <mat-form-field class="example-full-width">
-                          <input type="text" matInput placeholder="{{'REGISTER.LastName' | translate}}"
-                            [(ngModel)]="user.surname" formControlName="surname">
-                          <mat-error *ngIf="userInfoForm.get('surname').hasError('required')">
-                            {{'REGISTER.LastName' | translate}} <strong>{{'Required' | translate}}</strong>
+                        <mat-form-field class="example-full-width"
+                          [ngClass]="{'has-success':validPasswordRegister===true}">
+                          <input type="password" matInput placeholder="Confirm New Password"
+                            [errorStateMatcher]="matcher" [(ngModel)]="signupUser.passwordAgain"
+                            formControlName="passwordAgain">
+                          <mat-error *ngIf="changePasswordForm.get('passwordAgain').hasError('required')">
+                            Confirm New Password is <strong>Required!</strong>
                           </mat-error>
                         </mat-form-field>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="input-group-prepend" style="width:100%;">
-                    <div class="col-md-4" style="padding-left:0px;">
-                      <mat-form-field>
-                        <mat-select placeholder="GSM Code" [(ngModel)]="user.gsmCode" formControlName="gsmCode">
-                          <mat-option *ngFor="let pc of phoneNumberCodes" [value]="pc.dial_code">
-                            {{pc.name}} ( {{pc.dial_code}} )
-                          </mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                    </div>
-                    <div class="col-md-8" style="padding-right:0px;">
-                      <mat-form-field class="example-full-width has-label">
-                        <input type="tel" #gsm maxlength="10" name="gsm" (keydown)="checkisTelNumber($event)"
-                          placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="user.gsm"
-                          formControlName="gsm">
-                        <mat-hint align="end">{{gsm.value.length}}/ 10</mat-hint>
-                        <app-field-error-display errorMsg="Add a number!">
-                        </app-field-error-display>
-                      </mat-form-field>
+                  <div class="form-group-sm has-default">
+                    <div class="input-group">
+                      <div class="col-md-12 text-right" style="width:100%;">
+                        <button type="submit" class="btn btn-success btn-sm">Save</button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </form>
               </div>
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="input-group-prepend" style="width:100%;">
-                    <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailRegister===true}">
-                      <input type="email" matInput placeholder="{{'REGISTER.Email' | translate}}"
-                        [(ngModel)]="user.userName" (ngModelChange)="emailValidationRegister($event)"
-                        formControlName="email">
-                      <mat-error *ngIf="userInfoForm.get('email').hasError('email')">
-                        Email is Required
-                      </mat-error>
-                    </mat-form-field>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="col-md-12 text-right" style="width:100%;">
-                    <button type="submit" class="btn btn-info btn-sm">Save</button>
-                  </div>
-                </div>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-6 ml-auto mr-auto">
-        <div class="card">
-          <div class="card-header card-header-icon card-header-warning">
-            <div class="card-icon">
-              <i class="material-icons">business</i>
-            </div>
-            <h4 class="card-title ">Company Info</h4>
-          </div>
-          <div class="card-body">
-            <form [formGroup]="companyInfoForm" (ngSubmit)="companyFormSubmit()" class="form-horizontal">
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="input-group-prepend" style="width:100%;">
-                    <span class="input-group-text">
-                      <i class="material-icons">domain</i>
-                    </span>
-                    <mat-form-field class="example-full-width">
-                      <input type="text" matInput placeholder="{{'REGISTER.FormCompany' | translate}}"
-                        [(ngModel)]="signupUser.company.name" formControlName="company">
-                      <mat-error *ngIf="companyInfoForm.get('company').hasError('required')">
-                        {{'REGISTER.FormCompany' | translate}} <strong>{{'Required' | translate}}</strong>
-                      </mat-error>
-                    </mat-form-field>
-                  </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12 ml-auto mr-auto">
+            <div class="card card-wizard">
+              <div class="card-header card-header-icon card-header-warning">
+                <div class="card-icon">
+                  <i class="material-icons">business</i>
                 </div>
+                <h4 class="card-title ">Company Info</h4>
               </div>
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="input-group-prepend" style="width:100%;">
-                    <span class="input-group-text">
-                      <i class="material-icons">work_outline</i>
-                    </span>
-                    <mat-form-field>
-                      <mat-select placeholder="{{'REGISTER.Industry' | translate}}" name="Industry"
-                        [(ngModel)]="signupUser.industry" formControlName="industry">
-                        <mat-option value="PleaseSpecify">PleaseSpecify</mat-option>
-                        <mat-option value="Cloud Computing/Saas">Cloud Computing/Saas</mat-option>
-                        <mat-option value="Computer HW, SW">Computer HW, SW</mat-option>
-                        <mat-option value="Consumer Goods/Retail">Consumer Goods/Retail</mat-option>
-                        <mat-option value="Ecommerce/Online Advertising">Ecommerce/Online Advertising</mat-option>
-                        <mat-option value="Energy/Utility ">Energy/Utility</mat-option>
-                        <mat-option value="Financial Services/Insurance">Financial Services/Insurance</mat-option>
-                        <mat-option value="Healthcare/Lifesciences/Pharmaceuticals">
-                          Healthcare/Lifesciences/Pharmaceuticals</mat-option>
-                        <mat-option value="ISP / Hosting ">ISP / Hosting</mat-option>
-                        <mat-option value="IT Services">IT Services</mat-option>
-                        <mat-option value="Manufacturing">Manufacturing</mat-option>
-                        <mat-option value="Media/Entertainment">Media/Entertainment</mat-option>
-                        <mat-option value="Professional Services (Legal, Accounting, etc.) ">Professional
-                          Services (Legal,Accounting, etc.)</mat-option>
-                        <mat-option value="Telecommunications">Telecommunications</mat-option>
-                        <mat-option value="University">University</mat-option>
-                        <mat-option value="K12">K-12 Education</mat-option>
-                        <mat-option value="non-profits">Non-Profits</mat-option>
-                        <mat-option value="Other">Other</mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group-sm has-default">
-                <div class="row">
-                  <div class="col-md-6">
+              <div class="card-body">
+                <form [formGroup]="companyInfoForm" (ngSubmit)="companyFormSubmit()" class="form-horizontal">
+                  <div class="form-group-sm has-default">
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
                         <span class="input-group-text">
-                          <i class="material-icons">web</i>
+                          <i class="material-icons">domain</i>
                         </span>
                         <mat-form-field class="example-full-width">
-                          <input type="text" matInput placeholder="{{'REGISTER.WebSite' | translate}}"
-                            [(ngModel)]="signupUser.webSite" formControlName="webSite">
-                          <mat-error *ngIf="companyInfoForm.get('webSite').hasError('required')">
-                            {{'REGISTER.WebSite' | translate}} <strong>{{'Required' | translate}}</strong>
+                          <input type="text" matInput placeholder="Company Name" [(ngModel)]="signupUser.company.name"
+                            formControlName="companyName">
+                          <mat-error *ngIf="companyInfoForm.get('companyName').hasError('required')">
+                            {{'REGISTER.FormCompany' | translate}} <strong>{{'Required' | translate}}</strong>
                           </mat-error>
                         </mat-form-field>
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="form-group-sm has-default">
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
                         <span class="input-group-text">
-                          <i class="material-icons">people_outline</i>
+                          <i class="material-icons">work_outline</i>
                         </span>
                         <mat-form-field>
-                          <mat-select placeholder="{{'REGISTER.PersonnelCount' | translate}}"
-                            [(ngModel)]="signupUser.personnelCount" formControlName="personnelCount">
-                            <mat-option value="PleaseSpecify">{{'PleaseSpecify' | translate}}</mat-option>
-                            <mat-option value="1-50">1-50</mat-option>
-                            <mat-option value="50-99">50-99</mat-option>
-                            <mat-option value="100-249">100-249</mat-option>
-                            <mat-option value="250-499">250-499</mat-option>
-                            <mat-option value="500-999">500-999</mat-option>
-                            <mat-option value="1000-2499">1000-2499</mat-option>
-                            <mat-option value="2500-4999">2500-4999</mat-option>
-                            <mat-option value="5000-9999">5000-9999</mat-option>
-                            <mat-option value="10000-19999">10000-19999</mat-option>
+                          <mat-select placeholder="{{'REGISTER.Industry' | translate}}" name="Industry"
+                            [(ngModel)]="signupUser.company.industry" formControlName="industry">
+                            <mat-option value="PleaseSpecify">PleaseSpecify</mat-option>
+                            <mat-option value="Cloud Computing/Saas">Cloud Computing/Saas</mat-option>
+                            <mat-option value="Computer HW, SW">Computer HW, SW</mat-option>
+                            <mat-option value="Consumer Goods/Retail">Consumer Goods/Retail</mat-option>
+                            <mat-option value="Ecommerce/Online Advertising">Ecommerce/Online Advertising</mat-option>
+                            <mat-option value="Energy/Utility ">Energy/Utility</mat-option>
+                            <mat-option value="Financial Services/Insurance">Financial Services/Insurance</mat-option>
+                            <mat-option value="Healthcare/Lifesciences/Pharmaceuticals">
+                              Healthcare/Lifesciences/Pharmaceuticals</mat-option>
+                            <mat-option value="ISP / Hosting ">ISP / Hosting</mat-option>
+                            <mat-option value="IT Services">IT Services</mat-option>
+                            <mat-option value="Manufacturing">Manufacturing</mat-option>
+                            <mat-option value="Media/Entertainment">Media/Entertainment</mat-option>
+                            <mat-option value="Professional Services (Legal, Accounting, etc.) ">Professional
+                              Services (Legal,Accounting, etc.)</mat-option>
+                            <mat-option value="Telecommunications">Telecommunications</mat-option>
+                            <mat-option value="University">University</mat-option>
+                            <mat-option value="K12">K-12 Education</mat-option>
+                            <mat-option value="non-profits">Non-Profits</mat-option>
+                            <mat-option value="Other">Other</mat-option>
                           </mat-select>
                         </mat-form-field>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="col-md-12 text-right" style="width:100%;">
-                    <button type="submit" class="btn btn-warning btn-sm">Save</button>
+                  <div class="form-group-sm has-default">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <div class="input-group-prepend" style="width:100%;">
+                            <span class="input-group-text">
+                              <i class="material-icons">web</i>
+                            </span>
+                            <mat-form-field class="example-full-width">
+                              <input type="text" matInput placeholder="{{'REGISTER.WebSite' | translate}}"
+                                [(ngModel)]="signupUser.company.url" formControlName="url">
+                              <mat-error *ngIf="companyInfoForm.get('url').hasError('required')">
+                                {{'REGISTER.WebSite' | translate}} <strong>{{'Required' | translate}}</strong>
+                              </mat-error>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <div class="input-group-prepend" style="width:100%;">
+                            <span class="input-group-text">
+                              <i class="material-icons">people_outline</i>
+                            </span>
+                            <mat-form-field>
+                              <mat-select placeholder="{{'REGISTER.PersonnelCount' | translate}}"
+                                [(ngModel)]="signupUser.company.personnelCount" formControlName="personnelCount">
+                                <mat-option value="PleaseSpecify">{{'PleaseSpecify' | translate}}</mat-option>
+                                <mat-option value="1-50">1-50</mat-option>
+                                <mat-option value="50-99">50-99</mat-option>
+                                <mat-option value="100-249">100-249</mat-option>
+                                <mat-option value="250-499">250-499</mat-option>
+                                <mat-option value="500-999">500-999</mat-option>
+                                <mat-option value="1000-2499">1000-2499</mat-option>
+                                <mat-option value="2500-4999">2500-4999</mat-option>
+                                <mat-option value="5000-9999">5000-9999</mat-option>
+                                <mat-option value="10000-19999">10000-19999</mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                  <div class="form-group-sm has-default">
+                    <div class="input-group">
+                      <div class="input-group-prepend" style="width:100%;">
+                        <span class="input-group-text">
+                          <i class="material-icons">block</i>
+                        </span>
+                        <mat-form-field class="example-full-width">
+                          <input type="text" matInput placeholder="Block Message"
+                            [(ngModel)]="signupUser.company.blockMessage" formControlName="blockMessage">
+                          <mat-error *ngIf="companyInfoForm.get('blockMessage').hasError('required')">
+                            Block Message is <strong>Required</strong>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group-sm has-default">
+                    <div class="row justify-content-center">
+                      <div class="col-sm-5 ml-auto mr-auto">
+                        <label class="description">Company Logo</label>
+                      </div>
+                      <div class="col-sm-1 ml-auto mr-auto">
+                        <div class="picture-container">
+                          <div class="picture" style="border-radius:5%; max-width: 80px; max-height: 80px;">
+                            <ng-container *ngIf="signupUser.company.logo; else elseTemplate">
+                              <img src="{{signupUser.company.logo}}" class="picture-src" id="wizardPicturePreview"
+                                title="company logo" />
+                              <input type="file" id="companyLogo" (change)="selectFile($event)" formControlName="logo">
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                              <img src="./assets/img/default-avatar.png" class="picture-src" id="wizardPicturePreview"
+                                title="select logo" />
+                              <input type="file" id="companyLogo" (change)="selectFile($event)" formControlName="logo">
+                            </ng-template>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group-sm has-default">
+                          <div class="input-group">
+                            <div class="col-md-12 text-right" style="width:100%;">
+                              <button type="submit" class="btn btn-warning btn-sm">Save</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6 ml-auto mr-auto">
-        <div class="card">
-          <div class="card-header card-header-icon card-header-success">
-            <div class="card-icon">
-              <i class="material-icons">fingerprint</i>
-            </div>
-            <h4 class="card-title ">Change Password</h4>
-          </div>
-          <div class="card-body">
-            <form [formGroup]="changePasswordForm" (ngSubmit)="changePasswordFormSubmit()" class="form-horizontal">
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="input-group-prepend" style="width:100%;">
-                    <mat-form-field class="example-full-width">
-                      <input type="password" matInput placeholder="Current Password" [(ngModel)]="currentPassword"
-                        formControlName="currentPassword">
-                    </mat-form-field>
-                  </div>
+        <div class="row">
+          <div class="col-md-12 ml-auto mr-auto">
+            <div class="card">
+              <div class="card-header card-header-icon card-header-danger">
+                <div class="card-icon">
+                  <i class="material-icons">lock</i>
                 </div>
+                <h4 class="card-title ">Two Factor Authentication (2FA)</h4>
               </div>
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="input-group-prepend" style="width:100%;">
-                    <mat-form-field class="example-full-width" [ngClass]="{'has-success':validPasswordRegister===true}">
-                      <input type="password" matInput placeholder="New Password" [errorStateMatcher]="matcher"
-                        [(ngModel)]="user.password" formControlName="password">
-                      <mat-error *ngIf="changePasswordForm.get('password').hasError('required')">
-                        New Password is <strong>Required!</strong>
-                      </mat-error>
-                    </mat-form-field>
-                  </div>
+              <div class="card-body">
+                <div class="col-md-6 ml-auto mr-auto form-check ">
+                  <label class="form-check-label">
+                    <input class="form-check-input" (change)="twoFactorAuthentication()" type="checkbox"
+                      value="user.twoFactorAuthentication">
+                    <span class="form-check-sign">
+                      <span class="check"></span>
+                    </span>
+                    Enable two factor Authentication
+                  </label>
                 </div>
-              </div>
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="input-group-prepend" style="width:100%;">
-                    <mat-form-field class="example-full-width" [ngClass]="{'has-success':validPasswordRegister===true}">
-                      <input type="password" matInput placeholder="Confirm New Password" [errorStateMatcher]="matcher"
-                        [(ngModel)]="user.passwordAgain" formControlName="passwordAgain">
-                      <mat-error *ngIf="changePasswordForm.get('passwordAgain').hasError('required')">
-                        Confirm New Password is <strong>Required!</strong>
-                      </mat-error>
-                    </mat-form-field>
+                <div class="form-group-sm has-default">
+                  <div class="input-group">
+                    <div class="col-md-12 text-right" style="width:100%;">
+                      <button type="button" class="btn btn-danger btn-sm" (click)="change2FA()">Save</button>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group-sm has-default">
-                <div class="input-group">
-                  <div class="col-md-12 text-right" style="width:100%;">
-                    <button type="submit" class="btn btn-success btn-sm">Save</button>
-                  </div>
-                </div>
-              </div>
-            </form>
-
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6 ml-auto mr-auto">
-        <div class="card">
-          <div class="card-header card-header-icon card-header-danger">
-            <div class="card-icon">
-              <i class="material-icons">lock</i>
-            </div>
-            <h4 class="card-title ">Two Factor Authentication</h4>
-          </div>
-          <div class="card-body">
-            <br/><br/>
-            <div class="col-md-6 ml-auto mr-auto form-check ">
-              <label class="form-check-label">
-                <input class="form-check-input" (change)="twoFactorAuthentication()" type="checkbox" value="user.twoFactorAuthentication">
-                <span class="form-check-sign">
-                  <span class="check"></span>
-                </span>
-                Enable two factor Authentication
-              </label>
-            </div>
-            <br/><br/><br/>
-
-            <div class="form-group-sm has-default">
-              <div class="input-group">
-                <div class="col-md-12 text-right" style="width:100%;">
-                  <button type="submit" class="btn btn-danger btn-sm">Save</button>
                 </div>
               </div>
             </div>
