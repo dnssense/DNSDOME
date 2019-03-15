@@ -9,27 +9,27 @@ import { Router } from '@angular/router';
 import { Session } from '../models/Session';
 import { LoggerService } from './logger.service';
 import { AuthHttp, JwtHelper, tokenNotExpired } from 'angular2-jwt';
+import { SignupBean } from '../models/SignupBean';
+import { OperationResult } from '../models/OperationResult';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-
   private STORAGENAME = 'currentSession';
-  private loginUrl: string;
-  private refreshTokenUrl: string;
-  private logoutUrl: string;
+  private _forgotPasswordSendURL = this.configuration.getApiUrl() + "/forgotPasswordSend";  
+  private loginUrl = this.configuration.getApiUrl() + '/auth/login';
+  private refreshTokenUrl = this.configuration.getApiUrl() + '/auth/token';
+  private logoutUrl = this.configuration.getApiUrl() + '/auth/logout';
   currentSession: Session;
   private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
 
-  constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService, 
+  constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
     private router: Router, private logger: LoggerService) {
     logger.console('constructor authenticationservice');
-    this.loginUrl = this.configuration.getApiUrl() + '/auth/login';
-    this.logoutUrl = this.configuration.getApiUrl() + '/auth/logout';
-    this.refreshTokenUrl = this.configuration.getApiUrl() + '/auth/token';
+
     this.checkSessionIsValid();
     this.refreshTokenTimer = interval(3000 * 1000);
     this.refreshTokenTimer.subscribe(() => {
@@ -46,11 +46,11 @@ export class AuthenticationService {
         if (!this.jwtHelper.isTokenExpired(session.token)) {
           this.logger.console('token valid');
           this.currentSession = session;
-         // this.logger.console(session.refreshToken);
-         // this.logger.console(session.token);
+          // this.logger.console(session.refreshToken);
+          // this.logger.console(session.token);
         } else {
           this.http.post<any>(this.refreshTokenUrl, {}).subscribe((res: any) => {
-           // debugger;
+            // debugger;
             if (res && res.token) {
               session.token = res.token;
               this.currentSession = session;
@@ -74,19 +74,15 @@ export class AuthenticationService {
   refreshToken() {
     this.logger.console("refreshing token");
     this.http.post<any>(this.refreshTokenUrl, {}).subscribe((res: any) => {
-
       if (res && res.token) {
         this.currentSession.token = res.token;
-
         localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
         this.logger.console(res.refreshToken);
         this.logger.console(res.token);
-
       } else {
 
       }
-
-    })
+    });
 
   }
 
@@ -107,5 +103,14 @@ export class AuthenticationService {
     localStorage.clear();
     this.cookieService.clear();
     this.router.navigateByUrl('/login');
+  }
+
+  forgotPassword(signupBean: SignupBean): Observable<OperationResult> {
+    let options = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+    debugger;
+    return this.http.post<OperationResult>(this._forgotPasswordSendURL, JSON.stringify(signupBean, null, ' '), options)
+    .map(res => res);
   }
 }

@@ -1,107 +1,75 @@
-import {Response, Headers, RequestOptions} from "@angular/http";
-import {Injectable} from "@angular/core";
-import {SearchSetting} from "../models/SearchSetting";
-import {Observable} from "rxjs/Rx";
-import {Dashboard} from "../models/Dashboard";
-import {Constants} from "../../Constants"; 
-import { HttpClient } from '@angular/common/http';
+import { Response, Headers, RequestOptions } from "@angular/http";
+import { Injectable } from "@angular/core";
+import { SearchSetting } from "../models/SearchSetting";
+import { Observable } from "rxjs/Rx";
+import { Dashboard } from "../models/Dashboard";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ConfigService } from './config.service';
 
 /**
  * Created by fatih on 02.08.2016.
  * Edited by abdurrahman on 30.01.2019
  */
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SearchSettingService {
 
-  public _saveSearchSettingURL = Constants.getServerPath() + '/search-settings/save';  // URL to graph api
-  public _saveDashboardSearchSettingURL = Constants.getServerPath() + '/dashboard/save-setting?id=';  // URL to graph api
-  public _savedSearchURL = Constants.getServerPath() + '/search-settings/saved-search?';  // URL to graph api
-  public _ListURL = Constants.getServerPath() + '/search-settings/list';  // URL to graph api
-  public _ListUserURL = Constants.getServerPath() + '/search-settings/list-user-settings';  // URL to graph api
-  public _deleteSearchListURL = Constants.getServerPath() + '/search-settings/delete';  // URL to graph api
-  public _scheduleSearchSettingURL = Constants.getServerPath() + '/search-settings/schedule';  // URL to graph api
+  private _saveSearchSettingURL = this.config.getApiUrl() + '/search-settings/save';
+  private _saveDashboardSearchSettingURL = this.config.getApiUrl() + '/dashboard/save-setting?id=';
+  private _savedSearchURL = this.config.getApiUrl() + '/search-settings/saved-search?';
+  private _ListURL = this.config.getApiUrl() + '/search-settings/list';
+  private _ListUserURL = this.config.getApiUrl() + '/search-settings/list-user-settings';
+  private _deleteSearchListURL = this.config.getApiUrl() + '/search-settings/delete';
+  private _scheduleSearchSettingURL = this.config.getApiUrl() + '/search-settings/schedule';
 
-  public http;
 
-  constructor(http: HttpClient) {
-    this.http = http;
+  constructor(private http: HttpClient, private config: ConfigService) {
+
   }
 
   public openSavedSearch(value: number) {
-    return this.http.post(this._savedSearchURL + "id=" + value).map((res: Response) => res.json())
-      .catch((response: any, caught: any) => {
-       // this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });;
 
+    return this.http.post(this._savedSearchURL + "id=" + value, null).map(res => res);
   }
 
-  public listSavedSearchSettings() {
-    return this.http.post(this._ListURL).map((res: Response) => res.json())
-      .catch((response: any, caught: any) => {
-        //this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });;
-
+  public listSavedSearchSettings(): Observable<any> {
+    return this.http.get(this._ListURL).map(res => res);
   }
 
   public listUserSavedSearchSettings() {
-    return this.http.post(this._ListUserURL).map((res: Response) => res.json())
-      .catch((response: any, caught: any) => {
-        //this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });;
-
+    return this.http.get(this._ListUserURL).map(res => res);
   }
 
-  public saveSearchSetting(searchSetting: SearchSetting): Observable<Object> {
+  public saveSearchSetting(searchSetting: SearchSetting): Observable<any> {
     let body = JSON.stringify(searchSetting);
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
 
-    return this.http.post(this._saveSearchSettingURL, body, options).map(res => res.json())
-      .catch((response: any, caught: any) => {
-      //  this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });;
-
+    return this.http.post(this._saveSearchSettingURL, body, this.getOptions()).map(res => res);
   }
 
-  public scheduleSearchSetting(searchSetting: SearchSetting): Observable<Object> {
+  public scheduleSearchSetting(searchSetting: SearchSetting): Observable<any> {
     let body = JSON.stringify(searchSetting);
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
 
-    return this.http.post(this._scheduleSearchSettingURL, body, options).map(res => res.json())
-      .catch((response: any, caught: any) => {
-       // this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });;
+    return this.http.post(this._scheduleSearchSettingURL, body, this.getOptions()).map(res => res);
   }
 
-  public saveDashboardSearchSetting(dashboard: Dashboard, searchSetting: SearchSetting): Observable<Object> {
-    let body = JSON.stringify(searchSetting);
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
+  public saveDashboardSearchSetting(dashboard: Dashboard, searchSetting: SearchSetting): Observable<any> {
+    let body = JSON.stringify(searchSetting, null, ' ');
 
-    return this.http.post(this._saveDashboardSearchSettingURL + dashboard.id, body, options).map(res => res.json())
-      .catch((response: any, caught: any) => {
-      //  this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });;
+    return this.http.post(this._saveDashboardSearchSettingURL + dashboard.id, body, this.getOptions()).map(res => res);
   }
 
-  public deleteSearchSetting(searchSetting: SearchSetting): Observable<Object> {
-    let body = JSON.stringify(searchSetting);
-    let headers = new Headers({'Content-Type': 'application/json'});
-    let options = new RequestOptions({headers: headers});
+  public deleteSearchSetting(searchSetting: SearchSetting): Observable<any> {
+    let body = JSON.stringify(searchSetting, null, ' ');
 
-    return this.http.post(this._deleteSearchListURL, body, options).map(res => res.json())
-      .catch((response: any, caught: any) => {
-      //  this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });;
+    return this.http.post(this._deleteSearchListURL, body, this.getOptions()).map(res => res);
+  }
+
+  getOptions() {
+    let options = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json;' })
+    }
+
+    return options;
   }
 
 }

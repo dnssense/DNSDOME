@@ -39,8 +39,9 @@ export class AccountService {
   }
 
   public savePersonalSettings(user: User): Observable<OperationResult> {
-
-    return this.http.post<OperationResult>(this._savePersonalSettingURL, JSON.stringify(user, null, ' '), this.getOptions()).map(res => res);
+let body = JSON.stringify(user, null, ' ');
+debugger;
+    return this.http.post<OperationResult>(this._savePersonalSettingURL, body, this.getOptions()).map(res => res);
   }
 
   public getCurrentUser(): Observable<User> {

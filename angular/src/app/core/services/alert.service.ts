@@ -23,6 +23,15 @@ export class AlertService {
     }).catch(swal.noop)
   }
 
+  alertBasicError(title: string) {
+    swal({
+      type: 'warning',
+      title: title,
+      buttonsStyling: false,
+      confirmButtonClass: "btn btn-success"
+    }).catch(swal.noop)
+  }
+
   alertTitleAndText(title: string, message: string) {
     swal({
       title: title,
@@ -69,7 +78,7 @@ export class AlertService {
       text: message,
       type: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Okey',
+      confirmButtonText: 'OK',
       cancelButtonText: 'Cancel',
       confirmButtonClass: "btn btn-success",
       cancelButtonClass: "btn btn-danger",

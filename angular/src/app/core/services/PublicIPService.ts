@@ -3,6 +3,8 @@ import { Observable } from "rxjs/Rx";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { PublicIP } from '../models/PublicIP';
+import { WAgentIpGroup } from '../models/WAgentIpGroup';
+import { OperationResult } from '../models/OperationResult';
 
 
 @Injectable({ providedIn: 'root' })
@@ -37,28 +39,28 @@ export class PublicIPService {
     return this.http.get(this._domainProfilesListURL).map(res => res);
   }
 
-  public save(agent: PublicIP): Observable<any> {
-    debugger;
-    /*
-    fatihin commenti
-     for (let ip of agent.agentIpGroups){
-     ip.initIpBlocks();
-     ip.ips=null;
-     //todo . burda valuyu düzenlemen gerkeebilir..Burda agentip groups u basacaz...
-     }
-     */
+  public save(agent: PublicIP): Observable<OperationResult> {
+    
+    agent.agentIpGroups = [];
+    for (let i = 0; i < agent.ips.length; i++) {
+      const ip = agent.ips[i];
+      let nip = [Number(ip[0]), Number(ip[1]), Number(ip[2]), Number(ip[3]), Number(ip[4])];
+      let g: WAgentIpGroup = new WAgentIpGroup();
+      g.initIpBlocks();
+      g.ips = nip;
+      agent.agentIpGroups.push(g);      
+    }
     let body = JSON.stringify(agent, null, ' ');
 
-    return this.http.post(this._agentSaveURL, body, this.getOptions()).map(res => res);
+    return this.http.post<OperationResult>(this._agentSaveURL, body, this.getOptions()).map(res => res);
   }
 
 
-  public delete(agent: Location): Observable<any> {
+  public delete(agent: PublicIP): Observable<OperationResult> {
 
-    let body = JSON.stringify(agent, null, ' ');
-   
+    let body = JSON.stringify(agent, null, ' ');   
 
-    return this.http.post(this._agentDeleteURL, body, this.getOptions()).map(res => res);
+    return this.http.post<OperationResult>(this._agentDeleteURL, body, this.getOptions()).map(res => res);
   }
 
   private getOptions() {
