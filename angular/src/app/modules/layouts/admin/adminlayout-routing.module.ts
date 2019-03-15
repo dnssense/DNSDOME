@@ -31,6 +31,9 @@ const adminlayoutRoutes: Routes = [
     },{
       path: 'accountsettings',
       loadChildren: '../../accountsettings/accountsettings.module#AccountSettingsModule'
+    },{
+      path: 'scheduledreports',
+      loadChildren: '../../scheduledreports/scheduledreports.module#ScheduledReportsModule'
     }]
     /*,{
      path:'',

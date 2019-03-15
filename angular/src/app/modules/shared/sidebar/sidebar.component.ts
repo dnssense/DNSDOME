@@ -37,6 +37,13 @@ export const ProfileRoutes: RouteInfo[] = [
         type: 'link',
         icontype: 'settings',
         role: 'ROLE_CUSTOMER' 
+    },
+    {
+        path: '/admin/scheduledreports',
+        title: 'Scheduled Reports',
+        type: 'link',
+        icontype: 'settings',
+        role: 'ROLE_CUSTOMER' 
     }
 ]
 

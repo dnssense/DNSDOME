@@ -22,9 +22,14 @@
             </a>
             <div class="collapse" id="collapseExample">
                 <ul class="nav">
-                    <li routerLinkActive="active" *ngFor="let menuitem of profileMenuItems" class="nav-item">
+                    <li routerLinkActive="active" *ngFor="let menuitem of profileMenuItems; index as ind;" class="nav-item">
                         <a [routerLink]="[menuitem.path]" *ngIf="menuitem.type === 'link'" class="nav-link">
-                            <i class="material-icons">{{menuitem.icontype}}</i>
+                            <ng-container *ngIf="ind==0; else elseTemplate">
+                                <span class="sidebar-mini">AS</span>    
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                                <span class="sidebar-mini">SP</span>
+                            </ng-template>
                             <p>{{menuitem.title}}</p>
                         </a>
                     </li>

@@ -1,0 +1,245 @@
+<div class="main-content">
+  <div class="container-fluid col-md-11">
+    <section id="listPanel" class="listPanel" F>
+      <div class="row">
+        <div class="col-md-6 ml-auto mr-auto">
+          <div class="card">
+            <div class="card-header card-header-icon card-header-info">
+              <div class="card-icon">
+                <i class="material-icons">select_all</i>
+              </div>
+              <h4 class="card-title ">System Reports</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="text-success">
+                    <tr>
+                      <th>Name</th>
+                      <th>Scheduled</th>
+                      <th>Operations</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let row of systemReports">
+                      <td>{{row.name}}</td>
+                      <td>
+                        <ng-container
+                          *ngIf="row.scheduledReport && row.scheduledReport.format=='PDF'; else elseTemplate">
+                          <i class="fa fa-2x fa-file-pdf-o" style="color:green;" aria-hidden="true"></i>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                          <i class="material-icons" style="color:red;">close</i>
+                        </ng-template>
+
+                      </td>
+                      <td>
+                        <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
+                          mattooltip="Edit item" (click)="showEditWizard('system',row.id)">
+                          <i class="material-icons">edit</i>
+                        </button>
+                        <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
+                          mattooltip="Delete item" (click)="deletePublicIp(row.id)">
+                          <i class="material-icons">close</i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="systemReports==null || systemReports.length==0">
+                      <td colspan="3" class="text-warning">No Data</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 ml-auto mr-auto">
+          <div class="card">
+            <div class="card-header card-header-icon card-header-success">
+              <div class="card-icon">
+                <i class="material-icons">all_inbox</i>
+              </div>
+              <h4 class="card-title ">User Reports</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive" style="max-height: 800px;">
+                <table class="table">
+                  <thead class="text-success">
+                    <tr>
+                      <th>Name</th>
+                      <th>Scheduled</th>
+                      <th>Operations</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let row of userReports">
+                      <td>{{row.name}}</td>
+                      <td>
+                        <ng-container
+                          *ngIf="row.scheduledReport && row.scheduledReport.format=='PDF'; else elseTemplate">
+                          <i class="fa fa-2x fa-file-pdf-o" style="color:green;" aria-hidden="true"></i>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                          <i class="material-icons" style="color:red;">close</i>
+                        </ng-template>
+                      </td>
+                      <td>
+                        <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
+                          mattooltip="Edit item" (click)="showEditWizard('user',row.id)">
+                          <i class="material-icons">edit</i>
+                        </button>
+                        <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
+                          mattooltip="Delete item" (click)="deletePublicIp(row.id)">
+                          <i class="material-icons">close</i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="userReports==null || userReports.length==0">
+                      <td colspan="3" class="text-warning">No Data</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="wizardPanel" class="wizardPanel" style="display: none;">
+      <div class="row">
+        <div class="col-md-12">
+          <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
+            <i class="material-icons">arrow_back</i>
+          </button>
+          <div class="wizard-container">
+            <div class="card card-wizard" data-color="blue" id="wizardProfile">
+              <form [formGroup]="reportForm" action="" method="">
+                <div class="card-header text-center">
+                  <h3 class="card-title">
+                    <div class="row">
+                      <div class="col-md-4"></div>
+                      <div class="col-md-4 text-center input-group form-control-lg">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="material-icons">face</i>
+                          </span>
+                        </div>
+                        <mat-form-field>
+                          <input type="text" name="reportName" matInput id="text" placeholder="Report Name"
+                            [(ngModel)]="selectedReport.name" formControlName="reportName">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4"></div>
+                    </div>
+                  </h3>
+                </div>
+                <div class="wizard-navigation">
+                  <ul class="nav nav-pills">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="contentLink" href="#content" data-toggle="tab" role="tab">
+                        Report Details
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="content">
+                      <div class="row justify-content-center">
+                        <div class="col-md-12">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <mat-form-field>
+                                <mat-select placeholder="Result Count" formControlName="topNumber"
+                                  [(ngModel)]="selectedReport.topNumber">
+                                  <mat-option [value]="5">5</mat-option>
+                                  <mat-option [value]="10">10</mat-option>
+                                  <mat-option [value]="15">15</mat-option>
+                                  <mat-option [value]="20">20</mat-option>
+                                  <mat-option [value]="30">30</mat-option>
+                                  <mat-option [value]="50">50</mat-option>
+                                  <mat-option [value]="100">100</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                              <mat-form-field>
+                                <mat-select placeholder="Time Interval" formControlName="dateInterval"
+                                  [(ngModel)]="selectedReport.dateInterval">
+                                  <mat-option value="5">Last 5 Minutes</mat-option>
+                                  <mat-option value="10">Last 10 Minutes</mat-option>
+                                  <mat-option value="15">Last 15 Minutes</mat-option>
+                                  <mat-option value="30">Last 30 Minutes</mat-option>
+                                  <mat-option value="60">Last 1 Hours</mat-option>
+                                  <mat-option value="120">Last 2 Hours</mat-option>
+                                  <mat-option value="180">Last 3 Hours</mat-option>
+                                  <mat-option value="360">Last 6 Hours</mat-option>
+                                  <mat-option value="720">Last 12 Hours</mat-option>
+                                  <mat-option value="1440">Last 24 Hours</mat-option>
+                                  <mat-option value="2880">Last 2 Days</mat-option>
+                                  <mat-option value="10080">Last 7 Days</mat-option>
+                                  <mat-option value="43200">Last 30 Days</mat-option>
+                                  <mat-option value="-1">Custom Range</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                              <mat-form-field>
+                                <mat-select placeholder="Refresh" formControlName="refresh"
+                                  [(ngModel)]="selectedReport.refresh">
+                                  <mat-option [value]="-1">Refresh Off</mat-option>
+                                  <mat-option [value]="30">30 Seconds</mat-option>
+                                  <mat-option [value]="60">60 Seconds</mat-option>
+                                  <mat-option [value]="180">3 Minutes</mat-option>
+                                  <mat-option [value]="300">5 Minutes</mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="togglebutton">
+                                <label>Send As Email
+                                  <ng-container *ngIf="selectedReport.scheduledReport; else elseTemplate">
+                                    <input type="checkbox" checked (change)="manageScheduling()">
+                                    <span class="toggle"></span> On
+                                  </ng-container>
+                                  <ng-template #elseTemplate>
+                                    <input type="checkbox" (change)="manageScheduling()">
+                                    <span class="toggle"></span> Off
+                                  </ng-template>
+                                </label>
+                              </div>
+                              <div *ngIf="selectedReport.scheduledReport">
+                                <mat-form-field>
+                                  <mat-select placeholder="Format" formControlName="format"
+                                    [(ngModel)]="selectedReport.scheduledReport.format">
+                                    <mat-option value="PDF">PDF</mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                                <mat-form-field>
+                                  <mat-select placeholder="Period" formControlName="period"
+                                    [(ngModel)]="selectedReport.scheduledReport.period">
+                                    <mat-option value="d">Daily</mat-option>
+                                    <mat-option value="w">Weekly</mat-option>
+                                    <mat-option value="m">Monthly</mat-option>
+                                    <mat-option value="h">Hourly</mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="ml-auto">
+                    <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" id="finish" name="finish"
+                      value="Save" (click)="saveReport()" style="display: none;">
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
