@@ -161,7 +161,7 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12 ml-auto mr-auto">
-            <div class="card card-wizard">
+            <div class="card">
               <div class="card-header card-header-icon card-header-warning">
                 <div class="card-icon">
                   <i class="material-icons">business</i>
@@ -238,7 +238,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-5">
+                      <div class="col-md-6">
                         <div class="input-group">
                           <div class="input-group-prepend" style="width:100%;">
                             <span class="input-group-text">
@@ -282,32 +282,27 @@
                   </div>
                   <div class="form-group-sm has-default">
                     <div class="row justify-content-center">
-                      <div class="col-sm-5 ml-auto mr-auto">
+                      <div class="col-sm-5 text-right">
                         <label class="description">Company Logo</label>
                       </div>
-                      <div class="col-sm-1 ml-auto mr-auto">
+                      <div class="col-sm-2 ml-auto mr-auto  card-wizard" style="min-height: 20px; box-shadow: none;">
                         <div class="picture-container">
-                          <div class="picture" style="border-radius:5%; max-width: 80px; max-height: 80px;">
+                          <div class="picture" style="border-radius:5%;  max-width: 80px; max-height: 80px; ">
                             <ng-container *ngIf="signupUser.company.logo; else elseTemplate">
                               <img src="{{signupUser.company.logo}}" class="picture-src" id="wizardPicturePreview"
                                 title="company logo" />
-                              <input type="file" id="companyLogo" (change)="selectFile($event)" formControlName="logo">
                             </ng-container>
                             <ng-template #elseTemplate>
                               <img src="./assets/img/default-avatar.png" class="picture-src" id="wizardPicturePreview"
                                 title="select logo" />
-                              <input type="file" id="companyLogo" (change)="selectFile($event)" formControlName="logo">
                             </ng-template>
+                            <input type="file" id="companyLogo" (change)="selectFile($event)" formControlName="logo">
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-6">
-                        <div class="form-group-sm has-default">
-                          <div class="input-group">
-                            <div class="col-md-12 text-right" style="width:100%;">
-                              <button type="submit" class="btn btn-warning btn-sm">Save</button>
-                            </div>
-                          </div>
+                      <div class="col-md-5 d-flex align-items-end">
+                        <div class="ml-auto">
+                          <button type="submit" class="btn btn-warning btn-sm">Save</button>
                         </div>
                       </div>
                     </div>
@@ -327,21 +322,18 @@
                 <h4 class="card-title ">Two Factor Authentication (2FA)</h4>
               </div>
               <div class="card-body">
-                <div class="col-md-6 ml-auto mr-auto form-check ">
-                  <label class="form-check-label">
-                    <input class="form-check-input" (change)="twoFactorAuthentication()" type="checkbox"
-                      value="user.twoFactorAuthentication">
-                    <span class="form-check-sign">
-                      <span class="check"></span>
-                    </span>
-                    Enable two factor Authentication
-                  </label>
-                </div>
-                <div class="form-group-sm has-default">
-                  <div class="input-group">
-                    <div class="col-md-12 text-right" style="width:100%;">
-                      <button type="button" class="btn btn-danger btn-sm" (click)="change2FA()">Save</button>
-                    </div>
+                <div class="col-md-6 ml-auto mr-auto mb-5 mt-4">
+                  <div class="togglebutton">
+                    <label>Enable two factor Authentication
+                      <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate">
+                        <input type="checkbox" checked (change)="change2FASubmit()">
+                        <span class="toggle"></span> On
+                      </ng-container>
+                      <ng-template #elseTemplate>
+                        <input type="checkbox" (change)="change2FASubmit()">
+                        <span class="toggle"></span> Off
+                      </ng-template>
+                    </label>
                   </div>
                 </div>
               </div>
