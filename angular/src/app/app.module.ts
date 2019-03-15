@@ -26,6 +26,7 @@ import { DashBoardService } from './core/services/DashBoardService';
 import { SearchSettingService } from './core/services/SearchSettingService';
 import { FastReportService } from './core/services/FastReportService';
 import { CustomReportService } from './core/services/CustomReportService';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { CustomReportService } from './core/services/CustomReportService';
     BsModalService,
     DashBoardService,
     NotificationService,
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
     {
       provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true
     },
