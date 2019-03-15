@@ -22,7 +22,7 @@
                 <div class="col-md-12">
                   <div class="table-responsive">
                     <table class="table">
-                      <thead class="text-warning">
+                      <thead class="text-success">
                         <tr>
                           <th>Public Ip</th>
                           <th>Domain Profiles</th>
@@ -54,6 +54,10 @@
                               mattooltip="Edit item" (click)="showEditWizard(pi.id)">
                               <i class="material-icons">edit</i>
                             </button>
+                            <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
+                            mattooltip="Delete item" (click)="deletePublicIp(pi.id)">
+                            <i class="material-icons">close</i>
+                          </button>
                           </td>
                         </tr>
                       </tbody>
@@ -61,7 +65,6 @@
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -121,7 +124,7 @@
                                     <img src="./assets/img/default-avatar.png" class="picture-src"
                                       id="wizardPicturePreview" title="" />
                                   </ng-template>
-                                  <input type="file" id="wizard-picture">
+                                  <input type="file" (change)="selectFile($event)" id="wizard-picture">
                                 </div>
                                 <h6 class="description">Choose Block Image</h6>
                               </div>
@@ -209,9 +212,9 @@
                                   <div class="row " *ngFor="let row of ipList; index as i">
                                     <div class="col-md-4">
                                       <mat-form-field class="example-full-width has-label" style="width:100%;">
-                                        <input type="text" maxlength="15" name="ip+i"
+                                        <input type="text" maxlength="15" name="'ip'+i"
                                           (keydown)="checkIPNumber($event, ipList[i].ip)" placeholder="IP" matInput
-                                          [(ngModel)]="ipList[i].ip" formControlName="ip0">
+                                          [(ngModel)]="ipList[i].ip" formControlName="ip{{i}}">
                                         <mat-error *ngIf="publicIpForm.get('ip'+i).hasError('required')">
                                           Enter A Valid IP: <strong>127.0.0.1</strong>
                                         </mat-error>
@@ -223,8 +226,7 @@
                                     <div class="col-md-2" style="margin-left: -20px;">
                                       <mat-form-field class="example-full-width has-label">
                                         <mat-select placeholder="Mask" [(value)]="ipList[i].range">
-                                          <mat-option *ngFor="let it of [].constructor(9); let ind = index;"
-                                            [value]="ind+24">{{ind+24}}</mat-option>
+                                          <mat-option *ngFor="let ind of ipRanges;" [value]="ind">{{ind}}</mat-option>
                                         </mat-select>
                                       </mat-form-field>
                                     </div>
@@ -250,8 +252,8 @@
                                 <div class="col-12 ml-auto mr-auto">
                                   <mat-form-field>
                                     <textarea type="text" id="blockMessage" name="blockMessage" matInput id="text"
-                                      placeholder="Block Message" [(ngModel)]="blockMessage"
-                                      [(value)]="selectedIp.blockMessage" formControlName="blockMessage"></textarea>
+                                      placeholder="Block Message" [(ngModel)]="selectedIp.blockMessage"
+                                      formControlName="blockMessage"></textarea>
                                   </mat-form-field>
                                 </div>
                               </div>
@@ -262,14 +264,9 @@
                     </div>
                   </div>
                 </div>
-                <div class="card-footer">
-                  <div class="mr-auto">
-                    <input type="button" class="btn btn-previous btn-fill btn-default btn-wd disabled" id="previous"
-                      name="previous" value="Previous">
-                  </div>
+                <div class="card-footer">                  
                   <div class="ml-auto">
-                    <input type="button" class="btn btn-next btn-fill btn-info btn-wd" name="next" value="Next">
-                    <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" name="finish" value="Finish"
+                    <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" id="finish" name="finish" value="Save"
                       (click)="saveIP()" style="display: none;">
                   </div>
                   <div class="clearfix"></div>

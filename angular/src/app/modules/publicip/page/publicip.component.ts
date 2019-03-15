@@ -11,7 +11,6 @@ import { BWListService } from 'src/app/core/services/BWListService';
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
 import { PublicIP } from 'src/app/core/models/PublicIP';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
-import { AgentResponse } from 'src/app/core/models/AgentResponse';
 import { AgentService } from 'src/app/core/services/agent.service';
 
 declare var $: any;
@@ -30,7 +29,7 @@ export class PublicipComponent implements OnInit {
   ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
   publicIpForm: FormGroup;
   agentName: string;
-  ipList: IpNumber[] = [];
+  ipList: IpNumber[];
   blockMessage: string;
 
   appProfiles: ApplicationProfile[];
@@ -44,17 +43,17 @@ export class PublicipComponent implements OnInit {
   bwList: BWList[];
   userBWList: BWList[];
   systemBWList: BWList[];
-
+  ipRanges: Number[] = [24, 25, 26, 27, 28, 29, 30, 32];
   publicIps: PublicIP[];
   selectedIp: PublicIP = new PublicIP();
 
   constructor(private alertService: AlertService, private notification: NotificationService, private bwService: BWListService,
     private formBuilder: FormBuilder, private apService: ApplicationProfilesService, private dpService: DomainProfilesService,
-    private publicIpService: PublicIPService, private spinner: SpinnerService, private agentService: AgentService) {
+    private publicIpService: PublicIPService) {
 
     this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
 
-    this.ipList.push(new IpNumber());
+    //this.ipList.push(new IpNumber());
     this.publicIpForm = this.formBuilder.group({
       "agentName": ["", [Validators.required]],
       "blockMessage": ["", [Validators.required]],
@@ -205,38 +204,6 @@ export class PublicipComponent implements OnInit {
     }
   }
 
-  changeLabel(value: number) {
-
-    switch (value) {
-      case 1:
-        document.getElementsByClassName("noUi-tooltip")[0].innerHTML = "Allowed"
-        $('.slider')[0].style.backgroundColor = 'green';
-        break;
-      case 2:
-        document.getElementsByClassName("noUi-tooltip")[0].innerHTML = "Profile A"
-        $('.slider')[0].style.backgroundColor = 'blue';
-        break;
-      case 3:
-        document.getElementsByClassName("noUi-tooltip")[0].innerHTML = "Profile B"
-        $('.slider')[0].style.backgroundColor = 'blue';
-        break;
-      case 4:
-        document.getElementsByClassName("noUi-tooltip")[0].innerHTML = "Profile C"
-        $('.slider')[0].style.backgroundColor = 'orange';
-        break;
-      case 5:
-        document.getElementsByClassName("noUi-tooltip")[0].innerHTML = "Not Allowed"
-        $('.slider')[0].style.backgroundColor = 'red';
-        break;
-      default:
-        document.getElementsByClassName("noUi-tooltip")[0].innerHTML = "Not Selected"
-        $('.slider')[0].style.backgroundColor = 'green';
-        break;
-    }
-
-
-  }
-
   installWizard() {
 
     // Code for the Validator
@@ -245,6 +212,14 @@ export class PublicipComponent implements OnInit {
         agentName: {
           required: true,
           minlength: 3
+        },
+        blockMessage: {
+          required: true,
+          minlength: 5
+        },
+        ip0: {
+          required: true,
+          minlength: 15
         }
       },
 
@@ -452,8 +427,13 @@ export class PublicipComponent implements OnInit {
 
     $('.set-full-height').css('height', 'auto');
 
-    document.getElementById("previous").onclick = function () {
+    document.getElementById("finish").onclick = function () {
+      var $valid = $('.card-wizard form').valid();
       document.getElementById('wizardPanel').scrollIntoView();
+      if (!$valid) {
+        $validator.focusInvalid();
+        return false;
+      }
     };
 
   }
@@ -528,6 +508,8 @@ export class PublicipComponent implements OnInit {
 
   showNewWizard() {
 
+    this.ipList = [];
+    this.ipList.push(new IpNumber());
     this.selectedIp = new PublicIP();
     this.selectedIp.profile = this.domainProfiles[0];
     this.selectedIp.appUserProfile = this.appProfiles[0];
@@ -543,6 +525,7 @@ export class PublicipComponent implements OnInit {
   showEditWizard(id: Number) {
     debugger;
     this.ipList = [];
+    this.ipList.push(new IpNumber());
     this.selectedIp = this.publicIps.find(p => p.id == id);
 
     if (this.selectedIp && this.selectedIp.ips && this.selectedIp.ips.length > 0) {
@@ -553,10 +536,15 @@ export class PublicipComponent implements OnInit {
         const mask = Number(this.selectedIp.ips[i][4]) - Number(this.selectedIp.ips[i][3]);
         ipn.range = this.publicIpService.getRangeOrSubnetMask(1, mask);
 
-        if (i > 0) {
-          this.ipList.push(new IpNumber());
-        }
+        // if (i > 0) {
+        //   this.ipList.push(new IpNumber());
+        // }
         this.ipList[i] = ipn;
+        const cname = 'ip' + (this.ipList.length - 1);
+        this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
+        this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]);
+        this.publicIpForm.controls[cname].updateValueAndValidity();
+
       }
     }
 
@@ -578,7 +566,8 @@ export class PublicipComponent implements OnInit {
   }
 
   saveIP() {
-    if (!this.selectedIp.agentAlias) {
+    if (!this.publicIpForm.valid) {
+      this.notification.warning("Public IP form is not valid! Please enter required fields with valid values.");
       return;
     }
     this.selectedIp.ips = [];
@@ -589,22 +578,37 @@ export class PublicipComponent implements OnInit {
       this.selectedIp.ips.push(ip);
     }
 
+    console.log(this.selectedIp);
+
     this.publicIpService.save(this.selectedIp).subscribe(
       res => {
-        this.alertService.alertSuccessMessage("Operation Successful", "Agent successfully saved.");
-        this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
-        console.log(res);
-        $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
-        $('#publicIpPanel').toggle("slide", { direction: "left" }, 1000);
+        if (res.status == 200) {
+          this.alertService.alertSuccessMessage("Operation Successful", "Public IP successfully saved.");
+          this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
+          $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
+          $('#publicIpPanel').toggle("slide", { direction: "left" }, 1000);
+        } else {
+          this.notification.error("Operation Failed! " + res.message);
+        }
+      });
 
+  }
+
+  deletePublicIp(id: number) {
+    this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Public IP and its settings will be deleted!').subscribe(
+      res => {
+        if (res) {
+          this.publicIpService.delete(this.publicIps.find(p => p.id == id)).subscribe(res => {
+            if (res.status == 200) {
+              this.alertService.alertSuccessMessage("Operation Successful", "Public IP successfully Deleted.");
+              this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
+            } else {
+              this.notification.error("Operation Failed! " + res.message);
+            }
+          });
+        }
       }
     );
-
-
-    this.alertService.alertBasic(this.ipList.toString());
-
-    //this.alertService.alertSuccessMessage("Operation Successful", "Options changed for agent: ");
-
   }
 
   onSelectionChange(type: string) {
@@ -645,4 +649,25 @@ export class PublicipComponent implements OnInit {
     return this.ipSplit1[0] + '.' + this.ipSplit1[1] + '.' + this.ipSplit1[2] + '.' + this.ipSplit1[3] + '-' + this.ipSplit1[4];
   }
 
+  selectFile($event) {
+    debugger;
+    var inputValue = $event.target;
+    let file = inputValue.files[0];
+    let reader = new FileReader();
+    let ag = this.selectedIp;
+    if (typeof file !== 'undefined') {
+
+    }
+
+    reader.addEventListener("load", function () {
+      ag.logo = reader.result;
+    }, false);
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+
+    console.log(this.selectedIp);
+
+  }
 }

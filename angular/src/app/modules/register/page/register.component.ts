@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   public countries = countryList.countries;
   public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
   public captcha: string;
-  public captcha_key: string;
+  public captcha_key: string = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY;
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   public company: string = 'dnssense';
   public companyLogo: string = 'dnssense_logo_small.png';
@@ -89,7 +89,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.user = new SignupBean();
     this.user.company = new Company();
     this.user.company.name = " ";
-    this.captcha_key = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY;
+    
   }
 
   ngOnInit() {
@@ -175,7 +175,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onSelectionChange(type: string) {
+  onSelectionChange(type: string) {
     this.user.usageType = type;
     if (type === "Business Account") {
       $("#companyInfoDiv").show(500);
@@ -225,7 +225,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   }
 
-  public handleCaptcha($event) {
+  handleCaptcha($event) {
     this.captcha = $event;
   }
 
@@ -241,7 +241,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     console.log(`Resolved captcha with response ${captchaResponse}:`);
   }
 
-  public pPolicy() {
+  pPolicy() {
     this.privacyPolicy = this.privacyPolicy === true ? false : true;
   }
 
