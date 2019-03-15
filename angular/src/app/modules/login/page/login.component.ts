@@ -1,13 +1,13 @@
-import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { FormBuilder, AbstractControl } from '@angular/forms';
-import { PasswordValidation } from './password-validator.component';
+import { FormBuilder } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { CompileTemplateMetadata } from '@angular/compiler';
 import { Router } from '@angular/router';
-import { User } from 'src/app/core/models/User';
-import { first } from 'rxjs/operators';
+import { SignupBean } from 'src/app/core/models/SignupBean';
+import { ReCaptchaComponent } from 'angular2-recaptcha';
+import { CaptchaService } from 'src/app/core/services/captcha.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 declare var $: any;
 
@@ -17,6 +17,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
+declare var $: any;
 
 @Component({
   selector: 'app-login-cmp',
@@ -33,33 +34,29 @@ export class LoginComponent implements OnInit, OnDestroy {
     Validators.required,
     Validators.email,
   ]);
-
-
+  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
+  captcha: string;
+  captcha_key: string = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';// TODO: environment.API_CAPTCHA_KEY;
   validEmailLogin: true | false;
   validPasswordLogin: true | false;
   matcher = new MyErrorStateMatcher();
-  login: FormGroup;
+  loginForm: FormGroup;
   isFailed: boolean;
   email: string;
   password: string;
+  forgoterEmail: string;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, 
-    private router: Router, private element: ElementRef) {
+  constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
+    private element: ElementRef, private notification: NotificationService) {
     this.isFailed = false;
     this.nativeElement = element.nativeElement;
     this.sidebarVisible = false;
   }
 
   ngOnInit() {
-    this.login = this.formBuilder.group({
-      // To add a validator, we must first convert the string value into an array. The first item in the array
-      // is the default value if any, then the next item in the array is the validator. Here we are adding a
-      // required validator meaning that the firstName attribute must have a value in it.
-      email: [null, [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')]],
-      // We can use more than one validator per field. If we want to use more than one validator 
-      // we have to wrap our array of validators with a Validators.compose function. Here we are using a required,
-      // minimum length and maximum length validator.
-      password: ['', Validators.required]
+    this.loginForm = this.formBuilder.group({
+      "email": [null, [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')]],
+      "password": ['', Validators.required]
     });
     const navbar: HTMLElement = this.element.nativeElement;
     this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
@@ -105,22 +102,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     };
   }
 
-  authenticate() {
-    this.authService.login(this.email, this.password).subscribe(
-      val => {
-        this.router.navigateByUrl('/admin');
-      },
-      (err) => {
-        this.isFailed = true;
-      }
-    );
-
-  }
   onLogin() {
-    if (this.login.valid) {
-      this.authenticate();
+    if (this.loginForm.valid) {
+      this.authService.login(this.email, this.password).subscribe(
+        val => {
+          this.router.navigateByUrl('/admin');
+        },
+        (err) => {
+          this.isFailed = true;
+        }
+      );
     } else {
-      this.validateAllFormFields(this.login);
+      this.validateAllFormFields(this.loginForm);
     }
   }
 
@@ -154,7 +147,38 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  openLogin() {
+    $('#loginDiv').slideDown(300);
+    $('#forgotPasswordDiv').slideUp(300);
+  }
 
+  openForgotPassword() {
+    $('#loginDiv').slideUp(500);
+    $('#forgotPasswordDiv').slideDown(500);
+  }
+
+  handleCaptcha($event) {
+    this.captcha = $event;
+  }
+
+  sendActivationCode() {
+    let forgoter: SignupBean = new SignupBean();
+    forgoter.userName = this.forgoterEmail;
+
+    if (!CaptchaService.validCaptcha(this.captcha) || !forgoter.userName) {
+      return;
+    } else {
+      forgoter.c_answer = this.captcha;
+    }
+
+    this.authService.forgotPassword(forgoter).subscribe(res => {
+      if (res.status == 200) {
+        this.notification.success("Activation code sent your email." + res.message);
+      } else {
+        this.notification.error("Operation Failed! " + res.message);
+      }
+    });
+  }
 
 
 }

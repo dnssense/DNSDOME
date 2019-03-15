@@ -12,6 +12,7 @@ import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
+import { ReCaptchaModule } from 'angular2-recaptcha';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { HttpClient } from '@angular/common/http';
     NouisliderModule,
     TagInputModule,
     MaterialModule,
+    ReCaptchaModule,
     LoginRoutingModule,
     TranslateModule.forChild({
       loader: {

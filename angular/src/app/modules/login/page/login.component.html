@@ -1,12 +1,12 @@
 <div class="wrapper wrapper-full-page">
-  <div class="page-header login-page header-filter" filter-color="white" data-color="blue" >
+  <div class="page-header login-page header-filter" filter-color="white" data-color="blue">
     <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
     <div class="container">
       <div class="row">
         <div class="col-lg-4 col-md-6 col-sm-6 ml-auto mr-auto">
           <div class="card card-signup mt-0">
             <div class="card-title">
-              <h2 class="card-title text-center">{{'LOGIN.Login' | translate}}</h2>
+              <h2 class="card-title text-center" (click)="openLogin()">{{'LOGIN.Login' | translate}}</h2>
               <div class="row">
                 <div class="col text-right">
                   <div class="icon text-rose">
@@ -26,36 +26,69 @@
               </div>
             </div>
             <div class="card-body">
-              <form [formGroup]="login" novalidate ng-submit="loginform.$valid && login.submit()">
-                <p class="card-description text-center">Easiest way to be secure!</p>
-                <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
-                  <input type="email" matInput placeholder="{{'LOGIN.Email' | translate}} *" [errorStateMatcher]="matcher"
-                    (ngModelChange)="emailValidationLogin($event)" formControlName="email">
-                  <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-                    {{'LOGIN.EmailRequired' | translate}}
+              <div id="loginDiv">
+                <form [formGroup]="loginForm" novalidate ng-submit="loginform.$valid && loginForm.submit()">
+                  <p class="card-description text-center">Easiest way to be secure!</p>
+                  <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
+                    <input type="email" matInput placeholder="{{'LOGIN.Email' | translate}} *"
+                      [errorStateMatcher]="matcher" (ngModelChange)="emailValidationLogin($event)"
+                      formControlName="email">
+                    <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                      {{'LOGIN.EmailRequired' | translate}}
+                    </mat-error>
+                    <mat-error *ngIf="emailFormControl.hasError('required')">
+                      <strong>{{'LOGIN.EmailRequired' | translate}}</strong>
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" [ngClass]="{'has-success':validPasswordLogin===true}"
+                    [ngClass]="displayFieldCss(loginForm, 'password')">
+                    <input type="password" matInput placeholder="{{'LOGIN.Password' | translate}} *"
+                      (ngModelChange)="passwordValidationLogin($event)" formControlName="password">
+                    <app-field-error-display [displayError]="isFieldValid(loginForm, 'password')"
+                      errorMsg="{{'LOGIN.PasswordRequired' | translate}}">
+                    </app-field-error-display>
+                  </mat-form-field>
+                  <div class="category form-category">* {{'LOGIN.RequiredFields' | translate}}</div>
+                  <div class=""><a class="btn btn-sm btn-link" (click)="openForgotPassword()">*
+                      Forgot Your Password?</a></div>
+
+                  <mat-error class="ui-state-error-text" *ngIf="isFailed">
+                    {{ 'LOGIN.WrongEmailOrPassword' | translate}}
                   </mat-error>
+                  <div class="form-group text-center">
+                    <br />
+                    <button mat-button class="btn btn-info btn-secondary btn-sm" (click)="onLogin()">
+                      {{'LOGIN.Login'|translate}}
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div id="forgotPasswordDiv" style="display:none">
+                <small>*If you do not receive the password reset email message within a few minutes, please check your
+                  Spam or Bulk E-Mail folder just in case the email got delivered there instead of your inbox.
+                  If so, select the password reset email and mark it Not Spam, which should allow future messages to get
+                  through.
+                </small>
+
+                <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
+                  <input type="email" matInput placeholder="{{'LOGIN.Email' | translate}} *" [(ngModel)]="forgoterEmail"
+                    (ngModelChange)="emailValidationLogin($event)">
                   <mat-error *ngIf="emailFormControl.hasError('required')">
                     <strong>{{'LOGIN.EmailRequired' | translate}}</strong>
                   </mat-error>
                 </mat-form-field>
-                <mat-form-field class="example-full-width" [ngClass]="{'has-success':validPasswordLogin===true}"
-                  [ngClass]="displayFieldCss(login, 'password')">
-                  <input type="password" matInput placeholder="{{'LOGIN.Password' | translate}} *" (ngModelChange)="passwordValidationLogin($event)"
-                    formControlName="password">
-                  <app-field-error-display [displayError]="isFieldValid(login, 'password')" errorMsg="{{'LOGIN.PasswordRequired' | translate}}">
-                  </app-field-error-display>
-                </mat-form-field>
-                <div class="category form-category">* {{'LOGIN.RequiredFields' | translate}}</div>
-                <mat-error class="ui-state-error-text" *ngIf="isFailed">
-                  {{ 'LOGIN.WrongEmailOrPassword' | translate}}
-                </mat-error>
-                <div class="form-group text-center">
-                  <br />
-                  <button mat-button class="btn btn-info btn-secondary align-center" (click)="onLogin()">
-                    {{'LOGIN.Login'|translate}}
-                  </button>
+                <div>
+                  <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
+                  </re-captcha>
                 </div>
-              </form>
+                <div class="text-center">
+                  <button class="btn btn-info btn-sm" (click)="sendActivationCode()">Send Activation Code</button>
+                </div>
+
+                <div class=""><a class="btn btn-sm btn-link" (click)="openLogin()">* Login</a></div>
+              </div>
+
+
             </div>
           </div>
         </div>
@@ -82,7 +115,7 @@
           &copy;
           {{test | date: 'yyyy'}}, made by
           <a href="https://dnssense.com" target="_blank"><strong>DNSSense</strong></a> for a better world.
-          <h6>v.0.0.3</h6>
+          <!-- <h6>v.0.0.4</h6> -->
         </div>
 
       </div>
