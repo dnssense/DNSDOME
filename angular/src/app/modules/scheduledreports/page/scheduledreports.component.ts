@@ -52,11 +52,17 @@ export class ScheduledReportsComponent implements OnInit {
     }
 
     loadReports() {
+        this.userReports = [];
+        this.systemReports = [];
         this.searchSettingService.listUserSavedSearchSettings().subscribe((res: SearchSetting[]) => {
-            this.userReports = res;
-        });
-        this.searchSettingService.listSavedSearchSettings().subscribe((res: SearchSetting[]) => {
-            this.systemReports = res;
+            res.forEach(r => {
+                if (r.system) {
+                    this.systemReports.push(r);
+                }
+                else {
+                    this.userReports.push(r);
+                }
+            });
         });
     }
 
@@ -123,19 +129,48 @@ export class ScheduledReportsComponent implements OnInit {
             this.selectedReport.scheduledReport = new ScheduledReport();
             this.selectedReport.scheduledReport.format = 'PDF';
         }
-       
+
 
         this.searchSettingService.scheduleSearchSetting(this.selectedReport).subscribe(res => {
             this.selectedReport = res.object;
             console.log(this.selectedReport);
-            
+
         });
 
     }
 
     saveReport() {
         this.alert.alertSuccessMessage('', '');
-        
+
+    }
+
+    deleteReport(type: string, id: number) {
+
+        let report: SearchSetting;
+
+        if (type == 'user') {
+            report = this.userReports.find(r => r.id == id);
+        } else if (type == 'system') {
+            report = this.systemReports.find(r => r.id == id);
+        } else {
+            return;
+        }
+
+        this.alert.alertWarningAndCancel('Are You Sure?', 'Settings for this report will be deleted!').subscribe(
+            res => {
+                if (res) {
+                    this.searchSettingService.deleteSearchSetting(report).subscribe(res => {
+                        if (res.status == 200) {
+                            this.notification.success('Reports Deleted!' + res.message);
+                        } else {
+                            this.notification.success('Operation Failed!' + res.message);
+                        }
+                    });
+                }
+            }
+        );
+
+
     }
 
     installWizard() {

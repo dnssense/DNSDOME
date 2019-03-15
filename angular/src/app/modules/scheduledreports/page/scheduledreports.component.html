@@ -11,7 +11,7 @@
               <h4 class="card-title ">System Reports</h4>
             </div>
             <div class="card-body">
-              <div class="table-responsive">
+              <div class="table-responsive" style="max-height: 800px;">
                 <table class="table">
                   <thead class="text-success">
                     <tr>
@@ -31,15 +31,14 @@
                         <ng-template #elseTemplate>
                           <i class="material-icons" style="color:red;">close</i>
                         </ng-template>
-
                       </td>
-                      <td>
+                      <td class="text-right">
                         <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
                           mattooltip="Edit item" (click)="showEditWizard('system',row.id)">
                           <i class="material-icons">edit</i>
                         </button>
                         <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
-                          mattooltip="Delete item" (click)="deletePublicIp(row.id)">
+                          mattooltip="Delete item" (click)="deleteReport('system', row.id)">
                           <i class="material-icons">close</i>
                         </button>
                       </td>
@@ -89,7 +88,7 @@
                           <i class="material-icons">edit</i>
                         </button>
                         <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
-                          mattooltip="Delete item" (click)="deletePublicIp(row.id)">
+                          mattooltip="Delete item" (click)="deleteReport('user', row.id)">
                           <i class="material-icons">close</i>
                         </button>
                       </td>

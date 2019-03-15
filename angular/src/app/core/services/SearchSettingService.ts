@@ -5,6 +5,7 @@ import { Observable } from "rxjs/Rx";
 import { Dashboard } from "../models/Dashboard";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
+import { OperationResult } from '../models/OperationResult';
 
 /**
  * Created by fatih on 02.08.2016.
@@ -58,10 +59,10 @@ export class SearchSettingService {
     return this.http.post(this._saveDashboardSearchSettingURL + dashboard.id, body, this.getOptions()).map(res => res);
   }
 
-  public deleteSearchSetting(searchSetting: SearchSetting): Observable<any> {
+  public deleteSearchSetting(searchSetting: SearchSetting): Observable<OperationResult> {
     let body = JSON.stringify(searchSetting, null, ' ');
 
-    return this.http.post(this._deleteSearchListURL, body, this.getOptions()).map(res => res);
+    return this.http.post<OperationResult>(this._deleteSearchListURL, body, this.getOptions()).map(res => res);
   }
 
   getOptions() {
