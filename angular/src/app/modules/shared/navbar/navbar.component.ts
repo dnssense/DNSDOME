@@ -3,7 +3,7 @@ import { Component, OnInit, Renderer, ViewChild, ElementRef, Directive } from '@
 import { Router, ActivatedRoute, NavigationEnd, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { ROUTES } from '../sidebar/sidebar.component';
+import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService } from 'src/app/core/services/config.service';
@@ -98,6 +98,7 @@ export class NavbarComponent implements OnInit {
 
     ngOnInit() {
         this.listTitles = ROUTES.filter(listTitle => listTitle);
+        this.listTitles.push(...ProfileRoutes);
 
         const navbar: HTMLElement = this.element.nativeElement;
         const body = document.getElementsByTagName('body')[0];
@@ -165,6 +166,7 @@ export class NavbarComponent implements OnInit {
         this.mobile_menu_visible = 1;
         this.sidebarVisible = true;
     };
+
     sidebarClose() {
         var $toggle = document.getElementsByClassName('navbar-toggler')[0];
         const body = document.getElementsByTagName('body')[0];
@@ -186,6 +188,7 @@ export class NavbarComponent implements OnInit {
 
         this.mobile_menu_visible = 0;
     };
+
     sidebarToggle() {
         if (this.sidebarVisible === false) {
             this.sidebarOpen();
@@ -195,7 +198,8 @@ export class NavbarComponent implements OnInit {
     }
 
     getTitle() {
-        let titlee: any = this.location.prepareExternalUrl(this.location.path());
+        let titlee: string = this.location.prepareExternalUrl(this.location.path());
+        titlee = titlee.substring(1);
         for (let i = 0; i < this.listTitles.length; i++) {
             if (this.listTitles[i].type === "link" && this.listTitles[i].path === titlee) {
                 return this.listTitles[i].title;

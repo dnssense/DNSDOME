@@ -72,7 +72,7 @@
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
                         <mat-form-field class="example-full-width"
-                          [ngClass]="{'has-success':validEmailRegister===true}">
+                          >
                           <input type="email" matInput placeholder="{{'REGISTER.Email' | translate}}"
                             [(ngModel)]="user.userName" (ngModelChange)="emailValidationRegister($event)"
                             formControlName="email">
@@ -120,7 +120,7 @@
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
                         <mat-form-field class="example-full-width"
-                          [ngClass]="{'has-success':validPasswordRegister===true}">
+                          >
                           <input type="password" matInput placeholder="New Password" [errorStateMatcher]="matcher"
                             [(ngModel)]="signupUser.password" formControlName="password">
                           <mat-error *ngIf="changePasswordForm.get('password').hasError('required')">
@@ -134,7 +134,7 @@
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
                         <mat-form-field class="example-full-width"
-                          [ngClass]="{'has-success':validPasswordRegister===true}">
+                          >
                           <input type="password" matInput placeholder="Confirm New Password"
                             [errorStateMatcher]="matcher" [(ngModel)]="signupUser.passwordAgain"
                             formControlName="passwordAgain">

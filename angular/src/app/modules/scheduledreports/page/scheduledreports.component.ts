@@ -35,20 +35,20 @@ export class ScheduledReportsComponent implements OnInit {
     constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private notification: NotificationService,
         private alert: AlertService, private searchSettingService: SearchSettingService) {
 
-        this.selectedReport.scheduledReport = new ScheduledReport();
-        this.loadReports();
-
-        this.reportForm = this.formBuilder.group({
-            "reportName": ["", [Validators.required]],
-            "topNumber": ["", [Validators.required]],
-            "dateInterval": ["", [Validators.required]],
-            "refresh": ["", [Validators.required]],
-            "sendEmail": ["", [Validators.required]],
-            "period": ["", [Validators.required]],
-            "format": ["", [Validators.required]],
-            "type": ["", [Validators.required]],
-
-        });
+            this.selectedReport.scheduledReport = new ScheduledReport();
+            this.loadReports();
+    
+            this.reportForm = this.formBuilder.group({
+                "reportName": ["", [Validators.required]],
+                "topNumber": ["", [Validators.required]],
+                "dateInterval": ["", [Validators.required]],
+                "refresh": ["", [Validators.required]],
+                "sendEmail": ["", [Validators.required]],
+                "period": ["", [Validators.required]],
+                "format": ["", [Validators.required]],
+                "type": ["", [Validators.required]],
+    
+            });
     }
 
     loadReports() {
@@ -78,7 +78,7 @@ export class ScheduledReportsComponent implements OnInit {
     }
 
     ngOnInit() {
-
+        
     }
 
     showNewWizard() {

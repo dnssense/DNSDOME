@@ -106,7 +106,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.loginForm.valid) {
       this.authService.login(this.email, this.password).subscribe(
         val => {
-          this.router.navigateByUrl('/admin');
+          this.router.navigateByUrl('/admin/dashboard');
         },
         (err) => {
           this.isFailed = true;

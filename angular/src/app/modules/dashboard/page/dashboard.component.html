@@ -1,22 +1,5 @@
 <div class="main-content">
   <div class="container-fluid">
-    <!-- <div class="row">
-          <div class="col-md-12">
-            <section id="demo" style="padding-bottom: 20px; min-height: 100px;" #component>
-              <div *ngIf="dashboard!=null">
-                <div class="grid grid-stack" #gridstack *ngIf="dashboard!=null">
-                  <app-dashboard-top-panel [setting]="xx" *ngFor="let xx of dashboard.setting" [dashboard]="dashboard"
-                                           (onResize)="onResizeStop($event,xx)" (onDragStop)="onDragStop($event,xx)"
-                                           (removeReportEmitter)="removeReport($event)"
-                                           (currentSettingEmitter)="setCurrentSetting($event)"
-                                           (settingConfigUpdateEmitter)="updateSettingConfig($event)">
-          
-                  </app-dashboard-top-panel>
-                </div>
-              </div>
-            </section>
-          </div>
-      </div> -->
     <div class="row">
       <div class="col-md-6"></div>
       <div class="col-md-6"></div>
@@ -95,7 +78,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-7">
+      <div class="col-md-4">
         <div class="card card-stats">
           <div class="card-header card-header-icon card-header-info">
             <div class="card-icon">
@@ -110,7 +93,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-5">
+      <div class="col-md-4">
         <div class="card card-chart">
           <div class="card-header card-header-icon card-header-danger">
             <div class="card-icon">
@@ -133,6 +116,24 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-chart">
+          <div class="card-header card-header-icon card-header-warning">
+            <div class="card-icon">
+              <i class="material-icons">language</i>
+            </div>
+            <h4 class="card-title">World Status</h4>
+          </div>
+          <div class="card-body">
+            <div id="worldMap" class="map"></div>
+          </div>
+          <div class="card-footer">
+              <div class="row">
+                
+              </div>
+            </div>
         </div>
       </div>
     </div>

@@ -67,8 +67,8 @@ export class AccountSettingsComponent implements OnInit {
         this.companyInfoForm =
             this.formBuilder.group({
                 'companyName': ['', [Validators.required, Validators.minLength(3)]],
-                'url': ['', [Validators.minLength(3), ValidationService.domainValidation]],
-                'blockMessage': ['', [Validators.minLength(3)]],
+                'url': ['', [Validators.required,Validators.minLength(3), ValidationService.domainValidation]],
+                'blockMessage': ['', [Validators.required,Validators.minLength(3)]],
                 'industry': ['', [Validators.required, Validators.minLength(2)]],
                 'personnelCount': ['', [Validators.required, Validators.minLength(2)]],
                 'logo': ['', []]
@@ -84,16 +84,16 @@ export class AccountSettingsComponent implements OnInit {
             );
     }
 
-    isFieldValid(form: FormGroup, field: string) {
-        return !form.get(field).valid && form.get(field).touched;
-    }
+    // isFieldValid(form: FormGroup, field: string) {
+    //     return !form.get(field).valid && form.get(field).touched;
+    // }
 
-    displayFieldCss(form: FormGroup, field: string) {
-        return {
-            'has-error': this.isFieldValid(form, field),
-            'has-feedback': this.isFieldValid(form, field)
-        };
-    }
+    // displayFieldCss(form: FormGroup, field: string) {
+    //     return {
+    //         'has-error': this.isFieldValid(form, field),
+    //         'has-feedback': this.isFieldValid(form, field)
+    //     };
+    // }
 
     emailValidationRegister(e) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

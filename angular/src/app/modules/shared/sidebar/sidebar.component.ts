@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import PerfectScrollbar from 'perfect-scrollbar';
-import { Session } from 'src/app/core/models/Session';
-import { LoggerService } from 'src/app/core/services/logger.service';
 import { User } from 'src/app/core/models/User';
-import { forEach } from '@angular/router/src/utils/collection';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { Role } from 'src/app/core/models/Role';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { Router } from '@angular/router';
@@ -70,10 +66,10 @@ export const ROUTES: RouteInfo[] = [
         role: 'ROLE_CUSTOMER',
         collapse: 'settings',
         children: [
-            { path: 'profiles', title: 'Security Profiles', ab: 'SP' },
             { path: 'publicip', title: 'Public IP', ab: 'PI' },
             { path: 'devices', title: 'Local Devices', ab: 'LD' },
-            { path: 'roaming', title: 'Roaming Clients', ab: 'RC' }
+            { path: 'roaming', title: 'Roaming Clients', ab: 'RC' },
+            { path: 'profiles', title: 'Security Profiles', ab: 'EP' }
         ]
     }
     /*, {
@@ -148,6 +144,7 @@ export class SidebarComponent implements OnInit {
             let ps = new PerfectScrollbar(elemSidebar, { wheelSpeed: 2, suppressScrollX: true });
         }
     }
+    
     isMac(): boolean {
         let bool = false;
         if (navigator.platform.toUpperCase().indexOf('MAC') >= 0 || navigator.platform.toUpperCase().indexOf('IPAD') >= 0) {
