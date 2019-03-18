@@ -60,11 +60,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         var message = 'You clicked "'
           + region
           + '" which has the code: '
-          + code.toUpperCase();
+          + code.toUpperCase()+ ' value:' + values.get('jqvmap1_'+code);
+
 
         alert(message);
-
-        console.log(element);
+ 
       }
     });
 
