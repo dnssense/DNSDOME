@@ -287,13 +287,13 @@
                       </div>
                       <div class="col-sm-2 ml-auto mr-auto  card-wizard" style="min-height: 20px; box-shadow: none;">
                         <div class="picture-container">
-                          <div class="picture" style="border-radius:5%;  max-width: 80px; max-height: 80px; ">
+                          <div class="picture" style="border-radius:5%;">
                             <ng-container *ngIf="signupUser.company.logo; else elseTemplate">
                               <img src="{{signupUser.company.logo}}" class="picture-src" id="wizardPicturePreview"
                                 title="company logo" />
                             </ng-container>
                             <ng-template #elseTemplate>
-                              <img src="./assets/img/default-avatar.png" class="picture-src" id="wizardPicturePreview"
+                              <img src="./assets/img/image_placeholder.jpg" class="picture-src" id="wizardPicturePreview"
                                 title="select logo" />
                             </ng-template>
                             <input type="file" id="companyLogo" (change)="selectFile($event)" formControlName="logo">

@@ -43,6 +43,8 @@ export class AccountSettingsComponent implements OnInit {
         this.signupUser = new SignupBean();
         this.signupUser.company = new Company();
         this.signupUser.company.name = "";
+        console.log(this.signupUser);
+        
         this.companyService.getCompany().subscribe(res => {
             this.signupUser.company = res;
         });
@@ -83,17 +85,6 @@ export class AccountSettingsComponent implements OnInit {
                 , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
             );
     }
-
-    // isFieldValid(form: FormGroup, field: string) {
-    //     return !form.get(field).valid && form.get(field).touched;
-    // }
-
-    // displayFieldCss(form: FormGroup, field: string) {
-    //     return {
-    //         'has-error': this.isFieldValid(form, field),
-    //         'has-feedback': this.isFieldValid(form, field)
-    //     };
-    // }
 
     emailValidationRegister(e) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

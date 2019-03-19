@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ConfigService } from 'src/app/core/services/config.service';
 import * as Chartist from 'chartist';
 import { DashboardStatistic } from 'src/app/core/models/DashboardStatistic';
+import { ValueTransformer } from '@angular/compiler/src/util';
 
 declare const $: any;
 
@@ -12,8 +13,9 @@ declare const $: any;
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.sass']
 })
-export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   stats: DashboardStatistic;
+
 
   constructor(private configService: ConfigService, private http: HttpClient) {
 
@@ -36,10 +38,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.createPieCharts();
 
     let values: Map<string, number> = new Map();
-    values.set('jqvmap2_ru', 234);
-    values.set('jqvmap2_ca', 154);
-    values.set('jqvmap2_us', 834);
-    values.set('jqvmap2_br', 128);
+    values.set('ru', 234);
+    values.set('ca', 154);
+    values.set('us', 834);
+    values.set('br', 128);
+    values.set('tr', 20);
 
     $('#worldMap').vectorMap({
       map: 'world_en',
@@ -60,28 +63,34 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         var message = 'You clicked "'
           + region
           + '" which has the code: '
-          + code.toUpperCase()+ ' value:' + values.get('jqvmap1_'+code);
-
+          + code.toUpperCase() + ' value:' + values.get(code);
 
         alert(message);
- 
       }
     });
 
-
-  }
-
-
-
-  ngAfterViewInit(): void {
     window.setTimeout(function () {
-      var element = document.getElementById('jqvmap2_ru');
+
+      values.forEach((value: number, key: string) => {
+        var element = document.getElementById('jqvmap1_'+key);
+
       if (element) {
-        element.setAttribute('fill', '#ff0000');
+        if (value<300) {
+          element.setAttribute('fill', '#10bb20');
+        } else {
+          element.setAttribute('fill', '#ff0000');
+        }
+        element.title= value.toString();
       }
+      });
+
+      
     }, 1000);
- 
+
   }
+
+  
+
 
   createConnectedUserChart() {
     const dataColouredRoundedLineChart = {
