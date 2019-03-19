@@ -32,14 +32,7 @@ export const ProfileRoutes: RouteInfo[] = [
         title: 'Account Settings',
         type: 'link',
         icontype: 'settings',
-        role: 'ROLE_CUSTOMER' 
-    },
-    {
-        path: '/admin/scheduledreports',
-        title: 'Scheduled Reports',
-        type: 'link',
-        icontype: 'settings',
-        role: 'ROLE_CUSTOMER' 
+        role: 'ROLE_CUSTOMER'
     }
 ]
 
@@ -52,13 +45,30 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'dashboard',
         role: 'ROLE_CUSTOMER'
     }, {
+        path: '/admin/realtime',
+        title: 'Real-Time Monitor',
+        type: 'link',
+        icontype: 'av_timer',
+        role: 'ROLE_CUSTOMER'
+    }, {
         path: '/admin/reports',
-        title: 'Reports',
+        title: 'Custom Reports',
         type: 'link',
         icontype: 'timeline',
         role: 'ROLE_CUSTOMER'
-    },
-    {
+    }, {
+        path: '/admin',
+        title: 'Network',
+        type: 'sub',
+        icontype: 'wifi_tethering',
+        role: 'ROLE_CUSTOMER',
+        collapse: 'network',
+        children: [
+            { path: 'publicip', title: 'Public IP', ab: 'PI' },
+            { path: 'devices', title: 'Local Devices', ab: 'LD' },
+            { path: 'roaming', title: 'Roaming Clients', ab: 'RC' }
+        ]
+    }, {
         path: '/admin',
         title: 'Settings',
         type: 'sub',
@@ -66,19 +76,17 @@ export const ROUTES: RouteInfo[] = [
         role: 'ROLE_CUSTOMER',
         collapse: 'settings',
         children: [
-            { path: 'publicip', title: 'Public IP', ab: 'PI' },
-            { path: 'devices', title: 'Local Devices', ab: 'LD' },
-            { path: 'roaming', title: 'Roaming Clients', ab: 'RC' },
+            { path: 'users', title: 'Users', ab: 'U' },
+            { path: 'scheduledreports', title: 'Scheduled Reports', ab: 'SP' },
             { path: 'profiles', title: 'Security Profiles', ab: 'EP' }
         ]
-    }
-    /*, {
-        path: '/admin/hamza',
-        title: 'hamza',
+    }, {
+        path: '/admin/help',
+        title: 'Help',
         type: 'link',
-        icontype: 'date_range'
+        icontype: 'live_help',
+        role: 'ROLE_CUSTOMER'
     }
-    */
 ];
 
 @Component({
@@ -119,7 +127,7 @@ export class SidebarComponent implements OnInit {
             );
         }
 
-        this.profileMenuItems= ProfileRoutes;
+        this.profileMenuItems = ProfileRoutes;
     }
 
     logout() {
@@ -144,7 +152,7 @@ export class SidebarComponent implements OnInit {
             let ps = new PerfectScrollbar(elemSidebar, { wheelSpeed: 2, suppressScrollX: true });
         }
     }
-    
+
     isMac(): boolean {
         let bool = false;
         if (navigator.platform.toUpperCase().indexOf('MAC') >= 0 || navigator.platform.toUpperCase().indexOf('IPAD') >= 0) {
