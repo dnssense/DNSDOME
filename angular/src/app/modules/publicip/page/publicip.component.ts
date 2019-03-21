@@ -46,14 +46,14 @@ export class PublicipComponent implements OnInit {
   ipRanges: Number[] = [24, 25, 26, 27, 28, 29, 30, 32];
   publicIps: PublicIP[];
   selectedIp: PublicIP = new PublicIP();
+  ipType: string = 'staticIp';
+  dnsFqdn: string;
 
   constructor(private alertService: AlertService, private notification: NotificationService, private bwService: BWListService,
     private formBuilder: FormBuilder, private apService: ApplicationProfilesService, private dpService: DomainProfilesService,
     private publicIpService: PublicIPService) {
 
     this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
-
-    //this.ipList.push(new IpNumber());
     this.publicIpForm = this.formBuilder.group({
       "agentName": ["", [Validators.required]],
       "blockMessage": ["", [Validators.required]],
@@ -536,9 +536,6 @@ export class PublicipComponent implements OnInit {
         const mask = Number(this.selectedIp.ips[i][4]) - Number(this.selectedIp.ips[i][3]);
         ipn.range = this.publicIpService.getRangeOrSubnetMask(1, mask);
 
-        // if (i > 0) {
-        //   this.ipList.push(new IpNumber());
-        // }
         this.ipList[i] = ipn;
         const cname = 'ip' + (this.ipList.length - 1);
         this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
@@ -554,6 +551,7 @@ export class PublicipComponent implements OnInit {
     this.installWizard();
     $('#contentLink').click();
   }
+
   hideWizard() {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
       res => {
@@ -567,18 +565,31 @@ export class PublicipComponent implements OnInit {
 
   saveIP() {
     if (!this.publicIpForm.valid) {
-      this.notification.warning("Public IP form is not valid! Please enter required fields with valid values.");
+      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return;
     }
-    this.selectedIp.ips = [];
-    for (let i = 0; i < this.ipList.length; i++) {
-      const p = this.ipList[i];
-      let ip: string[] = p.ip.split('.');
-      ip.push(this.publicIpService.getRangeOrSubnetMask(2, p.range).toString());
-      this.selectedIp.ips.push(ip);
+    if (this.ipType == 'staticIp' && !this.ipList && this.ipList.length < 1) {
+      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
+      return;
+    } else if (this.ipType == 'dynamicIp' && !this.dnsFqdn) {
+      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
+      return;
+    } else {
+      return;
     }
 
-    console.log(this.selectedIp);
+    this.selectedIp.ips = [];
+    if (this.ipType == 'staticIp') {
+      for (let i = 0; i < this.ipList.length; i++) {
+        const p = this.ipList[i];
+        let ip: string[] = p.ip.split('.');
+        ip.push(this.publicIpService.getRangeOrSubnetMask(2, p.range).toString());
+        this.selectedIp.ips.push(ip);
+      }
+    } else if (this.ipType == 'dynamicIp'){
+      //TODO: this.dnsFqdn alanı bir yere bağlı değil şuanda.
+    }
+
 
     this.publicIpService.save(this.selectedIp).subscribe(
       res => {
@@ -611,14 +622,18 @@ export class PublicipComponent implements OnInit {
     );
   }
 
-  onSelectionChange(type: string) {
+  onSelectionChangeIPType(type: string) {
 
     if (type === 'dynamicIp') {
+      this.ipType = type;
       $("#dnsFqnDiv").show(300);
+      $('#staticIPBlock').hide(200);
       this.publicIpForm.controls["dnsFqdn"].setValidators([Validators.required]);
       this.publicIpForm.controls["dnsFqdn"].updateValueAndValidity();
     } else {
-      $("#dnsFqnDiv").hide(400);
+      this.ipType = type;
+      $("#dnsFqnDiv").hide(300);
+      $('#staticIPBlock').show(300);
       this.publicIpForm.controls["dnsFqdn"].clearValidators();
       this.publicIpForm.controls["dnsFqdn"].updateValueAndValidity();
     }

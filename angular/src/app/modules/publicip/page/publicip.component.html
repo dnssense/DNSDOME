@@ -55,9 +55,9 @@
                               <i class="material-icons">edit</i>
                             </button>
                             <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
-                            mattooltip="Delete item" (click)="deletePublicIp(pi.id)">
-                            <i class="material-icons">close</i>
-                          </button>
+                              mattooltip="Delete item" (click)="deletePublicIp(pi.id)">
+                              <i class="material-icons">close</i>
+                            </button>
                           </td>
                         </tr>
                       </tbody>
@@ -136,7 +136,7 @@
                               <div class="form-check">
                                 <label class="form-check-label">
                                   <input checked class="form-check-input" id="IpType" name="IpType" type="radio"
-                                    value="staticIp" (click)="onSelectionChange('staticIp')">
+                                    value="staticIp" (click)="onSelectionChangeIPType('staticIp')">
                                   Static IP <span class="circle"><span class="check"></span></span>
                                 </label>
                               </div>
@@ -145,21 +145,12 @@
                               <div class="form-check">
                                 <label class="form-check-label">
                                   <input class="form-check-input" id="IpType" name="IpType" type="radio"
-                                    value="dynamicIp" (click)="onSelectionChange('dynamicIp')">
+                                    value="dynamicIp" (click)="onSelectionChangeIPType('dynamicIp')">
                                   Dynamic IP <span class="circle"><span class="check"></span></span>
                                 </label>
                               </div>
                             </div>
                             <div class="col-md-2"></div>
-                          </div>
-                          <div class="row">
-                            <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-md-5 ml-auto mr-auto"
-                              style="display: none;">
-                              <mat-form-field>
-                                <input type="text" id="dnsFqdn" name="dnsFqdn" matInput id="text" placeholder="DNS FQDN"
-                                  value="">
-                              </mat-form-field>
-                            </div>
                           </div>
                           <div class="row">
                             <div class="col-md-5 ml-auto">
@@ -208,7 +199,14 @@
                             </div>
                             <div class="col-md-6">
                               <div class="row">
-                                <div class="col-md-12  ml-auto mr-auto">
+                                <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-md-12 ml-auto mr-auto"
+                                  style="display: none;">
+                                  <mat-form-field>
+                                    <input type="text" id="dnsFqdn" name="dnsFqdn" matInput id="text" [(ngModel)]="dnsFqdn"
+                                    formControlName="dnsFqdn" placeholder="DNS FQDN">
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-md-12  ml-auto mr-auto" id="staticIPBlock">
                                   <div class="row " *ngFor="let row of ipList; index as i">
                                     <div class="col-md-4">
                                       <mat-form-field class="example-full-width has-label" style="width:100%;">
@@ -264,10 +262,10 @@
                     </div>
                   </div>
                 </div>
-                <div class="card-footer">                  
+                <div class="card-footer">
                   <div class="ml-auto">
-                    <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" id="finish" name="finish" value="Save"
-                      (click)="saveIP()" style="display: none;">
+                    <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" id="finish" name="finish"
+                      value="Save" (click)="saveIP()" style="display: none;">
                   </div>
                   <div class="clearfix"></div>
                 </div>
