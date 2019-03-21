@@ -37,6 +37,9 @@ const adminlayoutRoutes: Routes = [
     },{
       path: 'users',
       loadChildren: '../../users/users.module#UsersModule'
+    },{
+      path: 'help',
+      loadChildren: '../../help/help.module#HelpModule'
     }]
     /*,{
      path:'',
