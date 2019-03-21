@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ValidationService } from 'src/app/core/services/validation.service';
-import * as phoneNumberCodesList from "src/app/core/models/PhoneNumberCodes";
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { User } from 'src/app/core/models/User';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -21,13 +19,11 @@ export class UsersComponent implements OnInit {
     selectedUser: User = new User();
     roleList: Role[] = [];
 
-    constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private notification: NotificationService,
+    constructor(private formBuilder: FormBuilder, private notification: NotificationService,
         private alert: AlertService, private userService: UserService) {
 
-        this.userService.getUsers().subscribe(res => {
-            this.userList = res
-            console.log(res);
-        });
+        this.selectedUser.roles = new Role();
+        this.userService.getUsers().subscribe(res => this.userList = res);
         this.userService.getRoles().subscribe(res => this.roleList = res);
 
     }
@@ -43,8 +39,6 @@ export class UsersComponent implements OnInit {
                 "name": ["", [Validators.required, Validators.minLength(2)]],
                 "surname": ["", [Validators.required, Validators.minLength(2)]],
                 "email": ["", [Validators.required, ValidationService.emailValidator]],
-                "locked": [""],
-                "active": [""],
                 "role": ["", [Validators.required]],
                 "password": ["", [Validators.required]],
                 "passwordAgain": ["", [Validators.required]],
@@ -55,6 +49,7 @@ export class UsersComponent implements OnInit {
 
     showNewWizard() {
         this.selectedUser = new User();
+        this.selectedUser.roles = new Role();
 
         $('#listPanel').toggle("slide", { direction: "left" }, 600);
         $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
@@ -65,8 +60,6 @@ export class UsersComponent implements OnInit {
 
     showEditWizard(id: Number) {
         this.selectedUser = this.userList.find(r => r.id == id);
-
-        console.log(this.selectedUser);
 
         $('#listPanel').toggle("slide", { direction: "left" }, 500);
         $('#wizardPanel').toggle("slide", { direction: "right" }, 500);
@@ -96,15 +89,36 @@ export class UsersComponent implements OnInit {
     }
 
     changeLockedStatusOnRow(id: number) {
-
+        if (id) {
+            let user = this.userList.find(u => u.id == id);
+            user.locked = user.locked === true ? false : true;
+            this.userService.save(user).subscribe(res => {
+                if (res.status == 200) {
+                    this.userService.getUsers().subscribe(res => this.userList = res);
+                    this.notification.success(res.message);
+                } else {
+                    this.notification.error(res.message);
+                }
+            });
+        }
     }
 
     changeActiveStatusOnRow(id: number) {
-
+        if (id) {
+            let user = this.userList.find(u => u.id == id);
+            user.active = user.active === true ? false : true;
+            this.userService.save(user).subscribe(res => {
+                if (res.status == 200) {
+                    this.userService.getUsers().subscribe(res => this.userList = res);
+                    this.notification.success(res.message);
+                } else {
+                    this.notification.error(res.message);
+                }
+            });
+        }
     }
 
     userFormSubmit() {
-        debugger;
 
         if (!this.selectedUser.locked) {
             this.selectedUser.locked = false;
@@ -117,6 +131,7 @@ export class UsersComponent implements OnInit {
         if (this.userForm.dirty && this.userForm.valid && this.selectedUser) {
             this.userService.save(this.selectedUser).subscribe(res => {
                 if (res.status == 200) {
+                    this.hideWizard();
                     this.notification.success(res.message);
                 } else {
                     this.notification.error(res.message);
@@ -133,6 +148,7 @@ export class UsersComponent implements OnInit {
                 res => {
                     if (res) {
                         this.userService.delete(this.userList.find(u => u.id == id)).subscribe(res => {
+                            this.userService.getUsers().subscribe(us => this.userList = us);
                             if (res.status == 200) {
                                 this.notification.success(res.message);
                             } else {
@@ -152,11 +168,11 @@ export class UsersComponent implements OnInit {
             rules: {
                 name: {
                     required: true,
-                    minlength: 3
+                    minlength: 2
                 },
                 surname: {
                     required: true,
-                    minlength: 5
+                    minlength: 2
                 },
                 email: {
                     required: true,

@@ -135,8 +135,8 @@
                     </div>
                     <div class="col-md-3">
                       <mat-form-field style="width:100%">
-                        <mat-select placeholder="Role" [(ngModel)]="selectedUser.role" formControlName="role">
-                          <mat-option [value]="role" *ngFor="let role of roleList">{{role.description}}
+                        <mat-select placeholder="Role" [(ngModel)]="selectedUser.roles.id" formControlName="role">
+                          <mat-option [value]="role.id" *ngFor="let role of roleList">{{role.description}}
                           </mat-option>
                         </mat-select>
                       </mat-form-field>
@@ -165,39 +165,37 @@
                     <div class="col-md-3"></div>
                   </div>
                   <div class="row justify-content-center">
-                      <div class="col-md-3"></div>
-                      <div class="col-md-3 mt-4">
-                          <div class="togglebutton">
-                              <label>is Locked
-                                <ng-container *ngIf="selectedUser.locked; else elseTemplate">
-                                  <input type="checkbox" checked formControlName="locked" (change)="changeLockStatus()">
-                                  <span class="toggle"></span>
-                                </ng-container>
-                                <ng-template #elseTemplate>
-                                  <input type="checkbox" formControlName="locked" (change)="changeLockStatus()">
-                                  <span class="toggle"></span>
-                                </ng-template>
-                              </label>
-                            </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3 mt-4">
+                      <div class="togglebutton">
+                        <label>is Locked
+                          <ng-container *ngIf="selectedUser.locked; else elseTemplate">
+                            <input type="checkbox" checked (change)="changeLockStatus()">
+                            <span class="toggle"></span>
+                          </ng-container>
+                          <ng-template #elseTemplate>
+                            <input type="checkbox" (change)="changeLockStatus()">
+                            <span class="toggle"></span>
+                          </ng-template>
+                        </label>
                       </div>
-                      <div class="col-md-3 mt-4">
-                          <div class="togglebutton">
-                              <label>is Active
-                                <ng-container *ngIf="selectedUser.active; else elseTemplate">
-                                  <input type="checkbox" checked formControlName="active" (change)="changeActiveStatus()">
-                                  <span class="toggle"></span>
-                                </ng-container>
-                                <ng-template #elseTemplate>
-                                  <input type="checkbox" formControlName="active" (change)="changeActiveStatus()">
-                                  <span class="toggle"></span>
-                                </ng-template>
-                              </label>
-                            </div>
-                      </div>
-                      <div class="col-md-3"></div>
                     </div>
-
-
+                    <div class="col-md-3 mt-4">
+                      <div class="togglebutton">
+                        <label>is Active
+                          <ng-container *ngIf="selectedUser.active; else elseTemplate">
+                            <input type="checkbox" checked (change)="changeActiveStatus()">
+                            <span class="toggle"></span>
+                          </ng-container>
+                          <ng-template #elseTemplate>
+                            <input type="checkbox" (change)="changeActiveStatus()">
+                            <span class="toggle"></span>
+                          </ng-template>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                  </div>
                 </form>
               </div>
               <div class="card-footer">
