@@ -1,6 +1,72 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
     <section id="publicIpPanel" class="publicIpPanel">
+      <!-- <div class="row" *ngIf="dataTable.dataRows && dataTable.dataRows.length>0">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-info card-header-icon">
+              <div class="card-icon">
+                <i class="material-icons">public</i>
+              </div>
+              <h4 class="card-title">Public Ip/ Agents</h4>
+            </div>
+            <div class="card-body">
+              <div class="toolbar">
+                <!--        Here you can write extra buttons/actions for the toolbar              
+              </div>
+              <div class="material-datatables">
+                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0"
+                  width="100%" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>{{ dataTable.headerRow[0] }}</th>
+                      <th>{{ dataTable.headerRow[1] }}</th>
+                      <th>{{ dataTable.headerRow[2] }}</th>
+                      <th>{{ dataTable.headerRow[3] }}</th>
+                      <th>{{ dataTable.headerRow[4] }}</th>
+                      <th>{{ dataTable.headerRow[5] }}</th>
+                      <th class="text-center">{{ dataTable.headerRow[6] }}</th>
+                      <th class="disabled-sorting text-right">{{ dataTable.headerRow[7] }}</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>{{ dataTable.footerRow[0] }}</th>
+                      <th>{{ dataTable.footerRow[1] }}</th>
+                      <th>{{ dataTable.footerRow[2] }}</th>
+                      <th>{{ dataTable.footerRow[3] }}</th>
+                      <th>{{ dataTable.footerRow[4] }}</th>
+                      <th>{{ dataTable.footerRow[5] }}</th>
+                      <th class="text-center">{{ dataTable.footerRow[6] }}</th>
+                      <th class="text-center">{{ dataTable.footerRow[7] }}</th>
+                    </tr>
+                  </tfoot>
+                  <tbody>
+                    <tr *ngFor="let row of dataTable.dataRows">
+                      <td>{{row[1]}}</td>
+                      <td>{{row[2]}}</td>
+                      <td>{{row[3]}}</td>
+                      <td>{{row[4]}}</td>
+                      <td>{{row[5]}}</td>
+                      <td>{{row[6]}}</td>
+                      <td class="text-center">
+                        <img class="row-img" alt=" " src="{{row[7]}}">
+                      </td>
+                      <td class="text-center">
+                        <a class="btn btn-link btn-info btn-just-icon" (click)="showEditWizard(row[0])"><i
+                            class="material-icons">edit</i></a>
+                        <a class="btn btn-link btn-danger btn-just-icon" (click)="deletePublicIp(row[0])"><i
+                            class="material-icons">close</i></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- end content
+          </div>
+        </div>
+      </div> -->
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
           <div class="card">
@@ -12,38 +78,58 @@
             </div>
             <div class="card-body">
               <div class="row">
-                <div class="col-md-12 text-right">
-                  <button mat-raised-button type="button" class="btn btn-success" (click)="showNewWizard()">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <mat-form-field>
+                    <input type="text" name="search" matInput id="text" placeholder="Search by name..."
+                      [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)">
+                  </mat-form-field>
+                </div>
+                <div class="col-md-4 text-right">
+                  <button mat-raised-button type="button" class="btn btn-success btn-sm" (click)="showNewWizard()">
                     <i class="material-icons">add_circle_outline</i> Create New Agent
                   </button>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <div class="table-responsive">
+                  <div class="table-responsive" style="max-height: 500px;">
                     <table class="table">
                       <thead class="text-success">
                         <tr>
-                          <th>Public Ip</th>
-                          <th>Domain Profiles</th>
-                          <th>Application Profile</th>
-                          <th>Blacklist/Whitelist Profiles</th>
-                          <th>Ip Address</th>
-                          <th>Block Message</th>
-                          <th>Logo</th>
-                          <th>Operation</th>
+                          <th><small>Name</small></th>
+                          <th><small>Domain</small></th>
+                          <th><small>Application</small></th>
+                          <th><small>Blacklist/Whitelist</small></th>
+                          <th style="min-width: 125px;"><small>Ip Address</small></th>
+                          <th class="text-center"><small>Message</small></th>
+                          <th><small>Logo</small></th>
+                          <th style="min-width: 80px;"><small>Operation</small></th>
                         </tr>
                       </thead>
+                      <tfoot>
+                        <tr>
+                          <th><small>Name</small></th>
+                          <th><small>Domain</small></th>
+                          <th><small>Application</small></th>
+                          <th><small>Blacklist/Whitelist</small></th>
+                          <th><small>Ip Address</small></th>
+                          <th class="text-center"><small>Message</small></th>
+                          <th><small>Logo</small></th>
+                          <th style="min-width: 80px;"><small>Operation</small></th>
+                        </tr>
+                      </tfoot>
                       <tbody>
-                        <tr *ngFor="let pi of publicIps">
+                        <tr *ngFor="let pi of publicIpsFiltered">
                           <td>{{pi.agentAlias}}</td>
                           <td>{{pi.profile.name}}</td>
                           <td>{{pi.appUserProfile.profileName}}</td>
                           <td>{{pi.bwList.name}}</td>
-                          <td>
-                            <div *ngIf="pi.ips.length > 0">
-                              <div *ngFor="let ip of pi.ips">{{ipSplit(ip)}}</div>
-                            </div>
+                          <td><small>
+                              <div *ngIf="pi.ips.length > 0">
+                                <div *ngFor="let ip of pi.ips">[{{ipSplit(ip)}}] </div>
+                              </div>
+                            </small>
                           </td>
                           <td class="text-center">{{pi.blockMessage?pi.blockMessage:"---"}}</td>
                           <td>
@@ -202,8 +288,8 @@
                                 <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-md-12 ml-auto mr-auto"
                                   style="display: none;">
                                   <mat-form-field>
-                                    <input type="text" id="dnsFqdn" name="dnsFqdn" matInput id="text" [(ngModel)]="dnsFqdn"
-                                    formControlName="dnsFqdn" placeholder="DNS FQDN">
+                                    <input type="text" id="dnsFqdn" name="dnsFqdn" matInput id="text"
+                                      [(ngModel)]="dnsFqdn" formControlName="dnsFqdn" placeholder="DNS FQDN">
                                   </mat-form-field>
                                 </div>
                                 <div class="col-md-12  ml-auto mr-auto" id="staticIPBlock">
@@ -277,3 +363,25 @@
     </section>
   </div>
 </div>
+<style>
+    /* width */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+  
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #eee;
+    }
+  
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: rgb(187, 187, 187);
+      border-radius: 9px;
+    }
+  
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #888888;
+    }
+  </style>

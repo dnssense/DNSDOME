@@ -8,7 +8,7 @@
               <div class="card-icon">
                 <i class="material-icons">all_inbox</i>
               </div>
-              <h4 class="card-title ">Boxes (Who am I, What am I)</h4>
+              <h4 class="card-title ">Boxes</h4>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -20,7 +20,7 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>Box information</td>
+                      <td>No Data</td>
                     </tr>
                   </tbody>
                 </table>
@@ -43,15 +43,15 @@
                 <table class="table">
                   <thead class="text-warning">
                     <tr>
-                      <th>Agent Id</th>
-                      <th>Register</th>
+                      <th>Name</th>
+                      <th class="text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let agent of unregistered">
                       <td>{{agent.agentAlias}}</td>
                       <td class="td-actions text-right">
-                        <button mat-raised-button type="button" class="btn btn-warning"
+                        <button mat-raised-button type="button" class="btn btn-success"
                           (click)="showNewWizard(agent.agentCode)">
                           <i class="material-icons">add_circle_outline</i>
                         </button>
@@ -74,16 +74,16 @@
             <div class="card-body">
               <div class="table-responsive" style="max-height: 300px;">
                 <table class="table">
-                  <thead class="text-success">
+                  <thead class="text-warning">
                     <tr>
-                      <th>Agent Id</th>
-                      <th>Register</th>
+                      <th>Name</th>
+                      <th class="text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let agent of registered">
                       <td>{{agent.agentAlias}}</td>
-                      <td class="td-actions text-center">
+                      <td class="td-actions text-right">
                         <button mat-raised-button type="button" class="btn btn-danger mr-1"
                           (click)="deleteAgent(agent)">
                           <i class="material-icons">close</i>
@@ -364,3 +364,25 @@
 
   </div>
 </div>
+<style>
+    /* width */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+  
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #eee;
+    }
+  
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: rgb(187, 187, 187);
+      border-radius: 9px;
+    }
+  
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #888888;
+    }
+  </style>

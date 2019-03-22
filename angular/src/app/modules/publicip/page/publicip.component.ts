@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { ApplicationProfile } from 'src/app/core/models/ApplicationProfile';
@@ -10,14 +10,18 @@ import { DomainProfilesService } from 'src/app/core/services/DomainProfilesServi
 import { BWListService } from 'src/app/core/services/BWListService';
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
 import { PublicIP } from 'src/app/core/models/PublicIP';
-import { SpinnerService } from 'src/app/core/services/spinner.service';
-import { AgentService } from 'src/app/core/services/agent.service';
 
 declare var $: any;
 
 export class IpNumber {
   ip: string = "";
   range: number = 0;
+}
+
+declare interface DataTable {
+  headerRow: string[];
+  footerRow: string[];
+  dataRows: string[][];
 }
 
 @Component({
@@ -27,6 +31,8 @@ export class IpNumber {
 })
 export class PublicipComponent implements OnInit {
   ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
+  publicIps: PublicIP[];
+  publicIpsFiltered: PublicIP[];
   publicIpForm: FormGroup;
   agentName: string;
   ipList: IpNumber[];
@@ -44,16 +50,20 @@ export class PublicipComponent implements OnInit {
   userBWList: BWList[];
   systemBWList: BWList[];
   ipRanges: Number[] = [24, 25, 26, 27, 28, 29, 30, 32];
-  publicIps: PublicIP[];
   selectedIp: PublicIP = new PublicIP();
   ipType: string = 'staticIp';
   dnsFqdn: string;
+  dataTable: DataTable = {} as DataTable;
+  dataTableRows: string[][] = [];
+  searchKey: string;
 
   constructor(private alertService: AlertService, private notification: NotificationService, private bwService: BWListService,
     private formBuilder: FormBuilder, private apService: ApplicationProfilesService, private dpService: DomainProfilesService,
     private publicIpService: PublicIPService) {
+    //this.dataTable.dataRows = [[]];
 
-    this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
+    this.getPublicIpsData();
+
     this.publicIpForm = this.formBuilder.group({
       "agentName": ["", [Validators.required]],
       "blockMessage": ["", [Validators.required]],
@@ -62,8 +72,30 @@ export class PublicipComponent implements OnInit {
     });
 
   }
-  ngOnInit() {
 
+  getPublicIpsData() {
+    this.publicIpService.getPublicIPs().subscribe(data => {
+      this.publicIps = data;
+      this.publicIpsFiltered = data;
+      // this.publicIps.forEach(p => {
+      //   let ipb = '';
+      //   if (p.ips && p.ips.length > 0) {
+      //     for (let j = 0; j < p.ips.length; j++) {
+      //       ipb += '[' + this.ipSplit(p.ips[j].join(',')) + '] ';
+      //     }
+      //   }
+      //   this.dataTableRows.push([p.id.toString(), p.agentAlias, p.profile.name, p.appUserProfile.profileName, p.bwList.name, ipb, p.blockMessage, p.logo.toString()]);
+      // });
+      // this.dataTable.dataRows= [];
+      // this.dataTable = {
+      //   headerRow: ['Name', 'Domain', 'Application', 'Blacklist/Whitelist', 'IP Block', 'Message', 'Logo', 'Actions'],
+      //   footerRow: ['Name', 'Domain', 'Application', 'Blacklist/Whitelist', 'IP Block', 'Message', 'Logo', 'Actions'],
+      //   dataRows: this.dataTableRows
+      // }; 
+    });
+  }
+
+  ngOnInit() {
     this.selectedIp = new PublicIP();
     this.selectedIp.profile = new DomainProfile();
     this.selectedIp.appUserProfile = new ApplicationProfile();
@@ -87,7 +119,79 @@ export class PublicipComponent implements OnInit {
         this.updateBWList();
       }
     });
+  }
 
+  ngAfterViewInit() {
+
+    $(window).resize(() => {
+      $('.card-wizard').each(function () {
+
+        const $wizard = $(this);
+        const index = $wizard.bootstrapWizard('currentIndex');
+        let $total = $wizard.find('.nav li').length;
+        let $li_width = 100 / $total;
+
+        let total_steps = $wizard.find('.nav li').length;
+        let move_distance = $wizard.width() / total_steps;
+        let index_temp = index;
+        let vertical_level = 0;
+
+        let mobile_device = $(document).width() < 600 && $total > 3;
+
+        if (mobile_device) {
+          move_distance = $wizard.width() / 2;
+          index_temp = index % 2;
+          $li_width = 50;
+        }
+
+        $wizard.find('.nav li').css('width', $li_width + '%');
+
+        let step_width = move_distance;
+        move_distance = move_distance * index_temp;
+
+        let $current = index + 1;
+
+        if ($current == 1 || (mobile_device == true && (index % 2 == 0))) {
+          move_distance -= 8;
+        } else if ($current == total_steps || (mobile_device == true && (index % 2 == 1))) {
+          move_distance += 8;
+        }
+
+        if (mobile_device) {
+          let x: any = index / 2;
+          vertical_level = parseInt(x);
+          vertical_level = vertical_level * 38;
+        }
+
+        $wizard.find('.moving-tab').css('width', step_width);
+        $('.moving-tab').css({
+          'transform': 'translate3d(' + move_distance + 'px, ' + vertical_level + 'px, 0)',
+          'transition': 'all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)'
+        });
+
+        $('.moving-tab').css({
+          'transition': 'transform 0s'
+        });
+      });
+    });
+
+    // $('#datatables').DataTable({
+    //   "pagingType": "full_numbers",
+    //   "lengthMenu": [
+    //     [10, 25, 50, -1],
+    //     [10, 25, 50, "All"]
+    //   ],
+    //   responsive: true,
+    //   language: {
+    //     search: "_INPUT_",
+    //     searchPlaceholder: "Search records",
+    //   }
+
+    // });
+
+    // const table = $('#datatables').DataTable();
+
+    // $('.card .material-datatables label').addClass('form-group');
   }
 
   updateApplicationProfilelist() {
@@ -451,61 +555,6 @@ export class PublicipComponent implements OnInit {
     }
   }
 
-  ngAfterViewInit() {
-
-    $(window).resize(() => {
-      $('.card-wizard').each(function () {
-
-        const $wizard = $(this);
-        const index = $wizard.bootstrapWizard('currentIndex');
-        let $total = $wizard.find('.nav li').length;
-        let $li_width = 100 / $total;
-
-        let total_steps = $wizard.find('.nav li').length;
-        let move_distance = $wizard.width() / total_steps;
-        let index_temp = index;
-        let vertical_level = 0;
-
-        let mobile_device = $(document).width() < 600 && $total > 3;
-
-        if (mobile_device) {
-          move_distance = $wizard.width() / 2;
-          index_temp = index % 2;
-          $li_width = 50;
-        }
-
-        $wizard.find('.nav li').css('width', $li_width + '%');
-
-        let step_width = move_distance;
-        move_distance = move_distance * index_temp;
-
-        let $current = index + 1;
-
-        if ($current == 1 || (mobile_device == true && (index % 2 == 0))) {
-          move_distance -= 8;
-        } else if ($current == total_steps || (mobile_device == true && (index % 2 == 1))) {
-          move_distance += 8;
-        }
-
-        if (mobile_device) {
-          let x: any = index / 2;
-          vertical_level = parseInt(x);
-          vertical_level = vertical_level * 38;
-        }
-
-        $wizard.find('.moving-tab').css('width', step_width);
-        $('.moving-tab').css({
-          'transform': 'translate3d(' + move_distance + 'px, ' + vertical_level + 'px, 0)',
-          'transition': 'all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)'
-        });
-
-        $('.moving-tab').css({
-          'transition': 'transform 0s'
-        });
-      });
-    });
-  }
-
   showNewWizard() {
 
     this.ipList = [];
@@ -522,11 +571,10 @@ export class PublicipComponent implements OnInit {
     $('#contentLink').click();
   }
 
-  showEditWizard(id: Number) {
-    debugger;
+  showEditWizard(id: string) {
     this.ipList = [];
     this.ipList.push(new IpNumber());
-    this.selectedIp = this.publicIps.find(p => p.id == id);
+    this.selectedIp = this.publicIps.find(p => p.id == Number(id));
 
     if (this.selectedIp && this.selectedIp.ips && this.selectedIp.ips.length > 0) {
       for (let i = 0; i < this.selectedIp.ips.length; i++) {
@@ -550,12 +598,15 @@ export class PublicipComponent implements OnInit {
 
     this.installWizard();
     $('#contentLink').click();
+    document.getElementById('wizardPanel').scrollIntoView();
+
   }
 
   hideWizard() {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
       res => {
         if (res) {
+          this.publicIpService.getPublicIPs().subscribe(data => { this.publicIps = data; });
           $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
           $('#publicIpPanel').toggle("slide", { direction: "left" }, 1000);
         }
@@ -574,7 +625,7 @@ export class PublicipComponent implements OnInit {
     } else if (this.ipType == 'dynamicIp' && !this.dnsFqdn) {
       this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return;
-    } else {
+    } else if (!this.ipType) {
       return;
     }
 
@@ -586,7 +637,7 @@ export class PublicipComponent implements OnInit {
         ip.push(this.publicIpService.getRangeOrSubnetMask(2, p.range).toString());
         this.selectedIp.ips.push(ip);
       }
-    } else if (this.ipType == 'dynamicIp'){
+    } else if (this.ipType == 'dynamicIp') {
       //TODO: this.dnsFqdn alanı bir yere bağlı değil şuanda.
     }
 
@@ -684,5 +735,13 @@ export class PublicipComponent implements OnInit {
 
     console.log(this.selectedIp);
 
+  }
+
+  searchByKeyword(e: any) {
+    if (this.searchKey && this.searchKey.length > 0) {
+      this.publicIpsFiltered = this.publicIps.filter(f => f.agentAlias.toLowerCase().includes(this.searchKey.toLowerCase()));
+    } else {
+      this.publicIpsFiltered = this.publicIps;
+    }
   }
 }

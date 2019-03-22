@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from '../../login/page/login.component';
 import { AdminLayoutComponent } from './page/adminlayout.component';
 import { AuthGuard } from 'src/app/core/guards/AuthGuard';
 
@@ -40,13 +39,13 @@ const adminlayoutRoutes: Routes = [
     },{
       path: 'help',
       loadChildren: '../../help/help.module#HelpModule'
+    },{
+      path: 'realtime',
+      loadChildren: '../../realtime/realtime.module#RealTimeModule'
+    },{
+      path: 'roaming',
+      loadChildren: '../../roaming/roaming.module#RoamingModule'
     }]
-    /*,{
-     path:'',
-     loadChildren: '../../login/login.module#LoginModule'
-   }
-
-   ]*/
   }
 
 ];

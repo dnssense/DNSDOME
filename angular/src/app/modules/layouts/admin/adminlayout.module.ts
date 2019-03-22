@@ -7,7 +7,6 @@ import { SelectModule } from 'ng2-select';
 import { MaterialModule } from 'src/app/shared/components/material.module';
 import { AdminLayoutComponent } from './page/adminlayout.component';
 import { AdminLayoutRoutingModule } from './adminlayout-routing.module';
-import { FixedpluginModule } from '../../shared/fixedplugin/fixedplugin.module';
 import { NavbarModule } from '../../shared/navbar/navbar.module';
 import { FooterModule } from '../../shared/footer/footer.module';
 import { SidebarModule } from '../../shared/sidebar/sidebar.module';
@@ -24,7 +23,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
     TagInputModule,
     MaterialModule,
     AdminLayoutRoutingModule,
-    FixedpluginModule,
     NavbarModule,
     FooterModule,
     SidebarModule,
