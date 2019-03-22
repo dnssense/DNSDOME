@@ -8,6 +8,8 @@ import { TimeProfileResponse } from 'src/app/core/models/TimeProfileResponse';
 import { CollectiveBlockRequest } from 'src/app/core/models/CollectiveBlockRequest';
 import { CollectiveCategory } from 'src/app/core/models/CollectiveCategory';
 import { DayProfileGroup } from 'src/app/core/models/DayProfileGroup';
+import { BoxService } from 'src/app/core/services/BoxService';
+import { Box } from 'src/app/core/models/Box';
 
 declare var $: any;
 
@@ -29,9 +31,12 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     deviceForm: FormGroup;
     collectiveBlockReq: CollectiveBlockRequest = new CollectiveBlockRequest();
     selectedProfile: DayProfileGroup;
+    boxes: Box[] = [];
 
-    constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService) {
+    constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService,
+        private boxService: BoxService) {
 
+        this.boxService.getBoxes().subscribe(b => this.boxes = b);
         this.initializeVariables();
 
         this.agentService.getRegisteredAgents().subscribe(data => { this.registered = data; this.registeredCount = data.length });
@@ -56,7 +61,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
             'has-feedback': this.isFieldValid(form, field)
         };
     }
-    
+
     ngOnInit() {
 
         this.deviceForm =
@@ -461,7 +466,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
 
             $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
             $('#devicePanel').toggle("slide", { direction: "left" }, 1000);
-            this.agentService.getProfiles().subscribe(d=> this.profiles= d);
+            this.agentService.getProfiles().subscribe(d => this.profiles = d);
         });
 
     }
@@ -507,11 +512,11 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
         );
 
     }
-    
+
     openEditProfilePanel(id: number) {
 
-        this.agentService.getProfiles().subscribe(d=> this.selectedProfile = d.profileDay.find(p=> p.id == id));
-        
+        this.agentService.getProfiles().subscribe(d => this.selectedProfile = d.profileDay.find(p => p.id == id));
+
         $('#profilePanel').slideDown(300);
     }
 

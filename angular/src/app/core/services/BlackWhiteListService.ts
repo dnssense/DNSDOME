@@ -13,7 +13,7 @@ import { OperationResult } from '../models/OperationResult';
 @Injectable({
   providedIn: 'root'
 })
-export class BWListService {
+export class BlackWhiteListService {
 
   public _bwlistDetailsURL = this.config.getApiUrl() + '/bwlist/get?id=';
   public _roleSaveURL = this.config.getApiUrl() + '/bwlist/save';

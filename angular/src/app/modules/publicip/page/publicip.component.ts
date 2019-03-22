@@ -7,7 +7,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { DomainProfile } from 'src/app/core/models/DomainProfile';
 import { BWList } from 'src/app/core/models/BWList';
 import { DomainProfilesService } from 'src/app/core/services/DomainProfilesService';
-import { BWListService } from 'src/app/core/services/BWListService';
+import { BlackWhiteListService } from 'src/app/core/services/BlackWhiteListService';
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
 import { PublicIP } from 'src/app/core/models/PublicIP';
 
@@ -57,7 +57,7 @@ export class PublicipComponent implements OnInit {
   dataTableRows: string[][] = [];
   searchKey: string;
 
-  constructor(private alertService: AlertService, private notification: NotificationService, private bwService: BWListService,
+  constructor(private alertService: AlertService, private notification: NotificationService, private bwService: BlackWhiteListService,
     private formBuilder: FormBuilder, private apService: ApplicationProfilesService, private dpService: DomainProfilesService,
     private publicIpService: PublicIPService) {
     //this.dataTable.dataRows = [[]];
