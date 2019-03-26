@@ -61,7 +61,7 @@ export class PublicipComponent implements OnInit {
     private formBuilder: FormBuilder, private apService: ApplicationProfilesService, private dpService: DomainProfilesService,
     private publicIpService: PublicIPService) {
     //this.dataTable.dataRows = [[]];
-
+   
     this.getPublicIpsData();
 
     this.publicIpForm = this.formBuilder.group({
@@ -77,6 +77,8 @@ export class PublicipComponent implements OnInit {
     this.publicIpService.getPublicIPs().subscribe(data => {
       this.publicIps = data;
       this.publicIpsFiltered = data;
+
+      // datatables.net implementation
       // this.publicIps.forEach(p => {
       //   let ipb = '';
       //   if (p.ips && p.ips.length > 0) {
