@@ -9,13 +9,13 @@ import { ConfigService } from './config.service';
 @Injectable({ providedIn: 'root' })
 export class BoxService {
 
-  public _boxesListURL = this.config.getApiUrl() + '/myboxes/box-list';
-  public _activeBoxesListURL = this.config.getApiUrl() + '/myboxes/active-box-list';
-  public _appUserProfilesListURL = this.config.getApiUrl() + '/application-profiles/profile-list';
-  public _domainProfilesListURL = this.config.getApiUrl() + '/domain-profiles/profile-list';
-  public _boxDeleteURL = this.config.getApiUrl() + '/myboxes/delete';
-  public _boxUpdateURL = this.config.getApiUrl() + '/myboxes/update';
-  public _boxSaveURL = this.config.getApiUrl() + '/myboxes/save';
+  private _boxesListURL = this.config.getApiUrl() + '/myboxes/box-list';
+  private _activeBoxesListURL = this.config.getApiUrl() + '/myboxes/active-box-list';
+  private _appUserProfilesListURL = this.config.getApiUrl() + '/application-profiles/profile-list';
+  private _domainProfilesListURL = this.config.getApiUrl() + '/domain-profiles/profile-list';
+  private _boxDeleteURL = this.config.getApiUrl() + '/myboxes/delete';
+  private _boxUpdateURL = this.config.getApiUrl() + '/myboxes/update';
+  private _boxSaveURL = this.config.getApiUrl() + '/myboxes/save';
 
   constructor(private http: HttpClient, private config: ConfigService) {
 
@@ -46,7 +46,7 @@ export class BoxService {
      //todo . burda valuyu düzenlemen gerkeebilir..Burda agentip groups u basacaz...
      }
      */
-    let body = JSON.stringify(box);
+    let body = JSON.stringify(box, null, ' ');
 
     return this.http.post<OperationResult>(this._boxSaveURL, body, this.getOptions()).map(res => res);
   }
