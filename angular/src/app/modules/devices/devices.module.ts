@@ -10,13 +10,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
 import { TimeProfileComponent } from './components/time-profile/time-profile.component';
+import { BoxWizardComponent } from './components/bow-wizard/box-wizard.component';
 
 
 
 @NgModule({
   declarations: [
     DevicesComponent,
-    TimeProfileComponent],
+    TimeProfileComponent,
+    BoxWizardComponent],
   imports: [
     FormsModule,
     ReactiveFormsModule,

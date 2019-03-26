@@ -3,7 +3,7 @@
     <section id="devicePanel" class="devicePanel">
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
-          <div class="card">
+          <div class="card mt-1">
             <div class="card-header card-header-icon card-header-info">
               <div class="card-icon">
                 <i class="material-icons">all_inbox</i>
@@ -11,17 +11,52 @@
               <h4 class="card-title ">Boxes</h4>
             </div>
             <div class="card-body">
-              <div class="table-responsive">
+              <div class="table-responsive" style="max-height:230px; min-height: 200px;">
                 <table class="table">
                   <thead class="text-warning">
                     <tr>
                       <th>Box Headers</th>
+                      <th>Domain</th>
+                      <th>Application</th>
+                      <th>Black/White</th>
+                      <th>Message</th>
+                      <th>Logo</th>
+                      <th>Operation</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let box of boxes">
                       <td>{{box.host}}</td>
-
+                      <td>{{box?.location?.profile?.name}}</td>
+                      <td>{{box?.location?.appUserProfile?.profileName}}</td>
+                      <td>{{box?.location?.bwList?.name}}</td>
+                      <td>{{box.location?.blockMessage?box.location.blockMessage:"---"}}</td>
+                      <td>
+                        <ng-container *ngIf="!box.logo; else elseTemplate">
+                          ---
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                          <img class="row-img" alt=" " src="{{box.logo}}">
+                        </ng-template>
+                      </td>
+                      <td class="text-center">
+                        <ng-container *ngIf="!box.location || box.location?.id<0; else elseTemplate">
+                          <button mat-raised-button type="button" class="btn btn-success btn-sm"
+                            mattooltip="Approve Box" (click)="approveBox(box?.id)">
+                            <i class="material-icons">check</i>Approve
+                          </button>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                          <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
+                            mattooltip="Edit item" (click)="showBoxEditWizard(box.id)">
+                            <i class="material-icons">edit</i>
+                          </button>
+                          <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
+                            mattooltip="Delete item" (click)="deleteBox(box.id)">
+                            <i class="material-icons">close</i>
+                          </button>
+                        </ng-template>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -32,7 +67,7 @@
       </div>
       <div class="row">
         <div class="col-md-6 ml-auto mr-auto">
-          <div class="card">
+          <div class="card mt-1">
             <div class="card-header card-header-icon card-header-warning">
               <div class="card-icon">
                 <i class="material-icons">assignment</i>
@@ -40,7 +75,7 @@
               <h4 class="card-title ">Unregistered Agents ({{unregisteredCount}})</h4>
             </div>
             <div class="card-body">
-              <div class="table-responsive" style="max-height: 300px;">
+              <div class="table-responsive" style="max-height: 270px;  min-height: 250px;">
                 <table class="table">
                   <thead class="text-warning">
                     <tr>
@@ -65,7 +100,7 @@
           </div>
         </div>
         <div class="col-md-6 ml-auto mr-auto">
-          <div class="card">
+          <div class="card mt-1">
             <div class="card-header card-header-icon card-header-success">
               <div class="card-icon">
                 <i class="material-icons">save</i>
@@ -73,7 +108,7 @@
               <h4 class="card-title ">Registered Agents ({{registeredCount}})</h4>
             </div>
             <div class="card-body">
-              <div class="table-responsive" style="max-height: 300px;">
+              <div class="table-responsive" style="max-height: 270px;  min-height: 250px;">
                 <table class="table">
                   <thead class="text-warning">
                     <tr>
@@ -362,7 +397,18 @@
         </div>
       </div>
     </section>
+    <section id="boxWizardPanel" class="wizardPanel" style="display: none;">
+      <div class="row">
+        <div class="col-md-12">
+          <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
+            <i class="material-icons">arrow_back</i>
+          </button>
+          <app-box-wizard [selectedBox]="selectedBox" (saveEmitter)="hideBoxWizard();">
+          </app-box-wizard>
+        </div>
+      </div>
 
+    </section>
   </div>
 </div>
 <style>

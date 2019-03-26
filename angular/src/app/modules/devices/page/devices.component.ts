@@ -10,6 +10,7 @@ import { CollectiveCategory } from 'src/app/core/models/CollectiveCategory';
 import { DayProfileGroup } from 'src/app/core/models/DayProfileGroup';
 import { BoxService } from 'src/app/core/services/BoxService';
 import { Box } from 'src/app/core/models/Box';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 declare var $: any;
 
@@ -32,11 +33,11 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     collectiveBlockReq: CollectiveBlockRequest = new CollectiveBlockRequest();
     selectedProfile: DayProfileGroup;
     boxes: Box[] = [];
+    selectedBox: Box;
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService,
-        private boxService: BoxService) {
-
-        this.boxService.getBoxes().subscribe(b => this.boxes = b);
+        private boxService: BoxService, private notification: NotificationService) {
+        
         this.initializeVariables();
 
         this.agentService.getRegisteredAgents().subscribe(data => { this.registered = data; this.registeredCount = data.length });
@@ -46,29 +47,31 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     initializeVariables() {
+        this.boxes = [];
+        this.boxService.getBoxes().subscribe(b => {
+            b.forEach(bx => {
+                if (!bx.location) {
+                    this.boxes.push(bx);
+                }
+            });
+            b.forEach(bx => {
+                if (bx.location) {
+                    this.boxes.push(bx);
+                }
+            });
+        });
+
         this.device = new AgentResponse();
         this.device.id = null;
         this.device.agentAlias = null;
         this.device.agentCode = null;
     }
 
-    isFieldValid(form: FormGroup, field: string) {
-        return !form.get(field).valid && form.get(field).touched;
-    }
-    displayFieldCss(form: FormGroup, field: string) {
-        return {
-            'has-error': this.isFieldValid(form, field),
-            'has-feedback': this.isFieldValid(form, field)
-        };
-    }
-
     ngOnInit() {
 
-        this.deviceForm =
-            this.formBuilder.group({
-                deviceName: ["", [Validators.required, Validators.minLength(2)]]
-            }
-            );
+        this.deviceForm = this.formBuilder.group({
+            deviceName: ["", [Validators.required, Validators.minLength(2)]]
+        });
     }
 
     installWizard() {
@@ -406,8 +409,9 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
         this.alertService.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
             res => {
                 if (res) {
-                    $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
-                    $('#devicePanel').toggle("slide", { direction: "left" }, 1000);
+                    $('#wizardPanel').hide("slide", { direction: "right" }, 1000);
+                    $('#boxWizardPanel').hide("slide", { direction: "right" }, 1000);
+                    $('#devicePanel').show("slide", { direction: "left" }, 1000);
                     $('#profilePanel').slideUp(300);
 
                     this.agentService.getRegisteredAgents().subscribe(data => { this.registered = data; this.registeredCount = data.length });
@@ -415,6 +419,13 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
                 }
             }
         );
+    }
+
+    hideBoxWizard() {
+        this.initializeVariables()
+        $('#wizardPanel').hide("slide", { direction: "right" }, 1000);
+        $('#boxWizardPanel').hide("slide", { direction: "right" }, 1000);
+        $('#devicePanel').show("slide", { direction: "left" }, 1000);
     }
 
     allowCategory(id: number) {
@@ -435,6 +446,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
         $('#profilePanel').hide();
         console.log(this.collectiveBlockReq);
     }
+
     blockCategory(id: number) {
         this.mobileCategories.find(m => m.id == id).blocked = true;
         let mc: MobileCategory = this.mobileCategories.find(m => m.id == id);
@@ -530,11 +542,36 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     addNewProfile() {
-
         this.selectedProfile = new DayProfileGroup();
-
         $('#profilePanel').slideDown(300);
+    }
 
+    approveBox(id: number) {
+        if (id) {
+            this.notification.success("approve");
+        }
+    }
+
+    showBoxEditWizard(id: number) {
+        if (id) {
+            debugger;
+            this.selectedBox = this.boxes.find(b => b.id == id);
+            $('#wizardPanel').hide();
+            $('#devicePanel').toggle("slide", { direction: "left" }, 600);
+            $('#boxWizardPanel').toggle("slide", { direction: "right" }, 600);
+        }
+    }
+
+    deleteBox(id: number) {
+        if (id) {
+            this.boxService.delete(this.boxes.find(b=> b.id == id)).subscribe(res=> {
+                if (res.status == 200) {
+                    this.notification.success(res.message);
+                  } else {
+                    this.notification.error(res.message);
+                  }
+            });
+        }
     }
 
 
