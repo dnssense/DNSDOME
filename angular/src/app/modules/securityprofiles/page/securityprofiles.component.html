@@ -1,6 +1,6 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
-    <section id="securityprofilesPanel" class="securityprofilesPanel">
+    <section id="securityProfilesPanel" class="securityProfilesPanel">
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
           <div class="card">
@@ -13,18 +13,119 @@
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table">
-                  <thead class="text-warning">
+                  <thead class="text-info">
                     <tr>
                       <th>Profile Headers</th>
+                      <th>Security Level</th>                      
+                      <th class="text-right">Operations</th>                      
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td>Profile information</td>
+                      <td>Security Level</td>
+                      <td class="text-right">
+                        <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
+                          mattooltip="Edit item" (click)="showEditWizard(1)">
+                          <i class="material-icons">edit</i>
+                        </button>
+                        <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
+                          mattooltip="Delete item" (click)="deleteProfile(1)">
+                          <i class="material-icons">close</i>
+                        </button>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="wizardPanel" class="wizardPanel" style="display: none;">
+      <div class="row">
+        <div class="col-md-12">
+          <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
+            <i class="material-icons">arrow_back</i>
+          </button>
+          <div class="wizard-container">
+            <div class="card card-wizard" data-color="blue" id="wizardProfile">
+              <form [formGroup]="profileForm" action="" method="">
+                <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
+                <div class="card-header text-center">
+                  <h3 class="card-title">
+                    <div class="row">
+                      <div class="col-md-4"></div>
+                      <div class="col-md-4 text-center input-group form-control-lg">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="material-icons">face</i>
+                          </span>
+                        </div>
+                        <mat-form-field>
+                          <input type="text" name="profileName" matInput id="text" placeholder="Profile Name"
+                            formControlName="profileName">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4"></div>
+                    </div>
+                  </h3>
+                  <!-- <h5 class="card-description">Manage this device</h5> -->
+                </div>
+                <div class="wizard-navigation">
+                  <ul class="nav nav-pills">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="contentLink" href="#content" data-toggle="tab" role="tab">
+                        Content Filtering
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#applications" data-toggle="tab" role="tab">
+                        Applications
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#security" data-toggle="tab" role="tab">
+                        Security
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="content">
+                      content
+                    </div>
+                    <div class="tab-pane" id="applications">
+                      <div class="row justify-content-center">
+                        <div class="col-md-12">
+                          applications
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane" id="security">
+                      <div class="row justify-content-center">
+                        <div class="col-md-12">
+                          security
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="mr-auto">
+                    <input type="button" class="btn btn-previous btn-fill btn-default btn-wd disabled" id="previous"
+                      name="previous" value="Previous">
+                  </div>
+                  <div class="ml-auto">
+                    <input type="button" class="btn btn-next btn-fill btn-info btn-wd" name="next" value="Next">
+                    <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" name="finish" value="Finish"
+                      (click)="saveProfile()" style="display: none;">
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
