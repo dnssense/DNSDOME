@@ -66,17 +66,6 @@ export class ScheduledReportsComponent implements OnInit {
         });
     }
 
-    isFieldValid(form: FormGroup, field: string) {
-        return !form.get(field).valid && form.get(field).touched;
-    }
-
-    displayFieldCss(form: FormGroup, field: string) {
-        return {
-            'has-error': this.isFieldValid(form, field),
-            'has-feedback': this.isFieldValid(form, field)
-        };
-    }
-
     ngOnInit() {
         
     }

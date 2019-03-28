@@ -68,7 +68,6 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     ngOnInit() {
-
         this.deviceForm = this.formBuilder.group({
             deviceName: ["", [Validators.required, Validators.minLength(2)]]
         });
@@ -301,7 +300,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
             $('.card-wizard').each(function () {
 
                 const $wizard = $(this);
-                const index = $wizard.bootstrapWizard('currentIndex');
+                const index = 0; // $wizard.bootstrapWizard('currentIndex');
                 let $total = $wizard.find('.nav li').length;
                 let $li_width = 100 / $total;
 

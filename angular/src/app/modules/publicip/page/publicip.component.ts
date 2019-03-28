@@ -129,7 +129,7 @@ export class PublicipComponent implements OnInit {
       $('.card-wizard').each(function () {
 
         const $wizard = $(this);
-        const index = $wizard.bootstrapWizard('currentIndex');
+        const index = 0; //$wizard.bootstrapWizard('currentIndex');
         let $total = $wizard.find('.nav li').length;
         let $li_width = 100 / $total;
 

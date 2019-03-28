@@ -12,17 +12,15 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ApplicationProfilesService {
-  public _profileListURL = this.config.getApiUrl() + '/application-profiles/profile-list';  // URL to graph api
-  public _categoryListURL = this.config.getApiUrl() + '/application-profiles/category-list';  // URL to graph api
-  public _saveProfiletURL = this.config.getApiUrl() + '/application-profiles/save';  // URL to graph api
-  public _deleteProfiletURL = this.config.getApiUrl() + '/application-profiles/delete';  // URL to graph api
+  private _profileListURL = this.config.getApiUrl() + '/application-profiles/profile-list';  // URL to graph api
+  private _categoryListURL = this.config.getApiUrl() + '/application-profiles/category-list';  // URL to graph api
+  private _saveProfiletURL = this.config.getApiUrl() + '/application-profiles/save';  // URL to graph api
+  private _deleteProfiletURL = this.config.getApiUrl() + '/application-profiles/delete';  // URL to graph api
 
+  private _categories: BehaviorSubject<WApplication[]> = new BehaviorSubject(null);
+  private _profileList: BehaviorSubject<ApplicationProfile[]> = new BehaviorSubject(null);
 
-  public _categories: BehaviorSubject<WApplication[]> = new BehaviorSubject(null);
-  public _profileList: BehaviorSubject<ApplicationProfile[]> = new BehaviorSubject(null);
-
-
-  public http;
+  private http;
 
   constructor(http: HttpClient, private config: ConfigService) {
     this.http = http;
@@ -46,7 +44,6 @@ export class ApplicationProfilesService {
 
   }
 
-
   get profileList(): BehaviorSubject<ApplicationProfile[]> {
     return this._profileList;
   }
@@ -57,41 +54,23 @@ export class ApplicationProfilesService {
 
   public getCategories() {
     return this.http.post(this._categoryListURL).map(res=> res);
-      // .catch((response: any, caught: any) => { 
-      //   return Observable.throw(response);
-      // });
-
   }
 
-
   public save(profile: ApplicationProfile) {
-
     let body = JSON.stringify(profile);
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
-
-    return this.http.post(this._saveProfiletURL, body, options).map((res: Response) => res.json())
-      .catch((response: any, caught: any) => { 
-        return Observable.throw(response);
-      });
-
+    return this.http.post(this._saveProfiletURL, body, options).map(res => res);
 
   }
 
   public delete(profile: ApplicationProfile) {
-
     let body = JSON.stringify(profile);
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
-
-    return this.http.post(this._deleteProfiletURL, body, options).map((res: Response) => res.json())
-      .catch((response: any, caught: any) => { 
-        return Observable.throw(response);
-      });
-
-
+    return this.http.post(this._deleteProfiletURL, body, options).map(res => res);
   }
 
 

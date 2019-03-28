@@ -11,6 +11,7 @@ import { Company } from 'src/app/core/models/Company';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
+import { AccountService } from 'src/app/core/services/AccountService';
 
 
 declare var $: any;
@@ -27,25 +28,23 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: 'register.component.html'
 })
 export class RegisterComponent implements OnInit, OnDestroy {
-  public _serviceURL = this.config.getApiUrl() + "/signup/";
   private toggleButton: any;
   private sidebarVisible: boolean;
   matcher = new MyErrorStateMatcher();
   isFailed: boolean;
   registerForm: FormGroup;
-  public user: SignupBean;
-  public message: string;
-  public status: number = null;
-  public passwordStrengthLabel: string = "";
-  public privacyPolicy: boolean = false;
-  public smsMessageActive: boolean = false;
-  public countries = countryList.countries;
-  public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
-  public captcha: string;
-  public captcha_key: string = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY;
+  private user: SignupBean;
+  private message: string;
+  private status: number = null;
+  private privacyPolicy: boolean = false;
+  private smsMessageActive: boolean = false;
+  private countries = countryList.countries;
+  private phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
+  private captcha: string;
+  private captcha_key: string = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
-  public company: string = 'dnssense';
-  public companyLogo: string = 'dnssense_logo_small.png';
+  private company: string = 'dnssense';
+  private companyLogo: string = 'dnssense_logo_small.png';
 
   emailFormControl = new FormControl('', [
     Validators.required,
@@ -53,9 +52,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ]);
   validEmailRegister: true | false;
   validPasswordRegister: true | false;
-  public usageType: boolean = true;
+  private usageType: boolean = true;
 
-  constructor(private formBuilder: FormBuilder, private element: ElementRef, private config: ConfigService, private notification: NotificationService) {
+  constructor(private formBuilder: FormBuilder, private element: ElementRef, private config: ConfigService,
+    private accountService: AccountService, private notification: NotificationService) {
     this.isFailed = false;
     this.sidebarVisible = false;
 
@@ -84,12 +84,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
         , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
       );
 
-      
-
     this.user = new SignupBean();
     this.user.company = new Company();
     this.user.company.name = " ";
-    
+
   }
 
   ngOnInit() {
@@ -126,25 +124,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     const body = document.getElementsByTagName('body')[0];
     body.classList.remove('register-page');
     body.classList.remove('off-canvas-sidebar');
-  }
-
-  isFieldValid(form: FormGroup, field: string) {
-    return !form.get(field).valid && form.get(field).touched;
-  }
-
-  displayFieldCss(form: FormGroup, field: string) {
-    return {
-      'has-error': this.isFieldValid(form, field),
-      'has-feedback': this.isFieldValid(form, field)
-    };
-  }
-
-  onRegister() {
-    if (this.registerForm.valid) {
-      //this.authenticate();
-    } else {
-      this.validateAllFormFields(this.registerForm);
-    }
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -189,7 +168,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.registerForm.controls["personnelCount"].setValidators(Validators.required);
       this.registerForm.controls["personnelCount"].updateValueAndValidity();
 
-      this.registerForm.controls["company"].setValidators(Validators.required);     
+      this.registerForm.controls["company"].setValidators(Validators.required);
       this.registerForm.controls["company"].updateValueAndValidity();
 
     } else {
@@ -206,7 +185,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.registerForm.controls["company"].clearValidators();
       this.registerForm.controls["company"].updateValueAndValidity();
     }
-    
+
   }
 
   checkisTelNumber(event: KeyboardEvent) {
@@ -229,9 +208,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.captcha = $event;
   }
 
-  isRegisterFormValid(){
-    if (this.user != null && this.registerForm.dirty && this.registerForm.valid 
-      && this.privacyPolicy && this.captcha != null){
+  isRegisterFormValid() {
+    if (this.user != null && this.registerForm.dirty && this.registerForm.valid
+      && this.privacyPolicy && this.captcha != null) {
       return true;
     }
     return false;
@@ -245,8 +224,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.privacyPolicy = this.privacyPolicy === true ? false : true;
   }
 
-  register(){
-    this.notification.warning("Register button clicked");
+  register() {
 
     if (!CaptchaService.validCaptcha(this.captcha)) {
       return;
@@ -255,9 +233,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
 
     if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.privacyPolicy) {
-      this.notification.success(JSON.stringify(this.registerForm.value));
+      this.accountService.signup(this.user).subscribe(res => {
+        if (res.status == 200) {
+          this.notification.success(res.message);
+        } else {
+          this.notification.error(res.message);
+        }
+      });
     }
-    
+
   }
+
 
 }

@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from '../models/User';
 import { OperationResult } from '../models/OperationResult';
 import { ConfigService } from './config.service';
+import { SignupBean } from '../models/SignupBean';
 
 /**
  * Created by fatih on 02.08.2016.
@@ -15,11 +16,12 @@ import { ConfigService } from './config.service';
 })
 export class AccountService {
 
-  public _saveAccountURL = this.config.getApiUrl() + '/account/updateUser';
-  public _savePasswordURL = this.config.getApiUrl() + '/account/savePassword';
-  public _savePersonalSettingURL = this.config.getApiUrl() + '/account/savePersonalSetting';
-  public _currentUserURL = this.config.getApiUrl() + '/account/currentUser';
-  public _currentUserRightsURL = this.config.getApiUrl() + '/account/currentUserRights';
+  private _signupURL = this.config.getApiUrl() + "/signup";
+  private _saveAccountURL = this.config.getApiUrl() + '/account/updateUser';
+  private _savePasswordURL = this.config.getApiUrl() + '/account/savePassword';
+  private _savePersonalSettingURL = this.config.getApiUrl() + '/account/savePersonalSetting';
+  private _currentUserURL = this.config.getApiUrl() + '/account/currentUser';
+  private _currentUserRightsURL = this.config.getApiUrl() + '/account/currentUserRights';
 
 
   constructor(private http: HttpClient, private config: ConfigService) {
@@ -39,8 +41,7 @@ export class AccountService {
   }
 
   public savePersonalSettings(user: User): Observable<OperationResult> {
-let body = JSON.stringify(user, null, ' ');
-debugger;
+    let body = JSON.stringify(user, null, ' ');
     return this.http.post<OperationResult>(this._savePersonalSettingURL, body, this.getOptions()).map(res => res);
   }
 
@@ -50,6 +51,10 @@ debugger;
 
   public getCurrentUserRights(): Observable<User> {
     return this.http.get<User>(this._currentUserRightsURL).map(res => res);
+  }
+
+  public signup(user: SignupBean): Observable<OperationResult> {
+    return this.http.post<OperationResult>(this._signupURL, JSON.stringify(user, null, ' '), this.getOptions()).map(res => res);
   }
 
   private getOptions() {

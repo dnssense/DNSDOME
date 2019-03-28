@@ -24,8 +24,6 @@ import {ReCaptchaModule} from "angular2-recaptcha";
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { DashBoardService } from './core/services/DashBoardService';
 import { SearchSettingService } from './core/services/SearchSettingService';
-import { FastReportService } from './core/services/FastReportService';
-import { CustomReportService } from './core/services/CustomReportService';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @NgModule({
@@ -59,8 +57,6 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     AuthGuard,
     AuthenticationService,
     SearchSettingService,
-    FastReportService,
-    CustomReportService,
     ConfigService,
     CookieService,
     BsModalService,

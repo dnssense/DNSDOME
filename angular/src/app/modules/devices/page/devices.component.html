@@ -120,12 +120,12 @@
                     <tr *ngFor="let agent of registered">
                       <td>{{agent.agentAlias}}</td>
                       <td class="td-actions text-right">
+                        <button mat-raised-button type="button" class="btn btn-info" (click)="showEditWizard(agent.id)">
+                          <i class="material-icons">edit</i>
+                        </button>
                         <button mat-raised-button type="button" class="btn btn-danger mr-1"
                           (click)="deleteAgent(agent)">
                           <i class="material-icons">close</i>
-                        </button>
-                        <button mat-raised-button type="button" class="btn btn-info" (click)="showEditWizard(agent.id)">
-                          <i class="material-icons">edit</i>
                         </button>
                       </td>
                     </tr>
@@ -137,7 +137,7 @@
         </div>
       </div>
     </section>
-    <section id="wizardPanel" class="wizardPanel" style="display: none;">
+    <section id="wizardPanel" class="wizardPanel" style="display: none;" *ngIf="device">
       <div class="row">
         <div class="col-md-12">
           <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">

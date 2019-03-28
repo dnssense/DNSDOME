@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { TimeProfileResponse } from 'src/app/core/models/TimeProfileResponse';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -13,7 +13,8 @@ declare var $: any;
     templateUrl: 'securityprofiles.component.html',
     styleUrls: ['securityprofiles.component.sass']
 })
-export class SecurityProfilesComponent implements OnInit {
+export class SecurityProfilesComponent implements OnInit, AfterViewInit {
+
     profiles: TimeProfileResponse;
     profileForm: FormGroup;
     mobileCategories: MobileCategory[];
@@ -29,6 +30,7 @@ export class SecurityProfilesComponent implements OnInit {
             profileName: ["", [Validators.required]]
         });
     }
+ 
 
     showEditWizard(id: number) {
         if (id) {
@@ -54,6 +56,10 @@ export class SecurityProfilesComponent implements OnInit {
 
     saveProfile() {
         this.notification.success("You pressed save button");
+    }
+
+    deleteProfile(id: number) {
+
     }
 
     installWizard() {
@@ -262,5 +268,61 @@ export class SecurityProfilesComponent implements OnInit {
         };
 
     }
+
+    ngAfterViewInit() {
+
+        $(window).resize(() => {
+            $('.card-wizard').each(function () {
+
+                const $wizard = $(this);
+                const index = 0; // $wizard.bootstrapWizard('currentIndex');
+                let $total = $wizard.find('.nav li').length;
+                let $li_width = 100 / $total;
+
+                let total_steps = $wizard.find('.nav li').length;
+                let move_distance = $wizard.width() / total_steps;
+                let index_temp = index;
+                let vertical_level = 0;
+
+                let mobile_device = $(document).width() < 600 && $total > 3;
+
+                if (mobile_device) {
+                    move_distance = $wizard.width() / 2;
+                    index_temp = index % 2;
+                    $li_width = 50;
+                }
+
+                $wizard.find('.nav li').css('width', $li_width + '%');
+
+                let step_width = move_distance;
+                move_distance = move_distance * index_temp;
+
+                let $current = index + 1;
+
+                if ($current == 1 || (mobile_device == true && (index % 2 == 0))) {
+                    move_distance -= 8;
+                } else if ($current == total_steps || (mobile_device == true && (index % 2 == 1))) {
+                    move_distance += 8;
+                }
+
+                if (mobile_device) {
+                    let x: any = index / 2;
+                    vertical_level = parseInt(x);
+                    vertical_level = vertical_level * 38;
+                }
+
+                $wizard.find('.moving-tab').css('width', step_width);
+                $('.moving-tab').css({
+                    'transform': 'translate3d(' + move_distance + 'px, ' + vertical_level + 'px, 0)',
+                    'transition': 'all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)'
+                });
+
+                $('.moving-tab').css({
+                    'transition': 'transform 0s'
+                });
+            });
+        });
+    }
+
 
 }
