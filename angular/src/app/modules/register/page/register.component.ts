@@ -33,15 +33,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
   matcher = new MyErrorStateMatcher();
   isFailed: boolean;
   registerForm: FormGroup;
-  private user: SignupBean;
+  public user: SignupBean;
   private message: string;
   private status: number = null;
   private privacyPolicy: boolean = false;
   private smsMessageActive: boolean = false;
   private countries = countryList.countries;
-  private phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
+  public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
   private captcha: string;
-  private captcha_key: string = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
+  public captcha_key: string = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   private company: string = 'dnssense';
   private companyLogo: string = 'dnssense_logo_small.png';
