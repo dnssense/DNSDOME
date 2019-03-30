@@ -55,24 +55,48 @@
                             </mat-select>
                           </mat-form-field>
                         </div>
-                        <div class="col-md-8" style="padding-right:0px;">
+                        <div class="col-md-6" style="padding-right:0px;">
                           <mat-form-field class="example-full-width has-label">
                             <input type="tel" #gsm maxlength="10" name="gsm" (keydown)="checkisTelNumber($event)"
-                              placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="user.gsm"
+                              placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="phoneNumberTemp"
                               formControlName="gsm">
                             <mat-hint align="end">{{gsm.value.length}}/ 10</mat-hint>
                             <app-field-error-display errorMsg="Add a number!">
                             </app-field-error-display>
                           </mat-form-field>
                         </div>
+                        <div class="col-md-2" style="padding-right:0px;">
+                          <button type="button" id="changePhoneBtn" disabled (click)="changePhoneNumber()"
+                            class="btn btn-info btn-sm">Validate</button>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                  <div id="smsValidationDiv" class="form-group-sm has-default" style="display:none;">
+                    <div class="row">
+                      <div class="col-md-4 text-center text-danger">
+                          <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="input-group">
+                          <div class="input-group-prepend" style="width:100%;">
+                            <mat-form-field class="example-full-width">
+                              <input type="text" matInput placeholder="SMS Validation Code" [(ngModel)]="smsCode"
+                                formControlName="smsCode">
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                          <button type="button" (click)="confirmGsm()" class="btn btn-info btn-sm">Corfirm</button>
+                      </div>
+                    </div>
+
                   </div>
                   <div class="form-group-sm has-default">
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
-                        <mat-form-field class="example-full-width"
-                          >
+                        <mat-form-field class="example-full-width">
                           <input type="email" matInput placeholder="{{'REGISTER.Email' | translate}}"
                             [(ngModel)]="user.userName" (ngModelChange)="emailValidationRegister($event)"
                             formControlName="email">
@@ -119,8 +143,7 @@
                   <div class="form-group-sm has-default">
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
-                        <mat-form-field class="example-full-width"
-                          >
+                        <mat-form-field class="example-full-width">
                           <input type="password" matInput placeholder="New Password" [errorStateMatcher]="matcher"
                             [(ngModel)]="signupUser.password" formControlName="password">
                           <mat-error *ngIf="changePasswordForm.get('password').hasError('required')">
@@ -133,8 +156,7 @@
                   <div class="form-group-sm has-default">
                     <div class="input-group">
                       <div class="input-group-prepend" style="width:100%;">
-                        <mat-form-field class="example-full-width"
-                          >
+                        <mat-form-field class="example-full-width">
                           <input type="password" matInput placeholder="Confirm New Password"
                             [errorStateMatcher]="matcher" [(ngModel)]="signupUser.passwordAgain"
                             formControlName="passwordAgain">
@@ -293,8 +315,8 @@
                                 title="company logo" />
                             </ng-container>
                             <ng-template #elseTemplate>
-                              <img src="./assets/img/image_placeholder.jpg" class="picture-src" id="wizardPicturePreview"
-                                title="select logo" />
+                              <img src="./assets/img/image_placeholder.jpg" class="picture-src"
+                                id="wizardPicturePreview" title="select logo" />
                             </ng-template>
                             <input type="file" id="companyLogo" (change)="selectFile($event)" formControlName="logo">
                           </div>
@@ -322,20 +344,26 @@
                 <h4 class="card-title ">Two Factor Authentication (2FA)</h4>
               </div>
               <div class="card-body">
-                <div class="col-md-6 ml-auto mr-auto mb-5 mt-4">
-                  <div class="togglebutton">
-                    <label>Enable two factor Authentication
-                      <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate">
-                        <input type="checkbox" checked (change)="change2FASubmit()">
-                        <span class="toggle"></span> On
-                      </ng-container>
-                      <ng-template #elseTemplate>
-                        <input type="checkbox" (change)="change2FASubmit()">
-                        <span class="toggle"></span> Off
-                      </ng-template>
-                    </label>
+                <div class="row">
+                  <div class="col-md-6 mt-4 text-danger">
+                    In order to login via two factor authentication and use sms service, enable this feature.
+                  </div>
+                  <div class="col-md-6 mt-4">
+                    <div class="togglebutton">
+                      <label>Enable two factor Authentication
+                        <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate">
+                          <input type="checkbox" checked (change)="change2FASubmit()">
+                          <span class="toggle"></span> On
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                          <input type="checkbox" (change)="change2FASubmit()">
+                          <span class="toggle"></span> Off
+                        </ng-template>
+                      </label>
+                    </div>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>

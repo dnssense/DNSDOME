@@ -7,7 +7,7 @@ export const environment = {
   useMock:false,
   environment:"dev",
   BACKEND_API_ROOT_URL: 'https://management.dnssense.com/services',
-  API_CAPTCHA_KEY: '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58',
+  API_CAPTCHA_KEY: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   COMPANY: 'dnssense',
   COMPANY_LOGO: 'dnssense_logo_small.png',
 };

@@ -8,6 +8,11 @@ import { SignupBean } from 'src/app/core/models/SignupBean';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { environment } from 'src/environments/environment';
+import { Session } from 'src/app/core/models/Session';
+import { SmsService } from 'src/app/core/services/SmsService';
+import { SmsType } from 'src/app/core/models/SmsType';
+import { SmsInformation } from 'src/app/core/models/SmsInformation';
 
 declare var $: any;
 
@@ -34,9 +39,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     Validators.required,
     Validators.email,
   ]);
+  twoFactorFormControl = new FormControl('', [
+    Validators.required,
+    Validators.email,
+  ]);
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   captcha: string;
-  captcha_key: string = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';// TODO: environment.API_CAPTCHA_KEY;
+  captcha_key: string = environment.API_CAPTCHA_KEY;
   validEmailLogin: true | false;
   validPasswordLogin: true | false;
   matcher = new MyErrorStateMatcher();
@@ -45,9 +54,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   email: string;
   password: string;
   forgoterEmail: string;
-
+  twoFactorPhone: string;
+  smsCode: string;
+  endTime: Date;
+  isConfirmTimeEnded: boolean = true;
+  maxRequest: number = 3;
+  private smsInformation: SmsInformation;
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
-    private element: ElementRef, private notification: NotificationService) {
+    private element: ElementRef, private notification: NotificationService, private smsService: SmsService) {
     this.isFailed = false;
     this.nativeElement = element.nativeElement;
     this.sidebarVisible = false;
@@ -56,7 +70,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
       "email": [null, [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')]],
-      "password": ['', Validators.required]
+      "password": ['', [Validators.required, Validators.minLength(5)]]
     });
     const navbar: HTMLElement = this.element.nativeElement;
     this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
@@ -69,6 +83,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       card.classList.remove('card-hidden');
     }, 700);
   }
+
   sidebarToggle() {
     const toggleButton = this.toggleButton;
     const body = document.getElementsByTagName('body')[0];
@@ -85,47 +100,30 @@ export class LoginComponent implements OnInit, OnDestroy {
       body.classList.remove('nav-open');
     }
   }
+
   ngOnDestroy() {
     const body = document.getElementsByTagName('body')[0];
     body.classList.remove('login-page');
     body.classList.remove('off-canvas-sidebar');
   }
 
-  isFieldValid(form: FormGroup, field: string) {
-    return !form.get(field).valid && form.get(field).touched;
-  }
-
-  displayFieldCss(form: FormGroup, field: string) {
-    return {
-      'has-error': this.isFieldValid(form, field),
-      'has-feedback': this.isFieldValid(form, field)
-    };
-  }
-
-  onLogin() {
+  login() {
     if (this.loginForm.valid) {
       this.authService.login(this.email, this.password).subscribe(
         val => {
-          this.router.navigateByUrl('/admin/dashboard');
+          if (val.currentUser.twoFactorAuthentication) {
+            this.open2FA(val);
+          } else {
+            this.router.navigateByUrl('/admin/dashboard');
+          }
         },
         (err) => {
           this.isFailed = true;
         }
       );
     } else {
-      this.validateAllFormFields(this.loginForm);
+      return;
     }
-  }
-
-  validateAllFormFields(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control instanceof FormControl) {
-        control.markAsTouched({ onlySelf: true });
-      } else if (control instanceof FormGroup) {
-        this.validateAllFormFields(control);
-      }
-    });
   }
 
   emailValidationLogin(e) {
@@ -138,18 +136,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  passwordValidationLogin(e) {
-    this.password = e;
-    if (e.length > 5) {
-      this.validPasswordLogin = true;
-    } else {
-      this.validPasswordLogin = false;
-    }
-  }
-
   openLogin() {
     $('#loginDiv').slideDown(300);
     $('#forgotPasswordDiv').slideUp(300);
+    $('twoFactorDiv').hide();
   }
 
   openForgotPassword() {
@@ -157,11 +147,61 @@ export class LoginComponent implements OnInit, OnDestroy {
     $('#forgotPasswordDiv').slideDown(500);
   }
 
+  open2FA(ses: Session) {
+    this.twoFactorPhone = 'Phone Number: *******' + ses.currentUser.gsm.substring(8);
+
+    this.smsService.sendSmsActivationCode(ses.currentUser, SmsType.LOGIN).subscribe(res => {
+      if (res.status == 200) {
+        this.smsInformation = res.object;
+        this.maxRequest = 3;
+        this.isConfirmTimeEnded = false;
+        this.endTime = new Date();
+        this.endTime.setMinutes(new Date().getMinutes() + 2);
+        $('#twoFactorDiv').slideDown(500);
+        $('#loginDiv').slideUp(500);
+        $('#forgotPasswordDiv').hide();
+      } else {
+        this.notification.error(res.message);
+      }
+    });
+
+  }
+
+  confirm2FACode() {
+    if (this.maxRequest != 0 && !this.isConfirmTimeEnded) {
+      this.maxRequest = this.maxRequest - 1;
+      if (this.smsInformation !== null) {
+        this.smsInformation.activationCode = this.smsCode;
+        this.smsService.confirm(this.smsInformation).subscribe(res => {
+          if (res.status === 200) {
+            if (res.object === true) {
+              this.router.navigateByUrl('/admin/dashboard');
+            } else {
+              this.notification.error(res.message);
+            }
+          } else {
+            this.notification.error(res.message);
+          }
+          if (this.maxRequest === 0) {
+            this.notification.error('You have exceeded the number of attempts! Try Again!');
+            this.openLogin();
+          }
+        });
+      }
+    }
+  }
+
+  timeEnd() {
+    this.notification.error('SMS Code Expired. Please Try Again.');
+    this.isConfirmTimeEnded = true;
+    this.openLogin();
+  }
+
   handleCaptcha($event) {
     this.captcha = $event;
   }
 
-  sendActivationCode() {
+  sendPasswordActivationCode() {
     let forgoter: SignupBean = new SignupBean();
     forgoter.userName = this.forgoterEmail;
 
@@ -178,6 +218,10 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.notification.error("Operation Failed! " + res.message);
       }
     });
+  }
+
+  send2FAActivationCode() {
+
   }
 
 

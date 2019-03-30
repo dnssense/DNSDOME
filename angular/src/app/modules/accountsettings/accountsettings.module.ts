@@ -8,6 +8,7 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/shared/components/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
+import { CountdownTimerModule } from 'ngx-countdown-timer';
 
 
 
@@ -15,6 +16,7 @@ import { FieldErrorDisplayComponent } from './components/field-error-display/fie
   declarations: [
     AccountSettingsComponent,FieldErrorDisplayComponent],
   imports: [
+    CountdownTimerModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
     CommonModule,

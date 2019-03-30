@@ -13,7 +13,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
 import { ReCaptchaModule } from 'angular2-recaptcha';
-
+import { CountdownTimerModule } from 'ngx-countdown-timer';
 
 @NgModule({
   declarations: [LoginComponent, FieldErrorDisplayComponent],
@@ -26,6 +26,7 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
     MaterialModule,
     ReCaptchaModule,
     LoginRoutingModule,
+    CountdownTimerModule.forRoot(),
     TranslateModule.forChild({
       loader: {
           provide: TranslateLoader,

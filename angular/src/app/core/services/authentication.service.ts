@@ -18,7 +18,7 @@ import { OperationResult } from '../models/OperationResult';
 })
 export class AuthenticationService {
   private STORAGENAME = 'currentSession';
-  private _forgotPasswordSendURL = this.configuration.getApiUrl() + "/forgotPasswordSend";  
+  private _forgotPasswordSendURL = this.configuration.getApiUrl() + "/forgotPasswordSend";
   private loginUrl = this.configuration.getApiUrl() + '/auth/login';
   private refreshTokenUrl = this.configuration.getApiUrl() + '/auth/token';
   private logoutUrl = this.configuration.getApiUrl() + '/auth/logout';
@@ -28,8 +28,6 @@ export class AuthenticationService {
 
   constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
     private router: Router, private logger: LoggerService) {
-    logger.console('constructor authenticationservice');
-
     this.checkSessionIsValid();
     this.refreshTokenTimer = interval(3000 * 1000);
     this.refreshTokenTimer.subscribe(() => {
@@ -46,11 +44,8 @@ export class AuthenticationService {
         if (!this.jwtHelper.isTokenExpired(session.token)) {
           this.logger.console('token valid');
           this.currentSession = session;
-          // this.logger.console(session.refreshToken);
-          // this.logger.console(session.token);
         } else {
           this.http.post<any>(this.refreshTokenUrl, {}).subscribe((res: any) => {
-            // debugger;
             if (res && res.token) {
               session.token = res.token;
               this.currentSession = session;
@@ -87,7 +82,6 @@ export class AuthenticationService {
   }
 
   login(email: string, pass: string): Observable<Session> {
-
     return this.http.post<Session>(this.loginUrl, { username: email, password: pass })
       .pipe(
         map(res => {
@@ -109,8 +103,7 @@ export class AuthenticationService {
     let options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    debugger;
     return this.http.post<OperationResult>(this._forgotPasswordSendURL, JSON.stringify(signupBean, null, ' '), options)
-    .map(res => res);
+      .map(res => res);
   }
 }

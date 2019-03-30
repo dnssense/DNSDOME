@@ -3,7 +3,7 @@ export const environment = {
   useMock: true,
   environment: 'dev',
   BACKEND_API_ROOT_URL: 'http://localhost:8080/services',
-  API_CAPTCHA_KEY: '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58',
+  API_CAPTCHA_KEY: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   COMPANY: 'dnssense',
   COMPANY_LOGO: 'dnssense_logo_small.png',
 };
