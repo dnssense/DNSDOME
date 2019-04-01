@@ -9,7 +9,7 @@ import { DashboardStatistic } from '../models/DashboardStatistic';
 })
 export class DashboardStatsService {
 
-  path = '/api/dashboard';
+  path = '/services/api/dashboard';
   constructor(private httpClient: HttpClient, private config: ConfigService) { }
 
   getStatistics(): Observable<DashboardStatistic> {

@@ -9,13 +9,13 @@ import { ConfigService } from './config.service';
 @Injectable({ providedIn: 'root' })
 export class BoxService {
 
-  private _boxesListURL = this.config.getApiUrl() + '/myboxes/box-list';
-  private _activeBoxesListURL = this.config.getApiUrl() + '/myboxes/active-box-list';
-  private _appUserProfilesListURL = this.config.getApiUrl() + '/application-profiles/profile-list';
-  private _domainProfilesListURL = this.config.getApiUrl() + '/domain-profiles/profile-list';
-  private _boxDeleteURL = this.config.getApiUrl() + '/myboxes/delete';
-  private _boxUpdateURL = this.config.getApiUrl() + '/myboxes/update';
-  private _boxSaveURL = this.config.getApiUrl() + '/myboxes/save';
+  private _boxesListURL = this.config.getApiUrl() + '/services/myboxes/box-list';
+  private _activeBoxesListURL = this.config.getApiUrl() + '/services/myboxes/active-box-list';
+  private _appUserProfilesListURL = this.config.getApiUrl() + '/services/application-profiles/profile-list';
+  private _domainProfilesListURL = this.config.getApiUrl() + '/services/domain-profiles/profile-list';
+  private _boxDeleteURL = this.config.getApiUrl() + '/services/myboxes/delete';
+  private _boxUpdateURL = this.config.getApiUrl() + '/services/myboxes/update';
+  private _boxSaveURL = this.config.getApiUrl() + '/services/myboxes/save';
 
   constructor(private http: HttpClient, private config: ConfigService) {
 

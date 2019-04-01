@@ -118,6 +118,7 @@ export class SidebarComponent implements OnInit {
     }
     ngOnInit() {
         this.menuItems = new Array();
+        //todo burada bir sıkıntı var
         let roleName: string = this.authService.currentSession.currentUser.roles.name;
         if (roleName) {
             this.menuItems = ROUTES.filter(

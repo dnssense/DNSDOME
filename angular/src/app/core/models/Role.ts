@@ -6,3 +6,18 @@ export class Role{
     description:string;
     clearences:Array<Clearance>   
 }
+
+
+
+export interface RestUserRoleRight{
+    roles:RestRole[];
+}
+
+export interface RestRole{
+    name:string;
+    rights:RestRight[];
+}
+
+export interface RestRight{
+    name:string
+}

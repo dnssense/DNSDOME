@@ -1,7 +1,18 @@
 {
-    "/services/*": {
-        "target": "http://localhost:8080",
-        "secure": false,
-        "changeOrigin": true
+  "/api/user/*": {
+    "target": "http://localhost:9002",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
     }
+  },
+  "/api/*": {
+    "target": "http://beta.dnssense.com",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+  
 }

@@ -10,10 +10,10 @@ import { Role } from '../models/Role';
 @Injectable({ providedIn: 'root' })
 export class UserService {
 
-  private _userListURL = this.config.getApiUrl() + '/users/user-list';
-  private _userSaveURL = this.config.getApiUrl() + '/users/save';
-  private _userDeleteURL = this.config.getApiUrl() + '/users/delete';
-  private _roleListURL = this.config.getApiUrl() + '/roles/role-list';
+  private _userListURL = this.config.getApiUrl() + '/services/users/user-list';
+  private _userSaveURL = this.config.getApiUrl() + '/services/users/save';
+  private _userDeleteURL = this.config.getApiUrl() + '/services/users/delete';
+  private _roleListURL = this.config.getApiUrl() + '/services/roles/role-list';
 
   constructor(private http: HttpClient, private config: ConfigService) {
 

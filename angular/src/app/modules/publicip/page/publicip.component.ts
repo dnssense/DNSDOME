@@ -289,7 +289,7 @@ export class PublicipComponent implements OnInit {
       }
 
       if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
-        debugger;
+        
         let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
         let secondOclet = Number(secondOcletStr);
         if (secondOclet >= 16 && secondOclet <= 31) {
@@ -718,7 +718,7 @@ export class PublicipComponent implements OnInit {
   }
 
   selectFile($event) {
-    debugger;
+    
     var inputValue = $event.target;
     let file = inputValue.files[0];
     let reader = new FileReader();

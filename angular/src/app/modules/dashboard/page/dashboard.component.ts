@@ -201,10 +201,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getcategory() {
     this.http.post<any>(this.configService.getApiUrl() + "/dashboard/list", {}).subscribe(() => {
-      debugger;
+      
     },
       () => {
-        debugger;
+        
       });
   }
 

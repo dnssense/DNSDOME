@@ -14,14 +14,14 @@ import { DayProfileGroup } from '../models/DayProfileGroup';
   providedIn: 'root'
 })
 export class AgentService {
-  private unRegisteredAgentsURL = this.config.getApiUrl() + '/home-controller/unregistered';
-  private registeredAgentsURL = this.config.getApiUrl() + '/home-controller/registered';
-  private mobileCategoriesURL = this.config.getApiUrl() + '/home-controller/categories?agentId=';
-  private profilesURL = this.config.getApiUrl() + '/home-controller/profiles';
-  private bedTimesURL = this.config.getApiUrl() + '/home-controller/bed-time';
-  private collectiveBlockURL = this.config.getApiUrl() + "/home-controller/collective-block";
-  private deleteAgentURL = this.config.getApiUrl() + "/home-controller/agent";
-  private createProfileURL = this.config.getApiUrl() + "/home-controller/profile";
+  private unRegisteredAgentsURL = this.config.getApiUrl() + '/services/home-controller/unregistered';
+  private registeredAgentsURL = this.config.getApiUrl() + '/services/home-controller/registered';
+  private mobileCategoriesURL = this.config.getApiUrl() + '/services/home-controller/categories?agentId=';
+  private profilesURL = this.config.getApiUrl() + '/services/home-controller/profiles';
+  private bedTimesURL = this.config.getApiUrl() + '/services/home-controller/bed-time';
+  private collectiveBlockURL = this.config.getApiUrl() + "/services/home-controller/collective-block";
+  private deleteAgentURL = this.config.getApiUrl() + "/services/home-controller/agent";
+  private createProfileURL = this.config.getApiUrl() + "/services/home-controller/profile";
 
 
   constructor(private http: HttpClient, private config: ConfigService) { }
@@ -48,7 +48,7 @@ export class AgentService {
 
   collectiveBlock(cbr: CollectiveBlockRequest): Observable<AgentResponse> {
 
-    debugger;
+    
     let options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     }
@@ -60,7 +60,7 @@ export class AgentService {
     let options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    debugger;
+    
     this.http.request('DELETE', this.deleteAgentURL, { body: JSON.stringify(agent, null, " ") });
   }
 

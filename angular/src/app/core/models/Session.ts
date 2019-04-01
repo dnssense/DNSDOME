@@ -3,7 +3,7 @@ import { User } from './User';
 
 export class Session{
     currentUser:User;
-    roles:[];
+    //roles:[];
     token:string;
     refreshToken:string;
 }

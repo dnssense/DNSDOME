@@ -9,10 +9,10 @@ import { OperationResult } from '../models/OperationResult';
 @Injectable({ providedIn: 'root' })
 export class BlackWhiteListService {
 
-  private _bwlistDetailsURL = this.config.getApiUrl() + '/bwlist/get?id=';
-  private _roleSaveURL = this.config.getApiUrl() + '/bwlist/save';
-  private _roleListRL = this.config.getApiUrl() + '/bwlist/list';
-  private _roleDeleteURL = this.config.getApiUrl() + '/bwlist/delete?id=';
+  private _bwlistDetailsURL = this.config.getApiUrl() + '/services/bwlist/get?id=';
+  private _roleSaveURL = this.config.getApiUrl() + '/services/bwlist/save';
+  private _roleListRL = this.config.getApiUrl() + '/services/bwlist/list';
+  private _roleDeleteURL = this.config.getApiUrl() + '/services/bwlist/delete?id=';
 
   constructor(private http: HttpClient, private config: ConfigService) {
   }

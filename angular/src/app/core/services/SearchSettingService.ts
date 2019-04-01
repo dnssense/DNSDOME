@@ -15,13 +15,13 @@ import { OperationResult } from '../models/OperationResult';
 @Injectable({ providedIn: 'root' })
 export class SearchSettingService {
 
-  private _saveSearchSettingURL = this.config.getApiUrl() + '/search-settings/save';
-  private _saveDashboardSearchSettingURL = this.config.getApiUrl() + '/dashboard/save-setting?id=';
-  private _savedSearchURL = this.config.getApiUrl() + '/search-settings/saved-search?';
-  private _ListURL = this.config.getApiUrl() + '/search-settings/list';
-  private _ListUserURL = this.config.getApiUrl() + '/search-settings/list-user-settings';
-  private _deleteSearchListURL = this.config.getApiUrl() + '/search-settings/delete';
-  private _scheduleSearchSettingURL = this.config.getApiUrl() + '/search-settings/schedule';
+  private _saveSearchSettingURL = this.config.getApiUrl() + '/services/search-settings/save';
+  private _saveDashboardSearchSettingURL = this.config.getApiUrl() + '/services/dashboard/save-setting?id=';
+  private _savedSearchURL = this.config.getApiUrl() + '/services/search-settings/saved-search?';
+  private _ListURL = this.config.getApiUrl() + '/services/search-settings/list';
+  private _ListUserURL = this.config.getApiUrl() + '/services/search-settings/list-user-settings';
+  private _deleteSearchListURL = this.config.getApiUrl() + '/services/search-settings/delete';
+  private _scheduleSearchSettingURL = this.config.getApiUrl() + '/services/search-settings/schedule';
 
 
   constructor(private http: HttpClient, private config: ConfigService) {

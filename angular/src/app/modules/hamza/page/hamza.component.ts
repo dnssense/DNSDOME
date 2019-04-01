@@ -101,20 +101,20 @@ export class HamzaComponent implements OnInit, OnDestroy {
 
     getcategory(){
         this.http.post<any>(this.config.getApiUrl()+"/dashboard/list",{}).subscribe(data=>{
-            debugger;
+            
         },
         err=>{
-            debugger;
+            
         });
     }
 
     deleteandcategory(){
         this.auth.currentSession=null;
         this.http.post<any>(this.config.getApiUrl()+"/dashboard/list",{}).subscribe(data=>{
-            debugger;
+            
         },
         err=>{
-            debugger;
+            
         });
     }
 

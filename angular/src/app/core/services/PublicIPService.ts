@@ -10,13 +10,13 @@ import { OperationResult } from '../models/OperationResult';
 @Injectable({ providedIn: 'root' })
 export class PublicIPService {
 
-  public _agentsListURL = this.config.getApiUrl() + '/mylocations/agent-list';
-  public _locationsListURL = this.config.getApiUrl() + '/mylocations/location-list';
-  public _appUserProfilesListURL = this.config.getApiUrl() + '/application-profiles/profile-list';
-  public _domainProfilesListURL = this.config.getApiUrl() + '/domain-profiles/profile-list';
-  public _agentDeleteURL = this.config.getApiUrl() + '/mylocations/delete';
-  public _agentUpdateURL = this.config.getApiUrl() + '/mylocations/update';
-  public _agentSaveURL = this.config.getApiUrl() + '/mylocations/save';
+  public _agentsListURL = this.config.getApiUrl() + '/services/mylocations/agent-list';
+  public _locationsListURL = this.config.getApiUrl() + '/services/mylocations/location-list';
+  public _appUserProfilesListURL = this.config.getApiUrl() + '/services/application-profiles/profile-list';
+  public _domainProfilesListURL = this.config.getApiUrl() + '/services/domain-profiles/profile-list';
+  public _agentDeleteURL = this.config.getApiUrl() + '/services/mylocations/delete';
+  public _agentUpdateURL = this.config.getApiUrl() + '/services/mylocations/update';
+  public _agentSaveURL = this.config.getApiUrl() + '/services/mylocations/save';
 
 
   constructor(private http: HttpClient, private config: ConfigService) {

@@ -14,11 +14,11 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class DashBoardService {
 
-  public _saveDashboardURL = Constants.getServerPath() + '/dashboard/save';  // URL to graph api
-  public _ListURL = Constants.getServerPath() + '/dashboard/list';  // URL to graph api
-  public _deleteDashboardURL = Constants.getServerPath() + '/dashboard/delete';  // URL to graph api
-  public _setDefaultDashboardURL = Constants.getServerPath() + '/dashboard/default';  // URL to graph api
-  public _dashboardSettingsURL = Constants.getServerPath() + '/dashboard/get?';  // URL to graph api
+  public _saveDashboardURL = Constants.getServerPath() + '/services/dashboard/save';  // URL to graph api
+  public _ListURL = Constants.getServerPath() + '/services/dashboard/list';  // URL to graph api
+  public _deleteDashboardURL = Constants.getServerPath() + '/services/dashboard/delete';  // URL to graph api
+  public _setDefaultDashboardURL = Constants.getServerPath() + '/services/dashboard/default';  // URL to graph api
+  public _dashboardSettingsURL = Constants.getServerPath() + '/services/dashboard/get?';  // URL to graph api
 
   public http;
 
@@ -27,7 +27,7 @@ export class DashBoardService {
   }
 
   public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {
-    debugger;
+    
     return this.http.post(this._dashboardSettingsURL + "id=" + dashboard.id).map((res) => {
       console.log(res);
       return res;

@@ -23,3 +23,12 @@ development ortamı için api yönlendirmesi
 proxy.config.json dosyasından yapılır
 
 
+sample proxy.config.json
+ "/services/*": {
+        "target": "http://localhost:8080",
+        "secure": false,
+        "changeOrigin": true
+    }
+
+
+

@@ -13,8 +13,8 @@ import { SmsType } from '../models/SmsType';
 @Injectable({providedIn : 'root'})
 export class SmsService {
 
-  private _sendSmsActivationCodeURL = this.config.getApiUrl() + '/sms/sendSmsActivationCode';
-  private _confirmURL = this.config.getApiUrl() + '/sms/confirm';
+  private _sendSmsActivationCodeURL = this.config.getApiUrl() + '/services/sms/sendSmsActivationCode';
+  private _confirmURL = this.config.getApiUrl() + '/services/sms/confirm';
 
 
   constructor(private http: HttpClient, private config: ConfigService) {

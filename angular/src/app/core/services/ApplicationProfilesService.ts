@@ -12,10 +12,10 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ApplicationProfilesService {
-  private _profileListURL = this.config.getApiUrl() + '/application-profiles/profile-list';  // URL to graph api
-  private _categoryListURL = this.config.getApiUrl() + '/application-profiles/category-list';  // URL to graph api
-  private _saveProfiletURL = this.config.getApiUrl() + '/application-profiles/save';  // URL to graph api
-  private _deleteProfiletURL = this.config.getApiUrl() + '/application-profiles/delete';  // URL to graph api
+  private _profileListURL = this.config.getApiUrl() + '/services/application-profiles/profile-list';  // URL to graph api
+  private _categoryListURL = this.config.getApiUrl() + '/services/application-profiles/category-list';  // URL to graph api
+  private _saveProfiletURL = this.config.getApiUrl() + '/services/application-profiles/save';  // URL to graph api
+  private _deleteProfiletURL = this.config.getApiUrl() + '/services/application-profiles/delete';  // URL to graph api
 
   private _categories: BehaviorSubject<WApplication[]> = new BehaviorSubject(null);
   private _profileList: BehaviorSubject<ApplicationProfile[]> = new BehaviorSubject(null);

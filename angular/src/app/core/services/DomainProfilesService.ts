@@ -20,10 +20,10 @@ import { ConfigService } from './config.service';
   providedIn: 'root'
 })
 export class DomainProfilesService {
-  public _profileListURL = this.config.getApiUrl() + "/domain-profiles/profile-list";  // URL to graph api
-  public _categoryListURL = this.config.getApiUrl() + "/domain-profiles/category-list";  // URL to graph api
-  public _saveProfiletURL = this.config.getApiUrl() + "/domain-profiles/save";  // URL to graph api
-  public _deleteProfiletURL = this.config.getApiUrl() + "/domain-profiles/delete";  // URL to graph api
+  public _profileListURL = this.config.getApiUrl() + "/services/domain-profiles/profile-list";  // URL to graph api
+  public _categoryListURL = this.config.getApiUrl() + "/services/domain-profiles/category-list";  // URL to graph api
+  public _saveProfiletURL = this.config.getApiUrl() + "/services/domain-profiles/save";  // URL to graph api
+  public _deleteProfiletURL = this.config.getApiUrl() + "/services/domain-profiles/delete";  // URL to graph api
 
   public _categories: BehaviorSubject<Category[]> = new BehaviorSubject(null);
   public _profileList: BehaviorSubject<DomainProfile[]> = new BehaviorSubject(null);

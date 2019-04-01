@@ -10,10 +10,10 @@ import { OperationResult } from '../models/OperationResult';
   providedIn: 'root'
 })
 export class CompanyService {
-  private _customerURL = this.config.getApiUrl() + '/company/get';
-  private _roleSaveURL = this.config.getApiUrl() + '/company/save';
-  private _roleUpdateURL = this.config.getApiUrl() + '/company/update';
-  private _roleDeleteURL = this.config.getApiUrl() + '/company/delete';
+  private _customerURL = this.config.getApiUrl() + '/services/company/get';
+  private _roleSaveURL = this.config.getApiUrl() + '/services/company/save';
+  private _roleUpdateURL = this.config.getApiUrl() + '/services/company/update';
+  private _roleDeleteURL = this.config.getApiUrl() + '/services/company/delete';
 
   constructor(private http: HttpClient, private config:ConfigService) {    
   }

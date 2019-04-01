@@ -158,7 +158,7 @@ export class BoxWizardComponent implements OnInit {
       }
 
       if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
-        debugger;
+        
         let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
         let secondOclet = Number(secondOcletStr);
         if (secondOclet >= 16 && secondOclet <= 31) {

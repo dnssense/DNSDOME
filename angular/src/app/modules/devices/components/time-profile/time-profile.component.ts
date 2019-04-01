@@ -44,7 +44,7 @@ export class TimeProfileComponent implements OnInit {
       { id: 5, startDate: null, endDate: null, status: 0 },
       { id: 6, startDate: null, endDate: null, status: 0 }
     ];
-    debugger;
+    
     if (this.selectedProfile && this.selectedProfile.id) {
 
       this.dayProfiles.forEach(dp => {
@@ -61,10 +61,10 @@ export class TimeProfileComponent implements OnInit {
   saveTimeProfile() {
 
     this.selectedProfile.dayProfiles = [];
-    debugger;
+    
 
     for (let i = 0; i < this.dayProfiles.length; i++) {
-      debugger;
+      
       if (this.dayProfiles[i].startDate && this.dayProfiles[i].endDate) {
         let dp = this.dayProfiles[i];
         if ((dp.status == 2 || dp.status == 1) && dp.startDate && dp.endDate) {

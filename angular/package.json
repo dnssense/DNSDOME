@@ -1,6 +1,6 @@
 {
-  "name": "dnssense",
-  "version": "1.0.0",
+  "name": "ui.dnssense",
+  "version": "1.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

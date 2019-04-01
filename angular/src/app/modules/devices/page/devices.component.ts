@@ -449,7 +449,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     blockCategory(id: number) {
         this.mobileCategories.find(m => m.id == id).blocked = true;
         let mc: MobileCategory = this.mobileCategories.find(m => m.id == id);
-        debugger;
+        
         if (this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id)) {
             this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id).block = true;
             if (this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id).category.categoryType == 1) {
@@ -553,7 +553,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
 
     showBoxEditWizard(id: number) {
         if (id) {
-            debugger;
+            
             this.selectedBox = this.boxes.find(b => b.id == id);
             $('#wizardPanel').hide();
             $('#devicePanel').toggle("slide", { direction: "left" }, 600);
