@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReportsComponent } from './page/reports.component';
+import { CustomReportComponent } from './customreport/customreport.component';
+import { MonitorComponent } from './monitor/monitor.component';
 import { ReportsRoutingModule } from './reports-routing.module';
 
 import { HttpClientModule, HttpClient } from '@angular/common/http';
@@ -11,10 +12,8 @@ import { MaterialModule } from 'src/app/shared/components/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 
-
-
 @NgModule({
-  declarations: [ReportsComponent],
+  declarations: [CustomReportComponent, MonitorComponent],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -30,6 +29,5 @@ import { NouisliderModule } from 'ng2-nouislider';
       }
     })
   ]
-
 })
-export class ReportsModule { }
+export class ReportsModule {}

@@ -8,11 +8,19 @@
       "^/api": ""
     }
   },
+  "/api/oauth/*": {
+    "target": "http://localhost:9001",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  },
   "/api/*": {
     "target": "http://beta.dnssense.com",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
   }
-  
 }

@@ -7,7 +7,11 @@ import { AppComponent } from './app.component';
 import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
 import { AuthenticationService } from './core/services/authentication.service';
 import { ConfigService } from './core/services/config.service';
-import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+  HttpClient
+} from '@angular/common/http';
 import { CookieService } from './core/services/cookie.service';
 import { NotificationService } from './core/services/notification.service';
 import { AuthGuard } from './core/guards/AuthGuard';
@@ -19,17 +23,19 @@ import { NotificationModule } from './modules/shared/notification/notification.m
 import { ErrorInterceptor } from './core/interceptors/ErrorInterceptor';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from './core/translationhelper';
-import { NgxUiLoaderModule, NgxUiLoaderRouterModule, NgxUiLoaderHttpModule } from 'ngx-ui-loader';
-import {ReCaptchaModule} from "angular2-recaptcha"; 
+import {
+  NgxUiLoaderModule,
+  NgxUiLoaderRouterModule,
+  NgxUiLoaderHttpModule
+} from 'ngx-ui-loader';
+import { ReCaptchaModule } from 'angular2-recaptcha';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { DashBoardService } from './core/services/DashBoardService';
 import { SearchSettingService } from './core/services/SearchSettingService';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     ModalModule.forRoot(),
     BrowserModule,
@@ -62,17 +68,22 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     BsModalService,
     DashBoardService,
     NotificationService,
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     {
-      provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
     },
     {
-      provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
     },
     {
-      provide: ErrorHandler, useClass: ErrorInterceptor
+      provide: ErrorHandler,
+      useClass: ErrorInterceptor
     }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
