@@ -10,7 +10,7 @@ export interface RestUser{
     isVerified:number;//mandatory
     source:string|'local'|'google'|null|undefined;//mandatory
     gsm?:string;
-    gmsCode?:string;
+    gsmCode?:string;
     language?:string;
 }
 

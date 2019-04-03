@@ -1,5 +1,5 @@
 {
-  "/api/user/*": {
+  "/api/user2/*": {
     "target": "http://localhost:9002",
     "secure": false,
     "logLevel": "debug",

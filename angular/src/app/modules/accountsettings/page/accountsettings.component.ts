@@ -193,14 +193,16 @@ export class AccountSettingsComponent implements OnInit {
 
     change2FASubmit() {
         this.user.twoFactorAuthentication = this.user.twoFactorAuthentication === true ? false : true;
-
+        debugger;
         if (this.user.gsm) {
+            this.user.surname='deneme';
             this.accountService.save(this.user).subscribe(res => {
+                debugger;
                 if (res.status == 200) {
                     this.notification.success("Operation Successful Two factor authentication updated.");
                     this.authService.checkSessionIsValid();
                 } else {
-                    this.notification.error("res.message");
+                    this.notification.error(res.message);
                     this.user.twoFactorAuthentication = this.user.twoFactorAuthentication === true ? false : true;
                 }
             });
@@ -234,8 +236,16 @@ export class AccountSettingsComponent implements OnInit {
 
               let request:RestSmsConfirmRequest={id:this.smsInformation.id,code:this.smsCode};
               this.smsService.confirmCommonSms(request).subscribe(res => {
-
+                    debugger;
                     this.user.gsm = this.phoneNumberTemp;
+                    this.accountService.save(this.user).subscribe(res => {
+                        if (res.status == 200) {
+                            this.notification.success("Operation Successful Two factor authentication updated.");
+                            this.authService.checkSessionIsValid();
+                        } else {
+                            this.notification.error(res.message);
+                        }
+                    });
                     $('#smsValidationDiv').hide(200);
 
 

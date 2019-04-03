@@ -33,31 +33,32 @@ export class AuthenticationService {
   currentSession: Session;
   private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
-  
+
   constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
     private router: Router, private logger: LoggerService) {
-      
+
     this.checkSessionIsValid();
     this.refreshTokenTimer = interval(150* 60* 1000);
     this.refreshTokenTimer.subscribe(() => {
-      
+
       this.refreshToken();
     });
 
   }
 
   checkSessionIsValid() {
-    
+
     try {
       let sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
         let session: Session = JSON.parse(sessionString);
         if (session) {
+
           if (!this.jwtHelper.isTokenExpired(session.token)) {
             this.logger.console('token valid');
             this.currentSession = session;
             //aslında adamı direk içeri alabiliriz fakat. şimdilik dışarı atalım
-            this.clear();
+            //this.clear();
           } else {
             const httpOptions = {
               headers: new HttpHeaders({
@@ -104,7 +105,7 @@ export class AuthenticationService {
     };
     let body =encodeURI("grant_type=refresh_token&refresh_token="+this.currentSession.refreshToken);
     this.http.post<Session>(this.refreshTokenUrl, body, httpOptions).subscribe((res: any) => {
-      
+
       if (res && res.accessToken && res.refreshToken) {
 
         this.currentSession.token = res.accessToken;
@@ -123,9 +124,9 @@ export class AuthenticationService {
 
 
     return this.http.get<RestUserRoleRight>(this.userRole).pipe(map((x:RestUserRoleRight)=>{
-      
-  
-      
+
+
+
       //todo: buranın ciddi sorunları var.
       x.roles.forEach((y:RestRole)=>{
         let  role=new Role();
@@ -145,7 +146,7 @@ export class AuthenticationService {
   }
 
   getCurrentUser(): Observable<Session> {
-    
+
     let options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
@@ -153,8 +154,8 @@ export class AuthenticationService {
     return this.http.get<RestUser>(this.userInfo, options)
       .pipe(
         mergeMap((res: RestUser) => {
-          
-          
+
+
           this.logger.console(res);
 
           let user=new User();
@@ -167,11 +168,16 @@ export class AuthenticationService {
           user.name=user.userName||'';
 
           user.surname='';
-          user.twoFactorAuthentication=Boolean(user.twoFactorAuthentication);
+
+          user.twoFactorAuthentication=Boolean(res.isTwoFactorAuthentication);
+          user.active=Boolean(res.isActive);
+
           user.language=res.language;
-          user.gsmCode=res.gmsCode;
+
+          user.gsmCode=res.gsmCode;
           user.gsm=res.gsm;
-          
+          user.usageType=1;
+
           this.currentSession.currentUser=user;
 
 
@@ -179,7 +185,7 @@ export class AuthenticationService {
         }));
   }
 
- 
+
 
   prelogin(email:string,pass:string):Observable<RestPreloginResponse>{
 
@@ -198,7 +204,7 @@ export class AuthenticationService {
     return httpOptions;
   }
 
-  
+
 
   login(email: string, pass: string): Observable<Session> {
 
@@ -212,19 +218,19 @@ export class AuthenticationService {
 
 
     return this.http.post<Session>(this.loginUrl, body, httpOptions)
-      .pipe(mergeMap((res: any) => {        
-        this.logger.console(res);        
+      .pipe(mergeMap((res: any) => {
+        this.logger.console(res);
         this.currentSession=new Session();
         this.currentSession.token = res.accessToken;
         this.currentSession.refreshToken = res.refreshToken;
         return this.getCurrentUser();
       }),catchError(err=>{
-        
+
         this.currentSession=null;
         throw err;
-        
+
       }))
-    
+
 
   }
 
