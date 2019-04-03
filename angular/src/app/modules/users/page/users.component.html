@@ -95,17 +95,12 @@
             <i class="material-icons">arrow_back</i>
           </button>
           <div class="wizard-container">
-            <div class="card card-wizard" data-color="blue" id="wizardProfile">
-              <div class="card-header text-center">
-              </div>
-              <div class="wizard-navigation">
-                <ul class="nav nav-pills">
-                  <li class="nav-item">
-                    <a class="nav-link active" id="contentLink" href="#content" data-toggle="tab" role="tab">
-                      User Information
-                    </a>
-                  </li>
-                </ul>
+            <div class="card">
+              <div class="card-header card-header-icon card-header-info">
+                <div class="card-icon">
+                  <i class="material-icons">person</i>
+                </div>
+                <h4 class="card-title">User Details</h4>
               </div>
               <div class="card-body">
                 <form [formGroup]="userForm" class="form-horizontal">
@@ -196,14 +191,12 @@
                     </div>
                     <div class="col-md-3"></div>
                   </div>
+                  <div class="row">
+                    <div class="col text-right ml-auto">
+                      <button type="submit" class="btn btn-info" (click)="userFormSubmit()">Save</button>
+                    </div>
+                  </div>
                 </form>
-              </div>
-              <div class="card-footer">
-                <div class="ml-auto">
-                  <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" id="finish" name="finish"
-                    value="Save" (click)="userFormSubmit()" style="display: none;">
-                </div>
-                <div class="clearfix"></div>
               </div>
             </div>
           </div>

@@ -9,7 +9,7 @@
                 <div class="card-icon">
                   <i class="material-icons">assignment_ind</i>
                 </div>
-                <h4 class="card-title ">User Info</h4>
+                <h4 class="card-title ">User Information</h4>
               </div>
               <div class="card-body">
                 <form [formGroup]="userInfoForm" (ngSubmit)="userFormSubmit()" class="form-horizontal">
@@ -19,10 +19,9 @@
                         <div class="input-group">
                           <div class="input-group-prepend" style="width:100%;">
                             <mat-form-field class="example-full-width">
-                              <input type="text" matInput placeholder="{{'REGISTER.FirstName' | translate}}"
-                                [(ngModel)]="user.name" formControlName="name">
+                              <input type="text" matInput placeholder="Full Name" [(ngModel)]="user.name" formControlName="name">
                               <mat-error *ngIf="userInfoForm.get('name').hasError('required')">
-                                First Name <strong>is Required</strong>
+                                Full Name <strong>is Required</strong>
                               </mat-error>
                             </mat-form-field>
                           </div>
@@ -32,11 +31,8 @@
                         <div class="input-group">
                           <div class="input-group-prepend" style="width:100%;">
                             <mat-form-field class="example-full-width">
-                              <input type="text" matInput placeholder="{{'REGISTER.LastName' | translate}}"
-                                [(ngModel)]="user.surname" formControlName="surname">
-                              <mat-error *ngIf="userInfoForm.get('surname').hasError('required')">
-                                {{'REGISTER.LastName' | translate}} <strong>{{'Required' | translate}}</strong>
-                              </mat-error>
+                              <input type="text" matInput placeholder="{{'REGISTER.Email' | translate}}"
+                                value={{user.userName}} disabled>
                             </mat-form-field>
                           </div>
                         </div>
@@ -44,69 +40,79 @@
                     </div>
                   </div>
                   <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="input-group-prepend" style="width:100%;">
-                        <div class="col-md-4" style="padding-left:0px;">
-                          <mat-form-field>
-                            <mat-select placeholder="GSM Code" [(ngModel)]="user.gsmCode" formControlName="gsmCode">
-                              <mat-option *ngFor="let pc of phoneNumberCodes" [value]="pc.dial_code">
-                                {{pc.name}} ( {{pc.dial_code}} )
-                              </mat-option>
-                            </mat-select>
-                          </mat-form-field>
-                        </div>
-                        <div class="col-md-6" style="padding-right:0px;">
-                          <mat-form-field class="example-full-width has-label">
-                            <input type="tel" #gsm maxlength="10" name="gsm" (keydown)="checkisTelNumber($event)"
-                              placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="phoneNumberTemp"
-                              formControlName="gsm">
-                            <mat-hint align="end">{{gsm.value.length}}/ 10</mat-hint>
-                            <app-field-error-display errorMsg="Add a number!">
-                            </app-field-error-display>
-                          </mat-form-field>
-                        </div>
-                        <div class="col-md-2" style="padding-right:0px;">
-                          <button type="button" id="changePhoneBtn" disabled (click)="changePhoneNumber()"
-                            class="btn btn-info btn-sm">Validate</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="smsValidationDiv" class="form-group-sm has-default" style="display:none;">
                     <div class="row">
-                      <div class="col-md-4 text-center text-danger">
-                          <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
+                      <div class="col-md-6 mt-4 text-danger">
+                        In order to login via two factor authentication and use sms service, enable this feature.
                       </div>
-                      <div class="col-md-4">
-                        <div class="input-group">
-                          <div class="input-group-prepend" style="width:100%;">
-                            <mat-form-field class="example-full-width">
-                              <input type="text" matInput placeholder="SMS Validation Code" [(ngModel)]="smsCode"
-                                formControlName="smsCode">
+                      <div class="col-md-6 mt-4">
+                        <div class="togglebutton">
+                          <label>Enable two factor Authentication
+                            <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
+                              <input type="checkbox" checked (change)="change2FASubmit()">
+                              <span class="toggle"></span> On
+                            </ng-container>
+                            <ng-template #elseTemplate1>
+                              <input type="checkbox" (change)="change2FASubmit()">
+                              <span class="toggle"></span> Off
+                            </ng-template>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="user.twoFactorAuthentication">
+                    <div class="form-group-sm has-default">
+                      <div class="input-group">
+                        <div class="input-group-prepend" style="width:100%;">
+                          <div class="col-md-4" style="padding-left:0px;">
+                            <mat-form-field>
+                              <mat-select placeholder="GSM Code" [(ngModel)]="user.gsmCode" formControlName="gsmCode">
+                                <mat-option *ngFor="let pc of phoneNumberCodes" [value]="pc.dial_code">
+                                  {{pc.name}} ( {{pc.dial_code}} )
+                                </mat-option>
+                              </mat-select>
                             </mat-form-field>
+                          </div>
+                          <div class="col-md-6" style="padding-right:0px;">
+                            <mat-form-field class="example-full-width has-label">
+                              <input type="tel" #gsm maxlength="10" name="gsm" (keydown)="checkisTelNumber($event)"
+                                placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="phoneNumberTemp"
+                                formControlName="gsm">
+                              <mat-hint align="end">{{gsm.value.length}}/ 10</mat-hint>
+                              <app-field-error-display errorMsg="Add a number!">
+                              </app-field-error-display>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-2" style="padding-right:0px;">
+                            <button type="button" id="changePhoneBtn" disabled (click)="changePhoneNumber()"
+                              class="btn btn-info btn-sm">Validate</button>
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-4">
+                    </div>
+                    <div id="smsValidationDiv" class="form-group-sm has-default" style="display:none;">
+                      <div class="row">
+                        <div class="col-md-4 text-center text-danger">
+                          <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="input-group">
+                            <div class="input-group-prepend" style="width:100%;">
+                              <mat-form-field class="example-full-width">
+                                <input type="text" matInput placeholder="SMS Validation Code" [(ngModel)]="smsCode"
+                                  formControlName="smsCode">
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
                           <button type="button" (click)="confirmGsm()" class="btn btn-info btn-sm">Corfirm</button>
+                        </div>
                       </div>
-                    </div>
 
-                  </div>
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="input-group-prepend" style="width:100%;">
-                        <mat-form-field class="example-full-width">
-                          <input type="email" matInput placeholder="{{'REGISTER.Email' | translate}}"
-                            [(ngModel)]="user.userName" (ngModelChange)="emailValidationRegister($event)"
-                            formControlName="email">
-                          <mat-error *ngIf="userInfoForm.get('email').hasError('email')">
-                            Email is Required
-                          </mat-error>
-                        </mat-form-field>
-                      </div>
                     </div>
                   </div>
+
                   <div class="form-group-sm has-default">
                     <div class="input-group">
                       <div class="col-md-12 text-right" style="width:100%;">
@@ -115,6 +121,7 @@
                     </div>
                   </div>
                 </form>
+
               </div>
             </div>
           </div>
@@ -307,7 +314,7 @@
                       <div class="col-sm-5 text-right">
                         <label class="description">Company Logo</label>
                       </div>
-                      <div class="col-sm-2 ml-auto mr-auto  card-wizard" style="min-height: 20px; box-shadow: none;">
+                      <div class="col-sm-2 ml-auto mr-auto card-wizard" style="min-height: 20px; box-shadow: none;">
                         <div class="picture-container">
                           <div class="picture" style="border-radius:5%;">
                             <ng-container *ngIf="signupUser.company.logo; else elseTemplate">
@@ -330,40 +337,6 @@
                     </div>
                   </div>
                 </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12 ml-auto mr-auto">
-            <div class="card">
-              <div class="card-header card-header-icon card-header-danger">
-                <div class="card-icon">
-                  <i class="material-icons">lock</i>
-                </div>
-                <h4 class="card-title ">Two Factor Authentication (2FA)</h4>
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-6 mt-4 text-danger">
-                    In order to login via two factor authentication and use sms service, enable this feature.
-                  </div>
-                  <div class="col-md-6 mt-4">
-                    <div class="togglebutton">
-                      <label>Enable two factor Authentication
-                        <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate">
-                          <input type="checkbox" checked (change)="change2FASubmit()">
-                          <span class="toggle"></span> On
-                        </ng-container>
-                        <ng-template #elseTemplate>
-                          <input type="checkbox" (change)="change2FASubmit()">
-                          <span class="toggle"></span> Off
-                        </ng-template>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
               </div>
             </div>
           </div>
