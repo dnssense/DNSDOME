@@ -37,7 +37,7 @@ export class JwtInterceptor implements HttpInterceptor {
                 });
             } */
 
-            if(request.url.indexOf("/token")<0){
+            if(request.url.indexOf("/token")<0 && request.url.indexOf('/prelogin')<0){
                 request = request.clone({
                     setHeaders: {
                         'Authorization': `Bearer ${currentSession.token}`,

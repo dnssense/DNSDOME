@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ConfigService } from './config.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of, interval } from 'rxjs';
-import { User, RestUser } from '../models/User';
+import { User } from '../models/User';
 import { CookieService } from './cookie.service';
 import { map, catchError, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -13,6 +13,8 @@ import { SignupBean } from '../models/SignupBean';
 import { OperationResult } from '../models/OperationResult';
 import { Role, RestRole, RestRight, RestUserRoleRight } from '../models/Role';
 import { Clearance } from '../models/Clearance';
+import { RestPreloginResponse, RestUser } from '../models/RestServiceModels';
+import { restoreView } from '@angular/core/src/render3';
 
 
 @Injectable({
@@ -25,6 +27,8 @@ export class AuthenticationService {
   private refreshTokenUrl =this.loginUrl;// this.configuration.getApiUrl() + '/oauth/refresh_token';
   private userInfo = this.configuration.getApiUrl()+ '/user/current';
   private userRole = this.configuration.getApiUrl()+ '/user/current/role';
+
+  private preloginUrl=this.configuration.getApiUrl()+'/user/prelogin'
 
   currentSession: Session;
   private jwtHelper: JwtHelper = new JwtHelper();
@@ -175,6 +179,27 @@ export class AuthenticationService {
         }));
   }
 
+ 
+
+  prelogin(email:string,pass:string):Observable<RestPreloginResponse>{
+
+      return this.http.post<RestPreloginResponse>(this.preloginUrl,JSON.stringify({username:email,password:pass}),this.getHttpOptions()).map(res=>{
+          return res;
+      })
+
+  }
+
+  getHttpOptions(){
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return httpOptions;
+  }
+
+  
+
   login(email: string, pass: string): Observable<Session> {
 
     const httpOptions = {
@@ -187,11 +212,8 @@ export class AuthenticationService {
 
 
     return this.http.post<Session>(this.loginUrl, body, httpOptions)
-      .pipe(mergeMap((res: any) => {
-        
-        this.logger.console(res);
-
-        
+      .pipe(mergeMap((res: any) => {        
+        this.logger.console(res);        
         this.currentSession=new Session();
         this.currentSession.token = res.accessToken;
         this.currentSession.refreshToken = res.refreshToken;

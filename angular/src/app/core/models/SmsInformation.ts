@@ -1,4 +1,4 @@
-import {User} from "./User";
+/*import {User} from "./User";
 import { SmsType } from './SmsType';
 
 export class SmsInformation {
@@ -13,3 +13,4 @@ export class SmsInformation {
   public smsType: SmsType;
 
 }
+ */

@@ -12,8 +12,9 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { CompanyService } from 'src/app/core/services/CompanyService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { SmsService } from 'src/app/core/services/SmsService';
-import { SmsInformation } from 'src/app/core/models/SmsInformation';
+//import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { SmsType } from 'src/app/core/models/SmsType';
+import { RestSmsResponse, RestSmsConfirmRequest } from 'src/app/core/models/RestServiceModels';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -43,7 +44,7 @@ export class AccountSettingsComponent implements OnInit {
     current2FAPreference: boolean;
     endTime: Date;
     maxRequest: number = 3;
-    private smsInformation: SmsInformation;
+   private smsInformation: RestSmsResponse;
     isConfirmTimeEnded: boolean = true;
     public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
 
@@ -211,17 +212,15 @@ export class AccountSettingsComponent implements OnInit {
     changePhoneNumber() {
         if (this.userInfoForm.get('gsm').valid && this.phoneNumberTemp && this.phoneNumberTemp.length == 10) {
             this.user.gsm = this.phoneNumberTemp;
-            this.smsService.sendSmsActivationCode(this.user, SmsType.PHONE_ACTIVATION).subscribe(res => {
-                if (res.status == 200) {
-                    this.smsInformation = res.object;
+
+            this.smsService.sendSmsCommon().subscribe(res => {
+
+                    this.smsInformation = res;
                     this.maxRequest = 3;
                     this.isConfirmTimeEnded = false;
                     this.endTime = new Date();
                     this.endTime.setMinutes(new Date().getMinutes() + 2);
                     $('#smsValidationDiv').show(300);
-                } else {
-                    this.notification.error(res.message);
-                }
             });
 
         }
@@ -231,22 +230,23 @@ export class AccountSettingsComponent implements OnInit {
         if (this.maxRequest != 0 && !this.isConfirmTimeEnded) {
             this.maxRequest = this.maxRequest - 1;
             if (this.smsInformation !== null) {
-              this.smsInformation.activationCode = this.smsCode;
-              this.smsService.confirm(this.smsInformation).subscribe(res => {
-                if (res.status === 200) {
-                  if (res.object === true) {
+
+
+              let request:RestSmsConfirmRequest={id:this.smsInformation.id,code:this.smsCode};
+              this.smsService.confirmCommonSms(request).subscribe(res => {
+
                     this.user.gsm = this.phoneNumberTemp;
                     $('#smsValidationDiv').hide(200);
-                  } else {
-                    this.notification.error(res.message);
-                  }
-                } else {
-                  this.notification.error(res.message);
-                }
+
+
+              },err=>{
+
                 if (this.maxRequest === 0) {
-                  this.notification.error('You have exceeded the number of attempts! Try Again!');
-                  
-                }
+                    this.notification.error('You have exceeded the number of attempts! Try Again!');
+
+                  }
+                  throw err;
+
               });
             }
           }

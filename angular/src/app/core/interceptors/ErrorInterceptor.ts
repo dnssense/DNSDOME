@@ -24,12 +24,14 @@ export class ErrorInterceptor implements ErrorHandler {
       if (!navigator.onLine) {
         notificationService.danger('No Internet Connection');
       } else {
+        
         // Handle Http Error (error.status === 403, 404...)
         const status=error.status;
-        const message=translatorService.translate(error.message);
+        const message=translatorService.translate(error.statusText);
         notificationService.error(`${status} - ${message}`);
       }
     } else {
+      
         const message=translatorService.translate(error.message);
         notificationService.error(message);
       }
