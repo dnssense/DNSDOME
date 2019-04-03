@@ -2,7 +2,9 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-6"></div>
-      <div class="col-md-6"></div>
+      <div class="col-md-6">
+
+      </div>
     </div>
     <div class="row">
       <div class="col-md-3">
@@ -11,7 +13,7 @@
             <div class="card-icon">
               <i class="material-icons">group_add</i>
             </div>
-            <p class="card-category"><strong>Yeni Kullanıcılar</strong> </p>
+            <p class="card-category"><strong>Total Hit Count</strong> </p>
             <h3 class="card-title">
               {{stats?.newUserCount}}
             </h3>
@@ -31,14 +33,14 @@
             <div class="card-icon">
               <i class="material-icons">date_range</i>
             </div>
-            <p class="card-category">En Yoğun Gün</p>
+            <p class="card-category">Unique Domain/Subdomain/IP</p>
             <h3 class="card-title">
-              <small>{{stats?.rushDay}}</small>
+              <small>732/65485/3120</small>
             </h3>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons text-danger">warning</i>
+              <i class="material-icons text-warning">warning</i>
               <a href="#pablo">Detaylara Git</a>
             </div>
           </div>
@@ -50,12 +52,13 @@
             <div class="card-icon">
               <i class="material-icons">person</i>
             </div>
-            <p class="card-category">Bağlı Kullanıcı</p>
+            <p class="card-category">DGA Domain Count</p>
             <h3 class="card-title">{{stats?.onlineUserCount}}</h3>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons">timer</i> Anlık
+              <i class="material-icons text-warning">warning</i>
+              <a href="#pablo">Detaylara Git</a>
             </div>
           </div>
         </div>
@@ -66,26 +69,27 @@
             <div class="card-icon">
               <i class="material-icons">signal_cellular_alt</i>
             </div>
-            <p class="card-category">Kullanıcı Cinsiyet Oranı</p>
-            <h3 class="card-title">%{{stats?.maleGenderRatio}}E - %{{100-stats?.maleGenderRatio}}K</h3>
+            <p class="card-category">Top Blockeds Count</p>
+            <h3 class="card-title">3325</h3>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons">timer</i> Toplam Kullanıcılar İçinde
+              <i class="material-icons text-warning">warning</i>
+              <a href="#pablo">Detaylara Git</a>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="card card-stats">
           <div class="card-header card-header-icon card-header-info">
             <div class="card-icon">
               <i class="material-icons">timeline</i>
             </div>
-            <h4 class="card-title">Bağlanan Kullanıcı Sayısı
-              <small> - Günlük</small>
+            <h4 class="card-title">Total Hit & Blocked
+              <small> - Last Day</small>
             </h4>
           </div>
           <div class="card-body">
@@ -93,13 +97,30 @@
           </div>
         </div>
       </div>
+      <div class="col-md-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-icon card-header-info">
+            <div class="card-icon">
+              <i class="material-icons">timeline</i>
+            </div>
+            <h4 class="card-title">Total Hit & Blocked
+              <small> - Last Day</small>
+            </h4>
+          </div>
+          <div class="card-body">
+            <div id="colouredRoundedLineChart2" class="ct-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-4">
         <div class="card card-chart">
           <div class="card-header card-header-icon card-header-danger">
             <div class="card-icon">
               <i class="material-icons">power</i>
             </div>
-            <h4 class="card-title">Giriş Yöntemleri</h4>
+            <h4 class="card-title">Domain Categories</h4>
           </div>
           <div class="card-body">
             <div id="birincipasta" class="ct-chart"></div>
@@ -107,12 +128,12 @@
           <div class="card-footer">
             <div class="row">
               <div class="col-md-12">
-                <h6 class="card-category">Yöntemler</h6>
+                <h6 class="card-category">Categories</h6>
               </div>
               <div class="col-md-12">
-                <i class="fa fa-circle text-info"></i> GSM
-                <i class="fa fa-circle text-warning"></i> Mail
-                <i class="fa fa-circle text-danger"></i> Facebook
+                <i class="fa fa-circle text-info"></i> Category A
+                <i class="fa fa-circle text-warning"></i> Category B
+                <i class="fa fa-circle text-danger"></i> Category C
               </div>
             </div>
           </div>
@@ -127,15 +148,79 @@
             <h4 class="card-title">World Status</h4>
           </div>
           <div class="card-body">
-            <div id="worldMap" class="map"></div>
+            <div id="worldMap" class="map" style="max-height: 177px;"></div>
           </div>
           <div class="card-footer">
-              <div class="row">
-                
-              </div>
+            <div class="row">
+
             </div>
+          </div>
         </div>
       </div>
+      <div class="col-md-4">
+          <div class="card">
+              <div class="card-header card-header-icon card-header-rose">
+                <h4 class="card-title ">Firstly Seen Domain For You</h4>
+              </div>
+                <div class="card-body table-full-width" >
+                    <div class="table-responsive mr-1" style="max-height: 245px;">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                  <th *ngFor="let cell of tableData3.headerRow">{{ cell }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                  <tr class="table-success">
+                                      <td *ngFor="let cell of tableData3.dataRows[0]">{{cell}}</td>
+                                  </tr>
+                                  <tr>
+                                      <td *ngFor="let cell of tableData3.dataRows[1]">{{cell}}</td>
+                                  </tr>
+                                  <tr class="table-danger">
+                                      <td *ngFor="let cell of tableData3.dataRows[2]">{{cell}}</td>
+                                  </tr>
+                                  <tr>
+                                      <td *ngFor="let cell of tableData3.dataRows[3]">{{cell}}</td>
+                                  </tr>
+                                  <tr class="table-danger">
+                                      <td *ngFor="let cell of tableData3.dataRows[4]">{{cell}}</td>
+                                  </tr>
+                                  <tr>
+                                      <td *ngFor="let cell of tableData3.dataRows[5]">{{cell}}</td>
+                                  </tr>
+                                  <tr class="table-warning">
+                                      <td *ngFor="let cell of tableData3.dataRows[6]">{{cell}}</td>
+                                  </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
   </div>
 </div>
+<style>
+    /* width */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+  
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #eee;
+    }
+  
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: rgb(187, 187, 187);
+      border-radius: 9px;
+    }
+  
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #888888;
+    }
+  </style>

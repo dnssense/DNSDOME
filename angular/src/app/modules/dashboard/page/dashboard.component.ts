@@ -4,6 +4,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import * as Chartist from 'chartist';
 import { DashboardStatistic } from 'src/app/core/models/DashboardStatistic';
 import { ValueTransformer } from '@angular/compiler/src/util';
+import { TableData } from '../../shared/md/md-table/md-table.component';
 
 declare const $: any;
 
@@ -15,18 +16,30 @@ declare const $: any;
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   stats: DashboardStatistic;
-
+  public tableData3: TableData;
 
   constructor(private configService: ConfigService, private http: HttpClient) {
 
     this.stats = {
       rushDay: "Pazar",
-      newUserCount: 12,
+      newUserCount: 5612,
       totalUserCount: 130,
-      onlineUserCount: 5,
+      onlineUserCount: 5345,
       maleGenderRatio: 56,
       weeklyUsers: [334, 456, 766, 635, 189, 389, 100]
     };
+
+    this.tableData3 = {
+      headerRow: [ 'Domain', 'Category' ],
+      dataRows: [
+          ['faceboook.com', 'Category A'],
+          ['twss.com', 'Category A'],
+          ['asdfd.com', 'Category B'],
+          ['googlea.com', 'Category C'],
+          ['somethibg.com', 'Category D'],
+          ['cameliscamel.com', 'Category E'],
+      ]
+   };
 
   }
 
@@ -72,29 +85,64 @@ export class DashboardComponent implements OnInit, OnDestroy {
     window.setTimeout(function () {
 
       values.forEach((value: number, key: string) => {
-        var element = document.getElementById('jqvmap1_'+key);
+        var element = document.getElementById('jqvmap1_' + key);
 
-      if (element) {
-        if (value<300) {
-          element.setAttribute('fill', '#10bb20');
-        } else {
-          element.setAttribute('fill', '#ff0000');
+        if (element) {
+          if (value < 300) {
+            element.setAttribute('fill', '#10bb20');
+          } else {
+            element.setAttribute('fill', '#ff0000');
+          }
+          element.title = value.toString();
         }
-        element.title= value.toString();
-      }
       });
 
-      
+
     }, 1000);
 
   }
 
-  
+
 
 
   createConnectedUserChart() {
+
+    const dataSimpleBarChart = {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      series: [
+        [542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895]
+      ]
+    };
+
+    const optionsSimpleBarChart = {
+      seriesBarDistance: 10,
+      axisX: {
+        showGrid: false
+      }
+    };
+
+    const responsiveOptionsSimpleBarChart: any = [
+      ['screen and (max-width: 640px)', {
+        seriesBarDistance: 5,
+        axisX: {
+          labelInterpolationFnc: function (value: any) {
+            return value[0];
+          }
+        }
+      }]
+    ];
+
+    const simpleBarChart = new Chartist.Bar('#simpleBarChart', dataSimpleBarChart, optionsSimpleBarChart,
+     responsiveOptionsSimpleBarChart);
+
+    // start animation for the Emails Subscription Chart
+    this.startAnimationForBarChart(simpleBarChart);
+
+
+
+
     const dataColouredRoundedLineChart = {
-      labels: ['Pzt', 'Sa', 'Çar', 'Per', 'Cu', 'Cts', 'Paz'],
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
       series: [this.stats.weeklyUsers, [134, 256, 66, 530, 289, 689, 700]]
 
     };
@@ -110,16 +158,44 @@ export class DashboardComponent implements OnInit, OnDestroy {
         showGrid: true,
       },
       low: 0,
-      high: 1000,
+      high: 900,
       showPoint: true,
       fullWidth: true,
-      height: '300px'
+      height: '250px'
     };
 
     const colouredRoundedLineChart = new Chartist.Line('#colouredRoundedLineChart', dataColouredRoundedLineChart,
       optionsColouredRoundedLineChart);
 
     this.startAnimationForLineChart(colouredRoundedLineChart);
+
+    const dataColouredRoundedLineChart2 = {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      series: [this.stats.weeklyUsers, [134, 256, 66, 530, 289, 289, 700]]
+
+    };
+    const optionsColouredRoundedLineChart2: any = {
+      lineSmooth: Chartist.Interpolation.cardinal({
+        tension: 5
+      }),
+      axisY: {
+        showGrid: true,
+        offset: 40
+      },
+      axisX: {
+        showGrid: true,
+      },
+      low: 0,
+      high: 900,
+      showPoint: true,
+      fullWidth: true,
+      height: '250px'
+    };
+    const colouredRoundedLineChart2 = new Chartist.Line('#colouredRoundedLineChart2', dataColouredRoundedLineChart2,
+      optionsColouredRoundedLineChart2);
+
+    this.startAnimationForLineChart(colouredRoundedLineChart2);
+
   }
 
   startAnimationForLineChart(chart: any) {
@@ -188,7 +264,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     const optionsPreferences = {
       donut: true,
-      height: '255px'
+      height: '150px'
     };
 
     new Chartist.Pie('#birincipasta', dataPreferences, optionsPreferences);
@@ -201,10 +277,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getcategory() {
     this.http.post<any>(this.configService.getApiUrl() + "/dashboard/list", {}).subscribe(() => {
-      
+
     },
       () => {
-        
+
       });
   }
 

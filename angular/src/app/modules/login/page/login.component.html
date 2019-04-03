@@ -59,7 +59,8 @@
                   </div>
                 </form>
               </div>
-              <div id="forgotPasswordDiv" style="display:none">                
+              <div id="forgotPasswordDiv" style="display:none">
+                <p class="card-description text-center">Send password reset request</p>
                 <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
                   <input type="email" matInput placeholder="{{'LOGIN.Email' | translate}} *" [(ngModel)]="forgoterEmail"
                     (ngModelChange)="emailValidationLogin($event)">
@@ -73,8 +74,9 @@
                 </div>
                 <div class=""><a class="btn btn-sm btn-link" (click)="openLogin()">* Login</a></div>
                 <div class="text-center">
-                  <button class="btn btn-info btn-sm" (click)="sendPasswordActivationCode()">Send Activation Code</button>
-                </div>                
+                  <button class="btn btn-info btn-sm" (click)="sendPasswordActivationCode()">Send Activation
+                    Code</button>
+                </div>
               </div>
               <div id="twoFactorDiv" style="display:none">
                 <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>

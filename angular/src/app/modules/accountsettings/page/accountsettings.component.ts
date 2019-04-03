@@ -58,7 +58,38 @@ export class AccountSettingsComponent implements OnInit {
         });
     }
 
-    createForms() {
+    emailValidationRegister(e) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (re.test(String(e).toLowerCase())) {
+            this.validEmailRegister = true;
+        } else {
+            this.validEmailRegister = false;
+        }
+    }
+
+    checkisTelNumber(event: KeyboardEvent) {
+        let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight"];
+        let isValid: boolean = false;
+
+        for (let i = 0; i < allowedChars.length; i++) {
+            if (allowedChars[i] == event.key) {
+                isValid = true;
+                break;
+            }
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+
+        if (this.phoneNumberTemp == this.user.gsm) {
+            $('#changePhoneBtn').attr('disabled', 'disabled');
+        } else {
+            $('#changePhoneBtn').removeAttr("disabled");
+        }
+    }
+
+    ngOnInit() {
         if (this.authService.currentSession) {
             this.user = this.authService.currentSession.currentUser;
             this.current2FAPreference = this.user.twoFactorAuthentication;
@@ -95,41 +126,6 @@ export class AccountSettingsComponent implements OnInit {
             }
                 , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
             );
-    }
-
-    emailValidationRegister(e) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (re.test(String(e).toLowerCase())) {
-            this.validEmailRegister = true;
-        } else {
-            this.validEmailRegister = false;
-        }
-    }
-
-    checkisTelNumber(event: KeyboardEvent) {
-        let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight"];
-        let isValid: boolean = false;
-
-        for (let i = 0; i < allowedChars.length; i++) {
-            if (allowedChars[i] == event.key) {
-                isValid = true;
-                break;
-            }
-        }
-
-        if (!isValid) {
-            event.preventDefault();
-        }
-
-        if (this.phoneNumberTemp == this.user.gsm) {
-            $('#changePhoneBtn').attr('disabled', 'disabled');
-        } else {
-            $('#changePhoneBtn').removeAttr("disabled");
-        }
-    }
-
-    ngOnInit() {
-        this.createForms();
     }
 
     selectFile($event) {
@@ -197,14 +193,17 @@ export class AccountSettingsComponent implements OnInit {
     change2FASubmit() {
         this.user.twoFactorAuthentication = this.user.twoFactorAuthentication === true ? false : true;
 
-        this.accountService.save(this.user).subscribe(res => {
-            if (res.status == 200) {
-                this.notification.success("Operation Successful Two factor authentication updated.");
-                this.authService.checkSessionIsValid();
-            } else {
-                this.notification.error("Operation Failed! " + res.message);
-            }
-        });
+        if (this.user.gsm) {
+            this.accountService.save(this.user).subscribe(res => {
+                if (res.status == 200) {
+                    this.notification.success("Operation Successful Two factor authentication updated.");
+                    this.authService.checkSessionIsValid();
+                } else {
+                    this.notification.error("res.message");
+                    this.user.twoFactorAuthentication = this.user.twoFactorAuthentication === true ? false : true;
+                }
+            });
+        }
 
     }
 
@@ -227,29 +226,39 @@ export class AccountSettingsComponent implements OnInit {
         }
     }
 
-    confirmGsm(){
+    confirmGsm() {
         if (this.maxRequest != 0 && !this.isConfirmTimeEnded) {
             this.maxRequest = this.maxRequest - 1;
             if (this.smsInformation !== null) {
-              this.smsInformation.activationCode = this.smsCode;
-              this.smsService.confirm(this.smsInformation).subscribe(res => {
-                if (res.status === 200) {
-                  if (res.object === true) {
-                    this.user.gsm = this.phoneNumberTemp;
-                    $('#smsValidationDiv').hide(200);
-                  } else {
-                    this.notification.error(res.message);
-                  }
-                } else {
-                  this.notification.error(res.message);
-                }
-                if (this.maxRequest === 0) {
-                  this.notification.error('You have exceeded the number of attempts! Try Again!');
-                  
-                }
-              });
+                this.smsInformation.activationCode = this.smsCode;
+                this.smsService.confirm(this.smsInformation).subscribe(res => {
+                    if (res.status === 200) {
+                        if (res.object === true) {
+                            this.user.gsm = this.phoneNumberTemp;
+
+                            this.accountService.save(this.user).subscribe(res => {
+                                if (res.status == 200) {
+                                    this.notification.success("Operation Successful Two factor authentication updated.");
+                                    this.authService.checkSessionIsValid();
+                                } else {
+                                    this.notification.error(res.message);
+                                }
+                            });
+
+                            $('#smsValidationDiv').hide(200);
+                        } else {
+                            this.notification.error(res.message);
+                        }
+                    } else {
+                        this.notification.error(res.message);
+                    }
+                    if (this.maxRequest === 0) {
+                        this.notification.error('You have exceeded the number of attempts! Try Again!');
+
+                    }
+                });
             }
-          }
+        }
     }
 
     timeEnd() {
