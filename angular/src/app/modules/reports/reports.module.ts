@@ -1,19 +1,30 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CustomReportComponent } from './customreport/customreport.component';
-import { MonitorComponent } from './monitor/monitor.component';
-import { ReportsRoutingModule } from './reports-routing.module';
-
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { DndModule } from "ng2-dnd";
+import { NouisliderModule } from 'ng2-nouislider';
+import { CollapseModule } from 'ngx-bootstrap';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/shared/components/material.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NouisliderModule } from 'ng2-nouislider';
+import { PipesModule } from '../shared/pipes/pipes.module';
+import { CustomReportComponent } from './customreport/customreport.component';
+import { MonitorComponent } from './monitor/monitor.component';
+import { MonitorResultComponent } from './monitor/result/monitor-result.component';
+import { MonitorSearchComponent } from './monitor/search/monitor-search.component';
+import { ReportsRoutingModule } from './reports-routing.module';
+import { ColumnTagInputComponent } from './shared/columntaginput/column-tag-input.component';
+
 
 @NgModule({
-  declarations: [CustomReportComponent, MonitorComponent],
+  declarations: [
+    CustomReportComponent,
+    MonitorComponent,
+    MonitorSearchComponent,
+    MonitorResultComponent,
+    ColumnTagInputComponent
+  ],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -21,6 +32,9 @@ import { NouisliderModule } from 'ng2-nouislider';
     NouisliderModule,
     MaterialModule,
     ReportsRoutingModule,
+    PipesModule,
+    DndModule.forRoot(),
+    CollapseModule.forRoot(),
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
@@ -28,6 +42,7 @@ import { NouisliderModule } from 'ng2-nouislider';
         deps: [HttpClient]
       }
     })
-  ]
+  ],
+  providers: [PipesModule]
 })
-export class ReportsModule {}
+export class ReportsModule { }

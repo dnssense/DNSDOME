@@ -12,7 +12,8 @@ import { environment } from 'src/environments/environment';
 import { Session } from 'src/app/core/models/Session';
 import { SmsService } from 'src/app/core/services/SmsService';
 import { SmsType } from 'src/app/core/models/SmsType';
-import { SmsInformation } from 'src/app/core/models/SmsInformation';
+//import { SmsInformation } from 'src/app/core/models/SmsInformation';
+import { RestPreloginResponse, RestPreloginSmsResponse } from 'src/app/core/models/RestServiceModels';
 
 declare var $: any;
 
@@ -59,7 +60,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   endTime: Date;
   isConfirmTimeEnded: boolean = true;
   maxRequest: number = 3;
-  private smsInformation: SmsInformation;
+  private smsInformation: RestPreloginSmsResponse;
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
     private element: ElementRef, private notification: NotificationService, private smsService: SmsService) {
     this.isFailed = false;
@@ -109,12 +110,16 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   login() {
     if (this.loginForm.valid) {
-      this.authService.login(this.email, this.password).subscribe(
+
+      this.authService.prelogin(this.email, this.password).subscribe(
         val => {
-          if (val.currentUser.twoFactorAuthentication) {
+
+          if (val.user.isTwoFactorAuthentication) {
             this.open2FA(val);
           } else {
+           this.authService.login(this.email,this.password).subscribe(val=>{
             this.router.navigateByUrl('/admin/dashboard');
+           })
           }
         },
         (err) => {
@@ -147,12 +152,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     $('#forgotPasswordDiv').slideDown(500);
   }
 
-  open2FA(ses: Session) {
-    this.twoFactorPhone = 'Phone Number: *******' + ses.currentUser.gsm.substring(8);
+  open2FA(val:RestPreloginResponse) {
 
-    this.smsService.sendSmsActivationCode(ses.currentUser, SmsType.LOGIN).subscribe(res => {
-      if (res.status == 200) {
-        this.smsInformation = res.object;
+
+    this.smsService.sendSmsForLogin(val).subscribe(res => {
+        this.twoFactorPhone=val.user.gsm;
+        this.smsInformation = res;
         this.maxRequest = 3;
         this.isConfirmTimeEnded = false;
         this.endTime = new Date();
@@ -160,9 +165,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         $('#twoFactorDiv').slideDown(500);
         $('#loginDiv').slideUp(500);
         $('#forgotPasswordDiv').hide();
-      } else {
-        this.notification.error(res.message);
-      }
+
     });
 
   }
@@ -171,17 +174,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.maxRequest != 0 && !this.isConfirmTimeEnded) {
       this.maxRequest = this.maxRequest - 1;
       if (this.smsInformation !== null) {
-        this.smsInformation.activationCode = this.smsCode;
-        this.smsService.confirm(this.smsInformation).subscribe(res => {
-          if (res.status === 200) {
-            if (res.object === true) {
-              this.router.navigateByUrl('/admin/dashboard');
-            } else {
-              this.notification.error(res.message);
-            }
-          } else {
-            this.notification.error(res.message);
-          }
+
+        this.smsService.confirmSmsForLogin(this.smsInformation,this.smsCode).subscribe(res => {
+          this.notification.info("Sms confirmed")
+          this.authService.login(this.email,this.password).subscribe(res2=>{
+
+            this.router.navigateByUrl("/admin/dashboard")
+          })
+
+        },err=>{
+          this.notification.error(err.message);
+          this.maxRequest-=1;
           if (this.maxRequest === 0) {
             this.notification.error('You have exceeded the number of attempts! Try Again!');
             this.openLogin();

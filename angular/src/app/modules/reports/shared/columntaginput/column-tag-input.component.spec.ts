@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MonitorComponent } from './monitor.component';
+import { ColumnTagInputComponent } from './column-tag-input.component';
 
-describe('MonitorComponent', () => {
-  let component: MonitorComponent;
-  let fixture: ComponentFixture<MonitorComponent>;
+describe('ColumnTagInputComponent', () => {
+  let component: ColumnTagInputComponent;
+  let fixture: ComponentFixture<ColumnTagInputComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MonitorComponent]
+      declarations: [ColumnTagInputComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MonitorComponent);
+    fixture = TestBed.createComponent(ColumnTagInputComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

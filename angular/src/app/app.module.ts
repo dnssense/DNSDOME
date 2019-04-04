@@ -1,43 +1,52 @@
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS
+} from '@angular/common/http';
+import { ErrorHandler, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
-import { NgModule, ErrorHandler } from '@angular/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { ReCaptchaModule } from 'angular2-recaptcha';
+import {
+  BsDropdownModule,
+  BsModalService,
+  CollapseModule,
+  ModalModule,
+  PaginationModule,
+  PopoverModule,
+  TabsModule,
+  TooltipModule
+} from 'ngx-bootstrap';
+import {
+  NgxUiLoaderHttpModule,
+  NgxUiLoaderModule,
+  NgxUiLoaderRouterModule
+} from 'ngx-ui-loader';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
+import { AuthGuard } from './core/guards/AuthGuard';
+import { ErrorInterceptor } from './core/interceptors/ErrorInterceptor';
+import { HttpErrorInterceptor } from './core/interceptors/HttpErrorInterceptor';
+import { JwtInterceptor } from './core/interceptors/JwtInterceptor';
 import { AuthenticationService } from './core/services/authentication.service';
 import { ConfigService } from './core/services/config.service';
-import {
-  HttpClientModule,
-  HTTP_INTERCEPTORS,
-  HttpClient
-} from '@angular/common/http';
 import { CookieService } from './core/services/cookie.service';
-import { NotificationService } from './core/services/notification.service';
-import { AuthGuard } from './core/guards/AuthGuard';
-import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
-import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
-import { JwtInterceptor } from './core/interceptors/JwtInterceptor';
-import { HttpErrorInterceptor } from './core/interceptors/HttpErrorInterceptor';
-import { NotificationModule } from './modules/shared/notification/notification.module';
-import { ErrorInterceptor } from './core/interceptors/ErrorInterceptor';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { translateHttpLoaderFactory } from './core/translationhelper';
-import {
-  NgxUiLoaderModule,
-  NgxUiLoaderRouterModule,
-  NgxUiLoaderHttpModule
-} from 'ngx-ui-loader';
-import { ReCaptchaModule } from 'angular2-recaptcha';
-import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { DashBoardService } from './core/services/DashBoardService';
+import { MonitorService } from './core/services/MonitorService';
+import { NotificationService } from './core/services/notification.service';
 import { SearchSettingService } from './core/services/SearchSettingService';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { translateHttpLoaderFactory } from './core/translationhelper';
+import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
+import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
+import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
+import { NotificationModule } from './modules/shared/notification/notification.module';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    ModalModule.forRoot(),
     BrowserModule,
     FormsModule,
     HttpClientModule,
@@ -50,6 +59,13 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     NgxUiLoaderModule.forRoot({ fgsPosition: 'center-center' }),
     NgxUiLoaderHttpModule.forRoot({ showForeground: true }),
     NgxUiLoaderRouterModule,
+    BsDropdownModule.forRoot(),
+    CollapseModule.forRoot(),
+    ModalModule.forRoot(),
+    PaginationModule.forRoot(),
+    PopoverModule.forRoot(),
+    TabsModule.forRoot(),
+    TooltipModule.forRoot(),
     ReCaptchaModule,
     TranslateModule.forRoot({
       loader: {
@@ -68,6 +84,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     BsModalService,
     DashBoardService,
     NotificationService,
+    MonitorService,
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     {
       provide: HTTP_INTERCEPTORS,
