@@ -24,7 +24,15 @@ export class UsersComponent implements OnInit {
 
         this.selectedUser.roles = new Role();
         this.userService.getUsers().subscribe(res => this.userList = res);
-        this.userService.getRoles().subscribe(res => this.roleList = res);
+
+        this.userService.getRoles().subscribe(res => {
+            this.roleList = [];
+            res.forEach(r => {
+                if (r.id != 6) {
+                    this.roleList.push(r);
+                }
+            });
+        });
 
     }
 
@@ -47,7 +55,7 @@ export class UsersComponent implements OnInit {
 
         $('#listPanel').toggle("slide", { direction: "left" }, 600);
         $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
- 
+
     }
 
     showEditWizard(id: Number) {
@@ -55,7 +63,7 @@ export class UsersComponent implements OnInit {
 
         $('#listPanel').toggle("slide", { direction: "left" }, 500);
         $('#wizardPanel').toggle("slide", { direction: "right" }, 500);
- 
+
     }
 
     hideWizard() {
