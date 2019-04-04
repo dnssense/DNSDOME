@@ -32,7 +32,7 @@ export const ProfileRoutes: RouteInfo[] = [
     title: 'Account Settings',
     type: 'link',
     icontype: 'settings',
-    role: 'ROLE_CUSTOMER'
+    role: ''
   }
 ];
 
@@ -43,21 +43,21 @@ export const ROUTES: RouteInfo[] = [
     title: 'Dashboard',
     type: 'link',
     icontype: 'dashboard',
-    role: 'ROLE_CUSTOMER'
+    role: ''
   },
   {
     path: '/admin/reports/monitor',
     title: ' Monitor',
     type: 'link',
     icontype: 'av_timer',
-    role: 'ROLE_CUSTOMER'
+    role: ''
   },
   {
     path: '/admin/reports/customreport',
     title: 'Custom Reports',
     type: 'link',
     icontype: 'timeline',
-    role: 'ROLE_CUSTOMER'
+    role: ''
   },
   {
     path: '/admin',
@@ -90,7 +90,7 @@ export const ROUTES: RouteInfo[] = [
     title: 'Help',
     type: 'link',
     icontype: 'live_help',
-    role: 'ROLE_CUSTOMER'
+    role: null
   }
 ];
 
@@ -127,14 +127,9 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     this.menuItems = new Array();
     //todo burada bir sıkıntı var
-    let roleName: string = this.authService.currentSession.currentUser.roles
-      .name;
+    let roleName: string = this.authService.currentSession.currentUser.roles.name;
     if (roleName) {
-      this.menuItems = ROUTES.filter(
-        menuItem =>
-          menuItem.role == null ||
-          (menuItem.role != null && roleName == menuItem.role)
-      );
+      this.menuItems = ROUTES.filter(m =>m.role == null || m.role == '' || (m.role != null && roleName == m.role));
     }
 
     this.profileMenuItems = ProfileRoutes;
