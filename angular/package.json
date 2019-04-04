@@ -64,6 +64,7 @@
     "lodash": "^4.17.11",
     "moment": "2.22.2",
     "moment-timezone": "0.4.1",
+    "ng2-dnd": "^4.1.0",
     "ng2-nouislider": "1.7.13",
     "ng2-select": "2.0.0",
     "ngx-bootstrap": "^2.0.2",

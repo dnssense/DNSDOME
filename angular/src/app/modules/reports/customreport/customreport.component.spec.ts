@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CustomReportComponent } from './customreport.component';
 
-describe('ReportsComponent', () => {
+describe('CustomReportComponent', () => {
   let component: CustomReportComponent;
   let fixture: ComponentFixture<CustomReportComponent>;
 

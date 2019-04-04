@@ -1,10 +1,16 @@
-<div class="main-content">
+<div class="main-content" #component>
   <div class="container-fluid col-md-11">
-    <div class="row">
-      <div class="col-md-6">
-        monitor component
-      </div>
-      <div class="col-md-6"></div>
-    </div>
+    <app-monitor-search
+      [searchSetting]="searchSetting"
+      (searchEmitter)="search($event)"
+      (searchSettingEmitter)="updateSearchSetting($event)"
+    >
+    </app-monitor-search>
+  </div>
+  <div class="container-fluid col-md-11">
+    <app-monitor-result
+      [searchSetting]="searchSetting"
+      (addColumnValueEmitter)="addValuesIntoSelected($event)"
+    ></app-monitor-result>
   </div>
 </div>
