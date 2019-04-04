@@ -4,7 +4,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-4 col-md-6 col-sm-6 ml-auto mr-auto">
-          <div class="card card-signup mt-0">
+          <div class="card card-signup">
             <div class="card-title">
               <h2 class="card-title text-center" (click)="openLogin()">{{'LOGIN.Login' | translate}}</h2>
               <div class="row">
@@ -60,13 +60,7 @@
                 </form>
               </div>
               <div id="forgotPasswordDiv" style="display:none">
-                <hr />
-                <small>*If you do not receive the password reset email message within a few minutes, please check your
-                  Spam or Bulk E-Mail folder just in case the email got delivered there instead of your inbox.
-                  If so, select the password reset email and mark it Not Spam, which should allow future messages to get
-                  through.
-                </small>
-                <hr />
+                <p class="card-description text-center">Send password reset request</p>
                 <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
                   <input type="email" matInput placeholder="{{'LOGIN.Email' | translate}} *" [(ngModel)]="forgoterEmail"
                     (ngModelChange)="emailValidationLogin($event)">
@@ -78,10 +72,11 @@
                   <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
                   </re-captcha>
                 </div>
-                <div class="text-center">
-                  <button class="btn btn-info btn-sm" (click)="sendPasswordActivationCode()">Send Activation Code</button>
-                </div>
                 <div class=""><a class="btn btn-sm btn-link" (click)="openLogin()">* Login</a></div>
+                <div class="text-center">
+                  <button class="btn btn-info btn-sm" (click)="sendPasswordActivationCode()">Send Activation
+                    Code</button>
+                </div>
               </div>
               <div id="twoFactorDiv" style="display:none">
                 <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>

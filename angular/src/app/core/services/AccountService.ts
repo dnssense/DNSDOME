@@ -16,12 +16,12 @@ import { SignupBean } from '../models/SignupBean';
 })
 export class AccountService {
 
-  private _signupURL = this.config.getApiUrl() + "/signup";
-  private _saveAccountURL = this.config.getApiUrl() + '/account/updateUser';
-  private _savePasswordURL = this.config.getApiUrl() + '/account/savePassword';
-  private _savePersonalSettingURL = this.config.getApiUrl() + '/account/savePersonalSetting';
-  private _currentUserURL = this.config.getApiUrl() + '/account/currentUser';
-  private _currentUserRightsURL = this.config.getApiUrl() + '/account/currentUserRights';
+  private _signupURL = this.config.getApiUrl() + "/services/signup";
+  private _saveAccountURL = this.config.getApiUrl() + '/services/account/updateUser';
+  private _savePasswordURL = this.config.getApiUrl() + '/services/account/savePassword';
+  private _savePersonalSettingURL = this.config.getApiUrl() + '/services/account/savePersonalSetting';
+  private _currentUserURL = this.config.getApiUrl() + '/services/account/currentUser';
+  private _currentUserRightsURL = this.config.getApiUrl() + '/services/account/currentUserRights';
 
 
   constructor(private http: HttpClient, private config: ConfigService) {

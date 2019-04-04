@@ -12,8 +12,9 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { CompanyService } from 'src/app/core/services/CompanyService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { SmsService } from 'src/app/core/services/SmsService';
-import { SmsInformation } from 'src/app/core/models/SmsInformation';
+//import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { SmsType } from 'src/app/core/models/SmsType';
+import { RestSmsResponse, RestSmsConfirmRequest } from 'src/app/core/models/RestServiceModels';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -43,7 +44,7 @@ export class AccountSettingsComponent implements OnInit {
     current2FAPreference: boolean;
     endTime: Date;
     maxRequest: number = 3;
-    private smsInformation: SmsInformation;
+   private smsInformation: RestSmsResponse;
     isConfirmTimeEnded: boolean = true;
     public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
 
@@ -58,7 +59,38 @@ export class AccountSettingsComponent implements OnInit {
         });
     }
 
-    createForms() {
+    emailValidationRegister(e) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (re.test(String(e).toLowerCase())) {
+            this.validEmailRegister = true;
+        } else {
+            this.validEmailRegister = false;
+        }
+    }
+
+    checkisTelNumber(event: KeyboardEvent) {
+        let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight"];
+        let isValid: boolean = false;
+
+        for (let i = 0; i < allowedChars.length; i++) {
+            if (allowedChars[i] == event.key) {
+                isValid = true;
+                break;
+            }
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+
+        if (this.phoneNumberTemp == this.user.gsm) {
+            $('#changePhoneBtn').attr('disabled', 'disabled');
+        } else {
+            $('#changePhoneBtn').removeAttr("disabled");
+        }
+    }
+
+    ngOnInit() {
         if (this.authService.currentSession) {
             this.user = this.authService.currentSession.currentUser;
             this.current2FAPreference = this.user.twoFactorAuthentication;
@@ -95,41 +127,6 @@ export class AccountSettingsComponent implements OnInit {
             }
                 , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
             );
-    }
-
-    emailValidationRegister(e) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (re.test(String(e).toLowerCase())) {
-            this.validEmailRegister = true;
-        } else {
-            this.validEmailRegister = false;
-        }
-    }
-
-    checkisTelNumber(event: KeyboardEvent) {
-        let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight"];
-        let isValid: boolean = false;
-
-        for (let i = 0; i < allowedChars.length; i++) {
-            if (allowedChars[i] == event.key) {
-                isValid = true;
-                break;
-            }
-        }
-
-        if (!isValid) {
-            event.preventDefault();
-        }
-
-        if (this.phoneNumberTemp == this.user.gsm) {
-            $('#changePhoneBtn').attr('disabled', 'disabled');
-        } else {
-            $('#changePhoneBtn').removeAttr("disabled");
-        }
-    }
-
-    ngOnInit() {
-        this.createForms();
     }
 
     selectFile($event) {
@@ -196,60 +193,74 @@ export class AccountSettingsComponent implements OnInit {
 
     change2FASubmit() {
         this.user.twoFactorAuthentication = this.user.twoFactorAuthentication === true ? false : true;
-
-        this.accountService.save(this.user).subscribe(res => {
-            if (res.status == 200) {
-                this.notification.success("Operation Successful Two factor authentication updated.");
-                this.authService.checkSessionIsValid();
-            } else {
-                this.notification.error("Operation Failed! " + res.message);
-            }
-        });
+        debugger;
+        if (this.user.gsm) {
+            this.user.surname='deneme';
+            this.accountService.save(this.user).subscribe(res => {
+                debugger;
+                if (res.status == 200) {
+                    this.notification.success("Operation Successful Two factor authentication updated.");
+                    this.authService.checkSessionIsValid();
+                } else {
+                    this.notification.error(res.message);
+                    this.user.twoFactorAuthentication = this.user.twoFactorAuthentication === true ? false : true;
+                }
+            });
+        }
 
     }
 
     changePhoneNumber() {
         if (this.userInfoForm.get('gsm').valid && this.phoneNumberTemp && this.phoneNumberTemp.length == 10) {
             this.user.gsm = this.phoneNumberTemp;
-            this.smsService.sendSmsActivationCode(this.user, SmsType.PHONE_ACTIVATION).subscribe(res => {
-                if (res.status == 200) {
-                    this.smsInformation = res.object;
+
+            this.smsService.sendSmsCommon().subscribe(res => {
+
+                    this.smsInformation = res;
                     this.maxRequest = 3;
                     this.isConfirmTimeEnded = false;
                     this.endTime = new Date();
                     this.endTime.setMinutes(new Date().getMinutes() + 2);
                     $('#smsValidationDiv').show(300);
-                } else {
-                    this.notification.error(res.message);
-                }
             });
 
         }
     }
 
-    confirmGsm(){
+    confirmGsm() {
         if (this.maxRequest != 0 && !this.isConfirmTimeEnded) {
             this.maxRequest = this.maxRequest - 1;
             if (this.smsInformation !== null) {
-              this.smsInformation.activationCode = this.smsCode;
-              this.smsService.confirm(this.smsInformation).subscribe(res => {
-                if (res.status === 200) {
-                  if (res.object === true) {
+
+
+
+              let request:RestSmsConfirmRequest={id:this.smsInformation.id,code:this.smsCode};
+              this.smsService.confirmCommonSms(request).subscribe(res => {
+                    debugger;
                     this.user.gsm = this.phoneNumberTemp;
+                    this.accountService.save(this.user).subscribe(res => {
+                        if (res.status == 200) {
+                            this.notification.success("Operation Successful Two factor authentication updated.");
+                            this.authService.checkSessionIsValid();
+                        } else {
+                            this.notification.error(res.message);
+                        }
+                    });
                     $('#smsValidationDiv').hide(200);
-                  } else {
-                    this.notification.error(res.message);
-                  }
-                } else {
-                  this.notification.error(res.message);
-                }
+
+
+              },err=>{
+
                 if (this.maxRequest === 0) {
-                  this.notification.error('You have exceeded the number of attempts! Try Again!');
-                  
-                }
+                    this.notification.error('You have exceeded the number of attempts! Try Again!');
+
+                  }
+                  throw err;
+
               });
+
             }
-          }
+        }
     }
 
     timeEnd() {

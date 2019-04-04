@@ -22,18 +22,3 @@ export class User {
 
 }
 
-
-export interface RestUser{
-    id:string;//mandatory
-    username:string;//mandatory
-    name?:string;
-    password:string;//mandatory
-    isActive:number;//mandatory
-    isLocked:number;//mandatory
-    isTwoFactorAuthentication:number,//mandatory
-    isVerified:number;//mandatory
-    source:string|'local'|'google'|null|undefined;//mandatory
-    gsm?:string;
-    gmsCode?:string,
-    language?:string;
-}

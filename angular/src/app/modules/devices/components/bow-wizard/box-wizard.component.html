@@ -1,16 +1,16 @@
 <div class="row">
   <div class="col-md-12 ml-auto mr-auto">
     <div class="card">
-      <div class="card-header card-header-text card-header-info">
-        <div class="card-text">
-          <h4 class="card-title">Box Information Details</h4>
-          <p class="card-category">Manage this box settings</p>
+      <div class="card-header card-header-icon card-header-info">
+        <div class="card-icon">
+          <i class="material-icons">book</i>
         </div>
+       <strong><h4 class="card-title">Box Details</h4></strong>
       </div>
       <div class="card-body">
-        <form [formGroup]="boxForm" (ngSubmit)="boxFormSubmit()"  method="post">
+        <form [formGroup]="boxForm" (ngSubmit)="boxFormSubmit()" method="post">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-5 ml-auto mr-auto">
               <mat-form-field>
                 <input type="text" id="boxName" name="boxName" matInput id="text" placeholder="Box Name"
                   [value]="selectedBox?.host">
@@ -20,7 +20,8 @@
           <div class="row" *ngIf="selectedBox">
             <div class="col-md-6">
               <mat-form-field>
-                <mat-select placeholder="Domain Profiles" [(ngModel)]="selectedBox?.location.profile.id" formControlName="domainProfile">
+                <mat-select placeholder="Domain Profiles" [(ngModel)]="selectedBox?.location.profile.id"
+                  formControlName="domainProfile">
                   <mat-optgroup [label]="'System Domain Profiles'">
                     <mat-option [value]="profile.id" *ngFor="let profile of systemProfiles">
                       {{profile.name}}
@@ -34,7 +35,8 @@
                 </mat-select>
               </mat-form-field>
               <mat-form-field>
-                <mat-select placeholder="Application Profiles" [(ngModel)]="selectedBox?.location.appUserProfile.id" formControlName="appProfile">
+                <mat-select placeholder="Application Profiles" [(ngModel)]="selectedBox?.location.appUserProfile.id"
+                  formControlName="appProfile">
                   <mat-optgroup [label]="'System Domain Profiles'">
                     <mat-option [value]="profile.id" *ngFor="let profile of applicationSystemProfiles">
                       {{profile.profileName}}
@@ -48,7 +50,8 @@
                 </mat-select>
               </mat-form-field>
               <mat-form-field>
-                <mat-select placeholder="Blacklist/Whitelist Profiles" [(ngModel)]="selectedBox?.location.bwList.id" formControlName="bwListProfile">
+                <mat-select placeholder="Blacklist/Whitelist Profiles" [(ngModel)]="selectedBox?.location.bwList.id"
+                  formControlName="bwListProfile">
                   <mat-optgroup [label]="'System Domain Profiles'">
                     <mat-option [value]="profile.id" *ngFor="let profile of systemBWList">
                       {{profile.name}}
@@ -85,7 +88,7 @@
                   <div *ngIf="selectedBox?.isCaptivePortal">
                     <mat-form-field class="example-full-width has-label" style="width:100%;">
                       <input type="text" maxlength="15" name="etvIp" (keydown)="checkIPNumber($event, etvIp)"
-                        placeholder="IP" matInput [(ngModel)]="etvIp" formControlName="etvIp">
+                        placeholder="Device LAN IP" matInput [(ngModel)]="etvIp" formControlName="etvIp">
                       <mat-error *ngIf="boxForm.get('etvIp').hasError('required')">
                         Enter A Valid IP: <strong>127.0.0.1</strong>
                       </mat-error>

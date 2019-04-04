@@ -1,72 +1,6 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
     <section id="publicIpPanel" class="publicIpPanel">
-      <!-- <div class="row" *ngIf="dataTable.dataRows && dataTable.dataRows.length>0">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header card-header-info card-header-icon">
-              <div class="card-icon">
-                <i class="material-icons">public</i>
-              </div>
-              <h4 class="card-title">Public Ip/ Agents</h4>
-            </div>
-            <div class="card-body">
-              <div class="toolbar">
-                <!--        Here you can write extra buttons/actions for the toolbar              
-              </div>
-              <div class="material-datatables">
-                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0"
-                  width="100%" style="width:100%">
-                  <thead>
-                    <tr>
-                      <th>{{ dataTable.headerRow[0] }}</th>
-                      <th>{{ dataTable.headerRow[1] }}</th>
-                      <th>{{ dataTable.headerRow[2] }}</th>
-                      <th>{{ dataTable.headerRow[3] }}</th>
-                      <th>{{ dataTable.headerRow[4] }}</th>
-                      <th>{{ dataTable.headerRow[5] }}</th>
-                      <th class="text-center">{{ dataTable.headerRow[6] }}</th>
-                      <th class="disabled-sorting text-right">{{ dataTable.headerRow[7] }}</th>
-                    </tr>
-                  </thead>
-                  <tfoot>
-                    <tr>
-                      <th>{{ dataTable.footerRow[0] }}</th>
-                      <th>{{ dataTable.footerRow[1] }}</th>
-                      <th>{{ dataTable.footerRow[2] }}</th>
-                      <th>{{ dataTable.footerRow[3] }}</th>
-                      <th>{{ dataTable.footerRow[4] }}</th>
-                      <th>{{ dataTable.footerRow[5] }}</th>
-                      <th class="text-center">{{ dataTable.footerRow[6] }}</th>
-                      <th class="text-center">{{ dataTable.footerRow[7] }}</th>
-                    </tr>
-                  </tfoot>
-                  <tbody>
-                    <tr *ngFor="let row of dataTable.dataRows">
-                      <td>{{row[1]}}</td>
-                      <td>{{row[2]}}</td>
-                      <td>{{row[3]}}</td>
-                      <td>{{row[4]}}</td>
-                      <td>{{row[5]}}</td>
-                      <td>{{row[6]}}</td>
-                      <td class="text-center">
-                        <img class="row-img" alt=" " src="{{row[7]}}">
-                      </td>
-                      <td class="text-center">
-                        <a class="btn btn-link btn-info btn-just-icon" (click)="showEditWizard(row[0])"><i
-                            class="material-icons">edit</i></a>
-                        <a class="btn btn-link btn-danger btn-just-icon" (click)="deletePublicIp(row[0])"><i
-                            class="material-icons">close</i></a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <!-- end content
-          </div>
-        </div>
-      </div> -->
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
           <div class="card">
@@ -162,201 +96,179 @@
           <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
             <i class="material-icons">arrow_back</i>
           </button>
-          <div class="wizard-container">
-            <div class="card card-wizard" data-color="blue" id="wizardProfile">
-              <form [formGroup]="publicIpForm" action="" method="">
-                <div class="card-header text-center">
-                  <h3 class="card-title">
+          <div class="card">
+            <div class="card-header card-header-icon card-header-info">
+              <div class="card-icon">
+                <i class="material-icons">public</i>
+              </div>
+              <h4 class="card-title">Public IP/Agent Details</h4>
+            </div>
+            <div class="card-body">
+              <form [formGroup]="publicIpForm">
+                <div class="row justify-content-center">
+                  <div class="col-md-4 ml-auto mr-auto">
+                    <mat-form-field>
+                      <input type="text" name="agentName" matInput id="text" placeholder="Public IP/Agent Name"
+                        [(ngModel)]="selectedIp.agentAlias" formControlName="agentName">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="row justify-content-center">
+                  <div class="col-md-12">
                     <div class="row">
                       <div class="col-md-4"></div>
-                      <div class="col-md-4 text-center input-group form-control-lg">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">
-                            <i class="material-icons">face</i>
-                          </span>
+                      <div class="col-lg-3 col-md-8 col-sm-4">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input checked class="form-check-input" id="IpType" name="IpType" type="radio"
+                              value="staticIp" (click)="onSelectionChangeIPType('staticIp')">
+                            Static IP <span class="circle"><span class="check"></span></span>
+                          </label>
                         </div>
+                      </div>
+                      <div class="col-lg-3 col-md-8 col-sm-4">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input class="form-check-input" id="IpType" name="IpType" type="radio" value="dynamicIp"
+                              (click)="onSelectionChangeIPType('dynamicIp')">
+                            Dynamic IP <span class="circle"><span class="check"></span></span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-2"></div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-5 ml-auto">
                         <mat-form-field>
-                          <input type="text" name="agentName" matInput id="text" placeholder="Public IP/Agent Name"
-                            [(ngModel)]="selectedIp.agentAlias" formControlName="agentName">
+                          <mat-select placeholder="Domain Profiles" [(value)]="selectedIp.profile.id">
+                            <mat-optgroup [label]="'System Domain Profiles'">
+                              <mat-option [value]="profile.id" *ngFor="let profile of systemProfiles">
+                                {{profile.name}}
+                              </mat-option>
+                            </mat-optgroup>
+                            <mat-optgroup [label]="'User Domain Profiles'">
+                              <mat-option [value]="profile.id" *ngFor="let profile of userProfiles">
+                                {{profile.name}}
+                              </mat-option>
+                            </mat-optgroup>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                          <mat-select placeholder="Application Profiles" [(value)]="selectedIp.appUserProfile.id">
+                            <mat-optgroup [label]="'System Domain Profiles'">
+                              <mat-option [value]="profile.id" *ngFor="let profile of applicationSystemProfiles">
+                                {{profile.profileName}}
+                              </mat-option>
+                            </mat-optgroup>
+                            <mat-optgroup [label]="'User Domain Profiles'">
+                              <mat-option [value]="profile.id" *ngFor="let profile of applicationUserProfiles">
+                                {{profile.profileName}}
+                              </mat-option>
+                            </mat-optgroup>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                          <mat-select placeholder="Blacklist/Whitelist Profiles" [(value)]="selectedIp.bwList.id">
+                            <mat-optgroup [label]="'System Domain Profiles'">
+                              <mat-option [value]="profile.id" *ngFor="let profile of systemBWList">
+                                {{profile.name}}
+                              </mat-option>
+                            </mat-optgroup>
+                            <mat-optgroup [label]="'User Domain Profiles'">
+                              <mat-option [value]="profile.id" *ngFor="let profile of userBWList">
+                                {{profile.name}}
+                              </mat-option>
+                            </mat-optgroup>
+                          </mat-select>
                         </mat-form-field>
                       </div>
-                      <div class="col-md-4"></div>
-                    </div>
-                  </h3>
-                </div>
-                <div class="wizard-navigation">
-                  <ul class="nav nav-pills">
-                    <li class="nav-item">
-                      <a class="nav-link active" id="contentLink" href="#content" data-toggle="tab" role="tab">
-                        Content Configuration
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="card-body">
-                  <div class="tab-content">
-                    <div class="tab-pane active" id="content">
-                      <div class="row justify-content-center">
-                        <div class="col-md-12">
-                          <div class="row justify-content-center">
-                            <div class="col-sm-2">
-                              <div class="picture-container">
-                                <div class="picture" style="border-radius:5%">
-                                  <ng-container *ngIf="selectedIp.logo; else elseTemplate">
-                                    <img src="{{selectedIp.logo}}" class="picture-src" id="wizardPicturePreview"
-                                      title="selectedIp.agentAlias" />
-                                  </ng-container>
-                                  <ng-template #elseTemplate>
-                                    <img src="./assets/img/image_placeholder.jpg" class="picture-src"
-                                      id="wizardPicturePreview" title="" />
-                                  </ng-template>
-                                  <input type="file" (change)="selectFile($event)" id="wizard-picture">
-                                </div>
-                                <h6 class="description">Choose Block Image</h6>
+                      <div class="col-md-6">
+                        <div class="row">
+                          <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-md-12 ml-auto mr-auto" style="display: none;">
+                            <mat-form-field>
+                              <input type="text" id="dnsFqdn" name="dnsFqdn" matInput id="text" [(ngModel)]="dnsFqdn"
+                                formControlName="dnsFqdn" placeholder="DNS FQDN">
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-12  ml-auto mr-auto" id="staticIPBlock">
+                            <div class="row " *ngFor="let row of ipList; index as i">
+                              <div class="col-md-4">
+                                <mat-form-field class="example-full-width has-label" style="width:100%;">
+                                  <input type="text" maxlength="15" name="'ip'+i"
+                                    (keydown)="checkIPNumber($event, ipList[i].ip)" placeholder="IP" matInput
+                                    [(ngModel)]="ipList[i].ip" formControlName="ip{{i}}">
+                                  <mat-error *ngIf="publicIpForm.get('ip'+i).hasError('required')">
+                                    Enter A Valid IP: <strong>127.0.0.1</strong>
+                                  </mat-error>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-md-1 mt-4" style="margin-left: -20px;">
+                                <legend>/</legend>
+                              </div>
+                              <div class="col-md-2" style="margin-left: -20px;">
+                                <mat-form-field class="example-full-width has-label">
+                                  <mat-select placeholder="Mask" [(value)]="ipList[i].range">
+                                    <mat-option *ngFor="let ind of ipRanges;" [value]="ind">{{ind}}</mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                              </div>
+                              <div class="col-md-3 ml-0 mt-2">
+                                <ng-container *ngIf="i>0; else elseTemplate">
+                                  <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
+                                    (click)="removeElementFromIpList(i)">
+                                    <i class="material-icons">close</i>
+                                  </button>
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                  <button mat-raised-button type="button" class="btn btn-success btn-just-icon btn-sm"
+                                    (click)="addIpRangeToList()">
+                                    <i class="material-icons">add_circle_outline</i>
+                                  </button>
+                                </ng-template>
                               </div>
                             </div>
                           </div>
-                          <div class="row">
-                            <div class="col-md-4"></div>
-                            <div class="col-lg-3 col-md-8 col-sm-4">
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input checked class="form-check-input" id="IpType" name="IpType" type="radio"
-                                    value="staticIp" (click)="onSelectionChangeIPType('staticIp')">
-                                  Static IP <span class="circle"><span class="check"></span></span>
-                                </label>
-                              </div>
-                            </div>
-                            <div class="col-lg-3 col-md-8 col-sm-4">
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" id="IpType" name="IpType" type="radio"
-                                    value="dynamicIp" (click)="onSelectionChangeIPType('dynamicIp')">
-                                  Dynamic IP <span class="circle"><span class="check"></span></span>
-                                </label>
-                              </div>
-                            </div>
-                            <div class="col-md-2"></div>
+                        </div>
+                        <div class="row">
+                          <div class="col-9 ">
+                            <mat-form-field>
+                              <textarea type="text" id="blockMessage" name="blockMessage" matInput id="text"
+                                placeholder="Block Message" [(ngModel)]="selectedIp.blockMessage"
+                                formControlName="blockMessage"></textarea>
+                            </mat-form-field>
                           </div>
-                          <div class="row">
-                            <div class="col-md-5 ml-auto">
-                              <mat-form-field>
-                                <mat-select placeholder="Domain Profiles" [(value)]="selectedIp.profile.id">
-                                  <mat-optgroup [label]="'System Domain Profiles'">
-                                    <mat-option [value]="profile.id" *ngFor="let profile of systemProfiles">
-                                      {{profile.name}}
-                                    </mat-option>
-                                  </mat-optgroup>
-                                  <mat-optgroup [label]="'User Domain Profiles'">
-                                    <mat-option [value]="profile.id" *ngFor="let profile of userProfiles">
-                                      {{profile.name}}
-                                    </mat-option>
-                                  </mat-optgroup>
-                                </mat-select>
-                              </mat-form-field>
-                              <mat-form-field>
-                                <mat-select placeholder="Application Profiles" [(value)]="selectedIp.appUserProfile.id">
-                                  <mat-optgroup [label]="'System Domain Profiles'">
-                                    <mat-option [value]="profile.id" *ngFor="let profile of applicationSystemProfiles">
-                                      {{profile.profileName}}
-                                    </mat-option>
-                                  </mat-optgroup>
-                                  <mat-optgroup [label]="'User Domain Profiles'">
-                                    <mat-option [value]="profile.id" *ngFor="let profile of applicationUserProfiles">
-                                      {{profile.profileName}}
-                                    </mat-option>
-                                  </mat-optgroup>
-                                </mat-select>
-                              </mat-form-field>
-                              <mat-form-field>
-                                <mat-select placeholder="Blacklist/Whitelist Profiles" [(value)]="selectedIp.bwList.id">
-                                  <mat-optgroup [label]="'System Domain Profiles'">
-                                    <mat-option [value]="profile.id" *ngFor="let profile of systemBWList">
-                                      {{profile.name}}
-                                    </mat-option>
-                                  </mat-optgroup>
-                                  <mat-optgroup [label]="'User Domain Profiles'">
-                                    <mat-option [value]="profile.id" *ngFor="let profile of userBWList">
-                                      {{profile.name}}
-                                    </mat-option>
-                                  </mat-optgroup>
-                                </mat-select>
-                              </mat-form-field>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="row">
-                                <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-md-12 ml-auto mr-auto"
-                                  style="display: none;">
-                                  <mat-form-field>
-                                    <input type="text" id="dnsFqdn" name="dnsFqdn" matInput id="text"
-                                      [(ngModel)]="dnsFqdn" formControlName="dnsFqdn" placeholder="DNS FQDN">
-                                  </mat-form-field>
-                                </div>
-                                <div class="col-md-12  ml-auto mr-auto" id="staticIPBlock">
-                                  <div class="row " *ngFor="let row of ipList; index as i">
-                                    <div class="col-md-4">
-                                      <mat-form-field class="example-full-width has-label" style="width:100%;">
-                                        <input type="text" maxlength="15" name="'ip'+i"
-                                          (keydown)="checkIPNumber($event, ipList[i].ip)" placeholder="IP" matInput
-                                          [(ngModel)]="ipList[i].ip" formControlName="ip{{i}}">
-                                        <mat-error *ngIf="publicIpForm.get('ip'+i).hasError('required')">
-                                          Enter A Valid IP: <strong>127.0.0.1</strong>
-                                        </mat-error>
-                                      </mat-form-field>
-                                    </div>
-                                    <div class="col-md-1 mt-4" style="margin-left: -20px;">
-                                      <legend>/</legend>
-                                    </div>
-                                    <div class="col-md-2" style="margin-left: -20px;">
-                                      <mat-form-field class="example-full-width has-label">
-                                        <mat-select placeholder="Mask" [(value)]="ipList[i].range">
-                                          <mat-option *ngFor="let ind of ipRanges;" [value]="ind">{{ind}}</mat-option>
-                                        </mat-select>
-                                      </mat-form-field>
-                                    </div>
-                                    <div class="col-md-3 ml-0 mt-2">
-                                      <ng-container *ngIf="i>0; else elseTemplate">
-                                        <button mat-raised-button type="button"
-                                          class="btn btn-danger btn-just-icon btn-sm"
-                                          (click)="removeElementFromIpList(i)">
-                                          <i class="material-icons">close</i>
-                                        </button>
-                                      </ng-container>
-                                      <ng-template #elseTemplate>
-                                        <button mat-raised-button type="button"
-                                          class="btn btn-success btn-just-icon btn-sm" (click)="addIpRangeToList()">
-                                          <i class="material-icons">add_circle_outline</i>
-                                        </button>
-                                      </ng-template>
-                                    </div>
-                                  </div>
-                                </div>
+                        </div>
+                        <div class="row justify-content-center">
+                          <div class="col-sm-2 ml-auto mr-auto card-wizard" style="min-height: 20px; box-shadow: none;">
+                            <div class="picture-container">
+                              <div class="picture" style="border-radius:5%">
+                                <ng-container *ngIf="selectedIp.logo; else elseTemplate">
+                                  <img src="{{selectedIp.logo}}" class="picture-src" id="wizardPicturePreview"
+                                    title="selectedIp.agentAlias" />
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                  <img src="./assets/img/image_placeholder.jpg" class="picture-src"
+                                    id="wizardPicturePreview" title="" />
+                                </ng-template>
+                                <input type="file" (change)="selectFile($event)" id="wizard-picture">
                               </div>
-                              <div class="row">
-                                <div class="col-12 ml-auto mr-auto">
-                                  <mat-form-field>
-                                    <textarea type="text" id="blockMessage" name="blockMessage" matInput id="text"
-                                      placeholder="Block Message" [(ngModel)]="selectedIp.blockMessage"
-                                      formControlName="blockMessage"></textarea>
-                                  </mat-form-field>
-                                </div>
-                              </div>
+                              <h6 class="description">Choose Block Image</h6>
                             </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col text-right ml-auto">
+                            <button type="submit" class="btn btn-info" (click)="saveIP()">Save</button>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="card-footer">
-                  <div class="ml-auto">
-                    <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" id="finish" name="finish"
-                      value="Save" (click)="saveIP()" style="display: none;">
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
+
               </form>
             </div>
+
           </div>
         </div>
       </div>
@@ -364,24 +276,24 @@
   </div>
 </div>
 <style>
-    /* width */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-  
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: #eee;
-    }
-  
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: rgb(187, 187, 187);
-      border-radius: 9px;
-    }
-  
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: #888888;
-    }
-  </style>
+  /* width */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #eee;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(187, 187, 187);
+    border-radius: 9px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #888888;
+  }
+</style>
