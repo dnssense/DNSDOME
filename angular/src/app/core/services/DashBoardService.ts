@@ -18,7 +18,7 @@ export class DashBoardService {
   private _deleteDashboardURL = this.config.getApiUrl() + '/services/dashboard/delete';  // URL to graph api
   private _setDefaultDashboardURL =this.config.getApiUrl() + '/services/dashboard/default';  // URL to graph api
   private _dashboardSettingsURL = this.config.getApiUrl()+ '/services/dashboard/get?';  // URL to graph api
-  private _elasticDataForDashboardURL= this.config.getApiUrl() + '/dashboard/deneme';
+  private _elasticDataForDashboardURL= this.config.getApiUrl() + '/dashboard/getdata';
 
   constructor(private http: HttpClient, private config: ConfigService) {
     
