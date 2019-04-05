@@ -1,6 +1,16 @@
 {
 
-  "/api/user/*": {
+  "/api/dashboard/*": {
+    "target": "http://localhost:9010",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  },
+  "/api/user2/*": {
+
     "target": "http://localhost:9002",
     "secure": false,
     "logLevel": "debug",

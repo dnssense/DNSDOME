@@ -24,7 +24,15 @@ export class UsersComponent implements OnInit {
 
         this.selectedUser.roles = new Role();
         this.userService.getUsers().subscribe(res => this.userList = res);
-        this.userService.getRoles().subscribe(res => this.roleList = res);
+
+        this.userService.getRoles().subscribe(res => {
+            this.roleList = [];
+            res.forEach(r => {
+                if (r.id != 6) {
+                    this.roleList.push(r);
+                }
+            });
+        });
 
     }
 

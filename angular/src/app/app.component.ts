@@ -13,6 +13,7 @@ export class AppComponent {
   constructor(private config: ConfigService,private authenticationService:AuthenticationService,private configService:ConfigService) {
     config.init();
     this.authenticationService.checkSessionIsValid();
+    this.host=configService.host;
     this.title=this.host.title;
    // authenticationService.checkSessionIsValid();
 

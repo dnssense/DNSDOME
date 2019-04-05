@@ -1,23 +1,18 @@
-import {Injectable, Injector} from '@angular/core';
-import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
+import { Injectable, Injector } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from './authentication.service';
 
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ComponentService {
-
   public authService: AuthenticationService;
 
   constructor(public modalService: BsModalService, private injector: Injector) {
     setTimeout(() => {
       this.authService = this.injector.get(AuthenticationService);
     });
-
   }
 
-
   public loginModalRef: BsModalRef;
-
 
   public config = {
     animated: true,
@@ -25,7 +20,6 @@ export class ComponentService {
     backdrop: true,
     ignoreBackdropClick: true
   };
-
 
   public openLoginScreen() {
     /*const cf = componentFactoryResolver.resolveComponentFactory(LoginModalComponent);
@@ -45,16 +39,15 @@ export class ComponentService {
      }
 
  */
-
   }
-
 
   public closeScreen() {
     this.modalService.hide(1);
+
     const body = document.getElementsByTagName('body')[0];
     body.classList.remove('modal-open');   // remove the class
 
+
+
   }
-
-
 }

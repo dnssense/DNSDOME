@@ -1,0 +1,44 @@
+ul {
+  display: block;
+  width: 100%;
+  padding: 1px 3px;
+  font-size: 12px !important;
+  line-height: 0.2;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 0px solid #ccc;
+  border-radius: 1px;
+  height: auto;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+li {
+  display: inline-block;
+  padding-right: 4px;
+  padding-left: 4px;
+  height: 26px;
+  overflow-y: auto;
+}
+
+li.tag {
+  background-color: #5bc0de;
+  color: #FFFFFF;
+  margin-right: 2px;
+  margin-top: 1px;
+  padding-top: 3px;
+  line-height: 1.2;
+}
+
+li.tag.nopadding {
+  color: #0073e6;
+  background-color: #FFFFFF;
+  padding: 0px;
+}
+
+input {
+  border: 0px none;
+  outline: none;
+  height: 26px;
+}

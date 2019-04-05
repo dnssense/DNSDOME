@@ -91,7 +91,7 @@ export const ROUTES: RouteInfo[] = [
     title: 'Help',
     type: 'link',
     icontype: 'live_help',
-    role: 'ROLE_CUSTOMER'
+    role: null
   }
 ];
 
@@ -131,6 +131,7 @@ export class SidebarComponent implements OnInit {
   private refreshMenus(){
     if (this.authService.currentSession && this.authService.currentSession.currentUser
       && this.authService.currentSession.currentUser.roles && this.authService.currentSession.currentUser.roles.name) {
+
        let roleName: string = this.authService.currentSession.currentUser.roles.name;
 
 
@@ -144,12 +145,21 @@ export class SidebarComponent implements OnInit {
    this.profileMenuItems = ProfileRoutes;
   }
   ngOnInit() {
+
     this.refreshMenus();
     this.authService.currentUserPropertiesChanged.subscribe(data=>{
 
         this.refreshMenus();
 
     })
+
+
+   /*  this.menuItems = new Array();
+    //todo burada bir sıkıntı var
+    let roleName: string = this.authService.currentSession.currentUser.roles.name;
+    if (roleName) {
+      this.menuItems = ROUTES.filter(m =>m.role == null || m.role == '' || (m.role != null && roleName == m.role));
+    } */
 
 
   }

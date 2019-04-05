@@ -5,50 +5,44 @@ import * as Chartist from 'chartist';
 import { DashboardStatistic } from 'src/app/core/models/DashboardStatistic';
 import { ValueTransformer } from '@angular/compiler/src/util';
 import { TableData } from '../../shared/md/md-table/md-table.component';
+import { DashBoardService } from 'src/app/core/services/DashBoardService';
+import { ElasticDashboardData } from 'src/app/core/models/ElasticDashboardData';
 
 declare const $: any;
-
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.sass']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
-  stats: DashboardStatistic;
+export class DashboardComponent implements OnInit {
+  elasticData: ElasticDashboardData;
   public tableData3: TableData;
 
-  constructor(private configService: ConfigService, private http: HttpClient) {
+  constructor(private configService: ConfigService, private http: HttpClient, private dashboardService: DashBoardService) {
 
-    this.stats = {
-      rushDay: "Pazar",
-      newUserCount: 5612,
-      totalUserCount: 130,
-      onlineUserCount: 5345,
-      maleGenderRatio: 56,
-      weeklyUsers: [334, 456, 766, 635, 189, 389, 100]
-    };
 
     this.tableData3 = {
-      headerRow: [ 'Domain', 'Category' ],
+      headerRow: ['Domain', 'Category'],
       dataRows: [
-          ['faceboook.com', 'Category A'],
-          ['twss.com', 'Category A'],
-          ['asdfd.com', 'Category B'],
-          ['googlea.com', 'Category C'],
-          ['somethibg.com', 'Category D'],
-          ['cameliscamel.com', 'Category E'],
+        ['faceboook.com', 'Category A'],
+        ['twss.com', 'Category A'],
+        ['asdfd.com', 'Category B'],
+        ['googlea.com', 'Category C'],
+        ['somethibg.com', 'Category D'],
+        ['cameliscamel.com', 'Category E'],
       ]
-   };
+    };
+    this.elasticData = new ElasticDashboardData();
+    this.dashboardService.getElasticData().subscribe(res => {
+      this.elasticData = res;
+      this.createConnectedUserChart();
+      this.createPieCharts();
+    });
 
-  }
-
-  ngOnDestroy() {
   }
 
   ngOnInit(): void {
-    this.createConnectedUserChart();
-    this.createPieCharts();
+   
 
     let values: Map<string, number> = new Map();
     values.set('ru', 234);
@@ -102,48 +96,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   }
 
-
-
-
   createConnectedUserChart() {
-
-    const dataSimpleBarChart = {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      series: [
-        [542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895]
-      ]
-    };
-
-    const optionsSimpleBarChart = {
-      seriesBarDistance: 10,
-      axisX: {
-        showGrid: false
-      }
-    };
-
-    const responsiveOptionsSimpleBarChart: any = [
-      ['screen and (max-width: 640px)', {
-        seriesBarDistance: 5,
-        axisX: {
-          labelInterpolationFnc: function (value: any) {
-            return value[0];
-          }
-        }
-      }]
-    ];
-
-    const simpleBarChart = new Chartist.Bar('#simpleBarChart', dataSimpleBarChart, optionsSimpleBarChart,
-     responsiveOptionsSimpleBarChart);
-
-    // start animation for the Emails Subscription Chart
-    this.startAnimationForBarChart(simpleBarChart);
-
-
-
 
     const dataColouredRoundedLineChart = {
       labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      series: [this.stats.weeklyUsers, [134, 256, 66, 530, 289, 689, 700]]
+      series: [this.elasticData.categories, [134, 256, 66, 530, 289, 689, 700]]
 
     };
     const optionsColouredRoundedLineChart: any = {
@@ -171,7 +128,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     const dataColouredRoundedLineChart2 = {
       labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      series: [this.stats.weeklyUsers, [134, 256, 66, 530, 289, 289, 700]]
+      series: [this.elasticData.categories, [134, 256, 66, 530, 289, 289, 700]]
 
     };
     const optionsColouredRoundedLineChart2: any = {

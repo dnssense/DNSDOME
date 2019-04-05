@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MonitorComponent } from './monitor.component';
+import { MonitorResultComponent } from './monitor-result.component';
 
-describe('MonitorComponent', () => {
-  let component: MonitorComponent;
-  let fixture: ComponentFixture<MonitorComponent>;
+describe('MonitorResultComponent', () => {
+  let component: MonitorResultComponent;
+  let fixture: ComponentFixture<MonitorResultComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MonitorComponent]
+      declarations: [MonitorResultComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MonitorComponent);
+    fixture = TestBed.createComponent(MonitorResultComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
