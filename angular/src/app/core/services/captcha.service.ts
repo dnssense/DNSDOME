@@ -1,23 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Response, Headers, RequestOptions, Http } from "@angular/http";
 import { TranslatorService } from './translator.service';
+import { NotificationService } from './notification.service';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class CaptchaService {
-  static translator: any;
 
-  constructor(public http: Http, private translator: TranslatorService) {
-    this.http = http;
-    this.translator = translator;
+
+  constructor(private translator: TranslatorService, private notification: NotificationService) {
+
+
   }
 
-  static validCaptcha(captcha: string) {
+  validCaptcha(captcha: string) {
 
+    if (!environment.production)
+      return true;
     if (captcha == null || captcha == '') {
-      alert(this.translator.translate('CaptchaMessage'));
+
+      this.notification.error(this.translator.translate('CaptchaMessage'));
+
       return false;
     }
 

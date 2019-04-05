@@ -49,3 +49,24 @@ export interface RestSmsConfirmRequest{
     id:string;
     code:string;
 }
+
+export interface RestEmptyResponse{
+
+}
+
+
+
+export interface RestUserUpdateRequest{
+
+    name?:string;
+    password?:string;
+    oldPassword?:string;
+    isActive?:number;
+    isLocked?:number;
+    isTwoFactorAuthentication?:number;
+    isVerified?:number;
+    gsm?:string;
+    gsmCode?:string;
+    language?:string;
+
+}

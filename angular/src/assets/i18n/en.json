@@ -62,5 +62,31 @@
         "SELECT_SETTING": "You must select a setting to add. Please Select a saved report from options.",
         "DELETEMESSAGE": "Are you sure to delete dashboard ",
         "DELETEDASHBOARD": "Delete Dashboard"
-    }
+    },
+    "ErrOAuthTestError":"Test error",
+    "ErrOAuthJwtVerificationFailed":"Jwt verification failed",
+     "ErrOAuthNotAuthorized":"Not authorized",
+     "ErrOAuthNotFound":"Resource not found",
+     "ErrOAuthUnknownError":"Unknown error",
+     "ErrOAuthInternalError":"Internal error",
+     "ErrOAuthUserLockedOrPassiveOrNotVerified":"User locked or passive or not verified",
+     "ErrUserNotFound":"User not found",
+   "ErrUserNotAuthorized":"Not authorized",
+   "ErrUserNotActiveOrLockedOrVerified":"User not active or locked",
+   "ErrUserBadGsmNumber":"Bad gsm number",
+   "ErrUserNeedsCodeArg":"Absent argument code",
+   "ErrUserBadArgument":"Bad argument",
+   "ErrUserNeedsUsernameAndPassword":"Absent username or password",
+   "ErrUserNeedsPrelogin":"Absent prelogin",
+   "ErrUserNeedsPreloginCodeSmscode":"Absent prelogin,code, or sms code",
+   "ErrUserBadSmsCode":"Bad sms code",
+   "ErrUserInternalError":"Internal error",
+   "ErrUserBadOldPassword":"Bad old password",
+   "ErrUserNotFoundUser":"User not found",
+   "ErrUserBadArgumentEmail":"Bad email parameter",
+   "ErrUserNeedsKeyPassword":"Needs key and password",
+   "ErrUserBadArgumentPasswordsAreNotSame":"Passwords are not same",
+   "FORGOTPASSWORD":{
+       "Title":"Change password"
+   }
 }

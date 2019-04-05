@@ -4,12 +4,12 @@
         <ul>
           <li></li>
           <li>
-            <a href="https://www.dnssense.com" target="_blank">
-              DNSSense
+            <a [href]="host.www" target="_blank">
+              {{host.brand}}
             </a>
           </li>
           <li>
-            <a href="https://www.dnssense.com/about-us" target="_blank">
+            <a [href]='host.aboutus' target="_blank">
               About Us
             </a>
           </li>
@@ -17,8 +17,8 @@
       </nav>
       <div class="copyright pull-right">
         &copy;
-        {{test | date: 'yyyy'}}, made by
-        <a href="https://dnssense.com" target="_blank">DNSSense</a> for a better world.
+        {{test | date: 'yyyy'}} made by
+        <a [href]="host.www" target="_blank">{{host.brand}}</a> for a better world.
       </div>
     </div>
   </footer>

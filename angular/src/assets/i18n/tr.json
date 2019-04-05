@@ -9,7 +9,7 @@
     "CaptchaMessage": "Robot ya da Bot olmadığınızı doğrulamak için tıklamanız gerekiyor.",
     "Required" :"zorunlu alan",
     "PleaseSpecify" :"Lütfen Seçiniz",
-    "LOGOUT":{ 
+    "LOGOUT":{
        "Logout":"Oturumu Kapat",
        "LogoutMessage": "Sistemden çıkış yapmak istiyor musunuz?",
        "LoggingOut":"Çıkış Yapılıyor...",
@@ -62,5 +62,27 @@
         "SELECT_SETTING": "Ekleme işlemi için bir seçenek seçmeniz gerekiyor. Lütfen seçeneklerden kayıtlı bir rapor seçiniz.",
         "DELETEMESSAGE": "Paneli silmek istediğinizden emin misiniz?",
         "DELETEDASHBOARD": "Paneli Sil"
-    }
+    },
+    "ErrOAuthTestError":"Test hatası",
+    "ErrOAuthJwtVerificationFailed":"Hatalı Jwt",
+     "ErrOAuthNotAuthorized":"Yetki verilmedi",
+     "ErrOAuthNotFound":"Kaynak bulunamadı",
+     "ErrOAuthUnknownError":"Bilinmeyen hata",
+     "ErrOAuthInternalError":"İç sistemlerde hata oluştur",
+     "ErrOAuthUserLockedOrPassiveOrNotVerified":"Kullanıcı kilitli, pasif yada doğrulanmamış",
+     "ErrUserNotFound":"Kullanıcı bulunamadı",
+   "ErrUserNotAuthorized":"Yetki verilmedi",
+   "ErrUserNotActiveOrLockedOrVerified":"Kullanıcı aktif değil yada kilitli",
+   "ErrUserBadGsmNumber":"Hatalı telefon numarası",
+   "ErrUserNeedsCodeArg":"Code bilgisi eksik",
+   "ErrUserBadArgument":"Hatalı veri girişi",
+   "ErrUserNeedsUsernameAndPassword":"Kullanıcı adı yada şifresi eksik",
+   "ErrUserNeedsPrelogin":"Prelogin bilgisi eksik",
+   "ErrUserNeedsPreloginCodeSmscode":"Prelogin,code yada sms code bilgisi eksik",
+   "ErrUserBadSmsCode":"Hatalı sms code",
+   "ErrUserInternalError":"İç sistemlerde hata oluştu.",
+   "ErrUserBadOldPassword":"Hatalı eski şifre",
+   "ErrUserNotFoundUser":"Kullanıcı bulunamadı",
+   "ErrUserBadArgumentEmail":"Hatalı email"
+
 }

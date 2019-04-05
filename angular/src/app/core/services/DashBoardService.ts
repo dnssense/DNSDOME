@@ -6,6 +6,8 @@ import { Observable } from "rxjs/Rx";
 import { Dashboard } from "../models/Dashboard";
 import { Constants } from "../../Constants";
 import { HttpClient } from '@angular/common/http';
+import { ConfigService } from './config.service';
+import { ROUTER_CONFIGURATION } from '@angular/router';
 
 /**
  * Created by fatih on 02.08.2016.
@@ -14,20 +16,20 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class DashBoardService {
 
-  public _saveDashboardURL = Constants.getServerPath() + '/services/dashboard/save';  // URL to graph api
-  public _ListURL = Constants.getServerPath() + '/services/dashboard/list';  // URL to graph api
-  public _deleteDashboardURL = Constants.getServerPath() + '/services/dashboard/delete';  // URL to graph api
-  public _setDefaultDashboardURL = Constants.getServerPath() + '/services/dashboard/default';  // URL to graph api
-  public _dashboardSettingsURL = Constants.getServerPath() + '/services/dashboard/get?';  // URL to graph api
+  public _saveDashboardURL = this.configuration.getApiUrl() + '/services/dashboard/save';  // URL to graph api
+  public _ListURL = this.configuration.getApiUrl()  + '/services/dashboard/list';  // URL to graph api
+  public _deleteDashboardURL = this.configuration.getApiUrl()  + '/services/dashboard/delete';  // URL to graph api
+  public _setDefaultDashboardURL = this.configuration.getApiUrl()  + '/services/dashboard/default';  // URL to graph api
+  public _dashboardSettingsURL = this.configuration.getApiUrl()  + '/services/dashboard/get?';  // URL to graph api
 
   public http;
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient,private configuration: ConfigService) {
     this.http = http;
   }
 
   public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {
-    
+
     return this.http.post(this._dashboardSettingsURL + "id=" + dashboard.id).map((res) => {
       console.log(res);
       return res;

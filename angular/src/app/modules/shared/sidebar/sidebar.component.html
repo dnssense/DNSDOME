@@ -5,7 +5,7 @@
         </div>
     </a>
     <a [routerLink]="['dashboard']" class="simple-text logo-normal">
-        <img src="/assets/img/logo.png" style="width: 130px; margin-left:10px;" />
+        <img src="/assets/img/{{host.logoImage}}" style="width: 130px; margin-left:10px;" />
     </a>
 </div>
 <div class="sidebar-wrapper">
@@ -25,7 +25,7 @@
                     <li routerLinkActive="active" *ngFor="let menuitem of profileMenuItems; index as ind;" class="nav-item">
                         <a [routerLink]="[menuitem.path]" *ngIf="menuitem.type === 'link'" class="nav-link">
                             <ng-container *ngIf="ind==0; else elseTemplate">
-                                <span class="sidebar-mini">AS</span>    
+                                <span class="sidebar-mini">AS</span>
                             </ng-container>
                             <ng-template #elseTemplate>
                                 <span class="sidebar-mini">SP</span>
@@ -54,7 +54,7 @@
                         </button>
                     </div>
                 </span>
-            </form> 
+            </form>
         <ul class="nav navbar-nav nav-mobile-menu">
             <li class="nav-item dropdown">
                 <a class="nav-link" href="#pablo" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"

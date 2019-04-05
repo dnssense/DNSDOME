@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from '@angular/co
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormBuilder } from '@angular/forms';
-import { ConfigService } from 'src/app/core/services/config.service';
+import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { SignupBean } from 'src/app/core/models/SignupBean';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { Company } from 'src/app/core/models/Company';
@@ -33,6 +33,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   public user: SignupBean;
   private privacyPolicy: boolean = false;
   private captcha: string;
+  private host:ConfigHost;
   public captcha_key: string = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
 
@@ -44,10 +45,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
   validPasswordRegister: true | false;
 
   constructor(private formBuilder: FormBuilder, private element: ElementRef, private config: ConfigService,
-    private accountService: AccountService, private notification: NotificationService) {
+    private accountService: AccountService, private notification: NotificationService,private capthaService:CaptchaService,private configService:ConfigService) {
     this.isFailed = false;
     this.sidebarVisible = false;
-
+      this.host=this.configService.host;
     this.createRegisterForm();
 
   }
@@ -172,7 +173,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   register() {
 
-    if (!CaptchaService.validCaptcha(this.captcha)) {
+    if (!this.capthaService.validCaptcha(this.captcha)) {
       return;
     } else {
       this.user.c_answer = this.captcha;

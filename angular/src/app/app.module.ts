@@ -33,6 +33,7 @@ import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { DashBoardService } from './core/services/DashBoardService';
 import { SearchSettingService } from './core/services/SearchSettingService';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { FooterModule } from './modules/shared/footer/footer.module';
 
 @NgModule({
   declarations: [AppComponent],

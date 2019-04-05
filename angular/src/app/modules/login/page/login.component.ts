@@ -14,6 +14,7 @@ import { SmsService } from 'src/app/core/services/SmsService';
 import { SmsType } from 'src/app/core/models/SmsType';
 //import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { RestPreloginResponse, RestPreloginSmsResponse } from 'src/app/core/models/RestServiceModels';
+import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 
 declare var $: any;
 
@@ -60,12 +61,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   endTime: Date;
   isConfirmTimeEnded: boolean = true;
   maxRequest: number = 3;
+
+  host:ConfigHost;
+
   private smsInformation: RestPreloginSmsResponse;
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
-    private element: ElementRef, private notification: NotificationService, private smsService: SmsService) {
+    private element: ElementRef, private notification: NotificationService,
+    private smsService: SmsService, private capthaService: CaptchaService,private configService:ConfigService) {
     this.isFailed = false;
     this.nativeElement = element.nativeElement;
     this.sidebarVisible = false;
+    this.host=this.configService.host;
   }
 
   ngOnInit() {
@@ -117,9 +123,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (val.user.isTwoFactorAuthentication) {
             this.open2FA(val);
           } else {
-           this.authService.login(this.email,this.password).subscribe(val=>{
-            this.router.navigateByUrl('/admin/dashboard');
-           })
+            this.authService.login(this.email, this.password).subscribe(val => {
+              this.router.navigateByUrl('/admin/dashboard');
+            })
           }
         },
         (err) => {
@@ -144,7 +150,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   openLogin() {
     $('#loginDiv').slideDown(300);
     $('#forgotPasswordDiv').slideUp(300);
-    $('twoFactorDiv').hide();
+    $('#twoFactorDiv').hide();
   }
 
   openForgotPassword() {
@@ -152,19 +158,19 @@ export class LoginComponent implements OnInit, OnDestroy {
     $('#forgotPasswordDiv').slideDown(500);
   }
 
-  open2FA(val:RestPreloginResponse) {
+  open2FA(val: RestPreloginResponse) {
 
 
     this.smsService.sendSmsForLogin(val).subscribe(res => {
-        this.twoFactorPhone=val.user.gsm;
-        this.smsInformation = res;
-        this.maxRequest = 3;
-        this.isConfirmTimeEnded = false;
-        this.endTime = new Date();
-        this.endTime.setMinutes(new Date().getMinutes() + 2);
-        $('#twoFactorDiv').slideDown(500);
-        $('#loginDiv').slideUp(500);
-        $('#forgotPasswordDiv').hide();
+      this.twoFactorPhone = val.user.gsm;
+      this.smsInformation = res;
+      this.maxRequest = 3;
+      this.isConfirmTimeEnded = false;
+      this.endTime = new Date();
+      this.endTime.setMinutes(new Date().getMinutes() + 2);
+      $('#twoFactorDiv').slideDown(500);
+      $('#loginDiv').slideUp(500);
+      $('#forgotPasswordDiv').hide();
 
     });
 
@@ -175,20 +181,23 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.maxRequest = this.maxRequest - 1;
       if (this.smsInformation !== null) {
 
-        this.smsService.confirmSmsForLogin(this.smsInformation,this.smsCode).subscribe(res => {
+        this.smsService.confirmSmsForLogin(this.smsInformation, this.smsCode).subscribe(res => {
           this.notification.info("Sms confirmed")
-          this.authService.login(this.email,this.password).subscribe(res2=>{
+          this.authService.login(this.email, this.password).subscribe(res2 => {
 
             this.router.navigateByUrl("/admin/dashboard")
           })
 
-        },err=>{
-          this.notification.error(err.message);
-          this.maxRequest-=1;
+        }, err => {
+
+
           if (this.maxRequest === 0) {
+            this.openLogin()
             this.notification.error('You have exceeded the number of attempts! Try Again!');
-            this.openLogin();
-          }
+
+          } else
+            this.notification.error(err.statusText);
+
         });
       }
     }
@@ -205,22 +214,25 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   sendPasswordActivationCode() {
-    let forgoter: SignupBean = new SignupBean();
-    forgoter.userName = this.forgoterEmail;
 
-    if (!CaptchaService.validCaptcha(this.captcha) || !forgoter.userName) {
-      return;
-    } else {
-      forgoter.c_answer = this.captcha;
-    }
+    if (this.validEmailLogin) {
+      let forgoter: SignupBean = new SignupBean();
+      forgoter.userName = this.forgoterEmail;
 
-    this.authService.forgotPassword(forgoter).subscribe(res => {
-      if (res.status == 200) {
-        this.notification.success("Activation code sent your email." + res.message);
+      if (!this.capthaService.validCaptcha(this.captcha) || !forgoter.userName) {
+        return;
       } else {
-        this.notification.error("Operation Failed! " + res.message);
+        forgoter.c_answer = this.captcha;
       }
-    });
+
+      this.authService.forgotPassword(forgoter).subscribe(res => {
+        if (res.status == 200) {
+          this.notification.success("Activation code sent your email." + res.message);
+        } else {
+          this.notification.error("Operation Failed! " + res.message);
+        }
+      });
+    }
   }
 
   send2FAActivationCode() {

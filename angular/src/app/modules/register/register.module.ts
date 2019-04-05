@@ -13,6 +13,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
 import { ReCaptchaComponent, ReCaptchaModule } from 'angular2-recaptcha';
+import { FooterModule } from '../shared/footer/footer.module';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { ReCaptchaComponent, ReCaptchaModule } from 'angular2-recaptcha';
     MaterialModule,
     ReCaptchaModule,
     RegisterRoutingModule,
+    FooterModule,
     TranslateModule.forChild({
       loader: {
           provide: TranslateLoader,
