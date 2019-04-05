@@ -15,7 +15,7 @@
             </div>
             <p class="card-category"><strong>Total Hit Count</strong> </p>
             <h3 class="card-title">
-              {{stats?.newUserCount}}
+              {{elasticData?.totalHit}}
             </h3>
           </div>
           <div class="card-footer">
@@ -32,14 +32,14 @@
             <div class="card-icon dashboardIcon">
               <i class="material-icons">date_range</i>
             </div>
-            <p class="card-category">Unique Domain/Subdomain/IP</p>
+            <p class="card-category">Domain/Subdomain/IP</p>
             <h3 class="card-title">
-              <small>732/65485/3120</small>
+              <small>{{elasticData?.uniqueDomain}}/{{elasticData?.uniqueSubdomain}}/{{elasticData?.uniqueIP}}</small>
             </h3>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons text-warning">warning</i>
+              <i class="material-icons text-warning">navigate_next</i>
               <a href="#pablo">Detaylara Git</a>
             </div>
           </div>
@@ -52,11 +52,11 @@
               <i class="material-icons">person</i>
             </div>
             <p class="card-category">DGA Domain Count</p>
-            <h3 class="card-title">{{stats?.onlineUserCount}}</h3>
+            <h3 class="card-title">{{elasticData?.dgaDomain}}</h3>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons text-warning">warning</i>
+              <i class="material-icons text-warning">navigate_next</i>
               <a href="#pablo">Detaylara Git</a>
             </div>
           </div>
@@ -69,11 +69,11 @@
               <i class="material-icons">signal_cellular_alt</i>
             </div>
             <p class="card-category">Top Blockeds Count</p>
-            <h3 class="card-title">3325</h3>
+            <h3 class="card-title">{{elasticData?.topBlocked}}</h3>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons text-warning">warning</i>
+              <i class="material-icons text-warning">navigate_next</i>
               <a href="#pablo">Detaylara Git</a>
             </div>
           </div>
