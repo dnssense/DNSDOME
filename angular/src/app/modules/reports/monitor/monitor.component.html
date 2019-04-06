@@ -1,5 +1,5 @@
 <div class="main-content" #component>
-  <div class="container-fluid col-md-11">
+  <div class="container col-md-12">
     <app-monitor-search
       [searchSetting]="searchSetting"
       (searchEmitter)="search($event)"
@@ -7,7 +7,7 @@
     >
     </app-monitor-search>
   </div>
-  <div class="container-fluid col-md-11">
+  <div class="container-fluid col-md-12 margin15">
     <app-monitor-result
       [searchSetting]="searchSetting"
       (addColumnValueEmitter)="addValuesIntoSelected($event)"

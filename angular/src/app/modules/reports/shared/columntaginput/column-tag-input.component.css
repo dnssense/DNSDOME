@@ -24,7 +24,7 @@ li {
 
 li.tag {
   background-color: #5bc0de;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-right: 2px;
   margin-top: 1px;
   padding-top: 3px;
@@ -33,7 +33,7 @@ li.tag {
 
 li.tag.nopadding {
   color: #0073e6;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   padding: 0px;
 }
 
@@ -41,4 +41,15 @@ input {
   border: 0px none;
   outline: none;
   height: 26px;
+}
+
+.inputCollapsed {
+  background-color: #fff;
+}
+
+.inputExpanded {
+  background-color: #5bc0de;
+  padding: 1px 2px !important;
+  line-height: 2;
+  width: auto;
 }

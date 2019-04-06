@@ -1,23 +1,99 @@
-<div class="main-content">
-  <div class="container-fluid col-md-11">
-    <div class="row">
-      <form class="form-horizontal card">
-        <div class="col-md-12">
-          <div class="row">
-            <app-column-tag-input
-              [columns]="columns"
-              [tags]="searchSetting.should"
-              #should
-              [mainCategories]="mainCategories"
-              [categoriesMap]="categoriesMap"
-              [agents]="agents"
-              [zoneName]="should"
-              [mainApplications]="mainApplications"
-              [applicationsMap]="applicationsMap"
-            ></app-column-tag-input>
-          </div>
+<div class="container-fluid col-md-12">
+  <form class="form-horizontal card">
+    <div class="col-md-12">
+      <div class="row">
+        <app-column-tag-input [columns]="columns" [tags]="searchSetting.should" #should
+          [mainCategories]="mainCategories" [categoriesMap]="categoriesMap" [agents]="agents" [zoneName]="should"
+          [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
+      </div>
+      <div class="row">
+        <app-column-tag-input [columns]="columns" [tags]="searchSetting.should" #should
+          [mainCategories]="mainCategories" [categoriesMap]="categoriesMap" [agents]="agents" [zoneName]="should"
+          [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
+      </div>
+      <div class="row">
+        <app-column-tag-input [columns]="columns" [tags]="searchSetting.should" #should
+          [mainCategories]="mainCategories" [categoriesMap]="categoriesMap" [agents]="agents" [zoneName]="should"
+          [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <input type="text" class="form-control" [(ngModel)]="searchSetting.query"
+            [ngModelOptions]="{ standalone: true }" [attr.placeholder]="'Query'" (keyup.enter)="search()" />
         </div>
-      </form>
+        <div class="col-md-4">
+          <select name="dateInterval" class="form-control input-xs nopadding" id="dateInterval" #dateSelect
+            [(ngModel)]="searchSetting.dateInterval" (click)="showDatePanel($event)" style="font-size: 10px;">
+            <option value="5">Last 5 minutes</option>
+            <option value="10">Last 10 minutes</option>
+            <option value="15">Last 15 minutes</option>
+            <option value="30">Last 30 minutes</option>
+            <option value="60">Last 1 hour</option>
+            <option value="120">Last 2 hours</option>
+            <option value="180">Last 3 hours</option>
+            <option value="360">Last 6 hours</option>
+            <option value="720">Last 12 hours</option>
+            <option value="1440">Last 1 day</option>
+            <option value="2880">Last 2 days</option>
+            <option value="10080">Last 1 week</option>
+            <option value="43200">Last 1 month</option>
+            <option value="-1" #customdaterange>Custom Range</option>
+          </select>
+          <div #actualTarget></div>
+        </div>
+        <div class="col-md-2">
+          <select class="form-control input-xs nopadding" name="type" id="type" [(ngModel)]="searchSetting.type">
+            <option selected="true" value="roksit">Dns</option>
+            <option value="roksitblock">Block Page</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <span class="criteria-search-button">
+            <button class="btn btn-primary btn-sm" (click)="search()">Search&nbsp; <i class="fa fa-search"></i>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<p-overlayPanel id="dateDialog" class="date-overlay-panel" #dateOverlay [dismissable]="false" [showCloseIcon]="false">
+  <div>
+    <div class="row form-group">
+      <label for="type" class="control-label col-md-2 col-sm-3 col-xs-3">Begining Date</label>
+      <span class="col-md-8 col-sm-7 col-xs-7 has-feedback" style="margin-bottom: 5px;padding-right: 0px">
+        <input class="form-control input-xs has-feedback-left" name="startDate" #startDateCal style="width: 100%" />
+        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+      </span>
+      <span class="col-md-2 col-sm-2 col-xs-2 pull-left" style="padding-left: 0px">
+        <button class="btn btn-danger btn-sm">
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+      </span>
+    </div>
+    <div class="row form-group">
+      <label for="type" class="control-label col-md-2 col-sm-3 col-xs-3">Ending Date</label>
+      <span class="col-md-8 col-sm-7 col-xs-7 has-feedback" style="padding-right: 0px">
+        <input type="text" class="form-control input-xs has-feedback-left" name="endDate" #endDateCal
+          style="width: 100%" />
+        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+
+      </span>
+      <span class="col-md-2 col-sm-2 col-xs-2 pull-left" style="padding-left: 0px">
+        <button class="btn btn-danger btn-sm">
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+      </span>
+
+    </div>
+    <div class="row form-group">
+      <div class="col-md-4 col-sm-6 col-xs-6">
+        <button class="btn btn-warning btn-sm" aria-hidden="true" (click)="hideDatePopover()">
+          <i class="glyphicon glyphicon-ok"></i>
+          OK
+        </button>
+      </div>
     </div>
   </div>
-</div>
+</p-overlayPanel>

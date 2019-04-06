@@ -28,7 +28,7 @@ declare var Waypoint: any;
 @Component({
   selector: 'app-monitor-search',
   templateUrl: 'monitor-search.component.html',
-  styleUrls: ['monitor-search.component.sass']
+  styleUrls: ['monitor-search.component.css']
 })
 export class MonitorSearchComponent
   implements OnInit, AfterViewInit, OnDestroy {
@@ -39,6 +39,10 @@ export class MonitorSearchComponent
   public categoriesMap = new Map<number, Category[]>();
   public applicationsMap = new Map<number, WApplication[]>();
   public expanded = true;
+  public startDateee: Date = null;
+  public endDateee: Date = null;
+  public start_date_pickr = null;
+  public end_date_pickr = null;
 
   private tableColumnsubscription: Subscription;
   private configItemsSubscription: Subscription;
@@ -64,7 +68,7 @@ export class MonitorSearchComponent
     private fastReportService: FastReportService,
     private locationsService: LocationsService,
     private customReportService: CustomReportService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.tableColumnsubscription = this.fastReportService.tableColumns
@@ -152,5 +156,84 @@ export class MonitorSearchComponent
 
   public setSearchSetting(searchSetting: SearchSetting) {
     this.searchSetting = searchSetting;
+  }
+
+  public search() {
+    // todo validation...
+    WebuiPopovers.hideAll();
+    this.searchEmitter.emit(this.searchSetting);
+  }
+
+  public showDatePanel($event) {
+    this.dateOverlay.hide();
+
+    let value = $event.target.value;
+
+    if (value === -1 || value.indexOf('-') > -1) {
+      if (this.searchSetting.dateInterval.indexOf('-') > 0) {
+        let dd = this.searchSetting.dateInterval.split('-');
+        this.startDateee = moment(dd[0], 'DD.MM.YYYY HH:mm:ss').toDate();
+        this.endDateee = moment(dd[1], 'DD.MM.YYYY HH:mm:ss').toDate();
+      } else {
+        let startDate = moment();
+        startDate.add(-1, 'day');
+        this.startDateee = startDate.toDate();
+        this.endDateee = moment().toDate();
+      }
+
+      this.start_date_pickr = new Flatpickr(this.startDateCal.nativeElement, {
+        allowInput: false,
+        enableTime: true,
+        defaultDate: this.startDateee,
+        maxDate: new Date(),
+        dateFormat: 'd.m.Y H:i:S',
+        time_24hr: true,
+        utc: false,
+        onValueUpdate: (e, args) => {
+          this.startDateee = args;
+          //   this.start_date_pickr.toggle();
+          //  this.end_date_pickr.toggle();
+        }
+      });
+      // alert(start_date_pickr.selectedDateObj);
+      this.end_date_pickr = new Flatpickr(this.endDateCal.nativeElement, {
+        allowInput: false,
+        enableTime: true,
+        defaultDate: this.endDateee,
+        maxDate: new Date(),
+        dateFormat: 'd.m.Y H:i:S',
+        time_24hr: true,
+        utc: false,
+        onValueUpdate: (e, args) => {
+          this.endDateee = args;
+          // this.end_date_pickr.toggle();
+        }
+      });
+      this.dateOverlay.show($event);
+    } else {
+
+      jQuery(this.dateSelect.nativeElement).val(value);
+      this.searchSetting.dateInterval = value;
+      this.dateOverlay.hide();
+    }
+  }
+
+  public hideDatePopover() {
+    var option = this.customdaterange.nativeElement;
+    let startDate = this.startDateee == null ? '' : moment(this.startDateee, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+    let endDate = this.endDateee == null ? '' : moment(this.endDateee, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+    let vall = startDate + ' - ' + endDate;
+    this.start_date_pickr.destroy();
+    this.end_date_pickr.destroy();
+
+    if (vall !== ' - ') {
+      this.searchSetting.dateInterval = vall;
+      option.text = vall;
+      option.value = vall;
+    } else {
+      option.innerHTML = 'Custom Range';
+      option.value = '-1';
+    }
+    this.dateOverlay.hide();
   }
 }

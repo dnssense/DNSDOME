@@ -5,7 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DndModule } from "ng2-dnd";
 import { NouisliderModule } from 'ng2-nouislider';
-import { CollapseModule } from 'ngx-bootstrap';
+import { CollapseModule, PopoverModule, PaginationModule, TooltipModule } from 'ngx-bootstrap';
+import { OverlayPanelModule } from "primeng/primeng";
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/shared/components/material.module';
 import { PipesModule } from '../shared/pipes/pipes.module';
@@ -15,6 +16,7 @@ import { MonitorResultComponent } from './monitor/result/monitor-result.componen
 import { MonitorSearchComponent } from './monitor/search/monitor-search.component';
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ColumnTagInputComponent } from './shared/columntaginput/column-tag-input.component';
+import { TextLimitComponent } from './shared/textlimit/text-limit.component';
 
 
 @NgModule({
@@ -23,7 +25,8 @@ import { ColumnTagInputComponent } from './shared/columntaginput/column-tag-inpu
     MonitorComponent,
     MonitorSearchComponent,
     MonitorResultComponent,
-    ColumnTagInputComponent
+    ColumnTagInputComponent,
+    TextLimitComponent
   ],
   imports: [
     FormsModule,
@@ -35,6 +38,10 @@ import { ColumnTagInputComponent } from './shared/columntaginput/column-tag-inpu
     PipesModule,
     DndModule.forRoot(),
     CollapseModule.forRoot(),
+    PopoverModule.forRoot(),
+    PaginationModule.forRoot(),
+    TooltipModule.forRoot(),
+    OverlayPanelModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
