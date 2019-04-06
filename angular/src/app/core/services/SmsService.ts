@@ -1,6 +1,6 @@
-import {Injectable} from "@angular/core"; 
+import {Injectable} from "@angular/core";
 import {Headers, Http, RequestOptions, Response} from "@angular/http";
-import {Observable} from "rxjs/Rx"; 
+import {Observable} from "rxjs/Rx";
 import { ConfigService } from './config.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OperationResult } from '../models/OperationResult';
@@ -8,7 +8,7 @@ import { OperationResult } from '../models/OperationResult';
 import { User } from '../models/User';
 import { SmsType } from '../models/SmsType';
 import { RestPreloginResponse, RestPreloginSmsResponse, RestPreloginSmsConfirmRequet, RestSmsResponse, RestSmsConfirmRequest } from '../models/RestServiceModels';
- 
+
 
 
 @Injectable({providedIn : 'root'})
@@ -21,18 +21,18 @@ export class SmsService {
 
 
   constructor(private http: HttpClient, private config: ConfigService) {
-    
+
   }
 
   public sendSmsForLogin(data: RestPreloginResponse): Observable<RestPreloginSmsResponse> {
-    
+
     let body = JSON.stringify({prelogin: data.prelogin});
     return this.http.post<RestPreloginSmsResponse>(this._sendSmsActivationCodeURL, body, this.getOptions());
   }
 
   public confirmSmsForLogin(data: RestPreloginSmsResponse,code:string): Observable<any> {
     let request:RestPreloginSmsConfirmRequet={prelogin:data.prelogin,smscode:data.smscode,code:code};
-    return this.http.post<void>(this._confirmURL, JSON.stringify(request), this.getOptions())
+    return this.http.post<any>(this._confirmURL, JSON.stringify(request), this.getOptions());
   }
 
   public sendSmsCommon():Observable<RestSmsResponse>{

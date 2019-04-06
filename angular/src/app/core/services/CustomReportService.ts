@@ -7,6 +7,7 @@ import { Constants } from 'src/app/Constants';
 import { Category } from '../models/Category';
 import { WApplication } from '../models/WApplication';
 import { SearchSetting } from '../models/SearchSetting';
+import { ConfigService } from './config.service';
 
 /**
  * Created by fatih on 02.08.2016.
@@ -14,27 +15,27 @@ import { SearchSetting } from '../models/SearchSetting';
 
 @Injectable({ providedIn: 'root' })
 export class CustomReportService {
-  public _initContentURL = Constants.getServerPath() + '/custom-reports/init'; // URL to subcategories api
-  public _dataURL = Constants.getServerPath() + '/custom-reports/data'; // URL to graph api
+  public _initContentURL = this.configService.getApiUrl() + '/services/custom-reports/init'; // URL to subcategories api
+  public _dataURL = this.configService.getApiUrl() + '/services/custom-reports/data'; // URL to graph api
   public _tableDataURL =
-    Constants.getServerPath() + '/custom-reports/tableData'; // URL to graph api
+  this.configService.getApiUrl() + '/services/custom-reports/tableData'; // URL to graph api
   public _multiValueHistogramDataURL =
-    Constants.getServerPath() + '/custom-reports/multiValueHistogramData'; // URL to graph api
+  this.configService.getApiUrl()+ '/services/custom-reports/multiValueHistogramData'; // URL to graph api
   public _singleValueDataURL =
-    Constants.getServerPath() + '/custom-reports/singleValue'; // URL to graph api
+  this.configService.getApiUrl() + '/services/custom-reports/singleValue'; // URL to graph api
   public _applicationListURL =
-    Constants.getServerPath() + '/custom-reports/application-list'; // URL to graph api
+  this.configService.getApiUrl() + '/services/custom-reports/application-list'; // URL to graph api
   public _categoryListURL =
-    Constants.getServerPath() + '/custom-reports/category-list'; // URL to graph api
+  this.configService.getApiUrl() + '/services/custom-reports/category-list'; // URL to graph api
   public _dashboardHeaderURL =
-    Constants.getServerPath() + '/custom-reports/dashboard-header'; // URL to graph api
+  this.configService.getApiUrl() + '/services/custom-reports/dashboard-header'; // URL to graph api
 
   public _categories: BehaviorSubject<Category[]> = new BehaviorSubject(null);
   public _applications: BehaviorSubject<WApplication[]> = new BehaviorSubject(
     null
   );
 
-  constructor(private http: HttpClient, private errorService: ErrorService) {
+  constructor(private http: HttpClient, private errorService: ErrorService,private configService:ConfigService) {
     // this.getCategorylist();
     // this.getApplicationList();
   }

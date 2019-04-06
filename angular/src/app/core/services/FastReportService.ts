@@ -9,6 +9,7 @@ import { Dashboard } from '../models/Dashboard';
 import { LogColumn } from '../models/LogColumn';
 import { SearchSetting } from '../models/SearchSetting';
 import { ErrorService } from './ErrorService';
+import { ConfigService } from './config.service';
 
 /**
  * Created by fatih on 02.08.2016.
@@ -16,22 +17,22 @@ import { ErrorService } from './ErrorService';
 
 @Injectable({ providedIn: 'root' })
 export class FastReportService {
-  public _initContentURL = Constants.getServerPath() + '/quick-reports/init'; // URL to subcategories api
-  public _graphURL = Constants.getServerPath() + '/quick-reports/tableData'; // URL to graph api
+  public _initContentURL = this.configService.getApiUrl()+ '/services/quick-reports/init'; // URL to subcategories api
+  public _graphURL = this.configService.getApiUrl()+ '/services/quick-reports/tableData'; // URL to graph api
   public _histogramURL =
-    Constants.getServerPath() + '/quick-reports/logCountHistogram'; // URL to graph api
+  this.configService.getApiUrl() + '/services/quick-reports/logCountHistogram'; // URL to graph api
   public _dashboardHistogramURL =
-    Constants.getServerPath() + '/quick-reports/dashboardHistogram'; // URL to graph api
+  this.configService.getApiUrl() + '/services/quick-reports/dashboardHistogram'; // URL to graph api
   public _saveSearchSettingURL =
-    Constants.getServerPath() + '/quick-reports/saveSearchSetting'; // URL to graph api
+  this.configService.getApiUrl() + '/services/quick-reports/saveSearchSetting'; // URL to graph api
   public _savedSearchURL =
-    Constants.getServerPath() + '/quick-reports/saved-search?'; // URL to graph api
+  this.configService.getApiUrl() + '/services/quick-reports/saved-search?'; // URL to graph api
   public _savedSearchListURL =
-    Constants.getServerPath() + '/quick-reports/saved-search-list'; // URL to graph api
+  this.configService.getApiUrl() + '/services/quick-reports/saved-search-list'; // URL to graph api
   public _initTableColumnsURL =
-    Constants.getServerPath() + '/quick-reports/tableColumns'; // URL to subcategories api
+  this.configService.getApiUrl() + '/services/quick-reports/tableColumns'; // URL to subcategories api
   public _multiValueHistogramDataURL =
-    Constants.getServerPath() + '/quick-reports/multiValueHistogramData'; // URL to graph api
+  this.configService.getApiUrl() + '/services/quick-reports/multiValueHistogramData'; // URL to graph api
 
   public _tableColumns: BehaviorSubject<LogColumn[]> = new BehaviorSubject(
     null
@@ -40,7 +41,7 @@ export class FastReportService {
     null
   );
 
-  constructor(private http: HttpClient, private errorService: ErrorService) {
+  constructor(private http: HttpClient, private errorService: ErrorService,private configService:ConfigService) {
     // this.initTableColumns();
     // this.initFormData();
   }

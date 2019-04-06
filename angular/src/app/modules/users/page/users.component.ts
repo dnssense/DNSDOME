@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ValidationService } from 'src/app/core/services/validation.service';
-import { User } from 'src/app/core/models/User';
+import { User, UserExtended } from 'src/app/core/models/User';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { UserService } from 'src/app/core/services/UserService';
@@ -16,7 +16,7 @@ declare var $: any;
 export class UsersComponent implements OnInit {
     userForm: FormGroup;
     userList: User[] = [];
-    selectedUser: User = new User();
+    selectedUser: UserExtended = new UserExtended();
     roleList: Role[] = [];
 
     constructor(private formBuilder: FormBuilder, private notification: NotificationService,
@@ -24,7 +24,15 @@ export class UsersComponent implements OnInit {
 
         this.selectedUser.roles = new Role();
         this.userService.getUsers().subscribe(res => this.userList = res);
-        this.userService.getRoles().subscribe(res => this.roleList = res);
+
+        this.userService.getRoles().subscribe(res => {
+            this.roleList = [];
+            res.forEach(r => {
+                if (r.id != 6) {
+                    this.roleList.push(r);
+                }
+            });
+        });
 
     }
 
@@ -42,20 +50,20 @@ export class UsersComponent implements OnInit {
     }
 
     showNewWizard() {
-        this.selectedUser = new User();
+        this.selectedUser = new UserExtended();
         this.selectedUser.roles = new Role();
 
         $('#listPanel').toggle("slide", { direction: "left" }, 600);
         $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
- 
+
     }
 
     showEditWizard(id: Number) {
-        this.selectedUser = this.userList.find(r => r.id == id);
+        this.selectedUser = this.userList.find(r => r.id == id) as UserExtended;
 
         $('#listPanel').toggle("slide", { direction: "left" }, 500);
         $('#wizardPanel').toggle("slide", { direction: "right" }, 500);
- 
+
     }
 
     hideWizard() {

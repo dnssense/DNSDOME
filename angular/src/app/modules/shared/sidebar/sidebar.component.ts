@@ -5,6 +5,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { Router } from '@angular/router';
+import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 
 declare const $: any;
 
@@ -90,7 +91,7 @@ export const ROUTES: RouteInfo[] = [
     title: 'Help',
     type: 'link',
     icontype: 'live_help',
-    role: 'ROLE_CUSTOMER'
+    role: null
   }
 ];
 
@@ -102,13 +103,16 @@ export class SidebarComponent implements OnInit {
   public menuItems: any[];
   public profileMenuItems: any[];
   currentUser: User;
-
+  host:ConfigHost;
   constructor(
     private authService: AuthenticationService,
     private router: Router,
     private translator: TranslatorService,
-    private alert: AlertService
+    private alert: AlertService,private configService:ConfigService
   ) {
+    this.host=this.configService.host;
+    this.menuItems = new Array();
+
     this.getUserName();
   }
 
@@ -124,20 +128,40 @@ export class SidebarComponent implements OnInit {
     }
     return true;
   }
-  ngOnInit() {
-    this.menuItems = new Array();
-    //todo burada bir sıkıntı var
-    let roleName: string = this.authService.currentSession.currentUser.roles
-      .name;
-    if (roleName) {
-      this.menuItems = ROUTES.filter(
-        menuItem =>
-          menuItem.role == null ||
-          (menuItem.role != null && roleName == menuItem.role)
-      );
-    }
+  private refreshMenus(){
+    if (this.authService.currentSession && this.authService.currentSession.currentUser
+      && this.authService.currentSession.currentUser.roles && this.authService.currentSession.currentUser.roles.name) {
 
-    this.profileMenuItems = ProfileRoutes;
+       let roleName: string = this.authService.currentSession.currentUser.roles.name;
+
+
+     this.menuItems = ROUTES.filter(
+       menuItem =>
+         menuItem.role == null ||
+         (menuItem.role != null && roleName == menuItem.role)
+     );
+   }
+
+   this.profileMenuItems = ProfileRoutes;
+  }
+  ngOnInit() {
+
+    this.refreshMenus();
+    this.authService.currentUserPropertiesChanged.subscribe(data=>{
+
+        this.refreshMenus();
+
+    })
+
+
+   /*  this.menuItems = new Array();
+    //todo burada bir sıkıntı var
+    let roleName: string = this.authService.currentSession.currentUser.roles.name;
+    if (roleName) {
+      this.menuItems = ROUTES.filter(m =>m.role == null || m.role == '' || (m.role != null && roleName == m.role));
+    } */
+
+
   }
 
   logout() {

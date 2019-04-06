@@ -31,17 +31,15 @@ export class UrlMatcher {
 
 export class Constants {
 
-  public static getServerPath() {
-    return environment.BACKEND_API_ROOT_URL;
-  }
 
-  public static getCompany() {
+
+ /*  public static getCompany() {
     return environment.COMPANY;
-  }
+  } */
 
-  public static getCompanyLogo() {
+/*   public static getCompanyLogo() {
     return environment.COMPANY_LOGO;
-  }
+  } */
 
   public static getCaptchaKey() {
     return environment.API_CAPTCHA_KEY;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ConfigService } from './config.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, interval } from 'rxjs';
+import { Observable, of, interval, Subject } from 'rxjs';
 import { User } from '../models/User';
 import { CookieService } from './cookie.service';
 import { map, catchError, mergeMap } from 'rxjs/operators';
@@ -21,24 +21,27 @@ import { restoreView } from '@angular/core/src/render3';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private STORAGENAME = 'currentSession';
-  private _forgotPasswordSendURL = this.configuration.getApiUrl() + "/services/forgotPasswordSend";
-  private loginUrl = this.configuration.getApiUrl() + '/oauth/token';
-  private refreshTokenUrl =this.loginUrl;// this.configuration.getApiUrl() + '/oauth/refresh_token';
-  private userInfo = this.configuration.getApiUrl()+ '/user/current';
-  private userRole = this.configuration.getApiUrl()+ '/user/current/role';
 
-  private preloginUrl=this.configuration.getApiUrl()+'/user/prelogin'
+  private STORAGENAME = 'currentSession';
+  private _forgotPasswordSendURL = this.configuration.getApiUrl() + '/user/forgot/password';
+  private _forgotPasswordChangeURL = this.configuration.getApiUrl() + '/user/forgot/password/confirm';
+  private loginUrl = this.configuration.getApiUrl() + '/oauth/token';
+  private refreshTokenUrl = this.loginUrl; // this.configuration.getApiUrl() + '/oauth/refresh_token';
+  private userInfo = this.configuration.getApiUrl() + '/user/current';
+  private userRole = this.configuration.getApiUrl() + '/user/current/role';
+
+  private preloginUrl = this.configuration.getApiUrl() + '/user/prelogin';
 
   currentSession: Session;
   private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
-
+  currentUserPropertiesChanged:Subject<any>;
   constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
     private router: Router, private logger: LoggerService) {
 
-    this.checkSessionIsValid();
-    this.refreshTokenTimer = interval(150* 60* 1000);
+      this.currentUserPropertiesChanged=new Subject();
+
+    this.refreshTokenTimer = interval(55 * 60 * 1000);
     this.refreshTokenTimer.subscribe(() => {
 
       this.refreshToken();
@@ -46,71 +49,60 @@ export class AuthenticationService {
 
   }
 
+
+  saveSession() {
+
+    localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
+
+    this.currentUserPropertiesChanged.next('changed');
+  }
+
   checkSessionIsValid() {
 
     try {
-      let sessionString = localStorage.getItem(this.STORAGENAME);
+      const sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
-        let session: Session = JSON.parse(sessionString);
+        const session: Session = JSON.parse(sessionString);
         if (session) {
+          this.currentSession = session;
 
-          if (!this.jwtHelper.isTokenExpired(session.token)) {
-            this.logger.console('token valid');
-            this.currentSession = session;
-            //aslında adamı direk içeri alabiliriz fakat. şimdilik dışarı atalım
-            //this.clear();
-          } else {
-            const httpOptions = {
-              headers: new HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
-              })
-            };
-            let body = encodeURI("grant_type=refresh_token&refresh_token="+this.currentSession.refreshToken);
-            this.http.post<Session>(this.refreshTokenUrl, body, httpOptions).subscribe((res: any) => {
-              if (res && res.accessToken) {
-                session.token = res.accessToken;
-                session.refreshToken=res.refreshToken;
-                this.currentSession = session;
-                localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
-                this.router.navigateByUrl('/admin');
-              } else {
 
-              }
+            this.refreshToken();
 
-            }, err => {
-              //console yaz geç
-              this.logger.console(err);
-              this.logout();
-            });
 
-          }
+
         }
       }
     } catch (err) {
+
+
       this.logger.console(err);
       this.logout();
     }
   }
 
   refreshToken() {
-    if(!this.currentSession ||  !this.currentSession.refreshToken)
+    if (!this.currentSession ||  !this.currentSession.refreshToken) {
     return;
-    this.logger.console("refreshing token");
+    }
+    this.logger.console('refreshing token');
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
       })
     };
-    let body =encodeURI("grant_type=refresh_token&refresh_token="+this.currentSession.refreshToken);
+    const body = encodeURI('grant_type=refresh_token&refresh_token=' + this.currentSession.refreshToken);
     this.http.post<Session>(this.refreshTokenUrl, body, httpOptions).subscribe((res: any) => {
 
       if (res && res.accessToken && res.refreshToken) {
 
         this.currentSession.token = res.accessToken;
-        this.currentSession.refreshToken=res.refreshToken;
-        localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
+        this.currentSession.refreshToken = res.refreshToken;
+        this.getCurrentUser().subscribe(x => {
+
+        });
+
         this.logger.console(res.refreshToken);
         this.logger.console(res.token);
       } else {
@@ -120,34 +112,35 @@ export class AuthenticationService {
 
   }
 
-  getCurrentUserRoles():Observable<Session>{
+  getCurrentUserRoles(): Observable<Session> {
 
 
-    return this.http.get<RestUserRoleRight>(this.userRole).pipe(map((x:RestUserRoleRight)=>{
+    return this.http.get<RestUserRoleRight>(this.userRole).pipe(map((x: RestUserRoleRight) => {
 
 
 
-      //todo: buranın ciddi sorunları var.
-      x.roles.forEach((y:RestRole)=>{
-        let  role=new Role();
-        role.name=y.name;
-        y.rights.forEach((a:RestRight)=>{
-          let cleareance=new Clearance();
-          cleareance.name=a.name;
-          role.clearences=[];
+      // todo: buranın ciddi sorunları var.
+      x.roles.forEach((y: RestRole) => {
+        const  role = new Role();
+        role.name = y.name;
+        y.rights.forEach((a: RestRight) => {
+          const cleareance = new Clearance();
+          cleareance.name = a.name;
+          role.clearences = [];
           role.clearences.push(cleareance);
         });
-       this.currentSession.currentUser.roles=role;
+       this.currentSession.currentUser.roles = role;
 
-      })
-      localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
+      });
+      //localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
+      this.saveSession();
       return this.currentSession;
     }));
   }
 
   getCurrentUser(): Observable<Session> {
 
-    let options = {
+    const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
@@ -158,27 +151,28 @@ export class AuthenticationService {
 
           this.logger.console(res);
 
-          let user=new User();
-          user.id=Number(res.id);
-          user.userName=res.username;
-          user.active=Boolean(res.isActive);
-          user.locked=Boolean(res.isLocked);
-          user.name=res.name;
-          if(!user.name)
-          user.name=user.userName||'';
+          const user = new User();
+          user.id = Number(res.id);
+          user.userName = res.username;
+          user.active = Boolean(res.isActive);
+          user.locked = Boolean(res.isLocked);
+          user.name = res.name;
+          if (!user.name) {
+          user.name = user.userName || '';
+          }
 
-          user.surname='';
+          user.surname = '';
 
-          user.twoFactorAuthentication=Boolean(res.isTwoFactorAuthentication);
-          user.active=Boolean(res.isActive);
+          user.twoFactorAuthentication = Boolean(res.isTwoFactorAuthentication);
+          user.active = Boolean(res.isActive);
 
-          user.language=res.language;
+          user.language = res.language;
 
-          user.gsmCode=res.gsmCode;
-          user.gsm=res.gsm;
-          user.usageType=1;
+          user.gsmCode = res.gsmCode;
+          user.gsm = res.gsm;
+          user.usageType = 1;
 
-          this.currentSession.currentUser=user;
+          this.currentSession.currentUser = user;
 
 
           return this.getCurrentUserRoles();
@@ -187,15 +181,17 @@ export class AuthenticationService {
 
 
 
-  prelogin(email:string,pass:string):Observable<RestPreloginResponse>{
+  prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
-      return this.http.post<RestPreloginResponse>(this.preloginUrl,JSON.stringify({username:email,password:pass}),this.getHttpOptions()).map(res=>{
+      return this.http.
+      post<RestPreloginResponse>(this.preloginUrl, JSON.stringify({username: email, password: pass}), this.getHttpOptions())
+      .map(res => {
           return res;
-      })
+      });
 
   }
 
-  getHttpOptions(){
+  getHttpOptions() {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -214,42 +210,53 @@ export class AuthenticationService {
         'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
       })
     };
-    let body = encodeURI("grant_type=password&username=" + email + "&password=" + pass);
+    const body = encodeURI('grant_type=password&username=' + email + '&password=' + pass);
 
 
     return this.http.post<Session>(this.loginUrl, body, httpOptions)
       .pipe(mergeMap((res: any) => {
         this.logger.console(res);
-        this.currentSession=new Session();
+        this.currentSession = new Session();
         this.currentSession.token = res.accessToken;
         this.currentSession.refreshToken = res.refreshToken;
         return this.getCurrentUser();
-      }),catchError(err=>{
+      }), catchError(err => {
 
-        this.currentSession=null;
+        this.currentSession = null;
         throw err;
 
-      }))
+      }));
 
 
   }
 
-  clear(){
+  clear() {
     this.currentSession = null;
     localStorage.clear();
     this.cookieService.clear();
   }
 
   logout() {
+
     this.clear();
+
     this.router.navigateByUrl('/login');
+
+
   }
 
   forgotPassword(signupBean: SignupBean): Observable<OperationResult> {
-    let options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
-    return this.http.post<OperationResult>(this._forgotPasswordSendURL, JSON.stringify(signupBean, null, ' '), options)
+
+
+    return this.http.post<OperationResult>(this._forgotPasswordSendURL, JSON.stringify(signupBean, null, ' '), this.getHttpOptions())
       .map(res => res);
+  }
+
+
+  forgotPasswordConfirm(key:string,password:string,passwordAgain:string): Observable<OperationResult> {
+
+    return this.http.post<any>(this._forgotPasswordChangeURL,
+       JSON.stringify({key:key,password:password,passwordAgain:passwordAgain}), this.getHttpOptions())
+
   }
 }

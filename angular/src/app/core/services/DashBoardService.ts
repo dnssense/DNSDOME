@@ -5,90 +5,79 @@ import { SearchSetting } from "../models/SearchSetting";
 import { Observable } from "rxjs/Rx";
 import { Dashboard } from "../models/Dashboard";
 import { Constants } from "../../Constants";
-import { HttpClient } from '@angular/common/http';
+
+import { ROUTER_CONFIGURATION } from '@angular/router';
 
 /**
  * Created by fatih on 02.08.2016.
  */
 
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ConfigService } from './config.service';
+import { DashboardStatistic } from '../models/DashboardStatistic';
+import { ElasticDashboardData } from '../models/ElasticDashboardData';
+
+
 @Injectable()
 export class DashBoardService {
 
-  public _saveDashboardURL = Constants.getServerPath() + '/services/dashboard/save';  // URL to graph api
-  public _ListURL = Constants.getServerPath() + '/services/dashboard/list';  // URL to graph api
-  public _deleteDashboardURL = Constants.getServerPath() + '/services/dashboard/delete';  // URL to graph api
-  public _setDefaultDashboardURL = Constants.getServerPath() + '/services/dashboard/default';  // URL to graph api
-  public _dashboardSettingsURL = Constants.getServerPath() + '/services/dashboard/get?';  // URL to graph api
 
-  public http;
+  public _saveDashboardURL = this.configuration.getApiUrl() + '/services/dashboard/save';  // URL to graph api
+  public _ListURL = this.configuration.getApiUrl()  + '/services/dashboard/list';  // URL to graph api
+  public _deleteDashboardURL = this.configuration.getApiUrl()  + '/services/dashboard/delete';  // URL to graph api
+  public _setDefaultDashboardURL = this.configuration.getApiUrl()  + '/services/dashboard/default';  // URL to graph api
+  public _dashboardSettingsURL = this.configuration.getApiUrl()  + '/services/dashboard/get?';  // URL to graph api
 
-  constructor(http: HttpClient) {
-    this.http = http;
+
+  private _elasticDataForDashboardURL= this.configuration.getApiUrl() + '/dashboard/getdata';
+
+
+
+
+
+  constructor(private http: HttpClient,private configuration: ConfigService) {
+
+  }
+
+
+  public getElasticData():Observable<ElasticDashboardData>{
+
+    return this.http.get<ElasticDashboardData>(this._elasticDataForDashboardURL).map(res=> res);
   }
 
   public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {
-    
-    return this.http.post(this._dashboardSettingsURL + "id=" + dashboard.id).map((res) => {
-      console.log(res);
-      return res;
-    })
-      .catch((response: any, caught: any) => {
-        // this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });
+    const url = this._dashboardSettingsURL + "id=" + dashboard.id;
+
+    return this.http.post<SearchSetting[]>(url, this.getOptions()).map(res => res);
+
   }
 
   public list() {
-    return this.http.post(this._ListURL)
-      .map((res) => {
-        return res;
-      })
-      .catch((response: any, caught: any) => {
-        //  this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });
+    return this.http.get(this._ListURL).map(res=> res);
   }
 
 
   public save(dashboard: Dashboard): Observable<Object> {
-    let body = JSON.stringify(dashboard);
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
-
-    return this.http.post(this._saveDashboardURL, body, options).map(res => res.json())
-      .catch((response: any, caught: any) => {
-        //     this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });
+    return this.http.post(this._saveDashboardURL, JSON.stringify(dashboard), this.getOptions()).map(res => res);
 
   }
 
   public delete(dashboard: Dashboard): Observable<Object> {
-    let body = JSON.stringify(dashboard);
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
 
-    return this.http.post(this._deleteDashboardURL, body, options).map(res => res.json())
-      .catch((response: any, caught: any) => {
-        //   this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });
-
+    return this.http.post(this._deleteDashboardURL, JSON.stringify(dashboard), this.getOptions()).map(res => res);
   }
 
 
   public setDefaultDashboard(dashboard: Dashboard): Observable<Object> {
-    let body = JSON.stringify(dashboard);
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
 
-    return this.http.post(this._setDefaultDashboardURL, body, options).map(res => res.json()).catch((response: any, caught: any) => {
-      // this.errorService.handleAuthenticatedError(response);
-      return Observable.throw(response);
-    });
-
+    return this.http.post(this._setDefaultDashboardURL, JSON.stringify(dashboard), this.getOptions()).map(res => res);
   }
 
-
+private getOptions() {
+    let options = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    }
+    return options;
+  }
 
 }

@@ -19,7 +19,8 @@
                         <div class="input-group">
                           <div class="input-group-prepend" style="width:100%;">
                             <mat-form-field class="example-full-width">
-                              <input type="text" matInput placeholder="Full Name" [(ngModel)]="user.name" formControlName="name">
+                              <input type="text" matInput placeholder="Full Name" [(ngModel)]="user.name"
+                                formControlName="name">
                               <mat-error *ngIf="userInfoForm.get('name').hasError('required')">
                                 Full Name <strong>is Required</strong>
                               </mat-error>
@@ -39,6 +40,16 @@
                       </div>
                     </div>
                   </div>
+                  <div class="form-group-sm has-default">
+                    <div class="input-group">
+                      <div class="col-md-12 text-right" style="width:100%;">
+                        <button type="submit" class="btn btn-info btn-sm">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                <form [formGroup]="userPhoneForm" class="form-horizontal">
+
                   <div class="form-group-sm has-default">
                     <div class="row">
                       <div class="col-md-6 mt-4 text-danger">
@@ -73,7 +84,7 @@
                               </mat-select>
                             </mat-form-field>
                           </div>
-                          <div class="col-md-6" style="padding-right:0px;">
+                          <div class="col-md-4" style="padding-right:0px;">
                             <mat-form-field class="example-full-width has-label">
                               <input type="tel" #gsm maxlength="10" name="gsm" (keydown)="checkisTelNumber($event)"
                                 placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="phoneNumberTemp"
@@ -83,8 +94,8 @@
                               </app-field-error-display>
                             </mat-form-field>
                           </div>
-                          <div class="col-md-2" style="padding-right:0px;">
-                            <button type="button" id="changePhoneBtn" disabled (click)="changePhoneNumber()"
+                          <div class="col-md-4" style="padding-right:0px;">
+                            <button type="button" id="changePhoneBtn" (click)="changePhoneNumber()"
                               class="btn btn-info btn-sm">Validate</button>
                           </div>
                         </div>
@@ -106,21 +117,14 @@
                           </div>
                         </div>
                         <div class="col-md-4">
-                          <button type="button" (click)="confirmGsm()" class="btn btn-info btn-sm">Corfirm</button>
+                          <button type="button" (click)="confirmGsm()" class="btn btn-info btn-sm">Confirm</button>
                         </div>
                       </div>
 
                     </div>
                   </div>
-
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="col-md-12 text-right" style="width:100%;">
-                        <button type="submit" class="btn btn-info btn-sm">Save</button>
-                      </div>
-                    </div>
-                  </div>
                 </form>
+
 
               </div>
             </div>

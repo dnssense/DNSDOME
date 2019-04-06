@@ -17,6 +17,9 @@ const authlayoutRoutes: Routes = [
       path: 'register',
       loadChildren: '../../register/register.module#RegisterModule'
     }, {
+      path: 'forgot-password-confirm',
+      loadChildren: '../../forgotpasswordconfirm/forgotpasswordconfirm.module#ForgotPasswordConfirmModule'
+    }, {
       path: '',
       loadChildren: '../../login/login.module#LoginModule'
     }

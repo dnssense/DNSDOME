@@ -8,7 +8,7 @@ export class User {
     public name: string;
     public surname: string;
     public gsm: string;
-    public gsmCode: string; 
+    public gsmCode: string;
     public language: string;
     public locked: boolean = false;
     public active: boolean = true;
@@ -20,5 +20,9 @@ export class User {
     public twoFactorAuthentication: boolean = false;
     public usageType: number;
 
+}
+
+export class UserExtended extends User{
+    passwordAgain:string;
 }
 

@@ -14,9 +14,10 @@ export class ErrorInterceptor implements ErrorHandler {
   ) { }
 
   handleError(error: Error | HttpErrorResponse) {
-        
-    const notificationService = this.injector.get(NotificationService); 
-    const spinnerService = this.injector.get(SpinnerService);    
+
+
+    const notificationService = this.injector.get(NotificationService);
+    const spinnerService = this.injector.get(SpinnerService);
     spinnerService.hide();
     const translatorService=this.injector.get(TranslatorService);
     if (error instanceof HttpErrorResponse) {
@@ -24,14 +25,26 @@ export class ErrorInterceptor implements ErrorHandler {
       if (!navigator.onLine) {
         notificationService.danger('No Internet Connection');
       } else {
-        
+
+
+
         // Handle Http Error (error.status === 403, 404...)
         const status=error.status;
-        const message=translatorService.translate(error.statusText);
+        if(error.error.code){
+
+          let message=translatorService.translate(error.error.code);
         notificationService.error(`${status} - ${message}`);
+
+        }else{
+
+
+          let message=translatorService.translate(error.statusText);
+        notificationService.error(`${status} - ${message}`);
+        }
+
       }
     } else {
-      
+
         const message=translatorService.translate(error.message);
         notificationService.error(message);
       }

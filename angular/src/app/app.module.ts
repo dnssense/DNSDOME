@@ -44,6 +44,9 @@ import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
 import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
 import { NotificationModule } from './modules/shared/notification/notification.module';
 
+import { FooterModule } from './modules/shared/footer/footer.module';
+
+
 @NgModule({
   declarations: [AppComponent],
   imports: [

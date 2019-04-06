@@ -43,7 +43,11 @@ export class ComponentService {
 
   public closeScreen() {
     this.modalService.hide(1);
-    let body = document.getElementsByTagName('body')[0];
-    body.classList.remove('modal-open'); //remove the class
+
+    const body = document.getElementsByTagName('body')[0];
+    body.classList.remove('modal-open');   // remove the class
+
+
+
   }
 }
