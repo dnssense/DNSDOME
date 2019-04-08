@@ -23,8 +23,6 @@
         [dragData]="item"
         (onDragSuccess)="dragSuccess($event)"
       >
-        <!-- [dragEnabled]="true"
-        [dragData]="item" -->
         <span
           class="pull-left"
           (click)="selectInputTag($event, item); $event.stopPropagation()"
@@ -64,8 +62,6 @@
           [collapse]="inputCollapsed"
           (blur)="blur($event)"
         >
-          <!-- [collapse]="inputCollapsed" -->
-
           <div class="input-group">
             <div class="input-group-btn" style="width: auto">
               <select
