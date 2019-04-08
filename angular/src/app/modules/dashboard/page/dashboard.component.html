@@ -15,7 +15,7 @@
             </div>
             <p class="card-category"><strong>Total Hit Count</strong> </p>
             <h3 class="card-title">
-              {{elasticData?.totalHit}}
+              {{elasticData?.doc_count}}
             </h3>
           </div>
           <div class="card-footer">
@@ -34,7 +34,7 @@
             </div>
             <p class="card-category">Domain/Subdomain/IP</p>
             <h3 class="card-title">
-              <small>{{elasticData?.uniqueDomain}}/{{elasticData?.uniqueSubdomain}}/{{elasticData?.uniqueIP}}</small>
+              <small>{{elasticData?.unique_domain}}/{{elasticData?.unique_subdomain}}/{{elasticData?.unique_destip}}</small>
             </h3>
           </div>
           <div class="card-footer">

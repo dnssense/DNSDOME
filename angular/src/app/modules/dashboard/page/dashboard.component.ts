@@ -6,7 +6,9 @@ import { DashboardStatistic } from 'src/app/core/models/DashboardStatistic';
 import { ValueTransformer } from '@angular/compiler/src/util';
 import { TableData } from '../../shared/md/md-table/md-table.component';
 import { DashBoardService } from 'src/app/core/services/DashBoardService';
-import { ElasticDashboardData } from 'src/app/core/models/ElasticDashboardData';
+import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { DatePipe } from '@angular/common';
 
 declare const $: any;
 @Component({
@@ -15,10 +17,11 @@ declare const $: any;
   styleUrls: ['dashboard.component.sass']
 })
 export class DashboardComponent implements OnInit {
-  elasticData: ElasticDashboardData;
+  elasticData: ElasticDashboardResponse;
   public tableData3: TableData;
 
-  constructor(private configService: ConfigService, private http: HttpClient, private dashboardService: DashBoardService) {
+  constructor(private configService: ConfigService, private http: HttpClient, private dashboardService: DashBoardService,
+    private auth: AuthenticationService, private datePipe: DatePipe) {
 
 
     this.tableData3 = {
@@ -32,17 +35,27 @@ export class DashboardComponent implements OnInit {
         ['cameliscamel.com', 'Category E'],
       ]
     };
-    this.elasticData = new ElasticDashboardData();
-    this.dashboardService.getElasticData().subscribe(res => {
+
+    this.elasticData = new ElasticDashboardResponse();
+
+
+    let docId = '126_20190406';// this.auth.currentSession.currentUser.companyId + '_' + this.datePipe.transform(Date.now(), 'yyyyMMdd');
+    
+
+    this.dashboardService.getDailyCompanySummary(docId).subscribe(res => {
       this.elasticData = res;
       this.createConnectedUserChart();
       this.createPieCharts();
     });
 
+    this.dashboardService.getDailyDomainSummary(docId).subscribe(res=> console.log(res));
+    this.dashboardService.getDailySummary(docId).subscribe(res=> console.log(res));
+    this.dashboardService.getHourlyCompanySummary(docId).subscribe(res=> console.log(res));
+
   }
 
   ngOnInit(): void {
-   
+
 
     let values: Map<string, number> = new Map();
     values.set('ru', 234);
@@ -100,7 +113,7 @@ export class DashboardComponent implements OnInit {
 
     const dataColouredRoundedLineChart = {
       labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      series: [this.elasticData.categories, [134, 256, 66, 530, 289, 689, 700]]
+      series: [null, [134, 256, 66, 530, 289, 689, 700]]
 
     };
     const optionsColouredRoundedLineChart: any = {
@@ -128,7 +141,7 @@ export class DashboardComponent implements OnInit {
 
     const dataColouredRoundedLineChart2 = {
       labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      series: [this.elasticData.categories, [134, 256, 66, 530, 289, 289, 700]]
+      series: [null, [134, 256, 66, 530, 289, 289, 700]]
 
     };
     const optionsColouredRoundedLineChart2: any = {

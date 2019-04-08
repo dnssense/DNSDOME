@@ -35,17 +35,13 @@ export class AuthenticationService {
   currentSession: Session;
   private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
-  currentUserPropertiesChanged:Subject<any>;
+  currentUserPropertiesChanged: Subject<any>;
   constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
     private router: Router, private logger: LoggerService) {
 
-      this.currentUserPropertiesChanged=new Subject();
-
+    this.currentUserPropertiesChanged = new Subject();
     this.refreshTokenTimer = interval(55 * 60 * 1000);
-    this.refreshTokenTimer.subscribe(() => {
-
-      this.refreshToken();
-    });
+    this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
 
   }
 
@@ -53,7 +49,6 @@ export class AuthenticationService {
   saveSession() {
 
     localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
-
     this.currentUserPropertiesChanged.next('changed');
   }
 
@@ -65,25 +60,19 @@ export class AuthenticationService {
         const session: Session = JSON.parse(sessionString);
         if (session) {
           this.currentSession = session;
-
-
-            this.refreshToken();
-
-
-
+          this.refreshToken();
         }
       }
     } catch (err) {
-
-
       this.logger.console(err);
       this.logout();
     }
+
   }
 
   refreshToken() {
-    if (!this.currentSession ||  !this.currentSession.refreshToken) {
-    return;
+    if (!this.currentSession || !this.currentSession.refreshToken) {
+      return;
     }
     this.logger.console('refreshing token');
     const httpOptions = {
@@ -102,7 +91,6 @@ export class AuthenticationService {
         this.getCurrentUser().subscribe(x => {
 
         });
-
         this.logger.console(res.refreshToken);
         this.logger.console(res.token);
       } else {
@@ -117,11 +105,9 @@ export class AuthenticationService {
 
     return this.http.get<RestUserRoleRight>(this.userRole).pipe(map((x: RestUserRoleRight) => {
 
-
-
-      // todo: buranın ciddi sorunları var.
+      // TODO: buranın ciddi sorunları var.
       x.roles.forEach((y: RestRole) => {
-        const  role = new Role();
+        const role = new Role();
         role.name = y.name;
         y.rights.forEach((a: RestRight) => {
           const cleareance = new Clearance();
@@ -129,7 +115,7 @@ export class AuthenticationService {
           role.clearences = [];
           role.clearences.push(cleareance);
         });
-       this.currentSession.currentUser.roles = role;
+        this.currentSession.currentUser.roles = role;
 
       });
       //localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
@@ -148,32 +134,28 @@ export class AuthenticationService {
       .pipe(
         mergeMap((res: RestUser) => {
 
-
           this.logger.console(res);
 
           const user = new User();
+          user.companyId = Number(res.companyId);
           user.id = Number(res.id);
           user.userName = res.username;
           user.active = Boolean(res.isActive);
           user.locked = Boolean(res.isLocked);
           user.name = res.name;
           if (!user.name) {
-          user.name = user.userName || '';
+            user.name = user.userName || '';
           }
 
           user.surname = '';
 
           user.twoFactorAuthentication = Boolean(res.isTwoFactorAuthentication);
           user.active = Boolean(res.isActive);
-
           user.language = res.language;
-
           user.gsmCode = res.gsmCode;
           user.gsm = res.gsm;
           user.usageType = 1;
-
           this.currentSession.currentUser = user;
-
 
           return this.getCurrentUserRoles();
         }));
@@ -183,10 +165,10 @@ export class AuthenticationService {
 
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
-      return this.http.
-      post<RestPreloginResponse>(this.preloginUrl, JSON.stringify({username: email, password: pass}), this.getHttpOptions())
+    return this.http.
+      post<RestPreloginResponse>(this.preloginUrl, JSON.stringify({ username: email, password: pass }), this.getHttpOptions())
       .map(res => {
-          return res;
+        return res;
       });
 
   }
@@ -253,10 +235,10 @@ export class AuthenticationService {
   }
 
 
-  forgotPasswordConfirm(key:string,password:string,passwordAgain:string): Observable<OperationResult> {
+  forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {
 
     return this.http.post<any>(this._forgotPasswordChangeURL,
-       JSON.stringify({key:key,password:password,passwordAgain:passwordAgain}), this.getHttpOptions())
+      JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions())
 
   }
 }
