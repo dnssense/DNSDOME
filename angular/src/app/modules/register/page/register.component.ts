@@ -10,6 +10,7 @@ import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { AccountService } from 'src/app/core/services/AccountService';
+import { Router } from '@angular/router';
 
 declare var $: any;
 
@@ -34,7 +35,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private privacyPolicy: boolean = false;
   private captcha: string;
   private host:ConfigHost;
-  public captcha_key: string = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
+  public captcha_key: string;
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
 
   emailFormControl = new FormControl('', [
@@ -44,11 +45,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
   validEmailRegister: true | false;
   validPasswordRegister: true | false;
 
-  constructor(private formBuilder: FormBuilder, private element: ElementRef, private config: ConfigService,
-    private accountService: AccountService, private notification: NotificationService,private capthaService:CaptchaService,private configService:ConfigService) {
+  constructor(private formBuilder: FormBuilder, private element: ElementRef,
+    private accountService: AccountService, private notification: NotificationService,
+    private capthaService:CaptchaService,private configService:ConfigService,private router:Router) {
     this.isFailed = false;
     this.sidebarVisible = false;
       this.host=this.configService.host;
+      this.captcha_key=this.host.captcha_key;
     this.createRegisterForm();
 
   }
@@ -151,7 +154,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleCaptcha($event) {
+  handleCaptcha($event: string) {
     this.captcha = $event;
   }
 
@@ -164,7 +167,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   resolved(captchaResponse: string) {
-    console.log(`Resolved captcha with response ${captchaResponse}:`);
+    //console.log(`Resolved captcha with response ${captchaResponse}:`);
   }
 
   pPolicy() {
@@ -179,13 +182,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.user.c_answer = this.captcha;
     }
 
-    if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.privacyPolicy) {
-      this.accountService.signup(this.user).subscribe(res => {
-        if (res.status == 200) {
-          this.notification.success(res.message);
-        } else {
-          this.notification.error(res.message);
-        }
+    if (this.user != null && this.registerForm.dirty
+      && this.registerForm.valid && this.privacyPolicy
+      && this.user.password===this.user.passwordAgain) {
+
+      this.accountService.signup({username: this.user.userName, password: this.user.password}).subscribe(res => {
+
+          this.notification.success("Registered successfuly, check your email and active your account");
+          this.router.navigateByUrl('/login');
+
       });
     }
 

@@ -55,7 +55,8 @@
         "Address2": "Street Address Line 2",
         "City": "City",
         "PostCode": "Postal / Zip Code",
-        "RegionState": "Region / State"
+        "RegionState": "Region / State",
+        "ActivateAccount":"Activate Account"
     },
     "DASHBOARD": {
         "SETTING_EXISTS": "Your current dashboard contains this report. Please Select another one.",
@@ -86,6 +87,8 @@
    "ErrUserBadArgumentEmail":"Bad email parameter",
    "ErrUserNeedsKeyPassword":"Needs key and password",
    "ErrUserBadArgumentPasswordsAreNotSame":"Passwords are not same",
+   "ErrUserBadArgumentEmailAndPassword":"Email and passwords are wrong",
+   "ErrUserAllreadyExitsUser":"Allready exits email, please reset your password",
    "FORGOTPASSWORD":{
        "Title":"Change password"
    }

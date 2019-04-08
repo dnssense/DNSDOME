@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install",
-    "start:proxy": "ng serve --proxy-config proxy.conf.json"
+    "start:proxy": "ng serve --disable-host-check --proxy-config proxy.conf.json"
   },
   "private": true,
   "dependencies": {

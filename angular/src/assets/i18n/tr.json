@@ -55,7 +55,8 @@
         "Address2": "Açık Adres 2",
         "City": "Şehir",
         "PostCode": "Posta / Posta Kodu",
-        "RegionState": "Bölge / Eyalet"
+        "RegionState": "Bölge / Eyalet",
+        "ActivateAccount":"Hesap Aktifleştirme"
     },
     "DASHBOARD": {
         "SETTING_EXISTS": "Mevcut paneliniz bu raporu zaten içeriyor. Lütfen başka bir rapor seçiniz.",

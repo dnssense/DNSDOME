@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   ]);
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   captcha: string;
-  captcha_key: string = environment.API_CAPTCHA_KEY;
+  captcha_key: string ;
   validEmailLogin: true | false;
   validPasswordLogin: true | false;
   matcher = new MyErrorStateMatcher();
@@ -72,6 +72,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.nativeElement = element.nativeElement;
     this.sidebarVisible = false;
     this.host=this.configService.host;
+    this.captcha_key=this.host.captcha_key;
   }
 
   ngOnInit() {
@@ -225,12 +226,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         forgoter.c_answer = this.captcha;
       }
 
-      this.authService.forgotPassword(forgoter).subscribe(res => {
-        if (res.status == 200) {
-          this.notification.success("Activation code sent your email." + res.message);
-        } else {
-          this.notification.error("Operation Failed! " + res.message);
-        }
+      this.authService.forgotPassword(forgoter.userName).subscribe(res => {
+
+          this.notification.success("Activation code sent your email.");
+          this.router.navigateByUrl('/login');
+
       });
     }
   }

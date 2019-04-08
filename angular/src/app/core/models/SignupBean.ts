@@ -24,3 +24,17 @@ export class SignupBean {
     public regionState: string = " ";
     public gsmCode: string = "+44";
 }
+
+export class RegisterUser{
+    public username:string;
+    public password:string;
+    public language?:string;
+    public city?:string;
+    public country?:string;
+    public ip?:string;
+    public timezone?: string;
+    public countryCode?:string;
+    public gsmCode?:string;
+
+
+}

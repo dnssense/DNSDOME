@@ -190,7 +190,7 @@ export class AccountSettingsComponent implements OnInit {
 
     changePasswordFormSubmit() {
         if (this.changePasswordForm.valid && this.changePasswordForm.dirty && this.signupUser.password === this.signupUser.passwordAgain) {
-            this.accountService.savePassword(this.currentPassword, this.signupUser.password)
+            this.accountService.changePassword(this.currentPassword, this.signupUser.password)
                 .subscribe(res => {
 
                     this.alert.alertSuccessMessage("Operation Successful", "Password changed.");

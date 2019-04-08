@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { Session } from '../models/Session';
 import { LoggerService } from './logger.service';
 import { AuthHttp, JwtHelper, tokenNotExpired } from 'angular2-jwt';
-import { SignupBean } from '../models/SignupBean';
 import { OperationResult } from '../models/OperationResult';
 import { Role, RestRole, RestRight, RestUserRoleRight } from '../models/Role';
 import { Clearance } from '../models/Clearance';
@@ -184,7 +183,7 @@ export class AuthenticationService {
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
       return this.http.
-      post<RestPreloginResponse>(this.preloginUrl, JSON.stringify({username: email, password: pass}), this.getHttpOptions())
+      post<RestPreloginResponse>(this.preloginUrl, {username: email, password: pass}, this.getHttpOptions())
       .map(res => {
           return res;
       });
@@ -245,10 +244,10 @@ export class AuthenticationService {
 
   }
 
-  forgotPassword(signupBean: SignupBean): Observable<OperationResult> {
+  forgotPassword(email:string): Observable<OperationResult> {
 
 
-    return this.http.post<OperationResult>(this._forgotPasswordSendURL, JSON.stringify(signupBean, null, ' '), this.getHttpOptions())
+    return this.http.post<OperationResult>(this._forgotPasswordSendURL, {username:email}, this.getHttpOptions())
       .map(res => res);
   }
 
@@ -256,7 +255,7 @@ export class AuthenticationService {
   forgotPasswordConfirm(key:string,password:string,passwordAgain:string): Observable<OperationResult> {
 
     return this.http.post<any>(this._forgotPasswordChangeURL,
-       JSON.stringify({key:key,password:password,passwordAgain:passwordAgain}), this.getHttpOptions())
+       {key:key,password:password,passwordAgain:passwordAgain}, this.getHttpOptions())
 
   }
 }

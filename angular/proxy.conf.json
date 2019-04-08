@@ -9,7 +9,7 @@
       "^/api": ""
     }
   },
-  "/api/user2/*": {
+  "/api/user/*": {
 
     "target": "http://localhost:9002",
     "secure": false,

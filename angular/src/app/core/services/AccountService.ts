@@ -1,12 +1,21 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { User } from '../models/User';
 import { OperationResult } from '../models/OperationResult';
 import { ConfigService } from './config.service';
-import { SignupBean } from '../models/SignupBean';
-import { RestUser,  RestUserUpdateRequest, RestEmptyResponse } from '../models/RestServiceModels';
+import { SignupBean, RegisterUser } from '../models/SignupBean';
+
+import { RestUser, RestUserUpdateRequest, RestEmptyResponse } from '../models/RestServiceModels';
+
+import { catchError, delay, map, mergeMap } from 'rxjs/operators';
+import { of, from } from 'rxjs';
+import { countries } from 'countries-list';
+import { geoLocation, GeoLocation } from 'src/app/shared/geoLocation';
+import { NullTemplateVisitor } from '@angular/compiler';
+import { httpFactory } from '@angular/http/src/http_module';
+
 
 /**
  * Created by fatih on 02.08.2016.
@@ -17,12 +26,14 @@ import { RestUser,  RestUserUpdateRequest, RestEmptyResponse } from '../models/R
 })
 export class AccountService {
 
-  private _signupURL = this.config.getApiUrl() + '/services/signup';
+
+  private _signupURL = this.config.getApiUrl() + '/user';
+  private _accountActiveURL = this.config.getApiUrl() + '/user/confirm';
   private _updateAccountURL = this.config.getApiUrl() + '/user/current';
   private _savePasswordURL = this.config.getApiUrl() + '/user/current';
   private _savePersonalSettingURL = this.config.getApiUrl() + '/services/account/savePersonalSetting';
-/*   private _currentUserURL = this.config.getApiUrl() + '/user/current';
-  private _currentUserRightsURL = this.config.getApiUrl() + '/user/current/role'; */
+  /*   private _currentUserURL = this.config.getApiUrl() + '/user/current';
+    private _currentUserRightsURL = this.config.getApiUrl() + '/user/current/role'; */
 
 
   constructor(private http: HttpClient, private config: ConfigService) {
@@ -30,57 +41,72 @@ export class AccountService {
   }
 
   public update(user: RestUserUpdateRequest): Observable<RestEmptyResponse> {
-    return this.http.put<RestEmptyResponse>(this._updateAccountURL, JSON.stringify(user), this.getOptions()).map(res => res);
+    return this.http.put<RestEmptyResponse>(this._updateAccountURL, user, this.getOptions());
   }
 
-  public savePassword(oldPassword: string, newPassword: string): Observable<OperationResult> {
-    return this.http.put<any>(this._savePasswordURL, JSON.stringify({
+  public changePassword(oldPassword: string, newPassword: string): Observable<OperationResult> {
+    return this.http.put<any>(this._savePasswordURL, {
       'oldPassword': oldPassword,
       'password': newPassword
 
-    }), this.getOptions()).map(res => res);
+    }, this.getOptions()).map(res => res);
   }
 
-  public savePersonalSettings(user: User): Observable<OperationResult> {
-    const body = JSON.stringify(user, null, ' ');
-    return this.http.post<OperationResult>(this._savePersonalSettingURL, body, this.getOptions()).map(res => res);
+  /*   public savePersonalSettings(user: User): Observable<OperationResult> {
+      const body = JSON.stringify(user, null, ' ');
+      return this.http.post<OperationResult>(this._savePersonalSettingURL, body, this.getOptions()).map(res => res);
+    } */
+
+
+  public signup(user: RegisterUser): Observable<any> {
+    user.language = navigator.language;
+
+    //eskiye uyumlu olsun diye böyle yazıldı
+    if (user.language && user.language.indexOf('-') > 0) {
+      user.language = user.language.slice(0, user.language.indexOf('-'));
+    }
+
+    return geoLocation.getCurrent(this.http).timeout(2000).pipe(
+      catchError((err) => {
+
+        return of(null);
+      }),
+      map((value: GeoLocation) => {
+
+
+        if (value) {
+
+          user.city = value.city;
+          user.country = value.country_name;
+          user.countryCode = value.country;
+          user.timezone = value.timezone;
+          user.ip = value.ip;
+          if (user.countryCode && countries[user.countryCode]) {
+            user.gsmCode = countries[user.countryCode].phone || undefined;
+            if (countries[user.countryCode].languages && countries[user.countryCode].languages.length > 0) {
+              user.language = countries[user.countryCode].languages[0];
+            }
+          }
+          //eskiye uyumlu olsun diye başına + konuldu
+          if (user.gsmCode && user.gsmCode.indexOf('+') < 0) {
+            user.gsmCode = '+' + user.gsmCode;
+          }
+        }
+
+      }), mergeMap(x => {
+
+        return this.http.post<any>(this._signupURL, user, this.getOptions());
+
+      }));
+
+
   }
 
- /*  public getCurrentUser(): Observable<User> {
-    debugger;
-    return this.http.get<RestUser>(this._currentUserURL).map(res =>{
-      let user=new User();
-      user.id=Number(res.id);
-      user.userName=res.username;
-      user.active=Boolean(res.isActive);
-      user.locked=Boolean(res.isLocked);
-      user.name=res.name;
-      if(!user.name)
-      user.name=user.userName||'';
-
-      user.surname='';
-
-      user.twoFactorAuthentication=Boolean(res.isTwoFactorAuthentication);
-      user.active=Boolean(res.isActive);
-
-      user.language=res.language;
-
-      user.gsmCode=res.gsmCode;
-      user.gsm=res.gsm;
-      user.usageType=1;
-      return user;
-
-    });
-  } */
-
- /*  public getCurrentUserRights(): Observable<User> {
-    debugger;
-    return this.http.get<User>(this._currentUserRightsURL).map(res => res);
+  activateAccount(accountActivateId: string): Observable<any> {
+    return this.http.post<any>(this._accountActiveURL, { key: accountActivateId }, this.getOptions());
   }
- */
-  public signup(user: SignupBean): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this._signupURL, JSON.stringify(user, null, ' '), this.getOptions()).map(res => res);
-  }
+
+
 
   private getOptions() {
     const options = {

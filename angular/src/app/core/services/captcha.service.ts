@@ -18,9 +18,9 @@ export class CaptchaService {
 
   validCaptcha(captcha: string) {
 
-    if (!environment.production)
-      return true;
-    if (captcha == null || captcha == '') {
+
+
+    if (!captcha) {
 
       this.notification.error(this.translator.translate('CaptchaMessage'));
 

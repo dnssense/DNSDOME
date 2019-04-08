@@ -3,6 +3,6 @@ export const environment = {
   useMock: true,
   environment: 'dev',
 
-  API_CAPTCHA_KEY: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+ // API_CAPTCHA_KEY: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
 
 };

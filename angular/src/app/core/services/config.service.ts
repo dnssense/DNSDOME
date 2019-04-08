@@ -12,6 +12,7 @@ export class ConfigHost{
   logoImage:string;
   title:string;
   privacyUrl:string;
+  captcha_key:string;
 }
 
 @Injectable({
@@ -30,6 +31,7 @@ export class ConfigService {
       this.host.logofullUrl=window.location.protocol+'://'+window.location.host+(window.location.port||'')+'/assets/img/logo-dnssense.png';
       this.host.title="DnsSense";
       this.host.privacyUrl='https://www.dnssense.com/privacy-statement.htm';
+      this.host.captcha_key='6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
 
     } else
       if (window.location.host.indexOf("roksit") >= 0) {
@@ -40,6 +42,7 @@ export class ConfigService {
         this.host.logofullUrl=window.location.protocol+'://'+window.location.host+(window.location.port||'')+'/assets/img/logo-roksit.png';
         this.host.title='Roksit';
         this.host.privacyUrl='https://www.roksit.com/privacy-statement.htm';
+        this.host.captcha_key='6LdZopwUAAAAALG7uO9JV88w2y9sQnTJ9M0Lqhrg';
       } else {
        /*  this.host.www = 'https://www.roksit.com';
         this.host.brand = 'Roksit';
@@ -53,6 +56,7 @@ export class ConfigService {
         this.host.logofullUrl=window.location.protocol +'://'+window.location.host +(window.location.port||'')+'/assets/img/logo-dnssense.png';
         this.host.title='DnsSense';
         this.host.privacyUrl='https://www.dnssense.com/privacy-statement.htm';
+        this.host.captcha_key='6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       }
   }
 

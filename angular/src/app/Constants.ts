@@ -41,9 +41,7 @@ export class Constants {
     return environment.COMPANY_LOGO;
   } */
 
-  public static getCaptchaKey() {
-    return environment.API_CAPTCHA_KEY;
-  }
+
 
   public static getCaptchaMessage() {
     return CAPTCHA_MESSAGE;
