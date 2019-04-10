@@ -36,7 +36,7 @@ export class MonitorSearchComponent
   public agents: Location[];
   public mainCategories: Category[];
   public mainApplications: WApplication[];
-  public categoriesMap = new Map<number, Category[]>();
+  //public categoriesMap = new Map<number, Category[]>();
   public applicationsMap = new Map<number, WApplication[]>();
   public expanded = true;
   public startDateee: Date = null;
@@ -106,16 +106,16 @@ export class MonitorSearchComponent
           // Get the main categories...
           let tempcategoris = [];
           for (let cat of allCategories) {
-            if (cat.parent == null) {
-              tempcategoris.push(cat);
-            } else {
-              let arr = this.categoriesMap.get(cat.parent.id);
-              if (arr == null || !arr) {
-                arr = [];
-              }
-              arr.push(cat);
-              this.categoriesMap.set(cat.parent.id, arr);
-            }
+            // if (cat.parent == null) {
+            tempcategoris.push(cat);
+            // } else {
+            //   let arr = this.categoriesMap.get(cat.parent.id);
+            //   if (arr == null || !arr) {
+            //     arr = [];
+            //   }
+            //   arr.push(cat);
+            //   this.categoriesMap.set(cat.parent.id, arr);
+            // }
           }
           this.mainCategories = tempcategoris;
           /* for (let cat of this.mainCategories) {
@@ -126,12 +126,9 @@ export class MonitorSearchComponent
           this.mainCategories.sort(ArrayUtils.categoryCompare);
         }
       });
-    // this.locationsService
-    //   .getAgents()
-    //   .takeUntil(this.ngUnsubscribe)
-    //   .subscribe((res: Location[]) => {
-    //     this.agents = res;
-    //   });
+    this.locationsService.getLocations().takeUntil(this.ngUnsubscribe).subscribe((res: Location[]) => {
+      this.agents = res;
+    });
   }
 
   ngAfterViewInit() {

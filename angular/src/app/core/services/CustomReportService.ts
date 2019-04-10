@@ -15,29 +15,29 @@ import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class CustomReportService {
-  public _initContentURL = this.configService.getApiUrl() + '/services/custom-reports/init'; // URL to subcategories api
-  public _dataURL = this.configService.getApiUrl() + '/services/custom-reports/data'; // URL to graph api
+  public _initContentURL = this.configService.getApiUrl() + '/custom-reports/init'; // URL to subcategories api
+  public _dataURL = this.configService.getApiUrl() + '/scustom-reports/data'; // URL to graph api
   public _tableDataURL =
-  this.configService.getApiUrl() + '/services/custom-reports/tableData'; // URL to graph api
+    this.configService.getApiUrl() + '/custom-reports/tableData'; // URL to graph api
   public _multiValueHistogramDataURL =
-  this.configService.getApiUrl()+ '/services/custom-reports/multiValueHistogramData'; // URL to graph api
+    this.configService.getApiUrl() + '/custom-reports/multiValueHistogramData'; // URL to graph api
   public _singleValueDataURL =
-  this.configService.getApiUrl() + '/services/custom-reports/singleValue'; // URL to graph api
+    this.configService.getApiUrl() + '/custom-reports/singleValue'; // URL to graph api
   public _applicationListURL =
-  this.configService.getApiUrl() + '/services/custom-reports/application-list'; // URL to graph api
+    this.configService.getApiUrl() + '/custom-reports/application-list'; // URL to graph api
   public _categoryListURL =
-  this.configService.getApiUrl() + '/services/custom-reports/category-list'; // URL to graph api
+    this.configService.getApiUrl() + '/custom-reports/category-list'; // URL to graph api
   public _dashboardHeaderURL =
-  this.configService.getApiUrl() + '/services/custom-reports/dashboard-header'; // URL to graph api
+    this.configService.getApiUrl() + '/custom-reports/dashboard-header'; // URL to graph api
 
   public _categories: BehaviorSubject<Category[]> = new BehaviorSubject(null);
   public _applications: BehaviorSubject<WApplication[]> = new BehaviorSubject(
     null
   );
 
-  constructor(private http: HttpClient, private errorService: ErrorService,private configService:ConfigService) {
-    // this.getCategorylist();
-    // this.getApplicationList();
+  constructor(private http: HttpClient, private errorService: ErrorService, private configService: ConfigService) {
+    this.getCategorylist();
+    this.getApplicationList();
   }
 
   get applications(): BehaviorSubject<WApplication[]> {
@@ -79,23 +79,23 @@ export class CustomReportService {
       });
   }
 
-  // public getApplicationList(): Observable<Object> {
-  //   return this.http
-  //     .post(this._applicationListURL)
-  //     .map(res => res.json())
-  //     .subscribe((res: WApplication[]) => {
-  //       this._applications.next(res);
-  //     });
-  // }
+  public getApplicationList() {
+    return this.http
+      .post<WApplication[]>(this._applicationListURL, null)
+      .map(response => response)
+      .subscribe((applicationnArray: WApplication[]) => {
+        this._applications.next(applicationnArray);
+      });
+  }
 
-  // public getCategorylist(): Observable<Category[]> {
-  //   return this.http
-  //     .post(this._categoryListURL)
-  //     .map((res: Response) => res.json())
-  //     .subscribe((res: Category[]) => {
-  //       this._categories.next(res);
-  //     });
-  // }
+  public getCategorylist() {
+    return this.http
+      .post<Category[]>(this._categoryListURL, null)
+      .map(response => response)
+      .subscribe((categoryArray: Category[]) => {
+        this._categories.next(categoryArray);
+      });
+  }
 
   save(content: SearchSetting): Observable<Object> {
     let body = JSON.stringify(content);

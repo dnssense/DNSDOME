@@ -1,5 +1,49 @@
 {
-
+  "/api/oauth/*": {
+    "target": "http://localhost:9001",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  },
+  "/api/monitor/*": {
+    "target": "http://localhost:8181",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  },
+  "/api/quick-reports/*": {
+    "target": "http://localhost:8181",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  },
+  "/api/custom-reports/*": {
+    "target": "http://localhost:8181",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  },
+  "/api/locations/*": {
+    "target": "http://localhost:8181",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  },
   "/api/dashboard/*": {
     "target": "http://localhost:9010",
     "secure": false,
@@ -10,7 +54,6 @@
     }
   },
   "/api/user2/*": {
-
     "target": "http://localhost:9002",
     "secure": false,
     "logLevel": "debug",

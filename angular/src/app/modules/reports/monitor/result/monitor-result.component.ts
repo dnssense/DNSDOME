@@ -1,4 +1,4 @@
-import { OnInit, Component, Input, Output, EventEmitter } from '@angular/core';
+import { OnInit, Component, Input, Output, EventEmitter, ElementRef, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { MonitorService } from 'src/app/core/services/MonitorService';
 import { Subject } from 'rxjs';
@@ -11,13 +11,12 @@ import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
   styleUrls: ['monitor-result.component.css'],
   providers: [CountryPipe]
 })
-export class MonitorResultComponent implements OnInit {
+export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy {
   public totalItems: number = 0;
   public currentPage: number = 1;
   public columns: LogColumn[];
   public selectedColumns: LogColumn[];
   public tableData: any;
-  public responseData: any;
   public total: number = 0;
   public multiplier = 1;
   public maxSize: number = 10;
@@ -26,9 +25,31 @@ export class MonitorResultComponent implements OnInit {
   @Input() public searchSetting: SearchSetting;
   @Output() public addColumnValueEmitter = new EventEmitter();
 
+  @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
+  @ViewChild('columnTablePanel') columnTablePanel: any;
+
   constructor(private monitorService: MonitorService) { }
 
   ngOnInit() { }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  ngAfterViewInit() {
+    this.monitorService.initTableColumns().takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
+      this.columns = res;
+      var tempcolumns = [];
+      for (let data of this.columns) {
+        if (data["checked"]) {
+          tempcolumns.push(data);
+        }
+      }
+      this.selectedColumns = tempcolumns;
+    });
+    this.loadGraph();
+  }
 
   refresh() {
     this.loadGraph();
@@ -78,6 +99,11 @@ export class MonitorResultComponent implements OnInit {
         }
       }
     }
+  }
+
+  public setTopCount(value) {
+    this.searchSetting.topNumber = value;
+    this.loadGraph();
   }
 
   public pageChanged(event: any): void {

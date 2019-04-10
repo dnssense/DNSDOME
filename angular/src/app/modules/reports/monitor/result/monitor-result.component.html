@@ -5,7 +5,8 @@
         <div class="btn-group pull-left" style="margin-top: 3px;">
           <button class="btn btn-default" #actualTarget placement="auto" container="body" [outsideClick]="true"
             (onHidden)="changeColumns($event)" [popover]="columnTablePanel">
-            <span class="glyphicon glyphicon-th-list"></span>
+            <!-- <span class="glyphicon glyphicon-th-list"></span> -->
+            <span><i class="material-icons">{{'settings'}}</i></span>
           </button>
         </div>
       </div>
@@ -71,7 +72,7 @@
       <!-- class="panel-body {{loading?'opakkk':''}}" -->
       <div class="panel-body" *ngIf="!tableData || tableData.length == 0">
         <div class="alert alert-danger" #tableDivComponent>
-          <strong>{{ 'GLOBALS.DATANOTFOUND' | translate }}</strong>
+          <strong>{{ 'Data not found!' }}</strong>
         </div>
       </div>
     </div>

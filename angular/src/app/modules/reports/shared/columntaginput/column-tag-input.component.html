@@ -1,223 +1,101 @@
 <span class="input-group tagInputSpan" style="height: 30px">
   <span class="input-group-btn" style="height: 24px">
-    <button
-      class="btn btn-info"
-      (click)="showHideInputDiv($event)"
-      style="padding-top: 2px; padding-bottom: 2px"
-    >
+    <button class="btn btn-info" (click)="showHideInputDiv($event)" style="padding-top: 2px; padding-bottom: 2px">
       <i class="fa fa-plus"></i>
     </button>
   </span>
   <span>
-    <ul
-      class="col-md-12 col-xs-12  columnInputDiv "
-      (blur)="blur($event)"
-      dnd-droppable
-      (onDropSuccess)="dropSuccess($event)"
-    >
-      <li
-        class="tag"
-        *ngFor="let item of tags"
-        dnd-draggable
-        [dragEnabled]="true"
-        [dragData]="item"
-        (onDragSuccess)="dragSuccess($event)"
-      >
-        <span
-          class="pull-left"
-          (click)="selectInputTag($event, item); $event.stopPropagation()"
-        >
+    <ul class="col-md-12 col-xs-12  columnInputDiv " (blur)="blur($event)" dnd-droppable
+      (onDropSuccess)="dropSuccess($event)">
+      <li class="tag" *ngFor="let item of tags" dnd-draggable [dragEnabled]="true" [dragData]="item"
+        (onDragSuccess)="dragSuccess($event)">
+        <span class="pull-left" (click)="selectInputTag($event, item); $event.stopPropagation()">
           {{ item.field }}{{ item.operator
           }}{{ item.field == 'time' ? (item.value | dateFormat) : item.value }}
         </span>
-        <span
-          class="pull-right clickableCursor"
-          (click)="removeTag(item); $event.stopPropagation()"
-        >
+        <span class="pull-right clickableCursor" (click)="removeTag(item); $event.stopPropagation()">
           <i class="fa fa-times pull-right"></i>
         </span>
       </li>
       <li class="tag nopadding">
-        <div
-          #tagInput
-          (click)="showInputControl($event)"
-          class="col-md-12 {{
+        <div #tagInput (click)="showInputControl($event)" class="col-md-12 {{
             !inputCollapsed && !inputSelected
               ? 'inputExpanded'
               : 'inputCollapsed'
-          }}"
-        >
+          }}">
           <b style="font-size: 12px">
             {{ currentinputValue }}
           </b>
-          <i
-            class="fa fa-times pull-right"
-            (click)="closeTagInputDiv($event); $event.stopPropagation()"
-            style="font-size: 13px; color:#fff;cursor: pointer"
-          ></i>
+          <i class="fa fa-times pull-right" (click)="closeTagInputDiv($event); $event.stopPropagation()"
+            style="font-size: 13px; color:#fff;cursor: pointer"></i>
         </div>
-        <div
-          #inputElement
-          class="taginput-bottom-div  col-md-7"
-          [collapse]="inputCollapsed"
-          (blur)="blur($event)"
-        >
+        <div #inputElement class="taginput-bottom-div col-md-7" [collapse]="inputCollapsed" (blur)="blur($event)">
           <div class="input-group">
             <div class="input-group-btn" style="width: auto">
-              <select
-                #mainInputElement
-                class="form-control input-xs"
-                [(ngModel)]="currentColumn"
-                (click)="inputsChanged($event, true)"
-              >
+              <select #mainInputElement class="form-control input-xs" [(ngModel)]="currentColumn"
+                (click)="inputsChanged($event, true)">
                 <option *ngFor="let op of columns" value="{{ op.name }}">{{
                   op.beautyName
                 }}</option>
               </select>
             </div>
-            <div
-              class="input-group-btn"
-              style="width: auto;padding-right: 2px "
-            >
-              <select
-                id="operator"
-                class="form-control input-xs"
-                [(ngModel)]="currentOperator"
-                (click)="inputsChanged($event, false)"
-              >
+            <div class="input-group-btn" style="width: auto;padding-right: 2px ">
+              <select id="operator" class="form-control input-xs" [(ngModel)]="currentOperator"
+                (click)="inputsChanged($event, false)">
                 <option value="=">=</option>
                 <option value=">">></option>
                 <option value=">=">>=</option>
-                <option value="<"> <</option>
-                <option value="<="> <=</option>
-              </select>
+                <option value="<">
+                  <</option> <option value="<=">
+                    <=</option> </select> </div> <div class="input-group" style="width: auto"
+                      *ngIf="currentColumn == 'category'">
+                      <select #select tabindex="-1" aria-hidden="true"
+                        class="col-md-12 col-sm-12 col-xs-12 form-control" [(ngModel)]="currentInput">
+                        <option value="-1" disabled>Select A Category</option>
+                        <option *ngFor="let cat of mainCategories" label="{{cat.categoryName}}"
+                          value="{{cat.categoryName}}">
+                          {{cat.categoryName}}
+                        </option>
+                      </select>
             </div>
-            <div
-              class="input-group"
-              style="width: auto"
-              *ngIf="currentColumn == 'category'"
-            >
-              <select
-                #select
-                tabindex="-1"
-                aria-hidden="true"
-                class="col-md-12 col-sm-12 col-xs-12 form-control"
-                [(ngModel)]="currentInput"
-              >
-                <option value="-1" disabled>Select A Category</option>
-                <optgroup
-                  *ngFor="let cat of mainCategories"
-                  label="{{ cat.categoryNameEN }}"
-                >
-                  <option
-                    *ngFor="let a of categoriesMap.get(cat.id)"
-                    value="{{ a.categoryName }}"
-                  >
-                    {{ a.categoryNameEN }}</option
-                  >
-                </optgroup>
-              </select>
-            </div>
-            <div
-              class="input-group"
-              style="width: auto"
-              *ngIf="currentColumn == 'applicationName'"
-            >
-              <select
-                #select
-                tabindex="-1"
-                aria-hidden="true"
-                class="col-md-12 col-sm-12 col-xs-12 form-control"
-                [(ngModel)]="currentInput"
-              >
+            <div class="input-group" style="width: auto" *ngIf="currentColumn == 'applicationName'">
+              <select #select tabindex="-1" aria-hidden="true" class="col-md-12 col-sm-12 col-xs-12 form-control"
+                [(ngModel)]="currentInput">
                 <option value="-1" disabled>Select An Application</option>
-                <optgroup
-                  *ngFor="let cat of mainApplications"
-                  label="{{ cat.name }}"
-                >
-                  <option
-                    *ngFor="let a of applicationsMap.get(cat.id)"
-                    value="{{ a.name }}"
-                    >{{ a.name }}</option
-                  >
+                <optgroup *ngFor="let cat of mainApplications" label="{{ cat.name }}">
+                  <option *ngFor="let a of applicationsMap.get(cat.id)" value="{{ a.name }}">{{ a.name }}</option>
                 </optgroup>
               </select>
             </div>
-            <div
-              class="input-group"
-              style="width: auto"
-              *ngIf="currentColumn == 'action'"
-            >
-              <select
-                #select
-                tabindex="-1"
-                aria-hidden="true"
-                class="col-md-12 col-sm-12 col-xs-12 form-control"
-                [(ngModel)]="currentInput"
-                place
-              >
+            <div class="input-group" style="width: auto" *ngIf="currentColumn == 'action'">
+              <select #select tabindex="-1" aria-hidden="true" class="col-md-12 col-sm-12 col-xs-12 form-control"
+                [(ngModel)]="currentInput" place>
                 <option value="-1" disabled>Select An Action</option>
                 <option value="true">Allow</option>
                 <option value="false">Block</option>
               </select>
             </div>
-            <div
-              class="input-group"
-              style="width: auto"
-              *ngIf="
+            <div class="input-group" style="width: auto" *ngIf="
                 currentColumn == 'sourceIpCountryCode' ||
                 currentColumn == 'destinationIpCountryCode'
-              "
-            >
-              <select
-                #select
-                tabindex="-1"
-                aria-hidden="true"
-                class="col-md-12 col-sm-12 col-xs-12 form-control"
-                [(ngModel)]="currentInput"
-                place
-              >
+              ">
+              <select #select tabindex="-1" aria-hidden="true" class="col-md-12 col-sm-12 col-xs-12 form-control"
+                [(ngModel)]="currentInput" place>
                 <option value="-1" disabled>Select A Country</option>
                 <option value="00">Local Domain</option>
-                <option
-                  *ngFor="let country of countries"
-                  value="{{ country.code }}"
-                  >{{ country.name }}</option
-                >
+                <option *ngFor="let country of countries" value="{{ country.code }}">{{ country.name }}</option>
               </select>
             </div>
-            <div
-              class="input-group"
-              style="width: auto"
-              *ngIf="currentColumn == 'agentAlias'"
-            >
-              <select
-                #select
-                tabindex="-1"
-                aria-hidden="true"
-                class="col-md-12 col-sm-12 col-xs-12 form-control"
-                [(ngModel)]="currentInput"
-              >
+            <div class="input-group" style="width: auto" *ngIf="currentColumn == 'agentAlias'">
+              <select #select tabindex="-1" aria-hidden="true" class="col-md-12 col-sm-12 col-xs-12 form-control"
+                [(ngModel)]="currentInput">
                 <option value="-1" disabled>Select An Agent</option>
-                <option
-                  *ngFor="let agent of agents"
-                  value="{{ agent.agentAlias }}"
-                  >{{ agent.agentAlias }}</option
-                >
+                <option *ngFor="let agent of agents" value="{{ agent.agentAlias }}">{{ agent.agentAlias }}</option>
               </select>
             </div>
-            <div
-              class="input-group"
-              style="width: auto"
-              *ngIf="currentColumn == 'reasonType'"
-            >
-              <select
-                #select
-                tabindex="-1"
-                aria-hidden="true"
-                class="col-md-12 col-sm-12 col-xs-12 form-control"
-                [(ngModel)]="currentInput"
-              >
+            <div class="input-group" style="width: auto" *ngIf="currentColumn == 'reasonType'">
+              <select #select tabindex="-1" aria-hidden="true" class="col-md-12 col-sm-12 col-xs-12 form-control"
+                [(ngModel)]="currentInput">
                 <option value="category">Category</option>
                 <option value="application">Application</option>
                 <option value="bwlist">BlackList/Whitelist</option>
@@ -225,43 +103,21 @@
                 <option value="malformed">Malformed Query</option>
               </select>
             </div>
-            <div
-              class="input-group"
-              style="width: auto"
-              *ngIf="
+            <div class="input-group" style="width: auto" *ngIf="
                 currentColumn == 'sourceIp' || currentColumn == 'destinationIp'
-              "
-            >
-              <input
-                class="form-control"
-                [(ngModel)]="currentInput"
-                (click)="inputClicked($event)"
-                (change)="inputsChanged($event)"
-                (keyup.enter)="inputsChanged($event)"
-                placeholder="xxx.xxx.xxx.xxx"
-              />
+              ">
+              <input class="form-control" [(ngModel)]="currentInput" (click)="inputClicked($event)"
+                (change)="inputsChanged($event)" (keyup.enter)="inputsChanged($event)" placeholder="xxx.xxx.xxx.xxx" />
             </div>
-            <div
-              class="input-group"
-              style="width: auto"
-              *ngIf="currentColumn == 'time'"
-            >
-              <input
-                class="form-control"
-                value="{{
+            <div class="input-group" style="width: auto" *ngIf="currentColumn == 'time'">
+              <input class="form-control" value="{{
                   currentColumn == 'time'
                     ? (currentInput | dateFormat)
                     : currentInput
-                }}"
-                (click)="inputClicked($event)"
-                (change)="inputsChanged($event)"
-                (keyup.enter)="inputsChanged($event)"
-              />
+                }}" (click)="inputClicked($event)" (change)="inputsChanged($event)"
+                (keyup.enter)="inputsChanged($event)" />
             </div>
-            <div
-              class="input-group"
-              style="width: auto"
-              *ngIf="
+            <div class="input-group" style="width: auto" *ngIf="
                 currentColumn != 'agentAlias' &&
                 currentColumn != 'action' &&
                 currentColumn != 'reasonType' &&
@@ -272,20 +128,13 @@
                 currentColumn != 'destinationIpCountryCode' &&
                 currentColumn != 'sourceIp' &&
                 currentColumn != 'destinationIp'
-              "
-            >
-              <input
-                class="form-control"
-                [(ngModel)]="currentInput"
-                (click)="inputClicked($event)"
-                (keyup.enter)="inputsChanged($event)"
-              />
+              ">
+              <input class="form-control" [(ngModel)]="currentInput" (click)="inputClicked($event)"
+                (keyup.enter)="inputsChanged($event)" />
             </div>
-            <span
-              class="input-group-addon  btn btn-ok inputTagButtonDiv"
-              (click)="addTag($event)"
-            >
-              <span class="glyphicon glyphicon-ok " aria-hidden="true"></span>
+            <span class="input-group-addon  btn btn-ok inputTagButtonDiv" (click)="addTag($event)">
+              <!-- <span class="glyphicon glyphicon-ok " aria-hidden="true"></span> -->
+              <span><i class="material-icons">{{'done'}}</i></span>
             </span>
           </div>
         </div>

@@ -63,7 +63,9 @@
               "node_modules/gridstack/dist/gridstack.js",
               "node_modules/highcharts/js/highcharts.js",
               "node_modules/highcharts/js/modules/exporting.js",
-              "node_modules/flatpickr/dist/flatpickr.min.js"
+              "node_modules/flatpickr/dist/flatpickr.min.js",
+              "node_modules/webui-popover/dist/jquery.webui-popover.min.js",
+              "node_modules/select2/dist/js/select2.full.min.js"
             ]
           },
           "configurations": {

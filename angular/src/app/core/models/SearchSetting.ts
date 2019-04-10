@@ -1,6 +1,6 @@
-import {ColumnTagInput} from "../models/ColumnTagInput";
-import {ConfigItem} from "../models/ConfigItem";
-import {ScheduledReport} from "../models/ScheduledReport";
+import { ColumnTagInput } from "../models/ColumnTagInput";
+import { ConfigItem } from "../models/ConfigItem";
+import { ScheduledReport } from "../models/ScheduledReport";
 /**
  * Created by fatih on 03.08.2016.
  */
@@ -10,7 +10,7 @@ export class SearchSetting {
   public name: string = "";
   public refresh: number = -1;
   public dateInterval: string = "5";
-  public type: string = "dnssense";
+  public type: string = "roksit";
   public topNumber: number = 10;
   public query: string;
   public must: ColumnTagInput[] = [];
