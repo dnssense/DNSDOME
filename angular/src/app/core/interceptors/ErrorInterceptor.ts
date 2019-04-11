@@ -4,7 +4,6 @@ import { NotificationService } from '../services/notification.service';
 import { SpinnerService } from '../services/spinner.service';
 import { TranslatorService } from '../services/translator.service';
 
-
 // errors-handler.ts
 @Injectable()
 export class ErrorInterceptor implements ErrorHandler {
@@ -14,40 +13,30 @@ export class ErrorInterceptor implements ErrorHandler {
   ) { }
 
   handleError(error: Error | HttpErrorResponse) {
-
-
     const notificationService = this.injector.get(NotificationService);
     const spinnerService = this.injector.get(SpinnerService);
     spinnerService.hide();
-    const translatorService=this.injector.get(TranslatorService);
+    const translatorService = this.injector.get(TranslatorService);
     if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
       if (!navigator.onLine) {
         notificationService.danger('No Internet Connection');
       } else {
-
-
-
         // Handle Http Error (error.status === 403, 404...)
-        const status=error.status;
-        if(error.error.code){
+        const status = error.status;
+        if (error.error.code) {
+          let message = translatorService.translate(error.error.code);
+          notificationService.error(`${status} - ${message}`);
 
-          let message=translatorService.translate(error.error.code);
-        notificationService.error(`${status} - ${message}`);
-
-        }else{
-
-
-          let message=translatorService.translate(error.statusText);
-        notificationService.error(`${status} - ${message}`);
+        } else {
+          let message = translatorService.translate(error.statusText);
+          notificationService.error(`${status} - ${message}`);
         }
-
       }
     } else {
-
-        const message=translatorService.translate(error.message);
-        notificationService.error(message);
-      }
+      const message = translatorService.translate(error.message);
+      notificationService.error(message);
+    }
     // Log the error anyway
     //console.error(error.name);
   }
