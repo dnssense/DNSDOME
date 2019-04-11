@@ -8,7 +8,7 @@ import { map, catchError, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Session } from '../models/Session';
 import { LoggerService } from './logger.service';
-import { AuthHttp, JwtHelper, tokenNotExpired } from 'angular2-jwt';
+import { JwtHelper } from 'angular2-jwt';
 import { SignupBean } from '../models/SignupBean';
 import { OperationResult } from '../models/OperationResult';
 import { Role, RestRole, RestRight, RestUserRoleRight } from '../models/Role';
@@ -102,9 +102,7 @@ export class AuthenticationService {
 
   getCurrentUserRoles(): Observable<Session> {
 
-
     return this.http.get<RestUserRoleRight>(this.userRole).pipe(map((x: RestUserRoleRight) => {
-
       // TODO: buranın ciddi sorunları var.
       x.roles.forEach((y: RestRole) => {
         const role = new Role();
@@ -161,8 +159,6 @@ export class AuthenticationService {
         }));
   }
 
-
-
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
     return this.http.
@@ -182,10 +178,8 @@ export class AuthenticationService {
     return httpOptions;
   }
 
-
-
   login(email: string, pass: string): Observable<Session> {
-
+    debugger;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -193,7 +187,6 @@ export class AuthenticationService {
       })
     };
     const body = encodeURI('grant_type=password&username=' + email + '&password=' + pass);
-
 
     return this.http.post<Session>(this.loginUrl, body, httpOptions)
       .pipe(mergeMap((res: any) => {
@@ -203,13 +196,9 @@ export class AuthenticationService {
         this.currentSession.refreshToken = res.refreshToken;
         return this.getCurrentUser();
       }), catchError(err => {
-
         this.currentSession = null;
         throw err;
-
       }));
-
-
   }
 
   clear() {
@@ -219,26 +208,20 @@ export class AuthenticationService {
   }
 
   logout() {
-
     this.clear();
-
     this.router.navigateByUrl('/login');
-
-
   }
 
   forgotPassword(signupBean: SignupBean): Observable<OperationResult> {
-
-
-    return this.http.post<OperationResult>(this._forgotPasswordSendURL, JSON.stringify(signupBean, null, ' '), this.getHttpOptions())
+    return this.http.post<OperationResult>(this._forgotPasswordSendURL, signupBean, this.getHttpOptions())
       .map(res => res);
   }
 
-
   forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {
-
     return this.http.post<any>(this._forgotPasswordChangeURL,
       JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions())
 
   }
+
+
 }
