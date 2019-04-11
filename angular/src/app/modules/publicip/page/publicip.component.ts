@@ -60,7 +60,7 @@ export class PublicipComponent implements OnInit {
   constructor(private alertService: AlertService, private notification: NotificationService, private bwService: BlackWhiteListService,
     private formBuilder: FormBuilder, private apService: ApplicationProfilesService, private dpService: DomainProfilesService,
     private publicIpService: PublicIPService) {
-   
+
     this.getPublicIpsData();
 
     this.publicIpForm = this.formBuilder.group({
@@ -76,7 +76,6 @@ export class PublicipComponent implements OnInit {
     this.publicIpService.getPublicIPs().subscribe(data => {
       this.publicIps = data;
       this.publicIpsFiltered = data;
-
     });
   }
 
@@ -105,7 +104,7 @@ export class PublicipComponent implements OnInit {
       }
     });
   }
- 
+
 
   updateApplicationProfilelist() {
     let systemProfiles = new Array();
@@ -200,7 +199,7 @@ export class PublicipComponent implements OnInit {
       }
 
       if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
-        
+
         let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
         let secondOclet = Number(secondOcletStr);
         if (secondOclet >= 16 && secondOclet <= 31) {
@@ -245,7 +244,7 @@ export class PublicipComponent implements OnInit {
 
     $('#publicIpPanel').toggle("slide", { direction: "left" }, 600);
     $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
- 
+
   }
 
   showEditWizard(id: string) {
@@ -272,7 +271,7 @@ export class PublicipComponent implements OnInit {
 
     $('#publicIpPanel').toggle("slide", { direction: "left" }, 600);
     $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
- 
+
 
   }
 
@@ -280,7 +279,7 @@ export class PublicipComponent implements OnInit {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
       res => {
         if (res) {
-          this.publicIpService.getPublicIPs().subscribe(data => { this.publicIps = data; });
+          this.getPublicIpsData();
           $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
           $('#publicIpPanel').toggle("slide", { direction: "left" }, 1000);
         }
@@ -320,7 +319,7 @@ export class PublicipComponent implements OnInit {
       res => {
         if (res.status == 200) {
           this.alertService.alertSuccessMessage("Operation Successful", "Public IP successfully saved.");
-          this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
+          this.getPublicIpsData();
           $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
           $('#publicIpPanel').toggle("slide", { direction: "left" }, 1000);
         } else {
@@ -337,7 +336,7 @@ export class PublicipComponent implements OnInit {
           this.publicIpService.delete(this.publicIps.find(p => p.id == id)).subscribe(res => {
             if (res.status == 200) {
               this.alertService.alertSuccessMessage("Operation Successful", "Public IP successfully Deleted.");
-              this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
+              this.getPublicIpsData();
             } else {
               this.notification.error("Operation Failed! " + res.message);
             }
@@ -379,7 +378,7 @@ export class PublicipComponent implements OnInit {
     const cname = 'ip' + index;
     this.ipList.splice(index, 1);
     this.publicIpForm.controls[cname].clearValidators();
-    this.publicIpForm.controls[cname].updateValueAndValidity();  
+    this.publicIpForm.controls[cname].updateValueAndValidity();
   }
 
   ipSplit1: String[];
@@ -389,7 +388,7 @@ export class PublicipComponent implements OnInit {
   }
 
   selectFile($event) {
-    
+
     var inputValue = $event.target;
     let file = inputValue.files[0];
     let reader = new FileReader();

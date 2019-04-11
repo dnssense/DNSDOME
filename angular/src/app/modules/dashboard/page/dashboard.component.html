@@ -15,7 +15,7 @@
             </div>
             <p class="card-category"><strong>Total Hit Count</strong> </p>
             <h3 class="card-title">
-              {{elasticData?.doc_count}}
+              {{elasticData?.doc_count | number}}
             </h3>
           </div>
           <div class="card-footer">
@@ -28,16 +28,15 @@
       </div>
       <div class="col-md-3">
         <div class="card card-stats">
-          <div class="card-header card-header-warning card-header-icon">
+          <div class="card-header card-header-warning card-header-icon mb-0">
             <div class="card-icon dashboardIcon">
               <i class="material-icons">date_range</i>
             </div>
-            <p class="card-category">Domain/Subdomain/IP</p>
-            <h3 class="card-title">
-              <small>{{elasticData?.unique_domain}}/{{elasticData?.unique_subdomain}}/{{elasticData?.unique_destip}}</small>
-            </h3>
+            <h5 class="card-title">Unique Domain Count: <strong>{{elasticData?.unique_domain| number}}</strong></h5>
+            <h5 class="card-title">Unique Subdomain Count: <strong>{{elasticData?.unique_subdomain| number}}</strong></h5>
+            <h5 class="card-title">Unique IP Count: <strong>{{elasticData?.unique_destip| number}}</strong></h5>
           </div>
-          <div class="card-footer">
+          <div class="card-footer mt-1">
             <div class="stats">
               <i class="material-icons text-warning">navigate_next</i>
               <a href="#pablo">Detaylara Git</a>
@@ -52,7 +51,7 @@
               <i class="material-icons">person</i>
             </div>
             <p class="card-category">DGA Domain Count</p>
-            <h3 class="card-title">{{elasticData?.dgaDomain}}</h3>
+            <h3 class="card-title">{{elasticData?.unique_destip}}</h3>
           </div>
           <div class="card-footer">
             <div class="stats">
@@ -69,7 +68,7 @@
               <i class="material-icons">signal_cellular_alt</i>
             </div>
             <p class="card-category">Top Blockeds Count</p>
-            <h3 class="card-title">{{elasticData?.topBlocked}}</h3>
+            <h3 class="card-title">{{elasticData?.unique_srcip | number }}</h3>
           </div>
           <div class="card-footer">
             <div class="stats">
