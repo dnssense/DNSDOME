@@ -23,7 +23,6 @@ export class DashboardComponent implements OnInit {
   constructor(private configService: ConfigService, private http: HttpClient, private dashboardService: DashBoardService,
     private auth: AuthenticationService, private datePipe: DatePipe) {
 
-
     this.tableData3 = {
       headerRow: ['Domain', 'Category'],
       dataRows: [
@@ -38,25 +37,21 @@ export class DashboardComponent implements OnInit {
 
     this.elasticData = new ElasticDashboardResponse();
 
-
-    let docId = '126_20190406';// this.auth.currentSession.currentUser.companyId + '_' + this.datePipe.transform(Date.now(), 'yyyyMMdd');
-    
-
+    let docId = this.auth.currentSession.currentUser.companyId + '_20190405';// + this.datePipe.transform(Date.now(), 'yyyyMMdd');
+    //'126_20190406';// 
     this.dashboardService.getDailyCompanySummary(docId).subscribe(res => {
       this.elasticData = res;
+      console.log(res);
+      
       this.createConnectedUserChart();
       this.createPieCharts();
     });
 
-    this.dashboardService.getDailyDomainSummary(docId).subscribe(res=> console.log(res));
-    this.dashboardService.getDailySummary(docId).subscribe(res=> console.log(res));
-    this.dashboardService.getHourlyCompanySummary(docId).subscribe(res=> console.log(res));
+     //this.dashboardService.getWeeklyCompanySummary('uiebiua.me_20190313').subscribe(res=> console.log(res));
 
   }
 
   ngOnInit(): void {
-
-
     let values: Map<string, number> = new Map();
     values.set('ru', 234);
     values.set('ca', 154);
