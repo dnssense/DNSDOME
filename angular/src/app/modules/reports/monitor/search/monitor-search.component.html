@@ -3,22 +3,31 @@
     <form class="form-horizontal card">
       <div class="col-md-12">
         <div class="row mt-2 mb-2">
-          <div class="col-md-12">
+          <div class="col-md-1 text-right" style="max-width: 100px;">
+              <label class="col-form-label" >AND</label>           
+          </div>
+          <div class="col-md-11" style="margin-left: -30px;">
             <app-column-tag-input [columns]="columns" [tags]="searchSetting.must" #must
               [mainCategories]="mainCategories" [agents]="agents" [zoneName]="should"
               [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
           </div>
         </div>
         <div class="row mt-2 mb-2">
-          <div class="col-md-12">
+            <div class="col-md-1 text-right" style="max-width: 100px;">
+                <label class="col-form-label">AND NOT</label>           
+            </div>
+            <div class="col-md-11" style="margin-left: -30px;">
             <app-column-tag-input [columns]="columns" [tags]="searchSetting.mustnot" #mustNot
               [mainCategories]="mainCategories" [agents]="agents" [zoneName]="should"
               [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
           </div>
         </div>
         <div class="row mt-2 mb-2">
-          <div class="col-md-12">
-            <app-column-tag-input [columns]="columns" [tags]="searchSetting.should" #should
+            <div class="col-md-1 text-right" style="max-width: 100px;">
+                <label class="col-form-label">OR</label>           
+            </div>
+            <div class="col-md-11" style="margin-left: -30px;">
+            <app-column-tag-input [columns]="columns" [tags]="searchSetting.should" #should 
               [mainCategories]="mainCategories" [agents]="agents" [zoneName]="should"
               [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
           </div>
