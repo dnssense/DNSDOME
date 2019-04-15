@@ -35,6 +35,8 @@ li.tag {
   margin-top: 1px;
   padding-top: 3px;
   line-height: 1.2;
+  min-height: 28px;
+  border-radius: 3px;
 }
 
 li.tag.nopadding {
@@ -46,12 +48,14 @@ li.tag.nopadding {
 .taginput-bottom-div {
   z-index: 999;
   position: absolute;
-  font-size: 11px !important;
+  font-size: 12px !important;
   background: #5bc0de;
   padding: 7px 2px;
   border: 1px solid #ccc;
   width: 350px;
   height: 25px;
+  min-width: 290px;
+  border-radius: 3px;
 }
 
 .tagInputSpan .input-group-btn {
@@ -60,7 +64,7 @@ li.tag.nopadding {
 
 .taginput-bottom-div select {
   padding: 3px 2px;
-  font-size: 11px;
+  font-size: 15px;
   line-height: 15px;
   height: 22px !important;
 }
@@ -75,6 +79,7 @@ li.tag.nopadding {
 .columnInputDiv {
   font-size: 12px !important;
   margin-bottom: 0px !important;
+  border-radius: 3px;
 }
 
 .inputTagButtonDiv {
@@ -95,7 +100,6 @@ li.tag.nopadding {
 }
 
 .taginput-bottom-div .btn-ok {
-  font-size: 16px !important;
   padding: 2px 5px !important;
   background-color: #2aabd2;
   color: #fff;
