@@ -17,15 +17,23 @@ import { MonitorSearchComponent } from './monitor/search/monitor-search.componen
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ColumnTagInputComponent } from './shared/columntaginput/column-tag-input.component';
 import { TextLimitComponent } from './shared/textlimit/text-limit.component';
+import { CustomReportSearchComponent } from './customreport/search/customreport-search.component';
+import { CustomReportResultComponent } from './customreport/result/customreport-result.component';
+import { CustomReportResultColumnComponent } from './customreport/result/column/customreport-result-column.component';
+import { HistogramComponent } from './shared/histogram/histogram.component';
 
 
 @NgModule({
   declarations: [
     CustomReportComponent,
+    CustomReportSearchComponent,
+    CustomReportResultComponent,
+    CustomReportResultColumnComponent,
     MonitorComponent,
     MonitorSearchComponent,
     MonitorResultComponent,
     ColumnTagInputComponent,
+    HistogramComponent,
     TextLimitComponent
   ],
   imports: [

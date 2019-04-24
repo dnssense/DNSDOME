@@ -115,7 +115,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login() {
-    debugger;
+    //debugger;
     if (this.loginForm.valid) {
 
       this.authService.prelogin(this.email, this.password).subscribe(
@@ -171,7 +171,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.isConfirmTimeEnded = false;
       this.endTime = new Date();
       this.endTime.setMinutes(new Date().getMinutes() + 2);
-     
+
 
     });
 

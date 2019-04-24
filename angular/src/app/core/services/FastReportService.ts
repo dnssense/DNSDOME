@@ -131,7 +131,7 @@ export class FastReportService {
 
     return this.http
       .post(this._histogramURL, body, options)
-      .map((res: Response) => res.json())
+      .map((res: Response) => res)
       .catch((response: any, caught: any) => {
         this.errorService.handleAuthenticatedError(response);
         return Observable.throw(response);

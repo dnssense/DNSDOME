@@ -1,0 +1,47 @@
+import { OnInit, OnDestroy, Component, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
+
+@Component({
+  selector: 'app-customreport-result-column',
+  templateUrl: 'customreport-result-column.component.html',
+  styleUrls: ['customreport-result-column.component.sass'],
+  providers: [CountryPipe]
+})
+export class CustomReportResultColumnComponent implements OnInit {
+  elementRef: ElementRef;
+  public data: string = "";
+
+  @Input() public value;
+  @Input() public columnName;
+  @Output() public addColumnValueEmitter = new EventEmitter();
+
+  constructor(private countryPipe: CountryPipe) { }
+
+  ngOnInit(): void {
+    if (this.columnName != 'sourceIpCountryCode' && this.columnName != 'destinationIpCountryCode' && this.columnName != 'action') {
+      this.data = this.value;
+    } else if (this.columnName == 'sourceIpCountryCode' || this.columnName == 'destinationIpCountryCode') {
+      if (this.value != null) {
+        let imageName = this.value.toLowerCase() == "local" ? "tr" : this.value.toLowerCase();
+        if (this.value != 'Others') {
+          this.data = "<img src='/assets/images/country/flags/" + imageName + ".png' class='flagImage' alt='" + this.value + "' title='" + this.value + "'/>" +
+            "&nbsp;" + (this.value == "00" ? "Local Domain" : this.countryPipe.transform(this.value));
+        } else {
+          this.data = this.value;
+        }
+      } else {
+        this.data = this.value;
+      }
+    } else if (this.columnName == 'action') {
+      this.data = this.value == true ? "Allow" : "Block";
+    }
+  }
+
+  public addColumnValueIntoSelectedValues(column: string, value: any) {
+    if (value == 'Others') {
+      return;
+    }
+    this.addColumnValueEmitter.emit({ column: column, data: value }); // How to pass the params event and ui...?
+  }
+
+}

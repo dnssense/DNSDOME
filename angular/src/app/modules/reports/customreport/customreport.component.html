@@ -1,89 +1,27 @@
-<div class="main-content">
-  <div class="container-fluid col-md-11">
+<div class="main-content" #component>
+  <div class="container-fluid">
     <div class="row">
-      <form [formGroup]="searchForm" class="form-horizontal card" (ngSubmit)="search()">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-4">
-              <mat-form-field class="example-full-width">
-                <input matInput placeholder="Query" formControlName="query" [(ngModel)]="query" type="text">
-              </mat-form-field>
-            </div>
-            <div class="col-md-4">
-              <mat-form-field>
-                <mat-select placeholder="Time Interval" formControlName="time" [(ngModel)]="time">
-                  <mat-option value="5">Last 5 Minutes</mat-option>
-                  <mat-option value="10">Last 10 Minutes</mat-option>
-                  <mat-option value="15">Last 15 Minutes</mat-option>
-                  <mat-option value="30">Last 30 Minutes</mat-option>
-                  <mat-option value="60">Last 1 Hours</mat-option>
-                  <mat-option value="120">Last 2 Hours</mat-option>
-                  <mat-option value="180">Last 3 Hours</mat-option>
-                  <mat-option value="360">Last 6 Hours</mat-option>
-                  <mat-option value="720">Last 12 Hours</mat-option>
-                  <mat-option value="1440">Last 24 Hours</mat-option>
-                  <mat-option value="2880">Last 2 Days</mat-option>
-                  <mat-option value="10080">Last 7 Days</mat-option>
-                  <mat-option value="43200">Last 30 Days</mat-option>
-                  <mat-option value="-1">Custom Range</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div class="col-md-4"> 
-              <mat-form-field>
-                <mat-select placeholder="Refresh Off" formControlName="refreshOff" [(ngModel)]="refreshOff">
-                  <mat-option value="5">Last 5 Seconds</mat-option>
-                  <mat-option value="15">Last 15 Seconds</mat-option>
-                  <mat-option value="30">Last 30 Seconds</mat-option>
-                  <mat-option value="60">Last 60 Seconds</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <mat-form-field class="example-full-width">
-                <input matInput placeholder="Must" type="text">
-              </mat-form-field>
-            </div>
-            <div class="col-md-6">
-              <mat-form-field class="example-full-width">
-                <input matInput placeholder="Must Not" type="text">
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <mat-form-field class="example-full-width">
-                <input matInput placeholder="Should" type="text">
-              </mat-form-field>
-            </div>
-            <div class="col-md-2">
-              <legend>Top</legend>
-              <nouislider [connect]="true" formControlName="slider" [min]="0" [max]="500" [step]="10" [(ngModel)]="topSlider"
-                [tooltips]="true" class="slider ml-3" >
-              </nouislider>
-            </div>
-            <div class="col-md-2">
-              <mat-form-field>
-                <mat-select placeholder="Type" formControlName="type">
-                  <mat-option value="dns">DNS</mat-option>
-                  <mat-option value="15">Block Page</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div class="col-md-2 text-right">
-              <button mat-raised-button class="btn btn-info" type="submit">Search</button>
-            </div>
-          </div>
-        </div>
-      </form>
+      <div class="col">
+        <app-customreport-search [searchSetting]="searchSetting" [columns]="columns" (searchEmitter)="search()"
+          (searchSettingEmitter)="updateSearchSetting($event)">
+        </app-customreport-search>
+      </div>
     </div>
-
-    
-
-
-
-
+    <div class="row">
+      <div class="col">
+        <div *ngIf="histogramIsActive">
+          <app-histogram [searchSetting]="searchSetting" (searchEmitter)="search($event)">
+          </app-histogram>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <app-customreport-result [data]="data" [searchSetting]="searchSetting" #tableComponent
+          (addColumnValueEmitter)="addValuesIntoSelected($event)" [multiplier]="multiplier" [total]="total"
+          (searchEmitter)="search()">
+        </app-customreport-result>
+      </div>
+    </div>
   </div>
 </div>
