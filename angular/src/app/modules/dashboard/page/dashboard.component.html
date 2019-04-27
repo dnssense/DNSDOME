@@ -15,14 +15,10 @@
             </div>
             <p class="card-category"><strong>Total Hit Count</strong> </p>
             <h3 class="card-title">
-              {{elasticData?.doc_count | number}}
+              {{elasticData[0]?.total_hit | number}}
             </h3>
           </div>
           <div class="card-footer">
-            <div class="stats">
-              <i class="material-icons text-warning">navigate_next</i>
-              <a href="#pablo">Detaylara Git</a>
-            </div>
           </div>
         </div>
       </div>
@@ -32,15 +28,11 @@
             <div class="card-icon dashboardIcon">
               <i class="material-icons">date_range</i>
             </div>
-            <h5 class="card-title">Unique Domain Count: <strong>{{elasticData?.unique_domain| number}}</strong></h5>
-            <h5 class="card-title">Unique Subdomain Count: <strong>{{elasticData?.unique_subdomain| number}}</strong></h5>
-            <h5 class="card-title">Unique IP Count: <strong>{{elasticData?.unique_destip| number}}</strong></h5>
+            <h5 class="card-title">Unique Domain Count: <strong>{{elasticData[0]?.unique_domain| number}}</strong></h5>
+            <h5 class="card-title">Unique Subdomain Count: <strong>{{elasticData[0]?.unique_subdomain| number}}</strong></h5>
+            <h5 class="card-title">Unique IP Count: <strong>{{elasticData[0]?.unique_destip| number}}</strong></h5>
           </div>
           <div class="card-footer mt-1">
-            <div class="stats">
-              <i class="material-icons text-warning">navigate_next</i>
-              <a href="#pablo">Detaylara Git</a>
-            </div>
           </div>
         </div>
       </div>
@@ -51,13 +43,9 @@
               <i class="material-icons">person</i>
             </div>
             <p class="card-category">DGA Domain Count</p>
-            <h3 class="card-title">{{elasticData?.unique_destip}}</h3>
+            <h3 class="card-title">----</h3>
           </div>
           <div class="card-footer">
-            <div class="stats">
-              <i class="material-icons text-warning">navigate_next</i>
-              <a href="#pablo">Detaylara Git</a>
-            </div>
           </div>
         </div>
       </div>
@@ -68,13 +56,9 @@
               <i class="material-icons">signal_cellular_alt</i>
             </div>
             <p class="card-category">Top Blockeds Count</p>
-            <h3 class="card-title">{{elasticData?.unique_srcip | number }}</h3>
+            <h3 class="card-title">{{todayTotalBlockCount | number }}</h3>
           </div>
-          <div class="card-footer">
-            <div class="stats">
-              <i class="material-icons text-warning">navigate_next</i>
-              <a href="#pablo">Detaylara Git</a>
-            </div>
+          <div class="card-footer">            
           </div>
         </div>
       </div>
@@ -86,12 +70,20 @@
             <div class="card-icon dashboardIcon">
               <i class="material-icons">timeline</i>
             </div>
-            <h4 class="card-title">Total Hit & Blocked
-              <small> - Last Day</small>
+            <h4 class="card-title">Total Hit
+              <small> - Average vs Today</small>
             </h4>
           </div>
           <div class="card-body">
             <div id="colouredRoundedLineChart" class="ct-chart"></div>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-md-12">
+                <i class="fa fa-circle text-danger"></i> Today
+                <i class="fa fa-circle text-info"></i> Averages
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -101,12 +93,20 @@
             <div class="card-icon dashboardIcon">
               <i class="material-icons">timeline</i>
             </div>
-            <h4 class="card-title">Total Hit & Blocked
-              <small> - Last Day</small>
+            <h4 class="card-title">Total Blocked
+              <small> - Average vs Today</small>
             </h4>
           </div>
           <div class="card-body">
             <div id="colouredRoundedLineChart2" class="ct-chart"></div>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-md-12">
+                <i class="fa fa-circle text-danger"></i> Today
+                <i class="fa fa-circle text-info"></i> Averages
+              </div>
+            </div>
           </div>
         </div>
       </div>

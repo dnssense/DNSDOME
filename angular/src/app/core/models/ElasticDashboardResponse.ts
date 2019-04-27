@@ -1,13 +1,21 @@
+import { DashboardAverages } from './DashboardAverages';
+import { DashboardDeltas } from './DashboardDeltas';
+import { DashboardTimeRange } from './DashboardTimeRange';
+
 export class ElasticDashboardResponse {
     companyId: number;
     date: Date;
-    doc_count: number=0;
-    unique_domain: number=0;
-    unique_subdomain: number=0;
-    unique_destip: number=0;
-    unique_srcip: number=0;
-    unique_user: number=0;
-    unique_mac: number=0;
-    domains: any;
-    src_countries: any;
+    allowed_count: number;
+    blocked_count: number;
+    averages: DashboardAverages;
+    delta: DashboardDeltas;
+    firstly_seen_domains: any;
+    total_hit: number;
+    unique_destip: number;
+    unique_domain: number;
+    unique_mac: number;
+    unique_srcip: number;
+    unique_subdomain: number;
+    unique_user: number;
+    time_range: DashboardTimeRange;
 }

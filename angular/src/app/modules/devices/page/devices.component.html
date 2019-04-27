@@ -16,9 +16,7 @@
                   <thead class="text-warning">
                     <tr>
                       <th>Box Headers</th>
-                      <th>Domain</th>
-                      <th>Application</th>
-                      <th>Black/White</th>
+                      <th>Security Profile</th>
                       <th>Message</th>
                       <th>Logo</th>
                       <th>Operation</th>
@@ -28,8 +26,6 @@
                     <tr *ngFor="let box of boxes">
                       <td>{{box.host}}</td>
                       <td>{{box?.location?.profile?.name}}</td>
-                      <td>{{box?.location?.appUserProfile?.profileName}}</td>
-                      <td>{{box?.location?.bwList?.name}}</td>
                       <td>{{box.location?.blockMessage?box.location.blockMessage:"---"}}</td>
                       <td>
                         <ng-container *ngIf="!box.logo; else elseTemplate">
@@ -49,7 +45,7 @@
                         <ng-template #elseTemplate>
                           <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
                             mattooltip="Edit item" (click)="showBoxEditWizard(box.id)">
-                            <i class="material-icons">edit</i>
+                            <i class="material-icons">settings</i>
                           </button>
                           <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
                             mattooltip="Delete item" (click)="deleteBox(box.id)">
@@ -80,16 +76,33 @@
                   <thead class="text-warning">
                     <tr>
                       <th>Name</th>
+                      <th class="text-left">Security Profile</th>
                       <th class="text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let agent of unregistered">
                       <td>{{agent.agentAlias}}</td>
+                      <td class="text-left">
+                        <mat-form-field>
+                        <mat-select placeholder="Security Profiles"
+                          (selectionChange)="securityProfileChanged(agent.agentAlias, $event.value)">
+                          <mat-option [value]="1">Profile 1</mat-option>
+                          <mat-option [value]="2">Profile 2</mat-option>
+                          <mat-option [value]="3">Profile 3</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      </td>
                       <td class="td-actions text-right">
-                        <button mat-raised-button type="button" class="btn btn-success"
+                        <button mat-raised-button type="button" class="btn btn-warning"
                           (click)="showNewWizard(agent.agentCode)">
-                          <i class="material-icons">add_circle_outline</i>
+                          <i class="material-icons">settings</i> New Profile
+                        </button>
+                        <button mat-raised-button type="button" class="btn btn-success ml-1"
+                          [disabled]="!isNewProfileSelected"
+                          [ngClass]="{'btn-success' : isNewProfileSelected, 'btn-default' : !isNewProfileSelected}"
+                          (click)="showNewWizard(agent.agentCode)">
+                          <i class="material-icons">check</i>Save
                         </button>
                       </td>
                     </tr>
@@ -113,16 +126,21 @@
                   <thead class="text-warning">
                     <tr>
                       <th>Name</th>
+                      <th class="text-left">Security Profile</th>
                       <th class="text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let agent of registered">
                       <td>{{agent.agentAlias}}</td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" class="btn btn-info" (click)="showEditWizard(agent.id)">
-                          <i class="material-icons">edit</i>
+                      <td class="text-left">
+                        <button mat-raised-button type="button" class="btn btn-info btn-sm btn-just-icon" (click)="showEditWizard(agent.id)">
+                          <i class="material-icons">settings</i>
                         </button>
+                        Profile-{{agent.agentAlias}}
+                      </td>
+                      <td class="td-actions text-right">
+
                         <button mat-raised-button type="button" class="btn btn-danger mr-1"
                           (click)="deleteAgent(agent)">
                           <i class="material-icons">close</i>

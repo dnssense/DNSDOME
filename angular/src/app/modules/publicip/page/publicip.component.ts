@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { ApplicationProfile } from 'src/app/core/models/ApplicationProfile';
@@ -10,6 +10,10 @@ import { DomainProfilesService } from 'src/app/core/services/DomainProfilesServi
 import { BlackWhiteListService } from 'src/app/core/services/BlackWhiteListService';
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
 import { PublicIP } from 'src/app/core/models/PublicIP';
+import { MobileCategory } from 'src/app/core/models/MobileCategory';
+import { AgentResponse } from 'src/app/core/models/AgentResponse';
+import { CollectiveBlockRequest } from 'src/app/core/models/CollectiveBlockRequest';
+import { AgentService } from 'src/app/core/services/agent.service';
 
 declare var $: any;
 
@@ -18,6 +22,9 @@ export class IpNumber {
   range: number = 0;
 }
 
+declare interface JsonIP {
+  ip: string
+}
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
@@ -29,11 +36,13 @@ declare interface DataTable {
   templateUrl: './publicip.component.html',
   styleUrls: ['./publicip.component.sass']
 })
-export class PublicipComponent implements OnInit {
+export class PublicipComponent implements OnInit, AfterViewInit {
+
   ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
   publicIps: PublicIP[];
   publicIpsFiltered: PublicIP[];
   publicIpForm: FormGroup;
+  publicIpFormWithProfile: FormGroup;
   agentName: string;
   ipList: IpNumber[];
   blockMessage: string;
@@ -49,21 +58,36 @@ export class PublicipComponent implements OnInit {
   bwList: BWList[];
   userBWList: BWList[];
   systemBWList: BWList[];
-  ipRanges: Number[] = [24, 25, 26, 27, 28, 29, 30, 32];
+  ipRanges: Number[] = [32, 30, 29, 28, 27, 26, 25, 24];
   selectedIp: PublicIP = new PublicIP();
   ipType: string = 'staticIp';
   dnsFqdn: string;
   dataTable: DataTable = {} as DataTable;
   dataTableRows: string[][] = [];
   searchKey: string;
+  isNewProfileSelected: boolean = false;
+
+  //Silinecek
+  mobileCategories: MobileCategory[];
+  notUpdatedCategories: MobileCategory[] = [];
+  device: AgentResponse;
+  deviceForm: FormGroup;
+  collectiveBlockReq: CollectiveBlockRequest = new CollectiveBlockRequest();
 
   constructor(private alertService: AlertService, private notification: NotificationService, private bwService: BlackWhiteListService,
     private formBuilder: FormBuilder, private apService: ApplicationProfilesService, private dpService: DomainProfilesService,
-    private publicIpService: PublicIPService) {
+    private publicIpService: PublicIPService, private agentService: AgentService) {
 
     this.getPublicIpsData();
 
     this.publicIpForm = this.formBuilder.group({
+      "agentName": ["", [Validators.required]],
+      "blockMessage": ["", [Validators.required]],
+      "dnsFqdn": ["", []],
+      "ip0": ["", [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]]
+    });
+    
+    this.publicIpFormWithProfile = this.formBuilder.group({
       "agentName": ["", [Validators.required]],
       "blockMessage": ["", [Validators.required]],
       "dnsFqdn": ["", []],
@@ -79,7 +103,67 @@ export class PublicipComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+
+    $(window).resize(() => {
+      $('.card-wizard').each(function () {
+
+        const $wizard = $(this);
+        const index = 0; // $wizard.bootstrapWizard('currentIndex');
+        let $total = $wizard.find('.nav li').length;
+        let $li_width = 100 / $total;
+
+        let total_steps = $wizard.find('.nav li').length;
+        let move_distance = $wizard.width() / total_steps;
+        let index_temp = index;
+        let vertical_level = 0;
+
+        let mobile_device = $(document).width() < 600 && $total > 3;
+
+        if (mobile_device) {
+          move_distance = $wizard.width() / 2;
+          index_temp = index % 2;
+          $li_width = 50;
+        }
+
+        $wizard.find('.nav li').css('width', $li_width + '%');
+
+        let step_width = move_distance;
+        move_distance = move_distance * index_temp;
+
+        let $current = index + 1;
+
+        if ($current == 1 || (mobile_device == true && (index % 2 == 0))) {
+          move_distance -= 8;
+        } else if ($current == total_steps || (mobile_device == true && (index % 2 == 1))) {
+          move_distance += 8;
+        }
+
+        if (mobile_device) {
+          let x: any = index / 2;
+          vertical_level = parseInt(x);
+          vertical_level = vertical_level * 38;
+        }
+
+        $wizard.find('.moving-tab').css('width', step_width);
+        $('.moving-tab').css({
+          'transform': 'translate3d(' + move_distance + 'px, ' + vertical_level + 'px, 0)',
+          'transition': 'all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)'
+        });
+
+        $('.moving-tab').css({
+          'transition': 'transform 0s'
+        });
+      });
+    });
+  }
+
   ngOnInit() {
+    this.device = new AgentResponse();
+    this.device.id = null;
+    this.device.agentAlias = null;
+    this.device.agentCode = null;
+
     this.selectedIp = new PublicIP();
     this.selectedIp.profile = new DomainProfile();
     this.selectedIp.appUserProfile = new ApplicationProfile();
@@ -104,7 +188,6 @@ export class PublicipComponent implements OnInit {
       }
     });
   }
-
 
   updateApplicationProfilelist() {
     let systemProfiles = new Array();
@@ -220,7 +303,7 @@ export class PublicipComponent implements OnInit {
     }
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     const input = $(this);
 
     if (input[0].files && input[0].files[0]) {
@@ -233,21 +316,47 @@ export class PublicipComponent implements OnInit {
     }
   }
 
-  showNewWizard() {
-
+  showNewProfileWizard() {
+    this.agentService.getMobileCategories(0).subscribe(data => this.mobileCategories = data);
     this.ipList = [];
     this.ipList.push(new IpNumber());
     this.selectedIp = new PublicIP();
-    this.selectedIp.profile = this.domainProfiles[0];
-    this.selectedIp.appUserProfile = this.appProfiles[0];
-    this.selectedIp.bwList = this.bwList[0];
+
+    document.getElementById('wizardPanel').scrollIntoView();
+    this.installWizard();
+    $('#ipdetails').click();
 
     $('#publicIpPanel').toggle("slide", { direction: "left" }, 600);
     $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+  }
+
+  showNewIpWizard() {
+    this.ipList = [];
+    this.ipList.push(new IpNumber());
+    this.selectedIp = new PublicIP();
+
+    // this.publicIpService.getMyIp().subscribe(res => {
+    //   let resIp: JsonIP;
+    //   resIp = res;
+    //   let myIp: IpNumber;
+    //   myIp.ip = resIp.ip;
+    //   myIp.range = 31;
+    //   console.log(res);
+    //   this.ipList.push(myIp)
+    // });
+
+    $('#newIpRow').slideDown(300);
+    $('#newButtonDiv').hide();
 
   }
 
+  hideNewWizard() {
+    $('#newIpRow').slideUp(300);
+    $('#newButtonDiv').show();
+  }
+
   showEditWizard(id: string) {
+    this.agentService.getMobileCategories(0).subscribe(data => this.mobileCategories = data);
     this.ipList = [];
     this.ipList.push(new IpNumber());
     this.selectedIp = this.publicIps.find(p => p.id == Number(id));
@@ -268,6 +377,10 @@ export class PublicipComponent implements OnInit {
 
       }
     }
+
+    document.getElementById('wizardPanel').scrollIntoView();
+    this.installWizard();
+    $('#ipdetailslink').click();
 
     $('#publicIpPanel').toggle("slide", { direction: "left" }, 600);
     $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
@@ -350,14 +463,14 @@ export class PublicipComponent implements OnInit {
 
     if (type === 'dynamicIp') {
       this.ipType = type;
-      $("#dnsFqnDiv").show(300);
-      $('#staticIPBlock').hide(200);
+      $("#dnsFqnDiv").show();
+      $('#staticIPBlock').hide();
       this.publicIpForm.controls["dnsFqdn"].setValidators([Validators.required]);
       this.publicIpForm.controls["dnsFqdn"].updateValueAndValidity();
     } else {
       this.ipType = type;
-      $("#dnsFqnDiv").hide(300);
-      $('#staticIPBlock').show(300);
+      $("#dnsFqnDiv").hide();
+      $('#staticIPBlock').show();
       this.publicIpForm.controls["dnsFqdn"].clearValidators();
       this.publicIpForm.controls["dnsFqdn"].updateValueAndValidity();
     }
@@ -416,4 +529,223 @@ export class PublicipComponent implements OnInit {
       this.publicIpsFiltered = this.publicIps;
     }
   }
+
+  securityProfileChanged(agentName: any, profile: any) {
+    this.isNewProfileSelected = true;
+  }
+
+  saveButton(){
+    this.notification.success('successfully created.');
+    $('#newIpRow').slideUp(300);
+    $('#newButtonDiv').show();
+  }
+
+  installWizard() {
+
+    // Code for the Validator
+    const $validator = $('.card-wizard form').validate({
+      rules: {
+        deviceName: {
+          required: true,
+          minlength: 3
+        }
+      },
+
+      highlight: function (element) {
+        $(element).closest('.form-group').removeClass('has-success').addClass('has-danger');
+      },
+      success: function (element) {
+        $(element).closest('.form-group').removeClass('has-danger').addClass('has-success');
+      },
+      errorPlacement: function (error, element) {
+        $(element).append(error);
+      }
+    });
+
+    // Wizard Initialization
+    $('.card-wizard').bootstrapWizard({
+      'tabClass': 'nav nav-pills',
+      'nextSelector': '.btn-next',
+      'previousSelector': '.btn-previous',
+
+      onNext: function () {
+        var $valid = $('.card-wizard form').valid();
+        document.getElementById('wizardPanel').scrollIntoView();
+        if (!$valid) {
+          $validator.focusInvalid();
+          return false;
+        }
+      },
+
+      onInit: function (tab: any, navigation: any, index: any) {
+
+        // check number of tabs and fill the entire row
+        let $total = navigation.find('li').length;
+        let $wizard = navigation.closest('.card-wizard');
+
+        let $first_li = navigation.find('li:first-child a').html();
+        let $moving_div = $('<div class="moving-tab">' + $first_li + '</div>');
+        $('.card-wizard .wizard-navigation').append($moving_div);
+
+        $total = $wizard.find('.nav li').length;
+        let $li_width = 100 / $total;
+
+        let total_steps = $wizard.find('.nav li').length;
+        let move_distance = $wizard.width() / total_steps;
+        let index_temp = index;
+        let vertical_level = 0;
+
+        let mobile_device = $(document).width() < 600 && $total > 3;
+
+        if (mobile_device) {
+          move_distance = $wizard.width() / 2;
+          index_temp = index % 2;
+          $li_width = 50;
+        }
+
+        $wizard.find('.nav li').css('width', $li_width + '%');
+
+        let step_width = move_distance;
+        move_distance = move_distance * index_temp;
+
+        let $current = index + 1;
+
+        if ($current == 1 || (mobile_device == true && (index % 2 == 0))) {
+          move_distance -= 8;
+        } else if ($current == total_steps || (mobile_device == true && (index % 2 == 1))) {
+          move_distance += 8;
+        }
+
+        if (mobile_device) {
+          let x: any = index / 2;
+          vertical_level = parseInt(x);
+          vertical_level = vertical_level * 38;
+        }
+
+        $wizard.find('.moving-tab').css('width', step_width);
+        $('.moving-tab').css({
+          'transform': 'translate3d(' + move_distance + 'px, ' + vertical_level + 'px, 0)',
+          'transition': 'all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)'
+
+        });
+        $('.moving-tab').css('transition', 'transform 0s');
+      },
+
+      onTabClick: function () {
+
+        const $valid = $('.card-wizard form').valid();
+
+        if (!$valid) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+
+      onTabShow: function (tab: any, navigation: any, index: any) {
+        let $total = navigation.find('li').length;
+        let $current = index + 1;
+
+        const $wizard = navigation.closest('.card-wizard');
+
+        // If it's the last tab then hide the last button and show the finish instead
+        if ($current >= $total) {
+          $($wizard).find('.btn-next').hide();
+          $($wizard).find('.btn-finish').show();
+        } else {
+          $($wizard).find('.btn-next').show();
+          $($wizard).find('.btn-finish').hide();
+        }
+
+        const button_text = navigation.find('li:nth-child(' + $current + ') a').html();
+
+        setTimeout(function () {
+          $('.moving-tab').text(button_text);
+        }, 150);
+
+        const checkbox = $('.footer-checkbox');
+
+        if (index !== 0) {
+          $(checkbox).css({
+            'opacity': '0',
+            'visibility': 'hidden',
+            'position': 'absolute'
+          });
+        } else {
+          $(checkbox).css({
+            'opacity': '1',
+            'visibility': 'visible'
+          });
+        }
+        $total = $wizard.find('.nav li').length;
+        let $li_width = 100 / $total;
+
+        let total_steps = $wizard.find('.nav li').length;
+        let move_distance = $wizard.width() / total_steps;
+        let index_temp = index;
+        let vertical_level = 0;
+
+        let mobile_device = $(document).width() < 600 && $total > 3;
+
+        if (mobile_device) {
+          move_distance = $wizard.width() / 2;
+          index_temp = index % 2;
+          $li_width = 50;
+        }
+
+        $wizard.find('.nav li').css('width', $li_width + '%');
+
+        let step_width = move_distance;
+        move_distance = move_distance * index_temp;
+
+        $current = index + 1;
+
+        if ($current == 1 || (mobile_device == true && (index % 2 == 0))) {
+          move_distance -= 8;
+        } else if ($current == total_steps || (mobile_device == true && (index % 2 == 1))) {
+          move_distance += 8;
+        }
+
+        if (mobile_device) {
+          let x: any = index / 2;
+          vertical_level = parseInt(x);
+          vertical_level = vertical_level * 38;
+        }
+
+        $wizard.find('.moving-tab').css('width', step_width);
+        $('.moving-tab').css({
+          'transform': 'translate3d(' + move_distance + 'px, ' + vertical_level + 'px, 0)',
+          'transition': 'all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)'
+
+        });
+      }
+    });
+
+
+    $('[data-toggle="wizard-radio"]').click(function () {
+      const wizard = $(this).closest('.card-wizard');
+      wizard.find('[data-toggle="wizard-radio"]').removeClass('active');
+      $(this).addClass('active');
+      $(wizard).find('[type="radio"]').removeAttr('checked');
+      $(this).find('[type="radio"]').attr('checked', 'true');
+    });
+
+    $('[data-toggle="wizard-checkbox"]').click(function () {
+      if ($(this).hasClass('active')) {
+        $(this).removeClass('active');
+        $(this).find('[type="checkbox"]').removeAttr('checked');
+      } else {
+        $(this).addClass('active');
+        $(this).find('[type="checkbox"]').attr('checked', 'true');
+      }
+    });
+
+    $('.set-full-height').css('height', 'auto');
+
+    document.getElementById("previous").onclick = function () {
+      document.getElementById('wizardPanel').scrollIntoView();
+    };
+
+  }
+
 }

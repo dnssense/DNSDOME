@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from 'src/app/core/services/config.service';
 import * as Chartist from 'chartist';
-import { DashboardStatistic } from 'src/app/core/models/DashboardStatistic';
-import { ValueTransformer } from '@angular/compiler/src/util';
 import { TableData } from '../../shared/md/md-table/md-table.component';
 import { DashBoardService } from 'src/app/core/services/DashBoardService';
 import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
@@ -17,12 +15,16 @@ declare const $: any;
   styleUrls: ['dashboard.component.sass']
 })
 export class DashboardComponent implements OnInit {
-  elasticData: ElasticDashboardResponse;
+  elasticData: ElasticDashboardResponse[];
   public tableData3: TableData;
+  todayTotalBlockCount: number;
+  public labelArray = ['00', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
+    '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
 
   constructor(private configService: ConfigService, private http: HttpClient, private dashboardService: DashBoardService,
     private auth: AuthenticationService, private datePipe: DatePipe) {
 
+    //silinecek
     this.tableData3 = {
       headerRow: ['Domain', 'Category'],
       dataRows: [
@@ -35,19 +37,16 @@ export class DashboardComponent implements OnInit {
       ]
     };
 
-    this.elasticData = new ElasticDashboardResponse();
+    this.elasticData = [];
 
-    let docId = this.auth.currentSession.currentUser.companyId + '_20190405';// + this.datePipe.transform(Date.now(), 'yyyyMMdd');
-    //'126_20190406';// 
-    this.dashboardService.getDailyCompanySummary(docId).subscribe(res => {
+    //this.datePipe.transform(Date.now(), 'yyyy-MM-dd')
+    this.dashboardService.getHourlyCompanySummary('1', '2019-04-20').subscribe(res => {
       this.elasticData = res;
-      console.log(res);
-      
+      console.log(this.elasticData);
+
       this.createConnectedUserChart();
       this.createPieCharts();
     });
-
-     //this.dashboardService.getWeeklyCompanySummary('uiebiua.me_20190313').subscribe(res=> console.log(res));
 
   }
 
@@ -105,15 +104,22 @@ export class DashboardComponent implements OnInit {
   }
 
   createConnectedUserChart() {
+   
+    let hitAverages = [24], todayHits = [24];
+    for (let i = 0; i < this.elasticData.length; i++) {
+      const data = this.elasticData[i];
+      hitAverages[new Date(data.time_range.gte).getHours()] = data.averages.total_hit;
+      todayHits[new Date(data.time_range.gte).getHours()] = data.total_hit;
+    }
 
     const dataColouredRoundedLineChart = {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      series: [null, [134, 256, 66, 530, 289, 689, 700]]
+      labels: this.labelArray,
+      series: [hitAverages, todayHits]
 
     };
     const optionsColouredRoundedLineChart: any = {
       lineSmooth: Chartist.Interpolation.cardinal({
-        tension: 5
+        tension: 2
       }),
       axisY: {
         showGrid: true,
@@ -122,8 +128,8 @@ export class DashboardComponent implements OnInit {
       axisX: {
         showGrid: true,
       },
-      low: 0,
-      high: 900,
+      low: Math.min(hitAverages.reduce((a, b) => Math.min(a, b)), todayHits.reduce((a, b) => Math.min(a, b))),
+      high: Math.max(hitAverages.reduce((a, b) => Math.max(a, b)), todayHits.reduce((a, b) => Math.max(a, b))),
       showPoint: true,
       fullWidth: true,
       height: '250px'
@@ -134,9 +140,18 @@ export class DashboardComponent implements OnInit {
 
     this.startAnimationForLineChart(colouredRoundedLineChart);
 
+    let blockAverages = [24], todayBlocks = [24];
+    for (let i = 0; i < this.elasticData.length; i++) {
+      const data = this.elasticData[i];
+      blockAverages[new Date(data.time_range.gte).getHours()] = data.averages.blocked_count;
+      todayBlocks[new Date(data.time_range.gte).getHours()] = data.blocked_count;
+    }
+
+    this.todayTotalBlockCount = todayBlocks.reduce((a, b) => a + b);
+
     const dataColouredRoundedLineChart2 = {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      series: [null, [134, 256, 66, 530, 289, 289, 700]]
+      labels: this.labelArray,
+      series: [blockAverages, todayBlocks]
 
     };
     const optionsColouredRoundedLineChart2: any = {
@@ -145,13 +160,13 @@ export class DashboardComponent implements OnInit {
       }),
       axisY: {
         showGrid: true,
-        offset: 40
+        offset: 20
       },
       axisX: {
         showGrid: true,
       },
-      low: 0,
-      high: 900,
+      low: Math.min(blockAverages.reduce((a, b) => Math.min(a, b)), todayBlocks.reduce((a, b) => Math.min(a, b))),
+      high: Math.max(blockAverages.reduce((a, b) => Math.max(a, b)), todayBlocks.reduce((a, b) => Math.max(a, b))),
       showPoint: true,
       fullWidth: true,
       height: '250px'

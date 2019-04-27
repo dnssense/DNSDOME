@@ -16,35 +16,15 @@ export class DashBoardService {
   public _setDefaultDashboardURL = this.configuration.getApiUrl() + '/services/dashboard/default';  // URL to graph api
   public _dashboardSettingsURL = this.configuration.getApiUrl() + '/services/dashboard/get?';  // URL to graph api
   //ES urls
-  private _dailyCompanySummaryURL = this.configuration.getApiUrl() + '/dashboard/dailycompany/';
-  private _weeklyCompanySummaryURL = this.configuration.getApiUrl() + '/dashboard/weeklydomain/';
-  private _dailySummaryURL = this.configuration.getApiUrl() + '/dashboard/daily/';
-  private _hourlyCompanySummaryURL = this.configuration.getApiUrl() + '/dashboard/hourly/';
-  private _dailyDomainSummaryURL = this.configuration.getApiUrl() + '/dashboard/dailydomain/';
+  private _hourlyCompanySummaryURL = this.configuration.getApiUrl() + '/dashboard/hourlycompany/';
 
   constructor(private http: HttpClient, private configuration: ConfigService) {
 
   }
 
-  public getWeeklyCompanySummary(docId: string): Observable<ElasticDashboardResponse[]> {
-    return this.http.get<ElasticDashboardResponse[]>(this._weeklyCompanySummaryURL + docId).map(res => res);
-  }
-
-  public getDailyCompanySummary(docId: string): Observable<ElasticDashboardResponse> {
-    return this.http.get<ElasticDashboardResponse>(this._dailyCompanySummaryURL + docId).map(res => res);
-  }
-
-  public getDailySummary(docId: string): Observable<ElasticDashboardResponse> {
-    return this.http.get<ElasticDashboardResponse>(this._dailySummaryURL + docId).map(res => res);
-  }
-
-  public getHourlyCompanySummary(docId: string): Observable<ElasticDashboardResponse> {
-    return this.http.get<ElasticDashboardResponse>(this._hourlyCompanySummaryURL + docId).map(res => res);
-  }
-
-  public getDailyDomainSummary(docId: string): Observable<ElasticDashboardResponse> {
-    return this.http.get<ElasticDashboardResponse>(this._dailyDomainSummaryURL + docId).map(res => res);
-  }
+  public getHourlyCompanySummary(companyId: string, date: string): Observable<ElasticDashboardResponse[]> {
+    return this.http.get<ElasticDashboardResponse[]>(this._hourlyCompanySummaryURL + companyId + '/' + date).map(res => res);
+  } 
 
   public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {
     const url = this._dashboardSettingsURL + "id=" + dashboard.id;

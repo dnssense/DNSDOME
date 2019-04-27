@@ -11,6 +11,7 @@ import { DayProfileGroup } from 'src/app/core/models/DayProfileGroup';
 import { BoxService } from 'src/app/core/services/BoxService';
 import { Box } from 'src/app/core/models/Box';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { StaticService } from 'src/app/core/services/StaticService';
 
 declare var $: any;
 
@@ -34,11 +35,14 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     selectedProfile: DayProfileGroup;
     boxes: Box[] = [];
     selectedBox: Box;
+    isNewProfileSelected: boolean = false;
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService,
-        private boxService: BoxService, private notification: NotificationService) {
-        
+        private boxService: BoxService, private notification: NotificationService, private staticService: StaticService) {
+
         this.initializeVariables();
+
+        // this.staticService.getCategoryList().subscribe(res=> console.log(res));
 
         this.agentService.getRegisteredAgents().subscribe(data => { this.registered = data; this.registeredCount = data.length });
         this.agentService.getUnRegisteredAgents().subscribe(data => { this.unregistered = data; this.unregisteredCount = data.length; });
@@ -449,7 +453,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     blockCategory(id: number) {
         this.mobileCategories.find(m => m.id == id).blocked = true;
         let mc: MobileCategory = this.mobileCategories.find(m => m.id == id);
-        
+
         if (this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id)) {
             this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id).block = true;
             if (this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id).category.categoryType == 1) {
@@ -553,7 +557,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
 
     showBoxEditWizard(id: number) {
         if (id) {
-            
+
             this.selectedBox = this.boxes.find(b => b.id == id);
             $('#wizardPanel').hide();
             $('#devicePanel').toggle("slide", { direction: "left" }, 600);
@@ -563,14 +567,19 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
 
     deleteBox(id: number) {
         if (id) {
-            this.boxService.delete(this.boxes.find(b=> b.id == id)).subscribe(res=> {
+            this.boxService.delete(this.boxes.find(b => b.id == id)).subscribe(res => {
                 if (res.status == 200) {
                     this.notification.success(res.message);
-                  } else {
+                } else {
                     this.notification.error(res.message);
-                  }
+                }
             });
         }
+    }
+
+    securityProfileChanged(agentName: any, profile: any) {
+        this.isNewProfileSelected = true;
+        this.notification.success(agentName + " profile changed as: " + profile);
     }
 
 
