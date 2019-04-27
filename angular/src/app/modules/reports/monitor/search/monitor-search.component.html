@@ -4,7 +4,7 @@
       <div class="col-md-12">
         <div class="row mt-2 mb-2">
           <div class="col-md-1 text-right" style="max-width: 100px;">
-              <label class="col-form-label" >AND</label>           
+            <label class="col-form-label">AND</label>
           </div>
           <div class="col-md-11" style="margin-left: -30px;">
             <app-column-tag-input [columns]="columns" [tags]="searchSetting.must" #must
@@ -13,21 +13,21 @@
           </div>
         </div>
         <div class="row mt-2 mb-2">
-            <div class="col-md-1 text-right" style="max-width: 100px;">
-                <label class="col-form-label">AND NOT</label>           
-            </div>
-            <div class="col-md-11" style="margin-left: -30px;">
+          <div class="col-md-1 text-right" style="max-width: 100px;">
+            <label class="col-form-label">AND NOT</label>
+          </div>
+          <div class="col-md-11" style="margin-left: -30px;">
             <app-column-tag-input [columns]="columns" [tags]="searchSetting.mustnot" #mustNot
               [mainCategories]="mainCategories" [agents]="agents" [zoneName]="should"
               [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
           </div>
         </div>
         <div class="row mt-2 mb-2">
-            <div class="col-md-1 text-right" style="max-width: 100px;">
-                <label class="col-form-label">OR</label>           
-            </div>
-            <div class="col-md-11" style="margin-left: -30px;">
-            <app-column-tag-input [columns]="columns" [tags]="searchSetting.should" #should 
+          <div class="col-md-1 text-right" style="max-width: 100px;">
+            <label class="col-form-label">OR</label>
+          </div>
+          <div class="col-md-11" style="margin-left: -30px;">
+            <app-column-tag-input [columns]="columns" [tags]="searchSetting.should" #should
               [mainCategories]="mainCategories" [agents]="agents" [zoneName]="should"
               [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
           </div>
@@ -96,14 +96,12 @@
         <input type="text" class="form-control input-xs has-feedback-left" name="endDate" #endDateCal
           style="width: 100%" />
         <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-
       </span>
       <span class="col-md-2 col-sm-2 col-xs-2 pull-left" style="padding-left: 0px">
         <button class="btn btn-danger btn-sm">
           <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </button>
       </span>
-
     </div>
     <div class="row form-group">
       <div class="col-md-4 col-sm-6 col-xs-6">

@@ -16,7 +16,7 @@ import { ConfigService } from './config.service';
 @Injectable({ providedIn: 'root' })
 export class CustomReportService {
   public _initContentURL = this.configService.getApiUrl() + '/custom-reports/init'; // URL to subcategories api
-  public _dataURL = this.configService.getApiUrl() + '/scustom-reports/data'; // URL to graph api
+  public _dataURL = this.configService.getApiUrl() + '/custom-reports/data'; // URL to graph api
   public _tableDataURL =
     this.configService.getApiUrl() + '/custom-reports/tableData'; // URL to graph api
   public _multiValueHistogramDataURL =
@@ -51,8 +51,8 @@ export class CustomReportService {
   public getData(searchSettings: SearchSetting): Observable<Object> {
     let body = JSON.stringify({ searchSetting: searchSettings });
     return this.http
-      .post(this._dataURL, body)
-      .map((res: Response) => res.json())
+      .post(this._dataURL, body, this.getOptions())
+      .map((res: Response) => res)
       .catch((response: any, caught: any) => {
         this.errorService.handleAuthenticatedError(response);
         return Observable.throw(response);
@@ -117,5 +117,12 @@ export class CustomReportService {
         this.errorService.handleAuthenticatedError(response);
         return Observable.throw(response);
       });
+  }
+
+  private getOptions() {
+    let options = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    }
+    return options;
   }
 }

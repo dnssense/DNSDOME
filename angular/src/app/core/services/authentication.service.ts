@@ -179,7 +179,7 @@ export class AuthenticationService {
   }
 
   login(email: string, pass: string): Observable<Session> {
-    debugger;
+    //debugger;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
