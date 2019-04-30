@@ -16,7 +16,7 @@ declare var $: any;
 export class SecurityProfilesComponent implements OnInit, AfterViewInit {
 
     profiles: TimeProfileResponse;
-    profileForm: FormGroup;
+    //profileForm: FormGroup;
     mobileCategories: MobileCategory[];
     selectedProfile: any;
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private notification: NotificationService,
@@ -26,9 +26,9 @@ export class SecurityProfilesComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
 
-        this.profileForm = this.formBuilder.group({
-            profileName: ["", [Validators.required]]
-        });
+        // this.profileForm = this.formBuilder.group({
+        //     profileName: ["", [Validators.required]]
+        // });
     }
  
 

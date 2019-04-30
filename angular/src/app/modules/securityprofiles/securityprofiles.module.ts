@@ -9,12 +9,15 @@ import { MaterialModule } from 'src/app/shared/components/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
+import { ProfileWizardComponent } from './shared/profile-wizard/profile-wizard.component';
 
 
 
 @NgModule({
   declarations: [
-    SecurityProfilesComponent],
+    SecurityProfilesComponent,
+    ProfileWizardComponent
+  ],
   imports: [
     FormsModule,
     ReactiveFormsModule,

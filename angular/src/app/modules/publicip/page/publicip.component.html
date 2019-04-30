@@ -286,11 +286,6 @@
                 <div class="wizard-navigation">
                   <ul class="nav nav-pills">
                     <li class="nav-item">
-                      <a class="nav-link active" id="ipdetailsLink" href="#ipdetails" data-toggle="tab" role="tab">
-                        Public Ip Details
-                      </a>
-                    </li>
-                    <li class="nav-item">
                       <a class="nav-link" id="contentLink" href="#content" data-toggle="tab" role="tab">
                         Content Filtering
                       </a>
@@ -309,119 +304,7 @@
                 </div>
                 <div class="card-body">
                   <div class="tab-content">
-                    <div class="tab-pane active" id="ipdetails">
-                      <div class="row justify-content-center">
-                        <div class="col-md-12">
-                          <div class="row">
-                            <div class="col-md-4">
-                              <mat-form-field>
-                                <input type="text" name="agentName" matInput id="text" formControlName="agentName"
-                                  placeholder="Public IP/Agent Name" [(ngModel)]="selectedIp.agentAlias">
-                              </mat-form-field>
-                            </div>
-                            <div class="col-md-2">
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input checked class="form-check-input" id="IpType" name="IpType" type="radio"
-                                    value="staticIp" (click)="onSelectionChangeIPType('staticIp')">
-                                  Static IP <span class="circle"><span class="check"></span></span>
-                                </label>
-                              </div>
-                            </div>
-                            <div class="col-md-2">
-                              <div class="form-check">
-                                <label class="form-check-label">
-                                  <input class="form-check-input" id="IpType" name="IpType" type="radio"
-                                    value="dynamicIp" (click)="onSelectionChangeIPType('dynamicIp')">
-                                  Dynamic IP <span class="circle"><span class="check"></span></span>
-                                </label>
-                              </div>
-                            </div>
-                            <div class="col-md-4">
-                              <div class="row">
-                                <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-md-12 ml-auto mr-auto"
-                                  style="display: none;">
-                                  <mat-form-field>
-                                    <input type="text" id="dnsFqdn" name="dnsFqdn" matInput id="text"
-                                      placeholder="DNS FQDN">
-                                  </mat-form-field>
-                                </div>
-                                <div class="col-md-12  ml-auto mr-auto" id="staticIPBlock">
-                                  <div class="row " *ngFor="let row of ipList; index as i">
-                                    <div class="col-md-4">
-                                      <mat-form-field class="example-full-width has-label" style="width:100%;">
-                                        <input type="text" maxlength="15" name="'ip'+i"
-                                          (keydown)="checkIPNumber($event, ipList[i].ip)" placeholder="IP" matInput
-                                         >
-                                        <mat-error *ngIf="publicIpForm.get('ip'+i).hasError('required')">
-                                          Enter A Valid IP: <strong>127.0.0.1</strong>
-                                        </mat-error>
-                                      </mat-form-field>
-                                    </div>
-                                    <div class="col-md-1 mt-4" style="margin-left: -20px;">
-                                      <legend>/</legend>
-                                    </div>
-                                    <div class="col-md-4" style="margin-left: -20px;">
-                                      <mat-form-field class="example-full-width has-label">
-                                        <mat-select placeholder="Mask" [(value)]="ipList[i].range">
-                                          <mat-option *ngFor="let ind of ipRanges;" [value]="ind">{{ind}}
-                                          </mat-option>
-                                        </mat-select>
-                                      </mat-form-field>
-                                    </div>
-                                    <div class="col-md-3 ml-0 mt-2">
-                                      <ng-container *ngIf="i>0; else elseTemplate">
-                                        <button mat-raised-button type="button"
-                                          class="btn btn-danger btn-just-icon btn-sm"
-                                          (click)="removeElementFromIpList(i)">
-                                          <i class="material-icons">close</i>
-                                        </button>
-                                      </ng-container>
-                                      <ng-template #elseTemplate>
-                                        <button mat-raised-button type="button"
-                                          class="btn btn-success btn-just-icon btn-sm" (click)="addIpRangeToList()">
-                                          <i class="material-icons">add_circle_outline</i>
-                                        </button>
-                                      </ng-template>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="col-md-6">
-                              <mat-form-field>
-                                <textarea type="text" id="blockMessage" name="blockMessage" matInput id="text"
-                                  placeholder="Block Message" ></textarea>
-                              </mat-form-field>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="row justify-content-center">
-                                <div class="col-sm-2 ml-auto mr-auto card-wizard"
-                                  style="min-height: 20px; box-shadow: none;">
-                                  <div class="picture-container">
-                                    <div class="picture" style="border-radius:5%;">
-                                      <ng-container *ngIf="selectedIp.logo; else elseTemplate">
-                                        <img src="{{selectedIp.logo}}" class="picture-src" id="wizardPicturePreview"
-                                          title="selectedIp.agentAlias" />
-                                      </ng-container>
-                                      <ng-template #elseTemplate>
-                                        <img src="./assets/img/image_placeholder.jpg" class="picture-src"
-                                          id="wizardPicturePreview" title="" />
-                                      </ng-template>
-                                      <input type="file" (change)="selectFile($event)" id="wizard-picture">
-                                      <h6>Block Logo</h6>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="tab-pane" id="content">
+                    <div class="tab-pane active" id="content">
                       <div class="row justify-content-center">
                         <div class="col-md-12">
                           <div class="item-wrapper">

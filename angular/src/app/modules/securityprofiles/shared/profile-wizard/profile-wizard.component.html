@@ -1,0 +1,465 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="wizard-container">
+      <div class="card card-wizard" data-color="blue" id="wizardProfile">
+        <div class="card-header text-center">
+          <h3 class="card-title">
+            <div class="row">
+              <div class="col-md-4"></div>
+              <div class="col-md-4 text-center input-group form-control-lg">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="material-icons">face</i>
+                  </span>
+                </div>
+                <mat-form-field>
+                  <input type="text" name="profileName" matInput id="text" placeholder="Profile Name">
+                </mat-form-field>
+              </div>
+              <div class="col-md-4"></div>
+            </div>
+          </h3>
+          <!-- <h5 class="card-description">Manage this device</h5> -->
+        </div>
+        <div class="wizard-navigation">
+          <ul class="nav nav-pills">
+            <li class="nav-item">
+              <a class="nav-link active" id="contentLink" href="#content" data-toggle="tab" role="tab">
+                Content Filtering
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#security" data-toggle="tab" role="tab">
+                Security
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#applications" data-toggle="tab" role="tab">
+                Applications
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <form action="">
+            <div class="tab-content">
+              <div class="tab-pane active" id="content">
+                <div class="row justify-content-center">
+                  <div class="col-md-12">
+                    <div class="item-wrapper">
+                      <ng-container *ngFor="let cat of categoryList">
+                        <div class="item" *ngIf="(cat.category.type=='UNSAFE_LIST' || cat.category.type=='HARMFULL_CONTENT') 
+                                      && cat.category.isVisible">
+                          <div class="row align-items-center">
+                            <div class="col-sm-12 text-center mt-1">
+                              <strong>{{cat.category.name}}</strong>
+                              <br />
+                              <ng-container *ngIf="cat.isBlocked; else elseTemplate">
+                                <button class="btn btn-sm btn-warning" (click)="allowCategory(cat.category.id)">Not
+                                  Allowed</button>
+                              </ng-container>
+                              <ng-template #elseTemplate>
+                                <button class="btn btn-sm btn-success"
+                                  (click)="blockCategory(cat.category.id)">Allowed</button>
+                              </ng-template>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <div id="cleanCategoriesAccordion" role="tablist">
+                        <div class="card-collapse">
+                          <div class="card-header" role="tab" id="headingOne">
+                            <h5 class="mb-0">
+                              <a data-toggle="collapse" href="#cleanCategories" aria-expanded="false"
+                                aria-controls="collapseOne" class="collapsed">
+                                Clean Categories
+                                <i class="material-icons">keyboard_arrow_down</i>
+                              </a>
+                            </h5>
+                          </div>
+                          <div id="cleanCategories" class="collapse" role="tabpanel" aria-labelledby="headingOne"
+                            data-parent="#cleanCategoriesAccordion">
+                            <ng-container *ngFor="let cat of categoryList">
+                              <div class="item" *ngIf="!(cat.category.type=='SECURITY' ||cat.category.type=='UNSAFE_LIST' 
+                                || cat.category.type=='HARMFULL_CONTENT' ) && cat.category.isVisible">
+                                <div class="row align-items-center">
+                                  <div class="col-sm-12 text-center mt-1">
+                                    <strong>{{cat.category.name}}</strong>
+                                    <br />
+                                    <ng-container *ngIf="cat.isBlocked; else elseTemplate">
+                                      <button class="btn btn-sm btn-warning"
+                                        (click)="allowCategory(cat.category.id)">Not
+                                        Allowed</button>
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                      <button class="btn btn-sm btn-success"
+                                        (click)="blockCategory(cat.category.id)">Allowed</button>
+                                    </ng-template>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="security">
+                <div class="row justify-content-center">
+                  <div class="col-md-12">
+                    <div class="item-wrapper">
+                      <ng-container *ngFor="let cat of categoryList">
+                        <div class="item" *ngIf="cat.category.type=='SECURITY'">
+                          <div class="row align-items-center">
+                            <div class="col-sm-12 text-center mt-1">
+                              <strong>{{cat.category.name}}</strong>
+                              <br />
+                              <ng-container *ngIf="cat.isBlocked; else elseTemplate">
+                                <button class="btn btn-sm btn-warning" (click)="allowCategory(cat.category.id)">Not
+                                  Allowed</button>
+                              </ng-container>
+                              <ng-template #elseTemplate>
+                                <button class="btn btn-sm btn-success"
+                                  (click)="blockCategory(cat.category.id)">Allowed</button>
+                              </ng-template>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="applications">
+                <div class="row justify-content-center">
+                  <div class="col-md-12">
+                    <div id="accordion" role="tablist">
+                      <div class="card-collapse">
+                        <div class="card-header" role="tab" id="headingOne">
+                          <h5 class="mb-0">
+                            <a data-toggle="collapse" href="#collapseOne" aria-expanded="true"
+                              aria-controls="collapseOne" class="collapsed">
+                              Online Videos
+                              <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                          </h5>
+                        </div>
+                        <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne"
+                          data-parent="#accordion">
+                          <div class="card-body">
+                            <div class="item-wrapper">
+                              <ng-container *ngFor="let app of applicationList">
+                                <div class="item"
+                                  *ngIf="app.application.isVisible && app.application.type=='ONLINE_VIDEO'">
+                                  <div class="row align-items-center">
+                                    <div class="col-sm-12 text-center mt-1">
+                                      <strong>{{app.application.name}}</strong>
+                                      <br />
+                                      <ng-container *ngIf="app.isBlocked; else elseTemplate">
+                                        <button class="btn btn-sm btn-warning"
+                                          (click)="allowApplication(app.application.id)">Not
+                                          Allowed</button>
+                                      </ng-container>
+                                      <ng-template #elseTemplate>
+                                        <button class="btn btn-sm btn-success"
+                                          (click)="blockApplication(app.application.id)">Allowed</button>
+                                        <br />
+                                        <ng-container *ngIf="profiles">
+                                          <div class="dropdown">
+                                            <ng-container
+                                              *ngIf="app.application.profile && app.application.profile.name; else elseTemplate">
+                                              <button mat-raised-button class="dropdown-toggle btn btn-success btn-sm"
+                                                data-toggle="dropdown"> {{app.application.profile.name}}
+                                                <b class="caret"></b>
+                                              </button>
+                                            </ng-container>
+                                            <ng-template #elseTemplate>
+                                              <button mat-raised-button class="dropdown-toggle btn btn-default btn-sm"
+                                                data-toggle="dropdown">
+                                                No Profile
+                                                <b class="caret"></b>
+                                              </button>
+                                            </ng-template>
+                                            <ul class="dropdown-menu dropdown-menu-left">
+                                              <li class="dropdown-header">Profiles</li>
+                                              <li>
+                                                <button mat-raised-button class="btn btn-link btn-info btn-sm"
+                                                  (click)="selectCategoryProfile(cat.id, 0)">Remove Profile
+                                                </button>
+                                              </li>
+                                              <li>
+                                                <div class="row">
+                                                  <div class="table-responsive">
+                                                    <table class="table">
+                                                      <tbody>
+                                                        <tr *ngFor="let profile of profiles.profileDay">
+                                                          <td class="col-md-7">
+                                                            <button mat-raised-button
+                                                              class="btn btn-link btn-primary btn-sm"
+                                                              data-toggle="dropdown"
+                                                              (click)="selectCategoryProfile(cat.id, profile.id)">
+                                                              {{profile.name}}
+                                                            </button>
+                                                          </td>
+                                                          <td class="td-actions text-center col-md-5">
+                                                            <button mat-raised-button type="button"
+                                                              class="btn btn-primary btn-link btn-just-icon btn-sm"
+                                                              (click)="openEditProfilePanel(profile.id)">
+                                                              <i class="material-icons">edit</i>
+                                                            </button>
+                                                            <button mat-raised-button type="button"
+                                                              class="btn btn-danger btn-link btn-just-icon btn-sm"
+                                                              (click)="deleteProfile(profile.id)">
+                                                              <i class="material-icons">close</i>
+                                                            </button>
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                </div>
+                                              </li>
+                                              <li><button mat-raised-button class="btn btn-link btn-info btn-sm"
+                                                  (click)="addNewProfile()">Add New Profile
+                                                </button>
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </ng-container>
+                                      </ng-template>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-collapse">
+                        <div class="card-header" role="tab" id="headingTwo">
+                          <h5 class="mb-0">
+                            <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false"
+                              aria-controls="collapseTwo">
+                              Instant Messaging
+                              <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                          </h5>
+                        </div>
+                        <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo"
+                          data-parent="#accordion">
+                          <div class="card-body">
+                            <div class="item-wrapper">
+                              <ng-container *ngFor="let app of applicationList">
+                                <div class="item"
+                                  *ngIf="app.application.isVisible && app.application.type=='INSTANT_MESSAGING'">
+                                  <div class="row align-items-center">
+                                    <div class="col-sm-12 text-center mt-1">
+                                      <strong>{{app.application.name}}</strong>
+                                      <br />
+                                      <ng-container *ngIf="app.isBlocked; else elseTemplate">
+                                        <button class="btn btn-sm btn-warning"
+                                          (click)="allowApplication(app.application.id)">Not
+                                          Allowed</button>
+                                      </ng-container>
+                                      <ng-template #elseTemplate>
+                                        <button class="btn btn-sm btn-success"
+                                          (click)="blockApplication(app.application.id)">Allowed</button>
+                                        <br />
+                                        <ng-container *ngIf="profiles">
+                                          <div class="dropdown">
+                                            <ng-container
+                                              *ngIf="app.application.profile && app.application.profile.name; else elseTemplate">
+                                              <button mat-raised-button class="dropdown-toggle btn btn-success btn-sm"
+                                                data-toggle="dropdown"> {{app.application.profile.name}}
+                                                <b class="caret"></b>
+                                              </button>
+                                            </ng-container>
+                                            <ng-template #elseTemplate>
+                                              <button mat-raised-button class="dropdown-toggle btn btn-default btn-sm"
+                                                data-toggle="dropdown">
+                                                No Profile
+                                                <b class="caret"></b>
+                                              </button>
+                                            </ng-template>
+                                            <ul class="dropdown-menu dropdown-menu-left">
+                                              <li class="dropdown-header">Profiles</li>
+                                              <li>
+                                                <button mat-raised-button class="btn btn-link btn-info btn-sm"
+                                                  (click)="selectCategoryProfile(cat.id, 0)">Remove Profile
+                                                </button>
+                                              </li>
+                                              <li>
+                                                <div class="row">
+                                                  <div class="table-responsive">
+                                                    <table class="table">
+                                                      <tbody>
+                                                        <tr *ngFor="let profile of profiles.profileDay">
+                                                          <td class="col-md-7">
+                                                            <button mat-raised-button
+                                                              class="btn btn-link btn-primary btn-sm"
+                                                              data-toggle="dropdown"
+                                                              (click)="selectCategoryProfile(cat.id, profile.id)">
+                                                              {{profile.name}}
+                                                            </button>
+                                                          </td>
+                                                          <td class="td-actions text-center col-md-5">
+                                                            <button mat-raised-button type="button"
+                                                              class="btn btn-primary btn-link btn-just-icon btn-sm"
+                                                              (click)="openEditProfilePanel(profile.id)">
+                                                              <i class="material-icons">edit</i>
+                                                            </button>
+                                                            <button mat-raised-button type="button"
+                                                              class="btn btn-danger btn-link btn-just-icon btn-sm"
+                                                              (click)="deleteProfile(profile.id)">
+                                                              <i class="material-icons">close</i>
+                                                            </button>
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                </div>
+                                              </li>
+                                              <li><button mat-raised-button class="btn btn-link btn-info btn-sm"
+                                                  (click)="addNewProfile()">Add New Profile
+                                                </button>
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </ng-container>
+                                      </ng-template>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-collapse">
+                        <div class="card-header" role="tab" id="headingThree">
+                          <h5 class="mb-0">
+                            <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false"
+                              aria-controls="collapseThree">
+                              Social
+                              <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                          </h5>
+                        </div>
+                        <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree"
+                          data-parent="#accordion">
+                          <div class="card-body">
+                            <div class="item-wrapper">
+                              <ng-container *ngFor="let app of applicationList">
+                                <div class="item"
+                                  *ngIf="app.application.isVisible && app.application.type=='INSTANT_MESSAGING'">
+                                  <div class="row align-items-center">
+                                    <div class="col-sm-12 text-center mt-1">
+                                      <strong>{{app.application.name}}</strong>
+                                      <br />
+                                      <ng-container *ngIf="app.isBlocked; else elseTemplate">
+                                        <button class="btn btn-sm btn-warning"
+                                          (click)="allowApplication(app.application.id)">Not
+                                          Allowed</button>
+                                      </ng-container>
+                                      <ng-template #elseTemplate>
+                                        <button class="btn btn-sm btn-success"
+                                          (click)="blockApplication(app.application.id)">Allowed</button>
+                                        <br />
+                                        <ng-container *ngIf="profiles">
+                                          <div class="dropdown">
+                                            <ng-container
+                                              *ngIf="app.application.profile && app.application.profile.name; else elseTemplate">
+                                              <button mat-raised-button class="dropdown-toggle btn btn-success btn-sm"
+                                                data-toggle="dropdown"> {{app.application.profile.name}}
+                                                <b class="caret"></b>
+                                              </button>
+                                            </ng-container>
+                                            <ng-template #elseTemplate>
+                                              <button mat-raised-button class="dropdown-toggle btn btn-default btn-sm"
+                                                data-toggle="dropdown">
+                                                No Profile
+                                                <b class="caret"></b>
+                                              </button>
+                                            </ng-template>
+                                            <ul class="dropdown-menu dropdown-menu-left">
+                                              <li class="dropdown-header">Profiles</li>
+                                              <li>
+                                                <button mat-raised-button class="btn btn-link btn-info btn-sm"
+                                                  (click)="selectCategoryProfile(cat.id, 0)">Remove Profile
+                                                </button>
+                                              </li>
+                                              <li>
+                                                <div class="row">
+                                                  <div class="table-responsive">
+                                                    <table class="table">
+                                                      <tbody>
+                                                        <tr *ngFor="let profile of profiles.profileDay">
+                                                          <td class="col-md-7">
+                                                            <button mat-raised-button
+                                                              class="btn btn-link btn-primary btn-sm"
+                                                              data-toggle="dropdown"
+                                                              (click)="selectCategoryProfile(cat.id, profile.id)">
+                                                              {{profile.name}}
+                                                            </button>
+                                                          </td>
+                                                          <td class="td-actions text-center col-md-5">
+                                                            <button mat-raised-button type="button"
+                                                              class="btn btn-primary btn-link btn-just-icon btn-sm"
+                                                              (click)="openEditProfilePanel(profile.id)">
+                                                              <i class="material-icons">edit</i>
+                                                            </button>
+                                                            <button mat-raised-button type="button"
+                                                              class="btn btn-danger btn-link btn-just-icon btn-sm"
+                                                              (click)="deleteProfile(profile.id)">
+                                                              <i class="material-icons">close</i>
+                                                            </button>
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                </div>
+                                              </li>
+                                              <li><button mat-raised-button class="btn btn-link btn-info btn-sm"
+                                                  (click)="addNewProfile()">Add New Profile
+                                                </button>
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </ng-container>
+                                      </ng-template>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer">
+          <div class="mr-auto">
+            <input type="button" class="btn btn-previous btn-fill btn-default btn-wd disabled" id="previous"
+              name="previous" value="Previous">
+          </div>
+          <div class="ml-auto">
+            <input type="button" class="btn btn-next btn-fill btn-info btn-wd" name="next" value="Next">
+            <input type="button" class="btn btn-finish btn-fill btn-info btn-wd" name="finish" value="Finish"
+              (click)="saveProfile()" style="display: none;">
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
