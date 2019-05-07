@@ -9,6 +9,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
 import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
+import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { FieldErrorDisplayComponent } from './components/field-error-display/fie
     NouisliderModule,
     MaterialModule,
     PublicipRoutingModule,
+    ProfileWizardModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
@@ -26,6 +28,9 @@ import { FieldErrorDisplayComponent } from './components/field-error-display/fie
       }
     })
   ],
-  declarations: [PublicipComponent,FieldErrorDisplayComponent]
+  declarations: [
+    PublicipComponent,
+    FieldErrorDisplayComponent  
+  ]
 })
 export class PublicipModule { }

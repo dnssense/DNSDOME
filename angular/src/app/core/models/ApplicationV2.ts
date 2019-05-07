@@ -1,7 +1,7 @@
 import { CategoryV2 } from './CategoryV2';
 
 export class ApplicationV2{
-    id:string;
+    id:number;
     name:string;
     type:string;
     isVisible:number;

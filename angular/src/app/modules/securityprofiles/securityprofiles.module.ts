@@ -9,14 +9,12 @@ import { MaterialModule } from 'src/app/shared/components/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
-import { ProfileWizardComponent } from './shared/profile-wizard/profile-wizard.component';
-
+import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 
 
 @NgModule({
   declarations: [
-    SecurityProfilesComponent,
-    ProfileWizardComponent
+    SecurityProfilesComponent
   ],
   imports: [
     FormsModule,
@@ -26,6 +24,7 @@ import { ProfileWizardComponent } from './shared/profile-wizard/profile-wizard.c
     MaterialModule,
     SecurityProfilesRoutingModule,
     AmazingTimePickerModule,
+    ProfileWizardModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

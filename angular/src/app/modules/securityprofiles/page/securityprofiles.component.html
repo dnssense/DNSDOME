@@ -16,21 +16,21 @@
                   <thead class="text-info">
                     <tr>
                       <th>Profile Headers</th>
-                      <th>Security Level</th>
+                      <th>Number of Uses</th>
                       <th class="text-right">Operations</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Profile information</td>
-                      <td>Security Level</td>
+                    <tr *ngFor="let p of securityProfiles">
+                      <td>{{p.name}}</td>
+                      <td>XYZ</td>
                       <td class="text-right">
                         <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
-                          mattooltip="Edit item" (click)="showEditWizard(1)">
+                          mattooltip="Edit item" (click)="showEditWizard(p.id)">
                           <i class="material-icons">edit</i>
                         </button>
                         <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
-                          mattooltip="Delete item" (click)="deleteProfile(1)">
+                          mattooltip="Delete item" (click)="deleteProfile(p.id)">
                           <i class="material-icons">close</i>
                         </button>
                       </td>
@@ -49,7 +49,7 @@
           <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
             <i class="material-icons">arrow_back</i>
           </button>
-          <app-profile-wizard [selectedAgent]="selectedAgent"></app-profile-wizard>
+          <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard" (saveEmitter)="hideWizard();"></app-profile-wizard>
         </div>
       </div>
     </section>

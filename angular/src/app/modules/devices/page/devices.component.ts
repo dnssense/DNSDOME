@@ -26,7 +26,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     unregisteredCount: number = 0;
     registered: AgentResponse[];
     unregistered: AgentResponse[];
-    profiles: TimeProfileResponse;
+   // profiles: TimeProfileResponse;
     mobileCategories: MobileCategory[];
     notUpdatedCategories: MobileCategory[] = [];
     device: AgentResponse;
@@ -46,7 +46,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
 
         this.agentService.getRegisteredAgents().subscribe(data => { this.registered = data; this.registeredCount = data.length });
         this.agentService.getUnRegisteredAgents().subscribe(data => { this.unregistered = data; this.unregisteredCount = data.length; });
-        this.agentService.getProfiles().subscribe(data => this.profiles = data);
+       // this.agentService.getProfiles().subscribe(data => this.profiles = data);
 
     }
 
@@ -354,7 +354,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     showNewWizard(agentCode: string) {
-        this.agentService.getProfiles().subscribe(data => this.profiles = data);
+       // this.agentService.getProfiles().subscribe(data => this.profiles = data);
         this.device = this.unregistered.find(d => d.agentCode == agentCode);
         this.agentService.getMobileCategories(0).subscribe(data => this.mobileCategories = data);
 
@@ -375,7 +375,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     showEditWizard(id: string) {
-        this.agentService.getProfiles().subscribe(data => this.profiles = data);
+       // this.agentService.getProfiles().subscribe(data => this.profiles = data);
         this.device = this.registered.find(d => d.id == Number(id));
 
         this.collectiveBlockReq = new CollectiveBlockRequest();
@@ -437,7 +437,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
         if (this.collectiveBlockReq.agent.id && this.collectiveBlockReq.agent.id > 0) {
             if (this.notUpdatedCategories.find(m => m.id == id)) {
                 this.collectiveBlockReq.collectiveCategories.splice(this.collectiveBlockReq.collectiveCategories.findIndex(c => c.category.id == id), 1);
-                this.notUpdatedCategories.splice(this.notUpdatedCategories.findIndex(n => n.id == id));
+                this.notUpdatedCategories.splice(this.notUpdatedCategories.findIndex(n => n.id == id),1);
             } else {
                 this.collectiveBlockReq.collectiveCategories.find(c => c.category.id == id).block = false;
             }
@@ -481,7 +481,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
 
             $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
             $('#devicePanel').toggle("slide", { direction: "left" }, 1000);
-            this.agentService.getProfiles().subscribe(d => this.profiles = d);
+           // this.agentService.getProfiles().subscribe(d => this.profiles = d);
         });
 
     }
@@ -496,7 +496,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
             }
 
         } else {
-            this.mobileCategories.find(m => m.id == catId).profile = this.profiles.profileDay.find(p => p.id == pId);
+          //  this.mobileCategories.find(m => m.id == catId).profile = this.profiles.profileDay.find(p => p.id == pId);
 
             if (this.collectiveBlockReq.collectiveCategories.find(cc => cc.category.id == catId)) {
                 this.collectiveBlockReq.collectiveCategories.find(cc => cc.category.id == catId).profileId = pId;
@@ -530,7 +530,7 @@ export class DevicesComponent implements OnInit, OnChanges, AfterViewInit {
 
     openEditProfilePanel(id: number) {
 
-        this.agentService.getProfiles().subscribe(d => this.selectedProfile = d.profileDay.find(p => p.id == id));
+      //  this.agentService.getProfiles().subscribe(d => this.selectedProfile = d.profileDay.find(p => p.id == id));
 
         $('#profilePanel').slideDown(300);
     }
