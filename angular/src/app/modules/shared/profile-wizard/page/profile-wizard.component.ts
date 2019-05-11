@@ -1,12 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { StaticService } from 'src/app/core/services/StaticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { Agent } from 'src/app/core/models/Agent';
 import { ApplicationV2 } from 'src/app/core/models/ApplicationV2';
-import { SecurityProfile, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
+import { SecurityProfile, BlackWhiteListProfile, SecurityProfileItem } from 'src/app/core/models/SecurityProfile';
 import { ValidationService } from 'src/app/core/services/validation.service';
+import { AgentService } from 'src/app/core/services/agent.service';
 
 declare var $: any;
 
@@ -17,7 +18,6 @@ export class categoryItem {
 export class applicationItem {
   constructor(public application: ApplicationV2, public isBlocked: boolean) { }
 }
-
 @Component({
   selector: 'app-profile-wizard',
   templateUrl: './profile-wizard.component.html',
@@ -35,8 +35,16 @@ export class ProfileWizardComponent {
   applicationList: applicationItem[] = [];
   public _selectedAgent: Agent;
   public _startWizard: boolean;
+  public _saveMode: string;
 
+  @Input() set saveMode(value: string) {
+    this._saveMode = value;
+  }
+  get saveMode(): string {
+    return this._saveMode;
+  }
   @Input() set selectedAgent(value: Agent) {
+    debugger
     this._selectedAgent = value;
   }
   get selectedAgent(): Agent {
@@ -53,79 +61,73 @@ export class ProfileWizardComponent {
     return this._startWizard;
   }
 
+  @Input() updateCount: number;
+
   @Output() public saveEmitter = new EventEmitter();
 
   constructor(private notification: NotificationService, private formBuilder: FormBuilder,
-    private staticService: StaticService) {
+    private staticService: StaticService, private agentService: AgentService) {
 
+    this.getCategoriesAndApps();
+
+  }
+
+  getCategoriesAndApps(): void {
     this.staticService.getCategoryList().subscribe(res => {
-      res.forEach(r => { this.categoryList.push(new categoryItem(r, false)); });
+      res.forEach(r => {
+        this.categoryList.push(new categoryItem(r, false));
+      });
     });
-
     this.staticService.getApplicationList().subscribe(res => {
       res.forEach(r => {
         this.applicationList.push(new applicationItem(r, false));
       });
     });
-
   }
 
-  checkKeyboardEventForIP(event: KeyboardEvent, inputValue: string) {
 
-    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", "."];
-    let isValid: boolean = false;
+  ngOnChanges(changes: SimpleChanges): void {
+    $('#contentLink').click();
+    this.updateModels();
+  }
 
-    for (let i = 0; i < allowedChars.length; i++) {
-      if (allowedChars[i] == event.key) {
-        isValid = true;
-        break;
-      }
-    }
-    if (inputValue && (event.key != 'Backspace' && event.key != 'ArrowLeft' && event.key != 'ArrowRight')) {
-      if (event.key != '.') {
-        inputValue += event.key;
-      }
-      let lastOcletStr = inputValue.substring(inputValue.lastIndexOf('.') + 1);
-      let lastOclet = Number(lastOcletStr);
-      if (isValid && (lastOclet > 255 || lastOclet < 0 || lastOcletStr.length > 3)) {
-        isValid = false;
-      }
-      if (isValid && event.key == '.') {
-        let oclets: string[] = inputValue.split('.');
-        for (let i = 0; i < oclets.length; i++) {
-          const oclet = oclets[i];
-          if (Number(oclet) < 0 || Number(oclet) > 255) {
-            isValid = false;
-            break;
-          }
+  updateModels() {
+    if (this.saveMode == 'NewProfile') {
+
+      this.categoryList.forEach(c => {
+        if (c.category.isVisible) {
+          c.isBlocked = false;
+          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: false })
         }
-      }
-
-      if (isValid && ((inputValue.length == 2 && inputValue == '10' && event.key == '.') ||
-        inputValue == '192.168' || inputValue == '127.0.0.1')) {
-        isValid = false;
-        this.notification.warning('Please enter a valid Public IP Adress!', false);
-      }
-
-      if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
-
-        let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
-        let secondOclet = Number(secondOcletStr);
-        if (secondOclet >= 16 && secondOclet <= 31) {
-          isValid = false;
-          this.notification.warning('Please enter a valid Public IP Adress!', false);
+      });
+      this.applicationList.forEach(a => {
+        if (a.application.isVisible) {
+          a.isBlocked = false;
+          this.selectedAgent.rootProfile.applicationProfile.categories.push({ id: a.application.id, isBlocked: false })
         }
-      }
+      });
+    } else if (this.saveMode == 'ProfileUpdate') {
+      this.selectedAgent.rootProfile.domainProfile.categories.forEach(x => {
+        this.categoryList.find(y => y.category.id == x.id).isBlocked = x.isBlocked;
+      });
 
-      if (isValid && event.key == '.' && (inputValue.endsWith('.') || inputValue.split('.').length >= 4)) {
-        isValid = false;
-      }
-    } else if (isValid && event.key == '.') {
-      isValid = false;
-    }
+      this.selectedAgent.rootProfile.applicationProfile.categories.forEach(x => {
+        this.applicationList.find(y => y.application.id == x.id).isBlocked = x.isBlocked;
+      });
+    }else if (this.saveMode == 'NewProfileWithAgent') {
 
-    if (!isValid) {
-      event.preventDefault();
+      this.categoryList.forEach(c => {
+        if (c.category.isVisible) {
+          c.isBlocked = false;
+          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: false })
+        }
+      });
+      this.applicationList.forEach(a => {
+        if (a.application.isVisible) {
+          a.isBlocked = false;
+          this.selectedAgent.rootProfile.applicationProfile.categories.push({ id: a.application.id, isBlocked: false })
+        }
+      });
     }
   }
 
@@ -135,7 +137,6 @@ export class ProfileWizardComponent {
   }
 
   blockCategory(id: number) {
-    debugger
     this.categoryList.find(c => c.category.id == id).isBlocked = true;
     this.selectedAgent.rootProfile.domainProfile.categories.find(c => c.id == id).isBlocked = true;
   }
@@ -151,11 +152,44 @@ export class ProfileWizardComponent {
   }
 
   saveProfile() {
-    this.notification.success('save clicked');
+    if (!this.selectedAgent.rootProfile.name) {
+      this.notification.error('Profile name is empty!');
+      return;
+    }
+    console.log(JSON.stringify(this.selectedAgent.rootProfile));
+    debugger
+    if (this.saveMode == 'NewProfile') {
+      this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(res => {
+        if (res.status == 200) {
+          this.notification.success(res.message)
+          this.saveEmitter.emit();
+        } else {
+          this.notification.error(res.message)
+        }
+      });
+    } else if (this.saveMode == 'ProfileUpdate') {
+      this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(res => {
+        if (res.status == 200) {
+          this.notification.success(res.message)
+          this.saveEmitter.emit();
+        } else {
+          this.notification.error(res.message)
+        }
+        console.log(res);
+      });
+    } else if (this.saveMode == 'NewProfileWithAgent') {
+      this.agentService.saveAgent(this.selectedAgent).subscribe(res => {
+        if (res.status == 200) {
+          this.notification.success(res.message)
+          this.saveEmitter.emit();
+        } else {
+          this.notification.error(res.message)
+        }
+        console.log(res);
+      });
+    }
 
-    console.log(JSON.stringify(this.selectedAgent));
 
-    //send selected agent to service.
   }
 
   blackListItemValidation() {
@@ -431,5 +465,6 @@ export class ProfileWizardComponent {
     };
 
   }
+
 
 }

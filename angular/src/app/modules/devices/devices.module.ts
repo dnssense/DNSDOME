@@ -11,6 +11,7 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
 import { TimeProfileComponent } from './components/time-profile/time-profile.component';
 import { BoxWizardComponent } from './components/box-wizard/box-wizard.component';
+import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 
 
 
@@ -27,6 +28,7 @@ import { BoxWizardComponent } from './components/box-wizard/box-wizard.component
     MaterialModule,
     DevicesRoutingModule,
     AmazingTimePickerModule,
+    ProfileWizardModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

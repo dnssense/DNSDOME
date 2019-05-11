@@ -120,6 +120,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       this.authService.prelogin(this.email, this.password).subscribe(
         val => {
+          console.log("prelogindeyim");
           console.log(val);
 
           if (val.user.isTwoFactorAuthentication) {

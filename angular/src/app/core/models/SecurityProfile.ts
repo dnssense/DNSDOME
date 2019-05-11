@@ -2,8 +2,8 @@
 export class SecurityProfile {
     id: number
     name: string
-    isSafeSearchEnabled: boolean
-    isYoutubeStrictModeEnabled: boolean
+    isSafeSearchEnabled: boolean= false;
+    isYoutubeStrictModeEnabled: boolean= false;
     domainProfile: SecurityProfileItem
     applicationProfile: SecurityProfileItem
     blackWhiteListProfile: BlackWhiteListProfile

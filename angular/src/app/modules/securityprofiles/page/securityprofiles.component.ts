@@ -15,34 +15,32 @@ declare var $: any;
     templateUrl: 'securityprofiles.component.html',
     styleUrls: ['securityprofiles.component.sass']
 })
-export class SecurityProfilesComponent implements OnInit {
+export class SecurityProfilesComponent {
 
     securityProfiles: SecurityProfile[];
     selectedAgent: Agent;
     profileList: SecurityProfile[];
-    startWizard: boolean=false;
-
+    startWizard: boolean = false;
+    saveMode: string;
+    updateCount: number = 0;
     constructor(private agentService: AgentService, private notification: NotificationService,
         private alert: AlertService) {
 
-            this.agentService.getSecurityProfiles().subscribe(res=> {
-                this.securityProfiles = res;
-                console.log(res);
-                
-            });
-
+        this.getProfiles();
         this.defineNewAgentForProfile();
     }
 
-    ngOnInit() {
-
+    getProfiles() {
+        this.agentService.getSecurityProfiles().subscribe(res => {
+            this.securityProfiles = res;
+        });
     }
 
     defineNewAgentForProfile() {
         debugger;
         this.selectedAgent = new Agent();
         this.selectedAgent.rootProfile = new SecurityProfile();
-        this.selectedAgent.rootProfile.name = "Agent1-Profile";
+        // this.selectedAgent.rootProfile.name = "Agent1-Profile";
         this.selectedAgent.rootProfile.domainProfile = {} as SecurityProfileItem;
         this.selectedAgent.rootProfile.applicationProfile = {} as SecurityProfileItem;
         this.selectedAgent.rootProfile.blackWhiteListProfile = {} as BlackWhiteListProfile;
@@ -52,14 +50,26 @@ export class SecurityProfilesComponent implements OnInit {
         this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList = [];
     }
 
+    showNewWizard() {
+        $('#securityProfilesPanel').toggle("slide", { direction: "left" }, 600);
+        $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+
+        this.saveMode = 'NewProfile';
+        this.defineNewAgentForProfile();
+        this.updateCount++;
+        this.startWizard = true;
+        document.getElementById('wizardPanel').scrollIntoView();
+
+    }
+
     showEditWizard(id: number) {
         if (id) {
             $('#securityProfilesPanel').toggle("slide", { direction: "left" }, 600);
             $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
-            
-            this.selectedAgent.rootProfile = this.securityProfiles.find(p=> p.id ==id);
 
-
+            this.selectedAgent.rootProfile = this.securityProfiles.find(p => p.id == id);
+            this.updateCount++;
+            this.saveMode = 'ProfileUpdate';
             this.startWizard = true;
             document.getElementById('wizardPanel').scrollIntoView();
         }
@@ -69,22 +79,32 @@ export class SecurityProfilesComponent implements OnInit {
         this.alert.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
             res => {
                 if (res) {
-                    $('#wizardPanel').hide("slide", { direction: "right" }, 1000);
-                    $('#securityProfilesPanel').show("slide", { direction: "left" }, 1000);
-                    //refresh models 
+                    this.hideWizardWithoutConfirm();
                 }
             }
         );
     }
 
+    hideWizardWithoutConfirm() {
+        this.getProfiles();
+        $('#wizardPanel').hide("slide", { direction: "right" }, 1000);
+        $('#securityProfilesPanel').show("slide", { direction: "left" }, 1000);
+    }
 
     saveProfile() {
         this.notification.success("You pressed save button");
     }
 
     deleteProfile(id: number) {
-
+        this.alert.alertWarningAndCancel('Are You Sure?', 'Item will be deleted!').subscribe(
+            res => {
+                if (res) {
+                   this.agentService.deleteSecurityProfile(id);
+                   this.getProfiles();
+                }
+            }
+        );
     }
- 
+
 
 }

@@ -13,7 +13,7 @@ export class Agent {
     rootProfile: SecurityProfile;
 }
 
-export interface IpWithMask{
+export interface IpWithMask {
     baseIp: string
-    mask:number
+    mask: number
 }

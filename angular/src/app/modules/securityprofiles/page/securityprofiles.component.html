@@ -1,6 +1,17 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
     <section id="securityProfilesPanel" class="securityProfilesPanel">
+        <div class="row" id="newButtonDiv">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-4 text-right">
+              <button mat-raised-button type="button" class="ml-2 btn btn-success btn-sm"
+                matTooltip="Create a new Public IP" (click)="showNewWizard()">
+                <i class="material-icons">add_circle_outline</i> Create New Profile
+              </button>
+            </div>
+          </div>
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
           <div class="card">
@@ -49,7 +60,8 @@
           <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
             <i class="material-icons">arrow_back</i>
           </button>
-          <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard" (saveEmitter)="hideWizard();"></app-profile-wizard>
+          <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard" [saveMode]="saveMode"
+          [updateCount]="updateCount" (saveEmitter)="hideWizardWithoutConfirm();"></app-profile-wizard>
         </div>
       </div>
     </section>

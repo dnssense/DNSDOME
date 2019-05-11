@@ -1,6 +1,6 @@
 export enum AgentType {
-    LOCATION,
-    BOX,
-    DEVICE,
-    MOBILE
+    LOCATION='LOCATION',
+    BOX='BOX',
+    DEVICE='DEVICE',
+    MOBILE='MOBILE'
 }
