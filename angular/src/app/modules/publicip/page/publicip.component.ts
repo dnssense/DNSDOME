@@ -68,7 +68,9 @@ export class PublicipComponent {
       "agentName": ["", [Validators.required]],
       "blockMessage": ["", [Validators.required]],
       "dnsFqdn": ["", []],
-      "ip0": ["", [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]]
+      "ip0": ["", [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]],
+      "cyberXRayIp": ["", [Validators.required, Validators.maxLength(12), Validators.pattern(this.ipv4Pattern)]]
+      
     });
 
     this.defineNewAgentForProfile();

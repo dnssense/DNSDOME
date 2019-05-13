@@ -42,7 +42,7 @@
                         [(ngModel)]="selectedIp.agentAlias" formControlName="agentName">
                     </mat-form-field>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-1">
                     <div class="form-check">
                       <label class="form-check-label">
                         <input checked class="form-check-input" id="IpType" name="IpType" type="radio" value="staticIp"
@@ -51,7 +51,7 @@
                       </label>
                     </div>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-1">
                     <div class="form-check">
                       <label class="form-check-label">
                         <input class="form-check-input" id="IpType" name="IpType" type="radio" value="dynamicIp"
@@ -60,7 +60,7 @@
                       </label>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                     <div class="row">
                       <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-md-12 ml-auto mr-auto" style="display: none;">
                         <mat-form-field>
@@ -81,7 +81,7 @@
                             </mat-form-field>
                           </div>
                           <div class="col-md-1 mt-4" style="margin-left: -20px;">
-                            <legend>/</legend>
+                            <h3>/</h3>
                           </div>
                           <div class="col-md-4" style="margin-left: -20px;">
                             <mat-form-field class="example-full-width has-label">
@@ -109,6 +109,12 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input type="text" name="cyberXRayIp" matInput id="cyberXRayIp" placeholder="Cyber X-Ray Ip"
+                        [(ngModel)]="selectedIp.cyberXRayIp" formControlName="cyberXRayIp">
+                    </mat-form-field>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-md-5">
@@ -127,7 +133,7 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-2"><h3>/</h3>
                     <button mat-raised-button type="button" class="btn btn-warning btn-sm"
                       matTooltip="Create a new security profile for this IP" (click)="showNewProfileWizard()">
                       <i class="material-icons">settings</i> New Profile
