@@ -73,43 +73,44 @@
       </div>
     </form>
   </div>
+  <div class="row">
+      <div class="col-md-6 mr-auto ml-auto">
+          <p-overlayPanel id="dateDialog" class="date-overlay-panel card" #dateOverlay
+              [dismissable]="false" [showCloseIcon]="false">
+              <div class="row form-group">
+                  <div class="col-md-3">
+                      <label class="control-label">Begining Date</label></div>
+                  <div class="col-md-8">
+                      <span class="has-feedback" style="margin-bottom: 5px;padding-right: 0px">
+                          <input class="form-control input-xs" name="startDate" #startDateCal />
+                      </span>
+                  </div>
+                  <div class="col-md-1">
+                      <button class="btn btn-danger btn-sm btn-just-icon">
+                          <i class="material-icons">close</i>
+                      </button>
+                  </div>
+              </div>
+              <div class="row form-group">
+                  <div class="col-md-3"><label class="control-label">Ending Date</label></div>
+                  <div class="col-md-8"><span class="has-feedback" style="padding-right: 0px">
+                          <input type="text" class="form-control input-xs " name="endDate" #endDateCal />
+                      </span></div>
+                  <div class="col-md-1"> <span class="pull-left" style="padding-left: 0px">
+                          <button class="btn btn-danger btn-sm  btn-just-icon">
+                              <i class="material-icons">close</i>
+                          </button>
+                      </span>
+                  </div>
+              </div>
+              <div class="row form-group">
+                  <div class="col-md-12 text-right">
+                      <button class="btn btn-warning btn-sm" aria-hidden="true"
+                          (click)="hideDatePopover()">OK</button>
+                  </div>
+              </div>
+          </p-overlayPanel>
+      </div>
+  </div>
 
 </div>
-
-<p-overlayPanel id="dateDialog" class="date-overlay-panel" #dateOverlay [dismissable]="false" [showCloseIcon]="false">
-  <div>
-    <div class="row form-group">
-      <label for="type" class="control-label col-md-2 col-sm-3 col-xs-3">Begining Date</label>
-      <span class="col-md-8 col-sm-7 col-xs-7 has-feedback" style="margin-bottom: 5px;padding-right: 0px">
-        <input class="form-control input-xs has-feedback-left" name="startDate" #startDateCal style="width: 100%" />
-        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-      </span>
-      <span class="col-md-2 col-sm-2 col-xs-2 pull-left" style="padding-left: 0px">
-        <button class="btn btn-danger btn-sm">
-          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </button>
-      </span>
-    </div>
-    <div class="row form-group">
-      <label for="type" class="control-label col-md-2 col-sm-3 col-xs-3">Ending Date</label>
-      <span class="col-md-8 col-sm-7 col-xs-7 has-feedback" style="padding-right: 0px">
-        <input type="text" class="form-control input-xs has-feedback-left" name="endDate" #endDateCal
-          style="width: 100%" />
-        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-      </span>
-      <span class="col-md-2 col-sm-2 col-xs-2 pull-left" style="padding-left: 0px">
-        <button class="btn btn-danger btn-sm">
-          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </button>
-      </span>
-    </div>
-    <div class="row form-group">
-      <div class="col-md-4 col-sm-6 col-xs-6">
-        <button class="btn btn-warning btn-sm" aria-hidden="true" (click)="hideDatePopover()">
-          <i class="glyphicon glyphicon-ok"></i>
-          OK
-        </button>
-      </div>
-    </div>
-  </div>
-</p-overlayPanel>

@@ -168,6 +168,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       }
 
       this.start_date_pickr = new Flatpickr(this.startDateCal.nativeElement, {
+        animate:false,
         allowInput: false,
         enableTime: true,
         defaultDate: this.startDateee,
@@ -183,6 +184,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       });
       //alert(start_date_pickr.selectedDateObj);
       this.end_date_pickr = new Flatpickr(this.endDateCal.nativeElement, {
+        animate:false,
         allowInput: false,
         enableTime: true,
         defaultDate: this.endDateee,

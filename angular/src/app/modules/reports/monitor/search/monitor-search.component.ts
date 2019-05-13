@@ -179,6 +179,7 @@ export class MonitorSearchComponent
       }
 
       this.start_date_pickr = new Flatpickr(this.startDateCal.nativeElement, {
+        animate:false,
         allowInput: false,
         enableTime: true,
         defaultDate: this.startDateee,
@@ -194,6 +195,7 @@ export class MonitorSearchComponent
       });
       // alert(start_date_pickr.selectedDateObj);
       this.end_date_pickr = new Flatpickr(this.endDateCal.nativeElement, {
+        animate:false,
         allowInput: false,
         enableTime: true,
         defaultDate: this.endDateee,
