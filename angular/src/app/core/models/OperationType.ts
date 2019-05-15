@@ -1,6 +1,6 @@
-public enum OperationType {
+export enum OperationType {
 	CREATE,
 	READ,
 	UPDATE,
-	DELETE;
+	DELETE
 }
