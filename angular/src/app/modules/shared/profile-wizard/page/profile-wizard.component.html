@@ -206,7 +206,7 @@
                           <div class="col-md-8 ml-auto">
                             <mat-form-field>
                               <input type="text" name="blackListText" matInput id="text" placeholder="Black List Domain"
-                                [(ngModel)]="blackListItem" (ngModelChange)="blackListItemValidation($event)">
+                                [(ngModel)]="blackListItem" (ngModelChange)="blackListItemValidation()">
                             </mat-form-field>
                           </div>
                           <div class="col-md-2 mr-auto">
@@ -241,7 +241,7 @@
                           <div class="col-md-8 ml-auto">
                             <mat-form-field>
                               <input type="text" name="whiteListText" matInput id="text" placeholder="White List Domain"
-                                [(ngModel)]="whiteListItem" (ngModelChange)="whiteListItemValidation($event)">
+                                [(ngModel)]="whiteListItem" (ngModelChange)="whiteListItemValidation()">
                             </mat-form-field>
                           </div>
                           <div class="col-md-2 mr-auto">

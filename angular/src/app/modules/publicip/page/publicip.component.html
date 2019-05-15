@@ -73,15 +73,15 @@
                           <div class="col-md-4">
                             <mat-form-field class="example-full-width has-label" style="width:100%;">
                               <input type="text" maxlength="15" name="'ip'+i"
-                                (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)" placeholder="IP" matInput
-                                [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" formControlName="ip{{i}}">
+                                (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)" placeholder="IP"
+                                matInput [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" formControlName="ip{{i}}">
                               <mat-error *ngIf="publicIpForm.get('ip'+i).hasError('required')">
                                 Enter A Valid IP: <strong>127.0.0.1</strong>
                               </mat-error>
                             </mat-form-field>
                           </div>
                           <div class="col-md-1 mt-4" style="margin-left: -20px;">
-                            <h3>/</h3>
+                            <legend>/</legend>
                           </div>
                           <div class="col-md-4" style="margin-left: -20px;">
                             <mat-form-field class="example-full-width has-label">
@@ -112,34 +112,35 @@
                   <div class="col-md-3">
                     <mat-form-field>
                       <input type="text" name="cyberXRayIp" matInput id="cyberXRayIp" placeholder="Cyber X-Ray Ip"
-                        [(ngModel)]="selectedIp.cyberXRayIp" formControlName="cyberXRayIp">
+                        (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)" [(ngModel)]="selectedIp.cyberXRayIp"
+                        formControlName="cyberXRayIp">
                     </mat-form-field>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-md-5">
+                  <div class="col-md-4">
                     <mat-form-field>
                       <input type="text" id="blockMessage" name="blockMessage" matInput id="text"
                         placeholder="Block Message" [(ngModel)]="selectedIp.blockMessage"
                         formControlName="blockMessage">
                     </mat-form-field>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <mat-form-field class=" ml-2">
                       <mat-select placeholder="Security Profiles" matTooltip="Select a predefined profile"
-                      [value]="selectedIp.rootProfile?selectedIp.rootProfile.id:0"
+                        [value]="selectedIp.rootProfile?selectedIp.rootProfile.id:0"
                         (selectionChange)="securityProfileChanged($event.value)">
                         <mat-option *ngFor="let p of securityProfiles" [value]="p.id">{{p.name}}</mat-option>
                       </mat-select>
                     </mat-form-field>
                   </div>
-                  <div class="col-md-2"><h3>/</h3>
+                  <div class="col-md-2">
                     <button mat-raised-button type="button" class="btn btn-warning btn-sm"
                       matTooltip="Create a new security profile for this IP" (click)="showNewProfileWizard()">
                       <i class="material-icons">settings</i> New Profile
                     </button></div>
-                  <div class="col-md-2">
-                    <button mat-raised-button type="button" class="btn btn-success btn-sm mr-1"
+                  <div class="col-md-4 text-right">
+                    <button mat-raised-button type="button" class="btn btn-success mr-1 mt-3"
                       [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile"
                       [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
                       (click)="savePublicIp()">
@@ -175,7 +176,7 @@
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <div class="table-responsive" style="max-height: 500px;">
+                  <div class="table-responsive" style="max-height: 600px;">
                     <table class="table">
                       <thead class="text-success">
                         <tr>
@@ -210,6 +211,10 @@
                           </td>
                           <td>{{pi.blockMessage?pi.blockMessage:"---"}}</td>
                           <td>
+                            <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
+                              matTooltip="Edit Profile" (click)="showProfileEditWizard(pi.id)">
+                              <i class="material-icons">settings</i>
+                            </button>
                             {{pi.rootProfile?pi.rootProfile.name:"---"}}
                           </td>
                           <td class="text-center">

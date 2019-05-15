@@ -48,7 +48,7 @@ export class PublicipComponent {
   startWizard: boolean = false;
   ipRanges: Number[] = [32, 31, 30, 29, 28, 27, 26, 25, 24];
   selectedIp: Agent = new Agent();
-  selectedAgent: Agent= new Agent();
+  selectedAgent: Agent = new Agent();
   ipType: string = 'staticIp';
   dnsFqdn: string;
   searchKey: string;
@@ -60,24 +60,22 @@ export class PublicipComponent {
     private formBuilder: FormBuilder, private agentService: AgentService) {
 
 
-    this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res });
-
-    this.getPublicIpsData();
+    this.getPublicIpsDataAndProfiles();
 
     this.publicIpForm = this.formBuilder.group({
       "agentName": ["", [Validators.required]],
       "blockMessage": ["", [Validators.required]],
       "dnsFqdn": ["", []],
       "ip0": ["", [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]],
-      "cyberXRayIp": ["", [Validators.required, Validators.maxLength(12), Validators.pattern(this.ipv4Pattern)]]
-      
+      "cyberXRayIp": ["", []]
+
     });
 
     this.defineNewAgentForProfile();
 
   }
 
-  getPublicIpsData() {
+  getPublicIpsDataAndProfiles() {
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
       res.forEach(r => {
@@ -89,10 +87,12 @@ export class PublicipComponent {
       console.log(this.publicIps);
 
     });
+
+    this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res });
   }
 
   defineNewAgentForProfile() {
-    
+
     this.selectedAgent.rootProfile = new SecurityProfile();
     this.selectedAgent.rootProfile.domainProfile = {} as SecurityProfileItem;
     this.selectedAgent.rootProfile.applicationProfile = {} as SecurityProfileItem;
@@ -167,7 +167,7 @@ export class PublicipComponent {
     if (!this.validatePublicIpForm()) {
       return;
     }
-debugger
+
     this.selectedAgent = this.selectedIp;
     this.defineNewAgentForProfile();
     this.selectedAgent.rootProfile.name = this.selectedIp.agentAlias + "-Profile";
@@ -179,6 +179,24 @@ debugger
     this.startWizard = true;
     $('#contentLink').click();
     document.getElementById('wizardPanel').scrollIntoView();
+  }
+
+  showProfileEditWizard(id: number) {
+    debugger
+
+    let agent = this.publicIps.find(p => p.id == id);
+    if (agent.rootProfile && agent.rootProfile.id > 0) {
+      this.selectedAgent = agent;
+      this.saveMode = 'ProfileUpdate';
+      $('#publicIpPanel').toggle("slide", { direction: "left" }, 600);
+      $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+      this.startWizard = true;
+      $('#contentLink').click();
+      document.getElementById('wizardPanel').scrollIntoView();
+    } else {
+      this.notification.warning('Profile can not find!');
+    }
+
   }
 
   showNewIpForm() {
@@ -205,7 +223,7 @@ debugger
   hideNewWizard() {
     $('#newIpRow').slideUp(300);
     $('#newButtonDiv').show();
-    this.getPublicIpsData();
+    this.getPublicIpsDataAndProfiles();
   }
 
   showEditWizard(id: string) {
@@ -253,7 +271,7 @@ debugger
           this.agentService.deleteAgent(id).subscribe(res => {
             if (res.status == 200) {
               this.notification.success(res.message);
-              this.getPublicIpsData();
+              this.getPublicIpsDataAndProfiles();
             } else {
               this.notification.error("Operation Failed! " + res.message);
             }
@@ -332,7 +350,7 @@ debugger
     $('#newButtonDiv').show();
   }
 
-  validatePublicIpForm(): boolean{
+  validatePublicIpForm(): boolean {
     const $validator = $('.publicIpForm').validate({
       rules: {
         agentName: {
