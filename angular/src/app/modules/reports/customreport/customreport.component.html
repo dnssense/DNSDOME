@@ -1,14 +1,14 @@
 <div class="main-content" #component>
   <div class="container-fluid">
     <div class="row">
-      <div class="col">
+      <div class="col-md-12">
         <app-customreport-search [searchSetting]="searchSetting" [columns]="columns" (searchEmitter)="search()"
           (searchSettingEmitter)="updateSearchSetting($event)">
         </app-customreport-search>
       </div>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col-md-12">
         <div *ngIf="histogramIsActive">
           <app-histogram [searchSetting]="searchSetting" (searchEmitter)="search($event)">
           </app-histogram>
@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col-md-12">
         <app-customreport-result [data]="data" [searchSetting]="searchSetting" #tableComponent
           (addColumnValueEmitter)="addValuesIntoSelected($event)" [multiplier]="multiplier" [total]="total"
           (searchEmitter)="search()">

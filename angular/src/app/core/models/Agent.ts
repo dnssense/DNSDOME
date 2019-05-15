@@ -8,6 +8,7 @@ export class Agent {
     blockMessage: string;
     isCpEnabled: boolean;
     captivePortalIp: string;
+    cyberXRayIp:string;
     staticSubnetIp: IpWithMask[];
     dynamicIpDomain: string;
     rootProfile: SecurityProfile;
