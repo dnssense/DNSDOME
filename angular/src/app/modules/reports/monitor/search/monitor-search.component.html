@@ -8,7 +8,7 @@
           </div>
           <div class="col-md-11" style="margin-left: -30px;">
             <app-column-tag-input [columns]="columns" [tags]="searchSetting.must" #must
-              [mainCategories]="mainCategories" [agents]="agents" [zoneName]="should"
+              [mainCategories]="mainCategories" [agents]="agents" [zoneName]="must"
               [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
           </div>
         </div>
@@ -18,7 +18,7 @@
           </div>
           <div class="col-md-11" style="margin-left: -30px;">
             <app-column-tag-input [columns]="columns" [tags]="searchSetting.mustnot" #mustNot
-              [mainCategories]="mainCategories" [agents]="agents" [zoneName]="should"
+              [mainCategories]="mainCategories" [agents]="agents" [zoneName]="mustNot"
               [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
           </div>
         </div>
@@ -71,47 +71,46 @@
           </div>
         </div>
         <div class="row">
-            <div class="col-md-6 mr-auto ml-auto">
-                <p-overlayPanel id="dateDialog" class="date-overlay-panel card" #dateOverlay
-                    [dismissable]="false" [showCloseIcon]="false">
-                    <div class="row form-group">
-                        <div class="col-md-3">
-                            <label class="control-label">Begining Date</label></div>
-                        <div class="col-md-8">
-                            <span class="has-feedback" style="margin-bottom: 5px;padding-right: 0px">
-                                <input class="form-control input-xs" name="startDate" #startDateCal />
-                            </span>
-                        </div>
-                        <div class="col-md-1">
-                            <button class="btn btn-danger btn-sm btn-just-icon">
-                                <i class="material-icons">close</i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-3"><label class="control-label">Ending Date</label></div>
-                        <div class="col-md-8"><span class="has-feedback" style="padding-right: 0px">
-                                <input type="text" class="form-control input-xs " name="endDate" #endDateCal />
-                            </span></div>
-                        <div class="col-md-1"> <span class="pull-left" style="padding-left: 0px">
-                                <button class="btn btn-danger btn-sm  btn-just-icon">
-                                    <i class="material-icons">close</i>
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-12 text-right">
-                            <button class="btn btn-warning btn-sm" aria-hidden="true"
-                                (click)="hideDatePopover()">OK</button>
-                        </div>
-                    </div>
-                </p-overlayPanel>
-            </div>
+          <div class="col-md-6 mr-auto ml-auto">
+            <p-overlayPanel id="dateDialog" class="date-overlay-panel card" #dateOverlay [dismissable]="false"
+              [showCloseIcon]="false">
+              <div class="row form-group">
+                <div class="col-md-3">
+                  <label class="control-label">Begining Date</label></div>
+                <div class="col-md-8">
+                  <span class="has-feedback" style="margin-bottom: 5px;padding-right: 0px">
+                    <input class="form-control input-xs" name="startDate" #startDateCal />
+                  </span>
+                </div>
+                <div class="col-md-1">
+                  <button class="btn btn-danger btn-sm btn-just-icon">
+                    <i class="material-icons">close</i>
+                  </button>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-md-3"><label class="control-label">Ending Date</label></div>
+                <div class="col-md-8"><span class="has-feedback" style="padding-right: 0px">
+                    <input type="text" class="form-control input-xs " name="endDate" #endDateCal />
+                  </span></div>
+                <div class="col-md-1"> <span class="pull-left" style="padding-left: 0px">
+                    <button class="btn btn-danger btn-sm  btn-just-icon">
+                      <i class="material-icons">close</i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-md-12 text-right">
+                  <button class="btn btn-warning btn-sm" aria-hidden="true" (click)="hideDatePopover()">OK</button>
+                </div>
+              </div>
+            </p-overlayPanel>
+          </div>
         </div>
       </div>
     </form>
   </div>
- 
+
 
 </div>
