@@ -30,8 +30,8 @@ export class CustomReportComponent implements OnInit, OnDestroy {
 
   @ViewChild("tableDivComponent")
   tableDivComponent: ElementRef;
-  @ViewChild(HistogramComponent)
-  public histogramComponent: HistogramComponent;
+  // @ViewChild(HistogramComponent)
+  // public histogramComponent: HistogramComponent;
   @ViewChild(CustomReportResultComponent)
   public customReportResultComponent: CustomReportResultComponent;
   @ViewChild(CustomReportSearchComponent)
@@ -41,7 +41,7 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   private tableColumnsubscription: Subscription;
   private categoriesSubscription: Subscription;
   private applicationSubscription: Subscription;
-  
+
 
   constructor(private customReportService: CustomReportService, private fastReportService: FastReportService, private notificationService: NotificationService) { }
 
@@ -66,12 +66,13 @@ export class CustomReportComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.histogramIsActive) {
-      this.histogramComponent.refresh();
+      this.drawChart(this.searchSetting)
     } else {
       this.histogramIsActive = true;
+      this.drawChart(this.searchSetting)
     }
     this.customReportResultComponent.search(this.searchSetting);
-    this.drawChart(this.searchSetting)
+    // this.drawChart(this.searchSetting)
   }
 
   drawChart(settings: SearchSetting) {
@@ -80,15 +81,15 @@ export class CustomReportComponent implements OnInit, OnDestroy {
       debugger
       let data: any[] = res;
 
-      let labelArray=[];
+      let labelArray = [];
       let chartSeries = [data.length];
       for (let i = 0; i < data.length; i++) {
         const d = new Date(data[i].date);
-        if (i%3==0) {
-          labelArray.push(d.getHours()+":"+d.getMinutes())
+        if (i % 3 == 0) {
+          labelArray.push(d.getHours() + ":" + d.getMinutes())
         } else {
           labelArray.push(" ")
-        }        
+        }
         chartSeries.push(data[i].value)
       }
 
