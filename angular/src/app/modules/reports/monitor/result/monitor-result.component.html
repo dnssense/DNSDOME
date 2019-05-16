@@ -1,102 +1,125 @@
-<div class="col-md-12">
-  <div class="row">
-    <div class="col">
-      <div class="panel panel-info tablle-scroll">
-        <div class="panel-heading clearfix">
-          <div class="btn-group pull-left" style="margin-top: 3px;">
-            <button class="btn btn-default btn-sm" #actualTarget placement="auto" container="body" [outsideClick]="true"
-              (onHidden)="changeColumns($event)" [popover]="columnTablePanel">
-              <span><i class="material-icons">settings</i></span>
-            </button>
-          </div>
+<div class="row">
+  <div class="col-md-1">
+    <div class="dropdown">
+      <button mat-raised-button class="dropdown-toggle btn btn-default btn-round btn-block btn-sm"
+        data-toggle="dropdown">
+        Columns
+        <b class="caret"></b>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-left">
+        <li class="dropdown-header">Select columns to show</li>
+        <li *ngFor="let col of columns">
+          <label>
+            <input type="checkbox" class="styled ml-3" value="{{col.name}}" [(ngModel)]="col.checked"
+              (ngModelChange)="inputChecked(col)"> {{col.beautyName}}
+          </label>
+        </li>
+      </ul>
+    </div>
+    <!-- <div class="panel panel-info tablle-scroll">
+      <div class="panel-heading clearfix">
+        <div class="btn-group pull-left" style="margin-top: 3px;">
+          <button class="btn btn-default btn-sm" #actualTarget placement="auto" container="body" [outsideClick]="true"
+            (onHidden)="changeColumns($event)" [popover]="columnTablePanel">
+            <span><i class="material-icons">settings</i></span>
+          </button>          
         </div>
       </div>
-      <div #component>
-        <!-- class="panel-body {{loading?'opakkk':''}}" -->
-        <div #tableDivComponent class="panel-body" id="table-data" style="background-color: white;"
-          *ngIf="tableData && tableData.length > 0">
-          <table class="table table-responsive table-hover table-striped percentage-table">
-            <thead>
-              <tr>
-                <td>
-                  #
-                </td>
-                <td *ngFor="let col of selectedColumns">
-                  {{col.beautyName}}o
-                </td>
-              </tr>
-            </thead>
-            <tr *ngFor="let dat of tableData;  let i = index">
-              <td>
-                {{((this.currentPage-1)*searchSetting.topNumber)==0?i+1:((this.currentPage-1)*searchSetting.topNumber)+(i+1)}}
-              </td>
-
-              <td *ngFor="let colName of selectedColumns">
-                <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])" *ngIf="(colName.name!= 'sourceIpCountryCode' && colName.name!='destinationIpCountryCode' && colName.name!='action'
+    </div> -->
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <!-- <div #component> -->
+    <!-- class="panel-body {{loading?'opakkk':''}}" -->
+    <div #tableDivComponent class="table-responsive table-striped" id="table-data" style="background-color: white;"
+      *ngIf="tableData && tableData.length > 0">
+      <table class="table" style="display: table;">
+        <thead>
+          <tr>
+            <td>
+              #
+            </td>
+            <td *ngFor="let col of selectedColumns">
+              {{col.beautyName}}
+            </td>
+          </tr>
+        </thead>
+        <tr *ngFor="let dat of tableData;  let i = index">
+          <td>
+            {{((this.currentPage-1)*searchSetting.topNumber)==0?i+1:((this.currentPage-1)*searchSetting.topNumber)+(i+1)}}
+          </td>
+          <td *ngFor="let colName of selectedColumns">
+            <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])" *ngIf="(colName.name!= 'sourceIpCountryCode' && colName.name!='destinationIpCountryCode' && colName.name!='action'
                  && colName.name!='category' && colName.name!='applicationName' )">
-                  <app-text-limit [text]="colName.name == 'time'?(dat[colName.name]| dateFormat):dat[colName.name]"
-                    [limit]="colName.name == 'domain'|| colName.name=='subdomain'?100:40"></app-text-limit>
+              <app-text-limit [text]="colName.name == 'time'?(dat[colName.name]| dateFormat):dat[colName.name]"
+                [limit]="colName.name == 'domain'|| colName.name=='subdomain'?100:40"></app-text-limit>
+            </a>
+            <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
+              *ngIf="(colName.name== 'sourceIpCountryCode' || colName.name=='destinationIpCountryCode' )">
+              <img src="/assets/img/flags/{{dat[colName.name]}}.png" class="flagImage" />
+              {{dat[colName.name] =='00'?'Local Domain':dat[colName.name] | countryPipe}}
+            </a>
+            <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
+              *ngIf="(colName.name== 'action' )">
+              {{dat[colName.name]? "Allow":"Block"}}
+            </a>
+            <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
+              *ngIf="(colName.name== 'applicationName' )">
+              {{dat[colName.name]}}
+            </a>
+            <ul *ngIf="(colName.name== 'category' )" style="list-style: none;">
+              <li *ngFor="let ca of dat[colName.name]">
+                <a (click)="addColumnValueIntoSelectedValues(colName.name,ca)">
+                  {{ca}}
                 </a>
-                <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
-                  *ngIf="(colName.name== 'sourceIpCountryCode' || colName.name=='destinationIpCountryCode' )">
-                  <img src="/assets/img/flags/{{dat[colName.name]}}.png" class="flagImage" />
-                  {{dat[colName.name] =='00'?'Local Domain':dat[colName.name] | countryPipe}}
-                </a>
-                <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
-                  *ngIf="(colName.name== 'action' )">
-                  {{dat[colName.name]? "Allow":"Block"}}
-                </a>
-                <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
-                  *ngIf="(colName.name== 'applicationName' )">
-                  {{dat[colName.name]}}
-                </a>
-
-                <ul *ngIf="(colName.name== 'category' )" style="list-style: none;">
-                  <li *ngFor="let ca of dat[colName.name]">
-                    <a (click)="addColumnValueIntoSelectedValues(colName.name,ca)">
-                      {{ca}}
-                    </a>
-                  </li>
-                </ul>
-
-              </td>
-            </tr>
-          </table>
-        </div>
-        <!-- class="panel-body {{loading?'opakkk':''}}" -->
-        <div class="panel-body" id="table-data" style="background-color: white;"
-          *ngIf="tableData && tableData.length > 0">
-          <pagination [totalItems]="totalItems" [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)"
-            [boundaryLinks]="true" [maxSize]="maxSize" [itemsPerPage]="searchSetting.topNumber"></pagination>
-        </div>
-        <!-- class="panel-body {{loading?'opakkk':''}}" -->
-        <div class="panel-body" *ngIf="!tableData || tableData.length == 0">
-          <div class="alert alert-danger" #tableDivComponent>
-            <strong>{{ 'Data not found!' }}</strong>
-          </div>
-        </div>
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="100">
+              <pagination [totalItems]="totalItems" [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)"
+              [boundaryLinks]="true" [maxSize]="maxSize" [itemsPerPage]="searchSetting.topNumber"></pagination>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!-- class="panel-body {{loading?'opakkk':''}}" -->
+    <!-- <div class="panel-body" id="table-data" style="background-color: white;" *ngIf="tableData && tableData.length > 0">
+      
+    </div>
+      -->
+    <!-- </div> -->
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel-body" *ngIf="!tableData || tableData.length == 0">
+      <div class="alert alert-default" #tableDivComponent>
+        <strong>{{ 'Data not found!' }}</strong>
       </div>
     </div>
   </div>
+</div>
 
-  <ng-template #columnTablePanel>
-    <div class="">
-      <div class="panel-success">
-        <div class="panel-heading">
-          Select columns to show
-        </div>
-        <div class="panel-body">
-          <div *ngFor="let col of columns; let i=index">
-            <div class=" checkbox checkbox-success overlay-table-columns">
-              <input type="checkbox" class="styled" value="{{col.name}}" [(ngModel)]="col.checked"
-                (ngModelChange)="inputChecked(col)">
-              <label (click)="checkUncheckColumn(col)">
-                {{col.beautyName}}
-              </label>
-            </div>
+
+
+<!-- <ng-template #columnTablePanel>
+    <div class="panel-success">
+      <div class="panel-heading">
+        Select columns to show
+      </div>
+      <div class="panel-body">
+        <div *ngFor="let col of columns; let i=index">
+          <div class=" checkbox checkbox-success overlay-table-columns">
+            <input type="checkbox" class="styled" value="{{col.name}}" [(ngModel)]="col.checked"
+              (ngModelChange)="inputChecked(col)">
+            <label (click)="checkUncheckColumn(col)">
+              {{col.beautyName}}
+            </label>
           </div>
         </div>
       </div>
     </div>
-  </ng-template>
-</div>
+</ng-template> -->

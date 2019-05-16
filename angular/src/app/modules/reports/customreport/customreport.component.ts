@@ -1,5 +1,5 @@
 import { OnInit, ElementRef, OnDestroy, Component, ViewChild } from '@angular/core';
-
+import * as Chartist from 'chartist';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { HistogramComponent } from '../shared/histogram/histogram.component';
@@ -41,6 +41,7 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   private tableColumnsubscription: Subscription;
   private categoriesSubscription: Subscription;
   private applicationSubscription: Subscription;
+  
 
   constructor(private customReportService: CustomReportService, private fastReportService: FastReportService, private notificationService: NotificationService) { }
 
@@ -70,7 +71,91 @@ export class CustomReportComponent implements OnInit, OnDestroy {
       this.histogramIsActive = true;
     }
     this.customReportResultComponent.search(this.searchSetting);
+    this.drawChart(this.searchSetting)
   }
+
+  drawChart(settings: SearchSetting) {
+    this.fastReportService.loadHistogram(settings).takeUntil(this.ngUnsubscribe).subscribe((res: any[]) => {
+
+      debugger
+      let data: any[] = res;
+
+      let labelArray=[];
+      let chartSeries = [data.length];
+      for (let i = 0; i < data.length; i++) {
+        const d = new Date(data[i].date);
+        if (i%3==0) {
+          labelArray.push(d.getHours()+":"+d.getMinutes())
+        } else {
+          labelArray.push(" ")
+        }        
+        chartSeries.push(data[i].value)
+      }
+
+      const dataColouredRoundedLineChart = {
+        labels: labelArray,
+        series: [chartSeries]
+
+      };
+      const optionsColouredRoundedLineChart: any = {
+        lineSmooth: Chartist.Interpolation.cardinal({
+          tension: 2
+        }),
+        axisY: {
+          showGrid: true,
+          offset: 40
+        },
+        axisX: {
+          showGrid: true,
+        },
+        low: Math.min(data.reduce((a, b) => Math.min(a, b)), data.reduce((a, b) => Math.min(a, b))),
+        high: Math.max(data.reduce((a, b) => Math.max(a, b)), data.reduce((a, b) => Math.max(a, b))),
+        showPoint: true,
+        fullWidth: true,
+        height: '250px'
+      };
+
+      const colouredRoundedLineChart = new Chartist.Line('#customReportChart', dataColouredRoundedLineChart,
+        optionsColouredRoundedLineChart);
+
+      this.startAnimationForLineChart(colouredRoundedLineChart);
+    });
+  }
+
+  startAnimationForLineChart(chart: any) {
+    let seq: number, delays: number, durations: number;
+    seq = 0;
+    delays = 80;
+    durations = 500;
+    chart.on('draw', function (data: any) {
+
+      if (data.type === 'line' || data.type === 'area') {
+        data.element.animate({
+          d: {
+            begin: 600,
+            dur: 700,
+            from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+            to: data.path.clone().stringify(),
+            easing: Chartist.Svg.Easing.easeOutQuint
+          }
+        });
+      } else if (data.type === 'point') {
+        seq++;
+        data.element.animate({
+          opacity: {
+            begin: seq * delays,
+            dur: durations,
+            from: 0,
+            to: 1,
+            easing: 'ease'
+          }
+        });
+      }
+    });
+
+    seq = 0;
+  }
+
 
   public addValuesIntoSelected($event) {
 
