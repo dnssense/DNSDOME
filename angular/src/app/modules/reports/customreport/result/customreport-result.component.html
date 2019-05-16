@@ -46,66 +46,59 @@
                         </span>
                     </span>
                     <a class="btn btn-default btn-sm btn-just-icon" style="margin-left: 10px" (click)="refresh()">
-                            <i class="material-icons">refresh</i>
-                        </a>
+                        <i class="material-icons">refresh</i>
+                    </a>
                 </div>
                 <!-- <h4 class="panel-title" style="padding-left: 10px">
                 Custom Report
             </h4> -->
             </div>
-            <div #component>
-                <div #tableDivComponent class="panel-body {{loading?'opakkk':''}}" style="background-color: white;"
-                    *ngIf="data && data.length > 0" id="table-data">
-                    <table class="table table-responsive table-hover table-striped percentage-table">
-                        <thead>
-                            <tr>
-                                <td>
-                                    #
-                                </td>
-                                <td *ngFor="let colz of selectedColumns">
-                                    {{colz.label}}
-                                </td>
-                                <td>Count</td>
-                                <td>
-                                    Percent (%)
-                                </td>
-                            </tr>
-                        </thead>
-                        <tr *ngFor="let dat of data;  let i = index">
-                            <td>
-                                {{i+1}}
-                            </td>
-                            <td *ngFor="let col of selectedColumns; let inde=index">
-                                <div *ngIf="col.column.name == 'action'">
-                                    <app-customreport-result-column [value]="dat[inde]== 'false' ? false:true"
-                                        [columnName]="col.column.name"
-                                        (addColumnValueEmitter)="addValuesIntoSelected($event)">
-                                    </app-customreport-result-column>
-                                </div>
-                                <div *ngIf="col.column.name!='action'">
-                                    <app-customreport-result-column [value]="dat[inde]" [columnName]="col.column.name"
-                                        (addColumnValueEmitter)="addValuesIntoSelected($event)">
-                                    </app-customreport-result-column>
-                                </div>
-                            <td>
-                                {{dat[selectedColumns.length] | customDecimalPipe}}
-                            </td>
-                            <!-- <td>
-                    <progress-component [index]="i" [percentage]="dat[selectedColumns.length]/total"
-                                        [multiplier]="multiplier"></progress-component>
-      
-                  </td> -->
-
+            <!-- <div #component> -->
+            <div #tableDivComponent class="table-responsive table-striped percentage-table {{loading?'opakkk':''}}"
+                style="background-color: white;" *ngIf="data && data.length > 0" id="table-data">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>#</td>
+                            <td *ngFor="let colz of selectedColumns">{{colz.label}}</td>
+                            <td>Count</td>
+                            <!-- <td>Percent (%)</td> -->
                         </tr>
-                    </table>
-                </div>
-                <div #tableComponent class="panel-body" *ngIf="!data || data.length == 0">
-                    <div class="alert alert-danger" #nodataContainer>
-                        <strong>Data not found!</strong>
-                    </div>
-                </div>
+                    </thead>
+                    <tr *ngFor="let dat of data;  let i = index">
+                        <td>{{i+1}}</td>
+                        <td *ngFor="let col of selectedColumns; let inde=index">
+                            <div *ngIf="col.column.name == 'action'">
+                                <app-customreport-result-column [value]="dat[inde]== 'false' ? false:true"
+                                    [columnName]="col.column.name"
+                                    (addColumnValueEmitter)="addValuesIntoSelected($event)">
+                                </app-customreport-result-column>
+                            </div>
+                            <div *ngIf="col.column.name!='action'">
+                                <app-customreport-result-column [value]="dat[inde]" [columnName]="col.column.name"
+                                    (addColumnValueEmitter)="addValuesIntoSelected($event)">
+                                </app-customreport-result-column>
+                            </div>
+                        <td>
+                            {{dat[selectedColumns.length] | customDecimalPipe}}
+                        </td>
+                        <!-- <td>                    <progress-component [index]="i" [percentage]="dat[selectedColumns.length]/total"
+                                        [multiplier]="multiplier"></progress-component>    
+                                </td> -->
+
+                    </tr>
+                </table>
+            </div>
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel-body" *ngIf="!data || data.length == 0">
+            <div class="alert alert-default" #tableDivComponent>
+                <strong>{{ 'Data not found!' }}</strong>
             </div>
         </div>
     </div>
-
 </div>

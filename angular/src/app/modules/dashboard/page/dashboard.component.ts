@@ -39,14 +39,16 @@ export class DashboardComponent implements OnInit {
 
     this.elasticData = [];
 
-    //this.datePipe.transform(Date.now(), 'yyyy-MM-dd')
-    this.dashboardService.getHourlyCompanySummary('1', '2019-04-20').subscribe(res => {
-      this.elasticData = res;
-      console.log(this.elasticData);
+    this.auth.getCurrentUser().subscribe(cu => {
+      this.dashboardService.getHourlyCompanySummary(cu.currentUser.companyId.toString(), this.datePipe.transform(Date.now(), 'yyyy-MM-dd')).subscribe(res => {
+        this.elasticData = res;
+        console.log(this.elasticData);
 
-      this.createConnectedUserChart();
-      this.createPieCharts();
+        this.createConnectedUserChart();
+        this.createPieCharts();
+      });
     });
+
 
   }
 
@@ -104,7 +106,7 @@ export class DashboardComponent implements OnInit {
   }
 
   createConnectedUserChart() {
-   
+
     let hitAverages = [24], todayHits = [24];
     for (let i = 0; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];

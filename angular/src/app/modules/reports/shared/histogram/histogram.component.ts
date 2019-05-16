@@ -56,8 +56,10 @@ export class HistogramComponent implements OnInit, OnDestroy {
 
   public loadHistogram() {
     // this.spinnerService.start();
-
+    debugger
     this.fastReportService.loadHistogram(this.searchSetting).takeUntil(this.ngUnsubscribe).subscribe((res: any[]) => {
+
+      debugger
       let data: any[] = res;
 
       var el: HTMLElement = this.graphComponent.nativeElement;
@@ -78,16 +80,10 @@ export class HistogramComponent implements OnInit, OnDestroy {
               selection: (event) => {
                 // log the min and max of the primary, datetime x-axis
                 try {
-
                   var startDate = Highcharts.dateFormat("%d.%m.%Y %H:%M:%S", event.xAxis[0].min);
-
                   var endDate = Highcharts.dateFormat("%d.%m.%Y %H:%M:%S", event.xAxis[0].max);
-
                   this.searchSetting.dateInterval = startDate + "-" + endDate;
-
                   this.searchEmitter.emit(this.searchSetting);
-
-
                 } catch (e) {
                   alert(e);
                 }
@@ -95,7 +91,6 @@ export class HistogramComponent implements OnInit, OnDestroy {
               },
               load: function (event) {
               }
-
             }
           },
           title: {

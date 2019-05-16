@@ -1,17 +1,10 @@
-import { Component, OnInit, SimpleChanges, OnChanges, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AgentResponse } from 'src/app/core/models/AgentResponse';
-import { MobileCategory } from 'src/app/core/models/MobileCategory';
 import { AlertService } from 'src/app/core/services/alert.service';
-import { TimeProfileResponse } from 'src/app/core/models/TimeProfileResponse';
-import { CollectiveBlockRequest } from 'src/app/core/models/CollectiveBlockRequest';
-import { CollectiveCategory } from 'src/app/core/models/CollectiveCategory';
-import { DayProfileGroup } from 'src/app/core/models/DayProfileGroup';
-import { BoxService } from 'src/app/core/services/BoxService';
 import { Box } from 'src/app/core/models/Box';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { StaticService } from 'src/app/core/services/StaticService';
 import { Agent } from 'src/app/core/models/Agent';
 import { AgentType } from 'src/app/core/models/AgentType';
 import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
@@ -36,7 +29,7 @@ export class DevicesComponent implements OnInit {
     deviceForm: FormGroup;
     //  collectiveBlockReq: CollectiveBlockRequest = new CollectiveBlockRequest();
     //selectedProfile: DayProfileGroup;
-    boxes: Box[] = [];
+    //boxes: Box[] = [];
     selectedBox: Box;
     isNewProfileSelected: boolean = false;
 
@@ -47,9 +40,9 @@ export class DevicesComponent implements OnInit {
     startWizard: boolean;
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService,
-        private boxService: BoxService, private notification: NotificationService) {
+        private notification: NotificationService) {
 
-        this.initializeVariables();
+      //  this.initializeVariables();
 
         this.agentService.getAgents().subscribe(res => {
             res.forEach(r => {
@@ -83,26 +76,26 @@ export class DevicesComponent implements OnInit {
         this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList = [];
     }
 
-    initializeVariables() {
-        this.boxes = [];
-        this.boxService.getBoxes().subscribe(b => {
-            b.forEach(bx => {
-                if (!bx.location) {
-                    this.boxes.push(bx);
-                }
-            });
-            b.forEach(bx => {
-                if (bx.location) {
-                    this.boxes.push(bx);
-                }
-            });
-        });
+    // initializeVariables() {
+    //     this.boxes = [];
+    //     this.boxService.getBoxes().subscribe(b => {
+    //         b.forEach(bx => {
+    //             if (!bx.location) {
+    //                 this.boxes.push(bx);
+    //             }
+    //         });
+    //         b.forEach(bx => {
+    //             if (bx.location) {
+    //                 this.boxes.push(bx);
+    //             }
+    //         });
+    //     });
 
-        this.device = new AgentResponse();
-        this.device.id = null;
-        this.device.agentAlias = null;
-        this.device.agentCode = null;
-    }
+    //     this.device = new AgentResponse();
+    //     this.device.id = null;
+    //     this.device.agentAlias = null;
+    //     this.device.agentCode = null;
+    // }
 
     ngOnInit() {
         this.deviceForm = this.formBuilder.group({
@@ -173,7 +166,7 @@ export class DevicesComponent implements OnInit {
 
     deleteBox(id: number) {
         if (id) {
-            this.boxService.delete(this.boxes.find(b => b.id == id)).subscribe(res => {
+            this.agentService.deleteAgent(id).subscribe(res => {
                 if (res.status == 200) {
                     this.notification.success(res.message);
                 } else {

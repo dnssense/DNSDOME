@@ -8,6 +8,7 @@ import { ApplicationV2 } from 'src/app/core/models/ApplicationV2';
 import { SecurityProfile, BlackWhiteListProfile, SecurityProfileItem } from 'src/app/core/models/SecurityProfile';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { AgentService } from 'src/app/core/services/agent.service';
+import { AlertService } from 'src/app/core/services/alert.service';
 
 declare var $: any;
 
@@ -65,7 +66,7 @@ export class ProfileWizardComponent {
 
   @Output() public saveEmitter = new EventEmitter();
 
-  constructor(private notification: NotificationService, private formBuilder: FormBuilder,
+  constructor(private notification: NotificationService, private alertService: AlertService,
     private staticService: StaticService, private agentService: AgentService) {
 
     this.getCategoriesAndApps();
@@ -114,7 +115,7 @@ export class ProfileWizardComponent {
       this.selectedAgent.rootProfile.applicationProfile.categories.forEach(x => {
         this.applicationList.find(y => y.application.id == x.id).isBlocked = x.isBlocked;
       });
-    }else if (this.saveMode == 'NewProfileWithAgent') {
+    } else if (this.saveMode == 'NewProfileWithAgent') {
 
       this.categoryList.forEach(c => {
         if (c.category.isVisible) {
@@ -158,36 +159,33 @@ export class ProfileWizardComponent {
     }
     console.log(JSON.stringify(this.selectedAgent.rootProfile));
     debugger
-    if (this.saveMode == 'NewProfile') {
-      this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(res => {
-        if (res.status == 200) {
-          this.notification.success(res.message)
-          this.saveEmitter.emit();
-        } else {
-          this.notification.error(res.message)
+
+    this.alertService.alertWarningAndCancel('Are You Sure?', 'Profile will save all of related agents.').subscribe(
+      res => {
+        if (res) {
+          if (this.saveMode == 'NewProfile' || this.saveMode == 'ProfileUpdate') {
+            this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(res => {
+              if (res.status == 200) {
+                this.notification.success(res.message)
+                this.saveEmitter.emit();
+              } else {
+                this.notification.error(res.message)
+              }
+            });
+          } else if (this.saveMode == 'NewProfileWithAgent') {
+            this.agentService.saveAgent(this.selectedAgent).subscribe(res => {
+              if (res.status == 200) {
+                this.notification.success(res.message)
+                this.saveEmitter.emit();
+              } else {
+                this.notification.error(res.message)
+              }
+              console.log(res);
+            });
+          }
         }
-      });
-    } else if (this.saveMode == 'ProfileUpdate') {
-      this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(res => {
-        if (res.status == 200) {
-          this.notification.success(res.message)
-          this.saveEmitter.emit();
-        } else {
-          this.notification.error(res.message)
-        }
-        console.log(res);
-      });
-    } else if (this.saveMode == 'NewProfileWithAgent') {
-      this.agentService.saveAgent(this.selectedAgent).subscribe(res => {
-        if (res.status == 200) {
-          this.notification.success(res.message)
-          this.saveEmitter.emit();
-        } else {
-          this.notification.error(res.message)
-        }
-        console.log(res);
-      });
-    }
+      }
+    );
 
 
   }
