@@ -6,7 +6,7 @@
     </button>
   </span>
   <span class="mt-1" style="border-bottom: 1px solid; border-bottom-color: gray; min-width: 50%;">
-    <ul class="col-md-12 col-xs-12  columnInputDiv " (blur)="blur($event)" dnd-droppable
+    <ul style="background-color: transparent; " class="col-md-12 col-xs-12  columnInputDiv " (blur)="blur($event)" dnd-droppable
       (onDropSuccess)="dropSuccess($event)">
       <li class="tag" *ngFor="let item of tags" dnd-draggable [dragEnabled]="true" [dragData]="item"
         (onDragSuccess)="dragSuccess($event)">

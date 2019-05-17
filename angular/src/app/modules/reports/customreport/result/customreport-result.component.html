@@ -45,8 +45,8 @@
                             </select>
                         </span>
                     </span>
-                    <a class="btn btn-default btn-sm btn-just-icon" style="margin-left: 10px" (click)="refresh()">
-                        <i class="material-icons">refresh</i>
+                    <a class="btn btn-default btn-sm" style="margin-left: 10px" (click)="refresh()">
+                        REFRESH TABLE<i class="material-icons">refresh</i>
                     </a>
                 </div>
                 <!-- <h4 class="panel-title" style="padding-left: 10px">
@@ -55,14 +55,14 @@
             </div>
             <!-- <div #component> -->
             <div #tableDivComponent class="table-responsive table-striped percentage-table {{loading?'opakkk':''}}"
-                style="background-color: white;" *ngIf="data && data.length > 0" id="table-data">
+                style="background-color: white; border-radius: 5px;" *ngIf="data && data.length > 0" id="table-data">
                 <table class="table">
                     <thead>
                         <tr>
                             <td>#</td>
-                            <td *ngFor="let colz of selectedColumns">{{colz.label}}</td>
-                            <td>Count</td>
-                            <!-- <td>Percent (%)</td> -->
+                            <td *ngFor="let colz of selectedColumns"><strong>{{colz.label}}</strong></td>
+                            <td><strong>Count</strong></td>
+                            <td><strong>Percent (%)</strong></td>
                         </tr>
                     </thead>
                     <tr *ngFor="let dat of data;  let i = index">
@@ -82,9 +82,12 @@
                         <td>
                             {{dat[selectedColumns.length] | customDecimalPipe}}
                         </td>
-                        <!-- <td>                    <progress-component [index]="i" [percentage]="dat[selectedColumns.length]/total"
-                                        [multiplier]="multiplier"></progress-component>    
-                                </td> -->
+                        <td>
+                            {{100*dat[selectedColumns.length]/total | number:'1.0-0'}}%
+                            <mat-progress-bar mode="determinate" value="{{100*dat[selectedColumns.length]/total}}">
+                            </mat-progress-bar>
+
+                        </td>
 
                     </tr>
                 </table>

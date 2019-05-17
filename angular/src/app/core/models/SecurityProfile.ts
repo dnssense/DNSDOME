@@ -1,12 +1,15 @@
 
 export class SecurityProfile {
-    id: number
-    name: string
-    isSafeSearchEnabled: boolean= false;
-    isYoutubeStrictModeEnabled: boolean= false;
-    domainProfile: SecurityProfileItem
-    applicationProfile: SecurityProfileItem
-    blackWhiteListProfile: BlackWhiteListProfile
+    id: number;
+    name: string;
+    isSafeSearchEnabled: boolean = false;
+    isYoutubeStrictModeEnabled: boolean = false;
+    domainProfile: SecurityProfileItem;
+    applicationProfile: SecurityProfileItem;
+    blackWhiteListProfile: BlackWhiteListProfile;
+    numberOfUsage: number;
+    isSystem: boolean=false;
+
 }
 
 export interface BlackWhiteListProfile {

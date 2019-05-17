@@ -34,9 +34,9 @@
                   <tbody>
                     <tr *ngFor="let p of securityProfiles">
                       <td>{{p.name}}</td>
-                      <td>XYZ</td>
+                      <td>{{p.numberOfUsage}}</td>
                       <td class="text-right">
-                        <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
+                        <button *ngIf="!p.isSystem" mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
                           mattooltip="Edit item" (click)="showEditWizard(p.id)">
                           <i class="material-icons">edit</i>
                         </button>
