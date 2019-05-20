@@ -6,7 +6,7 @@ import { User } from '../models/User';
 import { OperationResult } from '../models/OperationResult';
 import { ConfigService } from './config.service';
 import { SignupBean } from '../models/SignupBean';
-import { RestUser,  RestUserUpdateRequest, RestEmptyResponse } from '../models/RestServiceModels';
+import { RestUser, RestUserUpdateRequest, RestEmptyResponse } from '../models/RestServiceModels';
 
 /**
  * Created by fatih on 02.08.2016.
@@ -17,12 +17,12 @@ import { RestUser,  RestUserUpdateRequest, RestEmptyResponse } from '../models/R
 })
 export class AccountService {
 
-  private _signupURL = this.config.getApiUrl() + '/services/signup';
+  private _signupURL = this.config.getApiUrl() + '/user';
   private _updateAccountURL = this.config.getApiUrl() + '/user/current';
   private _savePasswordURL = this.config.getApiUrl() + '/user/current';
   private _savePersonalSettingURL = this.config.getApiUrl() + '/services/account/savePersonalSetting';
-/*   private _currentUserURL = this.config.getApiUrl() + '/user/current';
-  private _currentUserRightsURL = this.config.getApiUrl() + '/user/current/role'; */
+  /*   private _currentUserURL = this.config.getApiUrl() + '/user/current';
+    private _currentUserRightsURL = this.config.getApiUrl() + '/user/current/role'; */
 
 
   constructor(private http: HttpClient, private config: ConfigService) {
@@ -46,38 +46,38 @@ export class AccountService {
     return this.http.post<OperationResult>(this._savePersonalSettingURL, body, this.getOptions()).map(res => res);
   }
 
- /*  public getCurrentUser(): Observable<User> {
-    debugger;
-    return this.http.get<RestUser>(this._currentUserURL).map(res =>{
-      let user=new User();
-      user.id=Number(res.id);
-      user.userName=res.username;
-      user.active=Boolean(res.isActive);
-      user.locked=Boolean(res.isLocked);
-      user.name=res.name;
-      if(!user.name)
-      user.name=user.userName||'';
+  /*  public getCurrentUser(): Observable<User> {
+     debugger;
+     return this.http.get<RestUser>(this._currentUserURL).map(res =>{
+       let user=new User();
+       user.id=Number(res.id);
+       user.userName=res.username;
+       user.active=Boolean(res.isActive);
+       user.locked=Boolean(res.isLocked);
+       user.name=res.name;
+       if(!user.name)
+       user.name=user.userName||'';
+ 
+       user.surname='';
+ 
+       user.twoFactorAuthentication=Boolean(res.isTwoFactorAuthentication);
+       user.active=Boolean(res.isActive);
+ 
+       user.language=res.language;
+ 
+       user.gsmCode=res.gsmCode;
+       user.gsm=res.gsm;
+       user.usageType=1;
+       return user;
+ 
+     });
+   } */
 
-      user.surname='';
-
-      user.twoFactorAuthentication=Boolean(res.isTwoFactorAuthentication);
-      user.active=Boolean(res.isActive);
-
-      user.language=res.language;
-
-      user.gsmCode=res.gsmCode;
-      user.gsm=res.gsm;
-      user.usageType=1;
-      return user;
-
-    });
-  } */
-
- /*  public getCurrentUserRights(): Observable<User> {
-    debugger;
-    return this.http.get<User>(this._currentUserRightsURL).map(res => res);
-  }
- */
+  /*  public getCurrentUserRights(): Observable<User> {
+     debugger;
+     return this.http.get<User>(this._currentUserRightsURL).map(res => res);
+   }
+  */
   public signup(user: SignupBean): Observable<OperationResult> {
     return this.http.post<OperationResult>(this._signupURL, JSON.stringify(user, null, ' '), this.getOptions()).map(res => res);
   }
