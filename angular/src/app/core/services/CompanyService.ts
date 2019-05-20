@@ -1,31 +1,27 @@
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Rx";
-import "rxjs/add/operator/map";  
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs/Rx";
+import "rxjs/add/operator/map";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Company } from '../models/Company';
 import { ConfigService } from './config.service';
 import { OperationResult } from '../models/OperationResult';
- 
+
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyService {
-  private _customerURL = this.config.getApiUrl() + '/services/company/get';
-  private _roleSaveURL = this.config.getApiUrl() + '/services/company/save';
-  private _roleUpdateURL = this.config.getApiUrl() + '/services/company/update';
-  private _roleDeleteURL = this.config.getApiUrl() + '/services/company/delete';
+  private getCompanyURL = this.config.getApiUrl() + '/companies';
+  private saveCompanyURL = this.config.getApiUrl() + '/companies/save';
 
-  constructor(private http: HttpClient, private config:ConfigService) {    
+  constructor(private http: HttpClient, private config: ConfigService) {
   }
 
-  public getCompany(): Observable<Company> {
-    return this.http.get<Company>(this._customerURL).map(res => res);
+  public getCompany(): Observable<Company[]> {
+    return this.http.get<Company[]>(this.getCompanyURL).map(res => res);
   }
 
-  public save(role: Company): Observable<OperationResult> {
-    let body = JSON.stringify(role, null, ' ');
-
-    return this.http.post<OperationResult>(this._roleSaveURL, body, this.getOptions()).map(res => res);
+  public saveCompany(com: Company): Observable<OperationResult> {
+    return this.http.post<OperationResult>(this.saveCompanyURL, com, this.getOptions()).map(res => res);
   }
 
   private getOptions() {

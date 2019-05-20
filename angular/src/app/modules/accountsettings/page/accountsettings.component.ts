@@ -58,12 +58,14 @@ export class AccountSettingsComponent implements OnInit {
         this.signupUser.company.name = "";
 
         this.companyService.getCompany().subscribe(res => {
-            this.signupUser.company = res;
+            if (res && res.length > 0) {
+                this.signupUser.company = res[0];
+            }
         });
     }
 
     emailValidationRegister(e) {
-// tslint:disable-next-line: max-line-length
+        // tslint:disable-next-line: max-line-length
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (re.test(String(e).toLowerCase())) {
             this.validEmailRegister = true;
@@ -109,7 +111,7 @@ export class AccountSettingsComponent implements OnInit {
 
             });
 
-            this.userPhoneForm =
+        this.userPhoneForm =
             this.formBuilder.group({
 
                 "gsmCode": ["", [Validators.required]],
@@ -179,7 +181,7 @@ export class AccountSettingsComponent implements OnInit {
     companyFormSubmit() {
 
         if (this.companyInfoForm.valid && this.companyInfoForm.dirty) {
-            this.companyService.save(this.signupUser.company).subscribe(res => {
+            this.companyService.saveCompany(this.signupUser.company).subscribe(res => {
                 this.alert.alertSuccessMessage("Operation Successful", "Company information updated.");
             });
         } else {

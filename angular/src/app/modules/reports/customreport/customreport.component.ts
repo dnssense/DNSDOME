@@ -92,6 +92,13 @@ export class CustomReportComponent implements OnInit, OnDestroy {
         }
         chartSeries.push(data[i].value)
       }
+      if (labelArray.length + 1 < chartSeries.length) {
+        labelArray.push(" ");
+        labelArray.push(new Date(data[data.length-1].date).getHours() + ":" + new Date(data[data.length-1].date).getMinutes())
+      }else{
+        labelArray.push(" ");
+      }
+      
 
       const dataColouredRoundedLineChart = {
         labels: labelArray,

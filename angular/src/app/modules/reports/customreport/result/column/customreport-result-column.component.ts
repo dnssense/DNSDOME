@@ -22,9 +22,9 @@ export class CustomReportResultColumnComponent implements OnInit {
       this.data = this.value;
     } else if (this.columnName == 'sourceIpCountryCode' || this.columnName == 'destinationIpCountryCode') {
       if (this.value != null) {
-        let imageName = this.value.toLowerCase() == "local" ? "tr" : this.value.toLowerCase();
+        let imageName = this.value.toLowerCase() == "local" ? "TR" : this.value.toUpperCase();
         if (this.value != 'Others') {
-          this.data = "<img src='/assets/images/country/flags/" + imageName + ".png' class='flagImage' alt='" + this.value + "' title='" + this.value + "'/>" +
+          this.data = "<img src='/assets/img/flags/" + imageName + ".png' class='flagImage' alt='" + this.value + "' title='" + this.value + "'/>" +
             "&nbsp;" + (this.value == "00" ? "Local Domain" : this.countryPipe.transform(this.value));
         } else {
           this.data = this.value;

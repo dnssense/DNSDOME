@@ -159,8 +159,17 @@ export class ProfileWizardComponent {
     }
     console.log(JSON.stringify(this.selectedAgent.rootProfile));
     debugger
+    let alertMessage = '', alertTitle = '';
+    if (this.selectedAgent.rootProfile.numberOfUsage && this.selectedAgent.rootProfile.numberOfUsage > 0) {
+      alertTitle = this.selectedAgent.rootProfile.numberOfUsage + ' Agent/s using this profile!';
+      alertMessage = 'Profile configuration will change for all of related agents.';
+    } else {
+      alertTitle = 'Are You Sure?';
+      alertMessage = 'Profile configuration will change.';
+    }
 
-    this.alertService.alertWarningAndCancel('Are You Sure?', 'Profile will save all of related agents.').subscribe(
+
+    this.alertService.alertWarningAndCancel(alertTitle, alertMessage).subscribe(
       res => {
         if (res) {
           if (this.saveMode == 'NewProfile' || this.saveMode == 'ProfileUpdate') {

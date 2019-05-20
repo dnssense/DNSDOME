@@ -33,6 +33,8 @@ export class SecurityProfilesComponent {
     getProfiles() {
         this.agentService.getSecurityProfiles().subscribe(res => {
             this.securityProfiles = res;
+            console.log(res);
+            
         });
     }
 
@@ -89,10 +91,6 @@ export class SecurityProfilesComponent {
         this.getProfiles();
         $('#wizardPanel').hide("slide", { direction: "right" }, 1000);
         $('#securityProfilesPanel').show("slide", { direction: "left" }, 1000);
-    }
-
-    saveProfile() {
-        this.notification.success("You pressed save button");
     }
 
     deleteProfile(id: number) {

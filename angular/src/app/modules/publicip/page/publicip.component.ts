@@ -84,7 +84,7 @@ export class PublicipComponent {
         }
       });
       this.publicIpsFiltered = this.publicIps;
-      console.log(this.publicIps);
+      console.log(res);
 
     });
 
@@ -340,6 +340,7 @@ export class PublicipComponent {
     this.agentService.saveAgent(this.selectedIp).subscribe(res => {
       if (res.status == 200) {
         this.notification.success(res.message);
+        this.getPublicIpsDataAndProfiles();
       } else {
         this.notification.error(res.message);
       }
