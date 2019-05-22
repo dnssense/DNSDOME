@@ -12,6 +12,7 @@ export interface RestUser{
     gsm?:string;
     gsmCode?:string;
     language?:string;
+    companyId:number;
 }
 
 

@@ -5,6 +5,8 @@ import { MonitorService } from 'src/app/core/services/MonitorService';
 import { MonitorResultComponent } from './result/monitor-result.component';
 import { MonitorSearchComponent } from './search/monitor-search.component';
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
+import { NotificationService } from 'src/app/core/services/notification.service';
+import { OperationResult } from 'src/app/core/models/OperationResult';
 
 @Component({
   selector: 'app-monitor',
@@ -22,16 +24,16 @@ export class MonitorComponent implements OnInit {
 
   constructor(
     private monitorService: MonitorService,
+    private notificationService: NotificationService,
     public dateFormatPipe: DateFormatPipe
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   public search(searchSetting: SearchSetting) {
     this.monitorResultComponent.currentPage = 1;
     this.monitorResultComponent.refresh();
   }
-
   public addValuesIntoSelected($event) {
     let column: string = $event.column;
     let value = $event.data;
@@ -42,17 +44,12 @@ export class MonitorComponent implements OnInit {
         break;
       }
     }
-    // if (exists) {
-    //   this.notificationService.notify(OperationResult.getResult("error", "Selection Exists", column + "=" + value + " exists in your criteria"));
-    //   return;
-    // }
-
+    if (exists) {
+      this.notificationService.warning(column + "=" + value + " exists in your criteria");
+      return;
+    }
     this.searchSetting.must.push(new ColumnTagInput(column, '=', value));
-
-    //this.notificationService.notify(OperationResult.getResult("info", "Selection Added", column + "=" + (column == 'time' ? this.dateFormatPipe.transform(value, []) : value) + " Added into your criteria"));
-
-    //todo BU kısmın daha profesyonel olması lazım.
-    //kontroller, manuel should, must lar arasında geçiş...
+    this.notificationService.info(column + "=" + (column == 'time' ? this.dateFormatPipe.transform(value, []) : value) + " added into your criteria");
     this.monitorSearchComponent.setSearchSetting(this.searchSetting);
   }
 

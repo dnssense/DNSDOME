@@ -34,8 +34,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   public user: SignupBean;
   private privacyPolicy: boolean = false;
   private captcha: string;
-  private host:ConfigHost;
-  public captcha_key: string;
+  public host:ConfigHost;
+  public captcha_key: string = "6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58";//"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
 
   emailFormControl = new FormControl('', [

@@ -13,6 +13,7 @@ export class User {
     public locked: boolean = false;
     public active: boolean = true;
     public roles: Role;
+    public companyId:number;
    // public company: Company;
    // public passwordAgain: string;
    /*  public gsmVerification: boolean = false;

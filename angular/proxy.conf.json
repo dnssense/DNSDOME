@@ -1,7 +1,6 @@
 {
-
-  "/api/dashboard/*": {
-    "target": "http://localhost:9010",
+  "/api/monitor/*": {
+    "target": "http://localhost:8181",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
@@ -9,9 +8,26 @@
       "^/api": ""
     }
   },
-  "/api/user/*": {
-
-    "target": "http://localhost:9002",
+  "/api/quick-reports/*": {
+    "target": "http://localhost:8181",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  },
+  "/api/custom-reports/*": {
+    "target": "http://localhost:8181",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  },
+  "/api/locations/*": {
+    "target": "http://localhost:8181",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,

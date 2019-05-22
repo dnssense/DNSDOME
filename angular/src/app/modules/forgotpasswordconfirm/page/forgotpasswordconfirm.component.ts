@@ -25,24 +25,23 @@ import { ValidationService } from 'src/app/core/services/validation.service';
 
 declare var $: any;
 
-export interface ForgotPasswordModel{
-    password?:string;
-    passwordAgain?:string;
+export interface ForgotPasswordModel {
+  password?: string;
+  passwordAgain?: string;
 }
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-      const isSubmitted = form && form.submitted;
-      return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-    }
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
+}
 
 
 @Component({
-    selector: 'app-forgotpasswordconfirm',
-    templateUrl: 'forgotpasswordconfirm.component.html'
+  selector: 'app-forgotpasswordconfirm',
+  templateUrl: 'forgotpasswordconfirm.component.html'
 })
-
 export class ForgotPasswordConfirmComponent implements OnInit, OnDestroy {
     host:ConfigHost;
     forgotPasswordConfirmForm:any;
@@ -73,44 +72,44 @@ export class ForgotPasswordConfirmComponent implements OnInit, OnDestroy {
 
 
 
+  }
+  ngOnDestroy(): void {
+
+
+  }
+  ngOnInit() {
+    const navbar: HTMLElement = this.element.nativeElement;
+    this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
+    const body = document.getElementsByTagName('body')[0];
+    body.classList.add('register-page');
+    body.classList.add('off-canvas-sidebar');
+    const card = document.getElementsByClassName('card')[0];
+    setTimeout(function () {
+      // after 1000 ms we add the class animated to the login/register card
+      card.classList.remove('card-hidden');
+    }, 700);
+
+  }
+
+
+  isFormValid() {
+    if (this.model != null && this.forgotPasswordConfirmForm.dirty
+      && this.forgotPasswordConfirmForm.valid
+      && this.captcha != null) {
+      return true;
     }
-    ngOnDestroy(): void {
+    return false;
+  }
 
+  handleCaptcha($event) {
+    this.captcha = $event;
+  }
 
-    }
-    ngOnInit() {
-        const navbar: HTMLElement = this.element.nativeElement;
-        this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
-        const body = document.getElementsByTagName('body')[0];
-        body.classList.add('register-page');
-        body.classList.add('off-canvas-sidebar');
-        const card = document.getElementsByClassName('card')[0];
-        setTimeout(function () {
-          // after 1000 ms we add the class animated to the login/register card
-          card.classList.remove('card-hidden');
-        }, 700);
-
-      }
-
-
-      isFormValid() {
-        if (this.model != null && this.forgotPasswordConfirmForm.dirty
-           && this.forgotPasswordConfirmForm.valid
-         && this.captcha != null) {
-          return true;
-        }
-        return false;
-      }
-
-      handleCaptcha($event) {
-        this.captcha = $event;
-      }
-
-      forgotPasswordConfirm(){
-        this.authService.forgotPasswordConfirm(this.forgotId,this.model.password,this.model.passwordAgain).subscribe(x=>{
-            this.router.navigateByUrl("/login");
-        });
-      }
+  forgotPasswordConfirm() {
+    this.authService.forgotPasswordConfirm(this.forgotId, this.model.password, this.model.passwordAgain).subscribe(x => {
+      this.router.navigateByUrl("/login");
+    });
+  }
 
 
 

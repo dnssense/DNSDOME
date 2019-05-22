@@ -6,7 +6,6 @@ import { PublicIP } from '../models/PublicIP';
 import { WAgentIpGroup } from '../models/WAgentIpGroup';
 import { OperationResult } from '../models/OperationResult';
 
-
 @Injectable({ providedIn: 'root' })
 export class PublicIPService {
 
@@ -21,6 +20,10 @@ export class PublicIPService {
 
   constructor(private http: HttpClient, private config: ConfigService) {
 
+  }
+
+  public getMyIp():Observable<any>{
+    return  this.http.get<any>('https://jsonip.com').map( data => data);
   }
 
   public getAgents() {

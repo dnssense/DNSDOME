@@ -8,7 +8,8 @@ import { map, catchError, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Session } from '../models/Session';
 import { LoggerService } from './logger.service';
-import { AuthHttp, JwtHelper, tokenNotExpired } from 'angular2-jwt';
+import { JwtHelper } from 'angular2-jwt';
+import { SignupBean } from '../models/SignupBean';
 import { OperationResult } from '../models/OperationResult';
 import { Role, RestRole, RestRight, RestUserRoleRight } from '../models/Role';
 import { Clearance } from '../models/Clearance';
@@ -34,17 +35,13 @@ export class AuthenticationService {
   currentSession: Session;
   private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
-  currentUserPropertiesChanged:Subject<any>;
+  currentUserPropertiesChanged: Subject<any>;
   constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
     private router: Router, private logger: LoggerService) {
 
-      this.currentUserPropertiesChanged=new Subject();
-
+    this.currentUserPropertiesChanged = new Subject();
     this.refreshTokenTimer = interval(55 * 60 * 1000);
-    this.refreshTokenTimer.subscribe(() => {
-
-      this.refreshToken();
-    });
+    this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
 
   }
 
@@ -52,7 +49,6 @@ export class AuthenticationService {
   saveSession() {
 
     localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
-
     this.currentUserPropertiesChanged.next('changed');
   }
 
@@ -64,25 +60,19 @@ export class AuthenticationService {
         const session: Session = JSON.parse(sessionString);
         if (session) {
           this.currentSession = session;
-
-
-            this.refreshToken();
-
-
-
+          this.refreshToken();
         }
       }
     } catch (err) {
-
-
       this.logger.console(err);
       this.logout();
     }
+
   }
 
   refreshToken() {
-    if (!this.currentSession ||  !this.currentSession.refreshToken) {
-    return;
+    if (!this.currentSession || !this.currentSession.refreshToken) {
+      return;
     }
     this.logger.console('refreshing token');
     const httpOptions = {
@@ -101,7 +91,6 @@ export class AuthenticationService {
         this.getCurrentUser().subscribe(x => {
 
         });
-
         this.logger.console(res.refreshToken);
         this.logger.console(res.token);
       } else {
@@ -113,14 +102,10 @@ export class AuthenticationService {
 
   getCurrentUserRoles(): Observable<Session> {
 
-
     return this.http.get<RestUserRoleRight>(this.userRole).pipe(map((x: RestUserRoleRight) => {
-
-
-
-      // todo: buranın ciddi sorunları var.
+      // TODO: buranın ciddi sorunları var.
       x.roles.forEach((y: RestRole) => {
-        const  role = new Role();
+        const role = new Role();
         role.name = y.name;
         y.rights.forEach((a: RestRight) => {
           const cleareance = new Clearance();
@@ -128,7 +113,7 @@ export class AuthenticationService {
           role.clearences = [];
           role.clearences.push(cleareance);
         });
-       this.currentSession.currentUser.roles = role;
+        this.currentSession.currentUser.roles = role;
 
       });
       //localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
@@ -147,45 +132,39 @@ export class AuthenticationService {
       .pipe(
         mergeMap((res: RestUser) => {
 
-
           this.logger.console(res);
 
           const user = new User();
+          user.companyId = Number(res.companyId);
           user.id = Number(res.id);
           user.userName = res.username;
           user.active = Boolean(res.isActive);
           user.locked = Boolean(res.isLocked);
           user.name = res.name;
           if (!user.name) {
-          user.name = user.userName || '';
+            user.name = user.userName || '';
           }
 
           user.surname = '';
 
           user.twoFactorAuthentication = Boolean(res.isTwoFactorAuthentication);
           user.active = Boolean(res.isActive);
-
           user.language = res.language;
-
           user.gsmCode = res.gsmCode;
           user.gsm = res.gsm;
           user.usageType = 1;
-
           this.currentSession.currentUser = user;
-
 
           return this.getCurrentUserRoles();
         }));
   }
-
-
 
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
       return this.http.
       post<RestPreloginResponse>(this.preloginUrl, {username: email, password: pass}, this.getHttpOptions())
       .map(res => {
-          return res;
+        return res;
       });
 
   }
@@ -199,10 +178,8 @@ export class AuthenticationService {
     return httpOptions;
   }
 
-
-
   login(email: string, pass: string): Observable<Session> {
-
+    //debugger;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -210,7 +187,6 @@ export class AuthenticationService {
       })
     };
     const body = encodeURI('grant_type=password&username=' + email + '&password=' + pass);
-
 
     return this.http.post<Session>(this.loginUrl, body, httpOptions)
       .pipe(mergeMap((res: any) => {
@@ -220,13 +196,9 @@ export class AuthenticationService {
         this.currentSession.refreshToken = res.refreshToken;
         return this.getCurrentUser();
       }), catchError(err => {
-
         this.currentSession = null;
         throw err;
-
       }));
-
-
   }
 
   clear() {
@@ -236,26 +208,31 @@ export class AuthenticationService {
   }
 
   logout() {
-
     this.clear();
-
     this.router.navigateByUrl('/login');
-
-
   }
 
+<<<<<<< HEAD
   forgotPassword(email:string): Observable<OperationResult> {
 
 
     return this.http.post<OperationResult>(this._forgotPasswordSendURL, {username:email}, this.getHttpOptions())
+=======
+  forgotPassword(signupBean: SignupBean): Observable<OperationResult> {
+    return this.http.post<OperationResult>(this._forgotPasswordSendURL, signupBean, this.getHttpOptions())
+>>>>>>> 810ffb832450354993a9bcad1fc0c5050cdc5f67
       .map(res => res);
   }
 
-
-  forgotPasswordConfirm(key:string,password:string,passwordAgain:string): Observable<OperationResult> {
-
+  forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {
     return this.http.post<any>(this._forgotPasswordChangeURL,
+<<<<<<< HEAD
        {key:key,password:password,passwordAgain:passwordAgain}, this.getHttpOptions())
+=======
+      JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions())
+>>>>>>> 810ffb832450354993a9bcad1fc0c5050cdc5f67
 
   }
+
+
 }

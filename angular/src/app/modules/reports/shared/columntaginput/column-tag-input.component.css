@@ -1,4 +1,4 @@
-ul {
+ ul {
   display: block;
   width: 100%;
   padding: 1px 3px;
@@ -22,6 +22,12 @@ li {
   overflow-y: auto;
 }
 
+input {
+  border: 0px none;
+  outline: none;
+  height: 26px;
+}
+
 li.tag {
   background-color: #5bc0de;
   color: #ffffff;
@@ -29,6 +35,8 @@ li.tag {
   margin-top: 1px;
   padding-top: 3px;
   line-height: 1.2;
+  min-height: 28px;
+  border-radius: 3px;
 }
 
 li.tag.nopadding {
@@ -37,14 +45,51 @@ li.tag.nopadding {
   padding: 0px;
 }
 
-input {
-  border: 0px none;
-  outline: none;
-  height: 26px;
+.taginput-bottom-div {
+  z-index: 999;
+  position: absolute;
+  font-size: 12px !important;
+  background: #5bc0de;
+  padding: 7px 2px;
+  border: 1px solid #ccc;
+  width: 350px;
+  height: 25px;
+  min-width: 290px;
+  border-radius: 3px;
+}
+
+.tagInputSpan .input-group-btn {
+  padding-bottom: 1px !important;
+}
+
+.taginput-bottom-div select {
+  padding: 3px 2px;
+  font-size: 15px;
+  line-height: 15px;
+  height: 22px !important;
+}
+
+.taginput-bottom-div input {
+  padding: 1px 2px;
+  font-size: 12px;
+  line-height: 15px;
+  height: 23px !important;
+}
+
+.columnInputDiv {
+  font-size: 12px !important;
+  margin-bottom: 0px !important;
+  border-radius: 3px;
+}
+
+.inputTagButtonDiv {
+  height: 20px !important;
+  padding: 1px 2px !important;
 }
 
 .inputCollapsed {
   background-color: #fff;
+
 }
 
 .inputExpanded {
@@ -52,4 +97,10 @@ input {
   padding: 1px 2px !important;
   line-height: 2;
   width: auto;
+}
+
+.taginput-bottom-div .btn-ok {
+  padding: 2px 5px !important;
+  background-color: #2aabd2;
+  color: #fff;
 }

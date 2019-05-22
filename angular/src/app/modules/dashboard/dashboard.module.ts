@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { DashboardComponent } from './page/dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { HttpClient } from '@angular/common/http';
@@ -8,6 +8,7 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 
 @NgModule({
   declarations: [DashboardComponent],
+  providers:[DatePipe],
   imports: [
     CommonModule,
     DashboardRoutingModule,

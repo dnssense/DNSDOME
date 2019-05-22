@@ -1,6 +1,6 @@
 {
   "name": "ui.dnssense",
-  "version": "1.0.5",
+  "version": "1.0.9",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -57,6 +57,7 @@
     "googleapis": "19.0.0",
     "gridstack": "^0.4.0",
     "hammerjs": "2.0.8",
+    "highcharts": "^5.0.14",
     "jasny-bootstrap": "3.1.3",
     "jquery": "3.2.1",
     "jquery-ui-dist": "^1.12.1",
@@ -78,6 +79,7 @@
     "primeng": "^5.2.0",
     "rxjs": "~6.3.3",
     "rxjs-compat": "6.1.0",
+    "select2": "^4.0.5",
     "sweetalert2": "7.22.2",
     "tldjs": "^2.3.1",
     "tslib": "^1.9.0",
@@ -85,7 +87,9 @@
     "uglify-js": "3.3.28",
     "validate": "3.0.1",
     "validator": "^9.4.1",
+    "waypoints": "^4.0.1",
     "web-animations-js": "2.3.1",
+    "webui-popover": "^1.2.18",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
@@ -97,7 +101,6 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
-    "highcharts": "^5.0.15",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~3.1.1",

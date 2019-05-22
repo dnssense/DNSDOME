@@ -1,0 +1,7 @@
+export enum CategoryType {
+    SECURITY = "SECURITY",
+    HARMFULL_CONTENT = "HARMFULL_CONTENT",
+    GRAY_LIST = "GRAY_LIST",
+    UNSAFE_LIST = "UNSAFE_LIST",
+    SAFE_LIST = "SAFE_LIST",
+}

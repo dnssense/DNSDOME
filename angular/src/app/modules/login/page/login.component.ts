@@ -62,12 +62,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   isConfirmTimeEnded: boolean = true;
   maxRequest: number = 3;
 
-  host:ConfigHost;
+  host: ConfigHost;
 
   private smsInformation: RestPreloginSmsResponse;
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
     private element: ElementRef, private notification: NotificationService,
-    private smsService: SmsService, private capthaService: CaptchaService,private configService:ConfigService) {
+    private smsService: SmsService, private capthaService: CaptchaService, private configService: ConfigService) {
     this.isFailed = false;
     this.nativeElement = element.nativeElement;
     this.sidebarVisible = false;
@@ -116,10 +116,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login() {
+    //debugger;
     if (this.loginForm.valid) {
 
       this.authService.prelogin(this.email, this.password).subscribe(
         val => {
+          console.log("prelogindeyim");
+          console.log(val);
 
           if (val.user.isTwoFactorAuthentication) {
             this.open2FA(val);
@@ -160,8 +163,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   open2FA(val: RestPreloginResponse) {
-
-
+    $('#twoFactorDiv').slideDown(500);
+    $('#loginDiv').slideUp(500);
+    $('#forgotPasswordDiv').hide();
     this.smsService.sendSmsForLogin(val).subscribe(res => {
       this.twoFactorPhone = val.user.gsm;
       this.smsInformation = res;
@@ -169,9 +173,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.isConfirmTimeEnded = false;
       this.endTime = new Date();
       this.endTime.setMinutes(new Date().getMinutes() + 2);
-      $('#twoFactorDiv').slideDown(500);
-      $('#loginDiv').slideUp(500);
-      $('#forgotPasswordDiv').hide();
+
 
     });
 
@@ -215,7 +217,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   sendPasswordActivationCode() {
-
+    debugger;
     if (this.validEmailLogin) {
       let forgoter: SignupBean = new SignupBean();
       forgoter.userName = this.forgoterEmail;
@@ -233,10 +235,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       });
     }
-  }
-
-  send2FAActivationCode() {
-
   }
 
 

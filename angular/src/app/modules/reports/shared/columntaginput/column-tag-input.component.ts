@@ -1,19 +1,13 @@
-import {
-  ElementRef,
-  ViewChild,
-  Renderer,
-  Input,
-  OnInit,
-  Component
-} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Renderer, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
-import { LogColumn } from 'src/app/core/models/LogColumn';
-import { Location } from 'src/app/core/models/Location';
-import { WApplication } from 'src/app/core/models/WApplication';
 import { Category } from 'src/app/core/models/Category';
-import { OperationResult } from 'src/app/core/models/OperationResult';
+import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import * as countryList from 'src/app/core/models/Countries';
+import { Location } from 'src/app/core/models/Location';
+import { LogColumn } from 'src/app/core/models/LogColumn';
+import { WApplication } from 'src/app/core/models/WApplication';
+import { FastReportService } from 'src/app/core/services/FastReportService';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 declare var jQuery: any;
 
@@ -35,7 +29,6 @@ export class ColumnTagInputComponent implements OnInit {
   @Input() public mainApplications: WApplication[];
   @Input() public applicationsMap = new Map<number, WApplication[]>();
   @Input() public mainCategories: Category[];
-  @Input() public categoriesMap = new Map<number, Category[]>();
   @Input() public agents: Location[];
 
   public inputCollapsed: boolean = true;
@@ -50,13 +43,13 @@ export class ColumnTagInputComponent implements OnInit {
 
   public countries: any = [];
 
-  // private tableColumnsubscription: Subscription;
+  private tableColumnsubscription: Subscription;
 
   //deleted constructer parameters
-  // public fastReportService: FastReportService,
-  // public notificationService: NotificationService,
   // public roksitTranslateService: RoksitTranslateService,
-  public constructor(private renderer: Renderer) {
+  public constructor(private renderer: Renderer,
+    private fastReportService: FastReportService,
+    private notificationService: NotificationService) {
     if (!this.tags) {
       this.tags = [];
       this.current = new ColumnTagInput('domain', '=', '');
@@ -64,11 +57,11 @@ export class ColumnTagInputComponent implements OnInit {
       this.currentColumn = 'domain';
     }
 
-    // this.tableColumnsubscription = this.fastReportService.tableColumns.subscribe(
-    //   (res: LogColumn[]) => {
-    //     this.columns = res;
-    //   }
-    // );
+    this.tableColumnsubscription = this.fastReportService.tableColumns.subscribe(
+      (res: LogColumn[]) => {
+        this.columns = res;
+      }
+    );
   }
 
   ngOnInit() {
@@ -119,13 +112,10 @@ export class ColumnTagInputComponent implements OnInit {
     this.positionInputElement(this.tagInput.nativeElement);
   }
 
-  //burada hangi sekilde gelecek form onu yapacagiz
   public inputsChanged($event, select: boolean) {
     $event.stopPropagation();
 
     if ($event.keyCode === 13) {
-      // this.tags.push(this.current);
-      //   this.current = new ColumnTagInput(this.columns[0].name,"=","");
       this.addTag(event);
       return;
     }
@@ -170,7 +160,6 @@ export class ColumnTagInputComponent implements OnInit {
 
   blur($event) {
     $event.stopPropagation();
-    //   this.closeTagInputDiv();
   }
 
   public inputClicked($event) {
@@ -184,7 +173,6 @@ export class ColumnTagInputComponent implements OnInit {
     this.currentColumn = value.field;
     this.currentOperator = value.operator;
     this.currentInput = value.value;
-    //  this.currentinputValue=""+this.currentColumn+this.currentOperator+this.currentInput;
 
     this.inputCollapsed = false;
     this.positionInputElement($event.target);
@@ -229,7 +217,6 @@ export class ColumnTagInputComponent implements OnInit {
     }
 
     if (addStatus) {
-      //todo... Bu kısmı yapmalıyız.. İkinci elemena eklenmeli mi ?id ye gore alıp bakabilirisn...
       this.tags.push(
         new ColumnTagInput(
           this.currentColumn,
@@ -243,12 +230,9 @@ export class ColumnTagInputComponent implements OnInit {
     this.currentColumn = this.current.field;
     this.currentOperator = this.current.operator;
     this.currentInput = this.current.value;
-    // this.currentinputValue=""+this.currentColumn+this.currentOperator+this.currentInput;
     this.currentinputValue = '';
     this.inputCollapsed = true;
     this.inputSelected = false;
-
-    // this.positionInputElement(this.tagInput.nativeElement);
   }
 
   public removeTag(tag) {
@@ -311,13 +295,7 @@ export class ColumnTagInputComponent implements OnInit {
         /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/
       );
     if (!isValid) {
-      // ip valid degil
-      // var translate = this.roksitTranslateService.translateKey(
-      //   'LOCATION.INVALIDIP'
-      // );
-      // this.notificationService.notify(
-      //   OperationResult.getResult('error', 'Problem', translate)
-      // );
+      this.notificationService.error("Invalid IP");
       return false;
     }
     return true;

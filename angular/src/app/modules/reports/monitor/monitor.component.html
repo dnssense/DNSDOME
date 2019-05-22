@@ -1,16 +1,17 @@
 <div class="main-content" #component>
-  <div class="container col-md-12">
-    <app-monitor-search
-      [searchSetting]="searchSetting"
-      (searchEmitter)="search($event)"
-      (searchSettingEmitter)="updateSearchSetting($event)"
-    >
-    </app-monitor-search>
-  </div>
-  <div class="container-fluid col-md-12 margin15">
-    <app-monitor-result
-      [searchSetting]="searchSetting"
-      (addColumnValueEmitter)="addValuesIntoSelected($event)"
-    ></app-monitor-result>
+  <div class="container-fluid">
+    <div class="row" style="margin-top:-15px">
+      <div class="col-md-12">
+        <app-monitor-search [searchSetting]="searchSetting" (searchEmitter)="search($event)"
+          (searchSettingEmitter)="updateSearchSetting($event)">
+        </app-monitor-search>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <app-monitor-result [searchSetting]="searchSetting" (addColumnValueEmitter)="addValuesIntoSelected($event)">
+        </app-monitor-result>
+      </div>
+    </div>
   </div>
 </div>

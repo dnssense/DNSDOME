@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { ApplicationProfile } from 'src/app/core/models/ApplicationProfile';
@@ -10,14 +10,24 @@ import { DomainProfilesService } from 'src/app/core/services/DomainProfilesServi
 import { BlackWhiteListService } from 'src/app/core/services/BlackWhiteListService';
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
 import { PublicIP } from 'src/app/core/models/PublicIP';
+import { MobileCategory } from 'src/app/core/models/MobileCategory';
+import { AgentResponse } from 'src/app/core/models/AgentResponse';
+import { CollectiveBlockRequest } from 'src/app/core/models/CollectiveBlockRequest';
+import { AgentService } from 'src/app/core/services/agent.service';
+import { Agent, IpWithMask } from 'src/app/core/models/Agent';
+import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
+import { AgentType } from 'src/app/core/models/AgentType';
 
 declare var $: any;
 
-export class IpNumber {
-  ip: string = "";
-  range: number = 0;
-}
+// export class IpNumber {
+//   ip: string = "";
+//   range: number = 0;
+// }
 
+declare interface JsonIP {
+  ip: string
+}
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
@@ -29,137 +39,68 @@ declare interface DataTable {
   templateUrl: './publicip.component.html',
   styleUrls: ['./publicip.component.sass']
 })
-export class PublicipComponent implements OnInit {
+export class PublicipComponent {
+
   ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
-  publicIps: PublicIP[];
-  publicIpsFiltered: PublicIP[];
+  publicIps: Agent[] = [];
+  publicIpsFiltered: Agent[];
   publicIpForm: FormGroup;
-  agentName: string;
-  ipList: IpNumber[];
-  blockMessage: string;
-
-  appProfiles: ApplicationProfile[];
-  applicationSystemProfiles: ApplicationProfile[];
-  applicationUserProfiles: ApplicationProfile[];
-
-  domainProfiles: DomainProfile[];
-  userProfiles: DomainProfile[];
-  systemProfiles: DomainProfile[];
-
-  bwList: BWList[];
-  userBWList: BWList[];
-  systemBWList: BWList[];
-  ipRanges: Number[] = [24, 25, 26, 27, 28, 29, 30, 32];
-  selectedIp: PublicIP = new PublicIP();
+  startWizard: boolean = false;
+  ipRanges: Number[] = [32, 31, 30, 29, 28, 27, 26, 25, 24];
+  selectedIp: Agent = new Agent();
+  selectedAgent: Agent = new Agent();
   ipType: string = 'staticIp';
   dnsFqdn: string;
-  dataTable: DataTable = {} as DataTable;
-  dataTableRows: string[][] = [];
   searchKey: string;
+  isNewItemUpdated: boolean = false;
+  saveMode: string;
+  securityProfiles: SecurityProfile[];
 
-  constructor(private alertService: AlertService, private notification: NotificationService, private bwService: BlackWhiteListService,
-    private formBuilder: FormBuilder, private apService: ApplicationProfilesService, private dpService: DomainProfilesService,
-    private publicIpService: PublicIPService) {
-   
-    this.getPublicIpsData();
+  constructor(private alertService: AlertService, private notification: NotificationService,
+    private formBuilder: FormBuilder, private agentService: AgentService) {
+
+
+    this.getPublicIpsDataAndProfiles();
 
     this.publicIpForm = this.formBuilder.group({
       "agentName": ["", [Validators.required]],
       "blockMessage": ["", [Validators.required]],
       "dnsFqdn": ["", []],
-      "ip0": ["", [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]]
-    });
-
-  }
-
-  getPublicIpsData() {
-    this.publicIpService.getPublicIPs().subscribe(data => {
-      this.publicIps = data;
-      this.publicIpsFiltered = data;
+      "ip0": ["", [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]],
+      "cyberXRayIp": ["", []]
 
     });
+
+    this.defineNewAgentForProfile();
+
   }
 
-  ngOnInit() {
-    this.selectedIp = new PublicIP();
-    this.selectedIp.profile = new DomainProfile();
-    this.selectedIp.appUserProfile = new ApplicationProfile();
-    this.selectedIp.bwList = new BWList();
+  getPublicIpsDataAndProfiles() {
+    this.publicIps = [];
+    this.agentService.getAgents().subscribe(res => {
+      res.forEach(r => {
+        if (r.agentType && r.agentType.toString() == AgentType.LOCATION.toString()) {
+          this.publicIps.push(r);
+        }
+      });
+      this.publicIpsFiltered = this.publicIps;
+      console.log(res);
 
-    this.dpService.getProfileData().subscribe((res: DomainProfile[]) => {
-      if (res != null) {
-        this.domainProfiles = res;
-        this.updateDomainProfilelist();
-      }
     });
-    this.apService.getProfileData().subscribe((res: ApplicationProfile[]) => {
-      if (res != null) {
-        this.appProfiles = res;
-        this.updateApplicationProfilelist();
-      }
-    });
-    this.bwService.getBwList().subscribe((res: BWList[]) => {
-      if (res != null) {
-        this.bwList = res;
-        this.updateBWList();
-      }
-    });
-  }
- 
 
-  updateApplicationProfilelist() {
-    let systemProfiles = new Array();
-    let userProfiles = new Array();
-    for (let a of this.appProfiles) {
-      if (a.system) {
-        systemProfiles.push(a);
-      } else {
-        userProfiles.push(a);
-      }
-    }
-
-    this.applicationUserProfiles = userProfiles;
-    this.applicationSystemProfiles = systemProfiles;
+    this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res });
   }
 
-  updateBWList() {
-    const systemBWList = new Array();
-    const userBWList = new Array();
-    for (const a of this.bwList) {
-      if (a.system) {
-        systemBWList.push(a);
-      } else {
-        userBWList.push(a);
-      }
-    }
-    this.userBWList = userBWList;
-    this.systemBWList = systemBWList;
-  }
+  defineNewAgentForProfile() {
 
-  updateDomainProfilelist() {
-    const systemProfiles = new Array();
-    const userProfiles = new Array();
-    for (let a of this.domainProfiles) {
-      if (a.locked) {
-        systemProfiles.push(a);
-      } else {
-        userProfiles.push(a);
-      }
-    }
-
-    this.userProfiles = userProfiles;
-    this.systemProfiles = systemProfiles;
-  }
-
-  isFieldValid(form: FormGroup, field: string) {
-    return !form.get(field).valid && form.get(field).touched;
-  }
-
-  displayFieldCss(form: FormGroup, field: string) {
-    return {
-      'has-error': this.isFieldValid(form, field),
-      'has-feedback': this.isFieldValid(form, field)
-    };
+    this.selectedAgent.rootProfile = new SecurityProfile();
+    this.selectedAgent.rootProfile.domainProfile = {} as SecurityProfileItem;
+    this.selectedAgent.rootProfile.applicationProfile = {} as SecurityProfileItem;
+    this.selectedAgent.rootProfile.blackWhiteListProfile = {} as BlackWhiteListProfile;
+    this.selectedAgent.rootProfile.domainProfile.categories = [];
+    this.selectedAgent.rootProfile.applicationProfile.categories = [];
+    this.selectedAgent.rootProfile.blackWhiteListProfile.blackList = [];
+    this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList = [];
   }
 
   checkIPNumber(event: KeyboardEvent, inputValue: string) {
@@ -200,7 +141,7 @@ export class PublicipComponent implements OnInit {
       }
 
       if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
-        
+
         let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
         let secondOclet = Number(secondOcletStr);
         if (secondOclet >= 16 && secondOclet <= 31) {
@@ -221,123 +162,116 @@ export class PublicipComponent implements OnInit {
     }
   }
 
-  ngOnChanges() {
-    const input = $(this);
+  showNewProfileWizard() {
 
-    if (input[0].files && input[0].files[0]) {
-      const reader: any = new FileReader();
-
-      reader.onload = function (e: any) {
-        $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
-      };
-      reader.readAsDataURL(input[0].files[0]);
+    if (!this.validatePublicIpForm()) {
+      return;
     }
-  }
 
-  showNewWizard() {
+    this.selectedAgent = this.selectedIp;
+    this.defineNewAgentForProfile();
+    this.selectedAgent.rootProfile.name = this.selectedIp.agentAlias + "-Profile";
 
-    this.ipList = [];
-    this.ipList.push(new IpNumber());
-    this.selectedIp = new PublicIP();
-    this.selectedIp.profile = this.domainProfiles[0];
-    this.selectedIp.appUserProfile = this.appProfiles[0];
-    this.selectedIp.bwList = this.bwList[0];
+    this.saveMode = 'NewProfileWithAgent';
 
     $('#publicIpPanel').toggle("slide", { direction: "left" }, 600);
     $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
- 
+    this.startWizard = true;
+    $('#contentLink').click();
+    document.getElementById('wizardPanel').scrollIntoView();
+  }
+
+  showProfileEditWizard(id: number) {
+    debugger
+
+    let agent = this.publicIps.find(p => p.id == id);
+    if (agent.rootProfile && agent.rootProfile.id > 0) {
+      this.selectedAgent = agent;
+      this.saveMode = 'ProfileUpdate';
+      $('#publicIpPanel').toggle("slide", { direction: "left" }, 600);
+      $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+      this.startWizard = true;
+      $('#contentLink').click();
+      document.getElementById('wizardPanel').scrollIntoView();
+    } else {
+      this.notification.warning('Profile can not find!');
+    }
+
+  }
+
+  showNewIpForm() {
+    this.isNewItemUpdated = false;
+    this.selectedIp = new Agent();
+    this.selectedIp.staticSubnetIp = [];
+    this.selectedIp.staticSubnetIp.push({} as IpWithMask)
+
+    // this.publicIpService.getMyIp().subscribe(res => {
+    //   let resIp: JsonIP;
+    //   resIp = res;
+    //   let myIp: IpNumber;
+    //   myIp.ip = resIp.ip;
+    //   myIp.range = 31;
+    //   console.log(res);
+    //   this.ipList.push(myIp)
+    // });
+
+    $('#newIpRow').slideDown(300);
+    $('#newButtonDiv').hide();
+
+  }
+
+  hideNewWizard() {
+    $('#newIpRow').slideUp(300);
+    $('#newButtonDiv').show();
+    this.getPublicIpsDataAndProfiles();
   }
 
   showEditWizard(id: string) {
-    this.ipList = [];
-    this.ipList.push(new IpNumber());
+    this.isNewItemUpdated = true;
+    debugger
     this.selectedIp = this.publicIps.find(p => p.id == Number(id));
 
-    if (this.selectedIp && this.selectedIp.ips && this.selectedIp.ips.length > 0) {
-      for (let i = 0; i < this.selectedIp.ips.length; i++) {
-        let ipn = new IpNumber();
-        ipn.ip = this.selectedIp.ips[i].slice(0, 4).join('.');
-
-        const mask = Number(this.selectedIp.ips[i][4]) - Number(this.selectedIp.ips[i][3]);
-        ipn.range = this.publicIpService.getRangeOrSubnetMask(1, mask);
-
-        this.ipList[i] = ipn;
-        const cname = 'ip' + (this.ipList.length - 1);
+    if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
+      for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
+        const cname = 'ip' + (this.selectedIp.staticSubnetIp.length - 1);
         this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
         this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]);
         this.publicIpForm.controls[cname].updateValueAndValidity();
-
       }
+    } else {
+      this.selectedIp.staticSubnetIp = [];
+      this.selectedIp.staticSubnetIp.push({} as IpWithMask);
     }
 
-    $('#publicIpPanel').toggle("slide", { direction: "left" }, 600);
-    $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
- 
-
+    $('#newIpRow').slideDown(300);
+    $('#newButtonDiv').hide();
   }
 
   hideWizard() {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
       res => {
         if (res) {
-          this.publicIpService.getPublicIPs().subscribe(data => { this.publicIps = data; });
-          $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
-          $('#publicIpPanel').toggle("slide", { direction: "left" }, 1000);
+          this.hideWizardWithoutConfirm();
         }
       }
     );
   }
 
-  saveIP() {
-    if (!this.publicIpForm.valid) {
-      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
-      return;
-    }
-    if (this.ipType == 'staticIp' && !this.ipList && this.ipList.length < 1) {
-      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
-      return;
-    } else if (this.ipType == 'dynamicIp' && !this.dnsFqdn) {
-      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
-      return;
-    } else if (!this.ipType) {
-      return;
-    }
-
-    this.selectedIp.ips = [];
-    if (this.ipType == 'staticIp') {
-      for (let i = 0; i < this.ipList.length; i++) {
-        const p = this.ipList[i];
-        let ip: string[] = p.ip.split('.');
-        ip.push(this.publicIpService.getRangeOrSubnetMask(2, p.range).toString());
-        this.selectedIp.ips.push(ip);
-      }
-    } else if (this.ipType == 'dynamicIp') {
-      //TODO: this.dnsFqdn alanı bir yere bağlı değil şuanda.
-    }
-
-
-    this.publicIpService.save(this.selectedIp).subscribe(
-      res => {
-        if (res.status == 200) {
-          this.alertService.alertSuccessMessage("Operation Successful", "Public IP successfully saved.");
-          this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
-          $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
-          $('#publicIpPanel').toggle("slide", { direction: "left" }, 1000);
-        } else {
-          this.notification.error("Operation Failed! " + res.message);
-        }
-      });
-
+  hideWizardWithoutConfirm() {
+    $('#wizardPanel').toggle("slide", { direction: "right" }, 1000);
+    $('#publicIpPanel').toggle("slide", { direction: "left" }, 1000);
+    this.hideNewWizard();
   }
+
 
   deletePublicIp(id: number) {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Public IP and its settings will be deleted!').subscribe(
       res => {
         if (res) {
-          this.publicIpService.delete(this.publicIps.find(p => p.id == id)).subscribe(res => {
+          this.agentService.deleteAgent(id).subscribe(res => {
             if (res.status == 200) {
-              this.alertService.alertSuccessMessage("Operation Successful", "Public IP successfully Deleted.");
-              this.publicIpService.getPublicIPs().subscribe(data => this.publicIps = data);
+              this.notification.success(res.message);
+              this.getPublicIpsDataAndProfiles();
             } else {
               this.notification.error("Operation Failed! " + res.message);
             }
@@ -351,14 +285,14 @@ export class PublicipComponent implements OnInit {
 
     if (type === 'dynamicIp') {
       this.ipType = type;
-      $("#dnsFqnDiv").show(300);
-      $('#staticIPBlock').hide(200);
+      $("#dnsFqnDiv").show();
+      $('#staticIPBlock').hide();
       this.publicIpForm.controls["dnsFqdn"].setValidators([Validators.required]);
       this.publicIpForm.controls["dnsFqdn"].updateValueAndValidity();
     } else {
       this.ipType = type;
-      $("#dnsFqnDiv").hide(300);
-      $('#staticIPBlock').show(300);
+      $("#dnsFqnDiv").hide();
+      $('#staticIPBlock').show();
       this.publicIpForm.controls["dnsFqdn"].clearValidators();
       this.publicIpForm.controls["dnsFqdn"].updateValueAndValidity();
     }
@@ -366,9 +300,9 @@ export class PublicipComponent implements OnInit {
   }
 
   addIpRangeToList() {
-    if (this.ipList.length < 10) {
-      this.ipList.push(new IpNumber());
-      const cname = 'ip' + (this.ipList.length - 1);
+    if (this.selectedIp.staticSubnetIp.length < 10) {
+      this.selectedIp.staticSubnetIp.push({} as IpWithMask);
+      const cname = 'ip' + (this.selectedIp.staticSubnetIp.length - 1);
       this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
       this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]);
       this.publicIpForm.controls[cname].updateValueAndValidity();
@@ -377,37 +311,9 @@ export class PublicipComponent implements OnInit {
 
   removeElementFromIpList(index: number) {
     const cname = 'ip' + index;
-    this.ipList.splice(index, 1);
+    this.selectedIp.staticSubnetIp.splice(index, 1);
     this.publicIpForm.controls[cname].clearValidators();
-    this.publicIpForm.controls[cname].updateValueAndValidity();  
-  }
-
-  ipSplit1: String[];
-  ipSplit(str: String) {
-    this.ipSplit1 = str.toString().split(',');
-    return this.ipSplit1[0] + '.' + this.ipSplit1[1] + '.' + this.ipSplit1[2] + '.' + this.ipSplit1[3] + '-' + this.ipSplit1[4];
-  }
-
-  selectFile($event) {
-    
-    var inputValue = $event.target;
-    let file = inputValue.files[0];
-    let reader = new FileReader();
-    let ag = this.selectedIp;
-    if (typeof file !== 'undefined') {
-
-    }
-
-    reader.addEventListener("load", function () {
-      ag.logo = reader.result;
-    }, false);
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-
-    console.log(this.selectedIp);
-
+    this.publicIpForm.controls[cname].updateValueAndValidity();
   }
 
   searchByKeyword(e: any) {
@@ -417,4 +323,72 @@ export class PublicipComponent implements OnInit {
       this.publicIpsFiltered = this.publicIps;
     }
   }
+
+  securityProfileChanged(id: number) {
+    this.isNewItemUpdated = true;
+    this.selectedIp.rootProfile = this.securityProfiles.find(p => p.id == id);
+  }
+
+  savePublicIp() {
+
+    if (!this.validatePublicIpForm()) {
+      return;
+    }
+
+    console.log(JSON.stringify(this.selectedIp));
+
+    this.agentService.saveAgent(this.selectedIp).subscribe(res => {
+      if (res.status == 200) {
+        this.notification.success(res.message);
+        this.getPublicIpsDataAndProfiles();
+      } else {
+        this.notification.error(res.message);
+      }
+    })
+
+
+    $('#newIpRow').slideUp(300);
+    $('#newButtonDiv').show();
+  }
+
+  validatePublicIpForm(): boolean {
+    const $validator = $('.publicIpForm').validate({
+      rules: {
+        agentName: {
+          required: true
+        },
+        blockMessage: {
+          required: true
+        },
+        ip0: {
+          required: true,
+          minlength: 15
+        }
+      }
+    });
+
+    var $valid = $('.publicIpForm').valid();
+    if (!$valid) {
+      $validator.focusInvalid();
+      return false;
+    }
+
+    if (!this.publicIpForm.dirty || !this.publicIpForm.valid) {
+      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
+      return false;
+    }
+    if (this.ipType == 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
+      this.notification.warning("Form is not valid! Please enter required fields with valid values.1");
+      return false;
+    } else if (this.ipType == 'dynamicIp' && !this.dnsFqdn) {
+      this.notification.warning("Form is not valid! Please enter required fields with valid values.2");
+      return false;
+    } else if (!this.ipType) {
+      return false;
+    }
+
+    return true;
+  }
+
+
 }

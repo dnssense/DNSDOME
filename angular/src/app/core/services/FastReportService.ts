@@ -10,6 +10,7 @@ import { LogColumn } from '../models/LogColumn';
 import { SearchSetting } from '../models/SearchSetting';
 import { ErrorService } from './ErrorService';
 import { ConfigService } from './config.service';
+import { Config } from 'protractor';
 
 /**
  * Created by fatih on 02.08.2016.
@@ -17,22 +18,22 @@ import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class FastReportService {
-  public _initContentURL = this.configService.getApiUrl()+ '/services/quick-reports/init'; // URL to subcategories api
-  public _graphURL = this.configService.getApiUrl()+ '/services/quick-reports/tableData'; // URL to graph api
+  public _initContentURL = this.configService.getApiUrl() + '/quick-reports/init'; // URL to subcategories api
+  public _graphURL = this.configService.getApiUrl() + '/quick-reports/tableData'; // URL to graph api
   public _histogramURL =
-  this.configService.getApiUrl() + '/services/quick-reports/logCountHistogram'; // URL to graph api
+    this.configService.getApiUrl() + '/quick-reports/logCountHistogram'; // URL to graph api
   public _dashboardHistogramURL =
-  this.configService.getApiUrl() + '/services/quick-reports/dashboardHistogram'; // URL to graph api
+    this.configService.getApiUrl() + '/quick-reports/dashboardHistogram'; // URL to graph api
   public _saveSearchSettingURL =
-  this.configService.getApiUrl() + '/services/quick-reports/saveSearchSetting'; // URL to graph api
+    this.configService.getApiUrl() + '/quick-reports/saveSearchSetting'; // URL to graph api
   public _savedSearchURL =
-  this.configService.getApiUrl() + '/services/quick-reports/saved-search?'; // URL to graph api
+    this.configService.getApiUrl() + '/quick-reports/saved-search?'; // URL to graph api
   public _savedSearchListURL =
-  this.configService.getApiUrl() + '/services/quick-reports/saved-search-list'; // URL to graph api
+    this.configService.getApiUrl() + '/quick-reports/saved-search-list'; // URL to graph api
   public _initTableColumnsURL =
-  this.configService.getApiUrl() + '/services/quick-reports/tableColumns'; // URL to subcategories api
+    this.configService.getApiUrl() + '/quick-reports/tableColumns'; // URL to subcategories api
   public _multiValueHistogramDataURL =
-  this.configService.getApiUrl() + '/services/quick-reports/multiValueHistogramData'; // URL to graph api
+    this.configService.getApiUrl() + '/quick-reports/multiValueHistogramData'; // URL to graph api
 
   public _tableColumns: BehaviorSubject<LogColumn[]> = new BehaviorSubject(
     null
@@ -41,9 +42,9 @@ export class FastReportService {
     null
   );
 
-  constructor(private http: HttpClient, private errorService: ErrorService,private configService:ConfigService) {
-    // this.initTableColumns();
-    // this.initFormData();
+  constructor(private http: HttpClient, private errorService: ErrorService, private configService: ConfigService) {
+    this.initTableColumns();
+    this.initFormData();
   }
 
   get tableColumns(): BehaviorSubject<LogColumn[]> {
@@ -54,23 +55,23 @@ export class FastReportService {
     return this._configItems;
   }
 
-  // public initFormData(): Observable<Object> {
-  //   return this.http
-  //     .get(this._initContentURL)
-  //     .map((res: Response) => res.json())
-  //     .subscribe((res: Object) => {
-  //       this._configItems.next(res['configItems']);
-  //     });
-  // }
+  public initFormData() {
+    return this.http
+      .get<Object>(this._initContentURL)
+      .map((response: Object) => response)
+      .subscribe((configItemArray: Object) => {
+        this._configItems.next(configItemArray['configItems']);
+      });
+  }
 
-  // public initTableColumns(): Observable<LogColumn[]> {
-  //   return this.http
-  //     .get(this._initTableColumnsURL)
-  //     .map((res: Response) => res.json())
-  //     .subscribe((res: LogColumn[]) => {
-  //       this._tableColumns.next(res);
-  //     });
-  // }
+  public initTableColumns() {
+    return this.http
+      .get<LogColumn[]>(this._initTableColumnsURL)
+      .map((response: LogColumn[]) => response)
+      .subscribe((logColumnArray: LogColumn[]) => {
+        this._tableColumns.next(logColumnArray)
+      });
+  }
 
   public openSavedSearch(value: number): Observable<Object> {
     return this.http
@@ -130,7 +131,7 @@ export class FastReportService {
 
     return this.http
       .post(this._histogramURL, body, options)
-      .map((res: Response) => res.json())
+      .map((res: Response) => res)
       .catch((response: any, caught: any) => {
         this.errorService.handleAuthenticatedError(response);
         return Observable.throw(response);
@@ -149,10 +150,10 @@ export class FastReportService {
     return this.http
       .post(
         this._multiValueHistogramDataURL +
-          '?id=' +
-          searchSettings.id +
-          '&dashboardid=' +
-          dashboard.id,
+        '?id=' +
+        searchSettings.id +
+        '&dashboardid=' +
+        dashboard.id,
         '',
         options
       )
