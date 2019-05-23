@@ -1,7 +1,7 @@
 import { Company } from './Company';
 
 export class SignupBean {
-    public userName: string;
+    public username: string;
     public confirmEmail: string;
     public password: string;
     public name: string;
