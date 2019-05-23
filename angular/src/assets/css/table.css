@@ -1,0 +1,84 @@
+.table.base-table,
+.table.base-table tr,
+.table.base-table td,
+.table.base-table th {
+  border: none;
+}
+
+table td {
+  vertical-align: middle !important;
+}
+
+table {
+  color: #f5f5f5 !important;
+}
+
+table.table-bordered tr,
+table.table-bordered td,
+table.table-bordered th{
+  border: 1px solid rgba(255, 255, 255, .1)
+}
+
+.table.base-table {
+  color: #f5f5f5;
+}
+
+.table.base-table tr {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.25);
+  height: 54px;
+  padding: 10px 0;
+}
+
+.table.base-table thead th {
+  font-size: 15px !important;
+  font-weight: normal;
+}
+
+.table.base-table thead th,
+.table.base-table tbody td {
+  padding: 5px;
+  font-size: 14px;
+}
+
+.table.base-table td:first-child {
+  padding-left: 5px;
+}
+
+.table.base-table td:last-child {
+  padding-right: 5px;
+}
+
+.table.base-table tr td span.status {
+  display: inline-block;
+  font-size: 14px;
+}
+
+.table.base-table tr td span.status i {
+  margin-right: 3px;
+}
+
+.table.base-table tr td span.down {
+  color: #fa3f3f;
+}
+
+.table.base-table tr td span.up {
+  color: #5ad363;
+}
+
+.table.base-table {
+  margin-bottom: 0;
+}
+
+.table td.numeration {
+  width: 50px;
+  text-align: center;
+  border-top: 1px solid transparent !important;
+  border-bottom: 1px solid transparent !important;
+  border-left: 1px solid transparent !important;
+}
+
+.no-border {
+  border-top: 1px solid transparent !important;
+  border-bottom: 1px solid transparent !important;
+  border-left: 1px solid transparent !important;
+}

@@ -212,25 +212,14 @@ export class AuthenticationService {
     this.router.navigateByUrl('/login');
   }
 
-<<<<<<< HEAD
-  forgotPassword(email:string): Observable<OperationResult> {
-
-
-    return this.http.post<OperationResult>(this._forgotPasswordSendURL, {username:email}, this.getHttpOptions())
-=======
   forgotPassword(signupBean: SignupBean): Observable<OperationResult> {
     return this.http.post<OperationResult>(this._forgotPasswordSendURL, signupBean, this.getHttpOptions())
->>>>>>> 810ffb832450354993a9bcad1fc0c5050cdc5f67
       .map(res => res);
   }
 
   forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {
     return this.http.post<any>(this._forgotPasswordChangeURL,
-<<<<<<< HEAD
-       {key:key,password:password,passwordAgain:passwordAgain}, this.getHttpOptions())
-=======
       JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions())
->>>>>>> 810ffb832450354993a9bcad1fc0c5050cdc5f67
 
   }
 

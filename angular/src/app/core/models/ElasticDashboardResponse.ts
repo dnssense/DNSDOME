@@ -7,9 +7,10 @@ export class ElasticDashboardResponse {
     date: Date;
     allowed_count: number;
     blocked_count: number;
+    category_hits: any;
     averages: DashboardAverages;
     delta: DashboardDeltas;
-    firstly_seen_domains: any;
+    firstly_seen_domains: DomainItem[];
     total_hit: number;
     unique_destip: number;
     unique_domain: number;
@@ -18,4 +19,12 @@ export class ElasticDashboardResponse {
     unique_subdomain: number;
     unique_user: number;
     time_range: DashboardTimeRange;
+    hourIndex: number;
+}
+
+export interface DomainItem {
+    hits: number
+    domain: string
+    category: string[]
+    unique_subdomain: number
 }

@@ -7,31 +7,33 @@
         </app-customreport-search>
       </div>
     </div>
-    <div class="row">
+
+    <!-- <div class="row">
       <div class="col-md-12">
         <div *ngIf="histogramIsActive">
-            <div class="card card-stats mb-0 mt-0">
-                <div class="card-header card-header-icon card-header-info">
-                  <h4 class="card-title text-left mt-2">Total Domain Hit Count
-                  </h4>
-                </div>
-                <div class="card-body">
-                    <div id="customReportChart" class="ct-chart"></div>
-                </div>
-              </div>
-          
+          <div class="card card-stats mb-0 mt-0">
+            <div class="card-header card-header-icon card-header-info">
+              <h4 class="card-title text-left mt-2">Total Domain Hit Count
+              </h4>
+            </div>
+            <div class="card-body">
+              <div id="customReportChart"></div>
+
+            </div>
+          </div>
+
           <!-- <app-histogram [searchSetting]="searchSetting" (searchEmitter)="search($event)">
-          </app-histogram> -->
+          </app-histogram>  
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <app-customreport-result [data]="data" [searchSetting]="searchSetting" #tableComponent
-          (addColumnValueEmitter)="addValuesIntoSelected($event)" [multiplier]="multiplier" [total]="total"
-          (searchEmitter)="search()">
-        </app-customreport-result>
-      </div>
-    </div>
+
+    </div> -->
+
+    <app-customreport-result [data]="data" [searchSetting]="searchSetting" #tableComponent
+      (addColumnValueEmitter)="addValuesIntoSelected($event)" [multiplier]="multiplier" [total]="total"
+      (searchEmitter)="search()">
+    </app-customreport-result>
+
+
   </div>
 </div>

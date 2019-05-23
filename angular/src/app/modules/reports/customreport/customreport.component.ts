@@ -13,6 +13,8 @@ import { CustomReportService } from 'src/app/core/services/CustomReportService';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 
+import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
+
 @Component({
   selector: 'app-customreport',
   templateUrl: 'customreport.component.html',
@@ -22,11 +24,14 @@ export class CustomReportComponent implements OnInit, OnDestroy {
 
   public total: number = 0;
   public multiplier: number = 1;
-  public histogramIsActive: boolean = false;
+  //public histogramIsActive: boolean = false;
   public searchSetting: SearchSetting = new SearchSetting();
   public selectedColumns: AggregationItem[];
   public columns: LogColumn[];
   public data: any[];
+  // chartSeries: any;
+  // chartOptions: any;
+  // chartTitle:string='Total Domain Hit Count';
 
   @ViewChild("tableDivComponent")
   tableDivComponent: ElementRef;
@@ -43,7 +48,9 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   private applicationSubscription: Subscription;
 
 
-  constructor(private customReportService: CustomReportService, private fastReportService: FastReportService, private notificationService: NotificationService) { }
+  constructor(private customReportService: CustomReportService, private fastReportService: FastReportService, private notificationService: NotificationService) {
+
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -60,109 +67,16 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   }
 
   public search() {
+
     if (!this.searchSetting.columns.columns || this.searchSetting.columns.columns.length == 0) {
-      //todo alert here. Focus on the table columns ...
       this.notificationService.warning("You must select at least one column for a report.");
-      return;
-    }
-    if (this.histogramIsActive) {
-      this.drawChart(this.searchSetting)
     } else {
-      this.histogramIsActive = true;
-      this.drawChart(this.searchSetting)
+      this.customReportResultComponent.search(this.searchSetting);
     }
-    this.customReportResultComponent.search(this.searchSetting);
-    // this.drawChart(this.searchSetting)
+    
   }
 
-  drawChart(settings: SearchSetting) {
-    this.fastReportService.loadHistogram(settings).takeUntil(this.ngUnsubscribe).subscribe((res: any[]) => {
 
-      debugger
-      let data: any[] = res;
-
-      let labelArray = [];
-      let chartSeries = [data.length];
-      for (let i = 0; i < data.length; i++) {
-        const d = new Date(data[i].date);
-        if (i % 3 == 0) {
-          labelArray.push(d.getHours() + ":" + d.getMinutes())
-        } else {
-          labelArray.push(" ")
-        }
-        chartSeries.push(data[i].value)
-      }
-      if (labelArray.length + 1 < chartSeries.length) {
-        labelArray.push(" ");
-        labelArray.push(new Date(data[data.length-1].date).getHours() + ":" + new Date(data[data.length-1].date).getMinutes())
-      }else{
-        labelArray.push(" ");
-      }
-      
-
-      const dataColouredRoundedLineChart = {
-        labels: labelArray,
-        series: [chartSeries]
-
-      };
-      const optionsColouredRoundedLineChart: any = {
-        lineSmooth: Chartist.Interpolation.cardinal({
-          tension: 2
-        }),
-        axisY: {
-          showGrid: true,
-          offset: 40
-        },
-        axisX: {
-          showGrid: true,
-        },
-        low: Math.min(data.reduce((a, b) => Math.min(a, b)), data.reduce((a, b) => Math.min(a, b))),
-        high: Math.max(data.reduce((a, b) => Math.max(a, b)), data.reduce((a, b) => Math.max(a, b))),
-        showPoint: true,
-        fullWidth: true,
-        height: '250px'
-      };
-
-      const colouredRoundedLineChart = new Chartist.Line('#customReportChart', dataColouredRoundedLineChart,
-        optionsColouredRoundedLineChart);
-
-      this.startAnimationForLineChart(colouredRoundedLineChart);
-    });
-  }
-
-  startAnimationForLineChart(chart: any) {
-    let seq: number, delays: number, durations: number;
-    seq = 0;
-    delays = 80;
-    durations = 500;
-    chart.on('draw', function (data: any) {
-
-      if (data.type === 'line' || data.type === 'area') {
-        data.element.animate({
-          d: {
-            begin: 600,
-            dur: 700,
-            from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
-            to: data.path.clone().stringify(),
-            easing: Chartist.Svg.Easing.easeOutQuint
-          }
-        });
-      } else if (data.type === 'point') {
-        seq++;
-        data.element.animate({
-          opacity: {
-            begin: seq * delays,
-            dur: durations,
-            from: 0,
-            to: 1,
-            easing: 'ease'
-          }
-        });
-      }
-    });
-
-    seq = 0;
-  }
 
 
   public addValuesIntoSelected($event) {

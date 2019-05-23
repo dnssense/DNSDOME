@@ -34,7 +34,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   public user: SignupBean;
   private privacyPolicy: boolean = false;
   private captcha: string;
-  public host:ConfigHost;
+  public host: ConfigHost;
   public captcha_key: string = "6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58";//"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
 
@@ -47,11 +47,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   constructor(private formBuilder: FormBuilder, private element: ElementRef,
     private accountService: AccountService, private notification: NotificationService,
-    private capthaService:CaptchaService,private configService:ConfigService,private router:Router) {
+    private capthaService: CaptchaService, private configService: ConfigService, private router: Router) {
     this.isFailed = false;
     this.sidebarVisible = false;
-      this.host=this.configService.host;
-      this.captcha_key=this.host.captcha_key;
+    this.host = this.configService.host;
+    this.captcha_key = this.host.captcha_key;
     this.createRegisterForm();
 
   }
@@ -159,8 +159,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   isRegisterFormValid() {
-    if (this.user != null && this.registerForm.dirty && this.registerForm.valid
-      && this.privacyPolicy && this.captcha != null) {
+    if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.captcha != null) {
       return true;
     }
     return false;
@@ -168,10 +167,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   resolved(captchaResponse: string) {
     //console.log(`Resolved captcha with response ${captchaResponse}:`);
-  }
-
-  pPolicy() {
-    this.privacyPolicy = this.privacyPolicy === true ? false : true;
   }
 
   register() {
@@ -183,13 +178,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
 
     if (this.user != null && this.registerForm.dirty
-      && this.registerForm.valid && this.privacyPolicy
-      && this.user.password===this.user.passwordAgain) {
+      && this.registerForm.valid && this.user.password === this.user.passwordAgain) {
 
-      this.accountService.signup({username: this.user.userName, password: this.user.password}).subscribe(res => {
+      this.accountService.signup({ username: this.user.username, password: this.user.password }).subscribe(res => {
 
-          this.notification.success("Registered successfuly, check your email and active your account");
-          this.router.navigateByUrl('/login');
+        this.notification.success("Registered successfuly, check your email and active your account");
+        this.router.navigateByUrl('/login');
 
       });
     }

@@ -84,8 +84,6 @@ export class PublicipComponent {
         }
       });
       this.publicIpsFiltered = this.publicIps;
-      console.log(res);
-
     });
 
     this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res });

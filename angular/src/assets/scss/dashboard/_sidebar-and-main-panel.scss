@@ -2,7 +2,7 @@
     position: relative;
     top: 0;
     height: 100vh;
-    background: linear-gradient(#1e1e2f,#1e1e24);
+    background: #000000;
 }
 
 .sidebar {
@@ -46,6 +46,12 @@
 
     &[data-background-color="blueice"]{
         background: linear-gradient(0deg,#1e2525,#1d8cf8);
+        //background: linear-gradient(0deg,#1e2525,#262626);
+        box-shadow: 0 0 45px 0 rgba(0,0,0,.6);
+    }
+    
+    &[data-background-color="whitewalkers"]{
+        background: linear-gradient(0deg,#000000,#262626);
         box-shadow: 0 0 45px 0 rgba(0,0,0,.6);
     }
 

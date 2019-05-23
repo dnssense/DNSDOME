@@ -88,6 +88,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   public inputChecked(column: LogColumn) {
+    debugger
     if (column.checked) {
       this.selectedColumns.push(column);
     } else {

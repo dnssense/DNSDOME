@@ -1,53 +1,67 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
     <section id="securityProfilesPanel" class="securityProfilesPanel">
-        <div class="row" id="newButtonDiv">
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
-            </div>
-            <div class="col-md-4 text-right">
-              <button mat-raised-button type="button" class="ml-2 btn btn-success btn-sm"
-                matTooltip="Create a new Public IP" (click)="showNewWizard()">
-                <i class="material-icons">add_circle_outline</i> Create New Profile
-              </button>
-            </div>
-          </div>
+      <div class="row" id="newButtonDiv">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4 text-right">
+          <button mat-raised-button type="button" class="ml-2 btn btn-success btn-sm"
+            matTooltip="Create a new Public IP" (click)="showNewWizard()">
+            <i class="material-icons">add_circle_outline</i> Create New Profile
+          </button>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
-          <div class="card">
-            <div class="card-header card-header-icon card-header-info">
-              <div class="card-icon">
-                <i class="material-icons">settings_input_composite</i>
+          <div class="base-card">
+            <div class="base-card-content">
+              <div class="datatable-container container-fluid">
+                <div class="row">
+                  <h4 class="datatable-heading col-sm-4">Security Profiles</h4>
+                  <div class="col-sm-4">
+                    <div class="search-form">
+                      <mat-form-field>
+                        <input type="text" matInput [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)">
+                        <mat-placeholder style="color: whitesmoke;">Search by name</mat-placeholder>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h4 class="card-title ">Profiles</h4>
             </div>
-            <div class="card-body">
-              <div class="table-responsive" style="max-height: 600px;">
-                <table class="table">
-                  <thead class="text-info">
-                    <tr>
-                      <th>Profile Headers</th>
-                      <th>Number of Uses</th>
-                      <th class="text-right">Operations</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let p of securityProfiles">
-                      <td>{{p.name}}</td>
-                      <td>{{p.numberOfUsage}}</td>
-                      <td class="text-right">
-                        <button *ngIf="!p.isSystem" mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
-                          mattooltip="Edit item" (click)="showEditWizard(p.id)">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
-                          mattooltip="Delete item" (click)="deleteProfile(p.id)">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive" style="max-height: 600px;">
+                  <table class="table table-bordered">
+                    <thead>
+                      <th class="no-border"></th>
+                      <th class="color-light-blue">Profile Name</th>
+                      <th class="color-light-blue">Number of Uses</th>
+                      <th class="color-light-blue">Operations</th>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let p of securityProfilesFiltered; let i = index;">
+                        <td class="numeration">{{i}}</td>
+                        <td>{{p.name}}</td>
+                        <td style="width: 200px">{{p.numberOfUsage}}</td>
+                        <td style="width: 120px" class="text-center">
+                          <span *ngIf="p.isSystem" class="text-muted" >Default</span>
+                          <button *ngIf="!p.isSystem" mat-raised-button type="button"
+                            class="btn btn-info btn-link btn-just-icon btn-sm" mattooltip="Edit item"
+                            (click)="showEditWizard(p.id)">
+                            <i class="material-icons">edit</i>
+                          </button>
+                          <button *ngIf="!p.isSystem" mat-raised-button type="button"
+                            class="btn btn-danger btn-link btn-just-icon btn-sm" mattooltip="Delete item"
+                            (click)="deleteProfile(p.id)">
+                            <i class="material-icons">close</i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -61,7 +75,7 @@
             <i class="material-icons">arrow_back</i>
           </button>
           <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard" [saveMode]="saveMode"
-          [updateCount]="updateCount" (saveEmitter)="hideWizardWithoutConfirm();"></app-profile-wizard>
+            [updateCount]="updateCount" (saveEmitter)="hideWizardWithoutConfirm();"></app-profile-wizard>
         </div>
       </div>
     </section>

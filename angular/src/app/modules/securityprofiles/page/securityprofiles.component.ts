@@ -16,8 +16,9 @@ declare var $: any;
     styleUrls: ['securityprofiles.component.sass']
 })
 export class SecurityProfilesComponent {
-
+    searchKey: string;
     securityProfiles: SecurityProfile[];
+    securityProfilesFiltered: SecurityProfile[];
     selectedAgent: Agent;
     profileList: SecurityProfile[];
     startWizard: boolean = false;
@@ -33,8 +34,7 @@ export class SecurityProfilesComponent {
     getProfiles() {
         this.agentService.getSecurityProfiles().subscribe(res => {
             this.securityProfiles = res;
-            console.log(res);
-            
+            this.securityProfilesFiltered = this.securityProfiles;
         });
     }
 
@@ -94,15 +94,34 @@ export class SecurityProfilesComponent {
     }
 
     deleteProfile(id: number) {
-        this.alert.alertWarningAndCancel('Are You Sure?', 'Item will be deleted!').subscribe(
-            res => {
-                if (res) {
-                   this.agentService.deleteSecurityProfile(id);
-                   this.getProfiles();
+        debugger
+
+        if (this.securityProfiles.find(p => p.id == id).numberOfUsage > 0) {
+            this.alert.alertTitleAndText('Can not delete!', 'This profile using by some agents.')
+        } else {
+            this.alert.alertWarningAndCancel('Are You Sure?', 'Item will be deleted!').subscribe(
+                res => {
+                    if (res) {
+                        this.agentService.deleteSecurityProfile(id).subscribe(delRes => {
+                            if (delRes.status == 200) {
+                                this.notification.success(delRes.message);
+                                this.getProfiles();
+                            } else {
+                                this.notification.error(delRes.message);
+                            }
+                        });
+                    }
                 }
-            }
-        );
+            );
+        }
     }
 
+    searchByKeyword(e: any) {
+        if (this.searchKey && this.searchKey.length > 0) {
+            this.securityProfilesFiltered = this.securityProfiles.filter(f => f.name.toLowerCase().includes(this.searchKey.toLowerCase()));
+        } else {
+            this.securityProfilesFiltered = this.securityProfiles;
+        }
+    }
 
 }

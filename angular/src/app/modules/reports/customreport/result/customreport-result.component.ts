@@ -6,6 +6,9 @@ import { Subject } from 'rxjs';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { CustomReportService } from 'src/app/core/services/CustomReportService';
 
+import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
+import { FastReportService } from 'src/app/core/services/FastReportService';
+
 @Component({
   selector: 'app-customreport-result',
   templateUrl: 'customreport-result.component.html',
@@ -29,7 +32,7 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<any> = new Subject<any>();
 
   constructor(
-    private customReportService: CustomReportService,
+    private customReportService: CustomReportService, private fastReportService: FastReportService,
     private notificationService: NotificationService) { }
 
   ngOnInit(): void { }
@@ -59,7 +62,9 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
   }
 
   public search(searchSetting: SearchSetting) {
-    //this.spinnerService.start();
+
+    this.drawChart(searchSetting);
+
     this.customReportService.getData(searchSetting).takeUntil(this.ngUnsubscribe).subscribe((res: Response) => {
 
       if (res['searchSetting'] != null) {
@@ -69,7 +74,6 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
       let total = 0;
       let data: any = res;
       this.selectedColumns = <AggregationItem[]>JSON.parse(JSON.stringify(searchSetting.columns.columns));
-
 
       if (data && data.length > 0) {
         for (let i = 0; i < data.length; i++) {
@@ -92,13 +96,124 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
 
       }
       this.data = data;
-      console.log(this.data);
 
     }, () => this.stopRefreshing(),
       () => this.stopRefreshing()
     );
 
   }
+
+  drawChart(settings: SearchSetting) {
+    this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
+ 
+      let data: any[] = res;
+
+      if (data) {
+        let labelArray = [];
+        let chartSeries = [];
+        for (let i = 0; i < data.length; i++) {
+          const d = new Date(data[i].date);
+          labelArray.push(d.getHours() + ":" + (d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes()))
+          chartSeries.push(data[i].value)
+        }
+
+        var options = {
+          chart: {
+            height: 300,
+            type: 'area',
+            zoom: {
+              enabled: false
+            },
+            foreColor: '#9b9b9b',
+            toolbar: {
+              show: false,
+              tools: {
+                download: false
+              }
+            },
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            width: 3,
+            curve: 'straight'
+          },
+          colors: ['#9d60fb'],
+          series: [{
+            name: "Hits",
+            data: chartSeries
+          }
+          ],
+          markers: {
+            size: 5,
+            strokeColor: '#9d60fb',
+            fillColor: '#ffffff',
+            strokeWidth: 3,
+            hover: {
+              size: 9
+            }
+          },
+          xaxis: {
+            categories: labelArray,
+            labels: {
+              minHeight: 20
+            }
+          },
+          tooltip: {
+            theme: 'dark',
+
+          },
+          grid: {
+            borderColor: '#626262',
+            strokeDashArray: 3,
+            position: 'back',
+            padding: {
+              top: 0,
+              right: 10,
+              bottom: 0,
+              left: 20
+            },
+          },
+          legend: {
+            show: false
+          },
+          annotations: {
+            yaxis: [{
+              label: {
+                fontSize: '20px'
+              }
+            }]
+          },
+          fill: {
+            type: 'gradient',
+            gradient: {
+              shade: 'dark',
+              shadeIntensity: 1,
+              opacityFrom: 0.4,
+              opacityTo: 0,
+            }
+          },
+          title: {
+            text: 'Log Histogram',
+            style: {
+              fontSize: '20px',
+              color: '#eeeeee'
+            }
+          }
+        }
+
+        var chart = new ApexCharts(
+          document.querySelector("#customReportChart"),
+          options
+        );
+
+        chart.render();
+      }
+
+    });
+  }
+
   public stopRefreshing() {
     //this.spinnerService.stop();
   }

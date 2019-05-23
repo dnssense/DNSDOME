@@ -78,11 +78,15 @@ export class ProfileWizardComponent {
       res.forEach(r => {
         this.categoryList.push(new categoryItem(r, false));
       });
+      console.log(this.categoryList);
+      
     });
     this.staticService.getApplicationList().subscribe(res => {
       res.forEach(r => {
         this.applicationList.push(new applicationItem(r, false));
       });
+      console.log(this.applicationList);
+      
     });
   }
 
@@ -167,7 +171,6 @@ export class ProfileWizardComponent {
       alertTitle = 'Are You Sure?';
       alertMessage = 'Profile configuration will change.';
     }
-
 
     this.alertService.alertWarningAndCancel(alertTitle, alertMessage).subscribe(
       res => {

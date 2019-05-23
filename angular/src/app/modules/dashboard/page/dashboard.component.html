@@ -1,202 +1,297 @@
 <div class="main-content">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-6"></div>
+
+    <div class="base-card">
+      <div class="row">
+        <div class="ml-auto">
+          <div class="dropdown d-inline-block table-select">
+            <button class="btn dropdown-toggle text-left btn-sm" type="button" id="dropdownMenuButton1"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Yesterday
+              <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                    aria-controls="home" aria-selected="true">Date Range</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                    aria-controls="profile" aria-selected="false">Calendar</a>
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                  <a class="dropdown-item" (click)="changeDateParameter(0)">
+                    Today
+                  </a>
+                  <a class="dropdown-item" (click)="changeDateParameter(1)">
+                    Yesterday
+                  </a>
+                  <a class="dropdown-item" (click)="changeDateParameter(7)">
+                    Last Week
+                  </a>
+                  <a class="dropdown-item" (click)="changeDateParameter(14)">
+                    Last 14 Days
+                  </a>
+                  <a class="dropdown-item" (click)="changeDateParameter(30)">
+                    Last Mounth
+                  </a>
+                </div>
+                <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                  <input type="hidden" class="datepicker">
+                </div>
+                <div class="dropdown-divider"></div>
+                <span class="dropdown-label">Tarih Aralığı gir</span>
+                <div class="container-fluid">
+                  <div class="row mt-2 mb-3">
+                    <div class="col-6">
+                      <input type="text" value="01/01/2019" class="form-control">
+                    </div>
+                    <div class="col-6">
+                      <input type="text" value="01/01/2019" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <table class="table base-table table-responsive-md table-responsive-sm">
+          <thead>
+            <th></th>
+            <th>Total Traffic</th>
+            <th>Blocked</th>
+            <th>Malware</th>
+            <th>Grey</th>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Hit Count</td>
+              <td>
+                <span class="size-20 bold mr-4">{{totalHitCountForDashboard | number}}</span>
+                <span class="status down">
+                  <i class="fa fa-arrow-down"></i>
+                  {{elasticData[0]?.delta.hit_rate | number}}
+                </span>
+              </td>
+              <td>
+                <span class="size-20 mr-4">{{totalBlockCountForDashboard | number}}</span>
+                <span class="status up">
+                  <i class="fa fa-arrow-up"></i>
+                  {{elasticData[0]?.delta.blocked_rate | number}}
+                </span>
+              </td>
+              <td>
+                <span class="size-20 mr-4">{{malwareCountForDashboard}}</span>
+              </td>
+              <td>
+                <span class="size-20 mr-4">?</span>
+                <span class="status down">
+                  <i class="fa fa-arrow-down"></i>
+                  ?
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td>Unique Domain</td>
+              <td>
+                <span class="size-20 bold mr-4">{{elasticData[0]?.unique_domain| number}}</span>
+                <span class="status down">
+                  <i class="fa fa-arrow-down"></i>
+                  {{elasticData[0]?.delta.unique_domain_rate | number}}
+                </span>
+              </td>
+              <td>
+                <span class="size-20 mr-4">?</span>
+                <span class="status up">
+                  <i class="fa fa-arrow-up"></i>
+                  ?
+                </span>
+              </td>
+              <td>
+                <span class="size-20 mr-4">{{uMalwareCountForDashboard}}</span>
+              </td>
+              <td>
+                <span class="size-20 mr-4">?</span>
+                <span class="status down">
+                  <i class="fa fa-arrow-down"></i>
+                  ?
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row mt-2">
       <div class="col-md-6">
+        <div class="base-card">
+          <div class="base-card-header">
+            Traffic Based Anomaly
+          </div>
+          <div class="base-card-content">
+            <div class="labels" *ngIf="selectedCategoryForTraffic">
+              <span class="label">
+                <span class="label-color"></span>
+                <span>{{selectedCategoryForTraffic.name}}</span>
+                <i class="close-btn icon-cancel" (click)="deleteCatFromTraffic(selectedCategoryForTraffic.id)"></i>
+              </span>
+            </div>
+            <div class="chart">
+              <div id="trafficChart"></div>
+            </div>
+            <!-- <div class="events" style="margin-top: -30px">
+              <div class="toggle">
+                <button class="btn active btn-sm">Total Traffic</button>
+                <button class="btn btn-sm">Blocked Traffic</button>
+              </div>
+              <div class="dropdown d-inline-block">
+                <button class="btn dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  style="background-color: #262626; box-shadow:none;" aria-haspopup="true" aria-expanded="false">
+                  <i class="icon-plus" style="font-size: 20px"></i>
+                  Add Category
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <div class="dropdown-searchbar">
+                    <mat-form-field>
+                      <input type="text" class="form-control" matInput placeholder="Search" [(ngModel)]="searchKey"
+                        (ngModelChange)="searchCategoryForTraffic($event)">
+                    </mat-form-field>
+                  </div>
+                  <a class="dropdown-item" *ngFor="let cat of categoryListFiltered"
+                    (click)="addCategoryToTraffic(cat.id)">
+                    <span class="color-point" style="background:#fa3f3f"></span>
+                    {{cat.name}}
+                  </a>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="base-card">
+          <div class="base-card-header">
+            Unique Counter Based Anomaly
+          </div>
+          <div class="base-card-content">
+            <div class="labels" *ngIf="selectedCategoryForBlocked">
+              <span class="label">
+                <span class="label-color"></span>
+                <span>{{selectedCategoryForBlocked.name}}</span>
+                <i class="close-btn icon-cancel" (click)="deleteCatFromBlocked(selectedCategoryForBlocked.id)"></i>
+              </span>
+            </div>
+            <div class="chart">
+              <div id="blockedChart"></div>
+            </div>
+            <!-- <div class="events" style="margin-top: -30px">
+              <div class="toggle">
+                <button class="btn active btn-sm">Unique Domain</button>
+                <button class="btn btn-sm">Unique Subdomain</button>
+                <button class="btn btn-sm">Unique IP</button>
+              </div>
+              <div class="dropdown d-inline-block">
+                <button class="btn dropdown-toggle btn-sm" type="button" id="dropdownMenuButton3" data-toggle="dropdown"
+                  style="background-color: #262626; box-shadow:none;" aria-haspopup="true" aria-expanded="false">
+                  <i class="icon-plus" style="font-size: 20px"></i>
+                  Add Category
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                  <div class="dropdown-searchbar">
+                    <mat-form-field>
+                      <input type="text" class="form-control" matInput placeholder="Search" [(ngModel)]="searchKey"
+                        (ngModelChange)="searchCategoryForTraffic($event)">
+                    </mat-form-field>
+                  </div>
+                  <a class="dropdown-item" *ngFor="let cat of categoryListFiltered"
+                    (click)="addCategoryToBlocked(cat.id)">
+                    <span class="color-point" style="background:#fa3f3f"></span>
+                    {{cat.name}}
+                  </a>
+                </div>
+              </div>
+            </div> -->
+
+          </div>
+        </div>
 
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-3">
-        <div class="card card-stats">
-          <div class="card-header card-header-info card-header-icon">
-            <div class="dashboardIcon card-icon">
-              <i class="material-icons">group_add</i>
-            </div>
-            <p class="card-category"><strong>Total Hit Count</strong> </p>
-            <h3 class="card-title">
-              {{elasticData[0]?.total_hit | number}}
-            </h3>
-          </div>
-          <div class="card-footer">
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card card-stats">
-          <div class="card-header card-header-warning card-header-icon mb-0">
-            <div class="card-icon dashboardIcon">
-              <i class="material-icons">date_range</i>
-            </div>
-            <h5 class="card-title">Unique Domain Count: <strong>{{elasticData[0]?.unique_domain| number}}</strong></h5>
-            <h5 class="card-title">Unique Subdomain Count: <strong>{{elasticData[0]?.unique_subdomain| number}}</strong></h5>
-            <h5 class="card-title">Unique IP Count: <strong>{{elasticData[0]?.unique_destip| number}}</strong></h5>
-          </div>
-          <div class="card-footer mt-1">
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card card-stats">
-          <div class="card-header card-header-success card-header-icon">
-            <div class="card-icon dashboardIcon">
-              <i class="material-icons">person</i>
-            </div>
-            <p class="card-category">DGA Domain Count</p>
-            <h3 class="card-title">----</h3>
-          </div>
-          <div class="card-footer">
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card card-stats">
-          <div class="card-header card-header-danger card-header-icon">
-            <div class="card-icon dashboardIcon">
-              <i class="material-icons">signal_cellular_alt</i>
-            </div>
-            <p class="card-category">Top Blockeds Count</p>
-            <h3 class="card-title">{{todayTotalBlockCount | number }}</h3>
-          </div>
-          <div class="card-footer">            
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
+
+
+    <div class="row mt-4 mb-4">
       <div class="col-md-6">
-        <div class="card card-stats">
-          <div class="card-header card-header-icon card-header-info">
-            <div class="card-icon dashboardIcon">
-              <i class="material-icons">timeline</i>
-            </div>
-            <h4 class="card-title">Total Hit
-              <small> - Average vs Today</small>
-            </h4>
-          </div>
-          <div class="card-body">
-            <div id="colouredRoundedLineChart" class="ct-chart"></div>
-          </div>
-          <div class="card-footer">
-            <div class="row">
-              <div class="col-md-12">
-                <i class="fa fa-circle text-danger"></i> Today
-                <i class="fa fa-circle text-info"></i> Averages
+        <div class="base-card">
+          <div class="base-card-content">
+            <div class="datatable-container container-fluid">
+              <div class="row">
+                <h4 class="datatable-heading col-sm-8">Firstly Seen Domains ({{firstlySeenDomainsFiltered?.length}})
+                </h4>
+                <div class="col-sm-4">
+                  <div class="search-form">
+                    <mat-form-field>
+                      <input type="text" matInput [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)">
+                      <mat-placeholder style="color: whitesmoke;">Search by domain</mat-placeholder>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="table-responsive" style="max-height: 200px;">
+                    <table class="table table-bordered">
+                      <thead>
+                        <th class="no-border"></th>
+                        <th class="color-light-blue">Domain</th>
+                        <th class="color-light-blue">Category</th>
+                        <th class="color-light-blue">Hits</th>
+                      </thead>
+                      <ng-container *ngIf="firstlySeenDomainsFiltered && firstlySeenDomainsFiltered.length>0; else elseTemplateForDomain">
+                        <tbody>
+                          <tr *ngFor="let dom of firstlySeenDomainsFiltered; let i = index;">
+                            <td class="numeration">{{i}}</td>
+                            <td>{{dom.domain}}</td>
+                            <td>{{dom.category}}</td>
+                            <td>{{dom.hits}}</td>
+                          </tr>
+                        </tbody>
+                      </ng-container>
+                      <ng-template #elseTemplateForDomain>
+                        <tbody>
+                          <tr><td class="numeration"></td><td colspan="3">No Result!</td></tr>
+                        </tbody>
+                      </ng-template>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="col-md-6">
-        <div class="card card-stats">
-          <div class="card-header card-header-icon card-header-info">
-            <div class="card-icon dashboardIcon">
-              <i class="material-icons">timeline</i>
+        <div class="base-card">
+          <div class="base-card-header">
+            Malware Dedected
+          </div>
+          <div class="base-card-content">
+            <div class="chart">
+              <div id="malwareDetectionChart"></div>
             </div>
-            <h4 class="card-title">Total Blocked
-              <small> - Average vs Today</small>
-            </h4>
-          </div>
-          <div class="card-body">
-            <div id="colouredRoundedLineChart2" class="ct-chart"></div>
-          </div>
-          <div class="card-footer">
-            <div class="row">
-              <div class="col-md-12">
-                <i class="fa fa-circle text-danger"></i> Today
-                <i class="fa fa-circle text-info"></i> Averages
+            <div class="events" style="margin-top: -30px">
+              <div class="toggle">
+                <button class="btn active">All</button>
+                <button class="btn">Major</button>
+                <button class="btn">Threshold</button>
+                <button class="btn">Minor</button>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card card-chart">
-          <div class="card-header card-header-icon card-header-danger">
-            <div class="card-icon dashboardIcon">
-              <i class="material-icons">power</i>
-            </div>
-            <h4 class="card-title">Domain Categories</h4>
-          </div>
-          <div class="card-body">
-            <div id="birincipasta" class="ct-chart"></div>
-          </div>
-          <div class="card-footer">
-            <div class="row">
-              <div class="col-md-12">
-                <h6 class="card-category">Categories</h6>
-              </div>
-              <div class="col-md-12">
-                <i class="fa fa-circle text-info"></i> Category A
-                <i class="fa fa-circle text-warning"></i> Category B
-                <i class="fa fa-circle text-danger"></i> Category C
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card card-chart">
-          <div class="card-header card-header-icon card-header-warning">
-            <div class="card-icon dashboardIcon">
-              <i class="material-icons">language</i>
-            </div>
-            <h4 class="card-title">World Status</h4>
-          </div>
-          <div class="card-body">
-            <div id="worldMap" class="map" style="max-height: 177px;"></div>
-          </div>
-          <div class="card-footer">
-            <div class="row">
-
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-header card-header-icon card-header-rose">
-            <div class="card-icon dashboardIcon">
-              <i class="material-icons">category</i>
-            </div>
-            <h4 class="card-title ">Firstly Seen Domain For You</h4>
-          </div>
-          <div class="card-body table-full-width">
-            <div class="table-responsive mr-1" style="max-height: 245px;">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th *ngFor="let cell of tableData3.headerRow">{{ cell }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="table-success">
-                    <td *ngFor="let cell of tableData3.dataRows[0]">{{cell}}</td>
-                  </tr>
-                  <tr>
-                    <td *ngFor="let cell of tableData3.dataRows[1]">{{cell}}</td>
-                  </tr>
-                  <tr class="table-danger">
-                    <td *ngFor="let cell of tableData3.dataRows[2]">{{cell}}</td>
-                  </tr>
-                  <tr>
-                    <td *ngFor="let cell of tableData3.dataRows[3]">{{cell}}</td>
-                  </tr>
-                  <tr class="table-danger">
-                    <td *ngFor="let cell of tableData3.dataRows[4]">{{cell}}</td>
-                  </tr>
-                  <tr>
-                    <td *ngFor="let cell of tableData3.dataRows[5]">{{cell}}</td>
-                  </tr>
-                  <tr class="table-warning">
-                    <td *ngFor="let cell of tableData3.dataRows[6]">{{cell}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
           </div>
         </div>
       </div>

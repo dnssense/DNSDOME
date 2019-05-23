@@ -1,10 +1,13 @@
 <nav #navbar class="navbar navbar-expand-lg navbar-transparent  navbar-absolute">
   <div class="container-fluid">
     <div class="navbar-wrapper">
-      <div class="navbar-minimize">
-        <button mat-raised-button (click)="minimizeSidebar()" class="btn btn-just-icon btn-white btn-fab btn-round">
-          <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
-          <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
+      <div class="navbar-minimize" style="padding-left: 0px;">
+        <button mat-raised-button (click)="minimizeSidebar()" class="btn btn-just-icon"
+          style="background-color: black; box-shadow: none">
+          <i class="material-icons text_align-center visible-on-sidebar-regular"><i
+              class="icon-left-open-big rotate-0"></i></i>
+          <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini"><i
+              class="icon-left-open-big rotate-0 rotate-180"></i></i>
         </button>
       </div>
       <a class="navbar-brand text-white" href="{{getPath()}}"> {{getTitle()}}</a>

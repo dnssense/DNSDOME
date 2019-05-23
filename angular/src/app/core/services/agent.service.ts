@@ -56,7 +56,8 @@ export class AgentService {
   }
 
   deleteSecurityProfile(id: number): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.deleteSecurityProfileURL, { "id": id }, this.getOptions());
+    debugger
+    return this.http.post<OperationResult>(this.deleteSecurityProfileURL, { "id": id }, this.getOptions()).map(res=>res);
   }
 
   getOptions() {
@@ -67,42 +68,42 @@ export class AgentService {
   }
 
 
-  getRegisteredAgents(): Observable<AgentResponse[]> {
-    return this.http.get<AgentResponse[]>(this.registeredAgentsURL).map(data => data);
-  }
+  // getRegisteredAgents(): Observable<AgentResponse[]> {
+  //   return this.http.get<AgentResponse[]>(this.registeredAgentsURL).map(data => data);
+  // }
 
-  getUnRegisteredAgents(): Observable<AgentResponse[]> {
-    return this.http.get<AgentResponse[]>(this.unRegisteredAgentsURL).map(data => data);
-  }
+  // getUnRegisteredAgents(): Observable<AgentResponse[]> {
+  //   return this.http.get<AgentResponse[]>(this.unRegisteredAgentsURL).map(data => data);
+  // }
 
-  getMobileCategories(agetId: number): Observable<MobileCategory[]> {
-    return this.http.get<MobileCategory[]>(this.mobileCategoriesURL + agetId).map(data => data);
-  }
+  // getMobileCategories(agetId: number): Observable<MobileCategory[]> {
+  //   return this.http.get<MobileCategory[]>(this.mobileCategoriesURL + agetId).map(data => data);
+  // }
  
   // getProfiles(): Observable<TimeProfileResponse> {
   //   return this.http.get<TimeProfileResponse>(this.profilesURL).map(data => data);
   // }
 
-  getBedTimes(): Observable<TimeProfileResponse> {
-    return this.http.get<TimeProfileResponse>(this.bedTimesURL).map(data => data);
-  }
+  // getBedTimes(): Observable<TimeProfileResponse> {
+  //   return this.http.get<TimeProfileResponse>(this.bedTimesURL).map(data => data);
+  // }
 
-  collectiveBlock(cbr: CollectiveBlockRequest): Observable<AgentResponse> {
+  // collectiveBlock(cbr: CollectiveBlockRequest): Observable<AgentResponse> {
 
-    let options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }
-    let body = JSON.stringify(cbr, null, " ");
-    return this.http.post<AgentResponse>(this.collectiveBlockURL, body, options).map(d => d);
-  }
-
-  // deleteAgent(agent: AgentResponse) {
   //   let options = {
   //     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  //   };
-
-  //   this.http.request('DELETE', this.deleteAgentURL, { body: JSON.stringify(agent, null, " ") });
+  //   }
+  //   let body = JSON.stringify(cbr, null, " ");
+  //   return this.http.post<AgentResponse>(this.collectiveBlockURL, body, options).map(d => d);
   // }
+
+  // // deleteAgent(agent: AgentResponse) {
+  // //   let options = {
+  // //     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  // //   };
+
+  // //   this.http.request('DELETE', this.deleteAgentURL, { body: JSON.stringify(agent, null, " ") });
+  // // }
 
   saveProfile(profile: DayProfileGroup): Observable<DayProfileGroup> {
     let options = {

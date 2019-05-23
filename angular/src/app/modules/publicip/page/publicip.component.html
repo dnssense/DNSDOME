@@ -153,7 +153,7 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
           <div class="card">
             <div class="card-header card-header-icon card-header-info">
@@ -167,8 +167,8 @@
                 <div class="col-md-4"></div>
                 <div class="col-md-4">
                   <mat-form-field>
-                    <input type="text" name="search" matInput id="text" placeholder="Search by name..."
-                      [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)">
+                    <input type="text" matInput placeholder="Search by name..." [(ngModel)]="searchKey"
+                      (ngModelChange)="searchByKeyword($event)">
                   </mat-form-field>
                 </div>
                 <div class="col-md-4 text-right">
@@ -181,7 +181,6 @@
                       <thead class="text-success">
                         <tr>
                           <th><small>Name</small></th>
-                          <!-- <th><small>Type</small></th> -->
                           <th style="min-width: 125px;"><small>Ip Address</small></th>
                           <th><small>Message</small></th>
                           <th><small>Profile</small></th>
@@ -191,7 +190,6 @@
                       <tfoot>
                         <tr>
                           <th><small>Name</small></th>
-                          <!-- <th><small>Type</small></th> -->
                           <th><small>Ip Address</small></th>
                           <th><small>Message</small></th>
                           <th><small>Profile</small></th>
@@ -201,7 +199,6 @@
                       <tbody>
                         <tr *ngFor="let pi of publicIpsFiltered">
                           <td>{{pi.agentAlias}}</td>
-                          <!-- <td>Static</td> -->
                           <td>
                             <small>
                               <div *ngIf="pi.staticSubnetIp.length > 0">
@@ -211,8 +208,9 @@
                           </td>
                           <td>{{pi.blockMessage?pi.blockMessage:"---"}}</td>
                           <td>
-                            <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
-                              matTooltip="Edit Profile" (click)="showProfileEditWizard(pi.id)">
+                            <button [disabled]="pi.rootProfile?.isSystem" mat-raised-button type="button"
+                              class="btn btn-info btn-just-icon btn-sm" matTooltip="Edit Profile"
+                              (click)="showProfileEditWizard(pi.id)">
                               <i class="material-icons">settings</i>
                             </button>
                             {{pi.rootProfile?pi.rootProfile.name:"---"}}
@@ -233,6 +231,78 @@
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <div class="row mt-3">
+        <div class="col-12">
+          <div class="base-card">
+            <div class="base-card-content">
+              <div class="datatable-container container-fluid">
+                <div class="row">
+                  <h4 class="datatable-heading col-sm-4">Public Ip/ Agents</h4>
+                  <div class="col-sm-4">
+                    <div class="search-form">
+                      <mat-form-field>
+                        <input type="text" matInput [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)">
+                        <mat-placeholder style="color: whitesmoke;">Search by name</mat-placeholder>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="table-responsive" style="max-height: 600px;">
+                      <table class="table table-bordered">
+                        <thead>
+                          <th class="no-border"></th>
+                          <th class="color-light-blue">Name</th>
+                          <th class="color-light-blue">Ip Address</th>
+                          <th class="color-light-blue">Message</th>
+                          <th class="color-light-blue">Profile</th>
+                          <th class="color-light-blue">Operation</th>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let pi of publicIpsFiltered; let i = index;">
+                            <td class="numeration">{{i}}</td>
+                            <td>{{pi.agentAlias}}</td>
+                            <td>
+                              <small>
+                                <div *ngIf="pi.staticSubnetIp.length > 0">
+                                  <div *ngFor="let pis of pi.staticSubnetIp">[{{pis.baseIp}}]/[{{pis.mask}}] </div>
+                                </div>
+                              </small>
+                            </td>
+                            <td>{{pi.blockMessage?pi.blockMessage:"---"}}</td>
+                            <td>
+                              <button [disabled]="pi.rootProfile?.isSystem" mat-raised-button type="button"
+                                class="btn btn-info btn-link btn-just-icon btn-sm" matTooltip="Edit Profile"
+                                (click)="showProfileEditWizard(pi.id)">
+                                <i class="material-icons">settings</i>
+                              </button>
+                              {{pi.rootProfile?pi.rootProfile.name:"---"}}
+                            </td>
+                            <td class="text-center">
+                              <span class="form-control-feedback"><i class="material-icons">clear</i></span>
+                              <button mat-raised-button type="button" class="btn btn-info btn-link btn-just-icon btn-sm"
+                                matTooltip="Edit item" (click)="showEditWizard(pi.id)">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button mat-raised-button type="button" class="btn btn-danger btn-link btn-just-icon btn-sm"
+                                matTooltip="Delete item" (click)="deletePublicIp(pi.id)">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>

@@ -1,0 +1,25 @@
+.datatable-container {
+  display: block;
+  width: 100%;
+}
+
+.datatable-container .datatable-heading {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.datatable-container .datatable-pagination{
+  display: inline-block;
+}
+
+.datatable-container .datatable-pagination .page-numbers{
+  display: inline-block;
+}
+
+.page-prev, .page-next{
+  display: inline-block;
+  padding: 5px 10px;
+  cursor: pointer;
+  background: transparent !important;
+}

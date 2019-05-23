@@ -71,15 +71,10 @@
                         <div class="form-group-sm has-default text-center">
                           <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)"></re-captcha>
                         </div>
-                        <div class="form-group form-check ">
-                          <label class="form-check-label">
-                            <input class="form-check-input" (change)="pPolicy()" type="checkbox" value="">
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                            <a href="{{host.privacyUrl}}" target="_blank">{{'REGISTER.TermAndCondition' |
-                              translate}}</a>
-                          </label>
+                        <div class="form-group form-check text-center">
+                          <p>By clicking the 'Register' button, you are creating a DNSSENSE account and you agree to
+                            <a href="{{host.privacyUrl}}" target="_blank">DNSSENSE Privacy Policy.</a>
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -87,7 +82,7 @@
                       <div class="col-md-12">
                         <div class="text-center">
                           <button type="submit" class="btn btn-info btn-sm mt-4"
-                            [disabled]="!isRegisterFormValid()">Sign Up</button>
+                            [disabled]="!isRegisterFormValid()">Register</button>
                         </div>
                       </div>
                     </div>
@@ -101,6 +96,6 @@
       </div>
 
     </div>
-   <app-footer-cmp></app-footer-cmp>
+    <app-footer-cmp></app-footer-cmp>
 
-</div>
+  </div>

@@ -52,6 +52,37 @@
               <div class="tab-pane active" id="content">
                 <div class="row justify-content-center">
                   <div class="col-md-12">
+                    <div class="row mb-4">
+                      <div class="col-md-3 ml-auto">
+                        <div class="togglebutton">
+                          <label style="color:#333333;">Safe Search
+                            <ng-container *ngIf="selectedAgent.rootProfile.isSafeSearchEnabled; else elseTemplate1">
+                              <input type="checkbox" checked (change)="changeSafeSearchMode()">
+                              <span class="toggle"></span> On
+                            </ng-container>
+                            <ng-template #elseTemplate1>
+                              <input type="checkbox" (change)="changeSafeSearchMode()">
+                              <span class="toggle"></span> Off
+                            </ng-template>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-3 mr-auto">
+                        <div class="togglebutton">
+                          <label style="color:#333333;">YouTube Restrict Mode
+                            <ng-container
+                              *ngIf="selectedAgent.rootProfile.isYoutubeStrictModeEnabled; else elseTemplate2">
+                              <input type="checkbox" checked (change)="changeYoutubeMode()">
+                              <span class="toggle"></span> On
+                            </ng-container>
+                            <ng-template #elseTemplate2>
+                              <input type="checkbox" (change)="changeYoutubeMode()">
+                              <span class="toggle"></span> Off
+                            </ng-template>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                     <div class="item-wrapper">
                       <ng-container *ngFor="let cat of categoryList">
                         <div class="item" *ngIf="(cat.category.type=='UNSAFE_LIST' || cat.category.type=='HARMFULL_CONTENT') 
@@ -87,7 +118,7 @@
                             data-parent="#cleanCategoriesAccordion">
                             <ng-container *ngFor="let cat of categoryList">
                               <div class="item" *ngIf="!(cat.category.type=='SECURITY' ||cat.category.type=='UNSAFE_LIST' 
-                                || cat.category.type=='HARMFULL_CONTENT' ) && cat.category.isVisible">
+                                || cat.category.type=='HARMFULL_CONTENT'|| cat.category.type=='GRAY_LIST' ) && cat.category.isVisible">
                                 <div class="row align-items-center">
                                   <div class="col-sm-12 text-center mt-1">
                                     <strong>{{cat.category.name}}</strong>
@@ -116,8 +147,28 @@
                 <div class="row justify-content-center">
                   <div class="col-md-12">
                     <div class="item-wrapper">
+                      <h3 class="text-center text-danger">SECURITY</h3>
                       <ng-container *ngFor="let cat of categoryList">
                         <div class="item" *ngIf="cat.category.type=='SECURITY' && cat.category.isVisible">
+                          <div class="row align-items-center">
+                            <div class="col-sm-12 text-center mt-1">
+                              <strong>{{cat.category.name}}</strong>
+                              <br />
+                              <ng-container *ngIf="cat.isBlocked; else elseTemplate">
+                                <button class="btn btn-sm btn-warning" (click)="allowCategory(cat.category.id)">Not
+                                  Allowed</button>
+                              </ng-container>
+                              <ng-template #elseTemplate>
+                                <button class="btn btn-sm btn-success"
+                                  (click)="blockCategory(cat.category.id)">Allowed</button>
+                              </ng-template>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <h3 class="text-center text-muted">GRAY LIST</h3>
+                      <ng-container *ngFor="let cat of categoryList">
+                        <div class="item" *ngIf="cat.category.type=='GRAY_LIST' && cat.category.isVisible">
                           <div class="row align-items-center">
                             <div class="col-sm-12 text-center mt-1">
                               <strong>{{cat.category.name}}</strong>
@@ -141,40 +192,71 @@
               <div class="tab-pane" id="applications">
                 <div class="row justify-content-center">
                   <div class="col-md-12">
-                    <div class="row mb-4">
-                      <div class="col-md-3 ml-auto">
-                        <div class="togglebutton">
-                          <label style="color:#333333;">Safe Search
-                            <ng-container *ngIf="selectedAgent.rootProfile.isSafeSearchEnabled; else elseTemplate1">
-                              <input type="checkbox" checked (change)="changeSafeSearchMode()">
-                              <span class="toggle"></span> On
-                            </ng-container>
-                            <ng-template #elseTemplate1>
-                              <input type="checkbox" (change)="changeSafeSearchMode()">
-                              <span class="toggle"></span> Off
-                            </ng-template>
-                          </label>
-                        </div>
-                      </div>
-                      <div class="col-md-3 mr-auto">
-                        <div class="togglebutton">
-                          <label style="color:#333333;">YouTube Restrict Mode
-                            <ng-container
-                              *ngIf="selectedAgent.rootProfile.isYoutubeStrictModeEnabled; else elseTemplate2">
-                              <input type="checkbox" checked (change)="changeYoutubeMode()">
-                              <span class="toggle"></span> On
-                            </ng-container>
-                            <ng-template #elseTemplate2>
-                              <input type="checkbox" (change)="changeYoutubeMode()">
-                              <span class="toggle"></span> Off
-                            </ng-template>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
                     <div class="item-wrapper">
+                      <h3 class="text-center text-info">ONLINE VIDEO</h3>
                       <ng-container *ngFor="let app of applicationList">
-                        <div class="item" *ngIf="app.application.isVisible">
+                        <div class="item" *ngIf="app.application.isVisible && app.application.type=='ONLINE_VIDEO'">
+                          <div class="row align-items-center">
+                            <div class="col-sm-12 text-center mt-1">
+                              <strong>{{app.application.name}}</strong>
+                              <br />
+                              <ng-container *ngIf="app.isBlocked; else elseTemplate">
+                                <button class="btn btn-sm btn-warning"
+                                  (click)="allowApplication(app.application.id)">Not
+                                  Allowed</button>
+                              </ng-container>
+                              <ng-template #elseTemplate>
+                                <button class="btn btn-sm btn-success"
+                                  (click)="blockApplication(app.application.id)">Allowed</button>
+                              </ng-template>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <h3 class="text-center text-info">SOCIAL MEDIA</h3>
+                      <ng-container *ngFor="let app of applicationList">
+                        <div class="item" *ngIf="app.application.isVisible && app.application.type=='SOCIAL'">
+                          <div class="row align-items-center">
+                            <div class="col-sm-12 text-center mt-1">
+                              <strong>{{app.application.name}}</strong>
+                              <br />
+                              <ng-container *ngIf="app.isBlocked; else elseTemplate">
+                                <button class="btn btn-sm btn-warning"
+                                  (click)="allowApplication(app.application.id)">Not
+                                  Allowed</button>
+                              </ng-container>
+                              <ng-template #elseTemplate>
+                                <button class="btn btn-sm btn-success"
+                                  (click)="blockApplication(app.application.id)">Allowed</button>
+                              </ng-template>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <h3 class="text-center text-info">INSTANT MESSAGING</h3>
+                      <ng-container *ngFor="let app of applicationList">
+                        <div class="item"
+                          *ngIf="app.application.isVisible && app.application.type=='INSTANT_MESSAGING'">
+                          <div class="row align-items-center">
+                            <div class="col-sm-12 text-center mt-1">
+                              <strong>{{app.application.name}}</strong>
+                              <br />
+                              <ng-container *ngIf="app.isBlocked; else elseTemplate">
+                                <button class="btn btn-sm btn-warning"
+                                  (click)="allowApplication(app.application.id)">Not
+                                  Allowed</button>
+                              </ng-container>
+                              <ng-template #elseTemplate>
+                                <button class="btn btn-sm btn-success"
+                                  (click)="blockApplication(app.application.id)">Allowed</button>
+                              </ng-template>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <h3 class="text-center text-info">ADVERTISEMENT</h3>
+                      <ng-container *ngFor="let app of applicationList">
+                        <div class="item" *ngIf="app.application.isVisible && app.application.type=='CLEAR_ADS'">
                           <div class="row align-items-center">
                             <div class="col-sm-12 text-center mt-1">
                               <strong>{{app.application.name}}</strong>

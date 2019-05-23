@@ -220,15 +220,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     debugger;
     if (this.validEmailLogin) {
       let forgoter: SignupBean = new SignupBean();
-      forgoter.userName = this.forgoterEmail;
+      forgoter.username = this.forgoterEmail;
 
-      if (!this.capthaService.validCaptcha(this.captcha) || !forgoter.userName) {
+      if (!this.capthaService.validCaptcha(this.captcha) || !forgoter.username) {
         return;
       } else {
         forgoter.c_answer = this.captcha;
       }
 
-      this.authService.forgotPassword(forgoter.userName).subscribe(res => {
+      this.authService.forgotPassword(forgoter).subscribe(res => {
 
           this.notification.success("Activation code sent your email.");
           this.router.navigateByUrl('/login');

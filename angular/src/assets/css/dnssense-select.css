@@ -1,0 +1,103 @@
+/*the container must be positioned relative:*/
+.dnssense-select {
+  position: relative;
+  display: inline-block;
+  min-width: 75px;
+  font-size: 16px !important;
+  font-weight: normal !important;
+  text-align: left !important;
+  font-family: 'Roboto';
+}
+
+.dnssense-select select {
+  display: none;
+  /*hide original SELECT element:*/
+}
+
+.select-selected {
+  background-color: #141414 !important;
+  border-radius: 8px;
+  position: relative;
+}
+
+/*style the arrow inside the select element:*/
+.select-selected:after {
+  position: absolute;
+  font-family: 'Entypo';
+  content: "\e764";
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+}
+
+/*point the arrow upwards when the select box is open (active):*/
+.select-selected.select-arrow-active:after {
+  transform: rotate(180deg);
+  top: 10px;
+}
+
+/*style the items (options), including the selected item:*/
+.select-items div,
+.select-selected {
+  color: #ffffff;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+  user-select: none;
+  background: #444
+}
+
+/*style items (options):*/
+.select-items {
+  position: absolute;
+  background-color: #3b3b3b;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  border-radius: 8px;
+  overflow: hidden;
+  width: auto
+}
+
+/*hide the items when the select box is closed:*/
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover,
+.same-as-selected {
+  background-color: #4b4b4b;
+}
+
+.dnssense-select.light-select .select-selected {
+  background: #f5f5f5 !important;
+}
+
+.dnssense-select.light-select .select-items div,
+.dnssense-select.light-select .select-selected {
+  color: #4a4a4a;
+  background: #f5f5f5;
+}
+
+.dnssense-select.light-select .select-selected:after {
+  color: #4b4b4b;
+}
+
+.dnssense-select.light-select .select-items {
+  background: #f5f5f5;
+}
+
+.dnssense-select.light-select .select-items div:hover,
+.dnssense-select.light-select .same-as-selected {
+  background-color: rgba(208, 208, 208, .5);
+}
+
+.dnssense-select.icon-left-select .select-selected {
+  padding-left: 40px;
+}
+
+.dnssense-select.icon-left-select .icon {
+  z-index: 99;
+}

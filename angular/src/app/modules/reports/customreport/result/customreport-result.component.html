@@ -1,106 +1,89 @@
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-info tablepanel">
-            <div class="panel-heading clearfix">
-                <div class="btn-group  pull-right">
-                    <span class="btn-group" style="padding-right: 20px" *ngIf="data && data.length > 0">
-
-                        <!-- <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        {{ 'GLOBALS.EXPORT' | translate }} <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a (click)="exportTable('pdf','custom-reports')"><img
-                                    src="/assets/images/export-icon/pdf.png" aria-hidden="true"
-                                    class="exportIcon">Pdf</a></li>
-                        <li><a (click)="exportTable('xls','custom-reports')"><img
-                                    src="/assets/images/export-icon/xls.png" aria-hidden="true"
-                                    class="exportIcon">Excel</a></li>
-                        <li><a (click)="exportTable('png','custom-reports')"><img
-                                    src="/assets/images/export-icon/png.png" aria-hidden="true"
-                                    class="exportIcon">PNG</a></li>
-                        <li><a (click)="exportTable('jpg','custom-reports')"><img
-                                    src="/assets/images/export-icon/jpg.png" aria-hidden="true"
-                                    class="exportIcon">JPG</a></li>
-                        <li><a (click)="exportTable('csv','custom-reports')"><img
-                                    src="/assets/images/export-icon/csv.png" aria-hidden="true"
-                                    class="exportIcon">Csv</a></li>
-                    </ul> -->
-                        <span class="col-md-5 col-sm-5 col-xs-5">
-                            <select class="form-control input-xs nopadding" [(ngModel)]="searchSetting.topNumber"
-                                (change)="setTopCount($event.target.value)">
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="15">15</option>
-                                <option value="20">20</option>
-                                <option value="30">30</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                                <option value="250">250</option>
-                                <option value="500">500</option>
-                                <option value="1000">1000</option>
-                                <option value="3000">3000</option>
-                                <option value="5000">5000</option>
-                                <option value="10000">10000</option>
-                            </select>
-                        </span>
-                    </span>
-                    <a class="btn btn-default btn-sm" style="margin-left: 10px" (click)="refresh()">
-                        REFRESH TABLE<i class="material-icons">refresh</i>
-                    </a>
-                </div>
-                <!-- <h4 class="panel-title" style="padding-left: 10px">
-                Custom Report
-            </h4> -->
-            </div>
-            <!-- <div #component> -->
-            <div #tableDivComponent class="table-responsive table-striped percentage-table {{loading?'opakkk':''}}"
-                style="background-color: white; border-radius: 5px;" *ngIf="data && data.length > 0" id="table-data">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <td>#</td>
-                            <td *ngFor="let colz of selectedColumns"><strong>{{colz.label}}</strong></td>
-                            <td><strong>Count</strong></td>
-                            <td><strong>Percent (%)</strong></td>
-                        </tr>
-                    </thead>
-                    <tr *ngFor="let dat of data;  let i = index">
-                        <td>{{i+1}}</td>
-                        <td *ngFor="let col of selectedColumns; let inde=index">
-                            <div *ngIf="col.column.name == 'action'">
-                                <app-customreport-result-column [value]="dat[inde]== 'false' ? false:true"
-                                    [columnName]="col.column.name"
-                                    (addColumnValueEmitter)="addValuesIntoSelected($event)">
-                                </app-customreport-result-column>
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="base-card">
+            <div class="base-card-content">
+                <div id="customReportChart"></div>
+                <div class="mt-4"></div>
+                <ng-container *ngIf="data; else elseTemplate">
+                    <div class="datatable-container container-fluid">
+                        <div class="row">
+                            <h4 class="datatable-heading col-sm-4">Results</h4>
+                            <div class="col-sm-8 text-right">
+                                <div class="select-container default-select" style="width: 120px;">
+                                    <select class="form-control">
+                                        <option value="Export as">Export as</option>
+                                    </select>
+                                </div>
+                                <div class="datatable-pagination ml-5">
+                                    <span>Show Rows:</span>
+                                    <div class="select-container default-select ml-3">
+                                        <select class="form-control" [(ngModel)]="searchSetting.topNumber"
+                                            (change)="setTopCount($event.target.value)">
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                        </select>
+                                    </div>
+                                    <div class="page-numbers ml-3 mr-3"><a class="btn btn-default btn-link btn-sm"
+                                            style="margin-left: 10px" (click)="refresh()">
+                                            REFRESH TABLE<i class="material-icons">refresh</i>
+                                        </a></div>
+                                </div>
                             </div>
-                            <div *ngIf="col.column.name!='action'">
-                                <app-customreport-result-column [value]="dat[inde]" [columnName]="col.column.name"
-                                    (addColumnValueEmitter)="addValuesIntoSelected($event)">
-                                </app-customreport-result-column>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <table #tableDivComponent id="table-data" class="table table-bordered">
+                                    <thead>
+                                        <th class="no-border"></th>
+                                        <th class="color-light-blue" *ngFor="let colz of selectedColumns">
+                                            <strong>{{colz.label}}</strong></th>
+                                        <th class="color-light-blue">Count</th>
+                                        <th class="color-light-blue">Percent</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let dat of data;  let i = index">
+                                            <td class="numeration">{{i+1}}</td>
+                                            <td *ngFor="let col of selectedColumns; let inde=index">
+                                                <div *ngIf="col.column.name == 'action'">
+                                                    <app-customreport-result-column
+                                                        [value]="dat[inde]== 'false' ? false:true"
+                                                        [columnName]="col.column.name"
+                                                        (addColumnValueEmitter)="addValuesIntoSelected($event)">
+                                                    </app-customreport-result-column>
+                                                </div>
+                                                <div *ngIf="col.column.name!='action'">
+                                                    <app-customreport-result-column [value]="dat[inde]"
+                                                        [columnName]="col.column.name"
+                                                        (addColumnValueEmitter)="addValuesIntoSelected($event)">
+                                                    </app-customreport-result-column>
+                                                </div>
+                                            <td>
+                                                {{dat[selectedColumns.length] | customDecimalPipe}}
+                                            </td>
+                                            <td>
+                                                {{100*dat[selectedColumns.length]/total | number:'1.0-0'}}%
+                                                <mat-progress-bar mode="determinate"
+                                                    value="{{100*dat[selectedColumns.length]/total}}">
+                                                </mat-progress-bar>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
                             </div>
-                        <td>
-                            {{dat[selectedColumns.length] | customDecimalPipe}}
-                        </td>
-                        <td>
-                            {{100*dat[selectedColumns.length]/total | number:'1.0-0'}}%
-                            <mat-progress-bar mode="determinate" value="{{100*dat[selectedColumns.length]/total}}">
-                            </mat-progress-bar>
-
-                        </td>
-
-                    </tr>
-                </table>
-            </div>
-            <!-- </div> -->
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel-body" *ngIf="!data || data.length == 0">
-            <div class="alert alert-default" #tableDivComponent>
-                <strong>{{ 'Data not found!' }}</strong>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #elseTemplate>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p #tableDivComponent style="color: whitesmoke">
+                                <strong>{{ 'Data not found!' }}</strong>
+                            </p>
+                        </div>
+                    </div>
+                </ng-template>
             </div>
         </div>
     </div>

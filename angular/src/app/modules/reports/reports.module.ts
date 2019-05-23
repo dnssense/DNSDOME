@@ -21,6 +21,7 @@ import { CustomReportSearchComponent } from './customreport/search/customreport-
 import { CustomReportResultComponent } from './customreport/result/customreport-result.component';
 import { CustomReportResultColumnComponent } from './customreport/result/column/customreport-result-column.component';
 import { HistogramComponent } from './shared/histogram/histogram.component';
+import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
 
 
 @NgModule({
@@ -38,8 +39,9 @@ import { HistogramComponent } from './shared/histogram/histogram.component';
   ],
   imports: [
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule,    
     CommonModule,
+    NgApexchartsModule,
     NouisliderModule,
     MaterialModule,
     ReportsRoutingModule,

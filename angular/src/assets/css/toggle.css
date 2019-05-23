@@ -1,0 +1,47 @@
+.toggle {
+  background: #141414;
+  border-radius: 8px;
+  display: inline-block;
+  margin: 10px;
+  padding: 0px;
+  position: relative;
+}
+
+.toggle .btn {
+  border-radius: 8px;
+  font-weight: bold;
+  color: #e5e5e5;
+  font-size: 13px;
+  margin-right: 5px;
+  padding: 5px 10px;
+}
+
+.toggle .btn:last-child {
+  margin-right: 0;
+}
+
+.toggle .btn:hover {
+  background: #262626;
+}
+
+.toggle .btn.active {
+  background: #262626
+}
+
+.reverse-toggle {
+  background: white;
+}
+
+.reverse-toggle .btn {
+  background: white;
+  color: #484848;
+}
+
+.reverse-toggle .btn:hover {
+  background: #262626;
+}
+
+.reverse-toggle .btn.active {
+  background: #262626;
+  color: white;
+}
