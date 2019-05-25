@@ -21,8 +21,6 @@ declare const $: any;
 })
 export class DashboardComponent implements OnInit {
   elasticData: ElasticDashboardResponse[];
-  firstlySeenDomains: any;
-  firstlySeenDomainsFiltered: any;
   dateParameter: number = 0;
   malwareCountForDashboard: number;
   uMalwareCountForDashboard: number;
@@ -35,6 +33,7 @@ export class DashboardComponent implements OnInit {
   categoryListFiltered = [];
   selectedCategoryForTraffic = CategoryV2;
   selectedCategoryForBlocked = CategoryV2;
+  trafficChartType: string = 'hit';
 
   constructor(private dashboardService: DashBoardService, private auth: AuthenticationService, private datePipe: DatePipe,
     private staticService: StaticService) {
@@ -123,36 +122,41 @@ export class DashboardComponent implements OnInit {
 
   changeDateParameter(param: number) {
     var today = new Date();
-    this.dateParameter = new Date().setDate(today.getDate() - param);
-    this.getElasticData(this.dateParameter);
+    this.dateParameter = param;
+    this.getElasticData(new Date().setDate(today.getDate() - param));
   }
 
   createCharts() {
-    debugger
 
-    this.firstlySeenDomains = [];
     this.malwareCountForDashboard = 0;
     this.uMalwareCountForDashboard = 0;
     let hitAverages = [24], todayHits = [24], blockAverages = [24], todayBlocks = [24];
+
     for (let i = 0; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
-      hitAverages[data.hourIndex] = data.averages.total_hit;
+      hitAverages[data.hourIndex] = Math.round(data.averages.total_hit);
       todayHits[data.hourIndex] = data.total_hit;
-      blockAverages[data.hourIndex] = data.averages.blocked_count;
+      blockAverages[data.hourIndex] = Math.round(data.averages.blocked_count);
       todayBlocks[data.hourIndex] = data.blocked_count;
 
-      data.firstly_seen_domains.forEach(d => this.firstlySeenDomains.push(d));
       // this.malwareCountForDashboard += data.category_hits[Object.keys(data.category_hits)[36]].hits;//malware categoyr degerleri aliniyor
       // this.uMalwareCountForDashboard += data.category_hits[Object.keys(data.category_hits)[36]].unique_domain;
     }
-    this.firstlySeenDomainsFiltered = this.firstlySeenDomains.sort((x, y) => { return y.hits - x.hits });
+ 
+    // this.elasticData.forEach(e => {
+    //   hitAverages[e.hourIndex] = Math.round(e.averages.total_hit);
+    //   todayHits[e.hourIndex] = e.total_hit;
+    //   blockAverages[e.hourIndex] = Math.round(e.averages.blocked_count);
+    //   todayBlocks[e.hourIndex] = e.blocked_count;
+    // });
 
     this.totalHitCountForDashboard = todayHits.reduce((a, b) => a + b);
+    this.totalBlockCountForDashboard = todayBlocks.reduce((a, b) => a + b);
 
     var trafficChartoptions = {
       chart: {
         height: 250,
-        type: 'area',
+        type: 'line',
         zoom: {
           enabled: false
         },
@@ -169,19 +173,15 @@ export class DashboardComponent implements OnInit {
       },
       stroke: {
         width: [3, 3],
-        curve: 'straight',
+        curve: 'smooth',
         dashArray: [0, 6]
       },
-      colors: ['#9d60fb', '#6c84fa'],
+      colors: ['#9d60fb', '#4a90e2'],
       series: [{ name: "Today Hits", data: todayHits }, { name: "Average Hits", data: hitAverages }],
       markers: {
         size: 0,
-        opacity: 0.9,
-        colors: ['#FFA41B'],
-        strokeColor: "#fff",
-        strokeWidth: 2,
         hover: {
-          size: 7,
+          sizeOffset: 6
         }
       },
       xaxis: {
@@ -206,32 +206,21 @@ export class DashboardComponent implements OnInit {
           }
         }]
       },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shade: 'dark',
-          shadeIntensity: 1,
-          opacityFrom: 0.4,
-          opacityTo: 0,
-        }
-      },
       tooltip: {
         theme: 'dark'
-      },
+      }
     }
 
-    var chart = new ApexCharts(
-      document.querySelector("#trafficChart"),
+    var chart1 = new ApexCharts(
+      document.querySelector("#trafficChartHits"),
       trafficChartoptions
     );
-    chart.render();
- 
-    this.totalBlockCountForDashboard = todayBlocks.reduce((a, b) => a + b);
+    chart1.render();
 
-    var blockChartOption = {
+    var options2 = {
       chart: {
         height: 250,
-        type: 'area',
+        type: 'line',
         zoom: {
           enabled: false
         },
@@ -248,19 +237,15 @@ export class DashboardComponent implements OnInit {
       },
       stroke: {
         width: [3, 3],
-        curve: 'straight',
+        curve: 'smooth',
         dashArray: [0, 6]
       },
-      colors: ['#9d60fb', '#6c84fa'],
+      colors: ['#9d60fb', '#4a90e2'],
       series: [{ name: "Today Blockeds", data: todayBlocks }, { name: "Average Blockeds", data: blockAverages }],
       markers: {
         size: 0,
-        opacity: 0.9,
-        colors: ["#FFA41B"],
-        strokeColor: "#fff",
-        strokeWidth: 2,
         hover: {
-          size: 7,
+          sizeOffset: 6
         }
       },
       xaxis: {
@@ -285,30 +270,24 @@ export class DashboardComponent implements OnInit {
           }
         }]
       },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shade: 'dark',
-          shadeIntensity: 1,
-          opacityFrom: 0.4,
-          opacityTo: 0,
-        }
-      },
       tooltip: {
         theme: 'dark'
-      },
+      }
     }
 
     var chart2 = new ApexCharts(
-      document.querySelector("#blockedChart"),
-      blockChartOption
+      document.querySelector("#trafficChartBlocked"),
+      options2
     );
     chart2.render();
 
     var options3 = {
       chart: {
-        height: 200,
-        type: 'heatmap',
+        height: 250,
+        type: 'line',
+        zoom: {
+          enabled: false
+        },
         foreColor: '#9b9b9b',
         toolbar: {
           show: false,
@@ -321,47 +300,85 @@ export class DashboardComponent implements OnInit {
         enabled: false
       },
       stroke: {
-        show: true,
+        width: [3, 3],
         curve: 'smooth',
-        lineCap: 'butt',
-        colors: ['#262626'],
-        width: 4,
-        dashArray: 0,
+        dashArray: [0, 10]
       },
-      colors: ["#008FFB"],
+      colors: ['#9d60fb', '#4a90e2'],
       series: [{
-        name: 'Malware/Virus',
-        data: this.generateData(18, {
-          min: 50,
-          max: 90
-        })
+        name: "Session Duration",
+        data: [800, 630, 700, 400, 200, 250, 350, 400]
       },
       {
-        name: 'Phishing',
-        data: this.generateData(18, {
-          min: 0,
-          max: 150
-        })
-      },
-      {
-        name: 'Hacking',
-        data: this.generateData(18, {
-          min: 0,
-          max: 200
-        })
+        name: "Page Views",
+        data: [780, 600, 750, 330, 230, 220, 320, 380]
       }
-      ], tooltip: {
-        theme: 'dark'
+      ],
+      markers: {
+        size: 0,
+        hover: {
+          sizeOffset: 6
+        }
+      },
+      xaxis: {
+        categories: ['15', '16', '17', '18', '19', '20', '21'],
+        labels: {
+          minHeight: 20
+        }
+      },
+      tooltip: {
+        theme: 'dark',
+        y: [{
+          title: {
+            formatter: function (val) {
+              return val + " (mins)"
+            }
+          }
+        }, {
+          title: {
+            formatter: function (val) {
+              return val + " per session"
+            }
+          }
+        }]
+      },
+      grid: {
+        borderColor: '#626262',
+        strokeDashArray: 6,
+      },
+      legend: {
+        show: false
+      },
+      annotations: {
+        yaxis: [{
+          label: {
+            fontSize: '20px'
+          }
+        }]
       }
     }
 
     var chart3 = new ApexCharts(
-      document.querySelector("#malwareDetectionChart"),
+      document.querySelector("#uniqueCounterChart"),
       options3
     );
+
     chart3.render();
 
   }
+
+  changeTrafficChartData(type: string) {
+    this.trafficChartType = type;
+    if (type == 'hit') {
+      $('#hitChartDiv').show();
+      $('#blockChartDiv').hide();
+    } else {
+      $('#hitChartDiv').hide();
+      $('#blockChartDiv').show();
+    }
+
+  }
+
 
   generateData(count, yrange) {
     var i = 0;
@@ -394,6 +411,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  //delete cat from unique counter based olarak degisecek
   deleteCatFromBlocked(id: number) {
     if (id && id > 0) {
       this.selectedCategoryForBlocked = null;
@@ -405,12 +423,5 @@ export class DashboardComponent implements OnInit {
     this.selectedCategoryForBlocked = this.categoryList.find(c => c.id == id);
   }
 
-  searchByKeyword(e: any) {
-    if (this.searchKey && this.searchKey.length > 0) {
-      this.firstlySeenDomainsFiltered = this.firstlySeenDomains.filter(f => f.domain.toLowerCase().includes(this.searchKey.toLowerCase()));
-    } else {
-      this.firstlySeenDomainsFiltered = this.firstlySeenDomains;
-    }
-  }
 
 }

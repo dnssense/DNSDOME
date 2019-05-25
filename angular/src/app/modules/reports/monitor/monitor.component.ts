@@ -45,11 +45,11 @@ export class MonitorComponent implements OnInit {
       }
     }
     if (exists) {
-      this.notificationService.warning(column + "=" + value + " exists in your criteria");
+ //     this.notificationService.warning(column + "=" + value + " exists in your criteria");
       return;
     }
     this.searchSetting.must.push(new ColumnTagInput(column, '=', value));
-    this.notificationService.info(column + "=" + (column == 'time' ? this.dateFormatPipe.transform(value, []) : value) + " added into your criteria");
+    //this.notificationService.info(column + "=" + (column == 'time' ? this.dateFormatPipe.transform(value, []) : value) + " added into your criteria");
     this.monitorSearchComponent.setSearchSetting(this.searchSetting);
   }
 

@@ -1,135 +1,174 @@
 <div class="main-content">
-  <div class="container-fluid">
-
-    <div class="base-card">
-      <div class="row">
-        <div class="ml-auto">
-          <div class="dropdown d-inline-block table-select">
-            <button class="btn dropdown-toggle text-left btn-sm" type="button" id="dropdownMenuButton1"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Yesterday
-              <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                    aria-controls="home" aria-selected="true">Date Range</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                    aria-controls="profile" aria-selected="false">Calendar</a>
-                </li>
-              </ul>
-              <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                  <a class="dropdown-item" (click)="changeDateParameter(0)">
-                    Today
-                  </a>
-                  <a class="dropdown-item" (click)="changeDateParameter(1)">
-                    Yesterday
-                  </a>
-                  <a class="dropdown-item" (click)="changeDateParameter(7)">
-                    Last Week
-                  </a>
-                  <a class="dropdown-item" (click)="changeDateParameter(14)">
-                    Last 14 Days
-                  </a>
-                  <a class="dropdown-item" (click)="changeDateParameter(30)">
-                    Last Mounth
-                  </a>
-                </div>
-                <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                  <input type="hidden" class="datepicker">
-                </div>
-                <div class="dropdown-divider"></div>
-                <span class="dropdown-label">Tarih Aralığı gir</span>
-                <div class="container-fluid">
-                  <div class="row mt-2 mb-3">
-                    <div class="col-6">
-                      <input type="text" value="01/01/2019" class="form-control">
+  <div class="container-fluid ">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="base-card">
+          <div class="row">
+            <div class="col-12">
+              <div class="dns-dropdown d-inline-block table-select pull-right" id="dropdownDate">
+                <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
+                  data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                  <span [ngSwitch]="dateParameter">
+                    <ng-container *ngSwitchCase="0">
+                      Today
+                    </ng-container>
+                    <ng-container *ngSwitchCase="1">
+                      Yesterday
+                    </ng-container>
+                    <ng-container *ngSwitchCase="7">
+                      Last Week
+                    </ng-container>
+                    <ng-container *ngSwitchCase="14">
+                      Last 14 Days
+                    </ng-container>
+                    <ng-container *ngSwitchCase="30">
+                      Last Month
+                    </ng-container>
+                  </span>
+                  <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
+                  style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
+                  <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                        aria-controls="home" aria-selected="true">Date Range</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                        aria-controls="profile" aria-selected="false">Calendar</a>
+                    </li>
+                  </ul>
+                  <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                      <button class="dropdown-item" (click)="changeDateParameter(0)">
+                        Today
+                      </button>
+                      <button class="dropdown-item" (click)="changeDateParameter(1)">
+                        Yesterday
+                      </button>
+                      <button class="dropdown-item" (click)="changeDateParameter(7)">
+                        Last Week
+                      </button>
+                      <button class="dropdown-item" (click)="changeDateParameter(14)">
+                        Last 14 Days
+                      </button>
+                      <button class="dropdown-item" (click)="changeDateParameter(30)">
+                        Last Month
+                      </button>
                     </div>
-                    <div class="col-6">
-                      <input type="text" value="01/01/2019" class="form-control">
+                    <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel"
+                      aria-labelledby="profile-tab">
+
+                      <!-- <input type="hidden" class="dt datepicker"> -->
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker" placeholder="Choose a date" (click)="picker.open()">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <span class="dropdown-label">Enter Range</span>
+                    <div class="container-fluid">
+                      <div class="row mt-2 mb-3">
+                        <div class="col-6">
+                          <input type="text" value="01/01/2019" class="form-control">
+                        </div>
+                        <div class="col-6">
+                          <input type="text" value="01/01/2019" class="form-control">
+                        </div>
+                      </div>
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="row">
-        <table class="table base-table table-responsive-md table-responsive-sm">
-          <thead>
-            <th></th>
-            <th>Total Traffic</th>
-            <th>Blocked</th>
-            <th>Malware</th>
-            <th>Grey</th>
-          </thead>
 
-          <tbody>
-            <tr>
-              <td>Hit Count</td>
-              <td>
-                <span class="size-20 bold mr-4">{{totalHitCountForDashboard | number}}</span>
-                <span class="status down">
-                  <i class="fa fa-arrow-down"></i>
-                  {{elasticData[0]?.delta.hit_rate | number}}
-                </span>
-              </td>
-              <td>
-                <span class="size-20 mr-4">{{totalBlockCountForDashboard | number}}</span>
-                <span class="status up">
-                  <i class="fa fa-arrow-up"></i>
-                  {{elasticData[0]?.delta.blocked_rate | number}}
-                </span>
-              </td>
-              <td>
-                <span class="size-20 mr-4">{{malwareCountForDashboard}}</span>
-              </td>
-              <td>
-                <span class="size-20 mr-4">?</span>
-                <span class="status down">
-                  <i class="fa fa-arrow-down"></i>
-                  ?
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>Unique Domain</td>
-              <td>
-                <span class="size-20 bold mr-4">{{elasticData[0]?.unique_domain| number}}</span>
-                <span class="status down">
-                  <i class="fa fa-arrow-down"></i>
-                  {{elasticData[0]?.delta.unique_domain_rate | number}}
-                </span>
-              </td>
-              <td>
-                <span class="size-20 mr-4">?</span>
-                <span class="status up">
-                  <i class="fa fa-arrow-up"></i>
-                  ?
-                </span>
-              </td>
-              <td>
-                <span class="size-20 mr-4">{{uMalwareCountForDashboard}}</span>
-              </td>
-              <td>
-                <span class="size-20 mr-4">?</span>
-                <span class="status down">
-                  <i class="fa fa-arrow-down"></i>
-                  ?
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <!-- NUMERIC CARD -->
+          <div class="row">
+            <div class="col-12">
+              <table class="table base-table table-responsive-md table-responsive-sm">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Total Traffic</th>
+                    <th>Blocked</th>
+                    <th>Malware</th>
+                    <th>Grey</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Hit Count</td>
+                    <td>
+                      <span class="size-20 bold mr-4">{{totalHitCountForDashboard | number}}</span>
+                      <span class="status down">
+                        <i class="fa fa-arrow-down"></i>
+                        {{elasticData[0]?.delta.hit_rate | number}}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="size-20 mr-4">{{totalBlockCountForDashboard | number}}</span>
+                      <span class="status up">
+                        <i class="fa fa-arrow-up"></i>
+                        {{elasticData[0]?.delta.blocked_rate | number}}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="size-20 mr-4">{{malwareCountForDashboard}}</span>
+                    </td>
+                    <td>
+                      <span class="size-20 mr-4">?</span>
+                      <span class="status down">
+                        <i class="fa fa-arrow-down"></i>
+                        ?
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Unique Domain</td>
+                    <td>
+                      <span class="size-20 bold mr-4">{{elasticData[0]?.unique_domain| number}}</span>
+                      <span class="status down">
+                        <i class="fa fa-arrow-down"></i>
+                        {{elasticData[0]?.delta.unique_domain_rate | number}}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="size-20 mr-4">?</span>
+                      <span class="status up">
+                        <i class="fa fa-arrow-up"></i>
+                        ?
+                      </span>
+                    </td>
+                    <td>
+                      <span class="size-20 mr-4">{{uMalwareCountForDashboard}}</span>
+                    </td>
+                    <td>
+                      <span class="size-20 mr-4">?</span>
+                      <span class="status down">
+                        <i class="fa fa-arrow-down"></i>
+                        ?
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+
+              </table>
+            </div>
+          </div>
+          <!-- NUMERIC CARD -->
+
+        </div>
+
       </div>
     </div>
-    <div class="row mt-2">
-      <div class="col-md-6">
+
+    <div class="row mt-3">
+      <div class="col-md-8">
         <div class="base-card">
           <div class="base-card-header">
             Traffic Based Anomaly
@@ -143,38 +182,118 @@
               </span>
             </div>
             <div class="chart">
-              <div id="trafficChart"></div>
+              <div id="hitChartDiv">
+                <div id="trafficChartHits"></div>
+              </div>
+              <div id="blockChartDiv" style="display: none">
+                <div id="trafficChartBlocked"></div>
+              </div>
             </div>
-            <!-- <div class="events" style="margin-top: -30px">
-              <div class="toggle">
-                <button class="btn active btn-sm">Total Traffic</button>
-                <button class="btn btn-sm">Blocked Traffic</button>
+            <div class="events" style="margin-top: -30px">
+              <div class="toggle" style="padding: 4px;">
+                <button class="btns " [ngClass]="{'active ': trafficChartType=='hit'}"
+                  (click)="changeTrafficChartData('hit')">Total Traffic</button>
+                <button class="btns" [ngClass]="{'active': trafficChartType=='block'}"
+                  (click)="changeTrafficChartData('block')">Blocked Traffic</button>
               </div>
               <div class="dropdown d-inline-block">
-                <button class="btn dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                  style="background-color: #262626; box-shadow:none;" aria-haspopup="true" aria-expanded="false">
+                <button class="btns dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
                   <i class="icon-plus" style="font-size: 20px"></i>
                   Add Category
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                  style="max-height: 400px; overflow: auto;">
                   <div class="dropdown-searchbar">
                     <mat-form-field>
                       <input type="text" class="form-control" matInput placeholder="Search" [(ngModel)]="searchKey"
                         (ngModelChange)="searchCategoryForTraffic($event)">
                     </mat-form-field>
                   </div>
-                  <a class="dropdown-item" *ngFor="let cat of categoryListFiltered"
+                  <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
                     (click)="addCategoryToTraffic(cat.id)">
                     <span class="color-point" style="background:#fa3f3f"></span>
                     {{cat.name}}
-                  </a>
+                  </button>
                 </div>
               </div>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-lg-4">
+        <div class="base-card full-height mt-lg-0 mt-4">
+          <div class="base-card-header">
+            World Status
+          </div>
+
+          <div class="base-card-content">
+            <div class="country-list">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <td style="width: 20%">ABD</td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="in-progress" style="width: 34%"></div>
+                      </div>
+                    </td>
+                    <td style="width: 15%">%34</td>
+                  </tr>
+                  <tr>
+                    <td style="width: 20%">Hindistan</td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="in-progress" style="width: 21%"></div>
+                      </div>
+                    </td>
+                    <td style="width: 15%">%21</td>
+                  </tr>
+                  <tr>
+                    <td style="width: 20%">İngiltere</td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="in-progress" style="width: 11%"></div>
+                      </div>
+                    </td>
+                    <td style="width: 15%">%11</td>
+                  </tr>
+                  <tr>
+                    <td style="width: 20%">Çin</td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="in-progress" style="width: 23%"></div>
+                      </div>
+                    </td>
+                    <td style="width: 15%">%23</td>
+                  </tr>
+                  <tr>
+                    <td style="width: 15%">Brezilya</td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="in-progress" style="width: 15%"></div>
+                      </div>
+                    </td>
+                    <td style="width: 15%">%15</td>
+                  </tr>
+                  <tr>
+                    <td style="width: 20%">Türkiye</td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="in-progress" style="width: 9%"></div>
+                      </div>
+                    </td>
+                    <td style="width: 9%">%9</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-12">
         <div class="base-card">
           <div class="base-card-header">
             Unique Counter Based Anomaly
@@ -188,44 +307,43 @@
               </span>
             </div>
             <div class="chart">
-              <div id="blockedChart"></div>
+              <div id="uniqueCounterChart"></div>
             </div>
-            <!-- <div class="events" style="margin-top: -30px">
-              <div class="toggle">
-                <button class="btn active btn-sm">Unique Domain</button>
-                <button class="btn btn-sm">Unique Subdomain</button>
-                <button class="btn btn-sm">Unique IP</button>
+
+            <div class="events">
+              <div class="toggle" style="padding: 4px;">
+                <button class="btns active">Unique Domain</button>
+                <button class="btns">Unique Subdomain</button>
+                <button class="btns">Unique IP</button>
               </div>
-              <div class="dropdown d-inline-block">
-                <button class="btn dropdown-toggle btn-sm" type="button" id="dropdownMenuButton3" data-toggle="dropdown"
-                  style="background-color: #262626; box-shadow:none;" aria-haspopup="true" aria-expanded="false">
+
+              <div class="dns-dropdown d-inline-block">
+                <button class="btns dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
                   <i class="icon-plus" style="font-size: 20px"></i>
                   Add Category
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                  style="max-height: 400px; overflow: auto;">
                   <div class="dropdown-searchbar">
-                    <mat-form-field>
-                      <input type="text" class="form-control" matInput placeholder="Search" [(ngModel)]="searchKey"
-                        (ngModelChange)="searchCategoryForTraffic($event)">
-                    </mat-form-field>
+                    <input type="text" class="form-control" placeholder="Search">
                   </div>
-                  <a class="dropdown-item" *ngFor="let cat of categoryListFiltered"
+                  <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
                     (click)="addCategoryToBlocked(cat.id)">
                     <span class="color-point" style="background:#fa3f3f"></span>
                     {{cat.name}}
-                  </a>
+                  </button>
                 </div>
               </div>
-            </div> -->
+            </div>
 
           </div>
         </div>
-
       </div>
     </div>
 
 
-    <div class="row mt-4 mb-4">
+    <!-- <div class="row mt-4 mb-4">
       <div class="col-md-6">
         <div class="base-card">
           <div class="base-card-content">
@@ -252,7 +370,8 @@
                         <th class="color-light-blue">Category</th>
                         <th class="color-light-blue">Hits</th>
                       </thead>
-                      <ng-container *ngIf="firstlySeenDomainsFiltered && firstlySeenDomainsFiltered.length>0; else elseTemplateForDomain">
+                      <ng-container
+                        *ngIf="firstlySeenDomainsFiltered && firstlySeenDomainsFiltered.length>0; else elseTemplateForDomain">
                         <tbody>
                           <tr *ngFor="let dom of firstlySeenDomainsFiltered; let i = index;">
                             <td class="numeration">{{i}}</td>
@@ -264,7 +383,10 @@
                       </ng-container>
                       <ng-template #elseTemplateForDomain>
                         <tbody>
-                          <tr><td class="numeration"></td><td colspan="3">No Result!</td></tr>
+                          <tr>
+                            <td class="numeration"></td>
+                            <td colspan="3">No Result!</td>
+                          </tr>
                         </tbody>
                       </ng-template>
                     </table>
@@ -295,7 +417,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
 <style>

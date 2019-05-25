@@ -1,115 +1,390 @@
-<div class="container-fluid col-md-12">
-  <div class="row">
-      <form class="form-horizontal card">
-        <div class="col-md-12">
-          <div class="row mt-2 mb-2">
-            <div class="col-md-1 text-right" style="max-width: 100px;">
-              <label class="col-form-label">AND</label>
-            </div>
-            <div class="col-md-11" style="margin-left: -30px;">
-              <app-column-tag-input [columns]="columns" [tags]="searchSetting.must" #must
-                [mainCategories]="mainCategories" [agents]="agents" [zoneName]="must"
-                [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
-            </div>
-          </div>
-          <div class="row mt-2 mb-2">
-            <div class="col-md-1 text-right" style="max-width: 100px;">
-              <label class="col-form-label">AND NOT</label>
-            </div>
-            <div class="col-md-11" style="margin-left: -30px;">
-              <app-column-tag-input [columns]="columns" [tags]="searchSetting.mustnot" #mustNot
-                [mainCategories]="mainCategories" [agents]="agents" [zoneName]="mustNot"
-                [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
-            </div>
-          </div>
-          <div class="row mt-2 mb-2">
-            <div class="col-md-1 text-right" style="max-width: 100px;">
-              <label class="col-form-label">OR</label>
-            </div>
-            <div class="col-md-11" style="margin-left: -30px;">
-              <app-column-tag-input [columns]="columns" [tags]="searchSetting.should" #should
-                [mainCategories]="mainCategories" [agents]="agents" [zoneName]="should"
-                [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
-            </div>
-          </div>
-          <div class="row mt-4 mb-2">
-            <div class="col-md-4">
-              <input type="text" class="form-control" [(ngModel)]="searchSetting.query"
-                [ngModelOptions]="{ standalone: true }" [attr.placeholder]="'Query'" (keyup.enter)="search()" />
-            </div>
-            <div class="col-md-4">
-              <select name="dateInterval" class="form-control input-xs nopadding" id="dateInterval" #dateSelect
-                [(ngModel)]="searchSetting.dateInterval" (click)="showDatePanel($event)" style="font-size: 10px;">
-                <option value="5">Last 5 minutes</option>
-                <option value="10">Last 10 minutes</option>
-                <option value="15">Last 15 minutes</option>
-                <option value="30">Last 30 minutes</option>
-                <option value="60">Last 1 hour</option>
-                <option value="120">Last 2 hours</option>
-                <option value="180">Last 3 hours</option>
-                <option value="360">Last 6 hours</option>
-                <option value="720">Last 12 hours</option>
-                <option value="1440">Last 1 day</option>
-                <option value="2880">Last 2 days</option>
-                <option value="10080">Last 1 week</option>
-                <option value="43200">Last 1 month</option>
-                <option value="-1" #customdaterange>Custom Range</option>
-              </select>
-              <div #actualTarget></div>
-            </div>
-            <div class="col-md-2">
-              <select class="form-control input-xs nopadding" name="type" id="type" [(ngModel)]="searchSetting.type">
-                <option selected="true" value="roksit">Dns</option>
-                <option value="roksitblock">Block Page</option>
-              </select>
-            </div>
-            <div class="col-md-2">
-              <span class="criteria-search-button">
-                <button class="btn btn-primary btn-sm" (click)="search()">Search&nbsp; <i class="fa fa-search"></i>
-                </button>
-              </span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 mr-auto ml-auto">
-              <p-overlayPanel id="dateDialog" class="date-overlay-panel card" #dateOverlay [dismissable]="false"
-                [showCloseIcon]="false">
-                <div class="row form-group">
-                  <div class="col-md-3">
-                    <label class="control-label">Begining Date</label></div>
-                  <div class="col-md-8">
-                    <span class="has-feedback" style="margin-bottom: 5px;padding-right: 0px">
-                      <input class="form-control input-xs" name="startDate" #startDateCal />
-                    </span>
+<div class="base-card">
+  <div class="base-card-header">
+    <div class="row">
+      <div class="col-12">
+        <span>Monitor</span>
+        <div class="dns-dropdown d-inline-block table-select pull-right" style="width: 255px" id="dropdownDate2">
+          <button class="btns reverse-form dropdown-toggle text-left" type="button" id="dropdownMenuButton"
+            data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+            <img src="assets/images/icons/calendar.svg">
+            <span [ngSwitch]="searchSetting.dateInterval">
+              <ng-container *ngSwitchCase="5">
+                Last 5 minutes
+              </ng-container>
+              <ng-container *ngSwitchCase="15">
+                Last 15 minutes
+              </ng-container>
+              <ng-container *ngSwitchCase="30">
+                Last 30 minutes
+              </ng-container>
+              <ng-container *ngSwitchCase="60">
+                Last 1 hour
+              </ng-container>
+              <ng-container *ngSwitchCase="180">
+                Last 3 hours
+              </ng-container>
+              <ng-container *ngSwitchCase="720">
+                Last 12 hours
+              </ng-container>
+              <ng-container *ngSwitchCase="1440">
+                Last 1 day
+              </ng-container>
+              <ng-container *ngSwitchCase="2880">
+                Last 2 day
+              </ng-container>
+              <ng-container *ngSwitchCase="10080">
+                Last 1 week
+              </ng-container>
+            </span>
+            <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+            <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                  aria-selected="true">Tarih Aralığı</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                  aria-controls="profile" aria-selected="false">Takvim</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <button class="dropdown-item" (click)="changeSearchSettingDate('5')">Last 5 minutes</button>
+                <button class="dropdown-item" (click)="changeSearchSettingDate('15')">Last 15 minutes</button>
+                <button class="dropdown-item" (click)="changeSearchSettingDate('30')">Last 30 minutes</button>
+                <button class="dropdown-item" (click)="changeSearchSettingDate('60')">Last 1 hour</button>
+                <button class="dropdown-item" (click)="changeSearchSettingDate('180')">Last 3 hours</button>
+                <button class="dropdown-item" (click)="changeSearchSettingDate('720')">Last 12 hours</button>
+                <button class="dropdown-item" (click)="changeSearchSettingDate('1440')">Last 1 day</button>
+                <button class="dropdown-item" (click)="changeSearchSettingDate('2880')">Last 2 day</button>
+                <button class="dropdown-item" (click)="changeSearchSettingDate('10080')">Last 1 week</button>
+              </div>
+              <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <input type="hidden" class="dt datepicker2">
+              </div>
+              <div class="dropdown-divider"></div>
+              <span class="dropdown-label">Tarih Aralığı Gir</span>
+              <div class="container-fluid">
+                <div class="row mt-2 mb-3">
+                  <div class="col-6">
+                    <input type="text" value="01/01/2019" class="form-control">
                   </div>
-                  <div class="col-md-1">
-                    <button class="btn btn-danger btn-sm btn-just-icon">
-                      <i class="material-icons">close</i>
-                    </button>
+                  <div class="col-6">
+                    <input type="text" value="01/01/2019" class="form-control">
                   </div>
                 </div>
-                <div class="row form-group">
-                  <div class="col-md-3"><label class="control-label">Ending Date</label></div>
-                  <div class="col-md-8"><span class="has-feedback" style="padding-right: 0px">
-                      <input type="text" class="form-control input-xs " name="endDate" #endDateCal />
-                    </span></div>
-                  <div class="col-md-1"> <span class="pull-left" style="padding-left: 0px">
-                      <button class="btn btn-danger btn-sm  btn-just-icon">
-                        <i class="material-icons">close</i>
-                      </button>
-                    </span>
-                  </div>
-                </div>
-                <div class="row form-group">
-                  <div class="col-md-12 text-right">
-                    <button class="btn btn-warning btn-sm" aria-hidden="true" (click)="hideDatePopover()">OK</button>
-                  </div>
-                </div>
-              </p-overlayPanel>
+              </div>
             </div>
+
           </div>
         </div>
-      </form>
+        <button class="btns btn-light text-center pull-right mr-4" style="width: 135px">
+          <i class="fa fa-save size-20 position-relative top-3"></i>
+          <span class="size-14">Save</span>
+        </button>
+      </div>
     </div>
-  
+  </div>
+  <div class="base-card-content mt-3">
+    <div class="row">
+      <div class="col-12 d-flex align-items-center">
+        <div class="search-form full-width flex-1">
+          <img src="assets/images/icons/search.svg" class="icon">
+          <input type="text" class="dns-form-control reverse-form" placeholder="Contain *keyword*"
+            [(ngModel)]="searchSetting.query" [ngModelOptions]="{ standalone: true }" />
+        </div>
+        <div class="toggle reverse-toggle ml-4" style="padding: 4px">
+          <button class="btns" [ngClass]="{'active': searchSetting.type=='roksit'}"
+            (click)="changeSearchSettingType('roksit')">Total Traffic</button>
+          <button class="btns" [ngClass]="{'active': searchSetting.type=='roksitblock'}"
+            (click)="changeSearchSettingType('roksitblock')">Blocked Traffic</button>
+        </div>
+        <button class="btn btn-teritary ml-4" style="width: 164px;" (click)="search()">
+          Search
+        </button>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-12">
+
+        <button class="btns btn-success size-13 mr-1 mt-1 mb-1" *ngFor="let item of searchSetting.must">
+          {{item.field}}, Is, {{item.value}}
+          <img src="assets/images/icons/white.svg" width="15" height="15" class="ml-3" alt=""
+            (click)="removeTag(item,'must')">
+        </button>
+        <button class="btns btn-danger size-13 mr-1 mt-1 mb-1" *ngFor="let item of searchSetting.mustnot">
+          {{item.field}}, Is NOT, {{item.value}}
+          <img src="assets/images/icons/white.svg" width="15" height="15" class="ml-3" alt=""
+            (click)="removeTag(item,'mustnot')">
+        </button>
+        <button class="btns btn-warning size-13 mr-1 mt-1 mb-1" *ngFor="let item of searchSetting.should">
+          {{item.field}}, Is One Of, {{item.value}}
+          <img src="assets/images/icons/white.svg" width="15" height="15" class="ml-3" alt=""
+            (click)="removeTag(item, 'should')">
+        </button>
+
+        <button class="btns btn-clear size-14" (click)="removeAllTags()">
+          <img src="assets/images/icons/close.svg">
+          Clear All Filter
+        </button>
+
+        <div class="dns-dropdown d-inline-block" id="dropdownFilter">
+          <button class="btns dropdown-toggle color-light-blue" type="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <i class="icon-plus pr-2" style="font-size: 20px"></i>
+            Add Filter
+          </button>
+          <div class="dropdown-menu" style="width: 600px" id="tagsDd">
+
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12 col-lg-3 pr-0 mt-2">
+                  <div class="1dnssense-select light-select full-width">
+                    <select class="filterTags" (onChange)="changeCurrentColumn($event)" [(ngModel)]="currentColumn"
+                      [ngModelOptions]="{ standalone: true }">
+                      <option value="{{item.name}}" *ngFor="let item of columns">
+                        {{item.beautyName}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-3 pr-0 mt-2">
+                  <div class="1dnssense-select light-select full-width">
+                    <select class="filterTags" [(ngModel)]="currentOperator" [ngModelOptions]="{ standalone: true }">
+                      <option value="is">Is</option>
+                      <option value="isnot">Is Not</option>
+                      <option value="isoneof">Is One Of</option>
+                      <option value="isnotoneof">Is Not One Of</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6 mt-2">
+
+                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'domain'">
+                    <input type="text" [ngModelOptions]="{ standalone: true }" [(ngModel)]="currentInput"
+                      class=" filterTags" placeholder="Domain">
+                  </div>
+                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'subdomain'">
+                    <input type="text" name="filterValue" [ngModelOptions]="{ standalone: true }"
+                      [(ngModel)]="currentInput" class="filterTags" placeholder="Subdomain">
+                  </div>
+
+                  <div class="input-group" *ngIf="currentColumn == 'category'">
+                    <select class="filterTags" [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
+                      <option value="-1" disabled>Select A Category</option>
+                      <option *ngFor="let cat of mainCategories" label="{{cat.categoryName}}"
+                        value="{{cat.categoryName}}">
+                        {{cat.categoryName}}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'applicationName'">
+                    <select class="filterTags" [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
+                      <option value="-1" disabled>Select An Application</option>
+                      <optgroup *ngFor="let cat of mainApplications" label="{{ cat.name }}">
+                        <option *ngFor="let a of applicationsMap.get(cat.id)" value="{{ a.name }}">{{ a.name }}
+                        </option>
+                      </optgroup>
+                    </select>
+                  </div>
+                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'action'">
+                    <select class="filterTags" [(ngModel)]="currentInput" place [ngModelOptions]="{ standalone: true }">
+                      <option value="-1" disabled>Select An Action</option>
+                      <option value="true">Allow</option>
+                      <option value="false">Block</option>
+                    </select>
+                  </div>
+                  <div class="input-group" style="width: auto" *ngIf="
+                          currentColumn == 'sourceIpCountryCode' ||
+                          currentColumn == 'destinationIpCountryCode'
+                        ">
+                    <select class="filterTags " [(ngModel)]="currentInput" place
+                      [ngModelOptions]="{ standalone: true }">
+                      <option value="-1" disabled>Select A Country</option>
+                      <option value="00">Local Domain</option>
+                      <option *ngFor="let country of countries" value="{{ country.code }}">{{ country.name }}</option>
+                    </select>
+                  </div>
+                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'agentAlias'">
+                    <select class="filterTags " [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
+                      <option value="-1" disabled>Select An Agent</option>
+                      <option *ngFor="let agent of agents" value="{{ agent.agentAlias }}">{{ agent.agentAlias }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'reasonType'">
+                    <select class="filterTags" [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
+                      <option value="category">Category</option>
+                      <option value="application">Application</option>
+                      <option value="bwlist">BlackList/Whitelist</option>
+                      <option value="noip">Noip Domain</option>
+                      <option value="malformed">Malformed Query</option>
+                    </select>
+                  </div>
+                  <div class="input-group" style="width: auto"
+                    *ngIf="currentColumn == 'sourceIp' || currentColumn == 'destinationIp'">
+                    <input class="filterTags" [(ngModel)]="currentInput" (click)="inputClicked($event)"
+                      [ngModelOptions]="{ standalone: true }" (change)="inputsChanged($event)"
+                      (keyup.enter)="inputsChanged($event)" placeholder="xxx.xxx.xxx.xxx" />
+                  </div>
+                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'time'">
+                    <input class="filterTags" value="{{
+                            currentColumn == 'time'
+                              ? (currentInput | dateFormat)
+                              : currentInput
+                          }}" (click)="inputClicked($event)" (change)="inputsChanged($event)"
+                      (keyup.enter)="inputsChanged($event)" />
+                  </div>
+                  <div class="input-group" style="width: auto" *ngIf="
+                      currentColumn != 'subdomain' &&    
+                      currentColumn != 'domain' &&    
+                      currentColumn != 'agentAlias' &&
+                          currentColumn != 'action' &&
+                          currentColumn != 'reasonType' &&
+                          currentColumn != 'time' &&
+                          currentColumn != 'applicationName' &&
+                          currentColumn != 'category' &&
+                          currentColumn != 'sourceIpCountryCode' &&
+                          currentColumn != 'destinationIpCountryCode' &&
+                          currentColumn != 'sourceIp' &&
+                          currentColumn != 'destinationIp'
+                        ">
+                    <input class="filterTags" [(ngModel)]="currentInput" (click)="inputClicked($event)"
+                      [ngModelOptions]="{ standalone: true }" (keyup.enter)="inputsChanged($event)" />
+                  </div>
+
+                </div>
+                <div class="col-12 mt-2">
+                  <button class="btn btn-teritary" (click)="addTag($event)">Apply</button>
+                  <button class="btn btn-clear" (click)="cancelFilterPopup()">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+
+<!-- <div class="container-fluid col-md-12">
+  <div class="row">
+    <form class="form-horizontal card">
+      <div class="col-md-12">
+        <div class="row mt-2 mb-2">
+          <div class="col-md-1 text-right" style="max-width: 100px;">
+            <label class="col-form-label">AND</label>
+          </div>
+          <div class="col-md-11" style="margin-left: -30px;">
+            <app-column-tag-input [columns]="columns" [tags]="searchSetting.must" #must
+              [mainCategories]="mainCategories" [agents]="agents" [zoneName]="must"
+              [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
+          </div>
+        </div>
+        <div class="row mt-2 mb-2">
+          <div class="col-md-1 text-right" style="max-width: 100px;">
+            <label class="col-form-label">AND NOT</label>
+          </div>
+          <div class="col-md-11" style="margin-left: -30px;">
+            <app-column-tag-input [columns]="columns" [tags]="searchSetting.mustnot" #mustNot
+              [mainCategories]="mainCategories" [agents]="agents" [zoneName]="mustNot"
+              [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
+          </div>
+        </div>
+        <div class="row mt-2 mb-2">
+          <div class="col-md-1 text-right" style="max-width: 100px;">
+            <label class="col-form-label">OR</label>
+          </div>
+          <div class="col-md-11" style="margin-left: -30px;">
+            <app-column-tag-input [columns]="columns" [tags]="searchSetting.should" #should
+              [mainCategories]="mainCategories" [agents]="agents" [zoneName]="should"
+              [mainApplications]="mainApplications" [applicationsMap]="applicationsMap"></app-column-tag-input>
+          </div>
+        </div>
+        <div class="row mt-4 mb-2">
+          <div class="col-md-4">
+            <input type="text" class="form-control" [(ngModel)]="searchSetting.query"
+              [ngModelOptions]="{ standalone: true }" [attr.placeholder]="'Query'" (keyup.enter)="search()" />
+          </div>
+          <div class="col-md-4">
+            <select name="dateInterval" class="form-control input-xs nopadding" id="dateInterval" #dateSelect
+              [(ngModel)]="searchSetting.dateInterval" (click)="showDatePanel($event)" style="font-size: 10px;">
+              <option value="5">Last 5 minutes</option>
+              <option value="10">Last 10 minutes</option>
+              <option value="15">Last 15 minutes</option>
+              <option value="30">Last 30 minutes</option>
+              <option value="60">Last 1 hour</option>
+              <option value="120">Last 2 hours</option>
+              <option value="180">Last 3 hours</option>
+              <option value="360">Last 6 hours</option>
+              <option value="720">Last 12 hours</option>
+              <option value="1440">Last 1 day</option>
+              <option value="2880">Last 2 days</option>
+              <option value="10080">Last 1 week</option>
+              <option value="43200">Last 1 month</option>
+              <option value="-1" #customdaterange>Custom Range</option>
+            </select>
+            <div #actualTarget></div>
+          </div>
+          <div class="col-md-2">
+            <select class="form-control input-xs nopadding" name="type" id="type" [(ngModel)]="searchSetting.type">
+              <option selected="true" value="roksit">Dns</option>
+              <option value="roksitblock">Block Page</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <span class="criteria-search-button">
+              <button class="btn btn-primary btn-sm" (click)="search()">Search&nbsp; <i class="fa fa-search"></i>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mr-auto ml-auto">
+            <p-overlayPanel id="dateDialog" class="date-overlay-panel card" #dateOverlay [dismissable]="false"
+              [showCloseIcon]="false">
+              <div class="row form-group">
+                <div class="col-md-3">
+                  <label class="control-label">Begining Date</label></div>
+                <div class="col-md-8">
+                  <span class="has-feedback" style="margin-bottom: 5px;padding-right: 0px">
+                    <input class="form-control input-xs" name="startDate" #startDateCal />
+                  </span>
+                </div>
+                <div class="col-md-1">
+                  <button class="btn btn-danger btn-sm btn-just-icon">
+                    <i class="material-icons">close</i>
+                  </button>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-md-3"><label class="control-label">Ending Date</label></div>
+                <div class="col-md-8"><span class="has-feedback" style="padding-right: 0px">
+                    <input type="text" class="form-control input-xs " name="endDate" #endDateCal />
+                  </span></div>
+                <div class="col-md-1"> <span class="pull-left" style="padding-left: 0px">
+                    <button class="btn btn-danger btn-sm  btn-just-icon">
+                      <i class="material-icons">close</i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-md-12 text-right">
+                  <button class="btn btn-warning btn-sm" aria-hidden="true" (click)="hideDatePopover()">OK</button>
+                </div>
+              </div>
+            </p-overlayPanel>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div> -->

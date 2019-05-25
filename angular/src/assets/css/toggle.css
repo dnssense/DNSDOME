@@ -1,3 +1,4 @@
+
 .toggle {
   background: #141414;
   border-radius: 8px;
@@ -7,7 +8,9 @@
   position: relative;
 }
 
+.toggle .btns, 
 .toggle .btn {
+  box-shadow: none;
   border-radius: 8px;
   font-weight: bold;
   color: #e5e5e5;
@@ -16,31 +19,38 @@
   padding: 5px 10px;
 }
 
+.toggle .btns:last-child,
 .toggle .btn:last-child {
   margin-right: 0;
 }
 
+.toggle .btns:hover,
 .toggle .btn:hover {
   background: #262626;
 }
 
+.toggle .btns.active,
 .toggle .btn.active {
-  background: #262626
+  background: #262626;
+  box-shadow: none;
 }
 
 .reverse-toggle {
   background: white;
 }
 
+.reverse-toggle .btns,
 .reverse-toggle .btn {
   background: white;
   color: #484848;
 }
 
+.reverse-toggle .btns:hover,
 .reverse-toggle .btn:hover {
   background: #262626;
 }
 
+.reverse-toggle .btns.active,
 .reverse-toggle .btn.active {
   background: #262626;
   color: white;

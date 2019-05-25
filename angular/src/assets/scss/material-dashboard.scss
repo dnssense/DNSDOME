@@ -23,18 +23,18 @@
 
 // Core Components
 @import "core/layout";
-@import "core/buttons";
+ @import "core/buttons";
 @import "core/checkboxes";
 @import "dashboard/cards";
-@import "core/custom-forms";
+//@import "core/custom-forms";
 @import "core/switches";
-@import "core/example-pages";
+// @import "core/example-pages";
 @import "core/radios";
 @import "core/carousel";
 @import "dashboard/forms";
 @import "core/input-group";
 @import "core/list-group";
-@import "core/nav";
+// @import "core/nav";
 @import "core/images";
 @import "dashboard/navbar";
 @import "core/badges";
@@ -43,22 +43,22 @@
 @import "core/pills";
 @import "core/info-areas";
 @import "core/type";
-@import "core/tabs";
+// @import "core/tabs";
 @import "core/footers";
 @import "core/tooltip";
 @import "core/popover";
 @import "core/modal";
-@import "core/dropdown";
+// @import "core/dropdown";
 @import "core/headers";
 @import "core/drawer";
-@import "core/progress";
+// @import "core/progress";
 @import "core/togglebutton";
 @import "core/ripples";
 @import "dashboard/rtl";
 @import "dashboard/sidebar-and-main-panel";
 @import "dashboard/timeline";
 @import "dashboard/fixed-plugin";
-@import "dashboard/tables";
+// @import "dashboard/tables";
 @import "dashboard/misc";
 @import "dashboard/pages";
 
@@ -70,12 +70,12 @@
  @import "plugins/plugin-nouislider";
  @import "plugins/animate";
  @import "plugins/sweetalert2";
- @import "plugins/datatables.net";
+//  @import "plugins/datatables.net";
  @import "plugins/jquery.jvectormap";
  @import "plugins/plugin-datetime-picker";
  @import "plugins/fullcalendar";
  @import "plugins/wizard-card";
- @import "plugins/chartist";
+//  @import "plugins/chartist";
  @import "~chartist/dist/scss/chartist";
  @import "plugins/select-bootstrap";
  @import "plugins/perfect-scrollbar";

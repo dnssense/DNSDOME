@@ -2113,6 +2113,7 @@ pre code {
   border: 0;
 }
 
+.dns-form-control,
 .form-control {
   display: block;
   width: 100%;
@@ -2683,6 +2684,7 @@ textarea.form-control.is-invalid {
   }
 }
 
+.btns,
 .btn {
   display: inline-block;
   font-weight: 400;
@@ -3408,7 +3410,7 @@ input[type="button"].btn-block {
 
 .dropup,
 .dropright,
-.dropdown,
+.dns-dropdown,
 .dropleft {
   position: relative;
 }

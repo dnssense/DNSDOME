@@ -35,8 +35,7 @@
         <div class="row">
           <div class="col-12">
             <div class="datatable-labels">
-              <div class="label" *ngFor="let col of columns" [ngClass]="{'active' : col.checked}"
-                (click)="checkUncheckColumn(col)">
+              <div class="label" *ngFor="let col of columns" [ngClass]="{'active' : col.checked}" (click)="checkUncheckColumn(col)">
                 {{col.beautyName}}</div>
             </div>
           </div>

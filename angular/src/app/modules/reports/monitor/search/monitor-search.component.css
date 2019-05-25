@@ -7,3 +7,17 @@
   background: #00bcd4;
   color: #fff;
 }
+
+.filterTags{
+  width: 100%;
+  margin-top: 2px;
+  padding: 6px;
+  border-radius: 5px;
+}
+
+.filterTag{
+  width: 30%;
+  padding: 6px;
+  margin-top: 6px;
+  border-radius: 5px;
+}

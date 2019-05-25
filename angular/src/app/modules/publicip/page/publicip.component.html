@@ -13,144 +13,147 @@
           </button>
         </div>
       </div>
-      <div class="row" id="newIpRow" style="display:none;">
+      <div class="row" id="newIpRow" style="display:none; ">
         <div class="col-md-12 ml-auto mr-auto">
-          <div class="card">
-            <div class="card-header card-header-icon card-header-info">
-              <div class="card-icon">
-                <i class="material-icons">public</i>
-              </div>
-              <h4 class="card-title ">
+          <div class="base-card" style="background-color: #727272">
+            <div class="base-card-content">
+              <div class="datatable-container container-fluid">
                 <div class="row">
-                  <div class="col-md-4">New Public Ip/ Agents</div>
-                  <div class="col-md-4">
-                  </div>
-                  <div class="col-md-4 text-right">
+                  <h4 class="datatable-heading col-sm-4">New Public Ip/ Agents</h4>
+                  <div class="col-md-8  text-right">
                     <button mat-raised-button type="button" class="btn btn-warning btn-sm"
                       (click)="hideNewWizard()">Cancel
                     </button>
                   </div>
                 </div>
-              </h4>
-            </div>
-            <div class="card-body">
-              <form [formGroup]="publicIpForm" class="publicIpForm">
                 <div class="row">
-                  <div class="col-md-4">
-                    <mat-form-field>
-                      <input type="text" name="agentName" matInput id="agentName" placeholder="Public IP/Agent Name"
-                        [(ngModel)]="selectedIp.agentAlias" formControlName="agentName">
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-2">
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input checked class="form-check-input" id="IpType" name="IpType" type="radio" value="staticIp"
-                          (click)="onSelectionChangeIPType('staticIp')">
-                        Static IP <span class="circle"><span class="check"></span></span>
-                      </label>
-                    </div>
-                  </div>
-                  <!-- <div class="col-md-1">
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" id="IpType" name="IpType" type="radio" value="dynamicIp"
-                          (click)="onSelectionChangeIPType('dynamicIp')">
-                        Dynamic IP <span class="circle"><span class="check"></span></span>
-                      </label>
-                    </div>
-                  </div> -->
-                  <div class="col-md-3">
-                    <div class="row">
-                      <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-md-12 ml-auto mr-auto" style="display: none;">
-                        <mat-form-field>
-                          <input type="text" id="dnsFqdn" name="dnsFqdn" matInput id="text" [(ngModel)]="dnsFqdn"
-                            formControlName="dnsFqdn" placeholder="DNS FQDN">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-md-12  ml-auto mr-auto" id="staticIPBlock">
-                        <div class="row " *ngFor="let row of selectedIp.staticSubnetIp; index as i">
-                          <div class="col-md-4">
-                            <mat-form-field class="example-full-width has-label" style="width:100%;">
-                              <input type="text" maxlength="15" name="'ip'+i"
-                                (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)" placeholder="IP"
-                                matInput [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" formControlName="ip{{i}}">
-                              <mat-error *ngIf="publicIpForm.get('ip'+i).hasError('required')">
-                                Enter A Valid IP: <strong>127.0.0.1</strong>
-                              </mat-error>
-                            </mat-form-field>
-                          </div>
-                          <div class="col-md-1 mt-4" style="margin-left: -20px;">
-                            <legend>/</legend>
-                          </div>
-                          <div class="col-md-4" style="margin-left: -20px;">
-                            <mat-form-field class="example-full-width has-label">
-                              <mat-select placeholder="Mask" [(value)]="selectedIp.staticSubnetIp[i].mask">
-                                <mat-option *ngFor="let ind of ipRanges;" [value]="ind">{{ind}}
-                                </mat-option>
-                              </mat-select>
-                            </mat-form-field>
-                          </div>
-                          <div class="col-md-3 ml-0 mt-2">
-                            <ng-container *ngIf="i>0; else elseTemplate">
-                              <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
-                                (click)="removeElementFromIpList(i)">
-                                <i class="material-icons">close</i>
-                              </button>
-                            </ng-container>
-                            <ng-template #elseTemplate>
-                              <button mat-raised-button type="button" class="btn btn-success btn-just-icon btn-sm"
-                                (click)="addIpRangeToList()">
-                                <i class="material-icons">add_circle_outline</i>
-                              </button>
-                            </ng-template>
+                  <div class="col-12">
+                    <form [formGroup]="publicIpForm" class="publicIpForm">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <mat-form-field>
+                            <input type="text" name="agentName" matInput id="agentName"
+                              placeholder="Public IP/Agent Name" [(ngModel)]="selectedIp.agentAlias"
+                              formControlName="agentName">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-2">
+                          <div class="form-check">
+                            <label class="form-check-label">
+                              <input checked class="form-check-input" id="IpType" name="IpType" type="radio"
+                                value="staticIp" (click)="onSelectionChangeIPType('staticIp')">
+                              Static IP <span class="circle"><span class="check"></span></span>
+                            </label>
                           </div>
                         </div>
+                        <!-- <div class="col-md-1">
+                                  <div class="form-check">
+                                    <label class="form-check-label">
+                                      <input class="form-check-input" id="IpType" name="IpType" type="radio" value="dynamicIp"
+                                        (click)="onSelectionChangeIPType('dynamicIp')">
+                                      Dynamic IP <span class="circle"><span class="check"></span></span>
+                                    </label>
+                                  </div>
+                                </div> -->
+                        <div class="col-md-3">
+                          <div class="row">
+                            <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-md-12 ml-auto mr-auto"
+                              style="display: none;">
+                              <mat-form-field>
+                                <input type="text" id="dnsFqdn" name="dnsFqdn" matInput id="text" [(ngModel)]="dnsFqdn"
+                                  formControlName="dnsFqdn" placeholder="DNS FQDN">
+                              </mat-form-field>
+                            </div>
+                            <div class="col-md-12  ml-auto mr-auto" id="staticIPBlock">
+                              <div class="row " *ngFor="let row of selectedIp.staticSubnetIp; index as i">
+                                <div class="col-md-4">
+                                  <mat-form-field class="example-full-width has-label" style="width:100%;">
+                                    <input type="text" maxlength="15" name="'ip'+i"
+                                      (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)"
+                                      placeholder="IP" matInput [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp"
+                                      formControlName="ip{{i}}">
+                                    <mat-error *ngIf="publicIpForm.get('ip'+i).hasError('required')">
+                                      Enter A Valid IP: <strong>127.0.0.1</strong>
+                                    </mat-error>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-md-1 mt-4" style="margin-left: -20px;">
+                                  <legend>/</legend>
+                                </div>
+                                <div class="col-md-4" style="margin-left: -20px;">
+                                  <mat-form-field class="example-full-width has-label">
+                                    <mat-select placeholder="Mask" [(value)]="selectedIp.staticSubnetIp[i].mask">
+                                      <mat-option *ngFor="let ind of ipRanges;" [value]="ind">{{ind}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </div>
+                                <div class="col-md-3 ml-0 mt-2">
+                                  <ng-container *ngIf="i>0; else elseTemplate">
+                                    <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
+                                      (click)="removeElementFromIpList(i)">
+                                      <i class="material-icons">close</i>
+                                    </button>
+                                  </ng-container>
+                                  <ng-template #elseTemplate>
+                                    <button mat-raised-button type="button" class="btn btn-success btn-just-icon btn-sm"
+                                      (click)="addIpRangeToList()">
+                                      <i class="material-icons">add_circle_outline</i>
+                                    </button>
+                                  </ng-template>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <mat-form-field>
+                            <input type="text" name="cyberXRayIp" matInput id="cyberXRayIp" placeholder="Cyber X-Ray Ip"
+                              (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)"
+                              [(ngModel)]="selectedIp.cyberXRayIp" formControlName="cyberXRayIp">
+                          </mat-form-field>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <mat-form-field>
-                      <input type="text" name="cyberXRayIp" matInput id="cyberXRayIp" placeholder="Cyber X-Ray Ip"
-                        (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)" [(ngModel)]="selectedIp.cyberXRayIp"
-                        formControlName="cyberXRayIp">
-                    </mat-form-field>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-4">
-                    <mat-form-field>
-                      <input type="text" id="blockMessage" name="blockMessage" matInput id="text"
-                        placeholder="Block Message" [(ngModel)]="selectedIp.blockMessage"
-                        formControlName="blockMessage">
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-2">
-                    <mat-form-field class=" ml-2">
-                      <mat-select placeholder="Security Profiles" matTooltip="Select a predefined profile"
-                        [value]="selectedIp.rootProfile?selectedIp.rootProfile.id:0"
-                        (selectionChange)="securityProfileChanged($event.value)">
-                        <mat-option *ngFor="let p of securityProfiles" [value]="p.id">{{p.name}}</mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-2">
-                    <button mat-raised-button type="button" class="btn btn-warning btn-sm"
-                      matTooltip="Create a new security profile for this IP" (click)="showNewProfileWizard()">
-                      <i class="material-icons">settings</i> New Profile
-                    </button></div>
-                  <div class="col-md-4 text-right">
-                    <button mat-raised-button type="button" class="btn btn-success mr-1 mt-3"
-                      [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile"
-                      [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
-                      (click)="savePublicIp()">
-                      <i class="material-icons">check</i>Save
-                    </button>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <mat-form-field>
+                            <input type="text" id="blockMessage" name="blockMessage" matInput id="text"
+                              placeholder="Block Message" [(ngModel)]="selectedIp.blockMessage"
+                              formControlName="blockMessage">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-2">
+                          <mat-form-field class=" ml-2">
+                            <mat-select placeholder="Security Profiles" matTooltip="Select a predefined profile"
+                              [value]="selectedIp.rootProfile?selectedIp.rootProfile.id:0"
+                              (selectionChange)="securityProfileChanged($event.value)">
+                              <mat-option *ngFor="let p of securityProfiles" [value]="p.id">{{p.name}}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-2">
+                          <button mat-raised-button type="button" class="btn btn-warning btn-sm"
+                            matTooltip="Create a new security profile for this IP" (click)="showNewProfileWizard()">
+                            <i class="material-icons">settings</i> New Profile
+                          </button></div>
+                        <div class="col-md-4 text-right">
+                          <button mat-raised-button type="button" class="btn btn-success mr-1 mt-3"
+                            [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile"
+                            [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
+                            (click)="savePublicIp()">
+                            <i class="material-icons">check</i>Save
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+
                   </div>
                 </div>
-              </form>
+              </div>
+
             </div>
           </div>
+
         </div>
       </div>
       <!-- <div class="row">
@@ -289,8 +292,9 @@
                                 matTooltip="Edit item" (click)="showEditWizard(pi.id)">
                                 <i class="material-icons">edit</i>
                               </button>
-                              <button mat-raised-button type="button" class="btn btn-danger btn-link btn-just-icon btn-sm"
-                                matTooltip="Delete item" (click)="deletePublicIp(pi.id)">
+                              <button mat-raised-button type="button"
+                                class="btn btn-danger btn-link btn-just-icon btn-sm" matTooltip="Delete item"
+                                (click)="deletePublicIp(pi.id)">
                                 <i class="material-icons">close</i>
                               </button>
                             </td>
