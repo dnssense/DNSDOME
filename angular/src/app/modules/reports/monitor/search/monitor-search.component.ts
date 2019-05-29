@@ -41,7 +41,7 @@ export class MonitorSearchComponent
   public mainCategories: Category[];
   public mainApplications: WApplication[];
   //public categoriesMap = new Map<number, Category[]>();
-  public applicationsMap = new Map<number, WApplication[]>();
+  //public applicationsMap = new Map<number, WApplication[]>();
   public expanded = true;
   public startDateee: Date = null;
   public endDateee: Date = null;
@@ -76,7 +76,6 @@ export class MonitorSearchComponent
   current: ColumnTagInput;
   currentOperator: string = 'is';
   currentinputValue: string;
-  //tags: ColumnTagInput[];
   select2: any = null;
   inputCollapsed: boolean = true;
   inputSelected: boolean = false;
@@ -100,180 +99,71 @@ export class MonitorSearchComponent
       this.currentColumn = 'domain';
     }
 
-    // if (!this.searchSetting.must) {
-    //   this.searchSetting.must = [];
-    //   this.current = new ColumnTagInput('domain', '=', '');
-    //   this.currentOperator = 'is';
-    //   this.currentColumn = 'domain';
-    // }
   }
-
 
   ngOnInit() {
     this.countries = countryList.countries;
 
-    this.tableColumnsubscription = this.fastReportService.tableColumns
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((res: LogColumn[]) => {
-        this.columns = res;
-      });
-    this.applicationsSubscription = this.customReportService.applications
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((res: WApplication[]) => {
-        let allApplications = res;
-        if (res != null) {
-          // Get the main categories...
-          let tempcategoris = [];
-          for (let cat of allApplications) {
-            if (cat.parent == null) {
-              tempcategoris.push(cat);
-            } else {
-              let arr = this.applicationsMap.get(cat.parent.id);
-              if (arr == null || !arr) {
-                arr = [];
-              }
-              arr.push(cat);
-              this.applicationsMap.set(cat.parent.id, arr);
-            }
-          }
-          this.mainApplications = tempcategoris;
-        }
-      });
-    this.categoriesSubscription = this.customReportService.categories
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe((res: Category[]) => {
-        let allCategories = res;
-        if (res != null) {
-          // Get the main categories...
-          let tempcategoris = [];
-          for (let cat of allCategories) {
-            // if (cat.parent == null) {
+    this.fastReportService.tableColumns.subscribe((res: LogColumn[]) => { this.columns = res; });
+
+    this.customReportService.applications.subscribe((res: WApplication[]) => {
+      let allApplications = res;
+      if (res != null) {
+        // Get the main categories...
+        let tempcategoris = [];
+        for (let cat of allApplications) {
+          if (cat.parent == null) {
             tempcategoris.push(cat);
-            // } else {
-            //   let arr = this.categoriesMap.get(cat.parent.id);
-            //   if (arr == null || !arr) {
-            //     arr = [];
-            //   }
-            //   arr.push(cat);
-            //   this.categoriesMap.set(cat.parent.id, arr);
-            // }
           }
-          this.mainCategories = tempcategoris;
-          /* for (let cat of this.mainCategories) {
-           let sortedArray = this.categoriesMap.get(cat.id);
-           sortedArray.sort(ArrayUtils.categoryCompare);
-         }
-         */
-          this.mainCategories.sort(ArrayUtils.categoryCompare);
+          //  else {
+          //   let arr = this.applicationsMap.get(cat.parent.id);
+          //   if (arr == null || !arr) {
+          //     arr = [];
+          //   }
+          //   arr.push(cat);
+          //   this.applicationsMap.set(cat.parent.id, arr);
+          // }
         }
-      });
+        this.mainApplications = tempcategoris;
+      }
+    });
+
+    this.customReportService.categories.subscribe((res: Category[]) => {
+      let allCategories = res;
+      if (res != null) {
+        // Get the main categories...
+        let tempcategoris = [];
+        for (let cat of allCategories) {
+          // if (cat.parent == null) {
+          tempcategoris.push(cat);
+          // } else {
+          //   let arr = this.categoriesMap.get(cat.parent.id);
+          //   if (arr == null || !arr) {
+          //     arr = [];
+          //   }
+          //   arr.push(cat);
+          //   this.categoriesMap.set(cat.parent.id, arr);
+          // }
+        }
+        this.mainCategories = tempcategoris;
+        /* for (let cat of this.mainCategories) {
+         let sortedArray = this.categoriesMap.get(cat.id);
+         sortedArray.sort(ArrayUtils.categoryCompare);
+       }
+       */
+        this.mainCategories.sort(ArrayUtils.categoryCompare);
+      }
+    });
+
     this.locationsService.getLocations().takeUntil(this.ngUnsubscribe).subscribe((res: Location[]) => {
       this.agents = res;
     });
   }
 
   ngAfterViewInit() {
-
-    console.log(this.columns)
-
-    this.dnsSelectLoader();
-
-    // jQuery(
-    //   new Waypoint.Sticky({
-    //     element: this.fastSearchSetting.nativeElement,
-    //     handler: direction => {
-    //       if (direction === 'up') {
-    //         this.expanded = true;
-    //       } else {
-    //         this.expanded = false;
-    //       }
-    //     }
-    //   })
-    // );
-  }
-
-
-  dnsSelectLoader() {
-
-    var container_select, i, j, selElmnt, a, b, c;
-
-    container_select = document.getElementsByClassName("dnssense-select");
-    for (i = 0; i < container_select.length; i++) {
-      selElmnt = container_select[i].getElementsByTagName("select")[0];
-
-      a = document.createElement("DIV");
-      a.setAttribute("class", "select-selected");
-      a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
-      container_select[i].appendChild(a);
-
-      b = document.createElement("DIV");
-      b.setAttribute("class", "select-items select-hide");
-      for (j = 1; j < selElmnt.length; j++) {
-
-        c = document.createElement("DIV");
-        c.innerHTML = selElmnt.options[j].innerHTML;
-        // c.setAttribute("click","changeCurrentColumn('domain')");
-        c.addEventListener("click", function (e) {
-
-          var y, i, k, s, h;
-          s = this.parentNode.parentNode.getElementsByTagName("select")[0];
-          h = this.parentNode.previousSibling;
-
-          for (i = 0; i < s.length; i++) {
-            if (s.options[i].innerHTML == this.innerHTML) {
-              s.selectedIndex = i;
-              h.innerHTML = this.innerHTML;
-              y = this.parentNode.getElementsByClassName("same-as-selected");
-              for (k = 0; k < y.length; k++) {
-                y[k].removeAttribute("class");
-              }
-              this.setAttribute("class", "same-as-selected");
-              break;
-            }
-          }
-
-          h.click();
-        });
-
-        b.appendChild(c);
-      }
-
-      container_select[i].appendChild(b);
-
-      a.addEventListener("click", function (e) {
-        e.stopPropagation();
-        closeAllSelect(this);
-        this.nextSibling.classList.toggle("select-hide");
-        this.classList.toggle("select-arrow-active");
-      });
-    }
-
-    function closeAllSelect(elmnt) {
-      /*a function that will close all select boxes in the document,
-      except the current select box:*/
-      var x, y, i, arrNo = [];
-      x = document.getElementsByClassName("select-items");
-      y = document.getElementsByClassName("select-selected");
-      for (i = 0; i < y.length; i++) {
-        if (elmnt == y[i]) {
-          arrNo.push(i)
-        } else {
-          y[i].classList.remove("select-arrow-active");
-        }
-      }
-      for (i = 0; i < x.length; i++) {
-        if (arrNo.indexOf(i)) {
-          x[i].classList.add("select-hide");
-        }
-      }
-    }
-
-    document.addEventListener("click", closeAllSelect);
-
     jQuery('#tagsDd').click(function (e) {
       e.stopPropagation();
     });
-
   }
 
   ngOnDestroy() {
@@ -287,11 +177,10 @@ export class MonitorSearchComponent
 
   public search() {
     debugger
-    // todo validation...
-    WebuiPopovers.hideAll();
     this.searchEmitter.emit(this.searchSetting);
   }
 
+  //date panel icin kullanilacak
   public showDatePanel($event) {
     this.dateOverlay.hide();
 
@@ -522,14 +411,9 @@ export class MonitorSearchComponent
     } else if (type == 'should') {
       this.searchSetting.should.splice(this.searchSetting.should.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
     }
-
-    // if (!this.inputCollapsed) {
-    //   this.positionInputElement(this.tagInput.nativeElement);
-    // }
-    // this.inputCollapsed = true;
-    // this.inputSelected = false;
     this.currentinputValue = '';
   }
+
   public removeAllTags() {
     if (this.searchSetting.must.length > 0 || this.searchSetting.mustnot.length > 0 || this.searchSetting.should.length > 0) {
       this.alertService.alertWarningAndCancel('Are You Sure?', 'Your search parameters will be removed!').subscribe(
@@ -543,8 +427,6 @@ export class MonitorSearchComponent
         }
       );
     }
-
-
   }
 
   public positionInputElement(sourcePosition) {
@@ -562,11 +444,8 @@ export class MonitorSearchComponent
     if (this.select2 != null) {
       this.select2.select2('destroy');
     }
-    this.select2 = jQuery(this.select.nativeElement)
-      .select2({})
-      .on('select2:select', e => {
-        this.currentInput = e.target.value;
-      });
+    this.select2 = jQuery(this.select.nativeElement).select2({}).on(
+      'select2:select', e => { this.currentInput = e.target.value; });
   }
 
   public checkIp() {

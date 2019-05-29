@@ -12,8 +12,7 @@ import { LogColumn } from '../models/LogColumn';
 @Injectable({ providedIn: 'root' })
 export class MonitorService {
   public _initContentURL = this.configService.getApiUrl() + '/monitor/init'; // URL to subcategories api
-  public _initTableColumnsURL =
-    this.configService.getApiUrl() + '/monitor/tableColumns'; // URL to subcategories api
+  public _initTableColumnsURL = this.configService.getApiUrl() + '/monitor/tableColumns'; // URL to subcategories api
   public _graphURL = this.configService.getApiUrl() + '/monitor/data'; // URL to graph api
 
   constructor(private http: HttpClient, public errorService: ErrorService, private configService: ConfigService) { }
@@ -39,13 +38,7 @@ export class MonitorService {
   // }
 
   public initTableColumns(): Observable<LogColumn[]> {
-    return this.http
-      .post<LogColumn[]>(this._initTableColumnsURL, this.getOptions())
-      .map(res => res)
-      .catch((response: any, caught: any) => {
-        this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });
+    return this.http.post<LogColumn[]>(this._initTableColumnsURL, this.getOptions()).map(res => res);
   }
 
   // public getGraphData(searchSettings: SearchSetting, page: number): Observable<Object> {

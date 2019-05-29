@@ -52,7 +52,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   refresh() {
-    this.loadGraph();
+   this.loadGraph();
   }
 
   public stopRefreshing() {
@@ -104,12 +104,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public setTopCount(value) {
     this.searchSetting.topNumber = value;
-    this.loadGraph();
+  //checkUncheckColumn   this.loadGraph();
   }
 
   public pageChanged(event: any): void {
     this.currentPage = event.page;
-    this.loadGraph();
+   // this.loadGraph();
   };
 
   public addColumnValueIntoSelectedValues(column: any, xx: any) {

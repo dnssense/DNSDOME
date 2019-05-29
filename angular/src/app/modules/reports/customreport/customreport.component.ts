@@ -28,6 +28,7 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   public searchSetting: SearchSetting = new SearchSetting();
   public selectedColumns: AggregationItem[];
   public columns: LogColumn[];
+  public columnsTemp: LogColumn[];
   public data: any[];
   // chartSeries: any;
   // chartOptions: any;
@@ -57,7 +58,7 @@ export class CustomReportComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
   ngOnInit(): void {
-    this.tableColumnsubscription = this.fastReportService.tableColumns.takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
+    this.fastReportService.tableColumns.subscribe((res: LogColumn[]) => {
       this.columns = res;
     });
   }
@@ -73,7 +74,7 @@ export class CustomReportComponent implements OnInit, OnDestroy {
     } else {
       this.customReportResultComponent.search(this.searchSetting);
     }
-    
+
   }
 
 

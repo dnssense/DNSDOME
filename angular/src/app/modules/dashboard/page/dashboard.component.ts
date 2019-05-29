@@ -34,6 +34,8 @@ export class DashboardComponent implements OnInit {
   selectedCategoryForTraffic = CategoryV2;
   selectedCategoryForBlocked = CategoryV2;
   trafficChartType: string = 'hit';
+  uniqueChartType: string = 'domain';
+  companyId: number;
 
   constructor(private dashboardService: DashBoardService, private auth: AuthenticationService, private datePipe: DatePipe,
     private staticService: StaticService) {
@@ -48,75 +50,26 @@ export class DashboardComponent implements OnInit {
 
     this.elasticData = [];
 
-    this.getElasticData(Date.now());
-
-
+    this.auth.getCurrentUser().subscribe(cu => {
+      this.companyId = cu.currentUser.companyId;
+      this.getElasticData(Date.now());
+    });
   }
 
 
   private getElasticData(date: number) {
-    this.auth.getCurrentUser().subscribe(cu => {
-      this.dashboardService.getHourlyCompanySummary(cu.currentUser.companyId.toString(), this.datePipe.transform(date, 'yyyy-MM-dd')).subscribe(res => {
-        this.elasticData = res;
-        console.log(this.elasticData);
+    debugger;
+    this.dashboardService.getHourlyCompanySummary(this.companyId.toString(), this.datePipe.transform(date, 'yyyy-MM-dd')).subscribe(res => {
+      this.elasticData = res;
+      console.log(this.elasticData);
 
-        this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
-        this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
-        this.createCharts();
-      });
+      this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
+      this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
+      this.createCharts();
     });
   }
 
   ngOnInit(): void {
-    // let values: Map<string, number> = new Map();
-    // values.set('ru', 234);
-    // values.set('ca', 154);
-    // values.set('us', 834);
-    // values.set('br', 128);
-    // values.set('tr', 20);
-
-    // $('#worldMap').vectorMap({
-    //   map: 'world_en',
-    //   backgroundColor: 'transparent',
-    //   borderColor: '#818181',
-    //   borderOpacity: 0.25,
-    //   borderWidth: 1,
-    //   color: '#b3b3b3',
-    //   enableZoom: true,
-    //   hoverColor: '#eee',
-    //   hoverOpacity: null,
-    //   normalizeFunction: 'linear',
-    //   scaleColors: ['#b6d6ff', '#005ace'],
-    //   selectedColor: '#c9dfaf',
-    //   selectedRegions: null,
-    //   showTooltip: false,
-    //   onRegionClick: function (element, code, region) {
-    //     var message = 'You clicked "'
-    //       + region
-    //       + '" which has the code: '
-    //       + code.toUpperCase() + ' value:' + values.get(code);
-
-    //     alert(message);
-    //   }
-    // });
-
-    // window.setTimeout(function () {
-
-    //   values.forEach((value: number, key: string) => {
-    //     var element = document.getElementById('jqvmap1_' + key);
-
-    //     if (element) {
-    //       if (value < 300) {
-    //         element.setAttribute('fill', '#10bb20');
-    //       } else {
-    //         element.setAttribute('fill', '#ff0000');
-    //       }
-    //       element.title = value.toString();
-    //     }
-    //   });
-
-
-    // }, 1000);
 
   }
 
@@ -127,28 +80,37 @@ export class DashboardComponent implements OnInit {
   }
 
   createCharts() {
-
+    debugger
+    //buralar model haline getirilmeli
     this.malwareCountForDashboard = 0;
     this.uMalwareCountForDashboard = 0;
-    let hitAverages = [24], todayHits = [24], blockAverages = [24], todayBlocks = [24];
+    let hitAverages = [];
+    let todayHits = [];
+    let blockAverages = [];
+    let todayBlocks = [];
+    let uniqueDomain = []
+    let uniqueDomainAvg = []
+    let uniqueSubdomain = []
+    let uniqueSubdomainAvg = []
+    let uniqueDesIp = []
+    let uniqueDesIpAvg = []
+
 
     for (let i = 0; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
-      hitAverages[data.hourIndex] = Math.round(data.averages.total_hit);
-      todayHits[data.hourIndex] = data.total_hit;
-      blockAverages[data.hourIndex] = Math.round(data.averages.blocked_count);
-      todayBlocks[data.hourIndex] = data.blocked_count;
-
+      hitAverages.push(Math.round(data.averages.total_hit));
+      todayHits.push(data.total_hit);
+      blockAverages.push(Math.round(data.averages.blocked_count));
+      todayBlocks.push(data.blocked_count);
+      uniqueDomain.push(data.unique_domain);
+      uniqueDomainAvg.push(Math.round(data.averages.unique_domain))
+      uniqueDesIp.push(data.unique_destip)
+      uniqueDesIpAvg.push(Math.round(data.averages.unique_destip))
+      uniqueSubdomain.push(data.unique_subdomain)
+      uniqueSubdomainAvg.push(Math.round(data.averages.unique_subdomain))
       // this.malwareCountForDashboard += data.category_hits[Object.keys(data.category_hits)[36]].hits;//malware categoyr degerleri aliniyor
       // this.uMalwareCountForDashboard += data.category_hits[Object.keys(data.category_hits)[36]].unique_domain;
     }
- 
-    // this.elasticData.forEach(e => {
-    //   hitAverages[e.hourIndex] = Math.round(e.averages.total_hit);
-    //   todayHits[e.hourIndex] = e.total_hit;
-    //   blockAverages[e.hourIndex] = Math.round(e.averages.blocked_count);
-    //   todayBlocks[e.hourIndex] = e.blocked_count;
-    // });
 
     this.totalHitCountForDashboard = todayHits.reduce((a, b) => a + b);
     this.totalBlockCountForDashboard = todayBlocks.reduce((a, b) => a + b);
@@ -281,7 +243,7 @@ export class DashboardComponent implements OnInit {
     );
     chart2.render();
 
-    var options3 = {
+    var uniqueDomainOptions = {
       chart: {
         height: 250,
         type: 'line',
@@ -306,12 +268,12 @@ export class DashboardComponent implements OnInit {
       },
       colors: ['#9d60fb', '#4a90e2'],
       series: [{
-        name: "Session Duration",
-        data: [800, 630, 700, 400, 200, 250, 350, 400]
+        name: "Unique Domain",
+        data: uniqueDomain
       },
       {
-        name: "Page Views",
-        data: [780, 600, 750, 330, 230, 220, 320, 380]
+        name: "Unique Domain Avg",
+        data: uniqueDomainAvg
       }
       ],
       markers: {
@@ -321,26 +283,13 @@ export class DashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: ['15', '16', '17', '18', '19', '20', '21'],
+        categories: this.labelArray,
         labels: {
           minHeight: 20
         }
       },
       tooltip: {
-        theme: 'dark',
-        y: [{
-          title: {
-            formatter: function (val) {
-              return val + " (mins)"
-            }
-          }
-        }, {
-          title: {
-            formatter: function (val) {
-              return val + " per session"
-            }
-          }
-        }]
+        theme: 'dark'
       },
       grid: {
         borderColor: '#626262',
@@ -357,13 +306,197 @@ export class DashboardComponent implements OnInit {
         }]
       }
     }
-
-    var chart3 = new ApexCharts(
-      document.querySelector("#uniqueCounterChart"),
-      options3
+    var uniqueDomainChart = new ApexCharts(
+      document.querySelector("#uniqueDomainChart"),
+      uniqueDomainOptions
     );
+    uniqueDomainChart.render();
 
-    chart3.render();
+    var uniqueSubdomainChartOptions = {
+      chart: {
+        height: 250,
+        type: 'line',
+        zoom: {
+          enabled: false
+        },
+        foreColor: '#9b9b9b',
+        toolbar: {
+          show: false,
+          tools: {
+            download: false
+          }
+        },
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        width: [3, 3],
+        curve: 'smooth',
+        dashArray: [0, 10]
+      },
+      colors: ['#9d60fb', '#4a90e2'],
+      series: [{
+        name: "Unique Subdomain",
+        data: uniqueSubdomain
+      },
+      {
+        name: "Unique Subdomain Avg",
+        data: uniqueSubdomainAvg
+      }
+      ],
+      markers: {
+        size: 0,
+        hover: {
+          sizeOffset: 6
+        }
+      },
+      xaxis: {
+        categories: this.labelArray,
+        labels: {
+          minHeight: 20
+        }
+      },
+      tooltip: {
+        theme: 'dark'
+      },
+      grid: {
+        borderColor: '#626262',
+        strokeDashArray: 6,
+      },
+      legend: {
+        show: false
+      },
+      annotations: {
+        yaxis: [{
+          label: {
+            fontSize: '20px'
+          }
+        }]
+      }
+    }
+    var uniqueSubdomainChart = new ApexCharts(
+      document.querySelector("#uniqueSubdomainChart"),
+      uniqueSubdomainChartOptions
+    );
+    uniqueSubdomainChart.render();
+
+    var uniqueDestIpChartOptions = {
+      chart: {
+        height: 250,
+        type: 'line',
+        zoom: {
+          enabled: false
+        },
+        foreColor: '#9b9b9b',
+        toolbar: {
+          show: false,
+          tools: {
+            download: false
+          }
+        },
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        width: [3, 3],
+        curve: 'smooth',
+        dashArray: [0, 10]
+      },
+      colors: ['#9d60fb', '#4a90e2'],
+      series: [{
+        name: "Unique Dest. Ip",
+        data: uniqueDesIp
+      },
+      {
+        name: "Unique Dest. Ip Avg",
+        data: uniqueDesIpAvg
+      }
+      ],
+      markers: {
+        size: 0,
+        hover: {
+          sizeOffset: 6
+        }
+      },
+      xaxis: {
+        categories: this.labelArray,
+        labels: {
+          minHeight: 20
+        }
+      },
+      tooltip: {
+        theme: 'dark'
+      },
+      grid: {
+        borderColor: '#626262',
+        strokeDashArray: 6,
+      },
+      legend: {
+        show: false
+      },
+      annotations: {
+        yaxis: [{
+          label: {
+            fontSize: '20px'
+          }
+        }]
+      }
+    }
+    var uniqueDestIpChart = new ApexCharts(
+      document.querySelector("#uniqueDestIpChart"),
+      uniqueDestIpChartOptions
+    );
+    uniqueDestIpChart.render();
+
+
+    var gaugeOptions = {
+      chart: {
+        height: 250,
+        type: 'radialBar',
+      },
+      plotOptions: {
+        radialBar: {
+          startAngle: -100,
+          endAngle: 100,
+          dataLabels: {
+            name: {
+              fontSize: '16px',
+              color: '#e4e4e4',
+              offsetY: 25
+            },
+            value: {
+              offsetY: -20,
+              fontSize: '22px',
+              color: '#fffefe'
+            }
+          }
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          type: 'horizontal',
+          shadeIntensity: 0.5,
+          gradientToColors: ['#3ad333'],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100]
+        }
+      },
+      colors: ['#fa1e1e'],
+      series: [93],
+      labels: ['Risk Score'],
+
+    }
+    var gaugeChart = new ApexCharts(
+      document.querySelector("#gaugeChart"),
+      gaugeOptions
+    );
+    gaugeChart.render();
 
   }
 
@@ -375,6 +508,24 @@ export class DashboardComponent implements OnInit {
     } else {
       $('#hitChartDiv').hide();
       $('#blockChartDiv').show();
+    }
+
+  }
+
+  changeUniqueChartData(type: string) {
+    this.uniqueChartType = type;
+    if (type == 'domain') {
+      $('#uniqueDomainChartDiv').show();
+      $('#uniqueSubdomainChartDiv').hide();
+      $('#uniqueDestIpChartDiv').hide();
+    } else if (type == 'subdomain') {
+      $('#uniqueDomainChartDiv').hide();
+      $('#uniqueSubdomainChartDiv').show();
+      $('#uniqueDestIpChartDiv').hide();
+    } else {
+      $('#uniqueDomainChartDiv').hide();
+      $('#uniqueSubdomainChartDiv').hide();
+      $('#uniqueDestIpChartDiv').show();
     }
 
   }

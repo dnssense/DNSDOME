@@ -136,7 +136,7 @@ a:hover {
 }
 
 .table-select {
-  width: 306px;
+  width: 250px;
 }
 
 .table-select .btns,
@@ -199,8 +199,8 @@ a:hover {
 }
 
 .dropdown-menu .dropdown-searchbar {
-  margin-bottom: 10px;
-  padding: 16px;
+  /*margin-bottom: 10px;*/
+  padding-left: 16px;
 }
 
 .dropdown-menu .dropdown-searchbar .form-control {

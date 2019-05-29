@@ -1,163 +1,178 @@
 <div class="main-content">
   <div class="container-fluid ">
-    <div class="row">
+    <div class="row" style="margin-top: -10px">
       <div class="col-md-12">
         <div class="base-card">
-          <div class="row">
-            <div class="col-12">
-              <div class="dns-dropdown d-inline-block table-select pull-right" id="dropdownDate">
-                <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
-                  data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                  <span [ngSwitch]="dateParameter">
-                    <ng-container *ngSwitchCase="0">
-                      Today
-                    </ng-container>
-                    <ng-container *ngSwitchCase="1">
-                      Yesterday
-                    </ng-container>
-                    <ng-container *ngSwitchCase="7">
-                      Last Week
-                    </ng-container>
-                    <ng-container *ngSwitchCase="14">
-                      Last 14 Days
-                    </ng-container>
-                    <ng-container *ngSwitchCase="30">
-                      Last Month
-                    </ng-container>
-                  </span>
-                  <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
-                  style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
-                  <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
-                    <li class="nav-item">
-                      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                        aria-controls="home" aria-selected="true">Date Range</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                        aria-controls="profile" aria-selected="false">Calendar</a>
-                    </li>
-                  </ul>
-                  <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
-                      <button class="dropdown-item" (click)="changeDateParameter(0)">
-                        Today
-                      </button>
-                      <button class="dropdown-item" (click)="changeDateParameter(1)">
-                        Yesterday
-                      </button>
-                      <button class="dropdown-item" (click)="changeDateParameter(7)">
-                        Last Week
-                      </button>
-                      <button class="dropdown-item" (click)="changeDateParameter(14)">
-                        Last 14 Days
-                      </button>
-                      <button class="dropdown-item" (click)="changeDateParameter(30)">
-                        Last Month
-                      </button>
-                    </div>
-                    <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel"
-                      aria-labelledby="profile-tab">
-
-                      <!-- <input type="hidden" class="dt datepicker"> -->
-                      <mat-form-field>
-                        <input matInput [matDatepicker]="picker" placeholder="Choose a date" (click)="picker.open()">
-                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
-                      </mat-form-field>
-
-                    </div>
-                    <div class="dropdown-divider"></div>
-                    <span class="dropdown-label">Enter Range</span>
-                    <div class="container-fluid">
-                      <div class="row mt-2 mb-3">
-                        <div class="col-6">
-                          <input type="text" value="01/01/2019" class="form-control">
-                        </div>
-                        <div class="col-6">
-                          <input type="text" value="01/01/2019" class="form-control">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- NUMERIC CARD -->
-          <div class="row">
-            <div class="col-12">
+          <div class="row" style="margin-top: -10px">
+            <div class="col-9">
+              <div class="row">
+                <div class="col-12">
+                  <table class="table base-table table-responsive-md table-responsive-sm">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Total Traffic</th>
+                        <th>Blocked</th>
+                        <th>Malware</th>
+                        <th>Grey</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Hit Count</td>
+                        <td>
+                          <span class="size-20 bold mr-4">{{totalHitCountForDashboard | number}}</span>
+                          <span class="status down">
+                            <i class="fa fa-arrow-down"></i>
+                            {{elasticData[0]?.delta.hit_rate | number}}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="size-20 mr-4">{{totalBlockCountForDashboard | number}}</span>
+                          <span class="status up">
+                            <i class="fa fa-arrow-up"></i>
+                            {{elasticData[0]?.delta.blocked_rate | number}}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="size-20 mr-4">{{malwareCountForDashboard}}</span>
+                        </td>
+                        <td>
+                          <span class="size-20 mr-4">?</span>
+                          <span class="status down">
+                            <i class="fa fa-arrow-down"></i>
+                            ?
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Unique Domain</td>
+                        <td>
+                          <span class="size-20 bold mr-4">{{elasticData[0]?.unique_domain| number}}</span>
+                          <span class="status down">
+                            <i class="fa fa-arrow-down"></i>
+                            {{elasticData[0]?.delta.unique_domain_rate | number}}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="size-20 mr-4">?</span>
+                          <span class="status up">
+                            <i class="fa fa-arrow-up"></i>
+                            ?
+                          </span>
+                        </td>
+                        <td>
+                          <span class="size-20 mr-4">{{uMalwareCountForDashboard}}</span>
+                        </td>
+                        <td>
+                          <span class="size-20 mr-4">?</span>
+                          <span class="status down">
+                            <i class="fa fa-arrow-down"></i>
+                            ?
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-3">
               <table class="table base-table table-responsive-md table-responsive-sm">
                 <thead>
                   <tr>
-                    <th></th>
-                    <th>Total Traffic</th>
-                    <th>Blocked</th>
-                    <th>Malware</th>
-                    <th>Grey</th>
+                    <th>
+                      <div class="dns-dropdown d-inline-block table-select pull-right" id="dropdownDate">
+                        <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                          <span [ngSwitch]="dateParameter">
+                            <ng-container *ngSwitchCase="0">
+                              Today
+                            </ng-container>
+                            <ng-container *ngSwitchCase="1">
+                              Yesterday
+                            </ng-container>
+                            <ng-container *ngSwitchCase="7">
+                              Last Week
+                            </ng-container>
+                            <ng-container *ngSwitchCase="14">
+                              Last 14 Days
+                            </ng-container>
+                            <ng-container *ngSwitchCase="30">
+                              Last Month
+                            </ng-container>
+                          </span>
+                          <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
+                          style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
+                          <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
+                            <li class="nav-item">
+                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                aria-controls="home" aria-selected="true">Date Range</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                aria-controls="profile" aria-selected="false">Calendar</a>
+                            </li>
+                          </ul>
+                          <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                              <button class="dropdown-item" (click)="changeDateParameter(0)">
+                                Today
+                              </button>
+                              <button class="dropdown-item" (click)="changeDateParameter(1)">
+                                Yesterday
+                              </button>
+                              <button class="dropdown-item" (click)="changeDateParameter(7)">
+                                Last Week
+                              </button>
+                              <button class="dropdown-item" (click)="changeDateParameter(14)">
+                                Last 14 Days
+                              </button>
+                              <button class="dropdown-item" (click)="changeDateParameter(30)">
+                                Last Month
+                              </button>
+                            </div>
+                            <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel"
+                              aria-labelledby="profile-tab">
+
+                              <!-- <input type="hidden" class="dt datepicker"> -->
+                              <mat-form-field>
+                                <input matInput [matDatepicker]="picker" placeholder="Choose a date"
+                                  (click)="picker.open()">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                              </mat-form-field>
+
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <span class="dropdown-label">Enter Range</span>
+                            <div class="container-fluid">
+                              <div class="row mt-2 mb-3">
+                                <div class="col-6">
+                                  <input type="text" value="01/01/2019" class="form-control">
+                                </div>
+                                <div class="col-6">
+                                  <input type="text" value="01/01/2019" class="form-control">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>Hit Count</td>
-                    <td>
-                      <span class="size-20 bold mr-4">{{totalHitCountForDashboard | number}}</span>
-                      <span class="status down">
-                        <i class="fa fa-arrow-down"></i>
-                        {{elasticData[0]?.delta.hit_rate | number}}
-                      </span>
-                    </td>
-                    <td>
-                      <span class="size-20 mr-4">{{totalBlockCountForDashboard | number}}</span>
-                      <span class="status up">
-                        <i class="fa fa-arrow-up"></i>
-                        {{elasticData[0]?.delta.blocked_rate | number}}
-                      </span>
-                    </td>
-                    <td>
-                      <span class="size-20 mr-4">{{malwareCountForDashboard}}</span>
-                    </td>
-                    <td>
-                      <span class="size-20 mr-4">?</span>
-                      <span class="status down">
-                        <i class="fa fa-arrow-down"></i>
-                        ?
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Unique Domain</td>
-                    <td>
-                      <span class="size-20 bold mr-4">{{elasticData[0]?.unique_domain| number}}</span>
-                      <span class="status down">
-                        <i class="fa fa-arrow-down"></i>
-                        {{elasticData[0]?.delta.unique_domain_rate | number}}
-                      </span>
-                    </td>
-                    <td>
-                      <span class="size-20 mr-4">?</span>
-                      <span class="status up">
-                        <i class="fa fa-arrow-up"></i>
-                        ?
-                      </span>
-                    </td>
-                    <td>
-                      <span class="size-20 mr-4">{{uMalwareCountForDashboard}}</span>
-                    </td>
-                    <td>
-                      <span class="size-20 mr-4">?</span>
-                      <span class="status down">
-                        <i class="fa fa-arrow-down"></i>
-                        ?
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-
               </table>
+              <div id="gaugeChart"
+                style="max-height: 110px; min-height: 50px; margin-bottom:-115px; margin-top: -20px;">
+              </div>
             </div>
           </div>
           <!-- NUMERIC CARD -->
@@ -174,14 +189,7 @@
             Traffic Based Anomaly
           </div>
           <div class="base-card-content">
-            <div class="labels" *ngIf="selectedCategoryForTraffic">
-              <span class="label">
-                <span class="label-color"></span>
-                <span>{{selectedCategoryForTraffic.name}}</span>
-                <i class="close-btn icon-cancel" (click)="deleteCatFromTraffic(selectedCategoryForTraffic.id)"></i>
-              </span>
-            </div>
-            <div class="chart">
+            <div class="chart" style="min-height: 220px">
               <div id="hitChartDiv">
                 <div id="trafficChartHits"></div>
               </div>
@@ -216,17 +224,24 @@
                     {{cat.name}}
                   </button>
                 </div>
+                <span class="labels ml-3" *ngIf="selectedCategoryForTraffic">
+                  <span class="label">
+                    <span class="label-color"></span>
+                    <span>{{selectedCategoryForTraffic.name}}</span>
+                    <i class="close-btn icon-cancel" (click)="deleteCatFromTraffic(selectedCategoryForTraffic.id)"></i>
+                  </span>
+                </span>
               </div>
+
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-md-4">
         <div class="base-card full-height mt-lg-0 mt-4">
           <div class="base-card-header">
-            World Status
+            Top Anomalies
           </div>
-
           <div class="base-card-content">
             <div class="country-list">
               <table class="table">
@@ -299,22 +314,27 @@
             Unique Counter Based Anomaly
           </div>
           <div class="base-card-content">
-            <div class="labels" *ngIf="selectedCategoryForBlocked">
-              <span class="label">
-                <span class="label-color"></span>
-                <span>{{selectedCategoryForBlocked.name}}</span>
-                <i class="close-btn icon-cancel" (click)="deleteCatFromBlocked(selectedCategoryForBlocked.id)"></i>
-              </span>
-            </div>
-            <div class="chart">
-              <div id="uniqueCounterChart"></div>
+            <div class="chart" style="min-height: 200px">
+
+              <div id="uniqueDomainChartDiv">
+                <div id="uniqueDomainChart"></div>
+              </div>
+              <div id="uniqueSubdomainChartDiv" style="display: none">
+                <div id="uniqueSubdomainChart"></div>
+              </div>
+              <div id="uniqueDestIpChartDiv" style="display: none">
+                <div id="uniqueDestIpChart"></div>
+              </div>
             </div>
 
             <div class="events">
               <div class="toggle" style="padding: 4px;">
-                <button class="btns active">Unique Domain</button>
-                <button class="btns">Unique Subdomain</button>
-                <button class="btns">Unique IP</button>
+                <button class="btns active" [ngClass]="{'active ': uniqueChartType=='domain'}"
+                (click)="changeUniqueChartData('domain')">Unique Domain</button>
+                <button class="btns" [ngClass]="{'active ': uniqueChartType=='subdomain'}"
+                (click)="changeUniqueChartData('subdomain')">Unique Subdomain</button>
+                <button class="btns" [ngClass]="{'active ': uniqueChartType=='destIp'}"
+                (click)="changeUniqueChartData('destIp')">Unique IP</button>
               </div>
 
               <div class="dns-dropdown d-inline-block">
@@ -326,7 +346,10 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
                   style="max-height: 400px; overflow: auto;">
                   <div class="dropdown-searchbar">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <mat-form-field>
+                      <input type="text" class="form-control" matInput placeholder="Search" [(ngModel)]="searchKey"
+                        (ngModelChange)="searchCategoryForTraffic($event)">
+                    </mat-form-field>
                   </div>
                   <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
                     (click)="addCategoryToBlocked(cat.id)">
@@ -334,6 +357,13 @@
                     {{cat.name}}
                   </button>
                 </div>
+                <span class="labels ml-3" *ngIf="selectedCategoryForBlocked">
+                  <span class="label">
+                    <span class="label-color"></span>
+                    <span>{{selectedCategoryForBlocked.name}}</span>
+                    <i class="close-btn icon-cancel" (click)="deleteCatFromBlocked(selectedCategoryForBlocked.id)"></i>
+                  </span>
+                </span>
               </div>
             </div>
 

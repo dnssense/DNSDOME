@@ -13,7 +13,9 @@ import { SearchSettingService } from 'src/app/core/services/SearchSettingService
 import { LocationsService } from 'src/app/core/services/LocationService';
 import { ArrayUtils } from 'src/app/ArrayUtils';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
-
+import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
+import { AlertService } from 'src/app/core/services/alert.service';
+import * as countryList from 'src/app/core/models/Countries';
 
 declare var jQuery: any;
 declare var Flatpickr: any;
@@ -33,7 +35,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   public end_date_pickr = null;
   public popover: any;
   public dateShown: boolean = false;
-  public columnsPopover: any;
+  // public columnsPopover: any;
   public configItem: ConfigItem;
   startDateee: Date = null;
   endDateee: Date = null;
@@ -58,7 +60,13 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   // public savedReportsSelectComponent: SavedReportSelectComponent;
 
   @Input() searchSetting: SearchSetting;
-  @Input() public columns: LogColumn[];
+  @Input() set columns(value: LogColumn[]) {
+    if (value && value.length > 0) {
+      value.forEach(c => c.checked = false);
+      this._columns = value;
+    }
+
+  }
   @Input() public columnsTemp: LogColumn[];
   @Output() public searchEmitter = new EventEmitter();
   @Output() public searchSettingEmitter = new EventEmitter();
@@ -69,20 +77,40 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   private applicationsSubscription: Subscription;
   private categoriesSubscription: Subscription;
 
-  constructor(
-    public customReportService: CustomReportService,
-    public fastReportService: FastReportService,
-    public searchSettingService: SearchSettingService,
-    public locationsService: LocationsService,
-    private notificationService: NotificationService) {
+  _columns: LogColumn[];
+  columnListLength: number = 10;
+  currentColumn: string = 'domain';
+  currentInput: any;
+  countries: any = [];
+  current: ColumnTagInput;
+  currentOperator: string = 'is';
+  currentinputValue: string;
+  select2: any = null;
+  inputCollapsed: boolean = true;
+  inputSelected: boolean = false;
+  @ViewChild('inputElement') inputElement: ElementRef;
+  @ViewChild('mainInputElement') mainInputElement: ElementRef;
+  @ViewChild('tagInput') tagInput: ElementRef;
+  @ViewChild('select') select: ElementRef;
+  public selectedColumns: LogColumn[];
 
-    this.fastReportService.tableColumns
-      .subscribe((res: LogColumn[]) => {
-        this.columns = res;
-      });
+
+  constructor(public customReportService: CustomReportService, public fastReportService: FastReportService,
+    public searchSettingService: SearchSettingService, public locationsService: LocationsService,
+    private notification: NotificationService, private alertService: AlertService) {
+
+    this.selectedColumns = [];
+    if (!this.searchSetting) {
+      this.searchSetting = new SearchSetting();
+      this.current = new ColumnTagInput('domain', '=', '');
+      this.currentOperator = 'is';
+      this.currentColumn = 'domain';
+    }
+
   }
 
   ngOnInit() {
+    this.countries = countryList.countries;
     this.applicationsSubscription = this.customReportService.applications.subscribe((res: WApplication[]) => {
       let allApplications = res;
       if (res != null) {
@@ -115,13 +143,19 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.columnsPopover = jQuery(this.columnsOverlay.nativeElement).webuiPopover({
-      padding: true,
-      animation: 'pop',
-      closeable: false,
-      placement: 'bottom-right',
-      dismissible: true,
+
+    jQuery('#tagsDd').click(function (e) {
+      e.stopPropagation();
     });
+
+
+    // this.columnsPopover = jQuery(this.columnsOverlay.nativeElement).webuiPopover({
+    //   padding: true,
+    //   animation: 'pop',
+    //   closeable: false,
+    //   placement: 'bottom-right',
+    //   dismissible: true,
+    // });
 
     // jQuery(new Waypoint.Sticky({
     //   element: this.customSearchSetting.nativeElement,
@@ -141,16 +175,59 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public search() {
-    WebuiPopovers.hideAll();
-    // if (this.searchSetting.columns.columns.length > 0) {
-    //   this.notificationService.clearToasties();
-    // }
+    debugger
+    this.searchSetting.columns.columns = []
+    this._columns.filter(c => c.checked == true).forEach(c => {
+      this.searchSetting.columns.columns.push({ column: c, label: c.beautyName });
+    })
     this.searchEmitter.emit(this.searchSetting);
   }
 
   public setSearchSetting(searchSetting: SearchSetting) {
     this.searchSetting = searchSetting;
   }
+
+  public checkUncheckColumn(col: LogColumn) {
+
+    if (this._columns.find(c => c.name == col.name).checked == false && this._columns.filter(c => c.checked == true).length >= 5) {
+      this.notification.warning('You can selecy 5 columns!');
+      return;
+    }
+    for (let a of this._columns) {
+      if (a.name == col.name) {
+        col.checked = !a.checked;
+        a.checked = col.checked;
+        break;
+      }
+    }
+
+    this.addColumnToSelectedColumns(col)
+    // this.inputChecked(col);
+  }
+
+  changeColumnListLength() {
+    if (this.columnListLength == 10) {
+      this.columnListLength = this._columns.length;
+    } else {
+      this.columnListLength = 10;
+    }
+
+  }
+
+  // public inputChecked(column: LogColumn) {
+  //   debugger
+  //   if (column.checked) {
+  //     this.selectedColumns.push(column);
+  //   } else {
+  //     for (let a of this.selectedColumns) {
+  //       if (a.name == column.name) {
+  //         let cindex = this.selectedColumns.indexOf(a);
+  //         this.selectedColumns.splice(cindex, 1);
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
 
   public showDatePanel($event) {
     let value = $event.target.value;
@@ -168,7 +245,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       }
 
       this.start_date_pickr = new Flatpickr(this.startDateCal.nativeElement, {
-        animate:false,
+        animate: false,
         allowInput: false,
         enableTime: true,
         defaultDate: this.startDateee,
@@ -184,7 +261,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       });
       //alert(start_date_pickr.selectedDateObj);
       this.end_date_pickr = new Flatpickr(this.endDateCal.nativeElement, {
-        animate:false,
+        animate: false,
         allowInput: false,
         enableTime: true,
         defaultDate: this.endDateee,
@@ -254,5 +331,200 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
         break;
       }
     }
+  }
+
+  public inputClicked($event) {
+    $event.stopPropagation();
+  }
+
+  changeCurrentColumn(colName: string) {
+    debugger
+    jQuery('#tagsDd').click(function (e) {
+      e.stopPropagation();
+    });
+    this.currentColumn = colName;
+  }
+
+  public addTag($event) {
+
+    debugger
+    this.current.value = this.currentInput;
+    this.current.operator = '=' // default and only value is equal
+    this.current.field = this.currentColumn;
+
+    if (
+      this.currentColumn == 'sourceIp' ||
+      this.currentColumn == 'destinationIp'
+    ) {
+      if (!this.checkIp()) {
+        return;
+      }
+    }
+    $event.stopPropagation();
+    if (this.currentInput == '') {
+      //this.tagInput.nativeElement.focus();
+      return;
+    }
+
+    var addStatus = true;
+
+    if (this.currentOperator == 'is') {
+      for (let op of this.searchSetting.must) {
+        if (op.field == this.current.field && op.operator == this.current.operator &&
+          op.value == this.current.value) {
+          if (op.id != this.current.id) {
+            return;
+          }
+          op.field = this.currentColumn;
+          op.operator = this.currentOperator;
+          op.value = this.currentInput;
+          addStatus = false;
+        }
+      }
+      if (addStatus) {
+        this.searchSetting.must.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+      }
+
+    } else if (this.currentOperator == 'isnot' || this.currentOperator == 'isnotoneof') {
+      for (let op of this.searchSetting.mustnot) {
+        if (op.field == this.current.field && op.operator == this.current.operator &&
+          op.value == this.current.value) {
+          if (op.id != this.current.id) {
+            return;
+          }
+          op.field = this.currentColumn;
+          op.operator = this.currentOperator;
+          op.value = this.currentInput;
+          addStatus = false;
+        }
+      }
+      if (addStatus) {
+        this.searchSetting.mustnot.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+      }
+    } else if (this.currentOperator == 'isoneof') {
+      for (let op of this.searchSetting.should) {
+        if (op.field == this.current.field && op.operator == this.current.operator &&
+          op.value == this.current.value) {
+          if (op.id != this.current.id) {
+            return;
+          }
+          op.field = this.currentColumn;
+          op.operator = this.currentOperator;
+          op.value = this.currentInput;
+          addStatus = false;
+        }
+      }
+      if (addStatus) {
+        this.searchSetting.should.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+      }
+    }
+
+    jQuery('#tagsDd').removeClass('show');
+
+    this.current = new ColumnTagInput('domain', '=', '');
+    this.currentColumn = this.current.field;
+    this.currentOperator = 'is';
+    this.currentInput = this.current.value;
+    this.currentinputValue = '';
+    this.inputCollapsed = true;
+    this.inputSelected = false;
+
+  }
+
+  cancelFilterPopup() {
+    jQuery('#tagsDd').removeClass('show');
+  }
+
+  public inputsChanged($event, select: boolean) {
+    $event.stopPropagation();
+
+    if ($event.keyCode === 13) {
+      this.addTag(event);
+      return;
+    }
+    if (select) {
+      this.currentInput = '';
+    }
+
+    if (this.inputSelected) {
+      this.current.value = this.currentInput;
+      this.current.operator = this.currentOperator;
+      this.current.field = this.currentColumn;
+      this.currentinputValue = '';
+    } else {
+      this.currentinputValue =
+        '' + this.currentColumn + this.currentOperator + this.currentInput;
+    }
+
+    if (
+      this.currentColumn == 'applicationName' ||
+      this.currentColumn == 'category' ||
+      this.currentColumn == 'agentAlias' ||
+      this.currentColumn == 'sourceIpCountryCode' ||
+      this.currentColumn == 'destinationIpCountryCode'
+    ) {
+      this.initSelect();
+    }
+  }
+
+  changeSearchSettingType(type: string) {
+    if (type == 'roksit' || type == 'roksitblock') {
+      this.searchSetting.type = type;
+    }
+  }
+
+  changeSearchSettingDate(interval: string) {
+    if (Number(interval) > 0) {
+      this.searchSetting.dateInterval = interval;
+    }
+  }
+
+  public removeTag(tag: any, type: string) {
+
+    if (type == 'must') {
+      this.searchSetting.must.splice(this.searchSetting.must.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
+    } else if (type == 'mustnot') {
+      this.searchSetting.mustnot.splice(this.searchSetting.mustnot.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
+    } else if (type == 'should') {
+      this.searchSetting.should.splice(this.searchSetting.should.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
+    }
+    this.currentinputValue = '';
+  }
+
+  public removeAllTags() {
+    if (this.searchSetting.must.length > 0 || this.searchSetting.mustnot.length > 0 || this.searchSetting.should.length > 0) {
+      this.alertService.alertWarningAndCancel('Are You Sure?', 'Your search parameters will be removed!').subscribe(
+        res => {
+          if (res) {
+            this.searchSetting.must = [];
+            this.searchSetting.mustnot = [];
+            this.searchSetting.should = [];
+            this.currentinputValue = '';
+          }
+        }
+      );
+    }
+  }
+
+  public initSelect() {
+    if (this.select2 != null) {
+      this.select2.select2('destroy');
+    }
+    this.select2 = jQuery(this.select.nativeElement).select2({}).on(
+      'select2:select', e => { this.currentInput = e.target.value; });
+  }
+
+  public checkIp() {
+    let isValid =
+      this.currentInput != '0.0.0.0' &&
+      this.currentInput != '255.255.255.255' &&
+      this.currentInput.match(
+        /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/
+      );
+    if (!isValid) {
+      this.notification.error("Invalid IP");
+      return false;
+    }
+    return true;
   }
 }
