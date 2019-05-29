@@ -23,24 +23,24 @@
                       <tr>
                         <td>Hit Count</td>
                         <td>
-                          <span class="size-20 bold mr-4">{{totalHitCountForDashboard | number}}</span>
+                          <span class="size-20 bold mr-4">{{ds.totalHitCountForDashboard | number}}</span>
                           <span class="status down">
                             <i class="fa fa-arrow-down"></i>
                             {{elasticData[0]?.delta.hit_rate | number}}
                           </span>
                         </td>
                         <td>
-                          <span class="size-20 mr-4">{{totalBlockCountForDashboard | number}}</span>
+                          <span class="size-20 mr-4">{{ds.totalBlockCountForDashboard | number}}</span>
                           <span class="status up">
                             <i class="fa fa-arrow-up"></i>
                             {{elasticData[0]?.delta.blocked_rate | number}}
                           </span>
                         </td>
                         <td>
-                          <span class="size-20 mr-4">{{malwareCountForDashboard}}</span>
+                          <span class="size-20 mr-4">{{ds.malwareCountForDashboard| number}}</span>
                         </td>
                         <td>
-                          <span class="size-20 mr-4">?</span>
+                          <span class="size-20 mr-4">{{ds.grayCountForDashboard| number}}</span>
                           <span class="status down">
                             <i class="fa fa-arrow-down"></i>
                             ?
@@ -50,7 +50,7 @@
                       <tr>
                         <td>Unique Domain</td>
                         <td>
-                          <span class="size-20 bold mr-4">{{elasticData[0]?.unique_domain| number}}</span>
+                          <span class="size-20 bold mr-4">{{ds.totalUniqueDomain | number}}</span>
                           <span class="status down">
                             <i class="fa fa-arrow-down"></i>
                             {{elasticData[0]?.delta.unique_domain_rate | number}}
@@ -64,10 +64,10 @@
                           </span>
                         </td>
                         <td>
-                          <span class="size-20 mr-4">{{uMalwareCountForDashboard}}</span>
+                          <span class="size-20 mr-4">{{ds.uMalwareCountForDashboard| number}}</span>
                         </td>
                         <td>
-                          <span class="size-20 mr-4">?</span>
+                          <span class="size-20 mr-4">{{ds.uGrayCountForDashboard| number}}</span>
                           <span class="status down">
                             <i class="fa fa-arrow-down"></i>
                             ?
@@ -330,11 +330,11 @@
             <div class="events">
               <div class="toggle" style="padding: 4px;">
                 <button class="btns active" [ngClass]="{'active ': uniqueChartType=='domain'}"
-                (click)="changeUniqueChartData('domain')">Unique Domain</button>
+                  (click)="changeUniqueChartData('domain')">Unique Domain</button>
                 <button class="btns" [ngClass]="{'active ': uniqueChartType=='subdomain'}"
-                (click)="changeUniqueChartData('subdomain')">Unique Subdomain</button>
+                  (click)="changeUniqueChartData('subdomain')">Unique Subdomain</button>
                 <button class="btns" [ngClass]="{'active ': uniqueChartType=='destIp'}"
-                (click)="changeUniqueChartData('destIp')">Unique IP</button>
+                  (click)="changeUniqueChartData('destIp')">Unique IP</button>
               </div>
 
               <div class="dns-dropdown d-inline-block">
