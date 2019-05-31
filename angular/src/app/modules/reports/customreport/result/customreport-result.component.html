@@ -42,7 +42,7 @@
                                         <th class="color-light-blue">Percent</th>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let dat of data;  let i = index">
+                                        <tr *ngFor="let dat of data;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
                                             <td class="numeration">{{i+1}}</td>
                                             <td *ngFor="let col of selectedColumns; let inde=index">
                                                 <div *ngIf="col.column.name == 'action'">

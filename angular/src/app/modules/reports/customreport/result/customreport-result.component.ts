@@ -146,7 +146,7 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
           }
           ],
           markers: {
-            size: 5,
+            size: 3,
             strokeColor: '#9d60fb',
             fillColor: '#ffffff',
             strokeWidth: 3,

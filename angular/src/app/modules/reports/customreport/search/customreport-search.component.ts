@@ -62,7 +62,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   @Input() searchSetting: SearchSetting;
   @Input() set columns(value: LogColumn[]) {
     if (value && value.length > 0) {
-      value.forEach(c => c.checked = false);
+      value.forEach(c => { if (c.name == 'domain') { c.checked = true; } else { c.checked = false }});
       this._columns = value;
     }
 
@@ -211,7 +211,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     } else {
       this.columnListLength = 10;
     }
-
   }
 
   // public inputChecked(column: LogColumn) {

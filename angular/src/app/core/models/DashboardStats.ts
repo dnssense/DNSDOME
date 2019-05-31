@@ -1,16 +1,23 @@
 export class DashboardStats {
-    malwareCountForDashboard: number = 0;
-    uMalwareCountForDashboard: number = 0;
-    grayCountForDashboard: number = 0;
-    uGrayCountForDashboard: number = 0;
     totalHitCountForDashboard: number = 0;
+    totalHitCountForDashboardDelta: number = 0;
     totalBlockCountForDashboard: number = 0;
+    totalBlockCountForDashboardDelta: number = 0;
     totalUniqueDomain: number = 0;
+    totalUniqueDomainDelta: number = 0;
+    malwareCountForDashboard: number = 0;
+    malwareCountForDashboardDelta: number = 0;
+    uMalwareCountForDashboard: number = 0;
+    uMalwareCountForDashboardDelta: number = 0;
+    grayCountForDashboard: number = 0;
+    grayCountForDashboardDelta: number = 0;
+    uGrayCountForDashboard: number = 0;
+    uGrayCountForDashboardDelta: number = 0;
     riskScore: number = 0;
     hitAverages: number[] = [];
-    todayHits: number[] = [];
+    totalHits: number[] = [];
+    totalBlocks: number[] = [];
     blockAverages: number[] = [];
-    todayBlocks: number[] = [];
     uniqueDomain: number[] = []
     uniqueDomainAvg: number[] = []
     uniqueSubdomain: number[] = []
@@ -22,9 +29,9 @@ export class DashboardStats {
      *
      */
     constructor() {
-        this.todayBlocks = [];
+        this.totalBlocks = [];
         this.hitAverages = [];
-        this.todayHits = [];
+        this.totalHits = [];
         this.blockAverages = [];
         this.uniqueDomain = []
         this.uniqueDomainAvg = []

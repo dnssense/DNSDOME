@@ -45,7 +45,6 @@ export class ProfileWizardComponent {
     return this._saveMode;
   }
   @Input() set selectedAgent(value: Agent) {
-    debugger
     this._selectedAgent = value;
   }
   get selectedAgent(): Agent {

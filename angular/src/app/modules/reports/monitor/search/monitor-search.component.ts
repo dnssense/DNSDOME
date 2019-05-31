@@ -24,6 +24,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { AlertService } from 'src/app/core/services/alert.service';
 
 declare var jQuery: any;
+declare var $: any;
 declare var Flatpickr: any;
 declare var moment: any;
 declare var WebuiPopovers: any;
@@ -84,13 +85,8 @@ export class MonitorSearchComponent
   @ViewChild('tagInput') tagInput: ElementRef;
   @ViewChild('select') select: ElementRef;
 
-  constructor(
-    private fastReportService: FastReportService,
-    private locationsService: LocationsService,
-    private customReportService: CustomReportService,
-    private notification: NotificationService,
-    private alertService: AlertService
-  ) {
+  constructor(private fastReportService: FastReportService, private locationsService: LocationsService,
+    private customReportService: CustomReportService, private notification: NotificationService, private alertService: AlertService) {
 
     if (!this.searchSetting) {
       this.searchSetting = new SearchSetting();
@@ -99,6 +95,7 @@ export class MonitorSearchComponent
       this.currentColumn = 'domain';
     }
 
+    this.setDropdown();
   }
 
   ngOnInit() {
@@ -255,6 +252,34 @@ export class MonitorSearchComponent
     }
     this.dateOverlay.hide();
   }
+
+  setDropdown() {
+    let dropdownId='#dropdownDate23'
+    let datepickerId = '.datepicker2'
+    $(dropdownId + ' .dropdown-menu .nav-tabs li').click(function (e) {
+      setTimeout(() => {
+        $(dropdownId + ' .dropdown-menu').addClass('show');
+      }, 1);
+    });
+
+    $(datepickerId).flatpickr({
+      mode: 'range',
+      inline: true
+    });
+
+    $(dropdownId + ' .flatpickr-prev-month').click(function (e) {
+      setTimeout(() => {
+        $(dropdownId + ' .dropdown-menu').addClass('show');
+      }, 1);
+    });
+
+    $(dropdownId + ' .flatpickr-next-month').click(function (e) {
+      setTimeout(() => {
+        $(dropdownId + ' .dropdown-menu').addClass('show');
+      }, 1);
+    });
+  }
+
 
   public inputClicked($event) {
     $event.stopPropagation();

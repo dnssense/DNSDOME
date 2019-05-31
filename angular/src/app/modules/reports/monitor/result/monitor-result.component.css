@@ -2,3 +2,8 @@
     display: block;
     overflow-x: auto;
   }
+
+  .baseTableRow{
+    background-color: #181818;
+  }
+    

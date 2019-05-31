@@ -35,19 +35,46 @@
         <div class="row">
           <div class="col-12">
             <div class="datatable-labels">
-              <div class="label" *ngFor="let col of columns" [ngClass]="{'active' : col.checked}" (click)="checkUncheckColumn(col)">
-                {{col.beautyName}}</div>
+              <!-- <div class="label" *ngFor="let col of columns" [ngClass]="{'active' : col.checked}"
+                (click)="checkUncheckColumn(col)">
+                {{col.beautyName}}</div> -->
+
+
+              <span *ngFor="let col of columns; let i = index;">
+                <span class="label" *ngIf="i < columnListLength" [ngClass]="{'active' : col.checked}"
+                  style="padding: 0px 4px 0 4px;" (click)="checkUncheckColumn(col)">
+                  {{col.beautyName}}</span>
+              </span>
+              <ng-container *ngIf="columnListLength>10; else elseTemplate12">
+                <button mat-raised-button class="btn btn-just-icon btn-link" id="shrinkButton"
+                  (click)="changeColumnListLength()">
+                  <span class="btn-label">
+                    <i class="material-icons">fast_rewind</i>
+                  </span>
+                </button>
+              </ng-container>
+              <ng-template #elseTemplate12>
+                <button mat-raised-button class="btn btn-just-icon btn-link" id="expandButton"
+                  (click)="changeColumnListLength()">
+                  <span class="btn-label">
+                    <i class="material-icons">fast_forward</i>
+                  </span>
+                </button>
+              </ng-template>
+
+
+
             </div>
           </div>
         </div>
-        <div #tableDivComponent class="table-responsive table-striped" id="table-data" style="border-radius: 5px;"
+        <div #tableDivComponent class="table-responsive" id="table-data" style="border-radius: 5px;"
           *ngIf="tableData && tableData.length > 0">
           <table class="table table-bordered" style="display: table;">
             <thead>
               <th class="no-border"></th>
               <th class="color-light-blue" *ngFor="let col of selectedColumns">{{col.beautyName}}</th>
             </thead>
-            <tr *ngFor="let dat of tableData;  let i = index">
+            <tr *ngFor="let dat of tableData;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
               <td class="numeration"><small>
                   {{((this.currentPage-1)*searchSetting.topNumber)==0?i+1:((this.currentPage-1)*searchSetting.topNumber)+(i+1)}}
                 </small></td>
@@ -94,7 +121,7 @@
   <ng-template #elseTemplate>
     <div class="row">
       <div class="col-md-12">
-        <br/>
+        <br />
         <p #tableDivComponent style="color: whitesmoke">
           <strong>{{ 'Data not found!' }}</strong>
         </p>

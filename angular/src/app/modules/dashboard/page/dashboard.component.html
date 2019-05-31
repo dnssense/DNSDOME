@@ -15,8 +15,11 @@
                         <th></th>
                         <th>Total Traffic</th>
                         <th>Blocked</th>
-                        <th>Malware</th>
-                        <th>Grey</th>
+                        <th matTooltip="Involved Categories: Malware/Virus, Potentially Dangerous, Phishing">Security
+                          Risk *</th>
+                        <th
+                          matTooltip="Involved Categories: Unknown, Undecided Not Safe, Undecided Safe, Domain Parking, Newly Register, Newly Up, Dead Sites, Firstly Seen">
+                          Grey *</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -24,54 +27,98 @@
                         <td>Hit Count</td>
                         <td>
                           <span class="size-20 bold mr-4">{{ds.totalHitCountForDashboard | number}}</span>
-                          <span class="status down">
-                            <i class="fa fa-arrow-down"></i>
-                            {{elasticData[0]?.delta.hit_rate | number}}
-                          </span>
+                          <ng-container
+                            *ngIf="ds.totalHitCountForDashboardDelta>0||ds.totalHitCountForDashboardDelta==0; else elseTemplate1">
+                            <span class="status up">
+                              <i class="fa fa-arrow-up"></i>
+                              %{{ds.totalHitCountForDashboardDelta | number}}
+                            </span>
+                          </ng-container>
+                          <ng-template #elseTemplate1>
+                            <span class="status down">
+                              <i class="fa fa-arrow-down"></i>
+                              %{{ds.totalHitCountForDashboardDelta | number}}
+                            </span>
+                          </ng-template>
                         </td>
                         <td>
                           <span class="size-20 mr-4">{{ds.totalBlockCountForDashboard | number}}</span>
-                          <span class="status up">
-                            <i class="fa fa-arrow-up"></i>
-                            {{elasticData[0]?.delta.blocked_rate | number}}
-                          </span>
+
+                          <ng-container
+                            *ngIf="ds.totalBlockCountForDashboardDelta>0||ds.totalBlockCountForDashboardDelta==0; else elseTemplate2">
+                            <span class="status up">
+                              <i class="fa fa-arrow-up"></i>
+                              %{{ds.totalBlockCountForDashboardDelta | number}}
+                            </span>
+                          </ng-container>
+                          <ng-template #elseTemplate2>
+                            <span class="status down">
+                              <i class="fa fa-arrow-down"></i>
+                              %{{ds.totalBlockCountForDashboardDelta | number}}
+                            </span>
+                          </ng-template>
+
                         </td>
                         <td>
                           <span class="size-20 mr-4">{{ds.malwareCountForDashboard| number}}</span>
+                          <ng-container
+                            *ngIf="ds.malwareCountForDashboardDelta>0 || ds.malwareCountForDashboardDelta==0; else elseTemplate3">
+                            <span class="status up">
+                              <i class="fa fa-arrow-up"></i>
+                              %{{ds.malwareCountForDashboardDelta | number}}
+                            </span>
+                          </ng-container>
+                          <ng-template #elseTemplate3>
+                            <span class="status down">
+                              <i class="fa fa-arrow-down"></i>
+                              %{{ds.malwareCountForDashboardDelta | number}}
+                            </span>
+                          </ng-template>
                         </td>
                         <td>
                           <span class="size-20 mr-4">{{ds.grayCountForDashboard| number}}</span>
-                          <span class="status down">
-                            <i class="fa fa-arrow-down"></i>
-                            ?
-                          </span>
+                          <ng-container
+                            *ngIf="ds.grayCountForDashboardDelta>0||ds.grayCountForDashboardDelta==0; else elseTemplate4">
+                            <span class="status up">
+                              <i class="fa fa-arrow-up"></i>
+                              %{{ds.grayCountForDashboardDelta | number}}
+                            </span>
+                          </ng-container>
+                          <ng-template #elseTemplate4>
+                            <span class="status down">
+                              <i class="fa fa-arrow-down"></i>
+                              %{{ds.grayCountForDashboardDelta | number}}
+                            </span>
+                          </ng-template>
+
                         </td>
                       </tr>
                       <tr>
                         <td>Unique Domain</td>
                         <td>
                           <span class="size-20 bold mr-4">{{ds.totalUniqueDomain | number}}</span>
-                          <span class="status down">
-                            <i class="fa fa-arrow-down"></i>
-                            {{elasticData[0]?.delta.unique_domain_rate | number}}
-                          </span>
+                          <ng-container
+                            *ngIf="ds.totalUniqueDomainDelta>0 || ds.totalUniqueDomainDelta==0 ; else elseTemplate5">
+                            <span class="status up">
+                              <i class="fa fa-arrow-up"></i>
+                              %{{ds.totalUniqueDomainDelta | number}}
+                            </span>
+                          </ng-container>
+                          <ng-template #elseTemplate5>
+                            <span class="status down">
+                              <i class="fa fa-arrow-down"></i>
+                              %{{ds.totalUniqueDomainDelta | number}}
+                            </span>
+                          </ng-template>
                         </td>
                         <td>
-                          <span class="size-20 mr-4">?</span>
-                          <span class="status up">
-                            <i class="fa fa-arrow-up"></i>
-                            ?
-                          </span>
+                          <span class="size-20 mr-4">-</span>
                         </td>
                         <td>
                           <span class="size-20 mr-4">{{ds.uMalwareCountForDashboard| number}}</span>
                         </td>
                         <td>
                           <span class="size-20 mr-4">{{ds.uGrayCountForDashboard| number}}</span>
-                          <span class="status down">
-                            <i class="fa fa-arrow-down"></i>
-                            ?
-                          </span>
                         </td>
                       </tr>
                     </tbody>
@@ -178,7 +225,6 @@
           <!-- NUMERIC CARD -->
 
         </div>
-
       </div>
     </div>
 
@@ -238,70 +284,21 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="base-card full-height mt-lg-0 mt-4">
+        <!-- <div class="card card-chart" style="background-color: #262626">
+           
+              <div class="card-body">
+                <div id="worldMap" class="map" style="max-height: 220px;"></div>
+              </div>
+            </div> -->
+        <div class="base-card">
           <div class="base-card-header">
             Top Anomalies
           </div>
           <div class="base-card-content">
-            <div class="country-list">
-              <table class="table">
-                <tbody>
-                  <tr>
-                    <td style="width: 20%">ABD</td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="in-progress" style="width: 34%"></div>
-                      </div>
-                    </td>
-                    <td style="width: 15%">%34</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 20%">Hindistan</td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="in-progress" style="width: 21%"></div>
-                      </div>
-                    </td>
-                    <td style="width: 15%">%21</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 20%">İngiltere</td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="in-progress" style="width: 11%"></div>
-                      </div>
-                    </td>
-                    <td style="width: 15%">%11</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 20%">Çin</td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="in-progress" style="width: 23%"></div>
-                      </div>
-                    </td>
-                    <td style="width: 15%">%23</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 15%">Brezilya</td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="in-progress" style="width: 15%"></div>
-                      </div>
-                    </td>
-                    <td style="width: 15%">%15</td>
-                  </tr>
-                  <tr>
-                    <td style="width: 20%">Türkiye</td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="in-progress" style="width: 9%"></div>
-                      </div>
-                    </td>
-                    <td style="width: 9%">%9</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="card card-chart mb-2" style="box-shadow: none; background-color: #262626">
+              <div class="card-body">
+                <div id="worldMap" class="map" style="max-height: 220px;"></div>
+              </div>
             </div>
           </div>
         </div>
