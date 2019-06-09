@@ -3,7 +3,7 @@
 set -e
 cd angular
 #npm install
-#npm run build
+npm run build
 read -p 'versiyon numarası giriniz:  ' version
 cd ..
 docker build -t ui.dnssense .
