@@ -62,8 +62,10 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   @Input() searchSetting: SearchSetting;
   @Input() set columns(value: LogColumn[]) {
     if (value && value.length > 0) {
-      value.forEach(c => { if (c.name == 'domain') { c.checked = true; } else { c.checked = false }});
+      value.forEach(c => { if (c.name == 'domain') { c.checked = true; } else { c.checked = false } });
       this._columns = value;
+
+      this.search();
     }
 
   }
@@ -148,25 +150,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       e.stopPropagation();
     });
 
-
-    // this.columnsPopover = jQuery(this.columnsOverlay.nativeElement).webuiPopover({
-    //   padding: true,
-    //   animation: 'pop',
-    //   closeable: false,
-    //   placement: 'bottom-right',
-    //   dismissible: true,
-    // });
-
-    // jQuery(new Waypoint.Sticky({
-    //   element: this.customSearchSetting.nativeElement,
-    //   handler: (direction) => {
-    //     if (direction == 'up') {
-    //       this.expanded = true;
-    //     } else {
-    //       this.expanded = false;
-    //     }
-    //   }
-    // }));
   }
 
   ngOnDestroy() {
@@ -175,7 +158,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public search() {
-    debugger
+
     this.searchSetting.columns.columns = []
     this._columns.filter(c => c.checked == true).forEach(c => {
       this.searchSetting.columns.columns.push({ column: c, label: c.beautyName });
@@ -214,8 +197,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   // public inputChecked(column: LogColumn) {
-  //   debugger
-  //   if (column.checked) {
+    //   if (column.checked) {
   //     this.selectedColumns.push(column);
   //   } else {
   //     for (let a of this.selectedColumns) {
@@ -337,7 +319,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   changeCurrentColumn(colName: string) {
-    debugger
     jQuery('#tagsDd').click(function (e) {
       e.stopPropagation();
     });
@@ -345,8 +326,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public addTag($event) {
-
-    debugger
     this.current.value = this.currentInput;
     this.current.operator = '=' // default and only value is equal
     this.current.field = this.currentColumn;

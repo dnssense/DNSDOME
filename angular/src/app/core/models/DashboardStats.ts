@@ -5,6 +5,8 @@ export class DashboardStats {
     totalBlockCountForDashboardDelta: number = 0;
     totalUniqueDomain: number = 0;
     totalUniqueDomainDelta: number = 0;
+    totalUniqueBlockedDomainForDashboard: number = 0;
+    totalUniqueBlockedDomainForDashboardDelta: number = 0;
     malwareCountForDashboard: number = 0;
     malwareCountForDashboardDelta: number = 0;
     uMalwareCountForDashboard: number = 0;
@@ -19,6 +21,7 @@ export class DashboardStats {
     totalBlocks: number[] = [];
     blockAverages: number[] = [];
     uniqueDomain: number[] = []
+    uniqueBlockedDomain: number[] = []
     uniqueDomainAvg: number[] = []
     uniqueSubdomain: number[] = []
     uniqueSubdomainAvg: number[] = []
@@ -39,6 +42,7 @@ export class DashboardStats {
         this.uniqueSubdomainAvg = []
         this.uniqueDesIp = []
         this.uniqueDesIpAvg = []
+        this.uniqueBlockedDomain= []
 
     }
 }

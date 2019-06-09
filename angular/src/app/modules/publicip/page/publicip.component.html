@@ -277,14 +277,14 @@
                                 </div>
                               </small>
                             </td>
-                            <td>{{pi.blockMessage?pi.blockMessage:"---"}}</td>
+                            <td>{{pi.blockMessage?pi.blockMessage:"No Message!"}}</td>
                             <td>
                               <button [disabled]="pi.rootProfile?.isSystem" mat-raised-button type="button"
                                 class="btn btn-info btn-link btn-just-icon btn-sm" matTooltip="Edit Profile"
                                 (click)="showProfileEditWizard(pi.id)">
                                 <i class="material-icons">settings</i>
                               </button>
-                              {{pi.rootProfile?pi.rootProfile.name:"---"}}
+                              {{pi.rootProfile?pi.rootProfile.name:"No Profile!"}}
                             </td>
                             <td class="text-center">
                               <span class="form-control-feedback"><i class="material-icons">clear</i></span>
@@ -325,25 +325,3 @@
     </section>
   </div>
 </div>
-<style>
-  /* width */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #eee;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: rgb(187, 187, 187);
-    border-radius: 9px;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #888888;
-  }
-</style>

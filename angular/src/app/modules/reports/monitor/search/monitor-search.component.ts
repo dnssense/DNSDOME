@@ -173,7 +173,6 @@ export class MonitorSearchComponent
   }
 
   public search() {
-    debugger
     this.searchEmitter.emit(this.searchSetting);
   }
 
@@ -286,7 +285,6 @@ export class MonitorSearchComponent
   }
 
   changeCurrentColumn(colName: string) {
-    debugger
     jQuery('#tagsDd').click(function (e) {
       e.stopPropagation();
     });
@@ -294,8 +292,6 @@ export class MonitorSearchComponent
   }
 
   public addTag($event) {
-
-    debugger
     this.current.value = this.currentInput;
     this.current.operator = '=' // default and only value is equal
     this.current.field = this.currentColumn;

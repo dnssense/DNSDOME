@@ -180,8 +180,6 @@ export class PublicipComponent {
   }
 
   showProfileEditWizard(id: number) {
-    debugger
-
     let agent = this.publicIps.find(p => p.id == id);
     if (agent.rootProfile && agent.rootProfile.id > 0) {
       this.selectedAgent = agent;
@@ -226,7 +224,6 @@ export class PublicipComponent {
 
   showEditWizard(id: string) {
     this.isNewItemUpdated = true;
-    debugger
     this.selectedIp = this.publicIps.find(p => p.id == Number(id));
 
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
@@ -332,8 +329,6 @@ export class PublicipComponent {
     if (!this.validatePublicIpForm()) {
       return;
     }
-
-    console.log(JSON.stringify(this.selectedIp));
 
     this.agentService.saveAgent(this.selectedIp).subscribe(res => {
       if (res.status == 200) {

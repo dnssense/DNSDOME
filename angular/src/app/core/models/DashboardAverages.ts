@@ -7,4 +7,5 @@ export interface DashboardAverages {
     unique_domain: number;
     unique_srcip: number;
     unique_subdomain: number;
+    unique_blocked_domain: number;
 }

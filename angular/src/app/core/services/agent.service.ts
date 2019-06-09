@@ -56,7 +56,6 @@ export class AgentService {
   }
 
   deleteSecurityProfile(id: number): Observable<OperationResult> {
-    debugger
     return this.http.post<OperationResult>(this.deleteSecurityProfileURL, { "id": id }, this.getOptions()).map(res=>res);
   }
 

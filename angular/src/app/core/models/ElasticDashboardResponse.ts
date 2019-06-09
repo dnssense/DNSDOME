@@ -14,6 +14,7 @@ export class ElasticDashboardResponse {
     total_hit: number;
     unique_destip: number;
     unique_domain: number;
+    unique_blocked_domain:number;
     unique_mac: number;
     unique_srcip: number;
     unique_subdomain: number;

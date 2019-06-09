@@ -181,7 +181,6 @@ export class ColumnTagInputComponent implements OnInit {
   }
 
   public addTag($event) {
-    debugger
     this.current.value = this.currentInput;
     this.current.operator = this.currentOperator;
     this.current.field = this.currentColumn;
@@ -237,7 +236,6 @@ export class ColumnTagInputComponent implements OnInit {
   }
 
   public removeTag(tag) {
-    debugger
     for (let t = 0; t < this.tags.length; t++) {
       let ta = this.tags[t];
       if (

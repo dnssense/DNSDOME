@@ -15,9 +15,10 @@
                         <th></th>
                         <th>Total Traffic</th>
                         <th>Blocked</th>
-                        <th matTooltip="Involved Categories: Malware/Virus, Potentially Dangerous, Phishing">Security
+                        <th [matTooltipShowDelay]="800"
+                          matTooltip="Involved Categories: Malware/Virus, Potentially Dangerous, Phishing">Security
                           Risk *</th>
-                        <th
+                        <th [matTooltipShowDelay]="800"
                           matTooltip="Involved Categories: Unknown, Undecided Not Safe, Undecided Safe, Domain Parking, Newly Register, Newly Up, Dead Sites, Firstly Seen">
                           Grey *</th>
                       </tr>
@@ -112,13 +113,52 @@
                           </ng-template>
                         </td>
                         <td>
-                          <span class="size-20 mr-4">-</span>
+                          <span class="size-20 mr-4">{{ds.totalUniqueBlockedDomainForDashboard}}</span>
+                          <ng-container
+                            *ngIf="ds.totalUniqueBlockedDomainForDashboardDelta>0 || ds.totalUniqueBlockedDomainForDashboardDelta==0 ; else elseTemplate5">
+                            <span class="status up">
+                              <i class="fa fa-arrow-up"></i>
+                              %{{ds.totalUniqueBlockedDomainForDashboardDelta | number}}
+                            </span>
+                          </ng-container>
+                          <ng-template #elseTemplate5>
+                            <span class="status down">
+                              <i class="fa fa-arrow-down"></i>
+                              %{{ds.totalUniqueBlockedDomainForDashboardDelta | number}}
+                            </span>
+                          </ng-template>
                         </td>
                         <td>
                           <span class="size-20 mr-4">{{ds.uMalwareCountForDashboard| number}}</span>
+                          <ng-container
+                            *ngIf="ds.uMalwareCountForDashboardDelta>0 || ds.uMalwareCountForDashboardDelta==0 ; else elseTemplate5">
+                            <span class="status up">
+                              <i class="fa fa-arrow-up"></i>
+                              %{{ds.uMalwareCountForDashboardDelta | number}}
+                            </span>
+                          </ng-container>
+                          <ng-template #elseTemplate5>
+                            <span class="status down">
+                              <i class="fa fa-arrow-down"></i>
+                              %{{ds.uMalwareCountForDashboardDelta | number}}
+                            </span>
+                          </ng-template>
                         </td>
                         <td>
                           <span class="size-20 mr-4">{{ds.uGrayCountForDashboard| number}}</span>
+                          <ng-container
+                            *ngIf="ds.uGrayCountForDashboardDelta>0 || ds.uGrayCountForDashboardDelta==0 ; else elseTemplate5">
+                            <span class="status up">
+                              <i class="fa fa-arrow-up"></i>
+                              %{{ds.uGrayCountForDashboardDelta | number}}
+                            </span>
+                          </ng-container>
+                          <ng-template #elseTemplate5>
+                            <span class="status down">
+                              <i class="fa fa-arrow-down"></i>
+                              %{{ds.uGrayCountForDashboardDelta | number}}
+                            </span>
+                          </ng-template>
                         </td>
                       </tr>
                     </tbody>
@@ -141,6 +181,9 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="1">
                               Yesterday
+                            </ng-container>
+                            <ng-container *ngSwitchCase="2">
+                              2 Days Ago
                             </ng-container>
                             <ng-container *ngSwitchCase="7">
                               Last Week
@@ -173,6 +216,9 @@
                               </button>
                               <button class="dropdown-item" (click)="changeDateParameter(1)">
                                 Yesterday
+                              </button>
+                              <button class="dropdown-item" (click)="changeDateParameter(2)">
+                                2 Days Ago
                               </button>
                               <button class="dropdown-item" (click)="changeDateParameter(7)">
                                 Last Week
@@ -212,12 +258,12 @@
 
                         </div>
                       </div>
-
                     </th>
                   </tr>
                 </thead>
               </table>
-              <div id="gaugeChart"
+              <div id="gaugeChart" matTooltipPosition="above" [matTooltipShowDelay]="800"
+                matTooltip="Risk Score: {{(ds.totalBlockCountForDashboard/ds.totalHitCountForDashboard*100000 | number)/100000}}"
                 style="max-height: 110px; min-height: 50px; margin-bottom:-115px; margin-top: -20px;">
               </div>
             </div>
@@ -232,10 +278,52 @@
       <div class="col-md-8">
         <div class="base-card">
           <div class="base-card-header">
-            Traffic Based Anomaly
+            <div class="row">
+              <div class="col-md-6">Traffic Based Anomaly</div>
+              <div class="col-md-6">
+                <table class="table mb-0" style="margin-top: -15px">
+                  <thead>
+                    <tr>
+                      <th>
+                        <div class="dns-dropdown d-inline-block table-select pull-right" id="dropdownDate">
+                          <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                            <ng-container *ngIf="selectedCategoryForTraffic; else elseTemplateTraficCat">
+                              <span class="label"
+                                style="margin: 0px; margin-top: -5px; margin-bottom: -5px; height: 34px;">
+                                <span class="label-color"></span>
+                                <span>{{selectedCategoryForTraffic.name}}</span>
+                                <i class="close-btn icon-cancel"
+                                  (click)="deleteCatFromTraffic(selectedCategoryForTraffic.id)"></i>
+                              </span>
+                            </ng-container>
+                            <ng-template #elseTemplateTraficCat>
+                              Select Category
+                            </ng-template>
+                            <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
+                            style="max-height: 400px; overflow: auto; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
+                            <div class="dropdown-searchbar" style="width: 95%">
+                              <input type="text" class="dns-form-control reverse-form" matInput placeholder="Search"
+                                [(ngModel)]="searchKey" (ngModelChange)="searchCategoryForTraffic($event)">
+                            </div>
+                            <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
+                              (click)="addCategoryToTraffic(cat.id)">
+                              <span class="color-point" style="background:#fa3f3f"></span>
+                              {{cat.name}}
+                            </button>
+                          </div>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
           </div>
           <div class="base-card-content">
-            <div class="chart" style="min-height: 220px">
+            <div class="chart" style="min-height: 220px; margin-bottom: -18px;">
               <div id="hitChartDiv">
                 <div id="trafficChartHits"></div>
               </div>
@@ -243,7 +331,7 @@
                 <div id="trafficChartBlocked"></div>
               </div>
             </div>
-            <div class="events" style="margin-top: -30px">
+            <!-- <div class="events" style="margin-top: -30px">
               <div class="toggle" style="padding: 4px;">
                 <button class="btns " [ngClass]="{'active ': trafficChartType=='hit'}"
                   (click)="changeTrafficChartData('hit')">Total Traffic</button>
@@ -279,22 +367,16 @@
                 </span>
               </div>
 
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <!-- <div class="card card-chart" style="background-color: #262626">
-           
-              <div class="card-body">
-                <div id="worldMap" class="map" style="max-height: 220px;"></div>
-              </div>
-            </div> -->
         <div class="base-card">
           <div class="base-card-header">
             Top Anomalies
           </div>
-          <div class="base-card-content">
+          <div class="base-card-content" disabled="true">
             <div class="card card-chart mb-2" style="box-shadow: none; background-color: #262626">
               <div class="card-body">
                 <div id="worldMap" class="map" style="max-height: 220px;"></div>
@@ -308,11 +390,53 @@
       <div class="col-md-12">
         <div class="base-card">
           <div class="base-card-header">
-            Unique Counter Based Anomaly
+            <div class="row">
+                <div class="col-md-6">Unique Counter Based Anomaly</div>
+                <div class="col-md-6">
+                  <table class="table mb-0" style="margin-top: -15px">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div class="dns-dropdown d-inline-block table-select pull-right" id="dropdownDate">
+                            <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
+                              data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                              <ng-container *ngIf="selectedCategoryForUnique; else elseTemplateBlockedCat">
+                                <span class="label"
+                                  style="margin: 0px; margin-top: -5px; margin-bottom: -5px; height: 34px;">
+                                  <span class="label-color"></span>
+                                  <span>{{selectedCategoryForUnique.name}}</span>
+                                  <i class="close-btn icon-cancel"
+                                    (click)="deleteCatFromUnique(selectedCategoryForUnique.id)"></i>
+                                </span>
+                              </ng-container>
+                              <ng-template #elseTemplateBlockedCat>
+                                Select Category
+                              </ng-template>
+                              <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
+                              style="max-height: 400px; overflow: auto; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
+                              <div class="dropdown-searchbar" style="width: 95%">
+                                <input type="text" class="dns-form-control reverse-form" matInput placeholder="Search"
+                                  [(ngModel)]="searchKey" (ngModelChange)="searchCategoryForTraffic($event)">
+                              </div>
+                              <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
+                                (click)="addCategoryToUnique(cat.id)">
+                                <span class="color-point" style="background:#fa3f3f"></span>
+                                {{cat.name}}
+                              </button>
+                            </div>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+              </div>
+
           </div>
           <div class="base-card-content">
             <div class="chart" style="min-height: 200px">
-
               <div id="uniqueDomainChartDiv">
                 <div id="uniqueDomainChart"></div>
               </div>
@@ -327,14 +451,14 @@
             <div class="events">
               <div class="toggle" style="padding: 4px;">
                 <button class="btns active" [ngClass]="{'active ': uniqueChartType=='domain'}"
-                  (click)="changeUniqueChartData('domain')">Unique Domain</button>
+                  (click)="changeUniqueChartData('domain')">{{selectedCategoryForUnique?.name}} Unique Domain</button>
                 <button class="btns" [ngClass]="{'active ': uniqueChartType=='subdomain'}"
                   (click)="changeUniqueChartData('subdomain')">Unique Subdomain</button>
                 <button class="btns" [ngClass]="{'active ': uniqueChartType=='destIp'}"
                   (click)="changeUniqueChartData('destIp')">Unique IP</button>
               </div>
 
-              <div class="dns-dropdown d-inline-block">
+              <!-- <div class="dns-dropdown d-inline-block">
                 <button class="btns dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false">
                   <i class="icon-plus" style="font-size: 20px"></i>
@@ -361,7 +485,7 @@
                     <i class="close-btn icon-cancel" (click)="deleteCatFromBlocked(selectedCategoryForBlocked.id)"></i>
                   </span>
                 </span>
-              </div>
+              </div> -->
             </div>
 
           </div>
@@ -447,25 +571,3 @@
     </div> -->
   </div>
 </div>
-<style>
-  /* width */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #eee;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: rgb(187, 187, 187);
-    border-radius: 9px;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #888888;
-  }
-</style>

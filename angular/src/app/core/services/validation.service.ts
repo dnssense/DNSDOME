@@ -43,7 +43,6 @@ static emailValidator(control) {
 }
 
 static domainValidation(control) {
-  debugger;
   if (control == null || control.value == null || control.value === '') {
     return null;
   }

@@ -56,10 +56,8 @@ export class HistogramComponent implements OnInit, OnDestroy {
 
   public loadHistogram() {
     // this.spinnerService.start();
-    debugger
     this.fastReportService.loadHistogram(this.searchSetting).takeUntil(this.ngUnsubscribe).subscribe((res: any[]) => {
 
-      debugger
       let data: any[] = res;
 
       var el: HTMLElement = this.graphComponent.nativeElement;

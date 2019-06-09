@@ -179,8 +179,7 @@ export class AuthenticationService {
   }
 
   login(email: string, pass: string): Observable<Session> {
-    //debugger;
-    const httpOptions = {
+      const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'

@@ -52,7 +52,6 @@ export class DevicesComponent implements OnInit {
                     this.deviceAgents.push(r);
                 }
             });
-            console.log(res);
         });
 
         this.agentService.getSecurityProfiles().subscribe(res => this.securityProfiles = res);

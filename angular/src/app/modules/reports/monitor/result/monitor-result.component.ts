@@ -53,7 +53,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   refresh() {
-   this.loadGraph();
+    this.loadGraph();
   }
 
   public stopRefreshing() {
@@ -62,17 +62,9 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public loadGraph() {
     // this.spinnerService.start();
-    this.monitorService
-      .getGraphData(this.searchSetting, this.currentPage)
-      .takeUntil(this.ngUnsubscribe)
-      .subscribe(
-        (res: Response) => {
-          this.tableData = res['result'];
-          this.totalItems = res['total'];
-        },
-        () => this.stopRefreshing(),
-        () => this.stopRefreshing()
-      );
+    this.monitorService.getGraphData(this.searchSetting, this.currentPage).takeUntil(this.ngUnsubscribe)
+      .subscribe((res: Response) => { this.tableData = res['result']; this.totalItems = res['total']; },
+        () => this.stopRefreshing(), () => this.stopRefreshing());
   }
 
   public checkUncheckColumn(col: LogColumn) {
@@ -89,7 +81,6 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   public inputChecked(column: LogColumn) {
-    debugger
     if (column.checked) {
       this.selectedColumns.push(column);
     } else {
@@ -111,21 +102,21 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
   }
-  public setTopCount(value) {
-    this.searchSetting.topNumber = value;
-  //checkUncheckColumn   this.loadGraph();
-  }
+  // public setTopCount(value) {
+  //   this.searchSetting.topNumber = value;
+  // //checkUncheckColumn   this.loadGraph();
+  // }
 
   public pageChanged(event: any): void {
     this.currentPage = event.page;
-   // this.loadGraph();
+    this.loadGraph();
   };
 
   public addColumnValueIntoSelectedValues(column: any, xx: any) {
     this.addColumnValueEmitter.emit({ column: column, data: xx }); // How to pass the params event and ui...?
   }
 
-  public changeColumns($event) {
-    //you may implement here...
-  }
+  // public changeColumns($event) {
+  //   //you may implement here...
+  // }
 }

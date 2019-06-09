@@ -84,11 +84,8 @@ export class ScheduledReportsComponent implements OnInit {
 
         if (type == 'user') {
             this.selectedReport = this.userReports.find(r => r.id == id);
-            console.log(this.selectedReport);
-
         } else {
             this.selectedReport = this.systemReports.find(r => r.id == id);
-            console.log(this.selectedReport);
         }
 
         $('#listPanel').toggle("slide", { direction: "left" }, 600);
@@ -119,11 +116,8 @@ export class ScheduledReportsComponent implements OnInit {
             this.selectedReport.scheduledReport.format = 'PDF';
         }
 
-
         this.searchSettingService.scheduleSearchSetting(this.selectedReport).subscribe(res => {
             this.selectedReport = res.object;
-            console.log(this.selectedReport);
-
         });
 
     }

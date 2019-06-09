@@ -136,7 +136,7 @@ a:hover {
 }
 
 .table-select {
-  width: 250px;
+  min-width: 250px;
 }
 
 .table-select .btns,

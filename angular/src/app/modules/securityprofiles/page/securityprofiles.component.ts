@@ -39,7 +39,6 @@ export class SecurityProfilesComponent {
     }
 
     defineNewAgentForProfile() {
-        debugger;
         this.selectedAgent = new Agent();
         this.selectedAgent.rootProfile = new SecurityProfile();
         // this.selectedAgent.rootProfile.name = "Agent1-Profile";
@@ -94,7 +93,6 @@ export class SecurityProfilesComponent {
     }
 
     deleteProfile(id: number) {
-        debugger
 
         if (this.securityProfiles.find(p => p.id == id).numberOfUsage > 0) {
             this.alert.alertTitleAndText('Can not delete!', 'This profile using by some agents.')

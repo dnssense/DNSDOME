@@ -116,14 +116,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login() {
-    //debugger;
     if (this.loginForm.valid) {
 
       this.authService.prelogin(this.email, this.password).subscribe(
         val => {
-          console.log("prelogindeyim");
-          console.log(val);
-
           if (val.user.isTwoFactorAuthentication) {
             this.open2FA(val);
           } else {
@@ -217,7 +213,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   sendPasswordActivationCode() {
-    debugger;
     if (this.validEmailLogin) {
       let forgoter: SignupBean = new SignupBean();
       forgoter.username = this.forgoterEmail;

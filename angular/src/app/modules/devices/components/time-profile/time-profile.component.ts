@@ -97,8 +97,6 @@ export class TimeProfileComponent implements OnInit {
       }
     }
 
-    console.log(JSON.stringify(this.selectedProfile, null, " "));
-
     this.agentService.saveProfile(this.selectedProfile).subscribe(data => {
       this.selectedProfile = data;
       this.closeProfilePanel();

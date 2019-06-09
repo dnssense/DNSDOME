@@ -10,6 +10,7 @@ export class ConfigHost{
   aboutus:string;
   logofullUrl:string;
   logoImage:string;
+  iconImage:string;
   title:string;
   privacyUrl:string;
   captcha_key:string;
@@ -28,17 +29,29 @@ export class ConfigService {
       this.host.brand = 'DNSSense';
       this.host.aboutus='https://www.dnssense.com/about-us';
       this.host.logoImage='logo-dnssense.png';
+      this.host.iconImage='favicon-dnssense.png'
       this.host.logofullUrl=window.location.protocol+'://'+window.location.host+(window.location.port||'')+'/assets/img/logo-dnssense.png';
       this.host.title="DnsSense";
       this.host.privacyUrl='https://www.dnssense.com/privacy-statement.htm';
       this.host.captcha_key='6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
 
+    }else if (window.location.host.indexOf("cyte") >= 0) {
+      this.host.www = 'https://www.cybercyte.io';
+      this.host.brand = 'DNSCyte';
+      this.host.aboutus='https://www.cybercyte.io/the-company/';
+      this.host.logoImage='logo-dnscyte.png';
+      this.host.iconImage='favicon-dnscyte.png'
+      this.host.logofullUrl=window.location.protocol+'://'+window.location.host+(window.location.port||'')+'/assets/img/logo-dnscyte.png';
+      this.host.title="DnsCyte";
+      this.host.privacyUrl='https://www.cybercyte.io/privacy-and-cookie-policy/';
+      this.host.captcha_key='6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';// dnccyte için yenisi gerekli
     } else
       if (window.location.host.indexOf("roksit") >= 0) {
         this.host.www = 'https://www.roksit.com';
         this.host.brand = 'Roksit';
         this.host.aboutus='https://www.roksit.com/about-us';
         this.host.logoImage='logo-roksit.png';
+        this.host.iconImage='favicon-roksit.png'
         this.host.logofullUrl=window.location.protocol+'://'+window.location.host+(window.location.port||'')+'/assets/img/logo-roksit.png';
         this.host.title='Roksit';
         this.host.privacyUrl='https://www.roksit.com/privacy-statement.htm';
@@ -53,6 +66,7 @@ export class ConfigService {
         this.host.brand = 'DNSSense';
         this.host.aboutus='https://www.dnssense.com/about-us';
         this.host.logoImage='logo-dnssense.png';
+        this.host.iconImage='favicon-dnssense.png'
         this.host.logofullUrl=window.location.protocol +'://'+window.location.host +(window.location.port||'')+'/assets/img/logo-dnssense.png';
         this.host.title='DnsSense';
         this.host.privacyUrl='https://www.dnssense.com/privacy-statement.htm';

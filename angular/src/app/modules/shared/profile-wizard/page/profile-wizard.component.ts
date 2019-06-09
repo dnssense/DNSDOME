@@ -53,7 +53,6 @@ export class ProfileWizardComponent {
   @Input() set startWizard(value: boolean) {
     this._startWizard = value;
     if (value) {
-      console.log(this.selectedAgent);
       this.installWizard();
     }
   }
@@ -76,16 +75,12 @@ export class ProfileWizardComponent {
     this.staticService.getCategoryList().subscribe(res => {
       res.forEach(r => {
         this.categoryList.push(new categoryItem(r, false));
-      });
-      console.log(this.categoryList);
-      
+      });      
     });
     this.staticService.getApplicationList().subscribe(res => {
       res.forEach(r => {
         this.applicationList.push(new applicationItem(r, false));
       });
-      console.log(this.applicationList);
-      
     });
   }
 
@@ -160,8 +155,6 @@ export class ProfileWizardComponent {
       this.notification.error('Profile name is empty!');
       return;
     }
-    console.log(JSON.stringify(this.selectedAgent.rootProfile));
-    debugger
     let alertMessage = '', alertTitle = '';
     if (this.selectedAgent.rootProfile.numberOfUsage && this.selectedAgent.rootProfile.numberOfUsage > 0) {
       alertTitle = this.selectedAgent.rootProfile.numberOfUsage + ' Agent/s using this profile!';
@@ -191,7 +184,6 @@ export class ProfileWizardComponent {
               } else {
                 this.notification.error(res.message)
               }
-              console.log(res);
             });
           }
         }
@@ -225,13 +217,11 @@ export class ProfileWizardComponent {
   }
 
   removeFromBlackList(item: string) {
-    debugger;
     this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.splice(
       this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b == item), 1);
   }
 
   whiteListItemValidation() {
-    debugger;
     if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b == this.whiteListItem)) {
       this.isNewBlackListItem = false;
     } else {
