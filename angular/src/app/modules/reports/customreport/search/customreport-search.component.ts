@@ -26,7 +26,7 @@ declare var WebuiPopovers: any;
 @Component({
   selector: 'app-customreport-search',
   templateUrl: 'customreport-search.component.html',
-  styleUrls: ['customreport-search.component.sass']
+  styleUrls: ['customreport-search.component.css']
 })
 export class CustomReportSearchComponent implements OnInit, OnDestroy {
 
@@ -95,7 +95,8 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   @ViewChild('tagInput') tagInput: ElementRef;
   @ViewChild('select') select: ElementRef;
   public selectedColumns: LogColumn[];
-
+  editedTag: any;
+  editedTagType: string;
 
   constructor(public customReportService: CustomReportService, public fastReportService: FastReportService,
     public searchSettingService: SearchSettingService, public locationsService: LocationsService,
@@ -197,7 +198,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   // public inputChecked(column: LogColumn) {
-    //   if (column.checked) {
+  //   if (column.checked) {
   //     this.selectedColumns.push(column);
   //   } else {
   //     for (let a of this.selectedColumns) {
@@ -326,6 +327,11 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public addTag($event) {
+    if (this.editedTag) {
+      this.removeTag(this.editedTag, this.editedTagType);
+      this.editedTag = null;
+      this.editedTagType = null;
+    }
     this.current.value = this.currentInput;
     this.current.operator = '=' // default and only value is equal
     this.current.field = this.currentColumn;
@@ -409,6 +415,27 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
 
   }
 
+  editTag(tag: any, type: string) {
+    this.editedTag = tag;
+    this.editedTagType = type;
+    this.currentInput = tag.value;
+    this.currentColumn = tag.field;
+
+    jQuery('#tagsDd').addClass('show');
+  }
+
+  refreshFilterPanel() {
+    this.editedTag = null;
+    this.editedTagType = null;
+    this.current = new ColumnTagInput('domain', '=', '');
+    this.currentColumn = this.current.field;
+    this.currentOperator = 'is';
+    this.currentInput = this.current.value;
+    this.currentinputValue = '';
+    this.inputCollapsed = true;
+    this.inputSelected = false;
+  }
+
   cancelFilterPopup() {
     jQuery('#tagsDd').removeClass('show');
   }
@@ -459,11 +486,11 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
 
   public removeTag(tag: any, type: string) {
 
-    if (type == 'must') {
+    if (type == 'is') {
       this.searchSetting.must.splice(this.searchSetting.must.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
-    } else if (type == 'mustnot') {
+    } else if (type == 'isnot' || type == 'isnotoneof') {
       this.searchSetting.mustnot.splice(this.searchSetting.mustnot.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
-    } else if (type == 'should') {
+    } else if (type == 'isoneof') {
       this.searchSetting.should.splice(this.searchSetting.should.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
     }
     this.currentinputValue = '';

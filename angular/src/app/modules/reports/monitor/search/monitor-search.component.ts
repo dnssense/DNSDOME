@@ -73,6 +73,8 @@ export class MonitorSearchComponent
   //Yeni tasarim sonrasi
   currentColumn: string = 'domain';
   currentInput: any;
+  editedTag: any;
+  editedTagType: string;
   countries: any = [];
   current: ColumnTagInput;
   currentOperator: string = 'is';
@@ -253,7 +255,7 @@ export class MonitorSearchComponent
   }
 
   setDropdown() {
-    let dropdownId='#dropdownDate23'
+    let dropdownId = '#dropdownDate23'
     let datepickerId = '.datepicker2'
     $(dropdownId + ' .dropdown-menu .nav-tabs li').click(function (e) {
       setTimeout(() => {
@@ -292,6 +294,13 @@ export class MonitorSearchComponent
   }
 
   public addTag($event) {
+
+    if (this.editedTag) {
+      this.removeTag(this.editedTag, this.editedTagType);
+      this.editedTag = null;
+      this.editedTagType = null;
+    }
+
     this.current.value = this.currentInput;
     this.current.operator = '=' // default and only value is equal
     this.current.field = this.currentColumn;
@@ -379,6 +388,18 @@ export class MonitorSearchComponent
     jQuery('#tagsDd').removeClass('show');
   }
 
+  refreshFilterPanel() {
+    this.editedTag = null;
+    this.editedTagType = null;
+    this.current = new ColumnTagInput('domain', '=', '');
+    this.currentColumn = this.current.field;
+    this.currentOperator = 'is';
+    this.currentInput = this.current.value;
+    this.currentinputValue = '';
+    this.inputCollapsed = true;
+    this.inputSelected = false;
+  }
+
   public inputsChanged($event, select: boolean) {
     $event.stopPropagation();
 
@@ -423,16 +444,31 @@ export class MonitorSearchComponent
     }
   }
 
-  public removeTag(tag: any, type: string) {
+  public editTag(tag: any, type: string) {
+    debugger
+    this.editedTag = tag;
+    this.editedTagType = type;
+    this.currentInput = tag.value;
+    this.currentColumn = tag.field;
+    this.currentOperator = type;
 
-    if (type == 'must') {
+    jQuery('#tagsDd').addClass('show');
+    jQuery('#tagsDd').click(function (e) {
+      e.stopPropagation();
+    });
+  }
+
+  public removeTag(tag: any, type: string) {
+    debugger
+    if (type == 'is') {
       this.searchSetting.must.splice(this.searchSetting.must.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
-    } else if (type == 'mustnot') {
+    } else if (type == 'isnot' || type == 'isnotoneof') {
       this.searchSetting.mustnot.splice(this.searchSetting.mustnot.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
-    } else if (type == 'should') {
+    } else if (type == 'isoneof') {
       this.searchSetting.should.splice(this.searchSetting.should.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
     }
     this.currentinputValue = '';
+
   }
 
   public removeAllTags() {

@@ -78,6 +78,8 @@ export class PublicipComponent {
   getPublicIpsDataAndProfiles() {
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
+      console.log(res);
+      
       res.forEach(r => {
         if (r.agentType && r.agentType.toString() == AgentType.LOCATION.toString()) {
           this.publicIps.push(r);
@@ -132,21 +134,21 @@ export class PublicipComponent {
         }
       }
 
-      if (isValid && ((inputValue.length == 2 && inputValue == '10' && event.key == '.') ||
-        inputValue == '192.168' || inputValue == '127.0.0.1')) {
-        isValid = false;
-        this.notification.warning('Please enter a valid Public IP Adress!', false);
-      }
+      // if (isValid && ((inputValue.length == 2 && inputValue == '10' && event.key == '.') ||
+      //   inputValue == '192.168' || inputValue == '127.0.0.1')) {
+      //   isValid = false;
+      //   this.notification.warning('Please enter a valid Public IP Adress!', false);
+      // }
 
-      if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
+      // if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
 
-        let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
-        let secondOclet = Number(secondOcletStr);
-        if (secondOclet >= 16 && secondOclet <= 31) {
-          isValid = false;
-          this.notification.warning('Please enter a valid Public IP Adress!', false);
-        }
-      }
+      //   let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
+      //   let secondOclet = Number(secondOcletStr);
+      //   if (secondOclet >= 16 && secondOclet <= 31) {
+      //     isValid = false;
+      //     this.notification.warning('Please enter a valid Public IP Adress!', false);
+      //   }
+      // }
 
       if (isValid && event.key == '.' && (inputValue.endsWith('.') || inputValue.split('.').length >= 4)) {
         isValid = false;
@@ -224,7 +226,18 @@ export class PublicipComponent {
 
   showEditWizard(id: string) {
     this.isNewItemUpdated = true;
-    this.selectedIp = this.publicIps.find(p => p.id == Number(id));
+    const selectedUpdateIp = this.publicIps.find(p => p.id == Number(id));
+
+    this.selectedIp.id =selectedUpdateIp.id;
+    this.selectedIp.agentAlias =selectedUpdateIp.agentAlias;
+    this.selectedIp.agentType =selectedUpdateIp.agentType;
+    this.selectedIp.blockMessage =selectedUpdateIp.blockMessage;
+    this.selectedIp.captivePortalIp =selectedUpdateIp.captivePortalIp;
+    this.selectedIp.dynamicIpDomain =selectedUpdateIp.dynamicIpDomain;
+    this.selectedIp.cyberXRayIp =selectedUpdateIp.cyberXRayIp==null? '': selectedUpdateIp.cyberXRayIp;
+    this.selectedIp.rootProfile  = selectedUpdateIp.rootProfile;
+    this.selectedIp.staticSubnetIp = selectedUpdateIp.staticSubnetIp;
+    this.selectedIp.isCpEnabled = selectedUpdateIp.isCpEnabled;
 
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
       for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
@@ -325,7 +338,7 @@ export class PublicipComponent {
   }
 
   savePublicIp() {
-
+debugger
     if (!this.validatePublicIpForm()) {
       return;
     }
@@ -345,6 +358,7 @@ export class PublicipComponent {
   }
 
   validatePublicIpForm(): boolean {
+    debugger
     const $validator = $('.publicIpForm').validate({
       rules: {
         agentName: {
@@ -366,7 +380,7 @@ export class PublicipComponent {
       return false;
     }
 
-    if (!this.publicIpForm.dirty || !this.publicIpForm.valid) {
+    if ( !this.publicIpForm.valid) {
       this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return false;
     }

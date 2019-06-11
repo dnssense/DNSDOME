@@ -105,7 +105,7 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
 
   drawChart(settings: SearchSetting) {
     this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
- 
+
       let data: any[] = res;
 
       if (data) {
@@ -116,91 +116,23 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
           labelArray.push(d.getHours() + ":" + (d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes()))
           chartSeries.push(data[i].value)
         }
-
+        
         var options = {
           chart: {
-            height: 300,
-            type: 'area',
-            zoom: {
-              enabled: false
-            },
-            foreColor: '#9b9b9b',
-            toolbar: {
-              show: false,
-              tools: {
-                download: false
-              }
-            },
+            height: 300, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b',
+            toolbar: { show: false, tools: { download: false } },
           },
-          dataLabels: {
-            enabled: false
-          },
-          stroke: {
-            width: 3,
-            curve: 'straight'
-          },
+          dataLabels: { enabled: false },
+          stroke: { width: 3, curve: 'smooth' },
           colors: ['#9d60fb'],
-          series: [{
-            name: "Hits",
-            data: chartSeries
-          }
-          ],
-          markers: {
-            size: 3,
-            strokeColor: '#9d60fb',
-            fillColor: '#ffffff',
-            strokeWidth: 3,
-            hover: {
-              size: 9
-            }
-          },
-          xaxis: {
-            categories: labelArray,
-            labels: {
-              minHeight: 20
-            }
-          },
-          tooltip: {
-            theme: 'dark',
-
-          },
-          grid: {
-            borderColor: '#626262',
-            strokeDashArray: 3,
-            position: 'back',
-            padding: {
-              top: 0,
-              right: 10,
-              bottom: 0,
-              left: 20
-            },
-          },
-          legend: {
-            show: false
-          },
-          annotations: {
-            yaxis: [{
-              label: {
-                fontSize: '20px'
-              }
-            }]
-          },
-          fill: {
-            type: 'gradient',
-            gradient: {
-              shade: 'dark',
-              shadeIntensity: 1,
-              opacityFrom: 0.4,
-              opacityTo: 0,
-            }
-          },
-          title: {
-            text: 'Log Histogram',
-            style: {
-              fontSize: '20px',
-              color: '#eeeeee'
-            }
-          }
+          series: [{ name: "Hits", data: chartSeries }],
+          markers: { size: 0, hover: { sizeOffset: 6 } },
+          xaxis: { categories: labelArray, labels: { minHeight: 20 } },
+          tooltip: { theme: 'dark' },
+          grid: { borderColor: '#626262', strokeDashArray: 6, },
+          legend: { show: false },
+          annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
+          title: { text: 'Log Histogram', style: { fontSize: '20px', color: '#eeeeee' } }
         }
 
         var chart = new ApexCharts(

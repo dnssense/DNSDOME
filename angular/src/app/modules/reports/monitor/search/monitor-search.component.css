@@ -21,3 +21,8 @@
   margin-top: 6px;
   border-radius: 5px;
 }
+
+.editButton{ visibility: hidden}
+.filterButton:hover .editButton{
+visibility: visible;
+}

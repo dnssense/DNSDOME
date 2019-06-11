@@ -1,0 +1,90 @@
+
+
+body
+  font-family: 'Lato', sans-serif
+  margin: 0
+  color: #000
+  font-size: 100%
+  letter-spacing: 1px
+  background-position: center center
+  background-repeat: no-repeat
+  background-attachment: fixed
+  background-size: cover
+
+.main-content
+  bottom: 0
+  color: #fff
+  left: 0
+  margin: auto
+  position: absolute
+  right: 0
+  text-align: center
+  top: 10%
+  padding: 30px 0
+
+.side-lines
+  &:before, &:after
+    position: absolute
+    width: 8%
+    height: 3px
+    content: ''
+    border-top: 1px solid #fff
+    border-bottom: 1px solid #fff
+    margin-top: 14px
+  &:before
+    margin-left: -9%
+  &:after
+    margin-left: 1%
+
+.title
+  h1
+    font-size: 120px
+    margin: 60px 0 0
+  h5
+    font-size: 18px
+    font-weight: 400
+    letter-spacing: 2px
+    margin: 20px 0
+    text-transform: uppercase
+  p
+    font-size: 14px
+
+.action-btn
+  margin-top: 70px
+  a
+    &:hover
+      background-color: #fff
+      color: #000
+    border: 1px solid #fff
+    color: #fff
+    padding: 10px 20px
+    text-decoration: none
+
+.copyright
+  margin-top: 50px
+  font-size: 15px
+  a
+    color: #fff
+    text-decoration: none
+
+@media (max-width: 991px)
+  body
+    background-position: center top
+  .main-content
+    top: 5%
+  .title h1
+    font-size: 100px
+  .logo h2
+    font-size: 20px
+  .side-lines
+    &::before, &::after
+      margin-top: 11px
+  .title h5
+    font-size: 16px
+
+@media (max-width: 500px)
+  .title h1
+    margin: 20px 0 0
+    font-size: 80px
+  .copyright
+    font-size: 13px
