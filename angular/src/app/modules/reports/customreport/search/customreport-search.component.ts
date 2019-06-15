@@ -16,12 +16,13 @@ import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { AlertService } from 'src/app/core/services/alert.service';
 import * as countryList from 'src/app/core/models/Countries';
+import { DatePipe } from '@angular/common';
 
-declare var jQuery: any;
-declare var Flatpickr: any;
+declare var $: any;
+//declare var Flatpickr: any;
 declare var moment: any;
-declare var Waypoint: any;
-declare var WebuiPopovers: any;
+//declare var Waypoint: any;
+//declare var WebuiPopovers: any;
 
 @Component({
   selector: 'app-customreport-search',
@@ -97,10 +98,15 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   public selectedColumns: LogColumn[];
   editedTag: any;
   editedTagType: string;
+  searchStartDate: string;
+  searchStartDateTime: string='08:00';
+  searchEndDate: string;
+  searchEndDateTime: string='18:00';
+  selectedTab: string = 'home';
 
   constructor(public customReportService: CustomReportService, public fastReportService: FastReportService,
     public searchSettingService: SearchSettingService, public locationsService: LocationsService,
-    private notification: NotificationService, private alertService: AlertService) {
+    private notification: NotificationService, private alertService: AlertService , private datePipe:DatePipe) {
 
     this.selectedColumns = [];
     if (!this.searchSetting) {
@@ -146,8 +152,8 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-
-    jQuery('#tagsDd').click(function (e) {
+    this.setDropdown();
+    $('#tagsDd').click(function (e) {
       e.stopPropagation();
     });
 
@@ -211,78 +217,161 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   //   }
   // }
 
-  public showDatePanel($event) {
-    let value = $event.target.value;
+  // public showDatePanel($event) {
+  //   let value = $event.target.value;
 
-    if (value == -1 || value.indexOf("-") > -1) {
-      if (this.searchSetting.dateInterval.indexOf("-") > 0) {
-        let dd = this.searchSetting.dateInterval.split('-');
-        this.startDateee = moment(dd[0], "DD.MM.YYYY HH:mm:ss").toDate();
-        this.endDateee = moment(dd[1], "DD.MM.YYYY HH:mm:ss").toDate();
-      } else {
-        let startDate = moment();
-        startDate.add(-1, 'day');
-        this.startDateee = startDate.toDate();
-        this.endDateee = moment().toDate();
-      }
+  //   if (value == -1 || value.indexOf("-") > -1) {
+  //     if (this.searchSetting.dateInterval.indexOf("-") > 0) {
+  //       let dd = this.searchSetting.dateInterval.split('-');
+  //       this.startDateee = moment(dd[0], "DD.MM.YYYY HH:mm:ss").toDate();
+  //       this.endDateee = moment(dd[1], "DD.MM.YYYY HH:mm:ss").toDate();
+  //     } else {
+  //       let startDate = moment();
+  //       startDate.add(-1, 'day');
+  //       this.startDateee = startDate.toDate();
+  //       this.endDateee = moment().toDate();
+  //     }
 
-      this.start_date_pickr = new Flatpickr(this.startDateCal.nativeElement, {
-        animate: false,
-        allowInput: false,
-        enableTime: true,
-        defaultDate: this.startDateee,
-        maxDate: new Date(),
-        dateFormat: "d.m.Y H:i:S",
-        time_24hr: true,
-        utc: false,
-        onValueUpdate: (e, args) => {
-          this.startDateee = args;
-          //   this.start_date_pickr.toggle();
-          //     this.end_date_pickr.toggle();
-        }
+  //     this.start_date_pickr = new Flatpickr(this.startDateCal.nativeElement, {
+  //       animate: false,
+  //       allowInput: false,
+  //       enableTime: true,
+  //       defaultDate: this.startDateee,
+  //       maxDate: new Date(),
+  //       dateFormat: "d.m.Y H:i:S",
+  //       time_24hr: true,
+  //       utc: false,
+  //       onValueUpdate: (e, args) => {
+  //         this.startDateee = args;
+  //         //   this.start_date_pickr.toggle();
+  //         //     this.end_date_pickr.toggle();
+  //       }
+  //     });
+  //     //alert(start_date_pickr.selectedDateObj);
+  //     this.end_date_pickr = new Flatpickr(this.endDateCal.nativeElement, {
+  //       animate: false,
+  //       allowInput: false,
+  //       enableTime: true,
+  //       defaultDate: this.endDateee,
+  //       maxDate: new Date(),
+  //       dateFormat: "d.m.Y H:i:S",
+  //       time_24hr: true,
+  //       utc: false,
+  //       onValueUpdate: (e, args) => {
+  //         this.endDateee = args;
+  //         // this.end_date_pickr.toggle();
+  //       }
+  //     });
+  //     this.dateOverlay.show($event);
+  //   } else {
+
+  //     $(this.dateSelect.nativeElement).val(value);
+  //     this.searchSetting.dateInterval = value;
+  //     this.dateOverlay.hide();
+  //   }
+  // }
+
+  // public hideDatePopover() {
+  //   var option = this.customdaterange.nativeElement;
+  //   let startDate = this.startDateee == null ? "" : moment(this.startDateee, 'DD.MM.YYYY HH:mm:ss', true).format("DD.MM.YYYY HH:mm:ss");
+  //   let endDate = this.endDateee == null ? "" : moment(this.endDateee, 'DD.MM.YYYY HH:mm:ss', true).format("DD.MM.YYYY HH:mm:ss");
+  //   let vall = startDate + " - " + endDate;
+  //   this.start_date_pickr.destroy();
+  //   this.end_date_pickr.destroy();
+
+  //   if (vall != ' - ') {
+  //     this.searchSetting.dateInterval = vall;
+  //     option.text = vall;
+  //     option.value = vall;
+  //   } else {
+  //     option.innerHTML = "Custom Range";
+  //     option.value = "-1";
+  //   }
+
+  //   this.dateOverlay.hide();
+  // }
+
+  closeCalendarTab(tabId: string) {
+    this.selectedTab = tabId;
+    if (tabId == 'profile') {
+      $('#home').removeClass('active show');
+
+      $('.flatpickr-time ').css({ 'width':'100px', 'background-color': '#eee', 'border-radius': '5px', 'box-shadow': 'none' });
+      $('.flatpickr-calendar').css('box-shadow', 'none');
+      $('.flatpickr-days').css('color', '#7c86a2');
+      $('.flatpickr-day').css('color', '#7c86a2');
+      $('.inRange').css('background', 'transparent');
+      $('.flatpickr-months').css('display', 'none');
+      $('.flatpickr-disabled').css({'cursor': 'not-allowed', 'color':'rgba(124,134,162,0.3)'}); 
+      //$('.flatpickr-current-month').css({ 'display':'none', 'color': '#6c84fa', 'width': 'auto', 'padding': '0', 'left': '5px', 'font-size': '15px' });
+
+      $('#searchBoxDropdownDate .dropdown-menu .nav-tabs li').click(function (e) {
+        setTimeout(() => {
+          $('#searchBoxDropdownDate').addClass('show');
+        }, 1);
       });
-      //alert(start_date_pickr.selectedDateObj);
-      this.end_date_pickr = new Flatpickr(this.endDateCal.nativeElement, {
-        animate: false,
-        allowInput: false,
-        enableTime: true,
-        defaultDate: this.endDateee,
-        maxDate: new Date(),
-        dateFormat: "d.m.Y H:i:S",
-        time_24hr: true,
-        utc: false,
-        onValueUpdate: (e, args) => {
-          this.endDateee = args;
-          // this.end_date_pickr.toggle();
-        }
-      });
-      this.dateOverlay.show($event);
     } else {
-
-      jQuery(this.dateSelect.nativeElement).val(value);
-      this.searchSetting.dateInterval = value;
-      this.dateOverlay.hide();
+      $('#profile').removeClass('active show');
     }
+
   }
 
-  public hideDatePopover() {
-    var option = this.customdaterange.nativeElement;
-    let startDate = this.startDateee == null ? "" : moment(this.startDateee, 'DD.MM.YYYY HH:mm:ss', true).format("DD.MM.YYYY HH:mm:ss");
-    let endDate = this.endDateee == null ? "" : moment(this.endDateee, 'DD.MM.YYYY HH:mm:ss', true).format("DD.MM.YYYY HH:mm:ss");
-    let vall = startDate + " - " + endDate;
-    this.start_date_pickr.destroy();
-    this.end_date_pickr.destroy();
+  setDropdown() {
 
-    if (vall != ' - ') {
-      this.searchSetting.dateInterval = vall;
-      option.text = vall;
-      option.value = vall;
-    } else {
-      option.innerHTML = "Custom Range";
-      option.value = "-1";
-    }
+    let dropdownId = '#searchBoxDropdownDate'
+    let datepickerId = '.datepicker2'
+    $(dropdownId + ' .dropdown-menu .nav-tabs li').click(function (e) {
+      setTimeout(() => {
+        $(dropdownId + ' .dropdown-menu').addClass('show');
+      }, 1);
+    });
 
-    this.dateOverlay.hide();
+    let today = new Date(); 
+    const last10Days= this.datePipe.transform(new Date().setDate(today.getDate() - 10), 'yyyy-MM-dd')
+
+    $(datepickerId).flatpickr({ mode: 'range', inline: true, enableTime:false, maxDate:"today", minDate:last10Days });
+
+    $(dropdownId + ' .flatpickr-prev-month').click(function (e) {
+      $('.flatpickr-day').css('color', '#7c86a2');
+      setTimeout(() => {
+        $(dropdownId + ' .dropdown-menu').addClass('show');
+      }, 1);
+    });
+    $(dropdownId + ' .flatpickr-next-month').click(function (e) {
+      $('.flatpickr-day').css('color', '#7c86a2');
+      setTimeout(() => {
+        $(dropdownId + ' .dropdown-menu').addClass('show');
+      }, 1);
+    });
+    $(dropdownId + ' .flatpickr-time').click(function (e) {
+      setTimeout(() => {
+        $(dropdownId + ' .dropdown-menu').addClass('show');
+      }, 1);
+    });
+    $(dropdownId + ' .flatpickr-monthDropdown-months').click(function (e) {
+      $('.flatpickr-day').css('color', '#7c86a2');
+    });
+    $(dropdownId + ' .arrowUp').click(function (e) {
+      $('.flatpickr-day').css('color', '#7c86a2');
+    });
+    $(dropdownId + ' .arrowDown').click(function (e) {
+      $('.flatpickr-day').css('color', '#7c86a2');
+    });
+    $(dropdownId + ' .flatpickr-day').click(function (e) {
+      $('.flatpickr-day').css('color', '#7c86a2');
+      $('.flatpickr-disabled').css({'cursor': 'not-allowed', 'color':'rgba(124,134,162,0.3)'}); 
+    });
+    $(dropdownId + ' .inRange').click(function (e) {
+      $('.flatpickr-day').css('color', '#7c86a2');
+    });
+  }
+
+  searchDateChanged() {
+    $('.flatpickr-day').css('color', '#7c86a2');
+    $('.inRange').css({ 'background': 'transparent', 'box-shadow': 'none' });
+    $('.startRange').css({ 'border-radius': '50%', 'background': '#6c84fa', 'color': '#eee' });
+    $('.endRange').css({ 'border-radius': '50%', 'background': '#6c84fa', 'color': '#eee', 'box-shadow':'none' });
+    $('.flatpickr-disabled').css({'cursor': 'not-allowed', 'color':'rgba(124,134,162,0.3)'}); 
   }
 
   public addColumnToSelectedColumns(col: LogColumn) {
@@ -320,7 +409,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   changeCurrentColumn(colName: string) {
-    jQuery('#tagsDd').click(function (e) {
+    $('#tagsDd').click(function (e) {
       e.stopPropagation();
     });
     this.currentColumn = colName;
@@ -403,7 +492,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       }
     }
 
-    jQuery('#tagsDd').removeClass('show');
+    $('#tagsDd').removeClass('show');
 
     this.current = new ColumnTagInput('domain', '=', '');
     this.currentColumn = this.current.field;
@@ -421,7 +510,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     this.currentInput = tag.value;
     this.currentColumn = tag.field;
 
-    jQuery('#tagsDd').addClass('show');
+    $('#tagsDd').addClass('show');
   }
 
   refreshFilterPanel() {
@@ -437,7 +526,36 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   cancelFilterPopup() {
-    jQuery('#tagsDd').removeClass('show');
+    $('#tagsDd').removeClass('show');
+  }
+
+  closeSearchBoxDropdownDate(){
+    $('#searchBoxDropdownDate .dropdown-menu').removeClass('show');
+
+    let searchDateInput: string = $("#searchDateInput").val();
+    if (searchDateInput.length > 1) {
+
+      let dd = searchDateInput.split(' to ');
+ 
+      if (searchDateInput.includes('to')) {
+        
+        this.startDateee = moment(dd[0] +' ' + this.searchStartDateTime, 'YYYY-MM-DD HH:mm').toDate();
+        this.endDateee = moment(dd[1] + ' ' + this.searchEndDateTime, 'YYYY-MM-DD HH:mm').toDate();
+        this.searchStartDate = dd[0]+' ' + this.searchStartDateTime;
+        this.searchEndDate = dd[1]+' ' + this.searchEndDateTime;
+      } else {
+        this.startDateee = moment(dd[0]+' ' + this.searchStartDateTime, 'YYYY-MM-DD HH:mm').toDate();
+        this.endDateee = moment(dd[0]+' ' + this.searchEndDateTime, 'YYYY-MM-DD HH:mm').toDate();
+        this.searchStartDate = dd[0]+' ' + this.searchStartDateTime;
+        this.searchEndDate = dd[0]+' ' + this.searchEndDateTime;
+      }
+
+      let startDate = this.startDateee == null ? '' : moment(this.startDateee, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+      let endDate = this.endDateee == null ? '' : moment(this.endDateee, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+
+      const dateVal = startDate + ' - ' + endDate;
+      this.searchSetting.dateInterval = dateVal;
+    }
   }
 
   public inputsChanged($event, select: boolean) {
@@ -515,7 +633,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     if (this.select2 != null) {
       this.select2.select2('destroy');
     }
-    this.select2 = jQuery(this.select.nativeElement).select2({}).on(
+    this.select2 = $(this.select.nativeElement).select2({}).on(
       'select2:select', e => { this.currentInput = e.target.value; });
   }
 

@@ -21,7 +21,7 @@
           </span>
           Save
         </button> -->
-        <div class="dns-dropdown d-inline-block table-select pull-right ml-auto" id="dropdownDate23">
+        <div class="dns-dropdown d-inline-block table-select pull-right ml-auto" id="searchBoxDropdownDate">
           <button class="btns reverse-form dropdown-toggle text-left" type="button" id="dropdownMenuButton"
             data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
             <img src="assets/images/icons/calendar.svg">
@@ -53,6 +53,9 @@
               <ng-container *ngSwitchCase="10080">
                 Last 1 week
               </ng-container>
+              <ng-container *ngSwitchDefault>
+                {{searchStartDate}} - {{searchEndDate}}
+              </ng-container>
             </span>
             <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
           </button>
@@ -60,12 +63,12 @@
             <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-                  aria-selected="true">Time Range</a>
+                  (click)="closeCalendarTab('home')" aria-selected="true">Time Templates</a>
               </li>
-              <!-- <li class="nav-item">
+              <li class="nav-item">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                  aria-controls="profile" aria-selected="false">Calendar</a>
-              </li> -->
+                  (click)="closeCalendarTab('profile')" aria-controls="profile" aria-selected="false">Calendar</a>
+              </li>
             </ul>
             <div class="tab-content" id="myTabContent">
               <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -80,30 +83,38 @@
                 <button class="dropdown-item" (click)="changeSearchSettingDate('10080')">Last 1 week</button>
               </div>
               <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <input type="hidden" class="dt datepicker2" id="datepicker2">
-                <!-- <input class="form-control input-xs" name="startDate" #startDateCal /> -->
-              </div>
-              <div class="dropdown-divider"></div>
-              <!-- <span class="dropdown-label">Enter Date Range</span>
-              <div class="container-fluid">
-                <div class="row mt-2 mb-3">
-                  <div class="col-6">
-                    <input type="text" value="01/01/2019" class="form-control">
+                <input type="hidden" class="dt datepicker2" id="searchDateInput" (change)="searchDateChanged()">
+
+                <div class="dropdown-divider"></div>
+                <div class="container-fluid">
+                  <div class="row mt-2 mb-3">
+                    <div class="col-5 mr-auto ml-auto">
+                      <span class="dropdown-label" style="padding-left: 0px">Start Date Time</span>
+                      <!-- <input type="text" readonly [(ngModel)]="searchStartDate" class="dns-form-control reverse-form "> -->
+                      <input type="text" style="display: none;" mwlFlatpickr [(ngModel)]="searchStartDateTime"
+                        [altInput]="false" [enableTime]="true" [dateFormat]="'H:i'" [noCalendar]="true" [inline]="true"
+                        [time24hr]="true">
+                    </div>
+                    <div class="col-5 mr-auto ml-auto">
+                      <span class="dropdown-label" style="padding-left: 0px">End Date Time</span>
+                      <input type="text" style="display: none;" mwlFlatpickr [(ngModel)]="searchEndDateTime"
+                        [altInput]="false" [enableTime]="true" [dateFormat]="'H:i'" [noCalendar]="true" [inline]="true"
+                        [time24hr]="true">
+                    </div>
                   </div>
-                  <div class="col-6">
-                    <input type="text" value="01/01/2019" class="form-control">
+                  <div class="row">
+                    <div class="col-md-4 ml-auto mr-auto">
+                      <button class="btn btn-teritary btn-sm" (click)="closeSearchBoxDropdownDate()">Ok</button>
+                    </div>
                   </div>
                 </div>
-              </div> -->
+              </div>
             </div>
 
           </div>
         </div>
       </div>
-
     </div>
-
-
   </div>
   <div class="base-card-content mt-3">
     <!-- <div class="row">
@@ -152,8 +163,8 @@
           Clear All Filter
         </button>
         <div class="dns-dropdown d-inline-block" id="dropdownFilter">
-          <button class="btns dropdown-toggle color-light-blue" type="button" data-toggle="dropdown" (click)="refreshFilterPanel()"
-            aria-haspopup="true" aria-expanded="false">
+          <button class="btns dropdown-toggle color-light-blue" type="button" data-toggle="dropdown"
+            (click)="refreshFilterPanel()" aria-haspopup="true" aria-expanded="false">
             <i class="icon-plus pr-2" style="font-size: 20px"></i>
             Add Filter
           </button>

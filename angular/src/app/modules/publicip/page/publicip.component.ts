@@ -78,7 +78,6 @@ export class PublicipComponent {
   getPublicIpsDataAndProfiles() {
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
-      console.log(res);
       
       res.forEach(r => {
         if (r.agentType && r.agentType.toString() == AgentType.LOCATION.toString()) {
@@ -338,7 +337,6 @@ export class PublicipComponent {
   }
 
   savePublicIp() {
-debugger
     if (!this.validatePublicIpForm()) {
       return;
     }
@@ -358,7 +356,6 @@ debugger
   }
 
   validatePublicIpForm(): boolean {
-    debugger
     const $validator = $('.publicIpForm').validate({
       rules: {
         agentName: {

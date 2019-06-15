@@ -212,7 +212,7 @@ export class DashboardComponent implements OnInit {
     }
     this.trafficChart = new ApexCharts(document.querySelector("#trafficChartHits"), trafficChartoptions);
     this.trafficChart.render();
-    this.trafficChart.updateSeries([{ name: "Today Hits", data: this.ds.totalHits }, { name: "Average Hits", data: this.ds.hitAverages }])
+    this.trafficChart.updateSeries([{ name: "Today Hits", data: this.ds.totalHits }, { name: " Total Hit Averages", data: this.ds.hitAverages }])
 
     //Blocked Chart
     // var options2 = {

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +22,7 @@ import { CustomReportResultComponent } from './customreport/result/customreport-
 import { CustomReportResultColumnComponent } from './customreport/result/column/customreport-result-column.component';
 import { HistogramComponent } from './shared/histogram/histogram.component';
 import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
-
+import { FlatpickrModule } from 'angularx-flatpickr';
 
 @NgModule({
   declarations: [
@@ -46,6 +46,7 @@ import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
     MaterialModule,
     ReportsRoutingModule,
     PipesModule,
+    FlatpickrModule.forRoot(),
     DndModule.forRoot(),
     CollapseModule.forRoot(),
     PopoverModule.forRoot(),
@@ -60,6 +61,6 @@ import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
       }
     })
   ],
-  providers: [PipesModule]
+  providers: [PipesModule,DatePipe]
 })
 export class ReportsModule { }

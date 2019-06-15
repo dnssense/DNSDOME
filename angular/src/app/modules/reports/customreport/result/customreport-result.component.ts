@@ -1,11 +1,8 @@
-import { OnInit, ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
-
-import { NotificationService } from 'src/app/core/services/notification.service';
+import {ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { Subject } from 'rxjs';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { CustomReportService } from 'src/app/core/services/CustomReportService';
-
 import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
 import { FastReportService } from 'src/app/core/services/FastReportService';
 
@@ -14,7 +11,7 @@ import { FastReportService } from 'src/app/core/services/FastReportService';
   templateUrl: 'customreport-result.component.html',
   styleUrls: ['customreport-result.component.sass']
 })
-export class CustomReportResultComponent implements OnInit, OnDestroy {
+export class CustomReportResultComponent implements OnDestroy {
   elementRef: ElementRef;
   public date = new Date();
   public loading: boolean = false;
@@ -30,12 +27,8 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
-
-  constructor(
-    private customReportService: CustomReportService, private fastReportService: FastReportService,
-    private notificationService: NotificationService) { }
-
-  ngOnInit(): void { }
+  
+  constructor(private customReportService: CustomReportService, private fastReportService: FastReportService) {}
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -104,28 +97,25 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
   }
 
   drawChart(settings: SearchSetting) {
-    this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
 
+    this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
       let data: any[] = res;
 
       if (data) {
-        let labelArray = [];
+        var labelArray = [];
         let chartSeries = [];
         for (let i = 0; i < data.length; i++) {
           const d = new Date(data[i].date);
           labelArray.push(d.getHours() + ":" + (d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes()))
           chartSeries.push(data[i].value)
         }
-        
+
         var options = {
-          chart: {
-            height: 300, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b',
-            toolbar: { show: false, tools: { download: false } },
-          },
+          chart: { height: 300, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
           dataLabels: { enabled: false },
           stroke: { width: 3, curve: 'smooth' },
           colors: ['#9d60fb'],
-          series: [{ name: "Hits", data: chartSeries }],
+          series: [{ name: "Hits", data: [[]] }],
           markers: { size: 0, hover: { sizeOffset: 6 } },
           xaxis: { categories: labelArray, labels: { minHeight: 20 } },
           tooltip: { theme: 'dark' },
@@ -134,18 +124,15 @@ export class CustomReportResultComponent implements OnInit, OnDestroy {
           annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
           title: { text: 'Log Histogram', style: { fontSize: '20px', color: '#eeeeee' } }
         }
-
-        var chart = new ApexCharts(
-          document.querySelector("#customReportChart"),
-          options
-        );
-
-        chart.render();
+    
+        var logChart = new ApexCharts(document.querySelector("#customReportChart"), options);
+        logChart.render();
+        logChart.updateSeries([{ name: "Hits", data: chartSeries }])
       }
 
     });
   }
-
+ 
   public stopRefreshing() {
     //this.spinnerService.stop();
   }

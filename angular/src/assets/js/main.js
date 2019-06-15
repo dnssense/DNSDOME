@@ -25,7 +25,9 @@ $(function () {
 
     $(datepickerId).flatpickr({
       mode: 'range',
-      inline: true
+      inline: true,
+      enableTime: false,
+      dateFormat: "Y-m-d H:i"
     });
 
     $(dropdownId + ' .flatpickr-prev-month').click(function (e) {
