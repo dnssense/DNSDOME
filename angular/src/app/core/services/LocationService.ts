@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Rx';
 import { OperationResult } from '../models/OperationResult';
 import { ConfigService } from './config.service';
 import { ErrorService } from './ErrorService';
+import { Location } from '../models/Location';
 
 /**
  * Created by fatih on 02.08.2016.

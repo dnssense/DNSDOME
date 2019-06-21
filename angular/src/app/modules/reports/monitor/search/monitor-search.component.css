@@ -26,3 +26,11 @@
 .filterButton:hover .editButton{
 visibility: visible;
 }
+
+.example-chip-list {
+  width: 100%;
+}
+
+::ng-deep .dns-btn-tooltip {
+  color: #fff;
+}

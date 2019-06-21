@@ -1,7 +1,7 @@
 <div class="base-card">
   <div class="base-card-header">
     <div class="row">
-      <div class="col-md-8 d-flex align-items-center">
+      <div class="col-md-7 d-flex align-items-center">
         <div class="search-form full-width flex-1">
           <img src="assets/images/icons/search.svg" class="icon">
           <input type="text" class="dns-form-control reverse-form" placeholder="Contain *keyword*"
@@ -14,13 +14,58 @@
             (click)="changeSearchSettingType('roksitblock')">SecurityGAP</button>
         </div>
       </div>
-      <div class="col-md-4 d-flex mt-2">
+      <div class="col-md-5 d-flex mt-2">
         <!-- <button mat-raised-button class="btn btn-light mt-0 mr-2 ml-auto" style="height: 40px;">
           <span class="btn-label">
             <i class="fa fa-save size-20 position-relative top-3"></i>
           </span>
           Save
         </button> -->
+        <div class="dns-dropdown d-inline-block table-select pull-right ml-auto mr-2" style="min-width:180px">
+          <button class="btns reverse-form dropdown-toggle text-left" type="button" data-toggle="dropdown"
+            aria-haspopup="false" aria-expanded="false">
+            <span class="btn-label">
+              <i class="fa fa-save size-20 position-relative top-3"></i>
+            </span>
+            <ng-container *ngIf="selectedSavedReportName; else elseTemplateselectedSavedReportName">
+              {{selectedSavedReportName}}
+            </ng-container>
+            <ng-template #elseTemplateselectedSavedReportName>
+              Saved Reports <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
+            </ng-template>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <div class="table-responsive" style="max-height: 400px;">
+              <div class="tab-pane fade show active">
+                  <span class="dropdown-item text-center" style="background-color: #181818">User Reports</span>
+                  <div *ngFor="let r of savedReports">
+                    <button class="dropdown-item" *ngIf="r.system == null || r.system == false"
+                      (click)="selectSavedReport(r.id)">
+                      <div class="row">
+                        <div class="col-md-10">{{r.name}}</div>
+                        <div class="col-md-2 text-right"><i class="close-btn icon-cancel"
+                            (click)="deleteSavedReport(r)"></i></div>
+                      </div>
+                    </button>
+                  </div>
+                  <span class="dropdown-item text-center"  style="background-color: #181818">System Reports</span>
+                  <div *ngFor="let r of savedReports">
+                    <button class="dropdown-item" *ngIf="r.system" (click)="selectSavedReport(r.id)">
+                      <div class="row">
+                        <div class="col-md-10">{{r.name}}</div>
+                        <div class="col-md-2 text-right"><i class="close-btn icon-cancel"
+                            (click)="deleteSavedReport(r)"></i></div>
+                      </div>
+                    </button>
+                  </div>
+
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="dns-dropdown d-inline-block table-select pull-right ml-auto" id="searchBoxDropdownDate">
           <button class="btns reverse-form dropdown-toggle text-left" type="button" id="dropdownMenuButton"
             data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
@@ -117,24 +162,6 @@
     </div>
   </div>
   <div class="base-card-content mt-3">
-    <!-- <div class="row">
-      <div class="col-12 d-flex align-items-center">
-        <div class="search-form full-width flex-1">
-          <img src="assets/images/icons/search.svg" class="icon">
-          <input type="text" class="dns-form-control reverse-form" placeholder="Contain *keyword*"
-            [(ngModel)]="searchSetting.query" [ngModelOptions]="{ standalone: true }" />
-        </div>
-        <div class="toggle reverse-toggle ml-4" style="padding: 4px">
-          <button class="btns" [ngClass]="{'active': searchSetting.type=='roksit'}"
-            (click)="changeSearchSettingType('roksit')">Total Traffic</button>
-          <button class="btns" [ngClass]="{'active': searchSetting.type=='roksitblock'}"
-            (click)="changeSearchSettingType('roksitblock')">Blocked Traffic</button>
-        </div>
-        <button class="btn btn-teritary ml-4" style="width: 164px;" (click)="search()">
-          Search
-        </button>
-      </div>
-    </div> -->
     <div class="row ">
       <div class="col-10">
         <button class="btns btn-success size-13 mr-1 mt-1 mb-1 filterButton" *ngFor="let item of searchSetting.must">
@@ -144,14 +171,16 @@
           <img src="assets/images/icons/white.svg" class="editButton ml-2" width="15" height="15" alt=""
             (click)="removeTag(item,'is')">
         </button>
-        <button class="btns btn-danger size-13 mr-1 mt-1 mb-1 filterButton" *ngFor="let item of searchSetting.mustnot">
+        <button class="btns btn-danger size-13 mr-1 mt-1 mb-1 filterButton"
+          *ngFor="let item of searchSettingForHtml.mustnot">
           {{item.field}}, Is NOT, {{item.value}}
           <img src="assets/images/icons/edit.svg" class="editButton ml-2" width="15" height="15" alt=""
             (click)="editTag(item,'isnot')">
           <img src="assets/images/icons/white.svg" class="editButton ml-2" width="15" height="15" alt=""
             (click)="removeTag(item,'isnot')">
         </button>
-        <button class="btns btn-warning size-13 mr-1 mt-1 mb-1 filterButton" *ngFor="let item of searchSetting.should">
+        <button class="btns btn-warning size-13 mr-1 mt-1 mb-1 filterButton"
+          *ngFor="let item of searchSettingForHtml.should">
           {{item.field}}, Is One Of, {{item.value}}
           <img src="assets/images/icons/edit.svg" class="editButton ml-2" width="15" height="15" alt=""
             (click)="editTag(item,'isoneof')">
@@ -173,7 +202,7 @@
               <div class="row">
                 <div class="col-12 col-lg-3 pr-0 mt-2">
                   <div class="1dnssense-select light-select full-width">
-                    <select class="filterTags" (onChange)="changeCurrentColumn($event)" [(ngModel)]="currentColumn"
+                    <select class="filterTags" (change)="changeCurrentColumn(currentColumn)" [(ngModel)]="currentColumn"
                       [ngModelOptions]="{ standalone: true }">
                       <option value="{{item.name}}" *ngFor="let item of columns">
                         {{item.beautyName}}</option>
@@ -182,7 +211,8 @@
                 </div>
                 <div class="col-12 col-lg-3 pr-0 mt-2">
                   <div class="1dnssense-select light-select full-width">
-                    <select class="filterTags" [(ngModel)]="currentOperator" [ngModelOptions]="{ standalone: true }">
+                    <select class="filterTags" [(ngModel)]="currentOperator" [ngModelOptions]="{ standalone: true }"
+                      (change)="changeCurrentColumn(currentColumn)">
                       <option value="is">Is</option>
                       <option value="isnot">Is Not</option>
                       <option value="isoneof">Is One Of</option>
@@ -191,94 +221,118 @@
                   </div>
                 </div>
                 <div class="col-12 col-lg-6 mt-2">
-                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'domain'">
-                    <input type="text" [ngModelOptions]="{ standalone: true }" [(ngModel)]="currentInput"
-                      class=" filterTags" placeholder="Domain">
-                  </div>
-                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'subdomain'">
-                    <input type="text" name="filterValue" [ngModelOptions]="{ standalone: true }"
-                      [(ngModel)]="currentInput" class="filterTags" placeholder="Subdomain">
-                  </div>
-                  <div class="input-group" *ngIf="currentColumn == 'category'">
-                    <select class="filterTags" [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
-                      <option value="-1" disabled>Select A Category</option>
-                      <option *ngFor="let cat of mainCategories" label="{{cat.categoryName}}"
-                        value="{{cat.categoryName}}">
-                        {{cat.categoryName}}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'applicationName'">
-                    <select class="filterTags" [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
-                      <option value="-1" disabled>Select An Application</option>
-                      <option *ngFor="let a of mainApplications" value="{{ a.name }}">{{ a.name }}</option>
-                    </select>
-                  </div>
-                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'action'">
-                    <select class="filterTags" [(ngModel)]="currentInput" place [ngModelOptions]="{ standalone: true }">
-                      <option value="-1" disabled>Select An Action</option>
-                      <option value="true">Allow</option>
-                      <option value="false">Block</option>
-                    </select>
-                  </div>
-                  <div class="input-group" style="width: auto" *ngIf="
-                          currentColumn == 'sourceIpCountryCode' ||
-                          currentColumn == 'destinationIpCountryCode'
-                        ">
-                    <select class="filterTags " [(ngModel)]="currentInput" place
-                      [ngModelOptions]="{ standalone: true }">
-                      <option value="-1" disabled>Select A Country</option>
-                      <option value="00">Local Domain</option>
-                      <option *ngFor="let country of countries" value="{{ country.code }}">{{ country.name }}</option>
-                    </select>
-                  </div>
-                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'agentAlias'">
-                    <select class="filterTags " [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
-                      <option value="-1" disabled>Select An Agent</option>
-                      <option *ngFor="let agent of agents" value="{{ agent.agentAlias }}">{{ agent.agentAlias }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'reasonType'">
-                    <select class="filterTags" [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
-                      <option value="category">Category</option>
-                      <option value="application">Application</option>
-                      <option value="bwlist">BlackList/Whitelist</option>
-                      <option value="noip">Noip Domain</option>
-                      <option value="malformed">Malformed Query</option>
-                    </select>
-                  </div>
-                  <div class="input-group" style="width: auto"
-                    *ngIf="currentColumn == 'sourceIp' || currentColumn == 'destinationIp'">
-                    <input class="filterTags" [(ngModel)]="currentInput" (click)="inputClicked($event)"
-                      [ngModelOptions]="{ standalone: true }" (change)="inputsChanged($event)"
-                      (keyup.enter)="inputsChanged($event)" placeholder="xxx.xxx.xxx.xxx" />
-                  </div>
-                  <div class="input-group" style="width: auto" *ngIf="currentColumn == 'time'">
-                    <input class="filterTags" value="{{
-                            currentColumn == 'time'
-                              ? (currentInput | dateFormat)
-                              : currentInput
-                          }}" (click)="inputClicked($event)" (change)="inputsChanged($event)"
-                      (keyup.enter)="inputsChanged($event)" />
-                  </div>
-                  <div class="input-group" style="width: auto" *ngIf="
-                      currentColumn != 'subdomain' &&    
-                      currentColumn != 'domain' &&    
-                      currentColumn != 'agentAlias' &&
-                          currentColumn != 'action' &&
-                          currentColumn != 'reasonType' &&
-                          currentColumn != 'time' &&
-                          currentColumn != 'applicationName' &&
-                          currentColumn != 'category' &&
-                          currentColumn != 'sourceIpCountryCode' &&
-                          currentColumn != 'destinationIpCountryCode' &&
-                          currentColumn != 'sourceIp' &&
-                          currentColumn != 'destinationIp'
-                        ">
-                    <input class="filterTags" [(ngModel)]="currentInput" (click)="inputClicked($event)"
-                      [ngModelOptions]="{ standalone: true }" (keyup.enter)="inputsChanged($event)" />
-                  </div>
+                  <ng-container
+                    *ngIf="currentOperator=='isoneof' || currentOperator=='isnotoneof'; else elseTemplateofTags">
+                    <!-- <mat-form-field class="example-chip-list"> -->
+                    <mat-chip-list #chipList aria-label="Many Filter Selection">
+                      <mat-chip *ngFor="let item of isOneOfList" [selectable]="selectable" [removable]="removable"
+                        [color]="accent" selected (removed)="removeChip(item)">
+                        <mat-icon matChipRemove *ngIf="removable" class="ml-0 mr-1">cancel</mat-icon>
+                        {{item}}
+                      </mat-chip>
+                      <input placeholder="Write or select multiple..." #isOneOfInput [formControl]="isOneOfCtrl"
+                        [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                        (matChipInputTokenEnd)="addChip($event)"
+                        style="background-color: #fefefe; width: 100%; margin-top: 7px;padding: 6px; border-radius: 5px;">
+                    </mat-chip-list>
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedChip($event)">
+                      <mat-option *ngFor="let item of filteredIsOneOfs | async" [value]="item">
+                        {{item}}
+                      </mat-option>
+                    </mat-autocomplete>
+                    <!-- </mat-form-field> -->
+
+                  </ng-container>
+                  <ng-template #elseTemplateofTags>
+                    <div class="input-group" style="width: auto" *ngIf="currentColumn == 'domain'">
+                      <input type="text" [ngModelOptions]="{ standalone: true }" [(ngModel)]="currentInput"
+                        class=" filterTags" placeholder="Domain">
+                    </div>
+                    <div class="input-group" style="width: auto" *ngIf="currentColumn == 'subdomain'">
+                      <input type="text" name="filterValue" [ngModelOptions]="{ standalone: true }"
+                        [(ngModel)]="currentInput" class="filterTags" placeholder="Subdomain">
+                    </div>
+                    <div class="input-group" *ngIf="currentColumn == 'category'">
+                      <select class="filterTags" [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
+                        <option value="-1" disabled>Select A Category</option>
+                        <option *ngFor="let cat of mainCategories" label="{{cat.categoryName}}"
+                          value="{{cat.categoryName}}">
+                          {{cat.categoryName}}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="input-group" style="width: auto" *ngIf="currentColumn == 'applicationName'">
+                      <select class="filterTags" [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
+                        <option value="-1" disabled>Select An Application</option>
+                        <option *ngFor="let a of mainApplications" value="{{ a.name }}">{{ a.name }}</option>
+                      </select>
+                    </div>
+                    <div class="input-group" style="width: auto" *ngIf="currentColumn == 'action'">
+                      <select class="filterTags" [(ngModel)]="currentInput" place
+                        [ngModelOptions]="{ standalone: true }">
+                        <option value="-1" disabled>Select An Action</option>
+                        <option value="true">Allow</option>
+                        <option value="false">Block</option>
+                      </select>
+                    </div>
+                    <div class="input-group" style="width: auto"
+                      *ngIf="currentColumn == 'sourceIpCountryCode' || currentColumn == 'destinationIpCountryCode'">
+                      <select class="filterTags " [(ngModel)]="currentInput" place
+                        [ngModelOptions]="{ standalone: true }">
+                        <option value="-1" disabled>Select A Country</option>
+                        <option value="00">Local Domain</option>
+                        <option *ngFor="let country of countries" value="{{ country.code }}">{{ country.name }}</option>
+                      </select>
+                    </div>
+                    <div class="input-group" style="width: auto" *ngIf="currentColumn == 'agentAlias'">
+                      <select class="filterTags " [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
+                        <option value="-1" disabled>Select An Agent</option>
+                        <option *ngFor="let agent of agents" value="{{ agent.agentAlias }}">{{ agent.agentAlias }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="input-group" style="width: auto" *ngIf="currentColumn == 'reasonType'">
+                      <select class="filterTags" [(ngModel)]="currentInput" [ngModelOptions]="{ standalone: true }">
+                        <option value="category">Category</option>
+                        <option value="application">Application</option>
+                        <option value="bwlist">BlackList/Whitelist</option>
+                        <option value="noip">Noip Domain</option>
+                        <option value="malformed">Malformed Query</option>
+                      </select>
+                    </div>
+                    <div class="input-group" style="width: auto"
+                      *ngIf="currentColumn == 'sourceIp' || currentColumn == 'destinationIp'">
+                      <input class="filterTags" [(ngModel)]="currentInput" (click)="inputClicked($event)"
+                        [ngModelOptions]="{ standalone: true }" (change)="inputsChanged($event)"
+                        (keyup.enter)="inputsChanged($event)" placeholder="xxx.xxx.xxx.xxx" />
+                    </div>
+                    <div class="input-group" style="width: auto" *ngIf="currentColumn == 'time'">
+                      <input class="filterTags"
+                        value="{{currentColumn == 'time' ? (currentInput | dateFormat): currentInput}}"
+                        (click)="inputClicked($event)" (change)="inputsChanged($event)"
+                        (keyup.enter)="inputsChanged($event)" />
+                    </div>
+                    <div class="input-group" style="width: auto" *ngIf="
+                            currentColumn != 'subdomain' &&    
+                            currentColumn != 'domain' &&    
+                            currentColumn != 'agentAlias' &&
+                                currentColumn != 'action' &&
+                                currentColumn != 'reasonType' &&
+                                currentColumn != 'time' &&
+                                currentColumn != 'applicationName' &&
+                                currentColumn != 'category' &&
+                                currentColumn != 'sourceIpCountryCode' &&
+                                currentColumn != 'destinationIpCountryCode' &&
+                                currentColumn != 'sourceIp' &&
+                                currentColumn != 'destinationIp'
+                              ">
+                      <input class="filterTags" [(ngModel)]="currentInput" (click)="inputClicked($event)"
+                        [ngModelOptions]="{ standalone: true }" (keyup.enter)="inputsChanged($event)" />
+                    </div>
+
+                  </ng-template>
+
                 </div>
                 <div class="col-12 mt-2">
                   <button class="btn btn-teritary" (click)="addTag($event)">Apply</button>
@@ -290,7 +344,30 @@
         </div>
       </div>
       <div class="col-2 d-flex align-items-center">
-        <button class="btn btn-teritary ml-4" style="width: 164px;" (click)="search()">
+        <div class="dropdown d-inline-block" id="dropdownFilter">
+          <button class="btn btn-link dropdown-toggle  circle-dropdown-btn ml-0 mr-0" type="button"
+            data-toggle="dropdown" [matTooltipShowDelay]="900" matTooltip="SAVE FILTERS" aria-haspopup="true"
+            aria-expanded="false">
+            <i class="fa fa-floppy-o" style="font-size: 20px"></i>
+          </button>
+          <div class="dropdown-menu" style="width: 300px">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12">
+                  <input type="text" class="form-control reverse-form" placeholder="Give a name"
+                    [(ngModel)]="newSavedReportName">
+                </div>
+                <div class="col-12 mt-2">
+                  <button class="btn btn-success" (click)="saveReportFilters()">
+                    <i class="fa fa-check-circle-o"></i>
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-teritary ml-2" style="width: 164px;" (click)="search()">
           Search
         </button>
       </div>

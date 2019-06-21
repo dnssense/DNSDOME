@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../services/notification.service';
 import { SpinnerService } from '../services/spinner.service';
 import { TranslatorService } from '../services/translator.service';
+import { environment } from 'src/environments/environment';
 
 // errors-handler.ts
 @Injectable()
@@ -29,8 +30,14 @@ export class ErrorInterceptor implements ErrorHandler {
           notificationService.error(`${status} - ${message}`);
 
         } else {
-          let message = translatorService.translate(error.statusText);
-          notificationService.error(`${status} - ${message}`);
+
+          if (environment.production === false) {
+            let message = translatorService.translate(error.statusText);
+            notificationService.error(`${status} - ${message}`);
+          } else {
+             notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
+          }
+
         }
       }
     } else {

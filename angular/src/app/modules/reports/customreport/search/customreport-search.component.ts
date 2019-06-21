@@ -17,6 +17,13 @@ import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { AlertService } from 'src/app/core/services/alert.service';
 import * as countryList from 'src/app/core/models/Countries';
 import { DatePipe } from '@angular/common';
+import { Location } from 'src/app/core/models/Location';
+import { MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { FormControl } from '@angular/forms';
+import { ValidationService } from 'src/app/core/services/validation.service';
+import { ReportService } from 'src/app/core/services/ReportService';
+import { startWith, map } from 'rxjs/operators';
 
 declare var $: any;
 //declare var Flatpickr: any;
@@ -72,13 +79,27 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
   @Input() public columnsTemp: LogColumn[];
   @Output() public searchEmitter = new EventEmitter();
-  @Output() public searchSettingEmitter = new EventEmitter();
+ // @Output() public searchSettingEmitter = new EventEmitter();
+
 
   public observable: Observable<any> = null;
   public subscription: Subscription = null;
   private ngUnsubscribe: Subject<any> = new Subject<any>();
   private applicationsSubscription: Subscription;
   private categoriesSubscription: Subscription;
+
+  searchSettingForHtml: SearchSetting;
+  visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  isOneOfCtrl = new FormControl();
+  filteredIsOneOfs: Observable<string[]>;
+  isOneOfList: string[] = [];
+  isOneOfListItems: string[] = [];
+  @ViewChild('isOneOfInput') isOneOfInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   _columns: LogColumn[];
   columnListLength: number = 10;
@@ -99,17 +120,29 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   editedTag: any;
   editedTagType: string;
   searchStartDate: string;
-  searchStartDateTime: string='08:00';
+  searchStartDateTime: string = '08:00';
   searchEndDate: string;
-  searchEndDateTime: string='18:00';
+  searchEndDateTime: string = '18:00';
   selectedTab: string = 'home';
+  savedReports: SearchSetting[] = []
+  selectedSavedReportName: string;
+  newSavedReportName: string;
 
   constructor(public customReportService: CustomReportService, public fastReportService: FastReportService,
     public searchSettingService: SearchSettingService, public locationsService: LocationsService,
-    private notification: NotificationService, private alertService: AlertService , private datePipe:DatePipe) {
+    private reportService: ReportService, private notification: NotificationService, private alertService: AlertService,
+    private datePipe: DatePipe) {
 
+    this.reportService.getReportList().subscribe(res => {
+      this.savedReports = res;
+    });
+
+    this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.pipe(startWith(null), map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice()));
+    
     this.selectedColumns = [];
+
     if (!this.searchSetting) {
+      this.searchSettingForHtml = new SearchSetting();
       this.searchSetting = new SearchSetting();
       this.current = new ColumnTagInput('domain', '=', '');
       this.currentOperator = 'is';
@@ -164,12 +197,79 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  selectSavedReport(id: number) {
+    let sr = this.savedReports.find(r => r.id == id);
+    this.searchSetting = JSON.parse(JSON.stringify(sr));
+    this.selectedSavedReportName = sr.name;
+
+    if (sr.should) {
+      this.searchSettingForHtml.should = [];
+      let fieldMap = [];
+      sr.should.forEach(s => {
+        if (fieldMap && fieldMap.find(f => f.field == s.field)) {
+          const i = fieldMap.findIndex(f => f.field == s.field);
+          fieldMap[i] = { field: s.field, value: fieldMap[i].value + ',' + s.value };
+        } else {
+          fieldMap.push({ field: s.field, value: s.value });
+        }
+      });
+      fieldMap.forEach(fm => this.searchSettingForHtml.should.push(new ColumnTagInput(fm.field, '=', fm.value)))
+
+    }
+    if (sr.mustnot) {
+      this.searchSettingForHtml.mustnot = [];
+      let fieldMap = [];
+      sr.mustnot.forEach(s => {
+        if (fieldMap && fieldMap.find(f => f.field == s.field)) {
+          const i = fieldMap.findIndex(f => f.field == s.field);
+          fieldMap[i] = { field: s.field, value: fieldMap[i].value + ',' + s.value };
+        } else {
+          fieldMap.push({ field: s.field, value: s.value });
+        }
+      });
+      fieldMap.forEach(fm => this.searchSettingForHtml.mustnot.push(new ColumnTagInput(fm.field, '=', fm.value)))
+
+    }
+
+  }
+
+  saveReportFilters() {
+    this.searchSetting.name = this.newSavedReportName;
+    this.reportService.saveReport(this.searchSetting).subscribe(res => {
+      if (res.status == 200) {
+        this.notification.success(res.message);
+        this.reportService.getReportList().subscribe(res => this.savedReports = res);
+      } else {
+        this.notification.error(res.message);
+      }
+    })
+  }
+
+  deleteSavedReport(report: any) {
+    this.alertService.alertWarningAndCancel('Are You Sure?', report.name + ' report settings will be deleted!').subscribe(
+      res => {
+        if (res) {
+          this.reportService.deleteReport(report).subscribe(res => {
+            if (res.status == 200) {
+              this.notification.success(res.message);
+              this.reportService.getReportList().subscribe(res => this.savedReports = res);
+            } else {
+              this.notification.error(res.message);
+            }
+          });
+        }
+      }
+    );
+
+  }
+
   public search() {
 
     this.searchSetting.columns.columns = []
-    this._columns.filter(c => c.checked == true).forEach(c => {
-      this.searchSetting.columns.columns.push({ column: c, label: c.beautyName });
-    })
+    this._columns.filter(c => c.checked == true).forEach(c => { 
+      this.searchSetting.columns.columns.push({ column: c, label: c.beautyName }); 
+    });
+
     this.searchEmitter.emit(this.searchSetting);
   }
 
@@ -296,13 +396,13 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     if (tabId == 'profile') {
       $('#home').removeClass('active show');
 
-      $('.flatpickr-time ').css({ 'width':'100px', 'background-color': '#eee', 'border-radius': '5px', 'box-shadow': 'none' });
+      $('.flatpickr-time ').css({ 'width': '100px', 'background-color': '#eee', 'border-radius': '5px', 'box-shadow': 'none' });
       $('.flatpickr-calendar').css('box-shadow', 'none');
       $('.flatpickr-days').css('color', '#7c86a2');
       $('.flatpickr-day').css('color', '#7c86a2');
       $('.inRange').css('background', 'transparent');
       $('.flatpickr-months').css('display', 'none');
-      $('.flatpickr-disabled').css({'cursor': 'not-allowed', 'color':'rgba(124,134,162,0.3)'}); 
+      $('.flatpickr-disabled').css({ 'cursor': 'not-allowed', 'color': 'rgba(124,134,162,0.3)' });
       //$('.flatpickr-current-month').css({ 'display':'none', 'color': '#6c84fa', 'width': 'auto', 'padding': '0', 'left': '5px', 'font-size': '15px' });
 
       $('#searchBoxDropdownDate .dropdown-menu .nav-tabs li').click(function (e) {
@@ -326,10 +426,10 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       }, 1);
     });
 
-    let today = new Date(); 
-    const last10Days= this.datePipe.transform(new Date().setDate(today.getDate() - 10), 'yyyy-MM-dd')
+    let today = new Date();
+    const last10Days = this.datePipe.transform(new Date().setDate(today.getDate() - 10), 'yyyy-MM-dd')
 
-    $(datepickerId).flatpickr({ mode: 'range', inline: true, enableTime:false, maxDate:"today", minDate:last10Days });
+    $(datepickerId).flatpickr({ mode: 'range', inline: true, enableTime: false, maxDate: "today", minDate: last10Days });
 
     $(dropdownId + ' .flatpickr-prev-month').click(function (e) {
       $('.flatpickr-day').css('color', '#7c86a2');
@@ -359,7 +459,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     });
     $(dropdownId + ' .flatpickr-day').click(function (e) {
       $('.flatpickr-day').css('color', '#7c86a2');
-      $('.flatpickr-disabled').css({'cursor': 'not-allowed', 'color':'rgba(124,134,162,0.3)'}); 
+      $('.flatpickr-disabled').css({ 'cursor': 'not-allowed', 'color': 'rgba(124,134,162,0.3)' });
     });
     $(dropdownId + ' .inRange').click(function (e) {
       $('.flatpickr-day').css('color', '#7c86a2');
@@ -370,8 +470,8 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     $('.flatpickr-day').css('color', '#7c86a2');
     $('.inRange').css({ 'background': 'transparent', 'box-shadow': 'none' });
     $('.startRange').css({ 'border-radius': '50%', 'background': '#6c84fa', 'color': '#eee' });
-    $('.endRange').css({ 'border-radius': '50%', 'background': '#6c84fa', 'color': '#eee', 'box-shadow':'none' });
-    $('.flatpickr-disabled').css({'cursor': 'not-allowed', 'color':'rgba(124,134,162,0.3)'}); 
+    $('.endRange').css({ 'border-radius': '50%', 'background': '#6c84fa', 'color': '#eee', 'box-shadow': 'none' });
+    $('.flatpickr-disabled').css({ 'cursor': 'not-allowed', 'color': 'rgba(124,134,162,0.3)' });
   }
 
   public addColumnToSelectedColumns(col: LogColumn) {
@@ -409,38 +509,102 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   changeCurrentColumn(colName: string) {
-    $('#tagsDd').click(function (e) {
-      e.stopPropagation();
-    });
+
+    $('#tagsDd').click(function (e) { e.stopPropagation(); });
+
     this.currentColumn = colName;
+
+    this.isOneOfListItems = [];
+    if (this.currentOperator == 'isoneof' || this.currentOperator == 'isnotoneof') {
+      if (colName == 'category') {
+        this.mainCategories.forEach(m => this.isOneOfListItems.push(m.categoryName))
+      }
+      else if (colName == 'applicationName') {
+        this.mainApplications.forEach(m => this.isOneOfListItems.push(m.name))
+      } else if (colName == 'sourceIpCountryCode' || colName == 'destinationIpCountryCode') {
+        this.countries.forEach(c => this.isOneOfListItems.push(c.name))
+      } else if (colName == 'agentAlias') {
+        this.agents.forEach(c => this.isOneOfListItems.push(c.agentAlias))
+      } else if (colName == 'reasonType') {
+        this.isOneOfListItems.push('Category');
+        this.isOneOfListItems.push('Application');
+        this.isOneOfListItems.push('BlackList/Whitelist');
+        this.isOneOfListItems.push('Noip Domain');
+        this.isOneOfListItems.push('Malformed Query');
+      } else if (colName == 'action') {
+        this.isOneOfListItems.push('Allow');
+        this.isOneOfListItems.push('Block');
+      }
+
+    }
+
   }
 
-  public addTag($event) {
+  addTag($event) {
+
+    $event.stopPropagation();
     if (this.editedTag) {
       this.removeTag(this.editedTag, this.editedTagType);
       this.editedTag = null;
       this.editedTagType = null;
     }
-    this.current.value = this.currentInput;
-    this.current.operator = '=' // default and only value is equal
-    this.current.field = this.currentColumn;
 
-    if (
-      this.currentColumn == 'sourceIp' ||
-      this.currentColumn == 'destinationIp'
-    ) {
-      if (!this.checkIp()) {
-        return;
+    if (this.currentOperator == 'isoneof' || this.currentOperator == 'isnotoneof') {
+      if (this.currentColumn == 'reasonType') {
+        let convertedList = [];
+        this.isOneOfList.forEach(x => {
+          switch (x) {
+            case 'Category':
+              convertedList.push('category')
+              break;
+            case 'Application':
+              convertedList.push('application')
+              break;
+            case 'BlackList/Whitelist':
+              convertedList.push('bwlist')
+              break;
+            case 'Noip Domain':
+              convertedList.push('noip')
+              break;
+            case 'Malformed Query':
+              convertedList.push('malformed')
+              break;
+            default:
+              break;
+          }
+        });
+        this.currentInput = convertedList.join(',');
+      } else if (this.currentColumn == 'sourceIpCountryCode' || this.currentColumn == 'destinationIpCountryCode') {
+        let convertedList = [];
+        this.isOneOfList.forEach(x => { convertedList.push(this.countries.find(c => c.name == x).code) });
+        this.currentInput = convertedList.join(',');
+      } else {
+        this.currentInput = this.isOneOfList.join(',');
       }
+
     }
-    $event.stopPropagation();
+
     if (this.currentInput == '') {
       //this.tagInput.nativeElement.focus();
       return;
     }
 
-    var addStatus = true;
+    this.current.value = this.currentInput;
+    this.current.operator = '=' // default and only value is equal
+    this.current.field = this.currentColumn;
 
+    if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp') {
+      if (!this.checkIp(this.currentInput)) {
+        return;
+      }
+    } else if (this.currentColumn == 'domain' || this.currentColumn == 'subdomain') {
+      let result = ValidationService.domainValidation({ value: this.currentInput })
+      if (result != true) {
+        return;
+      }
+    }
+
+    var addStatus = true;
     if (this.currentOperator == 'is') {
       for (let op of this.searchSetting.must) {
         if (op.field == this.current.field && op.operator == this.current.operator &&
@@ -456,6 +620,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       }
       if (addStatus) {
         this.searchSetting.must.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+        this.searchSettingForHtml.must.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
       }
 
     } else if (this.currentOperator == 'isnot' || this.currentOperator == 'isnotoneof') {
@@ -472,7 +637,13 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
         }
       }
       if (addStatus) {
-        this.searchSetting.mustnot.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+        if (this.currentOperator == 'isnotoneof' && this.currentInput.includes(',')) {
+          this.currentInput.split(',').forEach(x => this.searchSetting.mustnot.push(new ColumnTagInput(this.currentColumn, '=', x)));
+          this.searchSettingForHtml.mustnot.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+        } else {
+          this.searchSetting.mustnot.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+          this.searchSettingForHtml.mustnot.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+        }
       }
     } else if (this.currentOperator == 'isoneof') {
       for (let op of this.searchSetting.should) {
@@ -488,7 +659,14 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
         }
       }
       if (addStatus) {
-        this.searchSetting.should.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+        if (this.currentInput.includes(',')) {
+          this.currentInput.split(',').forEach(x => this.searchSetting.should.push(new ColumnTagInput(this.currentColumn, '=', x)));
+          this.searchSettingForHtml.should.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+        } else {
+          this.searchSetting.should.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+          this.searchSettingForHtml.should.push(new ColumnTagInput(this.currentColumn, '=', this.currentInput));
+        }
+
       }
     }
 
@@ -502,18 +680,12 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     this.inputCollapsed = true;
     this.inputSelected = false;
 
-  }
+    this.isOneOfList = [];
 
-  editTag(tag: any, type: string) {
-    this.editedTag = tag;
-    this.editedTagType = type;
-    this.currentInput = tag.value;
-    this.currentColumn = tag.field;
-
-    $('#tagsDd').addClass('show');
   }
 
   refreshFilterPanel() {
+    this.isOneOfList = [];
     this.editedTag = null;
     this.editedTagType = null;
     this.current = new ColumnTagInput('domain', '=', '');
@@ -529,25 +701,25 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     $('#tagsDd').removeClass('show');
   }
 
-  closeSearchBoxDropdownDate(){
+  closeSearchBoxDropdownDate() {
     $('#searchBoxDropdownDate .dropdown-menu').removeClass('show');
 
     let searchDateInput: string = $("#searchDateInput").val();
     if (searchDateInput.length > 1) {
 
       let dd = searchDateInput.split(' to ');
- 
+
       if (searchDateInput.includes('to')) {
-        
-        this.startDateee = moment(dd[0] +' ' + this.searchStartDateTime, 'YYYY-MM-DD HH:mm').toDate();
+
+        this.startDateee = moment(dd[0] + ' ' + this.searchStartDateTime, 'YYYY-MM-DD HH:mm').toDate();
         this.endDateee = moment(dd[1] + ' ' + this.searchEndDateTime, 'YYYY-MM-DD HH:mm').toDate();
-        this.searchStartDate = dd[0]+' ' + this.searchStartDateTime;
-        this.searchEndDate = dd[1]+' ' + this.searchEndDateTime;
+        this.searchStartDate = dd[0] + ' ' + this.searchStartDateTime;
+        this.searchEndDate = dd[1] + ' ' + this.searchEndDateTime;
       } else {
-        this.startDateee = moment(dd[0]+' ' + this.searchStartDateTime, 'YYYY-MM-DD HH:mm').toDate();
-        this.endDateee = moment(dd[0]+' ' + this.searchEndDateTime, 'YYYY-MM-DD HH:mm').toDate();
-        this.searchStartDate = dd[0]+' ' + this.searchStartDateTime;
-        this.searchEndDate = dd[0]+' ' + this.searchEndDateTime;
+        this.startDateee = moment(dd[0] + ' ' + this.searchStartDateTime, 'YYYY-MM-DD HH:mm').toDate();
+        this.endDateee = moment(dd[0] + ' ' + this.searchEndDateTime, 'YYYY-MM-DD HH:mm').toDate();
+        this.searchStartDate = dd[0] + ' ' + this.searchStartDateTime;
+        this.searchEndDate = dd[0] + ' ' + this.searchEndDateTime;
       }
 
       let startDate = this.startDateee == null ? '' : moment(this.startDateee, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
@@ -602,16 +774,75 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     }
   }
 
+  public editTag(tag: any, type: string) {
+
+    this.editedTag = tag;
+    this.editedTagType = type;
+
+    this.currentColumn = tag.field;
+    this.currentOperator = type;
+
+    if (type == 'isoneof' || (type == 'isnot' && tag.value.includes(','))) {
+
+      if (this.currentColumn == 'reasonType') {
+        tag.value.split(',').forEach(x => {
+          switch (x) {
+            case 'category':
+              this.isOneOfList.push('Category')
+              break;
+            case 'application':
+              this.isOneOfList.push('Application')
+              break;
+            case 'bwlist':
+              this.isOneOfList.push('BlackList/Whitelist')
+              break;
+            case 'noip':
+              this.isOneOfList.push('Noip Domain')
+              break;
+            case 'malformed':
+              this.isOneOfList.push('Malformed Query')
+              break;
+            default:
+              break;
+          }
+        });
+      } else if (this.currentColumn == 'sourceIpCountryCode' || this.currentColumn == 'destinationIpCountryCode') {
+        tag.value.split(',').forEach(x => { this.isOneOfList.push(this.countries.find(c => c.code == x).name) });
+      } else {
+        this.isOneOfList = tag.value.split(',');
+      }
+
+      if (type == 'isnot') {
+        this.currentOperator = 'isnotoneof';
+      }
+    } else {
+      this.currentInput = tag.value;
+    }
+
+    $('#tagsDd').addClass('show');
+    $('#tagsDd').click(function (e) {
+      e.stopPropagation();
+    });
+  }
+
   public removeTag(tag: any, type: string) {
 
     if (type == 'is') {
       this.searchSetting.must.splice(this.searchSetting.must.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
-    } else if (type == 'isnot' || type == 'isnotoneof') {
-      this.searchSetting.mustnot.splice(this.searchSetting.mustnot.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
+    } else if (type == 'isnot') {
+      if (tag.value.includes(',')) {
+        this.searchSetting.mustnot.splice(this.searchSetting.mustnot.findIndex(a => a.field == tag.field));
+        this.searchSettingForHtml.mustnot.splice(this.searchSettingForHtml.mustnot.findIndex(a => a.field == tag.field));
+      } else {
+        this.searchSetting.mustnot.splice(this.searchSetting.mustnot.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
+        this.searchSettingForHtml.mustnot.splice(this.searchSettingForHtml.mustnot.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
+      }
     } else if (type == 'isoneof') {
-      this.searchSetting.should.splice(this.searchSetting.should.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
+      this.searchSetting.should.splice(this.searchSetting.should.findIndex(a => a.field == tag.field));
+      this.searchSettingForHtml.should.splice(this.searchSettingForHtml.should.findIndex(a => a.field == tag.field));
     }
     this.currentinputValue = '';
+
   }
 
   public removeAllTags() {
@@ -619,14 +850,80 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       this.alertService.alertWarningAndCancel('Are You Sure?', 'Your search parameters will be removed!').subscribe(
         res => {
           if (res) {
-            this.searchSetting.must = [];
-            this.searchSetting.mustnot = [];
-            this.searchSetting.should = [];
+            this.searchSetting = new SearchSetting();
+            this.searchSettingForHtml = new SearchSetting();
+            this.selectedSavedReportName = null;
+
             this.currentinputValue = '';
           }
         }
       );
     }
+  }
+
+  addChip(event: MatChipInputEvent): void {
+
+    $('#tagsDd').addClass('show');
+    if (!this.matAutocomplete.isOpen) {
+      const input = event.input;
+      const val = event.value;
+
+      if ((val || '').trim()) {
+
+        if (this.currentColumn == 'domain' || this.currentColumn == 'subdomain') {
+
+          let result = ValidationService.domainValidation({ value: val });
+          if (result == true) {
+            this.isOneOfList.push(val.trim());
+
+          } else {
+            this.notification.warning('Please enter a valid item!');
+            return;
+          }
+        } else if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp') {
+
+          let result = ValidationService.isValidIpString(val);
+          if (result == true) {
+            this.isOneOfList.push(val.trim());
+          } else {
+            this.notification.warning('Please enter a valid IP!');
+            return;
+          }
+
+        } else {
+
+          this.isOneOfList.push(val.trim());
+
+        }
+      }
+
+      if (input) { input.value = ''; }
+      this.isOneOfCtrl.setValue(null);
+
+    }
+  }
+
+  removeChip(item: string): void {
+    $('#tagsDd').addClass('show');
+    const index = this.isOneOfList.indexOf(item);
+
+    if (index >= 0) {
+      this.isOneOfList.splice(index, 1);
+    }
+  }
+
+  selectedChip(event: MatAutocompleteSelectedEvent): void {
+    $('#tagsDd').addClass('show');
+
+    this.isOneOfList.push(event.option.viewValue);
+    this.isOneOfInput.nativeElement.value = '';
+    this.isOneOfCtrl.setValue(null);
+  }
+
+  private filterChips(value: string): string[] {
+    $('#tagsDd').addClass('show');
+
+    return this.isOneOfListItems.filter(f => f.toLowerCase().indexOf(value.toLowerCase()) === 0);
   }
 
   public initSelect() {
@@ -637,13 +934,11 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       'select2:select', e => { this.currentInput = e.target.value; });
   }
 
-  public checkIp() {
+  public checkIp(ipForCheck: string) {
     let isValid =
-      this.currentInput != '0.0.0.0' &&
-      this.currentInput != '255.255.255.255' &&
-      this.currentInput.match(
-        /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/
-      );
+      ipForCheck != '0.0.0.0' &&
+      ipForCheck != '255.255.255.255' &&
+      ipForCheck.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/);
     if (!isValid) {
       this.notification.error("Invalid IP");
       return false;

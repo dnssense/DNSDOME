@@ -35,8 +35,8 @@ export class SmsService {
     return this.http.post<any>(this._confirmURL, JSON.stringify(request), this.getOptions());
   }
 
-  public sendSmsCommon():Observable<RestSmsResponse>{
-    return this.http.post<RestSmsResponse>(this._commonSendSmsUrl,"",this.getOptions());
+  public sendSmsCommon(phoneNumber:string):Observable<RestSmsResponse>{
+    return this.http.post<RestSmsResponse>(this._commonSendSmsUrl,{gsm: phoneNumber}, this.getOptions());
   }
 
   public confirmCommonSms(data:RestSmsConfirmRequest):Observable<any>{

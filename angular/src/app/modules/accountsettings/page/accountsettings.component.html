@@ -56,22 +56,27 @@
                         In order to login via two factor authentication and use sms service, enable this feature.
                       </div>
                       <div class="col-md-6 mt-4">
-                        <div class="togglebutton">
-                          <label>Enable two factor Authentication
-                            <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
-                              <input type="checkbox" checked (change)="change2FASubmit()">
-                              <span class="toggle"></span> On
-                            </ng-container>
-                            <ng-template #elseTemplate1>
-                              <input type="checkbox" (change)="change2FASubmit()">
-                              <span class="toggle"></span> Off
-                            </ng-template>
-                          </label>
-                        </div>
+                        <ng-container *ngIf="user.gsmCode && user.gsm; else elseTemplate2FA">
+                          <div class="togglebutton">
+                            <label>Enable two factor Authentication
+                              <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
+                                <input type="checkbox" checked (change)="change2FASubmit()">
+                                <span class="toggle"></span> On
+                              </ng-container>
+                              <ng-template #elseTemplate1>
+                                <input type="checkbox" (change)="change2FASubmit()">
+                                <span class="toggle"></span> Off
+                              </ng-template>
+                            </label>
+                          </div>
+                        </ng-container>
+                        <ng-template #elseTemplate2FA>
+                          <p>Before using two factor authentication please enter a gsm number. </p>
+                        </ng-template>
                       </div>
                     </div>
                   </div>
-                  <div *ngIf="user.twoFactorAuthentication">
+                  <div *ngIf="user.twoFactorAuthentication || user.gsm == null ">
                     <div class="form-group-sm has-default">
                       <div class="input-group">
                         <div class="input-group-prepend" style="width:100%;">
@@ -101,27 +106,27 @@
                         </div>
                       </div>
                     </div>
-                    <div id="smsValidationDiv" class="form-group-sm has-default" style="display:none;">
-                      <div class="row">
-                        <div class="col-md-4 text-center text-danger">
-                          <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="input-group">
-                            <div class="input-group-prepend" style="width:100%;">
-                              <mat-form-field class="example-full-width">
-                                <input type="text" matInput placeholder="SMS Validation Code" [(ngModel)]="smsCode"
-                                  formControlName="smsCode">
-                              </mat-form-field>
-                            </div>
+                  </div>
+                  <div id="smsValidationDiv" class="form-group-sm has-default" style="display: none;">
+                    <div class="row">
+                      <div class="col-md-4 text-center text-danger">
+                        <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="input-group">
+                          <div class="input-group-prepend" style="width:100%;">
+                            <mat-form-field class="example-full-width">
+                              <input type="text" matInput placeholder="SMS Validation Code" [(ngModel)]="smsCode"
+                                formControlName="smsCode">
+                            </mat-form-field>
                           </div>
                         </div>
-                        <div class="col-md-4">
-                          <button type="button" (click)="confirmGsm()" class="btn btn-info btn-sm">Confirm</button>
-                        </div>
                       </div>
-
+                      <div class="col-md-4">
+                        <button type="button" (click)="confirmGsm()" class="btn btn-info btn-sm">Confirm</button>
+                      </div>
                     </div>
+
                   </div>
                 </form>
 

@@ -30,9 +30,11 @@ export class MonitorComponent implements OnInit {
 
   ngOnInit() { }
 
-  public search(searchSetting: SearchSetting) {
+  public search(ss: SearchSetting) {
+    
+    this.searchSetting = ss;
     this.monitorResultComponent.currentPage = 1;
-    this.monitorResultComponent.refresh();
+    this.monitorResultComponent.refresh(ss);
   }
   public addValuesIntoSelected($event) {
     let column: string = $event.column;
@@ -53,7 +55,7 @@ export class MonitorComponent implements OnInit {
     this.monitorSearchComponent.setSearchSetting(this.searchSetting);
   }
 
-  public updateSearchSetting(setting: SearchSetting) {
-    this.searchSetting = setting;
-  }
+  // public updateSearchSetting(setting: SearchSetting) {
+  //   this.searchSetting = setting;
+  // }
 }

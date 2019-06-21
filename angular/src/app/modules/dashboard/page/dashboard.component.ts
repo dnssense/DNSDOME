@@ -121,6 +121,8 @@ export class DashboardComponent implements OnInit {
   private getElasticData(date: number) {
     this.dashboardService.getHourlyCompanySummary(this.companyId.toString(), this.datePipe.transform(date, 'yyyy-MM-dd')).subscribe(res => {
       this.elasticData = res;
+      
+      console.log(res);      
 
       this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
       this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
@@ -142,8 +144,8 @@ export class DashboardComponent implements OnInit {
     for (let i = 0; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
       this.ds.totalHitCountForDashboard += data.total_hit;
-      this.ds.totalBlockCountForDashboard = data.blocked_count;
-      this.ds.totalUniqueBlockedDomainForDashboard = data.unique_blocked_domain;
+      this.ds.totalBlockCountForDashboard += data.blocked_count;
+      this.ds.totalUniqueBlockedDomainForDashboard += data.unique_blocked_domain;
       this.ds.uniqueBlockedDomain.push(Math.round(data.averages.unique_blocked_domain));
       this.ds.totalUniqueDomain += data.unique_domain;
       this.ds.hitAverages.push(Math.round(data.averages.total_hit));
@@ -196,6 +198,7 @@ export class DashboardComponent implements OnInit {
     } else {
       this.notification.warning('Dashboard data could not get for this date parameter!', true);
     }
+
     // Total Traffic Chart
     var trafficChartoptions = {
       chart: { height: 270, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },

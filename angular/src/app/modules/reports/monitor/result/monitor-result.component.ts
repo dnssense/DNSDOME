@@ -49,20 +49,20 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
       }
       this.selectedColumns = tempcolumns;
     });
-    this.loadGraph();
+    this.loadGraph(this.searchSetting);
   }
 
-  refresh() {
-    this.loadGraph();
+  refresh(ss:SearchSetting) {
+    this.loadGraph(ss);
   }
 
   public stopRefreshing() {
     // this.spinnerService.stop();
   }
 
-  public loadGraph() {
+  public loadGraph(ss:SearchSetting) {
     // this.spinnerService.start();
-    this.monitorService.getGraphData(this.searchSetting, this.currentPage).takeUntil(this.ngUnsubscribe)
+    this.monitorService.getGraphData(ss, this.currentPage).takeUntil(this.ngUnsubscribe)
       .subscribe((res: Response) => { this.tableData = res['result']; this.totalItems = res['total']; },
         () => this.stopRefreshing(), () => this.stopRefreshing());
   }
@@ -109,7 +109,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public pageChanged(event: any): void {
     this.currentPage = event.page;
-    this.loadGraph();
+    this.loadGraph(this.searchSetting);
   };
 
   public addColumnValueIntoSelectedValues(column: any, xx: any) {

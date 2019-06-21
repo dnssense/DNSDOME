@@ -14,6 +14,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { SearchSettingService } from 'src/app/core/services/SearchSettingService';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
+import { ReportService } from 'src/app/core/services/ReportService';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -33,7 +34,7 @@ export class ScheduledReportsComponent implements OnInit {
     selectedReport: SearchSetting = new SearchSetting();
     reportForm: FormGroup;
     constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private notification: NotificationService,
-        private alert: AlertService, private searchSettingService: SearchSettingService) {
+        private alert: AlertService, private reportService: ReportService) {
 
             this.selectedReport.scheduledReport = new ScheduledReport();
             this.loadReports();
@@ -54,7 +55,7 @@ export class ScheduledReportsComponent implements OnInit {
     loadReports() {
         this.userReports = [];
         this.systemReports = [];
-        this.searchSettingService.listUserSavedSearchSettings().subscribe((res: SearchSetting[]) => {
+        this.reportService.getReportList().subscribe((res: SearchSetting[]) => {
             res.forEach(r => {
                 if (r.system) {
                     this.systemReports.push(r);
@@ -108,6 +109,7 @@ export class ScheduledReportsComponent implements OnInit {
     }
 
     manageScheduling() {
+        
         if (this.selectedReport.scheduledReport != null) {
             this.selectedReport.scheduledReport = null;
 
@@ -116,14 +118,19 @@ export class ScheduledReportsComponent implements OnInit {
             this.selectedReport.scheduledReport.format = 'PDF';
         }
 
-        this.searchSettingService.scheduleSearchSetting(this.selectedReport).subscribe(res => {
-            this.selectedReport = res.object;
-        });
+       
 
     }
 
     saveReport() {
-        this.alert.alertSuccessMessage('', '');
+        this.reportService.saveReport(this.selectedReport).subscribe(res => {
+            if (res.status == 200) {
+                this.notification.success(res.message);
+                this.loadReports();
+            } else {
+                this.notification.error(res.message);
+            }
+        });
 
     }
 
@@ -142,11 +149,11 @@ export class ScheduledReportsComponent implements OnInit {
         this.alert.alertWarningAndCancel('Are You Sure?', 'Settings for this report will be deleted!').subscribe(
             res => {
                 if (res) {
-                    this.searchSettingService.deleteSearchSetting(report).subscribe(res => {
+                    this.reportService.deleteReport(report).subscribe(res => {
                         if (res.status == 200) {
-                            this.notification.success('Reports Deleted!' + res.message);
+                            this.notification.success(res.message);
                         } else {
-                            this.notification.success('Operation Failed!' + res.message);
+                            this.notification.success(res.message);
                         }
                     });
                 }

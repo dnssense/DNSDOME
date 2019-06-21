@@ -3,7 +3,7 @@
     <section id="listPanel" class="listPanel" F>
       <div class="row">
         <div class="col-md-6 ml-auto mr-auto">
-          <div class="card">
+          <!-- <div class="card">
             <div class="card-header card-header-icon card-header-info">
               <div class="card-icon">
                 <i class="material-icons">select_all</i>
@@ -50,10 +50,65 @@
                 </table>
               </div>
             </div>
+          </div> -->
+
+
+          <div class="base-card">
+            <div class="base-card-content">
+              <div class="datatable-container container-fluid">
+                <div class="row">
+                  <h4 class="datatable-heading col-sm-4">System Reports</h4>
+                  <div class="col-sm-4">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive" style="max-height: 600px;">
+                  <table class="table table-bordered">
+                    <thead>
+                      <th class="no-border"></th>
+                      <th class="color-light-blue">Report Name</th>
+                      <th class="color-light-blue">Scheduled</th>
+                      <th class="color-light-blue">Operations</th>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of systemReports; let i = index;">
+                        <td class="numeration">{{i}}</td>
+                        <td>{{row.name}}</td>
+                        <td>
+                          <ng-container
+                            *ngIf="row.scheduledReport && row.scheduledReport.format=='PDF'; else elseTemplate">
+                            <i class="fa fa-2x fa-file-pdf-o" style="color:green;" aria-hidden="true"></i>
+                          </ng-container>
+                          <ng-template #elseTemplate>
+                            <i class="material-icons" style="color:red;">close</i>
+                          </ng-template>
+                        </td>
+                        <td class="text-right">
+                          <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-link btn-sm"
+                            mattooltip="Edit item" (click)="showEditWizard('system',row.id)">
+                            <i class="material-icons">edit</i>
+                          </button>
+                          <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-link btn-sm"
+                            mattooltip="Delete item" (click)="deleteReport('system', row.id)">
+                            <i class="material-icons">close</i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
+
+
         </div>
         <div class="col-md-6 ml-auto mr-auto">
-          <div class="card">
+        
+          <!-- <div class="card">
             <div class="card-header card-header-icon card-header-success">
               <div class="card-icon">
                 <i class="material-icons">timeline</i>
@@ -100,7 +155,60 @@
                 </table>
               </div>
             </div>
+          </div> -->
+
+          <div class="base-card">
+            <div class="base-card-content">
+              <div class="datatable-container container-fluid">
+                <div class="row">
+                  <h4 class="datatable-heading col-sm-4">User Reports</h4>
+                  <div class="col-sm-4">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive" style="max-height: 600px;">
+                  <table class="table table-bordered">
+                    <thead>
+                      <th class="no-border"></th>
+                      <th class="color-light-blue">Report Name</th>
+                      <th class="color-light-blue">Scheduled</th>
+                      <th class="color-light-blue">Operations</th>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of userReports; let i = index;">
+                        <td class="numeration">{{i}}</td>
+                        <td>{{row.name}}</td>
+                        <td>
+                          <ng-container
+                            *ngIf="row.scheduledReport && row.scheduledReport.format=='PDF'; else elseTemplate">
+                            <i class="fa fa-2x fa-file-pdf-o" style="color:green;" aria-hidden="true"></i>
+                          </ng-container>
+                          <ng-template #elseTemplate>
+                            <i class="material-icons" style="color:red;">close</i>
+                          </ng-template>
+                        </td>
+                        <td class="text-right">
+                          <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-link btn-sm"
+                            mattooltip="Edit item" (click)="showEditWizard('user',row.id)">
+                            <i class="material-icons">edit</i>
+                          </button>
+                          <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-link btn-sm"
+                            mattooltip="Delete item" (click)="deleteReport('user', row.id)">
+                            <i class="material-icons">close</i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
+
+
         </div>
       </div>
     </section>

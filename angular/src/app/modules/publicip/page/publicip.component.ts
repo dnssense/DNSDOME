@@ -224,6 +224,7 @@ export class PublicipComponent {
   }
 
   showEditWizard(id: string) {
+    
     this.isNewItemUpdated = true;
     const selectedUpdateIp = this.publicIps.find(p => p.id == Number(id));
 
@@ -239,8 +240,9 @@ export class PublicipComponent {
     this.selectedIp.isCpEnabled = selectedUpdateIp.isCpEnabled;
 
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
-      for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
-        const cname = 'ip' + (this.selectedIp.staticSubnetIp.length - 1);
+      for (let i = 1; i < this.selectedIp.staticSubnetIp.length; i++) {
+
+        const cname = 'ip' + i;
         this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
         this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]);
         this.publicIpForm.controls[cname].updateValueAndValidity();
@@ -337,6 +339,7 @@ export class PublicipComponent {
   }
 
   savePublicIp() {
+    
     if (!this.validatePublicIpForm()) {
       return;
     }
@@ -366,7 +369,7 @@ export class PublicipComponent {
         },
         ip0: {
           required: true,
-          minlength: 15
+          minlength: 8
         }
       }
     });
@@ -382,10 +385,10 @@ export class PublicipComponent {
       return false;
     }
     if (this.ipType == 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
-      this.notification.warning("Form is not valid! Please enter required fields with valid values.1");
+      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return false;
     } else if (this.ipType == 'dynamicIp' && !this.dnsFqdn) {
-      this.notification.warning("Form is not valid! Please enter required fields with valid values.2");
+      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return false;
     } else if (!this.ipType) {
       return false;

@@ -24,7 +24,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     // auto logout if 401 response returned from api
                     this.authenticationService.logout();
                     if (err.url.indexOf('login') === -1) { // reload if not login page
-                        location.href='/login'
+                        location.href='/#/login'
                     }
 
                 }

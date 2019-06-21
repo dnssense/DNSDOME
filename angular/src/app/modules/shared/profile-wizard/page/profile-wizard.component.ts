@@ -72,6 +72,7 @@ export class ProfileWizardComponent {
   }
 
   getCategoriesAndApps(): void {
+
     this.staticService.getCategoryList().subscribe(res => {
       res.forEach(r => {
         this.categoryList.push(new categoryItem(r, false));

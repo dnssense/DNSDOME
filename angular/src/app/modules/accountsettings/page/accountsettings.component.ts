@@ -97,6 +97,7 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     ngOnInit() {
+
         if (this.authService.currentSession) {
             this.user = this.authService.currentSession.currentUser;
             this.current2FAPreference = this.user.twoFactorAuthentication;
@@ -161,19 +162,12 @@ export class AccountSettingsComponent implements OnInit {
     userFormSubmit() {
 
         if (this.user && this.userInfoForm.dirty && this.userInfoForm.valid) {
-
             let request: RestUserUpdateRequest = {};
             request.name = this.user.name || ' ';
 
-
             this.accountService.update(request).subscribe(res => {
-
-
-
                 this.notification.success("Updated name");
                 this.authService.saveSession();
-
-
             });
         }
     }
@@ -207,37 +201,38 @@ export class AccountSettingsComponent implements OnInit {
 
     change2FASubmit() {
 
-
         if (this.user.gsm && this.user.gsmCode) {
             let request: RestUserUpdateRequest = {};
             request.isTwoFactorAuthentication = this.user.twoFactorAuthentication ? 0 : 1;
 
-
             this.accountService.update(request).subscribe(res => {
-
 
                 this.user.twoFactorAuthentication = !this.user.twoFactorAuthentication;
                 this.notification.success("Operation Successful Two factor authentication updated.");
                 this.authService.saveSession();
 
             });
+        } else {
+            this.notification.warning("User GSM is missing!");
         }
 
     }
 
     changePhoneNumber() {
 
-        if (this.userPhoneForm.get('gsm').valid && this.phoneNumberTemp && this.phoneNumberTemp.length == 10) {
+        if (this.userPhoneForm.get('gsmCode').valid && this.userPhoneForm.get('gsm').valid && this.phoneNumberTemp && this.phoneNumberTemp.length == 10) {
+
             this.user.gsm = this.phoneNumberTemp;
 
-            this.smsService.sendSmsCommon().subscribe(res => {
+            this.smsService.sendSmsCommon(this.user.gsmCode + this.user.gsm).subscribe(res => {
+                $('#smsValidationDiv').show(300);
 
-                this.smsInformation = res;
+                this.smsInformation = res;                
                 this.maxRequest = 3;
                 this.isConfirmTimeEnded = false;
                 this.endTime = new Date();
                 this.endTime.setMinutes(new Date().getMinutes() + 2);
-                $('#smsValidationDiv').show(300);
+                
             });
 
         }
@@ -249,39 +244,32 @@ export class AccountSettingsComponent implements OnInit {
             this.maxRequest -= 1;
             if (this.smsInformation) {
 
-
-
                 let request: RestSmsConfirmRequest = { id: this.smsInformation.id, code: this.smsCode };
-                this.smsService.confirmCommonSms(request).subscribe(res => {
+                this.smsService.confirmCommonSms(request).subscribe(res1 => {
 
                     this.user.gsm = this.phoneNumberTemp;
                     let updateRequest: RestUserUpdateRequest = {};
                     updateRequest.gsm = this.phoneNumberTemp;
                     updateRequest.gsmCode = this.user.gsmCode;
 
-                    this.accountService.update(updateRequest).subscribe(res => {
+                    this.accountService.update(updateRequest).subscribe(res2 => {
 
                         this.notification.success("Phone number updated");
                         this.user.gsm = this.phoneNumberTemp;
                         this.authService.saveSession();
 
-
                     });
                     $('#smsValidationDiv').hide(200);
 
-
                 }, err => {
-
                     if (this.maxRequest === 0) {
                         this.notification.error('You have exceeded the number of attempts! Try Again!');
-
                     }
                     else throw err;
-
                 });
 
             }
-        } 1
+        }
     }
 
     timeEnd() {

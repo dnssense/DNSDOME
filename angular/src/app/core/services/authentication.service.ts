@@ -81,8 +81,13 @@ export class AuthenticationService {
         'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
       })
     };
-    const body = encodeURI('grant_type=refresh_token&refresh_token=' + this.currentSession.refreshToken);
-    this.http.post<Session>(this.refreshTokenUrl, body, httpOptions).subscribe((res: any) => {
+    //const body = encodeURI('grant_type=refresh_token&refresh_token=' + this.currentSession.refreshToken);
+
+    let body = new URLSearchParams();
+    body.set('grant_type', 'refresh_token');
+    body.set('refresh_token', this.currentSession.refreshToken);
+
+    this.http.post<Session>(this.refreshTokenUrl, body.toString(), httpOptions).subscribe((res: any) => {
 
       if (res && res.accessToken && res.refreshToken) {
 
@@ -161,8 +166,8 @@ export class AuthenticationService {
 
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
-      return this.http.
-      post<RestPreloginResponse>(this.preloginUrl, {username: email, password: pass}, this.getHttpOptions())
+    return this.http.
+      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass }, this.getHttpOptions())
       .map(res => {
         return res;
       });
@@ -179,15 +184,19 @@ export class AuthenticationService {
   }
 
   login(email: string, pass: string): Observable<Session> {
-      const httpOptions = {
+    const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
       })
     };
-    const body = encodeURI('grant_type=password&username=' + email + '&password=' + pass);
-
-    return this.http.post<Session>(this.loginUrl, body, httpOptions)
+    
+    let body = new URLSearchParams();
+    body.set('grant_type', 'password');
+    body.set('username', email);
+    body.set('password', pass);
+    
+    return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
       .pipe(mergeMap((res: any) => {
         this.logger.console(res);
         this.currentSession = new Session();
@@ -208,7 +217,7 @@ export class AuthenticationService {
 
   logout() {
     this.clear();
-    this.router.navigateByUrl('/login');
+    this.router.navigateByUrl('/#/login');
   }
 
   forgotPassword(signupBean: SignupBean): Observable<OperationResult> {

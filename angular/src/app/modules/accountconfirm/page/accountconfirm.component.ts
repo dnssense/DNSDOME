@@ -72,7 +72,7 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
           this.activated=1;
           this.notification.success('Account activated');
           of(null).delay(2000).subscribe(x=>{
-            this.router.navigateByUrl('/login');
+            this.router.navigateByUrl('/#/login');
           })
 
         },err=>{

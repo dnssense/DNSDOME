@@ -63,12 +63,14 @@ export class CustomReportComponent implements OnInit, OnDestroy {
     });
   }
 
-  public updateSearchSetting(setting: any) {
+  // public updateSearchSetting(setting: any) {
+  //   debugger
+  //   this.searchSetting = setting;
+  // }
+
+  public search(setting: any) {
+
     this.searchSetting = setting;
-  }
-
-  public search() {
-
     if (!this.searchSetting.columns.columns || this.searchSetting.columns.columns.length == 0) {
       this.notificationService.warning("You must select at least one column for a report.");
     } else {
