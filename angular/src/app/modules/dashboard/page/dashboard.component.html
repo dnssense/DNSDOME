@@ -221,6 +221,9 @@
                         <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                           data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                           <span [ngSwitch]="dateParameter">
+                            <ng-container *ngSwitchCase="-1">
+                              Last Hour
+                            </ng-container>
                             <ng-container *ngSwitchCase="0">
                               Today
                             </ng-container>
@@ -253,6 +256,9 @@
                           </ul>
                           <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                              <button class="dropdown-item" (click)="changeDateParameter(-1)">
+                                Last Hour
+                              </button>
                               <button class="dropdown-item" (click)="changeDateParameter(0)">
                                 Today
                               </button>

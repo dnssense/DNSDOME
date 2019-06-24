@@ -9,7 +9,7 @@ import { FastReportService } from 'src/app/core/services/FastReportService';
 @Component({
   selector: 'app-customreport-result',
   templateUrl: 'customreport-result.component.html',
-  styleUrls: ['customreport-result.component.sass']
+  styleUrls: ['customreport-result.component.css']
 })
 export class CustomReportResultComponent implements OnDestroy {
   elementRef: ElementRef;

@@ -45,19 +45,19 @@
                                         <tr *ngFor="let dat of data;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
                                             <td class="numeration">{{i+1}}</td>
                                             <td *ngFor="let col of selectedColumns; let inde=index">
-                                                <div *ngIf="col.column.name == 'action'">
+                                                <a *ngIf="col.column.name == 'action'">
                                                     <app-customreport-result-column
                                                         [value]="dat[inde]== 'false' ? false:true"
                                                         [columnName]="col.column.name"
                                                         (addColumnValueEmitter)="addValuesIntoSelected($event)">
                                                     </app-customreport-result-column>
-                                                </div>
-                                                <div *ngIf="col.column.name!='action'">
+                                                </a>
+                                                <a *ngIf="col.column.name!='action'">
                                                     <app-customreport-result-column [value]="dat[inde]"
                                                         [columnName]="col.column.name"
                                                         (addColumnValueEmitter)="addValuesIntoSelected($event)">
                                                     </app-customreport-result-column>
-                                                </div>
+                                                </a>
                                             <td>
                                                 {{dat[selectedColumns.length] | customDecimalPipe}}
                                             </td>

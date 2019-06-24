@@ -35,17 +35,12 @@
         <div class="row">
           <div class="col-12">
             <div class="datatable-labels">
-              <!-- <div class="label" *ngFor="let col of columns" [ngClass]="{'active' : col.checked}"
-                (click)="checkUncheckColumn(col)">
-                {{col.beautyName}}</div> -->
-
-
               <span *ngFor="let col of columns; let i = index;">
                 <span class="label" *ngIf="i < columnListLength" [ngClass]="{'active' : col.checked}"
                   style="padding: 0px 4px 0 4px;" (click)="checkUncheckColumn(col)">
                   {{col.beautyName}}</span>
               </span>
-              <ng-container *ngIf="columnListLength>10; else elseTemplate12">
+              <ng-container *ngIf="columnListLength>12; else elseTemplate12">
                 <button mat-raised-button class="btn btn-just-icon btn-link" id="shrinkButton"
                   (click)="changeColumnListLength()">
                   <span class="btn-label">
@@ -61,9 +56,6 @@
                   </span>
                 </button>
               </ng-template>
-
-
-
             </div>
           </div>
         </div>

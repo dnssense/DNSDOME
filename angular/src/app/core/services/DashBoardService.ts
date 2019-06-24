@@ -22,9 +22,9 @@ export class DashBoardService {
 
   }
 
-  public getHourlyCompanySummary(companyId: string, date: string): Observable<ElasticDashboardResponse[]> {
-    return this.http.get<ElasticDashboardResponse[]>(this._hourlyCompanySummaryURL + companyId + '/' + date).map(res => res);
-  } 
+  public getHourlyCompanySummary(companyId: string, gteDate: string, ltDate: string): Observable<ElasticDashboardResponse[]> {
+    return this.http.get<ElasticDashboardResponse[]>(this._hourlyCompanySummaryURL + companyId + '/' + gteDate + '/' + ltDate).map(res => res);
+  }
 
   public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {
     const url = this._dashboardSettingsURL + "id=" + dashboard.id;

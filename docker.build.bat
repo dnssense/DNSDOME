@@ -7,7 +7,7 @@ docker build -t ui.dnssense .
 docker tag ui.dnssense registry.sea.net/dnssense/ui.dnssense:%version%
 :start
 SET choice=
-SET /p choice=Do you want to push? [N]: 
+SET /p choice=Do you want to push? [Y/N]: 
 IF NOT '%choice%'=='' SET choice=%choice:~0,1%
 IF '%choice%'=='Y' GOTO yes
 IF '%choice%'=='y' GOTO yes

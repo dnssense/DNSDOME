@@ -284,7 +284,7 @@
                             style="padding: 0px 4px 0 4px;" (click)="checkUncheckColumn(col)">
                             {{col.beautyName}}</span>
                     </span>
-                    <ng-container *ngIf="columnListLength>10; else elseTemplate12">
+                    <ng-container *ngIf="columnListLength>12; else elseTemplate12">
                         <button mat-raised-button class="btn btn-just-icon btn-link" id="shrinkButton"
                             (click)="changeColumnListLength()">
                             <span class="btn-label">

@@ -21,7 +21,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   public multiplier = 1;
   public maxSize: number = 10;
   private ngUnsubscribe: Subject<any> = new Subject<any>();
-  columnListLength: number = 10;
+  columnListLength: number = 12;
 
   @Input() public searchSetting: SearchSetting;
   @Output() public addColumnValueEmitter = new EventEmitter();
@@ -95,10 +95,10 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   changeColumnListLength() {
-    if (this.columnListLength == 10) {
+    if (this.columnListLength == 12) {
       this.columnListLength = this.columns.length;
     } else {
-      this.columnListLength = 10;
+      this.columnListLength = 12;
     }
 
   }

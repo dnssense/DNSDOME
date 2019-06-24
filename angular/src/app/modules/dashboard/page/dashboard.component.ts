@@ -118,30 +118,42 @@ export class DashboardComponent implements OnInit {
     }, 1000);
   }
 
-  private getElasticData(date: number) {
-    this.dashboardService.getHourlyCompanySummary(this.companyId.toString(), this.datePipe.transform(date, 'yyyy-MM-dd')).subscribe(res => {
-      this.elasticData = res;
-      
-      console.log(res);      
+  private getElasticData(d: number) {
+    const date = new Date(d);
 
-      this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
-      this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
-      this.createCharts();
-    });
+    let gteDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+    let ltDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+
+    this.dashboardService.getHourlyCompanySummary(this.companyId.toString(),
+      this.datePipe.transform(gteDate, 'yyyy-MM-dd HH:mm:ss'),
+      this.datePipe.transform(ltDate, 'yyyy-MM-dd HH:mm:ss')).subscribe(res => {
+        this.elasticData = res;
+        //console.log(res);
+        this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
+        this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
+        this.createCharts();
+      });
   }
 
   changeDateParameter(param: number) {
-    var today = new Date();
     this.dateParameter = param;
+    if (param == -1) {
+      param = 0;
+    }
+    var today = new Date();
+
     this.getElasticData(new Date().setDate(today.getDate() - param));
   }
 
   createCharts() {
+    
     this.ds = new DashboardStats();
     let mCounter = 0, mTotalAverages = 0, uMCounter = 0, uMAverages = 0, grayCounter = 0, grayTotalAverages = 0,
       uGrayCounter = 0, uGrayCounterAverages = 0;
 
-    for (let i = 0; i < this.elasticData.length; i++) {
+    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
+
+    for (let i = indexLimit; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
       this.ds.totalHitCountForDashboard += data.total_hit;
       this.ds.totalBlockCountForDashboard += data.blocked_count;
@@ -206,7 +218,7 @@ export class DashboardComponent implements OnInit {
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 6] },
       colors: ['#9d60fb', '#4a90e2'],
       series: [[0], [0]],
-      markers: { size: 0, hover: { sizeOffset: 6 } },
+      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
       legend: { position: 'top', horizontalAlign: 'left', show: true },
@@ -224,7 +236,7 @@ export class DashboardComponent implements OnInit {
     //   stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 6] },
     //   colors: ['#9d60fb', '#4a90e2'],
     //   series: [[0], [0]],
-    //   markers: { size: 0, hover: { sizeOffset: 6 } },
+    //   markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
     //   xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
     //   grid: { borderColor: '#626262', strokeDashArray: 6, },
     //   legend: { position: 'top', horizontalAlign: 'right', show: true },
@@ -242,7 +254,7 @@ export class DashboardComponent implements OnInit {
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
       series: [[0], [0]],
-      markers: { size: 0, hover: { sizeOffset: 6 } },
+      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       tooltip: { theme: 'dark' },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
@@ -255,18 +267,12 @@ export class DashboardComponent implements OnInit {
 
     //Unique Subdomain Chart
     var uniqueSubdomainChartOptions = {
-      chart: {
-        height: 250, type: 'line', zoom: { enabled: false },
-        foreColor: '#9b9b9b',
-        toolbar: {
-          show: false, tools: { download: false }
-        },
-      },
+      chart: { height: 250, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
-      series: [{ name: "Unique Subdomain", data: this.ds.uniqueSubdomain }, { name: "Unique Subdomain Avg", data: this.ds.uniqueSubdomainAvg }],
-      markers: { size: 0, hover: { sizeOffset: 6 } },
+      series: [0, 0],
+      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       tooltip: { theme: 'dark' },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
@@ -275,6 +281,7 @@ export class DashboardComponent implements OnInit {
     }
     var uniqueSubdomainChart = new ApexCharts(document.querySelector("#uniqueSubdomainChart"), uniqueSubdomainChartOptions);
     uniqueSubdomainChart.render();
+    uniqueSubdomainChart.updateSeries([{ name: "Unique Subdomain", data: this.ds.uniqueSubdomain }, { name: "Unique Subdomain Avg", data: this.ds.uniqueSubdomainAvg }])
 
     // Unique Dest Ip Chart
     var uniqueDestIpChartOptions = {
@@ -283,7 +290,7 @@ export class DashboardComponent implements OnInit {
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
       series: [[0], [0]],
-      markers: { size: 0, hover: { sizeOffset: 6 } },
+      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       tooltip: { theme: 'dark' },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
@@ -299,8 +306,7 @@ export class DashboardComponent implements OnInit {
       chart: { height: 250, type: 'radialBar', },
       plotOptions: {
         radialBar: {
-          startAngle: -100,
-          endAngle: 100,
+          startAngle: -100, endAngle: 100,
           dataLabels: {
             name: { fontSize: '16px', color: '#e4e4e4', offsetY: 25 },
             value: { offsetY: -20, fontSize: '22px', color: '#fffefe' }
@@ -374,7 +380,8 @@ export class DashboardComponent implements OnInit {
     let catName = this.selectedCategoryForTraffic.name;
 
     let catHits = [], catAvs = []
-    for (let i = 0; i < this.elasticData.length; i++) {
+    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
+    for (let i = indexLimit; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
 
       Object.keys(data.category_hits).forEach(function eachKey(key) {
@@ -404,7 +411,8 @@ export class DashboardComponent implements OnInit {
     this.selectedCategoryForUnique = this.categoryList.find(c => c.id == id);
     let catName = this.selectedCategoryForUnique.name;
     let catHits = [], catAvs = []
-    for (let i = 0; i < this.elasticData.length; i++) {
+    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
+    for (let i = indexLimit; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
 
       Object.keys(data.category_hits).forEach(function eachKey(key) {

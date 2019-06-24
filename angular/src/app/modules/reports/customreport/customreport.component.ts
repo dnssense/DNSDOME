@@ -64,7 +64,7 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   }
 
   // public updateSearchSetting(setting: any) {
-  //   debugger
+  //   
   //   this.searchSetting = setting;
   // }
 

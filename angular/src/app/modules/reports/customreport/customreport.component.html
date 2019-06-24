@@ -30,7 +30,7 @@
 
     <app-customreport-result [data]="data" [searchSetting]="searchSetting" #tableComponent
       (addColumnValueEmitter)="addValuesIntoSelected($event)" [multiplier]="multiplier" [total]="total"
-      (searchEmitter)="search()">
+      (searchEmitter)="search($event)">
     </app-customreport-result>
 
 

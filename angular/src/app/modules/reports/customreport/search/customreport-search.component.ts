@@ -102,7 +102,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   _columns: LogColumn[];
-  columnListLength: number = 10;
+  columnListLength: number = 12;
   currentColumn: string = 'domain';
   currentInput: any;
   countries: any = [];
@@ -252,6 +252,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
           this.reportService.deleteReport(report).subscribe(res => {
             if (res.status == 200) {
               this.notification.success(res.message);
+              this.selectedSavedReportName = null;
               this.reportService.getReportList().subscribe(res => this.savedReports = res);
             } else {
               this.notification.error(res.message);
@@ -296,10 +297,10 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   changeColumnListLength() {
-    if (this.columnListLength == 10) {
+    if (this.columnListLength == 12) {
       this.columnListLength = this._columns.length;
     } else {
-      this.columnListLength = 10;
+      this.columnListLength = 12;
     }
   }
 
@@ -846,7 +847,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public removeAllTags() {
-    if (this.searchSetting.must.length > 0 || this.searchSetting.mustnot.length > 0 || this.searchSetting.should.length > 0) {
+    
       this.alertService.alertWarningAndCancel('Are You Sure?', 'Your search parameters will be removed!').subscribe(
         res => {
           if (res) {
@@ -858,7 +859,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
           }
         }
       );
-    }
   }
 
   addChip(event: MatChipInputEvent): void {

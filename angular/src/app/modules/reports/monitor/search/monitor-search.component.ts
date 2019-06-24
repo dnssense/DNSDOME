@@ -256,6 +256,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
           this.reportService.deleteReport(report).subscribe(res => {
             if (res.status == 200) {
               this.notification.success(res.message);
+              this.selectedSavedReportName = null;
               this.reportService.getReportList().subscribe(res => this.savedReports = res);
             } else {
               this.notification.error(res.message);
@@ -778,8 +779,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   public removeAllTags() {
-    if (this.searchSetting.must.length > 0 || this.searchSetting.mustnot.length > 0 || this.searchSetting.should.length > 0) {
-      this.alertService.alertWarningAndCancel('Are You Sure?', 'Your search parameters will be removed!').subscribe(
+    this.alertService.alertWarningAndCancel('Are You Sure?', 'Your search parameters will be removed!').subscribe(
         res => {
           if (res) {
 
@@ -791,7 +791,6 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
           }
         }
       );
-    }
   }
 
   addChip(event: MatChipInputEvent): void {
