@@ -279,7 +279,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public checkUncheckColumn(col: LogColumn) {
-
+debugger
     if (this._columns.find(c => c.name == col.name).checked == false && this._columns.filter(c => c.checked == true).length >= 5) {
       this.notification.warning('You can selecy 5 columns!');
       return;
@@ -776,7 +776,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public editTag(tag: any, type: string) {
-
+debugger
     this.editedTag = tag;
     this.editedTagType = type;
 
@@ -821,7 +821,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     }
 
     $('#tagsDd').addClass('show');
-    $('#tagsDd').click(function (e) {
+    $('.filterButton').click(function (e) {
       e.stopPropagation();
     });
   }

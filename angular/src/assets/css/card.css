@@ -1,4 +1,4 @@
-.base-card {
+.dns-base-card {
   display: block;
   width: 100%;
   min-height: 1px;
@@ -10,7 +10,7 @@
   color: #f5f5f5;
 }
 
-.base-card-header {
+.dns-base-card-header {
   font-size: 24px;
   font-weight: bold;
   color: #f5f5f5;

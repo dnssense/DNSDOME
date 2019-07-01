@@ -22,9 +22,12 @@
   border-radius: 5px;
 }
 
-.editButton{ visibility: hidden}
+.editButton {
+  visibility: hidden
+}
+
 .filterButton:hover .editButton{
-visibility: visible;
+  visibility: visible;
 }
 
 .example-chip-list {

@@ -6,39 +6,42 @@
         <div class="col-md-4">
         </div>
         <div class="col-md-4 text-right">
-          <button mat-raised-button type="button" class="ml-2 btn btn-success btn-sm"
-            matTooltip="Create a new Public IP" (click)="showNewWizard()">
+          <!-- <button mat-raised-button type="button" class="ml-2 btn btn-success btn-sm"
+            matTooltip="Create a new Public IP" >
             <i class="material-icons">add_circle_outline</i> Create New Profile
-          </button>
+          </button> -->
+          <button class="btns btn-teritary border-radius-8 p-2 card-create-btn" id="newAgentBtn" (click)="showNewWizard()"
+          style="z-index: 10;">
+              <img src="assets/images/icons/add.svg">
+              Create New Profile
+            </button>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
-          <div class="base-card">
-            <div class="base-card-content">
-              <div class="datatable-container container-fluid">
+          <div class="dns-base-card">
+            <div class="dns-base-card-content">
+              <div class="dns-datatable-container container-fluid">
                 <div class="row">
-                  <h4 class="datatable-heading col-sm-4">Security Profiles</h4>
+                  <h4 class="dns-datatable-heading col-sm-4">Security Profiles</h4>
                   <div class="col-sm-4">
-                    <div class="search-form">
-                      <mat-form-field>
-                        <input type="text" matInput [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)">
-                        <mat-placeholder style="color: whitesmoke;">Search by name</mat-placeholder>
-                      </mat-form-field>
-                    </div>
+                    <div class="search-form dns-full-width flex-1">
+                        <img src="assets/images/icons/search.svg" class="icon">
+                        <input type="search" class="dns-form-control reverse-form" placeholder="Search by name" [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)" />
+                      </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row mt-3">
               <div class="col-12">
                 <div class="table-responsive" style="max-height: 600px;">
                   <table class="table table-bordered">
                     <thead>
                       <th class="no-border"></th>
-                      <th class="color-light-blue">Profile Name</th>
-                      <th class="color-light-blue">Number of Uses</th>
-                      <th class="color-light-blue">Operations</th>
+                      <th style="border-bottom: white;">Profile Name</th>
+                      <th style="border-bottom: white;">Number of Uses</th>
+                      <th style="border-bottom: white;">Operations</th>
                     </thead>
                     <tbody>
                       <tr *ngFor="let p of securityProfilesFiltered; let i = index;">

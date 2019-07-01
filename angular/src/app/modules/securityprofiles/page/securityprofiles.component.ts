@@ -29,6 +29,13 @@ export class SecurityProfilesComponent {
 
         this.getProfiles();
         this.defineNewAgentForProfile();
+
+        $('#newAgentBtn').click(function () {
+            
+            $('#closeNewAgentBtn').removeClass('d-none');
+            $(this).addClass('d-none');
+            $('#agent-wizard').removeClass('d-none');
+          });
     }
 
     getProfiles() {
@@ -77,7 +84,7 @@ export class SecurityProfilesComponent {
     }
 
     hideWizard() {
-        this.alert.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
+        this.alert.alertWarningAndCancel('Are You Sure?', 'If you made changes, Your Changes will be cancelled!').subscribe(
             res => {
                 if (res) {
                     this.hideWizardWithoutConfirm();

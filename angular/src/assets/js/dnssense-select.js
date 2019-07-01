@@ -1,4 +1,4 @@
-function dnsSelectLoader2() {
+(function () {
 
   var container_select, i, j, selElmnt, a, b, c;
 
@@ -74,4 +74,4 @@ function dnsSelectLoader2() {
 
   document.addEventListener("click", closeAllSelect);
 
-}
+})();

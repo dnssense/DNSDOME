@@ -19,6 +19,7 @@ export class categoryItem {
 export class applicationItem {
   constructor(public application: ApplicationV2, public isBlocked: boolean) { }
 }
+
 @Component({
   selector: 'app-profile-wizard',
   templateUrl: './profile-wizard.component.html',
@@ -37,6 +38,7 @@ export class ProfileWizardComponent {
   public _selectedAgent: Agent;
   public _startWizard: boolean;
   public _saveMode: string;
+  currentStep = 0;
 
   @Input() set saveMode(value: string) {
     this._saveMode = value;
@@ -50,12 +52,15 @@ export class ProfileWizardComponent {
   get selectedAgent(): Agent {
     return this._selectedAgent;
   }
+
   @Input() set startWizard(value: boolean) {
     this._startWizard = value;
     if (value) {
-      this.installWizard();
+      this.currentStep = 0;
+      this.controlStep();
     }
   }
+
   get startWizard(): boolean {
     return this._startWizard;
   }
@@ -76,7 +81,7 @@ export class ProfileWizardComponent {
     this.staticService.getCategoryList().subscribe(res => {
       res.forEach(r => {
         this.categoryList.push(new categoryItem(r, false));
-      });      
+      });
     });
     this.staticService.getApplicationList().subscribe(res => {
       res.forEach(r => {
@@ -87,11 +92,15 @@ export class ProfileWizardComponent {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    $('#contentLink').click();
+    // $('#contentLink').click();
+    
     this.updateModels();
   }
 
   updateModels() {
+    this.currentStep = 0;
+    this.controlStep();
+
     if (this.saveMode == 'NewProfile') {
 
       this.categoryList.forEach(c => {
@@ -465,6 +474,79 @@ export class ProfileWizardComponent {
     };
 
   }
+
+  nextStep() {
+    if (this.currentStep >= 0 && this.currentStep < 3) {
+      this.currentStep++;
+      this.controlStep();
+      document.getElementById('agent-wizard').scrollIntoView();
+    }
+  }
+
+  prevStep() {
+    if (this.currentStep >= 0 && this.currentStep <= 3) {
+      this.currentStep--;
+      this.controlStep();
+      document.getElementById('agent-wizard').scrollIntoView();
+    }
+  }
+
+  changeWizardStep(stepNo: number) {
+    this.currentStep = stepNo;
+    this.controlStep();
+  }
+
+  controlStep() {
+
+    let prevButton = $('#prevBtn');
+    let nextButton = $('#nextBtn');
+    let finishButton = $('#finishBtn');
+
+    let contentFilter = $('#contentFilter'),
+      security = $('#security'),
+      applications = $('#applications'),
+      blackWhiteLists = $('#blackWhiteLists');
+
+    if (this.currentStep === 0) {
+      prevButton.hide();
+      finishButton.hide();
+    } else if (this.currentStep === 3) {
+      nextButton.hide();
+      finishButton.show();
+    } else {
+      finishButton.hide();
+      prevButton.show();
+      nextButton.show();
+    }
+
+    contentFilter.removeClass('d-block');
+    security.removeClass('d-block');
+    applications.removeClass('d-block');
+    blackWhiteLists.removeClass('d-block');
+
+    if (this.currentStep === 0) {
+      contentFilter.addClass('d-block');
+      $('#contentFilterBtn').addClass('activated')
+      $('#securityBtn').removeClass('activated')
+      $('#applicationsBtn').removeClass('activated')
+      $('#blackWhiteListsBtn').removeClass('activated')
+    } else if (this.currentStep === 1) {
+      security.addClass('d-block');
+      $('#securityBtn').addClass('activated')
+      $('#applicationsBtn').removeClass('activated')
+      $('#blackWhiteListsBtn').removeClass('activated')
+    } else if (this.currentStep === 2) {
+      applications.addClass('d-block');
+      $('#applicationsBtn').addClass('activated')
+      $('#blackWhiteListsBtn').removeClass('activated')
+    } else {
+      blackWhiteLists.addClass('d-block');
+      $('#blackWhiteListsBtn').addClass('activated')
+    }
+
+  }
+
+
 
 
 }

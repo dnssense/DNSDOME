@@ -1,4 +1,4 @@
-.label {
+.dns-label {
   display: inline-block;
   padding: 0 10px;
   margin: 10px;
@@ -8,17 +8,17 @@
   border-radius: 8px;
 }
 
-.label:hover {
+.dns-label:hover {
   background-color: rgba(71, 71, 71, 0.6);
   cursor: pointer;
   user-select: none;
 }
 
-.label:first-child {
+.dns-label:first-child {
   margin-left: 0;
 }
 
-.label .label-color {
+.dns-label .dns-label-color {
   display: inline-block;
   width: 12px;
   height: 12px;
@@ -27,23 +27,23 @@
   margin-right: 8px;
 }
 
-.label i.close-btn {
+.dns-label i.dns-close-btn {
   font-size: 26px;
   vertical-align: middle;
   margin-left: 5px;
 }
 
-.datatable-labels .label {
+.dns-datatable-labels .dns-label {
   padding: 7px 14px;
   margin-right: 8px;
   color: #f5f5f5;
   font-weight: 500;
   background: #141414;
-  transition: 0.2s;
+  transition: 0.dns-2s;
 }
 
-.datatable-labels .label.active {
+.dns-datatable-labels .dns-label.dns-active {
   background: #7cbf52;
   color: #202124;
-  transition: 0.2s;
+  transition: 0.dns-2s;
 }

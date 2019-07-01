@@ -1,0 +1,99 @@
+.dns-wizard-container {
+  display: block;
+  width: 100%;
+}
+
+.dns-wizard-container .dns-wizard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dns-wizard-container .dns-wizard-header .btn {
+  flex: 1;
+  padding: 10px;
+  background: #9d9d9d;
+  color: #484848;
+  margin: 20px;
+  border-radius: 50px;
+  position: relative;
+}
+
+.dns-wizard-container .dns-wizard-header .btn:last-child::after {
+  display: none;
+}
+
+.dns-wizard-container .dns-wizard-header .btn::after {
+  display: block;
+  content: "";
+  height: 2px;
+  background: #9d9d9d;
+  width: 20px;
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 99999;
+}
+
+.dns-wizard-container .dns-wizard-header .btn.activated {
+  background: var(--color-accent);
+  color: white;
+}
+
+.dns-wizard-container .dns-wizard-header .btn.activated::after {
+  background: var(--color-accent);
+}
+
+.dns-wizard-container .dns-wizard-content .btn.wizard-btn {
+  background: #9d9d9d;
+  color: #484848;
+  position: relative;
+  top: 35px;
+}
+
+.dns-wizard-container .dns-wizard-content .btn.wizard-btn.next-btn {
+  float: right;
+  background: var(--color-accent);
+  color: white;
+}
+
+.dns-wizard-container .dns-wizard-content .btn.wizard-btn.next-btn::before {
+  content: "Next";
+}
+
+.dns-wizard-container .dns-wizard-content .btn.wizard-btn.next-btn::after {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: 12px;
+  position: relative;
+  top: 3px;
+  background: url("../images/icons/arrow-right-white.svg");
+}
+
+.dns-wizard-container .dns-wizard-content .btn.wizard-btn.prev-btn::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 12px;
+  position: relative;
+  top: 3px;
+  background: url("../images/icons/arrow-right-black.svg");
+}
+
+.dns-wizard-container .dns-wizard-content .btn.wizard-btn.prev-btn::after {
+  content: "Previous";
+}
+
+.dns-wizard-container .dns-wizard-content .btn.wizard-btn.finish-btn {
+  background: var(--color-accent);
+  color: white;
+  float: right;
+}
+
+.dns-wizard-container .dns-wizard-content .btn.wizard-btn.finish-btn::before {
+  content: "Finish";
+}

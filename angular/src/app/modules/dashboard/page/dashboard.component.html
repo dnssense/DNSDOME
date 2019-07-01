@@ -2,25 +2,30 @@
   <div class="container-fluid ">
     <div class="row" style="margin-top: -10px">
       <div class="col-md-12">
-        <div class="base-card">
+        <div class="dns-base-card">
 
           <!-- NUMERIC CARD -->
           <div class="row" style="margin-top: -10px">
             <div class="col-9">
               <div class="row">
                 <div class="col-12">
-                  <table class="table base-table table-responsive-md table-responsive-sm">
+                  <table class="table dns-base-table table-responsive-md table-responsive-sm">
                     <thead>
                       <tr>
                         <th></th>
                         <th class="text-center">Total Traffic</th>
                         <th class="text-center">Blocked</th>
-                        <th class="text-center" [matTooltipShowDelay]="800"
-                          matTooltip="Involved Categories: Malware/Virus, Potentially Dangerous, Phishing">Security
-                          Risk *</th>
-                        <th class="text-center" [matTooltipShowDelay]="800"
-                          matTooltip="Involved Categories: Unknown, Undecided Not Safe, Undecided Safe, Domain Parking, Newly Register, Newly Up, Dead Sites, Firstly Seen">
-                          Grey *</th>
+                        <th class="text-center">
+                          Security Risk
+                          <span matTooltip="Involved Categories: Malware/Virus, Potentially Dangerous, Phishing">
+                            <i class="fa fa-question-circle ml-3"></i></span>
+                        </th>
+                        <th class="text-center">
+                          Grey
+                          <span
+                            matTooltip="Involved Categories: Unknown, Undecided Not Safe, Undecided Safe, Domain Parking, Newly Register, Newly Up, Dead Sites, Firstly Seen">
+                            <i class="fa fa-question-circle ml-3"></i></span>
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -213,11 +218,11 @@
 
             </div>
             <div class="col-3">
-              <table class="table base-table table-responsive-md table-responsive-sm">
+              <table class="table dns-base-table table-responsive-md table-responsive-sm">
                 <thead>
                   <tr>
                     <th>
-                      <div class="dns-dropdown d-inline-block table-select pull-right" id="dropdownDate">
+                      <div class="dns-dropdown d-inline-block dns-table-select pull-right" id="dropdownDate">
                         <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                           data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                           <span [ngSwitch]="dateParameter">
@@ -321,8 +326,8 @@
 
     <div class="row mt-3">
       <div class="col-md-8">
-        <div class="base-card">
-          <div class="base-card-header">
+        <div class="dns-base-card">
+          <div class="dns-base-card-header">
             <div class="row">
               <div class="col-md-6">Traffic Based Anomaly</div>
               <div class="col-md-6">
@@ -330,15 +335,15 @@
                   <thead>
                     <tr>
                       <th>
-                        <div class="dns-dropdown d-inline-block table-select pull-right" id="dropdownDate">
+                        <div class="dns-dropdown d-inline-block dns-table-select pull-right" id="dropdownDate">
                           <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                             <ng-container *ngIf="selectedCategoryForTraffic; else elseTemplateTraficCat">
-                              <span class="label"
+                              <span class="dns-label"
                                 style="margin: 0px; margin-top: -5px; margin-bottom: -5px; height: 34px;">
-                                <span class="label-color"></span>
+                                <span class="dns-label-color"></span>
                                 <span>{{selectedCategoryForTraffic.name}}</span>
-                                <i class="close-btn icon-cancel"
+                                <i class="dns-close-btn icon-cancel"
                                   (click)="deleteCatFromTraffic(selectedCategoryForTraffic.id)"></i>
                               </span>
                             </ng-container>
@@ -348,14 +353,14 @@
                             <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
-                            style="max-height: 400px; overflow: auto; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
-                            <div class="dropdown-searchbar" style="width: 95%">
+                            style="max-height: 400px;  overflow: auto; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
+                            <div class="dns-dropdown-searchbar">
                               <input type="text" class="dns-form-control reverse-form" matInput placeholder="Search"
                                 [(ngModel)]="searchKey" (ngModelChange)="searchCategoryForTraffic($event)">
                             </div>
                             <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
                               (click)="addCategoryToTraffic(cat.id)">
-                              <span class="color-point" style="background:#fa3f3f"></span>
+                              <span class="dns-color-point" style="background:#fa3f3f"></span>
                               {{cat.name}}
                             </button>
                           </div>
@@ -367,7 +372,7 @@
               </div>
             </div>
           </div>
-          <div class="base-card-content">
+          <div class="dns-base-card-content">
             <div class="chart" style="min-height: 220px; margin-bottom: -18px;">
               <div id="hitChartDiv">
                 <div id="trafficChartHits"></div>
@@ -377,7 +382,7 @@
               </div>
             </div>
             <!-- <div class="events" style="margin-top: -30px">
-              <div class="toggle" style="padding: 4px;">
+              <div class="dns-toggle" style="padding: 4px;">
                 <button class="btns " [ngClass]="{'active ': trafficChartType=='hit'}"
                   (click)="changeTrafficChartData('hit')">Total Traffic</button>
                 <button class="btns" [ngClass]="{'active': trafficChartType=='block'}"
@@ -417,11 +422,11 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="base-card">
-          <div class="base-card-header">
+        <div class="dns-base-card">
+          <div class="dns-base-card-header">
             World Traffic
           </div>
-          <div class="base-card-content" disabled="true">
+          <div class="dns-base-card-content" disabled="true">
             <div class="card card-chart mb-2" style="box-shadow: none; background-color: #262626">
               <div class="card-body">
                 <div id="worldMap" class="map" style="max-height: 220px;"></div>
@@ -433,8 +438,8 @@
     </div>
     <div class="row mt-3">
       <div class="col-md-12">
-        <div class="base-card">
-          <div class="base-card-header">
+        <div class="dns-base-card">
+          <div class="dns-base-card-header">
             <div class="row">
               <div class="col-md-6">Unique Counter Based Anomaly</div>
               <div class="col-md-6">
@@ -442,15 +447,15 @@
                   <thead>
                     <tr>
                       <th>
-                        <div class="dns-dropdown d-inline-block table-select pull-right" id="dropdownDate">
+                        <div class="dns-dropdown d-inline-block dns-table-select pull-right" id="dropdownDate">
                           <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                             <ng-container *ngIf="selectedCategoryForUnique; else elseTemplateBlockedCat">
-                              <span class="label"
+                              <span class="dns-label"
                                 style="margin: 0px; margin-top: -5px; margin-bottom: -5px; height: 34px;">
-                                <span class="label-color"></span>
+                                <span class="dns-label-color"></span>
                                 <span>{{selectedCategoryForUnique.name}}</span>
-                                <i class="close-btn icon-cancel"
+                                <i class="dns-close-btn icon-cancel"
                                   (click)="deleteCatFromUnique(selectedCategoryForUnique.id)"></i>
                               </span>
                             </ng-container>
@@ -467,7 +472,7 @@
                             </div>
                             <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
                               (click)="addCategoryToUnique(cat.id)">
-                              <span class="color-point" style="background:#fa3f3f"></span>
+                              <span class="dns-color-point" style="background:#fa3f3f"></span>
                               {{cat.name}}
                             </button>
                           </div>
@@ -480,7 +485,7 @@
             </div>
 
           </div>
-          <div class="base-card-content">
+          <div class="dns-base-card-content">
             <div class="chart" style="min-height: 200px">
               <div id="uniqueDomainChartDiv">
                 <div id="uniqueDomainChart"></div>
@@ -494,7 +499,7 @@
             </div>
 
             <div class="events">
-              <div class="toggle" style="padding: 4px;">
+              <div class="dns-toggle" style="padding: 4px;">
                 <button class="btns active" [ngClass]="{'active ': uniqueChartType=='domain'}"
                   (click)="changeUniqueChartData('domain')">{{selectedCategoryForUnique?.name}} Unique Domain</button>
                 <button class="btns" [ngClass]="{'active ': uniqueChartType=='subdomain'}"
@@ -541,8 +546,8 @@
 
     <!-- <div class="row mt-4 mb-4">
       <div class="col-md-6">
-        <div class="base-card">
-          <div class="base-card-content">
+        <div class="dns-base-card">
+          <div class="dns-base-card-content">
             <div class="datatable-container container-fluid">
               <div class="row">
                 <h4 class="datatable-heading col-sm-8">Firstly Seen Domains ({{firstlySeenDomainsFiltered?.length}})
@@ -594,16 +599,16 @@
         </div>
       </div>
       <div class="col-md-6">
-        <div class="base-card">
-          <div class="base-card-header">
+        <div class="dns-base-card">
+          <div class="dns-base-card-header">
             Malware Dedected
           </div>
-          <div class="base-card-content">
+          <div class="dns-base-card-content">
             <div class="chart">
               <div id="malwareDetectionChart"></div>
             </div>
             <div class="events" style="margin-top: -30px">
-              <div class="toggle">
+              <div class="dns-toggle">
                 <button class="btn active">All</button>
                 <button class="btn">Major</button>
                 <button class="btn">Threshold</button>

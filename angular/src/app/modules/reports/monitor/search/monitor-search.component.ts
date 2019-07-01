@@ -190,6 +190,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngAfterViewInit() {
     this.setDropdown();
+
     $('#tagsDd').click(function (e) {
       e.stopPropagation();
     });
@@ -708,7 +709,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   public editTag(tag: any, type: string) {
-
+debugger
     this.editedTag = tag;
     this.editedTagType = type;
 
@@ -753,9 +754,10 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     $('#tagsDd').addClass('show');
-    $('#tagsDd').click(function (e) {
+    $('.filterButton').click(function (e) {
       e.stopPropagation();
     });
+
   }
 
   public removeTag(tag: any, type: string) {

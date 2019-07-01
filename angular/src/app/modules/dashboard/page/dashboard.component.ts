@@ -15,7 +15,6 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 
 declare const $: any;
 
-//chartlar icin class tanımla
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
@@ -59,7 +58,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    
     let values: Map<string, number> = new Map();
     values.set('ru', 234);
     values.set('ca', 154);
@@ -121,18 +120,16 @@ export class DashboardComponent implements OnInit {
   private getElasticData(d: number) {
     const date = new Date(d);
 
-    let gteDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-    let ltDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+    let d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+    let d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
-    this.dashboardService.getHourlyCompanySummary(this.companyId.toString(),
-      this.datePipe.transform(gteDate, 'yyyy-MM-dd HH:mm:ss'),
-      this.datePipe.transform(ltDate, 'yyyy-MM-dd HH:mm:ss')).subscribe(res => {
-        this.elasticData = res;
-        //console.log(res);
-        this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
-        this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
-        this.createCharts();
-      });
+    this.dashboardService.getHourlyCompanySummary(this.companyId.toString(), d1.toISOString(), d2.toISOString()).subscribe(res => {
+      this.elasticData = res;
+      console.log(res);
+      this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
+      this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
+      this.createCharts();
+    });
   }
 
   changeDateParameter(param: number) {
@@ -146,7 +143,6 @@ export class DashboardComponent implements OnInit {
   }
 
   createCharts() {
-    
     this.ds = new DashboardStats();
     let mCounter = 0, mTotalAverages = 0, uMCounter = 0, uMAverages = 0, grayCounter = 0, grayTotalAverages = 0,
       uGrayCounter = 0, uGrayCounterAverages = 0;
@@ -397,8 +393,6 @@ export class DashboardComponent implements OnInit {
 
     this.resetCategoryListFiltered();
   }
-
-
 
   deleteCatFromTraffic(id: number) {
     if (id && id > 0) {

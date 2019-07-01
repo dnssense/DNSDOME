@@ -28,87 +28,93 @@
     </div> 
   </div>
 </div> -->
-<div class="base-card">
+<div class="dns-base-card">
   <ng-container *ngIf="tableData && tableData.length>0; else elseTemplate">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="row">
-          <div class="col-12">
-            <div class="datatable-labels">
-              <span *ngFor="let col of columns; let i = index;">
-                <span class="label" *ngIf="i < columnListLength" [ngClass]="{'active' : col.checked}"
-                  style="padding: 0px 4px 0 4px;" (click)="checkUncheckColumn(col)">
-                  {{col.beautyName}}</span>
-              </span>
-              <ng-container *ngIf="columnListLength>12; else elseTemplate12">
-                <button mat-raised-button class="btn btn-just-icon btn-link" id="shrinkButton"
-                  (click)="changeColumnListLength()">
-                  <span class="btn-label">
-                    <i class="material-icons">fast_rewind</i>
+    <div class="dns-base-card-content">
+      <div class="dns-datatable-container container-fluid">
+        
+            <div class="row">
+              <div class="col-12">
+                <div class="dns-datatable-labels">
+                  <span *ngFor="let col of columns; let i = index;">
+                    <span class="dns-label" *ngIf="i < columnListLength" [ngClass]="{'dns-active' : col.checked}"
+                      style="padding: 0px 4px 0 4px;" (click)="checkUncheckColumn(col)">
+                      {{col.beautyName}}</span>
                   </span>
-                </button>
-              </ng-container>
-              <ng-template #elseTemplate12>
-                <button mat-raised-button class="btn btn-just-icon btn-link" id="expandButton"
-                  (click)="changeColumnListLength()">
-                  <span class="btn-label">
-                    <i class="material-icons">fast_forward</i>
-                  </span>
-                </button>
-              </ng-template>
+                  <ng-container *ngIf="columnListLength>12; else elseTemplate12">
+                    <button mat-raised-button class="btn btn-just-icon btn-link" id="shrinkButton"
+                      (click)="changeColumnListLength()">
+                      <span class="btn-label">
+                        <i class="material-icons">fast_rewind</i>
+                      </span>
+                    </button>
+                  </ng-container>
+                  <ng-template #elseTemplate12>
+                    <button mat-raised-button class="btn btn-just-icon btn-link" id="expandButton"
+                      (click)="changeColumnListLength()">
+                      <span class="btn-label">
+                        <i class="material-icons">fast_forward</i>
+                      </span>
+                    </button>
+                  </ng-template>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div #tableDivComponent class="table-responsive" id="table-data" style="border-radius: 5px;"
-          *ngIf="tableData && tableData.length > 0">
-          <table class="table table-bordered" style="display: table;">
-            <thead>
-              <th class="no-border"></th>
-              <th class="color-light-blue" *ngFor="let col of selectedColumns">{{col.beautyName}}</th>
-            </thead>
-            <tr *ngFor="let dat of tableData;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
-              <td class="numeration"><small>
-                  {{((this.currentPage-1)*searchSetting.topNumber)==0?i+1:((this.currentPage-1)*searchSetting.topNumber)+(i+1)}}
-                </small></td>
-              <td *ngFor="let colName of selectedColumns"><small>
-                  <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])" *ngIf="(colName.name!= 'sourceIpCountryCode' && colName.name!='destinationIpCountryCode' && colName.name!='action'
-                 && colName.name!='category' && colName.name!='applicationName' )">
-                    <app-text-limit [text]="colName.name == 'time'?(dat[colName.name]| dateFormat):dat[colName.name]"
-                      [limit]="colName.name == 'domain'|| colName.name=='subdomain'?100:40"></app-text-limit>
-                  </a>
-                  <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
-                    *ngIf="(colName.name== 'sourceIpCountryCode' || colName.name=='destinationIpCountryCode' )">
-                    <img src="/assets/img/flags/{{dat[colName.name]}}.png" class="flagImage" />
-                    {{dat[colName.name] =='00'?'Local Domain':dat[colName.name] | countryPipe}}
-                  </a>
-                  <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
-                    *ngIf="(colName.name== 'action' )">
-                    {{dat[colName.name]? "Allow":"Block"}}
-                  </a>
-                  <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
-                    *ngIf="(colName.name== 'applicationName' )">
-                    {{dat[colName.name]}}
-                  </a>
-                  <ul *ngIf="(colName.name== 'category' )" style="list-style: none;">
-                    <li *ngFor="let ca of dat[colName.name]">
-                      <a (click)="addColumnValueIntoSelectedValues(colName.name,ca)">
-                        {{ca}}
-                      </a>
-                    </li>
-                  </ul>
-                </small>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="100">
-                <pagination [totalItems]="totalItems" [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)"
-                  [boundaryLinks]="true" [maxSize]="maxSize" [itemsPerPage]="searchSetting.topNumber"></pagination>
-              </td>
-            </tr>
-          </table>
-        </div>
+            <div class="row">
+              <div class="col-md-12">
+                <table class="table table-bordered" style="display: table;">
+                  <thead>
+                    <th class="no-border"></th>
+                    <th *ngFor="let col of selectedColumns">{{col.beautyName}}</th>
+                  </thead>
+                  <tr *ngFor="let dat of tableData;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
+                    <td class="numeration"><small>
+                        {{((this.currentPage-1)*searchSetting.topNumber)==0?i+1:((this.currentPage-1)*searchSetting.topNumber)+(i+1)}}
+                      </small></td>
+                    <td *ngFor="let colName of selectedColumns"><small>
+                        <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])" *ngIf="(colName.name!= 'sourceIpCountryCode' && colName.name!='destinationIpCountryCode' && colName.name!='action'
+                   && colName.name!='category' && colName.name!='applicationName' )">
+                          <app-text-limit
+                            [text]="colName.name == 'time'?(dat[colName.name]| dateFormat):dat[colName.name]"
+                            [limit]="colName.name == 'domain'|| colName.name=='subdomain'?100:40"></app-text-limit>
+                        </a>
+                        <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
+                          *ngIf="(colName.name== 'sourceIpCountryCode' || colName.name=='destinationIpCountryCode' )">
+                          <img src="/assets/img/flags/{{dat[colName.name]}}.png" class="flagImage" />
+                          {{dat[colName.name] =='00'?'Local Domain':dat[colName.name] | countryPipe}}
+                        </a>
+                        <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
+                          *ngIf="(colName.name== 'action' )">
+                          {{dat[colName.name]? "Allow":"Block"}}
+                        </a>
+                        <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
+                          *ngIf="(colName.name== 'applicationName' )">
+                          {{dat[colName.name]}}
+                        </a>
+                        <ul *ngIf="(colName.name== 'category' )" style="list-style: none;">
+                          <li *ngFor="let ca of dat[colName.name]">
+                            <a (click)="addColumnValueIntoSelectedValues(colName.name,ca)">
+                              {{ca}}
+                            </a>
+                          </li>
+                        </ul>
+                      </small>
+                    </td>
+                  </tr>
+                  <tr >
+                    <td class="numeration" colspan="100">
+                      <pagination [totalItems]="totalItems" [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)"
+                        [boundaryLinks]="true" [maxSize]="maxSize" [itemsPerPage]="searchSetting.topNumber"></pagination>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+             
       </div>
     </div>
+
+
   </ng-container>
   <ng-template #elseTemplate>
     <div class="row">

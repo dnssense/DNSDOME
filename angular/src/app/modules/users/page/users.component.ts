@@ -44,7 +44,7 @@ export class UsersComponent implements OnInit {
                 "email": ["", [Validators.required, ValidationService.emailValidator]],
                 "role": ["", [Validators.required]],
                 "password": ["", [Validators.required]],
-                "passwordAgain": ["", [Validators.required]],
+                "passwordAgain": ["", []],
             }, { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
             );
     }
@@ -118,6 +118,8 @@ export class UsersComponent implements OnInit {
 
     userFormSubmit() {
 
+        console.log(this.selectedUser);
+        debugger
         if (!this.selectedUser.locked) {
             this.selectedUser.locked = false;
         }

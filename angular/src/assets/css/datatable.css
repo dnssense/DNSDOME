@@ -1,25 +1,36 @@
-.datatable-container {
+.dns-datatable-container {
   display: block;
   width: 100%;
 }
 
-.datatable-container .datatable-heading {
+.dns-datatable-container .dns-datatable-heading {
   display: inline-block;
   font-size: 20px;
   font-weight: bold;
 }
 
-.datatable-container .datatable-pagination{
+.dns-datatable-container .dns-datatable-pagination {
   display: inline-block;
 }
 
-.datatable-container .datatable-pagination .page-numbers{
+.dns-datatable-container .dns-datatable-pagination .page-numbers {
   display: inline-block;
 }
 
-.page-prev, .page-next{
+.page-prev,
+.page-next {
   display: inline-block;
   padding: 5px 10px;
   cursor: pointer;
   background: transparent !important;
+}
+
+.dns-datatable-pagination {
+  font-size: 16px !important;
+  font-weight: normal;
+}
+
+.table-padding-05 td,
+.table-padding-05 th {
+  padding: .5rem;
 }

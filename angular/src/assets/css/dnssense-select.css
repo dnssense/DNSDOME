@@ -58,7 +58,9 @@
   z-index: 99;
   border-radius: 8px;
   overflow: hidden;
-  width: auto
+  width: auto;
+  max-height: 400px;
+  overflow: auto;
 }
 
 /*hide the items when the select box is closed:*/

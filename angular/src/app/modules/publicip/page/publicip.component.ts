@@ -1,18 +1,7 @@
-import { Component, OnInit, SimpleChanges, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertService } from 'src/app/core/services/alert.service';
-import { ApplicationProfile } from 'src/app/core/models/ApplicationProfile';
-import { ApplicationProfilesService } from 'src/app/core/services/ApplicationProfilesService';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { DomainProfile } from 'src/app/core/models/DomainProfile';
-import { BWList } from 'src/app/core/models/BWList';
-import { DomainProfilesService } from 'src/app/core/services/DomainProfilesService';
-import { BlackWhiteListService } from 'src/app/core/services/BlackWhiteListService';
-import { PublicIPService } from 'src/app/core/services/PublicIPService';
-import { PublicIP } from 'src/app/core/models/PublicIP';
-import { MobileCategory } from 'src/app/core/models/MobileCategory';
-import { AgentResponse } from 'src/app/core/models/AgentResponse';
-import { CollectiveBlockRequest } from 'src/app/core/models/CollectiveBlockRequest';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { Agent, IpWithMask } from 'src/app/core/models/Agent';
 import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
@@ -28,18 +17,14 @@ declare var $: any;
 declare interface JsonIP {
   ip: string
 }
-declare interface DataTable {
-  headerRow: string[];
-  footerRow: string[];
-  dataRows: string[][];
-}
 
 @Component({
   selector: 'app-publicip',
   templateUrl: './publicip.component.html',
   styleUrls: ['./publicip.component.sass']
 })
-export class PublicipComponent {
+export class PublicipComponent implements AfterViewInit {
+
 
   ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
   publicIps: Agent[] = [];
@@ -64,7 +49,7 @@ export class PublicipComponent {
 
     this.publicIpForm = this.formBuilder.group({
       "agentName": ["", [Validators.required]],
-      "blockMessage": ["", [Validators.required]],
+      "blockMessage": ["", []],
       "dnsFqdn": ["", []],
       "ip0": ["", [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]],
       "cyberXRayIp": ["", []]
@@ -74,11 +59,121 @@ export class PublicipComponent {
     this.defineNewAgentForProfile();
 
   }
+  ngAfterViewInit(): void {
+
+    ///////////adding select options into divs
+    var container_select, i, j, selElmnt, a, b, c;
+    container_select = document.getElementsByClassName("dnssense-select");
+    for (i = 0; i < container_select.length; i++) {
+      selElmnt = container_select[i].getElementsByTagName("select")[0];
+
+      a = document.createElement("DIV");
+      a.setAttribute("class", "select-selected");
+      a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+      container_select[i].appendChild(a);
+
+      b = document.createElement("DIV");
+      b.setAttribute("class", "select-items select-hide");
+      for (j = 1; j < selElmnt.length; j++) {
+
+        c = document.createElement("DIV");
+        c.innerHTML = selElmnt.options[j].innerHTML;
+        c.addEventListener("click", function (e) {
+
+          var y, i, k, s, h;
+          s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+          h = this.parentNode.previousSibling;
+
+          for (i = 0; i < s.length; i++) {
+            if (s.options[i].innerHTML == this.innerHTML) {
+              s.selectedIndex = i;
+              h.innerHTML = this.innerHTML;
+              y = this.parentNode.getElementsByClassName("same-as-selected");
+              for (k = 0; k < y.length; k++) {
+                y[k].removeAttribute("class");
+              }
+              this.setAttribute("class", "same-as-selected");
+              break;
+            }
+          }
+          h.click();
+        });
+        b.appendChild(c);
+      }
+
+      container_select[i].appendChild(b);
+
+      a.addEventListener("click", function (e) {
+        e.stopPropagation();
+        closeAllSelect(this);
+        this.nextSibling.classList.toggle("select-hide");
+        this.classList.toggle("select-arrow-active");
+      });
+    }
+    function closeAllSelect(elmnt) {
+      /*a function that will close all select boxes in the document,
+      except the current select box:*/
+      var x, y, i, arrNo = [];
+      x = document.getElementsByClassName("select-items");
+      y = document.getElementsByClassName("select-selected");
+      for (i = 0; i < y.length; i++) {
+        if (elmnt == y[i]) {
+          arrNo.push(i)
+        } else {
+          y[i].classList.remove("select-arrow-active");
+        }
+      }
+      for (i = 0; i < x.length; i++) {
+        if (arrNo.indexOf(i)) {
+          x[i].classList.add("select-hide");
+        }
+      }
+    }
+    document.addEventListener("click", closeAllSelect);
+
+    ///////////adding select options into divs
+
+    // $('#pi_card_btn').click(function () {
+    //   $('#pi_add_filter').removeClass('d-none');
+    //   $(this).addClass('d-none');
+    //   $('#filterCard').addClass('d-block');
+    // });
+
+    // $('#pi_add_filter .close-btn').click(function () {
+    //   $('#pi_add_filter').addClass('d-none');
+    //   $('#pi_card_btn').parent('.row').removeClass('d-none');
+    //   $('#filterCard').removeClass('d-block');
+    //   $('#pi_card_btn').removeClass('d-none');
+    // });
+
+    $('#advancedBtn').click(function () {
+      $('#advancedContent').toggleClass('d-none');
+      $('#defaultSaveBtn').toggleClass('d-none');
+      $('#advancedSaveBtn').toggleClass('d-none');
+    });
+
+    // var agentsTable = $('#agents-table'),
+    //   closeNewAgentBtn = $('#closeNewAgentBtn');
+
+    // $('#newAgentBtn').click(function () {
+    //   agentsTable.addClass('d-none');
+    //   $('#closeNewAgentBtn').removeClass('d-none');
+    //   $(this).addClass('d-none');
+    //   $('#agent-wizard').removeClass('d-none');
+    // });
+
+    // closeNewAgentBtn.click(function () {
+    //   agentsTable.removeClass('d-none');
+    //   closeNewAgentBtn.addClass('d-none');
+    //   $('#newAgentBtn').removeClass('d-none');
+    //   $('#agent-wizard').addClass('d-none');
+    // });
+  }
 
   getPublicIpsDataAndProfiles() {
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
-      
+
       res.forEach(r => {
         if (r.agentType && r.agentType.toString() == AgentType.LOCATION.toString()) {
           this.publicIps.push(r);
@@ -197,10 +292,13 @@ export class PublicipComponent {
   }
 
   showNewIpForm() {
+
     this.isNewItemUpdated = false;
     this.selectedIp = new Agent();
     this.selectedIp.staticSubnetIp = [];
-    this.selectedIp.staticSubnetIp.push({} as IpWithMask)
+    let ip0 = {} as IpWithMask;
+    ip0.mask = 0;
+    this.selectedIp.staticSubnetIp.push(ip0)
 
     // this.publicIpService.getMyIp().subscribe(res => {
     //   let resIp: JsonIP;
@@ -212,30 +310,31 @@ export class PublicipComponent {
     //   this.ipList.push(myIp)
     // });
 
+
     $('#newIpRow').slideDown(300);
-    $('#newButtonDiv').hide();
+    $('#pi_card_btn').hide();
 
   }
 
   hideNewWizard() {
     $('#newIpRow').slideUp(300);
-    $('#newButtonDiv').show();
+    $('#pi_card_btn').show();
     this.getPublicIpsDataAndProfiles();
   }
 
   showEditWizard(id: string) {
-    
+
     this.isNewItemUpdated = true;
     const selectedUpdateIp = this.publicIps.find(p => p.id == Number(id));
 
-    this.selectedIp.id =selectedUpdateIp.id;
-    this.selectedIp.agentAlias =selectedUpdateIp.agentAlias;
-    this.selectedIp.agentType =selectedUpdateIp.agentType;
-    this.selectedIp.blockMessage =selectedUpdateIp.blockMessage;
-    this.selectedIp.captivePortalIp =selectedUpdateIp.captivePortalIp;
-    this.selectedIp.dynamicIpDomain =selectedUpdateIp.dynamicIpDomain;
-    this.selectedIp.cyberXRayIp =selectedUpdateIp.cyberXRayIp==null? '': selectedUpdateIp.cyberXRayIp;
-    this.selectedIp.rootProfile  = selectedUpdateIp.rootProfile;
+    this.selectedIp.id = selectedUpdateIp.id;
+    this.selectedIp.agentAlias = selectedUpdateIp.agentAlias;
+    this.selectedIp.agentType = selectedUpdateIp.agentType;
+    this.selectedIp.blockMessage = selectedUpdateIp.blockMessage;
+    this.selectedIp.captivePortalIp = selectedUpdateIp.captivePortalIp;
+    this.selectedIp.dynamicIpDomain = selectedUpdateIp.dynamicIpDomain;
+    this.selectedIp.cyberXRayIp = selectedUpdateIp.cyberXRayIp;
+    this.selectedIp.rootProfile = selectedUpdateIp.rootProfile;
     this.selectedIp.staticSubnetIp = selectedUpdateIp.staticSubnetIp;
     this.selectedIp.isCpEnabled = selectedUpdateIp.isCpEnabled;
 
@@ -253,7 +352,9 @@ export class PublicipComponent {
     }
 
     $('#newIpRow').slideDown(300);
-    $('#newButtonDiv').hide();
+    $('#pi_card_btn').hide();
+
+
   }
 
   hideWizard() {
@@ -281,6 +382,7 @@ export class PublicipComponent {
             if (res.status == 200) {
               this.notification.success(res.message);
               this.getPublicIpsDataAndProfiles();
+
             } else {
               this.notification.error("Operation Failed! " + res.message);
             }
@@ -339,7 +441,7 @@ export class PublicipComponent {
   }
 
   savePublicIp() {
-    
+
     if (!this.validatePublicIpForm()) {
       return;
     }
@@ -348,14 +450,14 @@ export class PublicipComponent {
       if (res.status == 200) {
         this.notification.success(res.message);
         this.getPublicIpsDataAndProfiles();
+        
       } else {
         this.notification.error(res.message);
       }
-    })
-
+    });
 
     $('#newIpRow').slideUp(300);
-    $('#newButtonDiv').show();
+    $('#pi_card_btn').show();
   }
 
   validatePublicIpForm(): boolean {
@@ -365,7 +467,7 @@ export class PublicipComponent {
           required: true
         },
         blockMessage: {
-          required: true
+          required: false
         },
         ip0: {
           required: true,
@@ -380,7 +482,7 @@ export class PublicipComponent {
       return false;
     }
 
-    if ( !this.publicIpForm.valid) {
+    if (!this.publicIpForm.valid) {
       this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return false;
     }

@@ -4,38 +4,28 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12 ml-auto mr-auto">
-            <div class="card">
-              <div class="card-header card-header-icon card-header-info">
-                <div class="card-icon">
-                  <i class="material-icons">assignment_ind</i>
-                </div>
-                <h4 class="card-title ">User Information</h4>
+            <div class="dns-base-card">
+              <div class="dns-base-card-header">
+                <h5>User Information</h5>
               </div>
-              <div class="card-body">
-                <form [formGroup]="userInfoForm" (ngSubmit)="userFormSubmit()" class="form-horizontal">
-                  <div class="form-group-sm has-default">
+              <div class="dns-base-card-content">
+                <form [formGroup]="userInfoForm" (ngSubmit)="userFormSubmit()">
+                  <div class="form-ux" id="userInformationForm">
                     <div class="row">
                       <div class="col-md-6">
-                        <div class="input-group">
-                          <div class="input-group-prepend" style="width:100%;">
-                            <mat-form-field class="example-full-width">
-                              <input type="text" matInput placeholder="Full Name" [(ngModel)]="user.name"
-                                formControlName="name">
-                              <mat-error *ngIf="userInfoForm.get('name').hasError('required')">
-                                Full Name <strong>is Required</strong>
-                              </mat-error>
-                            </mat-form-field>
+                        <div class="form-group">
+                          <div class="form-group">
+                            <label for="fullName">Full name</label>
+                            <input type="text " class="dns-form-control input-reverse" id="fullName"
+                              [(ngModel)]="user.name" formControlName="name" placeholder="Enter full name">
                           </div>
                         </div>
                       </div>
                       <div class="col-md-6">
-                        <div class="input-group">
-                          <div class="input-group-prepend" style="width:100%;">
-                            <mat-form-field class="example-full-width">
-                              <input type="text" matInput placeholder="{{'REGISTER.Email' | translate}}"
-                                value={{user.userName}} disabled>
-                            </mat-form-field>
-                          </div>
+                        <div class="form-group">
+                          <label for="email">Email</label>
+                          <input type="email" class="dns-form-control input-reverse" id="email" value={{user.userName}}
+                            disabled>
                         </div>
                       </div>
                     </div>
@@ -43,12 +33,12 @@
                   <div class="form-group-sm has-default">
                     <div class="input-group">
                       <div class="col-md-12 text-right" style="width:100%;">
-                        <button type="submit" class="btn btn-info btn-sm">Save</button>
+                        <button type="submit" class="btns btn-teritary">Save</button>
                       </div>
                     </div>
                   </div>
                 </form>
-                <form [formGroup]="userPhoneForm" class="form-horizontal">
+                <form [formGroup]="userPhoneForm">
 
                   <div class="form-group-sm has-default">
                     <div class="row">
@@ -56,7 +46,23 @@
                         In order to login via two factor authentication and use sms service, enable this feature.
                       </div>
                       <div class="col-md-6 mt-4">
-                        <ng-container *ngIf="user.gsmCode && user.gsm; else elseTemplate2FA">
+                        <label for="chk" class="dns-chk-label">
+                          <span>Enable two factor Authentication</span>
+                          <div class="dns-form-switch ml-5">
+                            <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
+                              <input type="checkbox" id="chk" checked (change)="change2FASubmit()">
+                            </ng-container>
+                            <ng-template #elseTemplate1>
+                              <input type="checkbox" id="chk" (change)="change2FASubmit()">
+                            </ng-template>
+
+                            <i></i>
+                            <span></span>
+                          </div>
+                        </label>
+
+
+                        <!-- <ng-container *ngIf="user.gsmCode && user.gsm; else elseTemplate2FA">
                           <div class="togglebutton">
                             <label>Enable two factor Authentication
                               <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
@@ -69,7 +75,7 @@
                               </ng-template>
                             </label>
                           </div>
-                        </ng-container>
+                        </ng-container> -->
                         <ng-template #elseTemplate2FA>
                           <p>Before using two factor authentication please enter a gsm number. </p>
                         </ng-template>
@@ -77,56 +83,52 @@
                     </div>
                   </div>
                   <div *ngIf="user.twoFactorAuthentication || user.gsm == null ">
-                    <div class="form-group-sm has-default">
-                      <div class="input-group">
-                        <div class="input-group-prepend" style="width:100%;">
-                          <div class="col-md-4" style="padding-left:0px;">
-                            <mat-form-field>
-                              <mat-select placeholder="GSM Code" [(ngModel)]="user.gsmCode" formControlName="gsmCode">
-                                <mat-option *ngFor="let pc of phoneNumberCodes" [value]="pc.dial_code">
-                                  {{pc.name}} ( {{pc.dial_code}} )
-                                </mat-option>
-                              </mat-select>
-                            </mat-form-field>
-                          </div>
-                          <div class="col-md-4" style="padding-right:0px;">
-                            <mat-form-field class="example-full-width has-label">
-                              <input type="tel" #gsm maxlength="10" name="gsm" (keydown)="checkisTelNumber($event)"
-                                placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="phoneNumberTemp"
-                                formControlName="gsm">
-                              <mat-hint align="end">{{gsm.value.length}}/ 10</mat-hint>
-                              <app-field-error-display errorMsg="Add a number!">
-                              </app-field-error-display>
-                            </mat-form-field>
-                          </div>
-                          <div class="col-md-4" style="padding-right:0px;">
-                            <button type="button" id="changePhoneBtn" (click)="changePhoneNumber()"
-                              class="btn btn-info btn-sm">Validate</button>
-                          </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="gsmCode">GSM Code</label>
+                          <select class="dns-form-control reverse-form" [(ngModel)]="user.gsmCode"
+                            formControlName="gsmCode">
+                            <option value="0" disabled selected>Select</option>
+                            <option *ngFor="let pc of phoneNumberCodes" [ngValue]="pc.dial_code">{{pc.name}} (
+                              {{pc.dial_code}} )</option>
+                          </select>
                         </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="gsm">GSM</label>
+                          <input type="tel" maxlength="10" name="gsm" class="dns-form-control input-reverse"
+                            (keydown)="checkisTelNumber($event)" [(ngModel)]="phoneNumberTemp" formControlName="gsm"
+                            placeholder="Enter GSM">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <button type="button" id="changePhoneBtn" (click)="changePhoneNumber()"
+                          class="btns btn-teritary pull-right">Validate</button>
                       </div>
                     </div>
                   </div>
                   <div id="smsValidationDiv" class="form-group-sm has-default" style="display: none;">
                     <div class="row">
-                      <div class="col-md-4 text-center text-danger">
+                      <div class="col-md-6 text-center text-danger">
                         <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
                       </div>
-                      <div class="col-md-4">
-                        <div class="input-group">
-                          <div class="input-group-prepend" style="width:100%;">
-                            <mat-form-field class="example-full-width">
-                              <input type="text" matInput placeholder="SMS Validation Code" [(ngModel)]="smsCode"
-                                formControlName="smsCode">
-                            </mat-form-field>
-                          </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="smsCode">SMS Code</label>
+                          <input type="text" class="dns-form-control input-reverse" placeholder="SMS Validation Code"
+                            [(ngModel)]="smsCode" formControlName="smsCode">
                         </div>
                       </div>
-                      <div class="col-md-4">
-                        <button type="button" (click)="confirmGsm()" class="btn btn-info btn-sm">Confirm</button>
+                      <div class="col-md-12">
+                        <button type="button" (click)="confirmGsm()"
+                          class="btns btn-teritary pull-right">Confirm</button>
                       </div>
                     </div>
-
                   </div>
                 </form>
 
@@ -135,59 +137,39 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row mt-3">
           <div class="col-md-12 ml-auto mr-auto">
-            <div class="card">
-              <div class="card-header card-header-icon card-header-success">
-                <div class="card-icon">
-                  <i class="material-icons">fingerprint</i>
-                </div>
-                <h4 class="card-title ">Change Password</h4>
+            <div class="dns-base-card">
+              <div class="dns-base-card-header">
+                <h5>Change Password</h5>
               </div>
-              <div class="card-body">
-                <form [formGroup]="changePasswordForm" (ngSubmit)="changePasswordFormSubmit()" class="form-horizontal">
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="input-group-prepend" style="width:100%;">
-                        <mat-form-field class="example-full-width">
-                          <input type="password" matInput placeholder="Current Password" [(ngModel)]="currentPassword"
-                            formControlName="currentPassword">
-                        </mat-form-field>
+              <div class="dns-base-card-content">
+                <form [formGroup]="changePasswordForm" (ngSubmit)="changePasswordFormSubmit()">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" class="dns-form-control input-reverse" id="currentPassword"
+                          [(ngModel)]="currentPassword" formControlName="currentPassword"
+                          placeholder="Current Password">
                       </div>
                     </div>
-                  </div>
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="input-group-prepend" style="width:100%;">
-                        <mat-form-field class="example-full-width">
-                          <input type="password" matInput placeholder="New Password" [errorStateMatcher]="matcher"
-                            [(ngModel)]="signupUser.password" formControlName="password">
-                          <mat-error *ngIf="changePasswordForm.get('password').hasError('required')">
-                            New Password is <strong>Required!</strong>
-                          </mat-error>
-                        </mat-form-field>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="currentPassword">New Password</label>
+                        <input type="password" class="dns-form-control input-reverse" id="newPassword"
+                          placeholder="New Password" [(ngModel)]="signupUser.password" formControlName="password">
                       </div>
                     </div>
-                  </div>
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="input-group-prepend" style="width:100%;">
-                        <mat-form-field class="example-full-width">
-                          <input type="password" matInput placeholder="Confirm New Password"
-                            [errorStateMatcher]="matcher" [(ngModel)]="signupUser.passwordAgain"
-                            formControlName="passwordAgain">
-                          <mat-error *ngIf="changePasswordForm.get('passwordAgain').hasError('required')">
-                            Confirm New Password is <strong>Required!</strong>
-                          </mat-error>
-                        </mat-form-field>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" class="dns-form-control input-reverse" placeholder="Confirm New Password"
+                          [(ngModel)]="signupUser.passwordAgain" formControlName="passwordAgain">
                       </div>
                     </div>
-                  </div>
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="col-md-12 text-right" style="width:100%;">
-                        <button type="submit" class="btn btn-success btn-sm">Save</button>
-                      </div>
+                    <div class="col-md-12">
+                      <button type="submit" class="btns btn-teritary pull-right">Save</button>
                     </div>
                   </div>
                 </form>
@@ -199,155 +181,88 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12 ml-auto mr-auto">
-            <div class="card">
-              <div class="card-header card-header-icon card-header-warning">
-                <div class="card-icon">
-                  <i class="material-icons">business</i>
+
+            <div class="dns-base-card">
+              <div class="dns-base-card-header">
+                <h5>Company Info</h5>
+              </div>
+              <form [formGroup]="companyInfoForm" (ngSubmit)="companyFormSubmit()">
+                <div class="dns-base-card-content">
+                  <div class="form-group dns-full-width">
+                    <label>Company Name</label>
+                    <input type="text" class="dns-form-control input-reverse" placeholder="Company Name"
+                      [(ngModel)]="signupUser.company.name" formControlName="companyName" />
+                  </div>
+
+                  <div class="form-group light-select dns-full-width">
+                    <label>Industry</label>
+                    <select class="dns-form-control reverse-form" [(ngModel)]="signupUser.company.industry"
+                      formControlName="industry">
+                      <option selected="selected">PleaseSpecify</option>
+                      <option value="Cloud Computing/Saas">Cloud Computing/Saas</option>
+                      <option value="Computer HW, SW">Computer HW, SW</option>
+                      <option value="Consumer Goods/Retail">Consumer Goods/Retail</option>
+                      <option value="Ecommerce/Online Advertising">Ecommerce/Online Advertising</option>
+                      <option value="Energy/Utility ">Energy/Utility</option>
+                      <option value="Financial Services/Insurance">Financial Services/Insurance</option>
+                      <option value="Healthcare/Lifesciences/Pharmaceuticals">Healthcare/Lifesciences/Pharmaceuticals
+                      </option>
+                      <option value="ISP / Hosting ">ISP / Hosting</option>
+                      <option value="IT Services">IT Services</option>
+                      <option value="Manufacturing">Manufacturing</option>
+                      <option value="Media/Entertainment">Media/Entertainment</option>
+                      <option value="Professional Services (Legal, Accounting, etc.) ">Professional
+                        Services (Legal,Accounting, etc.)</option>
+                      <option value="Telecommunications">Telecommunications</option>
+                      <option value="University">University</option>
+                      <option value="K12">K-12 Education</option>
+                      <option value="non-profits">Non-Profits</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-8">
+                      <div class="form-group dns-full-width">
+                        <label>Web Site</label>
+                        <input type="text" class="dns-form-control input-reverse" [(ngModel)]="signupUser.company.url"
+                          formControlName="url" placeholder="Website URL" />
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="form-group dns-full-width">
+                        <label>Personnel</label>
+                        <select class="dns-form-control reverse-form" [(ngModel)]="signupUser.company.personnelCount"
+                          formControlName="personnelCount">
+                          <option selected>Please Specify</option>
+                          <option value="1-50">1-50</option>
+                          <option value="50-99">50-99</option>
+                          <option value="100-249">100-249</option>
+                          <option value="250-499">250-499</option>
+                          <option value="500-999">500-999</option>
+                          <option value="1000-2499">1000-2499</option>
+                          <option value="2500-4999">2500-4999</option>
+                          <option value="5000-9999">5000-9999</option>
+                          <option value="10000-19999">10000-19999</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group dns-full-width">
+                    <label>Block Message</label>
+                    <input type="text" class="dns-form-control input-reverse" placeholder="Block Message"
+                      [(ngModel)]="signupUser.company.blockMessage" formControlName="blockMessage" />
+                  </div>
+                  <div class="form-group">
+                    <button class="btn btn-teritary pull-right">
+                      <i class="fa fa-save"></i>
+                      <span class="ml-3">Save</span>
+                    </button>
+                  </div>
                 </div>
-                <h4 class="card-title ">Company Info</h4>
-              </div>
-              <div class="card-body">
-                <form [formGroup]="companyInfoForm" (ngSubmit)="companyFormSubmit()" class="form-horizontal">
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="input-group-prepend" style="width:100%;">
-                        <span class="input-group-text">
-                          <i class="material-icons">domain</i>
-                        </span>
-                        <mat-form-field class="example-full-width">
-                          <input type="text" matInput placeholder="Company Name" [(ngModel)]="signupUser.company.name"
-                            formControlName="companyName">
-                          <mat-error *ngIf="companyInfoForm.get('companyName').hasError('required')">
-                            {{'REGISTER.FormCompany' | translate}} <strong>{{'Required' | translate}}</strong>
-                          </mat-error>
-                        </mat-form-field>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="input-group-prepend" style="width:100%;">
-                        <span class="input-group-text">
-                          <i class="material-icons">work_outline</i>
-                        </span>
-                        <mat-form-field>
-                          <mat-select placeholder="{{'REGISTER.Industry' | translate}}" name="Industry"
-                            [(ngModel)]="signupUser.company.industry" formControlName="industry">
-                            <mat-option value="PleaseSpecify">PleaseSpecify</mat-option>
-                            <mat-option value="Cloud Computing/Saas">Cloud Computing/Saas</mat-option>
-                            <mat-option value="Computer HW, SW">Computer HW, SW</mat-option>
-                            <mat-option value="Consumer Goods/Retail">Consumer Goods/Retail</mat-option>
-                            <mat-option value="Ecommerce/Online Advertising">Ecommerce/Online Advertising</mat-option>
-                            <mat-option value="Energy/Utility ">Energy/Utility</mat-option>
-                            <mat-option value="Financial Services/Insurance">Financial Services/Insurance</mat-option>
-                            <mat-option value="Healthcare/Lifesciences/Pharmaceuticals">
-                              Healthcare/Lifesciences/Pharmaceuticals</mat-option>
-                            <mat-option value="ISP / Hosting ">ISP / Hosting</mat-option>
-                            <mat-option value="IT Services">IT Services</mat-option>
-                            <mat-option value="Manufacturing">Manufacturing</mat-option>
-                            <mat-option value="Media/Entertainment">Media/Entertainment</mat-option>
-                            <mat-option value="Professional Services (Legal, Accounting, etc.) ">Professional
-                              Services (Legal,Accounting, etc.)</mat-option>
-                            <mat-option value="Telecommunications">Telecommunications</mat-option>
-                            <mat-option value="University">University</mat-option>
-                            <mat-option value="K12">K-12 Education</mat-option>
-                            <mat-option value="non-profits">Non-Profits</mat-option>
-                            <mat-option value="Other">Other</mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group-sm has-default">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="input-group">
-                          <div class="input-group-prepend" style="width:100%;">
-                            <span class="input-group-text">
-                              <i class="material-icons">web</i>
-                            </span>
-                            <mat-form-field class="example-full-width">
-                              <input type="text" matInput placeholder="{{'REGISTER.WebSite' | translate}}"
-                                [(ngModel)]="signupUser.company.url" formControlName="url">
-                              <mat-error *ngIf="companyInfoForm.get('url').hasError('required')">
-                                {{'REGISTER.WebSite' | translate}} <strong>{{'Required' | translate}}</strong>
-                              </mat-error>
-                            </mat-form-field>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="input-group">
-                          <div class="input-group-prepend" style="width:100%;">
-                            <span class="input-group-text">
-                              <i class="material-icons">people_outline</i>
-                            </span>
-                            <mat-form-field>
-                              <mat-select placeholder="{{'REGISTER.PersonnelCount' | translate}}"
-                                [(ngModel)]="signupUser.company.personnelCount" formControlName="personnelCount">
-                                <mat-option value="PleaseSpecify">{{'PleaseSpecify' | translate}}</mat-option>
-                                <mat-option value="1-50">1-50</mat-option>
-                                <mat-option value="50-99">50-99</mat-option>
-                                <mat-option value="100-249">100-249</mat-option>
-                                <mat-option value="250-499">250-499</mat-option>
-                                <mat-option value="500-999">500-999</mat-option>
-                                <mat-option value="1000-2499">1000-2499</mat-option>
-                                <mat-option value="2500-4999">2500-4999</mat-option>
-                                <mat-option value="5000-9999">5000-9999</mat-option>
-                                <mat-option value="10000-19999">10000-19999</mat-option>
-                              </mat-select>
-                            </mat-form-field>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="input-group-prepend" style="width:100%;">
-                        <span class="input-group-text">
-                          <i class="material-icons">block</i>
-                        </span>
-                        <mat-form-field class="example-full-width">
-                          <input type="text" matInput placeholder="Block Message"
-                            [(ngModel)]="signupUser.company.blockMessage" formControlName="blockMessage">
-                          <mat-error *ngIf="companyInfoForm.get('blockMessage').hasError('required')">
-                            Block Message is <strong>Required</strong>
-                          </mat-error>
-                        </mat-form-field>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group-sm has-default">
-                    <div class="row justify-content-center">
-                      <div class="col-sm-5 text-right">
-                        <label class="description">Company Logo</label>
-                      </div>
-                      <div class="col-sm-2 ml-auto mr-auto card-wizard" style="min-height: 20px; box-shadow: none;">
-                        <div class="picture-container">
-                          <div class="picture" style="border-radius:5%;">
-                            <ng-container *ngIf="signupUser.company.logo; else elseTemplate">
-                              <img src="{{signupUser.company.logo}}" class="picture-src" id="wizardPicturePreview"
-                                title="company logo" />
-                            </ng-container>
-                            <ng-template #elseTemplate>
-                              <img src="./assets/img/image_placeholder.jpg" class="picture-src"
-                                id="wizardPicturePreview" title="select logo" />
-                            </ng-template>
-                            <input type="file" id="companyLogo" (change)="selectFile($event)" formControlName="logo">
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-5 d-flex align-items-end">
-                        <div class="ml-auto">
-                          <button type="submit" class="btn btn-warning btn-sm">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
+              </form>
             </div>
+
           </div>
         </div>
       </div>

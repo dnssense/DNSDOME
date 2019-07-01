@@ -1,23 +1,23 @@
 <div class="row mt-3">
     <div class="col-12">
-        <div class="base-card">
-            <div class="base-card-content">
+        <div class="dns-base-card">
+            <div class="dns-base-card-content">
                 <div id="customReportChart"></div>
                 <div class="mt-0"></div>
                 <ng-container *ngIf="data; else elseTemplate">
-                    <div class="datatable-container container-fluid">
+                    <div class="dns-datatable-container container-fluid">
                         <div class="row">
-                            <h4 class="datatable-heading col-sm-4">Results</h4>
+                            <h4 class="dns-datatable-heading col-sm-4">Results</h4>
                             <div class="col-sm-8 text-right">
-                                <div class="select-container default-select" style="width: 120px;">
-                                    <select class="form-control">
+                                <div class="dns-select-container default-select" style="width: 120px;">
+                                    <select class="dns-form-control">
                                         <option value="Export as">Export as</option>
                                     </select>
                                 </div>
-                                <div class="datatable-pagination ml-5">
+                                <div class="dns-datatable-pagination ml-5">
                                     <span>Show Rows:</span>
-                                    <div class="select-container default-select ml-3">
-                                        <select class="form-control" [(ngModel)]="searchSetting.topNumber"
+                                    <div class="dns-select-container default-select ml-3">
+                                        <select class="dns-form-control" [(ngModel)]="searchSetting.topNumber"
                                             (change)="setTopCount($event.target.value)">
                                             <option value="10">10</option>
                                             <option value="25">25</option>
@@ -36,10 +36,10 @@
                                 <table #tableDivComponent id="table-data" class="table table-bordered">
                                     <thead>
                                         <th class="no-border"></th>
-                                        <th class="color-light-blue" *ngFor="let colz of selectedColumns">
+                                        <th *ngFor="let colz of selectedColumns">
                                             <strong>{{colz.label}}</strong></th>
-                                        <th class="color-light-blue">Count</th>
-                                        <th class="color-light-blue">Percent</th>
+                                        <th>Count</th>
+                                        <th>Percent</th>
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let dat of data;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">

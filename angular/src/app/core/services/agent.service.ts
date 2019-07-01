@@ -44,19 +44,19 @@ export class AgentService {
   }
 
   deleteAgent(id: number): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.deleteAgentURL, { "id": id }, this.getOptions()).map(res=> res);
+    return this.http.post<OperationResult>(this.deleteAgentURL, { "id": id }, this.getOptions()).map(res => res);
   }
 
   getSecurityProfiles(): Observable<SecurityProfile[]> {
     return this.http.get<SecurityProfile[]>(this.getSecurityProfilesURL).map(data => data);
   }
 
-  saveSecurityProfile(p: SecurityProfile): Observable<OperationResult> {    
-    return this.http.post<OperationResult>(this.saveSecurityProfileURL, JSON.stringify(p), this.getOptions()).map(res =>res);
+  saveSecurityProfile(p: SecurityProfile): Observable<OperationResult> {
+    return this.http.post<OperationResult>(this.saveSecurityProfileURL, JSON.stringify(p), this.getOptions()).map(res => res);
   }
 
   deleteSecurityProfile(id: number): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.deleteSecurityProfileURL, { "id": id }, this.getOptions()).map(res=>res);
+    return this.http.post<OperationResult>(this.deleteSecurityProfileURL, { "id": id }, this.getOptions()).map(res => res);
   }
 
   getOptions() {
@@ -78,7 +78,7 @@ export class AgentService {
   // getMobileCategories(agetId: number): Observable<MobileCategory[]> {
   //   return this.http.get<MobileCategory[]>(this.mobileCategoriesURL + agetId).map(data => data);
   // }
- 
+
   // getProfiles(): Observable<TimeProfileResponse> {
   //   return this.http.get<TimeProfileResponse>(this.profilesURL).map(data => data);
   // }

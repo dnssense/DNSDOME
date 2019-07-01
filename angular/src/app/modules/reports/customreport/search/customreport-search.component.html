@@ -1,5 +1,5 @@
-<div class="base-card">
-    <div class="base-card-header">
+<div class="dns-base-card">
+    <div class="dns-base-card-header">
         <div class="row">
             <div class="col-md-7 d-flex align-items-center">
                 <div class="search-form full-width flex-1">
@@ -7,7 +7,7 @@
                     <input type="text" class="dns-form-control reverse-form" placeholder="Contain *keyword*"
                         [(ngModel)]="searchSetting.query" [ngModelOptions]="{ standalone: true }" />
                 </div>
-                <div class="toggle reverse-toggle" style="padding: 4px">
+                <div class="dns-toggle dns-reverse-toggle" style="padding: 4px">
                     <button class="btns" [ngClass]="{'active': searchSetting.type=='roksit'}"
                         (click)="changeSearchSettingType('roksit')">Total Traffic</button>
                     <button class="btns" [ngClass]="{'active': searchSetting.type=='roksitblock'}"
@@ -21,7 +21,7 @@
                     </span>
                     Save
                 </button> -->
-                <div class="dns-dropdown d-inline-block table-select pull-right ml-auto mr-2" style="min-width:180px">
+                <div class="dns-dropdown d-inline-block dns-table-select pull-right ml-auto mr-2" style="min-width:180px">
                     <button class="btns reverse-form dropdown-toggle text-left" type="button" data-toggle="dropdown"
                         aria-haspopup="false" aria-expanded="false">
                         <span class="btn-label">
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="dns-dropdown d-inline-block table-select pull-right ml-auto" id="searchBoxDropdownDate">
+                <div class="dns-dropdown d-inline-block dns-table-select pull-right ml-auto" id="searchBoxDropdownDate">
                     <button class="btns reverse-form dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                         data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                         <img src="assets/images/icons/calendar.svg">
@@ -141,12 +141,11 @@
                                 aria-labelledby="profile-tab">
                                 <input type="hidden" class="dt datepicker2" id="searchDateInput"
                                     (change)="searchDateChanged()">
-
                                 <div class="dropdown-divider"></div>
                                 <div class="container-fluid">
                                     <div class="row mt-2 mb-3">
                                         <div class="col-5 mr-auto ml-auto">
-                                            <span class="dropdown-label" style="padding-left: 0px">Start Date
+                                            <span class="dns-dropdown-label" style="padding-left: 0px">Start Date
                                                 Time</span>
                                             <!-- <input type="text" readonly [(ngModel)]="searchStartDate" class="dns-form-control reverse-form "> -->
                                             <input type="text" style="display: none;" mwlFlatpickr
@@ -155,7 +154,7 @@
                                                 [time24hr]="true">
                                         </div>
                                         <div class="col-5 mr-auto ml-auto">
-                                            <span class="dropdown-label" style="padding-left: 0px">End Date Time</span>
+                                            <span class="dns-dropdown-label" style="padding-left: 0px">End Date Time</span>
                                             <input type="text" style="display: none;" mwlFlatpickr
                                                 [(ngModel)]="searchEndDateTime" [altInput]="false" [enableTime]="true"
                                                 [dateFormat]="'H:i'" [noCalendar]="true" [inline]="true"
@@ -275,12 +274,12 @@
             </div>
         </div> -->
     </div>
-    <div class="base-card-content mt-3">
+    <div class="dns-base-card-content mt-3">
         <div class="row" style="margin-top: -15px">
             <div class="col-12">
-                <div class="datatable-labels">
+                <div class="dns-datatable-labels">
                     <span *ngFor="let col of _columns; let i = index;">
-                        <span class="label" *ngIf="i < columnListLength" [ngClass]="{'active' : col.checked}"
+                        <span class="dns-label" *ngIf="i < columnListLength" [ngClass]="{'dns-active' : col.checked}"
                             style="padding: 0px 4px 0 4px;" (click)="checkUncheckColumn(col)">
                             {{col.beautyName}}</span>
                     </span>
@@ -308,7 +307,7 @@
                 <button class="btns btn-success size-13 mr-1 mt-1 mb-1 filterButton"
                     *ngFor="let item of searchSetting.must">
                     {{item.field}}, Is, {{item.value}}
-                    <img src="assets/images/icons/edit.svg" class="editButton ml-2" width="15" height="15" alt=""
+                    <img src="assets/images/icons/editF.svg" class="editButton ml-2" width="15" height="15" alt=""
                         (click)="editTag(item,'is')">
                     <img src="assets/images/icons/white.svg" class="editButton ml-2" width="15" height="15" alt=""
                         (click)="removeTag(item,'is')">
@@ -316,7 +315,7 @@
                 <button class="btns btn-danger size-13 mr-1 mt-1 mb-1 filterButton"
                     *ngFor="let item of searchSettingForHtml.mustnot">
                     {{item.field}}, Is NOT, {{item.value}}
-                    <img src="assets/images/icons/edit.svg" class="editButton ml-2" width="15" height="15" alt=""
+                    <img src="assets/images/icons/editF.svg" class="editButton ml-2" width="15" height="15" alt=""
                         (click)="editTag(item,'isnot')">
                     <img src="assets/images/icons/white.svg" class="editButton ml-2" width="15" height="15" alt=""
                         (click)="removeTag(item,'isnot')">
@@ -324,7 +323,7 @@
                 <button class="btns btn-warning size-13 mr-1 mt-1 mb-1 filterButton"
                     *ngFor="let item of searchSettingForHtml.should">
                     {{item.field}}, Is One Of, {{item.value}}
-                    <img src="assets/images/icons/edit.svg" class="editButton ml-2" width="15" height="15" alt=""
+                    <img src="assets/images/icons/editF.svg" class="editButton ml-2" width="15" height="15" alt=""
                         (click)="editTag(item,'isoneof')">
                     <img src="assets/images/icons/white.svg" class="editButton ml-2" width="15" height="15" alt=""
                         (click)="removeTag(item, 'isoneof')">
@@ -334,7 +333,7 @@
                     Clear All Filter
                 </button>
                 <div class="dns-dropdown d-inline-block" id="dropdownFilter">
-                    <button class="btns dropdown-toggle color-light-blue" type="button" data-toggle="dropdown"
+                    <button class="btns dropdown-toggle " type="button" data-toggle="dropdown"
                         (click)="refreshFilterPanel()" aria-haspopup="true" aria-expanded="false">
                         <i class="icon-plus pr-2" style="font-size: 20px"></i>
                         Add Filter
@@ -496,8 +495,8 @@
 
                                 </div>
                                 <div class="col-12 mt-2">
-                                    <button class="btn btn-teritary" (click)="addTag($event)">Apply</button>
-                                    <button class="btn btn-clear" (click)="cancelFilterPopup()">Cancel</button>
+                                    <button class="btns btn-teritary" (click)="addTag($event)">Apply</button>
+                                    <button class="btns btn-clear" (click)="cancelFilterPopup()">Cancel</button>
                                 </div>
                             </div>
                         </div>

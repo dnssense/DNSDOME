@@ -1,36 +1,36 @@
 :root {
-  --pure-material-onsurface-rgb: 255, 255, 255;
-  --pure-material-primary-rgb: 110, 135, 255;
-  --pure-material-onsurface-rgb: 255, 255, 255;
+  --dns-onsurface-rgb: 255, 255, 255;
+  --dns-primary-rgb: transparent;
+  --dns-onsurface-rgb: 255, 255, 255;
 
   --checkbox-size: 24px;
 }
 
-.pure-material-checkbox {
+.dns-checkbox {
   z-index: 0;
   position: relative;
   display: inline-block;
-  color: rgba(var(--pure-material-onsurface-rgb), 0.87);
-  font-family: var(--pure-material-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
+  color: rgba(var(--dns-onsurface-rgb), 0.87);
+  font-family: var(--dns-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
   font-size: 13px;
   line-height: 28px;
 }
 
 /* Input */
-.pure-material-checkbox>input {
+.dns-checkbox>input {
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
   z-index: -1;
   position: absolute;
-  left: calc((var(--checkbox-size) - var(--checkbox-size) / 1.5) * -1);
+  left: calc((var(--checkbox-size) - var(--checkbox-size) / 1.3) * -1);
   top: calc((var(--checkbox-size) - var(--checkbox-size) / 1.35) * -1);
   display: block;
   margin: 0;
   border-radius: 50%;
   width: calc(var(--checkbox-size) * 1.75);
   height: calc(var(--checkbox-size) * 1.75);
-  background-color: rgba(var(--pure-material-onsurface-rgb), 0.6);
+  background-color: rgba(var(--dns-onsurface-rgb), 0.6);
   box-shadow: none;
   outline: none;
   opacity: 0;
@@ -40,7 +40,7 @@
 }
 
 /* Span */
-.pure-material-checkbox>span {
+.dns-checkbox>span {
   display: inline-block;
   width: 100%;
   user-select: none;
@@ -48,14 +48,14 @@
 }
 
 /* Box */
-.pure-material-checkbox>span::before {
+.dns-checkbox>span::before {
   content: "";
   display: inline-block;
   box-sizing: border-box;
   margin: 3px 11px 3px 1px;
   border: solid 2px;
   /* Safari */
-  border-color: rgba(var(--pure-material-onsurface-rgb), 0.6);
+  border-color: rgba(var(--dns-onsurface-rgb), 0.6);
   border-radius: 2px;
   width: var(--checkbox-size);
   height: var(--checkbox-size);
@@ -64,12 +64,12 @@
 }
 
 /* Checkmark */
-.pure-material-checkbox>span::after {
+.dns-checkbox>span::after {
   content: "";
   display: block;
   position: absolute;
   top: calc(var(--checkbox-size) / 3.5);
-  left: calc(var(--checkbox-size) / 3.5);
+  left: calc(var(--checkbox-size) / 3.9);
   width: 10px;
   height: 5px;
   border: solid 2px transparent;
@@ -79,72 +79,72 @@
 }
 
 /* Checked, Indeterminate */
-.pure-material-checkbox>input:checked,
-.pure-material-checkbox>input:indeterminate {
-  background-color: rgb(var(--pure-material-primary-rgb));
+.dns-checkbox>input:checked,
+.dns-checkbox>input:indeterminate {
+  background-color: rgb(var(--dns-primary-rgb));
 }
 
-.pure-material-checkbox>input:checked+span::before,
-.pure-material-checkbox>input:indeterminate+span::before {
-  border-color: rgb(var(--pure-material-primary-rgb));
-  background-color: rgb(var(--pure-material-primary-rgb));
+.dns-checkbox>input:checked+span::before,
+.dns-checkbox>input:indeterminate+span::before {
+  border-color: rgb(var(--dns-primary-rgb));
+  background-color: rgb(var(--dns-primary-rgb));
 }
 
-.pure-material-checkbox>input:checked+span::after,
-.pure-material-checkbox>input:indeterminate+span::after {
-  border-color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
+.dns-checkbox>input:checked+span::after,
+.dns-checkbox>input:indeterminate+span::after {
+  border-color: rgb(var(--dns-onprimary-rgb, 255, 255, 255));
 }
 
-.pure-material-checkbox>input:indeterminate+span::after {
+.dns-checkbox>input:indeterminate+span::after {
   border-left: none;
   transform: translate(4px, 3px);
 }
 
 /* Hover, Focus */
-.pure-material-checkbox:hover>input {
+.dns-checkbox:hover>input {
   opacity: 0.04;
 }
 
-.pure-material-checkbox>input:focus {
+.dns-checkbox>input:focus {
   opacity: 0.12;
 }
 
-.pure-material-checkbox:hover>input:focus {
+.dns-checkbox:hover>input:focus {
   opacity: 0.16;
 }
 
 /* Active */
-.pure-material-checkbox>input:active {
+.dns-checkbox>input:active {
   opacity: 1;
   transform: scale(0);
   transition: transform 0s, opacity 0s;
 }
 
-.pure-material-checkbox>input:active+span::before {
-  border-color: rgb(var(--pure-material-primary-rgb));
+.dns-checkbox>input:active+span::before {
+  border-color: rgb(var(--dns-primary-rgb));
 }
 
-.pure-material-checkbox>input:checked:active+span::before {
+.dns-checkbox>input:checked:active+span::before {
   border-color: transparent;
-  background-color: rgba(var(--pure-material-onsurface-rgb), 0.6);
+  background-color: rgba(var(--dns-onsurface-rgb), 0.6);
 }
 
 /* Disabled */
-.pure-material-checkbox>input:disabled {
+.dns-checkbox>input:disabled {
   opacity: 0;
 }
 
-.pure-material-checkbox>input:disabled+span {
-  color: rgba(var(--pure-material-onsurface-rgb), 0.38);
+.dns-checkbox>input:disabled+span {
+  color: rgba(var(--dns-onsurface-rgb), 0.38);
   cursor: initial;
 }
 
-.pure-material-checkbox>input:disabled+span::before {
+.dns-checkbox>input:disabled+span::before {
   border-color: currentColor;
 }
 
-.pure-material-checkbox>input:checked:disabled+span::before,
-.pure-material-checkbox>input:indeterminate:disabled+span::before {
+.dns-checkbox>input:checked:disabled+span::before,
+.dns-checkbox>input:indeterminate:disabled+span::before {
   border-color: transparent;
   background-color: currentColor;
 }

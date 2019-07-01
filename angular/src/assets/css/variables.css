@@ -1,5 +1,7 @@
 :root {
   --color-primary: #121212;
   --color-secondary: #262626;
-  --color-success: #5ad363;
+  --color-success: #7cbf52;
+  --color-accent: #4fb75d;
+  --color-accent-200: hsla(128, 42%, 51%, 0.5);
 }

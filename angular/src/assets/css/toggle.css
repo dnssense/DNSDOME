@@ -1,16 +1,14 @@
-
-.toggle {
+.dns-toggle {
   background: #141414;
   border-radius: 8px;
   display: inline-block;
   margin: 10px;
-  padding: 0px;
+  padding: 4px;
   position: relative;
 }
 
-.toggle .btns, 
-.toggle .btn {
-  box-shadow: none;
+.dns-toggle .btns,
+.dns-toggle .btn {
   border-radius: 8px;
   font-weight: bold;
   color: #e5e5e5;
@@ -19,39 +17,38 @@
   padding: 5px 10px;
 }
 
-.toggle .btns:last-child,
-.toggle .btn:last-child {
+.dns-toggle .btns:last-child,
+.dns-toggle .btn:last-child {
   margin-right: 0;
 }
 
-.toggle .btns:hover,
-.toggle .btn:hover {
+.dns-toggle .btns:hover,
+.dns-toggle .btn:hover {
   background: #262626;
 }
 
-.toggle .btns.active,
-.toggle .btn.active {
-  background: #262626;
-  box-shadow: none;
+.dns-toggle .btns.active,
+.dns-toggle .btn.active {
+  background: #262626
 }
 
-.reverse-toggle {
+.dns-reverse-toggle {
   background: white;
 }
 
-.reverse-toggle .btns,
-.reverse-toggle .btn {
+.dns-reverse-toggle .btns,
+.dns-reverse-toggle .btn {
   background: white;
   color: #484848;
 }
 
-.reverse-toggle .btns:hover,
-.reverse-toggle .btn:hover {
+.dns-reverse-toggle .btns:hover,
+.dns-reverse-toggle .btn:hover {
   background: #262626;
 }
 
-.reverse-toggle .btns.active,
-.reverse-toggle .btn.active {
+.dns-reverse-toggle .btns.active,
+.dns-reverse-toggle .btn.active {
   background: #262626;
   color: white;
 }
