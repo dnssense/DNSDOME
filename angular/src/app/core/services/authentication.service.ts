@@ -55,6 +55,7 @@ export class AuthenticationService {
   checkSessionIsValid() {
 
     try {
+      
       const sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
         const session: Session = JSON.parse(sessionString);
@@ -142,12 +143,12 @@ export class AuthenticationService {
           const user = new User();
           user.companyId = Number(res.companyId);
           user.id = Number(res.id);
-          user.userName = res.username;
+          user.username = res.username;
           user.active = Boolean(res.isActive);
           user.locked = Boolean(res.isLocked);
           user.name = res.name;
           if (!user.name) {
-            user.name = user.userName || '';
+            user.name = user.username || '';
           }
 
           user.surname = '';

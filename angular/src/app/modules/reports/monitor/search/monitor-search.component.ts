@@ -277,83 +277,6 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     this.searchEmitter.emit(this.searchSetting);
   }
 
-  //date panel icin kullanilacak
-  // public showDatePanel($event) {
-
-  //   this.dateOverlay.hide();
-
-  //   let value = $event.target.value;
-
-  //   if (value === -1 || value.indexOf('-') > -1) {
-  //     if (this.searchSetting.dateInterval.indexOf('-') > 0) {
-  //       let dd = this.searchSetting.dateInterval.split('-');
-  //       this.startDateee = moment(dd[0], 'DD.MM.YYYY HH:mm:ss').toDate();
-  //       this.endDateee = moment(dd[1], 'DD.MM.YYYY HH:mm:ss').toDate();
-  //     } else {
-  //       let startDate = moment();
-  //       startDate.add(-1, 'day');
-  //       this.startDateee = startDate.toDate();
-  //       this.endDateee = moment().toDate();
-  //     }
-
-  //     this.start_date_pickr = new Flatpickr(this.startDateCal.nativeElement, {
-  //       animate: false,
-  //       allowInput: false,
-  //       enableTime: true,
-  //       defaultDate: this.startDateee,
-  //       maxDate: new Date(),
-  //       dateFormat: 'd.m.Y H:i:S',
-  //       time_24hr: true,
-  //       utc: false,
-  //       onValueUpdate: (e, args) => {
-  //         this.startDateee = args;
-  //         this.start_date_pickr.toggle();
-  //         this.end_date_pickr.toggle();
-  //       }
-  //     });
-  //     // alert(start_date_pickr.selectedDateObj);
-  //     this.end_date_pickr = new Flatpickr(this.endDateCal.nativeElement, {
-  //       animate: false,
-  //       allowInput: false,
-  //       enableTime: true,
-  //       defaultDate: this.endDateee,
-  //       maxDate: new Date(),
-  //       dateFormat: 'd.m.Y H:i:S',
-  //       time_24hr: true,
-  //       utc: false,
-  //       onValueUpdate: (e, args) => {
-  //         this.endDateee = args;
-  //         this.end_date_pickr.toggle();
-  //       }
-  //     });
-  //     this.dateOverlay.show($event);
-  //   } else {
-
-  //     $(this.dateSelect.nativeElement).val(value);
-  //     this.searchSetting.dateInterval = value;
-  //     this.dateOverlay.hide();
-  //   }
-  // }
-
-  // public hideDatePopover() {
-  //   var option = this.customdaterange.nativeElement;
-  //   let startDate = this.startDateee == null ? '' : moment(this.startDateee, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-  //   let endDate = this.endDateee == null ? '' : moment(this.endDateee, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-  //   let vall = startDate + ' - ' + endDate;
-  //   this.start_date_pickr.destroy();
-  //   this.end_date_pickr.destroy();
-
-  //   if (vall !== ' - ') {
-  //     this.searchSetting.dateInterval = vall;
-  //     option.text = vall;
-  //     option.value = vall;
-  //   } else {
-  //     option.innerHTML = 'Custom Range';
-  //     option.value = '-1';
-  //   }
-  //   this.dateOverlay.hide();
-  // }
-
   closeCalendarTab(tabId: string) {
     this.selectedTab = tabId;
 
@@ -709,7 +632,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   public editTag(tag: any, type: string) {
-debugger
+
     this.editedTag = tag;
     this.editedTagType = type;
 
@@ -782,34 +705,32 @@ debugger
 
   public removeAllTags() {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Your search parameters will be removed!').subscribe(
-        res => {
-          if (res) {
+      res => {
+        if (res) {
 
-            this.searchSetting = new SearchSetting();
-            this.searchSettingForHtml = new SearchSetting();
-            this.selectedSavedReportName = null;
+          this.searchSetting = new SearchSetting();
+          this.searchSettingForHtml = new SearchSetting();
+          this.selectedSavedReportName = null;
 
-            this.currentinputValue = '';
-          }
+          this.currentinputValue = '';
         }
-      );
+      }
+    );
   }
 
   addChip(event: MatChipInputEvent): void {
     
     $('#tagsDd').addClass('show');
+
     if (!this.matAutocomplete.isOpen) {
       const input = event.input;
       const val = event.value;
 
       if ((val || '').trim()) {
-
         if (this.currentColumn == 'domain' || this.currentColumn == 'subdomain') {
-
           let result = ValidationService.domainValidation({ value: val });
           if (result == true) {
             this.isOneOfList.push(val.trim());
-
           } else {
             this.notification.warning('Please enter a valid item!');
             return;
@@ -825,9 +746,7 @@ debugger
           }
 
         } else {
-
           this.isOneOfList.push(val.trim());
-
         }
       }
 
@@ -848,8 +767,18 @@ debugger
 
   selectedChip(event: MatAutocompleteSelectedEvent): void {
     $('#tagsDd').addClass('show');
+   
+    if (this.currentColumn == 'category' || this.currentColumn == 'applicationName') {
+      if (this.isOneOfList.find(x => x == event.option.viewValue) != null) {
+        this.notification.warning('This item is already added!');
+      } else {
+        this.isOneOfList.push(event.option.viewValue);
 
-    this.isOneOfList.push(event.option.viewValue);
+      }
+    } else {
+      this.isOneOfList.push(event.option.viewValue);
+    }
+
     this.isOneOfInput.nativeElement.value = '';
     this.isOneOfCtrl.setValue(null);
   }
@@ -859,25 +788,6 @@ debugger
 
     return this.isOneOfListItems.filter(f => f.toLowerCase().indexOf(value.toLowerCase()) === 0);
   }
-
-  // public positionInputElement(sourcePosition) {
-  //   setTimeout(() => {
-  //     let position = $(sourcePosition).position();
-  //     $(this.inputElement.nativeElement).css({
-  //       top: position.top + 21,
-  //       left: position.left - 1,
-  //       position: 'absolute'
-  //     });
-  //   }, 50);
-  // }
-
-  // public initSelect() {
-  //   if (this.select2 != null) {
-  //     this.select2.select2('destroy');
-  //   }
-  //   this.select2 = $(this.select.nativeElement).select2({}).on(
-  //     'select2:select', e => { this.currentInput = e.target.value; });
-  // }
 
   public checkIp(ipForCheck: string) {
     let isValid =
@@ -891,4 +801,65 @@ debugger
     }
     return true;
   }
+
+  checkIPNumber(event: KeyboardEvent, inputValue: string) {
+
+    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", "."];
+    let isValid: boolean = false;
+
+    for (let i = 0; i < allowedChars.length; i++) {
+      if (allowedChars[i] == event.key) {
+        isValid = true;
+        break;
+      }
+    }
+    if (inputValue && (event.key != 'Backspace' && event.key != 'ArrowLeft' && event.key != 'ArrowRight')) {
+      if (event.key != '.') {
+        inputValue += event.key;
+      }
+      let lastOcletStr = inputValue.substring(inputValue.lastIndexOf('.') + 1);
+      let lastOclet = Number(lastOcletStr);
+      if (isValid && (lastOclet > 255 || lastOclet < 0 || lastOcletStr.length > 3)) {
+        isValid = false;
+      }
+      if (isValid && event.key == '.') {
+        let oclets: string[] = inputValue.split('.');
+        for (let i = 0; i < oclets.length; i++) {
+          const oclet = oclets[i];
+          if (Number(oclet) < 0 || Number(oclet) > 255) {
+            isValid = false;
+            break;
+          }
+        }
+      }
+      // To prevent enterin special ips uncomment below
+      // if (isValid && ((inputValue.length == 2 && inputValue == '10' && event.key == '.') ||
+      //   inputValue == '192.168' || inputValue == '127.0.0.1')) {
+      //   isValid = false;
+      //   this.notification.warning('Please enter a valid Public IP Adress!', false);
+      // }
+
+      // if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
+
+      //   let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
+      //   let secondOclet = Number(secondOcletStr);
+      //   if (secondOclet >= 16 && secondOclet <= 31) {
+      //     isValid = false;
+      //     this.notification.warning('Please enter a valid Public IP Adress!', false);
+      //   }
+      // }
+
+      if (isValid && event.key == '.' && (inputValue.endsWith('.') || inputValue.split('.').length >= 4)) {
+        isValid = false;
+      }
+    } else if (isValid && event.key == '.') {
+      isValid = false;
+    }
+
+    if (!isValid) {
+      event.preventDefault();
+    }
+  }
+
+
 }

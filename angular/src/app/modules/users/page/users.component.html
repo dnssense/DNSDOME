@@ -1,24 +1,23 @@
 <div class="main-content">
 
-  <section id="listPanel">
-    <div class="container-fluid col-md-11">
-      <div class="row">
-        <div class="col-12">
-          <div class="dns-base-card">
-            <div class="dns-base-card-header pt-3">
-              <div class="row">
-                <button class="btns btn-teritary border-radius-8 card-create-btn" data-toggle="modal"
-                  data-target="#exampleModal">
-                  <img src="assets/images/icons/add.svg">
-                  Create New User
-                </button>
+  <!-- <section id="listPanel"> -->
+  <div class="container-fluid col-md-11">
+    <div class="row">
+      <div class="col-12">
+        <div class="dns-base-card">
+          <div class="dns-base-card-header pt-3">
+            <div class="row">
+              <button class="btns btn-teritary border-radius-8 card-create-btn" id="createUserBtn"
+                (click)="showNewWizard()">
+                <img src="assets/images/icons/add.svg">
+                Create New User
+              </button>
 
-                <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                  <span class="mr-3 flex-2">Users</span>
+              <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
+                <span class="mr-3 flex-2">Users</span>
 
-                  <!-- <div class="dns-datatable-pagination ml-3 d-inline-flex align-items-center">
+                <!-- <div class="dns-datatable-pagination ml-3 d-inline-flex align-items-center">
                     <span>Show Rows</span>
-
                     <div class="dnssense-select ml-3">
                       <select>
                         <option>10</option>
@@ -27,136 +26,122 @@
                         <option>50</option>
                       </select>
                     </div>
-
                     <div class="page-numbers ml-3 mr-3">1 - 109</div>
-
                     <button class="btn page-prev">
                       <i class="icon-left-open-big"></i>
                     </button>
                     <button class="btn page-next">
                       <i class="icon-right-open-big"></i>
                     </button>
-
                   </div> -->
-                </div>
               </div>
-
             </div>
-            <div class="dns-base-card-content">
-              <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
-                <thead>
-                  <th class="th-no-border">
-                    <input type="text" class="dns-form-control input-reverse" placeholder="Email">
-                  </th>
-                  <th class="th-no-border">
-                    <input type="text" class="dns-form-control input-reverse" placeholder="Name">
-                  </th>
-                  <th class="th-no-border">
-                    <input type="text" class="dns-form-control input-reverse" placeholder="Surname">
-                  </th>
-                  <th class="text-center th-no-border">
-                    Is Locked
-                  </th>
-                  <th class="text-center th-no-border">
-                    Is Active
-                  </th>
-                  <th class="th-no-border text-center">Edit</th>
-                  <th class="th-no-border text-center">Deactive</th>
-                </thead>
 
-                <tbody>
-                  <tr *ngFor="let row of userList">
-                    <td>{{row.userName}}</td>
-                    <td>{{row.name}} {{row.surname}}</td>
-                    <td>{{row.roles.description}}</td>
-                    <td class="text-center">
-
-                      <ng-container *ngIf="row.locked; else elseTemplate1">
-                        <button class="btn btn-clear">
-                          <img src="./assets/images/icons/checkbox.svg">
-                        </button>
-                      </ng-container>
-                      <ng-template #elseTemplate1>
-                        <button class="btn btn-clear">
-                          <img src="./assets/images/icons/close.svg" alt="">
-                        </button>
-                      </ng-template>
-
-                    </td>
-                    <td class="text-center">
-                      <ng-container *ngIf="row.active; else elseTemplate2">
-                        <button class="btn btn-clear">
-                          <img src="./assets/images/icons/checkbox.svg">
-                        </button>
-                      </ng-container>
-                      <ng-template #elseTemplate2>
-                        <button class="btn btn-clear">
-                          <img src="./assets/images/icons/close.svg" alt="">
-                        </button>
-                      </ng-template>
-                    </td>
-                    <td class="text-center">
-                      <button class="btns btn-info">
-                        Edit
+          </div>
+          <div class="dns-base-card-content">
+            <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
+              <thead>
+                <th class="text-center">
+                  E-mail
+                </th>
+                <th class="text-center">
+                  Role
+                </th>
+                <th class="text-center">
+                  Is Locked
+                </th>
+                <th class="text-center">
+                  Is Active
+                </th>
+                <th class="text-center">Edit</th>
+                <th class="text-center">Delete</th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of userList">
+                  <td>{{row.username}}</td>
+                  <td>{{userFriendlyRoleName(row.roles[0].name)}}</td>
+                  <td class="text-center">
+                    <ng-container *ngIf="row.isLocked==1; else elseTemplate01">
+                      <button class="btns btn-clear">
+                        <img src="./assets/images/icons/checkbox.svg" title="Locked">
                       </button>
-                    </td>
-                    <td class="text-center">
-                      <button class="btns btn-danger">
-                        Deactivate
+                    </ng-container>
+                    <ng-template #elseTemplate01>
+                      <button class="btns btn-clear">
+                        <img src="./assets/images/icons/close.svg" title="Not Locked">
                       </button>
-                    </td>
-                  </tr>
-
-                </tbody>
-              </table>
-            </div>
+                    </ng-template>
+                  </td>
+                  <td class="text-center">
+                    <ng-container *ngIf="row.isActive==1; else elseTemplate2">
+                      <button class="btns btn-clear">
+                        <img src="./assets/images/icons/checkbox.svg" title="Active">
+                      </button>
+                    </ng-container>
+                    <ng-template #elseTemplate2>
+                      <button class="btns btn-clear">
+                        <img src="./assets/images/icons/close.svg" title="Not Active">
+                      </button>
+                    </ng-template>
+                  </td>
+                  <td class="text-center">
+                    <button class="btns btn-info" (click)="showEditWizard(row.id)">
+                      Edit
+                    </button>
+                  </td>
+                  <td class="text-center">
+                    <button class="btns btn-danger" (click)="deleteUser(row.id)">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+    </div>
 
 
-      <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content" style="background: #262626; color: white;">
-            <form [formGroup]="userForm" class="form-horizontal">
-              <div class="modal-header" style="border-bottom: none; color:white">
-                <h4 class="modal-title" id="exampleModalLabel">New User</h4>
-                <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body" style="border-bottom: none;">
-                <div class="form-ux activated" id="userInformationForm">
-                  <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text " class="dns-form-control input-reverse" id="email" placeholder="Enter e-mail">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text " class="dns-form-control input-reverse" id="name" [(ngModel)]="selectedUser.name"
-                      formControlName="name" placeholder="Enter name">
-                    <label for="name">Surname</label>
-                    <input type="text " class="dns-form-control input-reverse" id="surname"
-                      [(ngModel)]="selectedUser.surname" formControlName="surname" placeholder="Enter surname">
-                  </div>
-                  <div class="form-group not-ux light-select dns-full-width">
-                    <label>Roles</label>
-                    <select class="dns-form-control reverse-form" [(ngModel)]="selectedUser.roles.id"
-                      formControlName="role">
-                      <option disabled selected>Select Role</option>
-                      <option value="1">Role 1</option>
-                      <option value="2">Role 2</option>
-                      <option [ngValue]="role.id" *ngFor="let role of roleList">{{role.description}}</option>
-                    </select>
-                  </div>
-                  <div class="form-group password">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control input-reverse" id="password" placeholder="X X X X X"
-                      [(ngModel)]="selectedUser.password" formControlName="password" />
-                  </div>
-                  <div class="row">
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background: #262626; color: white;">
+          <form [formGroup]="userForm" class="form-horizontal">
+            <div class="modal-header" style="border-bottom: none; color:white">
+              <h4 class="modal-title" id="exampleModalLabel">New User</h4>
+              <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close"
+                (click)="closeModal()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" style="border-bottom: none;">
+              <div class="form-ux activated" id="userInformationForm">
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="text " class="dns-form-control input-reverse" id="email" placeholder="Enter e-mail"
+                    [(ngModel)]="selectedUser.username" formControlName="email">
+                </div>
+                <!-- <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text " class="dns-form-control input-reverse" id="name" [(ngModel)]="selectedUser.name"
+                    formControlName="name" placeholder="Enter full name">
+                </div> -->
+                <div class="form-group not-ux light-select dns-full-width">
+                  <label>Roles</label>
+                  <select class="dns-form-control reverse-form" [(ngModel)]="selectedUser.roles.name"
+                    formControlName="role">
+                    <option disabled selected>Select Role</option>
+                    <option [ngValue]="role.name" *ngFor="let role of roleList">{{role.description}}</option>
+                  </select>
+                </div>
+                <div class="form-group password">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control input-reverse" id="password" placeholder="X X X X X"
+                    [(ngModel)]="selectedUser.password" formControlName="password" />
+                </div>
+                <!-- <div class="row">
                     <div class="col-4">
                       <span class="color-9d9d9d">Password Strength</span>
                     </div>
@@ -169,252 +154,58 @@
                         <div></div>
                       </div>
                     </div>
-                  </div>
-                  <div class="row mt-3">
-                    <div class="col-6">
-                      <label class="dns-checkbox">
+                  </div> -->
+               
+               
+                <div *ngIf="modalStatus =='edit'" class="row mt-3">
+                  <div class="col-6">
+                    <label class="dns-checkbox">
+                      <ng-container *ngIf="selectedUser.isActive == 1; else elseTemplate133">
+                        <input type="checkbox" checked (change)="changeActiveStatus()">
+                      </ng-container>
+                      <ng-template #elseTemplate133>
                         <input type="checkbox" (change)="changeActiveStatus()">
-                        <span>Active
-                        </span>
-                      </label>
-                      <button class="btn btn-clear p-0 m-0" tabindex="0" data-toggle="tooltip" data-placement="bottom"
-                        title="Activation of User">
-                        <i class="fa fa-question-circle ml-3"></i>
-                      </button>
-                    </div>
-
-                    <div class="col-6">
-                      <label class="dns-checkbox">
-                        <input type="checkbox">
-                        <span>Locked
-                          <button class="btn btn-clear p-0 m-0" data-toggle="tooltip" data-placement="top"
-                            title="Status of User">
-                            <i class="fa fa-question-circle ml-3"></i>
-                          </button>
-                        </span>
-                      </label>
-                    </div>
+                      </ng-template>
+                      <span>Active
+                      </span>
+                    </label>
+                    <button class="btn btn-clear p-0 m-0" tabindex="0" data-toggle="tooltip" data-placement="bottom"
+                      title="Activation of User">
+                      <i class="fa fa-question-circle ml-3"></i>
+                    </button>
                   </div>
-
+                  <div class="col-6">
+                    <label class="dns-checkbox">
+                      <ng-container *ngIf="selectedUser.isLocked == 1; else elseTemplate13">
+                        <input type="checkbox" checked (change)="changeLockStatus()">
+                      </ng-container>
+                      <ng-template #elseTemplate13>
+                        <input type="checkbox" (change)="changeLockStatus()">
+                      </ng-template>
+                      <span>Locked
+                        <button class="btn btn-clear p-0 m-0" data-toggle="tooltip" data-placement="top"
+                          title="Status of User">
+                          <i class="fa fa-question-circle ml-3"></i>
+                        </button>
+                      </span>
+                    </label>
+                  </div>
                 </div>
+
               </div>
-              <div class="modal-footer justify-content-start">
-                <button class="btns btn-teritary pl-3 pr-3" (click)="userFormSubmit()">
-                  <i class="fa fa-save mr-3"></i>
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
+            </div>
+            <div class="modal-footer justify-content-start">
+              <button class="btns btn-teritary pl-3 pr-3" (click)="userFormSubmit()">
+                <i class="fa fa-save mr-3"></i>Save
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-
-      <!-- <div class="row">
-        <div class="col-md-12 ml-auto mr-auto">
-          <div class="card">
-            <div class="card-header card-header-icon card-header-info">
-              <div class="card-icon">
-                <i class="material-icons">public</i>
-              </div>
-              <h4 class="card-title ">Users</h4>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-12 text-right">
-                  <button mat-raised-button type="button" class="btn btn-success" (click)="showNewWizard()">
-                    <i class="material-icons">add_circle_outline</i> Create New User
-                  </button>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="table-responsive">
-                    <table class="table">
-                      <thead class="text-success">
-                        <tr>
-                          <th>E-mail</th>
-                          <th>Name</th>
-                          <th>Surname</th>
-                          <th>Role</th>
-                          <th>Locked</th>
-                          <th>Active</th>
-                          <th>Operation</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let row of userList">
-                          <td>{{row.userName}}</td>
-                          <td>{{row.name}}</td>
-                          <td>{{row.surname}}</td>
-                          <td>{{row.roles.description}}</td>
-                          <td>
-                            <div class="togglebutton">
-                              <label>
-                                <ng-container *ngIf="row.locked; else elseTemplate">
-                                  <input type="checkbox disabled" checked disabled>
-                                  <span class="toggle"></span>
-                                </ng-container>
-                                <ng-template #elseTemplate>
-                                  <input type="checkbox" disabled>
-                                  <span class="toggle"></span>
-                                </ng-template>
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="togglebutton">
-                              <label>
-                                <ng-container *ngIf="row.active; else elseTemplate2">
-                                  <input type="checkbox" checked (change)="changeActiveStatusOnRow(row.id)">
-                                  <span class="toggle"></span>
-                                </ng-container>
-                                <ng-template #elseTemplate2>
-                                  <input type="checkbox" (change)="changeActiveStatusOnRow(row.id)">
-                                  <span class="toggle"></span>
-                                </ng-template>
-                              </label>
-                            </div>
-                          </td>
-                          <td class="text-center">
-                            <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
-                              mattooltip="Edit item" (click)="showEditWizard(row.id)">
-                              <i class="material-icons">edit</i>
-                            </button>
-                            <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
-                              mattooltip="Delete item" (click)="deleteUser(row.id)">
-                              <i class="material-icons">close</i>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-
-
     </div>
-  </section>
-  <section id="wizardPanel" class="wizardPanel" style="display: none;">
 
-    <!-- <div class="row">
-      <div class="col-md-12">
-        <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
-          <i class="material-icons">arrow_back</i>
-        </button>
-        <div class="wizard-container">
-          <div class="card">
-            <div class="card-header card-header-icon card-header-info">
-              <div class="card-icon">
-                <i class="material-icons">person</i>
-              </div>
-              <h4 class="card-title">User Details</h4>
-            </div>
-            <div class="card-body">
-              <form [formGroup]="userForm" class="form-horizontal">
-                <div class="row justify-content-center">
-                  <div class="col-md-3"></div>
-                  <div class="col-md-3">
-                    <mat-form-field style="width:100%">
-                      <input type="text" name="name" matInput id="name" name="name" placeholder="Name"
-                        [(ngModel)]="selectedUser.name" formControlName="name">
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-3">
-                    <mat-form-field style="width:100%">
-                      <input type="text" name="surname" matInput id="text" placeholder="Surname"
-                        [(ngModel)]="selectedUser.surname" formControlName="surname">
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-3"></div>
-                </div>
-                <div class="row justify-content-center">
-                  <div class="col-md-3"></div>
-                  <div class="col-md-3">
-                    <mat-form-field style="width:100%">
-                      <input type="text" name="email" matInput id="email" name="email" placeholder="E-mail"
-                        [(ngModel)]="selectedUser.userName" formControlName="email">
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-3">
-                    <mat-form-field style="width:100%">
-                      <mat-select placeholder="Role" [(ngModel)]="selectedUser.roles.id" formControlName="role">
-                        <mat-option [value]="role.id" *ngFor="let role of roleList">{{role.description}}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-3"></div>
-                </div>
-                <div class="row justify-content-center">
-                  <div class="col-md-3"></div>
-                  <div class="col-md-3">
-                    <mat-form-field style="width:100%">
-                      <input type="password" name="password" matInput id="password" name="password"
-                        placeholder="Password" [(ngModel)]="selectedUser.password" formControlName="password">
-                    </mat-form-field>
-                    <mat-password-strength #passwordComponent [password]="selectedUser.password">
-                    </mat-password-strength>
-                  </div>
-                  <div class="col-md-3">
-                    <mat-form-field style="width:100%">
-                      <input type="password" name="passwordAgain" matInput id="passwordAgain" name="passwordAgain"
-                        placeholder="Password Again" [(ngModel)]="selectedUser.passwordAgain"
-                        formControlName="passwordAgain">
-                    </mat-form-field>
-                    <mat-password-strength #passwordComponent [password]="selectedUser.passwordAgain">
-                    </mat-password-strength>
-                  </div>
-                  <div class="col-md-3"></div>
-                </div>
-                <div class="row justify-content-center">
-                  <div class="col-md-3"></div>
-                  <div class="col-md-3 mt-4">
-                    <div class="togglebutton">
-                      <label>is Locked
-                        <ng-container *ngIf="selectedUser.locked; else elseTemplate">
-                          <input type="checkbox" checked (change)="changeLockStatus()">
-                          <span class="toggle"></span>
-                        </ng-container>
-                        <ng-template #elseTemplate>
-                          <input type="checkbox" (change)="changeLockStatus()">
-                          <span class="toggle"></span>
-                        </ng-template>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-md-3 mt-4">
-                    <div class="togglebutton">
-                      <label>is Active
-                        <ng-container *ngIf="selectedUser.active; else elseTemplate">
-                          <input type="checkbox" checked (change)="changeActiveStatus()">
-                          <span class="toggle"></span>
-                        </ng-container>
-                        <ng-template #elseTemplate>
-                          <input type="checkbox" (change)="changeActiveStatus()">
-                          <span class="toggle"></span>
-                        </ng-template>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-md-3"></div>
-                </div>
-                <div class="row">
-                  <div class="col text-right ml-auto">
-                    <button type="submit" class="btn btn-info" (click)="userFormSubmit()">Save</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
+    
 
-  </section>
-
+  </div>
+  
 </div>

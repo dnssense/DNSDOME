@@ -43,6 +43,7 @@ export class ValidationService {
   }
 
   static domainValidation(control) {
+    
     if (control == null || control.value == null || control.value === '') {
       return null;
     }
@@ -52,8 +53,9 @@ export class ValidationService {
       if (String(domain).charAt(domain.length - 1).toLowerCase() === String(domain).charAt(domain.length - 1).toUpperCase()) {
         return { 'invalidDomain': true };
       }
+      
       const domObject = tldjs.parse(domain);
-      const result = (domObject.isValid && domObject.tldExists && (domObject.domain != null || domObject.subdomain != null));
+      const result = (domObject.isValid && domObject.tldExists);
       if (!result) {
         return { 'invalidDomain': true };
       }

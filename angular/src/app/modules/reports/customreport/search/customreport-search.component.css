@@ -16,3 +16,16 @@
 .filterButton:hover .editButton{
 visibility: visible;
 }
+
+.btnOverFlow{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+::ng-deep .mat-option:hover{
+  background-color: #77f !important;
+}
+::ng-deep .mat-option.mat-selected:not(.mat-option-multiple) {
+  background-color: #77f !important;
+}

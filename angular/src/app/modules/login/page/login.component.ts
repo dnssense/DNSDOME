@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   ]);
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   captcha: string;
-  captcha_key: string ;
+  captcha_key: string;
   validEmailLogin: true | false;
   validPasswordLogin: true | false;
   matcher = new MyErrorStateMatcher();
@@ -71,8 +71,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isFailed = false;
     this.nativeElement = element.nativeElement;
     this.sidebarVisible = false;
-    this.host=this.configService.host;
-    this.captcha_key=this.host.captcha_key;
+    this.host = this.configService.host;
+    this.captcha_key = this.host.captcha_key;
   }
 
   ngOnInit() {
@@ -163,13 +163,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     $('#loginDiv').slideUp(500);
     $('#forgotPasswordDiv').hide();
     this.smsService.sendSmsForLogin(val).subscribe(res => {
+      this.notificationIndex = 0;
       this.twoFactorPhone = val.user.gsm;
       this.smsInformation = res;
       this.maxRequest = 3;
       this.isConfirmTimeEnded = false;
       this.endTime = new Date();
       this.endTime.setMinutes(new Date().getMinutes() + 2);
-
 
     });
 
@@ -188,8 +188,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           })
 
         }, err => {
-
-
           if (this.maxRequest === 0) {
             this.openLogin()
             this.notification.error('You have exceeded the number of attempts! Try Again!');
@@ -202,10 +200,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  notificationIndex = 0;
   timeEnd() {
-    this.notification.error('SMS Code Expired. Please Try Again.');
-    this.isConfirmTimeEnded = true;
-    this.openLogin();
+    if (this.notificationIndex < 2) {
+      this.notification.error('SMS Code Expired. Please Try Again.');
+      this.isConfirmTimeEnded = true;
+      this.openLogin();
+      this.notificationIndex++;
+    }
+
   }
 
   handleCaptcha($event) {
@@ -225,8 +228,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       this.authService.forgotPassword(forgoter).subscribe(res => {
 
-          this.notification.success("Activation code sent your email.");
-          this.router.navigateByUrl('/login');
+        this.notification.success("Activation code sent your email.");
+        this.router.navigateByUrl('/login');
 
       });
     }

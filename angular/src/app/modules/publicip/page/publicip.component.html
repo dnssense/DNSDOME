@@ -153,6 +153,7 @@
           </div>
         </div>
       </form>
+
       <div class="row mt-4">
         <div class="col-md-12">
           <div class="dns-base-card">
@@ -199,7 +200,7 @@
                     <th class="no-border"></th>
                     <th style="border-bottom: white;">Name</th>
                     <th style="border-bottom: white;">Ip Address</th>
-                    <th style="border-bottom: white;">Message</th>
+                    <th style="border-bottom: white;">Block Message</th>
                     <th style="border-bottom: white;">Profile</th>
                     <th style="border-bottom: white;" colspan="2" class="text-center">Operation</th>
                   </thead>
@@ -214,7 +215,7 @@
                           </div>
                         </small>
                       </td>
-                      <td>{{pi.blockMessage?pi.blockMessage:"No Message!"}}</td>
+                      <td><small>{{pi.blockMessage?pi.blockMessage:"No Message!"}}</small></td>
                       <td>
                         <button [disabled]="pi.rootProfile?.isSystem" class="btns btn-clear" matTooltip="Edit Profile"
                           (click)="showProfileEditWizard(pi.id)">

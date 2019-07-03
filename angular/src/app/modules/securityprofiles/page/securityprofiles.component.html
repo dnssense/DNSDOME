@@ -10,11 +10,11 @@
             matTooltip="Create a new Public IP" >
             <i class="material-icons">add_circle_outline</i> Create New Profile
           </button> -->
-          <button class="btns btn-teritary border-radius-8 p-2 card-create-btn" id="newAgentBtn" (click)="showNewWizard()"
-          style="z-index: 10;">
-              <img src="assets/images/icons/add.svg">
-              Create New Profile
-            </button>
+          <button class="btns btn-teritary border-radius-8 p-2 card-create-btn" id="newAgentBtn"
+            (click)="showNewWizard()" style="z-index: 10;">
+            <img src="assets/images/icons/add.svg">
+            Create New Profile
+          </button>
         </div>
       </div>
       <div class="row">
@@ -26,9 +26,10 @@
                   <h4 class="dns-datatable-heading col-sm-4">Security Profiles</h4>
                   <div class="col-sm-4">
                     <div class="search-form dns-full-width flex-1">
-                        <img src="assets/images/icons/search.svg" class="icon">
-                        <input type="search" class="dns-form-control reverse-form" placeholder="Search by name" [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)" />
-                      </div>
+                      <img src="assets/images/icons/search.svg" class="icon">
+                      <input type="search" class="dns-form-control reverse-form" placeholder="Search by name"
+                        [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -49,11 +50,15 @@
                         <td>{{p.name}}</td>
                         <td style="width: 200px">{{p.numberOfUsage}}</td>
                         <td style="width: 120px" class="text-center">
-                          <span *ngIf="p.isSystem" class="text-muted" >Default</span>
-                          <button *ngIf="!p.isSystem" mat-raised-button type="button"
-                            class="btn btn-info btn-link btn-just-icon btn-sm" mattooltip="Edit item"
-                            (click)="showEditWizard(p.id)">
+                          <!-- <span *ngIf="p.isSystem" class="text-muted" >Default</span> -->
+                          <button mat-raised-button type="button" class="btn btn-info btn-link btn-just-icon btn-sm"
+                            mattooltip="Edit item" (click)="showEditWizard(p.id)">
                             <i class="material-icons">edit</i>
+                          </button>
+                          <button *ngIf="p.isSystem" mat-raised-button type="button"
+                            class="btn btn-danger btn-link btn-just-icon btn-sm"
+                            title="Default profile can not delete!">
+                            <i class="material-icons">close</i>
                           </button>
                           <button *ngIf="!p.isSystem" mat-raised-button type="button"
                             class="btn btn-danger btn-link btn-just-icon btn-sm" mattooltip="Delete item"

@@ -3,7 +3,7 @@ import { Company } from './Company';
 
 export class User {
     public id: number = -1;
-    public userName: string;
+    public username: string;
     public password: string;
     public name: string;
     public surname: string;
@@ -11,7 +11,9 @@ export class User {
     public gsmCode: string;
     public language: string;
     public locked: boolean = false;
+    public isLocked: number;
     public active: boolean = true;
+    public isActive: number;
     public roles: Role;
     public companyId:number;
    // public company: Company;

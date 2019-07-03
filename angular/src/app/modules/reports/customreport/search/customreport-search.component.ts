@@ -79,7 +79,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
   @Input() public columnsTemp: LogColumn[];
   @Output() public searchEmitter = new EventEmitter();
- // @Output() public searchSettingEmitter = new EventEmitter();
+  // @Output() public searchSettingEmitter = new EventEmitter();
 
 
   public observable: Observable<any> = null;
@@ -138,7 +138,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     });
 
     this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.pipe(startWith(null), map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice()));
-    
+
     this.selectedColumns = [];
 
     if (!this.searchSetting) {
@@ -267,8 +267,8 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   public search() {
 
     this.searchSetting.columns.columns = []
-    this._columns.filter(c => c.checked == true).forEach(c => { 
-      this.searchSetting.columns.columns.push({ column: c, label: c.beautyName }); 
+    this._columns.filter(c => c.checked == true).forEach(c => {
+      this.searchSetting.columns.columns.push({ column: c, label: c.beautyName });
     });
 
     this.searchEmitter.emit(this.searchSetting);
@@ -279,7 +279,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public checkUncheckColumn(col: LogColumn) {
-debugger
+    
     if (this._columns.find(c => c.name == col.name).checked == false && this._columns.filter(c => c.checked == true).length >= 5) {
       this.notification.warning('You can selecy 5 columns!');
       return;
@@ -510,22 +510,36 @@ debugger
   }
 
   changeCurrentColumn(colName: string) {
-
+    
     $('#tagsDd').click(function (e) { e.stopPropagation(); });
 
     this.currentColumn = colName;
-
-    this.isOneOfListItems = [];
+   
     if (this.currentOperator == 'isoneof' || this.currentOperator == 'isnotoneof') {
+       this.isOneOfListItems = [];
       if (colName == 'category') {
-        this.mainCategories.forEach(m => this.isOneOfListItems.push(m.categoryName))
+        //this.mainCategories.forEach(m => this.isOneOfListItems.push(m.categoryName))
+
+        for (let i = 0; i < this.mainCategories.length; i++) {
+          this.isOneOfListItems.push(this.mainCategories[i].categoryName)
+        }
+
       }
       else if (colName == 'applicationName') {
-        this.mainApplications.forEach(m => this.isOneOfListItems.push(m.name))
+        //this.mainApplications.forEach(m => this.isOneOfListItems.push(m.name))
+        for (let i = 0; i < this.mainApplications.length; i++) {
+          this.isOneOfListItems.push(this.mainApplications[i].name)
+        }
       } else if (colName == 'sourceIpCountryCode' || colName == 'destinationIpCountryCode') {
-        this.countries.forEach(c => this.isOneOfListItems.push(c.name))
+        //this.countries.forEach(c => this.isOneOfListItems.push(c.name))
+        for (let i = 0; i < this.countries.length; i++) {
+          this.isOneOfListItems.push(this.countries[i].name)
+        }
       } else if (colName == 'agentAlias') {
-        this.agents.forEach(c => this.isOneOfListItems.push(c.agentAlias))
+        //this.agents.forEach(c => this.isOneOfListItems.push(c.agentAlias))
+        for (let i = 0; i < this.agents.length; i++) {
+          this.isOneOfListItems.push(this.agents[i].agentAlias)
+        }
       } else if (colName == 'reasonType') {
         this.isOneOfListItems.push('Category');
         this.isOneOfListItems.push('Application');
@@ -776,7 +790,7 @@ debugger
   }
 
   public editTag(tag: any, type: string) {
-debugger
+    
     this.editedTag = tag;
     this.editedTagType = type;
 
@@ -847,18 +861,18 @@ debugger
   }
 
   public removeAllTags() {
-    
-      this.alertService.alertWarningAndCancel('Are You Sure?', 'Your search parameters will be removed!').subscribe(
-        res => {
-          if (res) {
-            this.searchSetting = new SearchSetting();
-            this.searchSettingForHtml = new SearchSetting();
-            this.selectedSavedReportName = null;
 
-            this.currentinputValue = '';
-          }
+    this.alertService.alertWarningAndCancel('Are You Sure?', 'Your search parameters will be removed!').subscribe(
+      res => {
+        if (res) {
+          this.searchSetting = new SearchSetting();
+          this.searchSettingForHtml = new SearchSetting();
+          this.selectedSavedReportName = null;
+
+          this.currentinputValue = '';
         }
-      );
+      }
+    );
   }
 
   addChip(event: MatChipInputEvent): void {
@@ -915,7 +929,17 @@ debugger
   selectedChip(event: MatAutocompleteSelectedEvent): void {
     $('#tagsDd').addClass('show');
 
-    this.isOneOfList.push(event.option.viewValue);
+    if (this.currentColumn == 'category' || this.currentColumn == 'applicationName') {
+      if (this.isOneOfList.find(x => x == event.option.viewValue) != null) {
+        this.notification.warning('This item is already added!');
+      } else {
+        this.isOneOfList.push(event.option.viewValue);
+
+      }
+    } else {
+      this.isOneOfList.push(event.option.viewValue);
+    }
+
     this.isOneOfInput.nativeElement.value = '';
     this.isOneOfCtrl.setValue(null);
   }

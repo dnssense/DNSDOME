@@ -14,76 +14,89 @@ declare var $: any;
     styleUrls: ['users.component.sass']
 })
 export class UsersComponent implements OnInit {
+    modalStatus: string = "create";
     userForm: FormGroup;
     userList: User[] = [];
-    selectedUser: UserExtended = new UserExtended();
+    selectedUser: User = new User();
     roleList: Role[] = [];
 
     constructor(private formBuilder: FormBuilder, private notification: NotificationService,
         private alert: AlertService, private userService: UserService) {
 
         this.selectedUser.roles = new Role();
-        this.userService.getUsers().subscribe(res => this.userList = res);
+        this.selectedUser.roles.name = 'ROLE_CUSTOMER';
 
-        this.userService.getRoles().subscribe(res => {
-            this.roleList = [];
-            res.forEach(r => {
-                if (r.id != 6) {
-                    this.roleList.push(r);
-                }
-            });
+        this.userService.getUsers().subscribe(res => {
+            this.userList = res
+            console.log(res)
         });
+
+        this.roleList = this.userService.getRoles();
 
     }
 
     ngOnInit() {
         this.userForm =
             this.formBuilder.group({
-                "name": ["", [Validators.required, Validators.minLength(2)]],
-                "surname": ["", [Validators.required, Validators.minLength(2)]],
+                //  "name": ["", [Validators.required, Validators.minLength(2)]], "surname": ["", []],
                 "email": ["", [Validators.required, ValidationService.emailValidator]],
                 "role": ["", [Validators.required]],
                 "password": ["", [Validators.required]],
                 "passwordAgain": ["", []],
-            }, { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
+            }
+                //, { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
             );
+    }
+
+    userFriendlyRoleName(r:string){
+        if (r=='ROLE_CUSTOMER') {
+            return 'CUSTOMER';
+        } else if(r=='ROLE_ADMIN') {
+            return 'ADMIN';
+        } else if(r=='ROLE_USER') {
+            return 'USER';
+        }else {
+            return 'Not Defined'
+        }
     }
 
     showNewWizard() {
         this.selectedUser = new UserExtended();
         this.selectedUser.roles = new Role();
-
-        $('#listPanel').toggle("slide", { direction: "left" }, 600);
-        $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
-
+        this.selectedUser.roles.id = 2;
+        this.modalStatus = 'create'
+        this.openModal();
     }
 
     showEditWizard(id: Number) {
-        this.selectedUser = this.userList.find(r => r.id == id) as UserExtended;
-
-        $('#listPanel').toggle("slide", { direction: "left" }, 500);
-        $('#wizardPanel').toggle("slide", { direction: "right" }, 500);
-
+        
+        let u = this.userList.find(r => r.id == id);
+        this.selectedUser = JSON.parse(JSON.stringify(u));
+        this.selectedUser.roles.name = u.roles[0].name;
+        this.modalStatus = 'edit'
+        this.openModal();
     }
+ 
+    openModal() {
+        $(document.body).addClass('modal-open');
+        $('#exampleModal').css('display', 'block');
+        $('#exampleModal').attr('aria-hidden', 'false');
+        $('#exampleModal').addClass('show');
+    }
+    closeModal() {
 
-    hideWizard() {
-        this.alert.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
-            res => {
-                this.userService.getUsers().subscribe(ul => this.userList = ul);
-                if (res) {
-                    $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
-                    $('#listPanel').toggle("slide", { direction: "left" }, 600);
-                }
-            }
-        );
+        $(document.body).removeClass('modal-open');
+        $('#exampleModal').css('display', 'none');
+        $('#exampleModal').attr('aria-hidden', 'true');
+        $('#exampleModal').removeClass('show');
     }
 
     changeLockStatus() {
-        this.selectedUser.locked = this.selectedUser.locked === true ? false : true;
+        this.selectedUser.isLocked = this.selectedUser.isLocked === 1 ? 0 : 1;
     }
 
     changeActiveStatus() {
-        this.selectedUser.active = this.selectedUser.active === true ? false : true;
+        this.selectedUser.isActive = this.selectedUser.isActive === 1 ? 0 : 1;
     }
 
     changeLockedStatusOnRow(id: number) {
@@ -118,28 +131,50 @@ export class UsersComponent implements OnInit {
 
     userFormSubmit() {
 
-        console.log(this.selectedUser);
-        debugger
-        if (!this.selectedUser.locked) {
-            this.selectedUser.locked = false;
-        }
 
-        if (!this.selectedUser.active) {
-            this.selectedUser.active = false;
-        }
 
-        if (this.userForm.dirty && this.userForm.valid && this.selectedUser) {
-            this.userService.save(this.selectedUser).subscribe(res => {
-                if (res.status == 200) {
-                    this.hideWizard();
-                    this.notification.success(res.message);
-                } else {
-                    this.notification.error(res.message);
-                }
-            });
+
+        if (this.modalStatus == 'create') {
+            let user = {
+                id: this.selectedUser.id,
+                username: this.selectedUser.username,
+                name: this.selectedUser.name,
+                password: this.selectedUser.password,
+                roles: [this.selectedUser.roles.name]
+            }
+
+            if (this.userForm.dirty && this.userForm.valid && user) {
+                this.userService.save(user).subscribe(res => {
+                    if (res.key) {
+                        this.closeModal();
+                        this.notification.success('User Created.');
+                        this.userService.getUsers().subscribe(res => this.userList = res);
+                    } else {
+                        this.notification.error(res.message);
+                    }
+                });
+            } else {
+                this.notification.warning('User Form is not valid!');
+                return;
+            }
         } else {
-            return;
+            
+            let user = {
+                id: this.selectedUser.id,
+                username: this.selectedUser.username,
+                password: this.selectedUser.password,
+                roles: [this.selectedUser.roles.name],
+                isActive: this.selectedUser.isActive,
+                isLocked: this.selectedUser.isLocked
+            }
+            this.userService.update(user).subscribe(res => {
+                this.closeModal();
+                this.notification.success('User updated.');
+                this.userService.getUsers().subscribe(res => this.userList = res);
+            });
         }
+
+
     }
 
     deleteUser(id: number) {

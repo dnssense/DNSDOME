@@ -131,20 +131,6 @@ export class PublicipComponent implements AfterViewInit {
     }
     document.addEventListener("click", closeAllSelect);
 
-    ///////////adding select options into divs
-
-    // $('#pi_card_btn').click(function () {
-    //   $('#pi_add_filter').removeClass('d-none');
-    //   $(this).addClass('d-none');
-    //   $('#filterCard').addClass('d-block');
-    // });
-
-    // $('#pi_add_filter .close-btn').click(function () {
-    //   $('#pi_add_filter').addClass('d-none');
-    //   $('#pi_card_btn').parent('.row').removeClass('d-none');
-    //   $('#filterCard').removeClass('d-block');
-    //   $('#pi_card_btn').removeClass('d-none');
-    // });
 
     $('#advancedBtn').click(function () {
       $('#advancedContent').toggleClass('d-none');
@@ -152,22 +138,6 @@ export class PublicipComponent implements AfterViewInit {
       $('#advancedSaveBtn').toggleClass('d-none');
     });
 
-    // var agentsTable = $('#agents-table'),
-    //   closeNewAgentBtn = $('#closeNewAgentBtn');
-
-    // $('#newAgentBtn').click(function () {
-    //   agentsTable.addClass('d-none');
-    //   $('#closeNewAgentBtn').removeClass('d-none');
-    //   $(this).addClass('d-none');
-    //   $('#agent-wizard').removeClass('d-none');
-    // });
-
-    // closeNewAgentBtn.click(function () {
-    //   agentsTable.removeClass('d-none');
-    //   closeNewAgentBtn.addClass('d-none');
-    //   $('#newAgentBtn').removeClass('d-none');
-    //   $('#agent-wizard').addClass('d-none');
-    // });
   }
 
   getPublicIpsDataAndProfiles() {

@@ -44,28 +44,28 @@ export const ROUTES: RouteInfo[] = [
     title: 'Dashboard',
     type: 'link',
     icontype: 'dashboard',
-    role: 'ROLE_CUSTOMER'
+    role: 'ROLE_CUSTOMER,ROLE_ADMIN,ROLE_USER'
   },
   {
     path: '/admin/reports/monitor',
     title: ' Monitor',
     type: 'link',
     icontype: 'av_timer',
-    role: 'ROLE_CUSTOMER'
+    role: 'ROLE_CUSTOMER,ROLE_ADMIN,ROLE_USER'
   },
   {
     path: '/admin/reports/customreport',
     title: 'Custom Reports',
     type: 'link',
     icontype: 'timeline',
-    role: 'ROLE_CUSTOMER'
+    role: 'ROLE_CUSTOMER,ROLE_ADMIN,ROLE_USER'
   },
   {
     path: '/admin',
     title: 'Network',
     type: 'sub',
     icontype: 'wifi_tethering',
-    role: 'ROLE_CUSTOMER',
+    role: 'ROLE_CUSTOMER,ROLE_ADMIN',
     collapse: 'network',
     children: [
       { path: 'publicip', title: 'Public IP', ab: 'PI' },
@@ -78,10 +78,10 @@ export const ROUTES: RouteInfo[] = [
     title: 'Settings',
     type: 'sub',
     icontype: 'settings',
-    role: 'ROLE_CUSTOMER',
+    role: 'ROLE_CUSTOMER,ROLE_ADMIN',
     collapse: 'settings',
     children: [
-       //{ path: 'users', title: 'Users', ab: 'U' },
+      { path: 'users', title: 'Users', ab: 'U' },
       // { path: 'scheduledreports', title: 'Scheduled Reports', ab: 'SP' },
       { path: 'profiles', title: 'Security Profiles', ab: 'EP' }
     ]
@@ -103,14 +103,14 @@ export class SidebarComponent implements OnInit {
   public menuItems: any[];
   public profileMenuItems: any[];
   currentUser: User;
-  host:ConfigHost;
+  host: ConfigHost;
   constructor(
     private authService: AuthenticationService,
     private router: Router,
     private translator: TranslatorService,
-    private alert: AlertService,private configService:ConfigService
+    private alert: AlertService, private configService: ConfigService
   ) {
-    this.host=this.configService.host;
+    this.host = this.configService.host;
     this.menuItems = new Array();
 
     this.getUserName();
@@ -128,38 +128,35 @@ export class SidebarComponent implements OnInit {
     }
     return true;
   }
-  private refreshMenus(){
+  private refreshMenus() {
     if (this.authService.currentSession && this.authService.currentSession.currentUser
       && this.authService.currentSession.currentUser.roles && this.authService.currentSession.currentUser.roles.name) {
 
-       let roleName: string = this.authService.currentSession.currentUser.roles.name;
+      let roleName: string = this.authService.currentSession.currentUser.roles.name;
 
+      this.menuItems = ROUTES.filter(
+        menuItem => menuItem.role == null || (menuItem.role != null && menuItem.role.split(',').includes(roleName))
+      );
+    }
 
-     this.menuItems = ROUTES.filter(
-       menuItem =>
-         menuItem.role == null ||
-         (menuItem.role != null && roleName == menuItem.role)
-     );
-   }
-
-   this.profileMenuItems = ProfileRoutes;
+    this.profileMenuItems = ProfileRoutes;
   }
   ngOnInit() {
 
     this.refreshMenus();
-    this.authService.currentUserPropertiesChanged.subscribe(data=>{
+    this.authService.currentUserPropertiesChanged.subscribe(data => {
 
-        this.refreshMenus();
+      this.refreshMenus();
 
     })
 
 
-   /*  this.menuItems = new Array();
-    //todo burada bir sıkıntı var
-    let roleName: string = this.authService.currentSession.currentUser.roles.name;
-    if (roleName) {
-      this.menuItems = ROUTES.filter(m =>m.role == null || m.role == '' || (m.role != null && roleName == m.role));
-    } */
+    /*  this.menuItems = new Array();
+     //todo burada bir sıkıntı var
+     let roleName: string = this.authService.currentSession.currentUser.roles.name;
+     if (roleName) {
+       this.menuItems = ROUTES.filter(m =>m.role == null || m.role == '' || (m.role != null && roleName == m.role));
+     } */
 
 
   }

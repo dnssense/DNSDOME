@@ -7,32 +7,48 @@ import { ConfigService } from './config.service';
 import { User } from '../models/User';
 import { Role } from '../models/Role';
 
+export class Roles {
+  static ITEMS = [{ id: 1, name: "ROLE_ADMIN" }, { id: 2, name: "ROLE_CUSTOMER" }, { id: 5, name: "ROLE_USER" }];
+  static ADMIN = "ROLE_ADMIN";
+  static CUSTOMER = "ROLE_CUSTOMER";
+  static USER = "ROLE_USER"
+}
+
 @Injectable({ providedIn: 'root' })
 export class UserService {
 
-  private _userListURL = this.config.getApiUrl() + '/services/users/user-list';
-  private _userSaveURL = this.config.getApiUrl() + '/services/users/save';
-  private _userDeleteURL = this.config.getApiUrl() + '/services/users/delete';
-  private _roleListURL = this.config.getApiUrl() + '/services/roles/role-list';
+  private _childUserListURL = this.config.getApiUrl() + '/user/current/childUser';
+  private _userSaveURL = this.config.getApiUrl() + '/user/current/childUser';
+  private _userUpdateURL = this.config.getApiUrl() + '/user/current/childUser';
+  private _userDeleteURL = this.config.getApiUrl() + '/user/current/childUser/';
 
   constructor(private http: HttpClient, private config: ConfigService) {
 
   }
 
   public getUsers(): Observable<User[]> {
-    return this.http.post<User[]>(this._userListURL, this.getOptions()).map(res => res);
+    return this.http.get<User[]>(this._childUserListURL).map(res => res);
   }
 
-  public getRoles(): Observable<Role[]> {
-    return this.http.post<Role[]>(this._roleListURL, this.getOptions()).map(res => res);
+  public getRoles(): Role[] {
+    let roles: Role[] = [
+      { id: 1, name: "ROLE_ADMIN", description: "Admin", clearences: null },
+      { id: 2, name: "ROLE_CUSTOMER", description: "Customer", clearences: null },
+      { id: 5, name: "ROLE_USER", description: "User", clearences: null }];
+
+    return roles;
   }
 
-  public save(user: User): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this._userSaveURL, JSON.stringify(user, null, ' '), this.getOptions()).map(res => res);
+  public save(user: any): Observable<any> {
+    return this.http.post<any>(this._userSaveURL, JSON.stringify(user, null, ' '), this.getOptions()).map(res => res);
+  }
+
+  public update(user: any): Observable<any> {
+    return this.http.put<any>(this._userUpdateURL, JSON.stringify(user, null, ' '), this.getOptions()).map(res => res);
   }
 
   public delete(user: User): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this._userDeleteURL, JSON.stringify(user)).map(res => res);
+    return this.http.delete<OperationResult>(this._userDeleteURL + user.id).map(res => res);
   }
 
   private getOptions() {
