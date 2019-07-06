@@ -39,34 +39,13 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   public agents: Location[];
   public mainCategories: Category[];
   public mainApplications: WApplication[];
-  //public categoriesMap = new Map<number, Category[]>();
-  //public applicationsMap = new Map<number, WApplication[]>();
-  // public expanded = true;
   public startDateee: Date = null;
   public endDateee: Date = null;
-  //public start_date_pickr = null;
-  //public end_date_pickr = null;
-
-  // private tableColumnsubscription: Subscription;
-  // private configItemsSubscription: Subscription;
-  // private applicationsSubscription: Subscription;
-  // private categoriesSubscription: Subscription;
   private ngUnsubscribe: Subject<any> = new Subject<any>(); // ne icin kullaniliyor? gereksizse silelim
 
   @Input() searchSetting: SearchSetting;
   @Output() public searchEmitter = new EventEmitter();
   @Output() public searchSettingEmitter = new EventEmitter();
-
-  // @ViewChild('settingNameConfirmationModal') settingNameConfirmationModal: any;
-  // @ViewChild('popoverbtn') popoverbtn: ElementRef;
-  // @ViewChild('dateSelect') dateSelect: ElementRef;
-  // @ViewChild('startDateCal') startDateCal: ElementRef;
-  // @ViewChild('endDateCal') endDateCal: ElementRef;
-  // @ViewChild('customdaterange') customdaterange: ElementRef;
-  // @ViewChild('btn') btn: ElementRef;
-  // @ViewChild('fastSearchSetting') fastSearchSetting: ElementRef;
-  // @ViewChild('dateOverlay') dateOverlay: any;
-
 
   //Yeni tasarim sonrasi
   searchSettingForHtml: SearchSetting;
@@ -87,10 +66,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   inputCollapsed: boolean = true;
   inputSelected: boolean = false;
   @ViewChild('inputElement') inputElement: ElementRef;
-  // @ViewChild('mainInputElement') mainInputElement: ElementRef;
-  // @ViewChild('tagInput') tagInput: ElementRef;
-  // @ViewChild('select') select: ElementRef;
-
+  
   visible = true;
   selectable = true;
   removable = true;
@@ -116,7 +92,10 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
     });
 
-    this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.pipe(startWith(null), map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice()));
+    this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.pipe(
+      startWith(null),
+      map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice())
+    );
 
     if (!this.searchSetting) {
       this.searchSettingForHtml = new SearchSetting();
@@ -719,7 +698,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   addChip(event: MatChipInputEvent): void {
-    
+
     $('#tagsDd').addClass('show');
 
     if (!this.matAutocomplete.isOpen) {
@@ -767,7 +746,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
   selectedChip(event: MatAutocompleteSelectedEvent): void {
     $('#tagsDd').addClass('show');
-   
+
     if (this.currentColumn == 'category' || this.currentColumn == 'applicationName') {
       if (this.isOneOfList.find(x => x == event.option.viewValue) != null) {
         this.notification.warning('This item is already added!');
@@ -785,8 +764,11 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private filterChips(value: string): string[] {
     $('#tagsDd').addClass('show');
-
-    return this.isOneOfListItems.filter(f => f.toLowerCase().indexOf(value.toLowerCase()) === 0);
+    
+    if (value) {
+      return this.isOneOfListItems.filter(f => f.toLowerCase().indexOf(value.toLowerCase()) === 0);
+    }
+    return null;
   }
 
   public checkIp(ipForCheck: string) {

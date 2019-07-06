@@ -32,8 +32,7 @@ export class UserService {
 
   public getRoles(): Role[] {
     let roles: Role[] = [
-      { id: 1, name: "ROLE_ADMIN", description: "Admin", clearences: null },
-      { id: 2, name: "ROLE_CUSTOMER", description: "Customer", clearences: null },
+      { id: 2, name: "ROLE_CUSTOMER", description: "Admin", clearences: null },
       { id: 5, name: "ROLE_USER", description: "User", clearences: null }];
 
     return roles;

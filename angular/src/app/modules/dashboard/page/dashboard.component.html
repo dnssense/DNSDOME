@@ -381,43 +381,6 @@
                 <div id="trafficChartBlocked"></div>
               </div>
             </div>
-            <!-- <div class="events" style="margin-top: -30px">
-              <div class="dns-toggle" style="padding: 4px;">
-                <button class="btns " [ngClass]="{'active ': trafficChartType=='hit'}"
-                  (click)="changeTrafficChartData('hit')">Total Traffic</button>
-                <button class="btns" [ngClass]="{'active': trafficChartType=='block'}"
-                  (click)="changeTrafficChartData('block')">Blocked Traffic</button>
-              </div>
-              <div class="dropdown d-inline-block">
-                <button class="btns dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">
-                  <i class="icon-plus" style="font-size: 20px"></i>
-                  Add Category
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
-                  style="max-height: 400px; overflow: auto;">
-                  <div class="dropdown-searchbar">
-                    <mat-form-field>
-                      <input type="text" class="form-control" matInput placeholder="Search" [(ngModel)]="searchKey"
-                        (ngModelChange)="searchCategoryForTraffic($event)">
-                    </mat-form-field>
-                  </div>
-                  <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
-                    (click)="addCategoryToTraffic(cat.id)">
-                    <span class="color-point" style="background:#fa3f3f"></span>
-                    {{cat.name}}
-                  </button>
-                </div>
-                <span class="labels ml-3" *ngIf="selectedCategoryForTraffic">
-                  <span class="label">
-                    <span class="label-color"></span>
-                    <span>{{selectedCategoryForTraffic.name}}</span>
-                    <i class="close-btn icon-cancel" (click)="deleteCatFromTraffic(selectedCategoryForTraffic.id)"></i>
-                  </span>
-                </span>
-              </div>
-
-            </div> -->
           </div>
         </div>
       </div>
@@ -429,7 +392,7 @@
           <div class="dns-base-card-content" disabled="true">
             <div class="card card-chart mb-2" style="box-shadow: none; background-color: #262626">
               <div class="card-body">
-                <div id="worldMap" class="map" style="max-height: 220px;"></div>
+                <div #worldMap id="worldMap" class="map" style="max-height: 220px;"></div>
               </div>
             </div>
           </div>
@@ -507,35 +470,6 @@
                 <button class="btns" [ngClass]="{'active ': uniqueChartType=='destIp'}"
                   (click)="changeUniqueChartData('destIp')">Unique IP</button>
               </div>
-
-              <!-- <div class="dns-dropdown d-inline-block">
-                <button class="btns dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">
-                  <i class="icon-plus" style="font-size: 20px"></i>
-                  Add Category
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
-                  style="max-height: 400px; overflow: auto;">
-                  <div class="dropdown-searchbar">
-                    <mat-form-field>
-                      <input type="text" class="form-control" matInput placeholder="Search" [(ngModel)]="searchKey"
-                        (ngModelChange)="searchCategoryForTraffic($event)">
-                    </mat-form-field>
-                  </div>
-                  <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
-                    (click)="addCategoryToBlocked(cat.id)">
-                    <span class="color-point" style="background:#fa3f3f"></span>
-                    {{cat.name}}
-                  </button>
-                </div>
-                <span class="labels ml-3" *ngIf="selectedCategoryForBlocked">
-                  <span class="label">
-                    <span class="label-color"></span>
-                    <span>{{selectedCategoryForBlocked.name}}</span>
-                    <i class="close-btn icon-cancel" (click)="deleteCatFromBlocked(selectedCategoryForBlocked.id)"></i>
-                  </span>
-                </span>
-              </div> -->
             </div>
 
           </div>
@@ -543,81 +477,5 @@
       </div>
     </div>
 
-
-    <!-- <div class="row mt-4 mb-4">
-      <div class="col-md-6">
-        <div class="dns-base-card">
-          <div class="dns-base-card-content">
-            <div class="datatable-container container-fluid">
-              <div class="row">
-                <h4 class="datatable-heading col-sm-8">Firstly Seen Domains ({{firstlySeenDomainsFiltered?.length}})
-                </h4>
-                <div class="col-sm-4">
-                  <div class="search-form">
-                    <mat-form-field>
-                      <input type="text" matInput [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)">
-                      <mat-placeholder style="color: whitesmoke;">Search by domain</mat-placeholder>
-                    </mat-form-field>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12">
-                  <div class="table-responsive" style="max-height: 200px;">
-                    <table class="table table-bordered">
-                      <thead>
-                        <th class="no-border"></th>
-                        <th class="color-light-blue">Domain</th>
-                        <th class="color-light-blue">Category</th>
-                        <th class="color-light-blue">Hits</th>
-                      </thead>
-                      <ng-container
-                        *ngIf="firstlySeenDomainsFiltered && firstlySeenDomainsFiltered.length>0; else elseTemplateForDomain">
-                        <tbody>
-                          <tr *ngFor="let dom of firstlySeenDomainsFiltered; let i = index;">
-                            <td class="numeration">{{i}}</td>
-                            <td>{{dom.domain}}</td>
-                            <td>{{dom.category}}</td>
-                            <td>{{dom.hits}}</td>
-                          </tr>
-                        </tbody>
-                      </ng-container>
-                      <ng-template #elseTemplateForDomain>
-                        <tbody>
-                          <tr>
-                            <td class="numeration"></td>
-                            <td colspan="3">No Result!</td>
-                          </tr>
-                        </tbody>
-                      </ng-template>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="dns-base-card">
-          <div class="dns-base-card-header">
-            Malware Dedected
-          </div>
-          <div class="dns-base-card-content">
-            <div class="chart">
-              <div id="malwareDetectionChart"></div>
-            </div>
-            <div class="events" style="margin-top: -30px">
-              <div class="dns-toggle">
-                <button class="btn active">All</button>
-                <button class="btn">Major</button>
-                <button class="btn">Threshold</button>
-                <button class="btn">Minor</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </div>

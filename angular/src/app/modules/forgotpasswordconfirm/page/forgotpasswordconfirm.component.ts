@@ -107,7 +107,7 @@ export class ForgotPasswordConfirmComponent implements OnInit, OnDestroy {
 
   forgotPasswordConfirm() {
     this.authService.forgotPasswordConfirm(this.forgotId, this.model.password, this.model.passwordAgain).subscribe(x => {
-      this.router.navigateByUrl("/#/login");
+      this.router.navigateByUrl("/login");
     });
   }
 

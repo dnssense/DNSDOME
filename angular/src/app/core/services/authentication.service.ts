@@ -218,7 +218,7 @@ export class AuthenticationService {
 
   logout() {
     this.clear();
-    this.router.navigateByUrl('/#/login');
+    this.router.navigateByUrl('/login');
   }
 
   forgotPassword(signupBean: SignupBean): Observable<OperationResult> {

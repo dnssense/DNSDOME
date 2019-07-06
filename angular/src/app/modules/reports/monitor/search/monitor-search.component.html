@@ -159,7 +159,7 @@
     <div class="row ">
       <div class="col-10">
         <button class="btns btn-success size-13 mr-1 mt-1 mb-1 filterButton" *ngFor="let item of searchSetting.must">
-          {{item.field}}, Is, {{item.value}}
+          {{item.field}}, Is, <span style="color: black"><b>{{item.value}}</b></span>
           <img src="assets/images/icons/editF.svg" class="editButton ml-2" width="15" height="15" alt=""
             (click)="editTag(item,'is')">
           <img src="assets/images/icons/white.svg" class="editButton ml-2" width="15" height="15" alt=""
@@ -167,7 +167,7 @@
         </button>
         <button class="btns btn-danger size-13 mr-1 mt-1 mb-1 filterButton"
           *ngFor="let item of searchSettingForHtml.mustnot">
-          {{item.field}}, Is NOT, {{item.value}}
+          {{item.field}}, Is NOT, <span style="color: black"><b>{{item.value}}</b></span>
           <img src="assets/images/icons/editF.svg" class="editButton ml-2" width="15" height="15" alt=""
             (click)="editTag(item,'isnot')">
           <img src="assets/images/icons/white.svg" class="editButton ml-2" width="15" height="15" alt=""
@@ -175,7 +175,7 @@
         </button>
         <button class="btns btn-warning size-13 mr-1 mt-1 mb-1 filterButton"
           *ngFor="let item of searchSettingForHtml.should">
-          {{item.field}}, Is One Of, {{item.value}}
+          {{item.field}}, Is One Of, <span style="color: black"><b>{{item.value}}</b></span>
           <img src="assets/images/icons/editF.svg" class="editButton ml-2" width="15" height="15" alt=""
             (click)="editTag(item,'isoneof')">
           <img src="assets/images/icons/white.svg" class="editButton ml-2" width="15" height="15" alt=""

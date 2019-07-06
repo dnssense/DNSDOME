@@ -1,8 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ConfigService } from 'src/app/core/services/config.service';
-import * as Chartist from 'chartist';
-import { TableData } from '../../shared/md/md-table/md-table.component';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { DashBoardService } from 'src/app/core/services/DashBoardService';
 import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -58,7 +54,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
     let values: Map<string, number> = new Map();
     values.set('ru', 234);
     values.set('ca', 154);
@@ -73,6 +69,7 @@ export class DashboardComponent implements OnInit {
     values.set('cd', 240);
     values.set('de', 740);
     values.set('bi', 340);
+
 
     $('#worldMap').vectorMap({
       map: 'world_en',
@@ -224,24 +221,6 @@ export class DashboardComponent implements OnInit {
     this.trafficChart = new ApexCharts(document.querySelector("#trafficChartHits"), trafficChartoptions);
     this.trafficChart.render();
     this.trafficChart.updateSeries([{ name: "Today Hits", data: this.ds.totalHits }, { name: " Total Hit Averages", data: this.ds.hitAverages }])
-
-    //Blocked Chart
-    // var options2 = {
-    //   chart: { height: 250, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
-    //   dataLabels: { enabled: false },
-    //   stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 6] },
-    //   colors: ['#9d60fb', '#4a90e2'],
-    //   series: [[0], [0]],
-    //   markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-    //   xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
-    //   grid: { borderColor: '#626262', strokeDashArray: 6, },
-    //   legend: { position: 'top', horizontalAlign: 'right', show: true },
-    //   annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
-    //   tooltip: { theme: 'dark' }
-    // }
-    // var blockedChart = new ApexCharts(document.querySelector("#trafficChartBlocked"), options2);
-    // blockedChart.render();
-    // blockedChart.updateSeries([{ name: "Today Blockeds", data: this.ds.totalBlocks }, { name: "Average Blockeds", data: this.ds.blockAverages }])
 
     //Uniquer Domain Chart
     var uniqueDomainOptions = {

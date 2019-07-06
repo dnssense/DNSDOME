@@ -11,7 +11,8 @@
       <div class="col-5 ml-auto mr-auto">
         <div class="dns-full-width flex-1">
           <input type="text" class="dns-form-control reverse-form" placeholder="Profile Name"
-            [(ngModel)]="selectedAgent.rootProfile.name" />
+            [(ngModel)]="selectedAgent.rootProfile.name"/>
+
         </div>
       </div>
     </div>
@@ -42,14 +43,14 @@
                     <span></span>
                   </div>
                 </label>
-                <label for="chk1" class="dns-chk-label ml-4">
+                <label for="chk2" class="dns-chk-label ml-4">
                   <span>YouTube Restrict Mode</span>
                   <div data-width="30" class="dns-form-switch">
                     <ng-container *ngIf="selectedAgent.rootProfile.isYoutubeStrictModeEnabled; else elseTemplate2">
-                      <input type="checkbox" id="chk" checked (change)="changeYoutubeMode()">
+                      <input type="checkbox" id="chk2" checked (change)="changeYoutubeMode()">
                     </ng-container>
                     <ng-template #elseTemplate2>
-                      <input type="checkbox" id="chk" (change)="changeYoutubeMode()">
+                      <input type="checkbox" id="chk2" (change)="changeYoutubeMode()">
                     </ng-template>
                     <i></i>
                     <span></span>
@@ -534,7 +535,7 @@
             <button class="btn wizard-btn prev-btn" id="prevBtn" (click)="prevStep()"></button>
             <button class="btn wizard-btn next-btn" id="nextBtn" (click)="nextStep()"></button>
             <button class="btn wizard-btn finish-btn" id="finishBtn" (click)="saveProfile()"
-            *ngIf="selectedAgent.rootProfile && selectedAgent.rootProfile.isSystem == false;"></button>
+              *ngIf="selectedAgent.rootProfile && selectedAgent.rootProfile.isSystem == false;"></button>
 
           </div>
 

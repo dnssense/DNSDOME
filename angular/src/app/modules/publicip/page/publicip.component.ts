@@ -9,11 +9,6 @@ import { AgentType } from 'src/app/core/models/AgentType';
 
 declare var $: any;
 
-// export class IpNumber {
-//   ip: string = "";
-//   range: number = 0;
-// }
-
 declare interface JsonIP {
   ip: string
 }
@@ -143,7 +138,6 @@ export class PublicipComponent implements AfterViewInit {
   getPublicIpsDataAndProfiles() {
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
-
       res.forEach(r => {
         if (r.agentType && r.agentType.toString() == AgentType.LOCATION.toString()) {
           this.publicIps.push(r);
@@ -420,7 +414,7 @@ export class PublicipComponent implements AfterViewInit {
       if (res.status == 200) {
         this.notification.success(res.message);
         this.getPublicIpsDataAndProfiles();
-        
+
       } else {
         this.notification.error(res.message);
       }

@@ -50,8 +50,6 @@ export class UsersComponent implements OnInit {
 
     userFriendlyRoleName(r:string){
         if (r=='ROLE_CUSTOMER') {
-            return 'CUSTOMER';
-        } else if(r=='ROLE_ADMIN') {
             return 'ADMIN';
         } else if(r=='ROLE_USER') {
             return 'USER';

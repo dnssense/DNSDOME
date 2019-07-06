@@ -66,6 +66,8 @@
               "src/assets/js/highcharts/highcharts-more.js",
               "src/assets/js/highcharts/modules/map.js",
               "src/assets/js/highcharts/modules/exporting.js",
+              "src/assets/js/world.js",
+              "src/assets/js/tr-all.js",
               "node_modules/flatpickr/dist/flatpickr.min.js",
               "node_modules/webui-popover/dist/jquery.webui-popover.min.js",
               "node_modules/select2/dist/js/select2.full.min.js",

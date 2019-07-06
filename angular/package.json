@@ -1,6 +1,6 @@
 {
   "name": "ui.dnssense",
-  "version": "1.0.44",
+  "version": "1.0.45",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -60,7 +60,7 @@
     "googleapis": "19.0.0",
     "gridstack": "^0.4.0",
     "hammerjs": "2.0.8",
-    "highcharts": "^5.0.14",
+    "highcharts": "^5.0.15",
     "jasny-bootstrap": "3.1.3",
     "jquery": "3.2.1",
     "jquery-ui-dist": "^1.12.1",
