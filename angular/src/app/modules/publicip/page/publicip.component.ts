@@ -138,6 +138,9 @@ export class PublicipComponent implements AfterViewInit {
   getPublicIpsDataAndProfiles() {
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
+      debugger
+      console.log(res);
+      
       res.forEach(r => {
         if (r.agentType && r.agentType.toString() == AgentType.LOCATION.toString()) {
           this.publicIps.push(r);
@@ -301,6 +304,7 @@ export class PublicipComponent implements AfterViewInit {
     this.selectedIp.rootProfile = selectedUpdateIp.rootProfile;
     this.selectedIp.staticSubnetIp = selectedUpdateIp.staticSubnetIp;
     this.selectedIp.isCpEnabled = selectedUpdateIp.isCpEnabled;
+    this.selectedIp.logo = selectedUpdateIp.logo;
 
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
       for (let i = 1; i < this.selectedIp.staticSubnetIp.length; i++) {
@@ -337,6 +341,23 @@ export class PublicipComponent implements AfterViewInit {
     this.hideNewWizard();
   }
 
+  selectFile($event) {
+    var inputValue = $event.target;
+    let file = inputValue.files[0];
+    let reader = new FileReader();
+    let ag = this.selectedIp;
+    if (typeof file !== 'undefined') {
+
+    }
+
+    reader.addEventListener("load", function () {
+        ag.logo = reader.result;
+    }, false);
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+}
 
   deletePublicIp(id: number) {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Public IP and its settings will be deleted!').subscribe(

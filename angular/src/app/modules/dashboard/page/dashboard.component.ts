@@ -122,7 +122,6 @@ export class DashboardComponent implements OnInit {
 
     this.dashboardService.getHourlyCompanySummary(this.companyId.toString(), d1.toISOString(), d2.toISOString()).subscribe(res => {
       this.elasticData = res;
-      console.log(res);
       this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
       this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
       this.createCharts();

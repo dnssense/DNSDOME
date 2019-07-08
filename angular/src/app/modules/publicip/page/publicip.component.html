@@ -109,10 +109,15 @@
 
                     <div class="row align-items-center d-none" id="advancedContent">
                       <div class="col-12 col-lg-3 mt-3 ml-lg-0">
-                        <input type="file" class="inputfile inputfile-4" id="fileUpload">
+                        <input type="file" class="inputfile inputfile-4" id="fileUpload" (change)="selectFile($event)">
                         <label for="fileUpload">
                           <figure>
-                            <img src="./assets/images/icons/upload-image.svg" class="dns-full-width">
+                            <ng-container *ngIf="selectedIp.logo; else elseTemplateLogo">
+                              <img src="{{selectedIp.logo}}" class="dns-full-width">
+                            </ng-container>
+                            <ng-template #elseTemplateLogo>
+                              <img src="./assets/images/icons/upload-image.svg" class="dns-full-width">
+                            </ng-template>
                           </figure>
                           <span>Add Chose Block Image</span>
                         </label>
@@ -202,6 +207,7 @@
                     <th style="border-bottom: white;">Ip Address</th>
                     <th style="border-bottom: white;">Block Message</th>
                     <th style="border-bottom: white;">Profile</th>
+                    <th style="border-bottom: white;">Block Logo</th>
                     <th style="border-bottom: white;" colspan="2" class="text-center">Operation</th>
                   </thead>
                   <tbody>
@@ -222,6 +228,15 @@
                           <img src="./assets/images/icons/settings-outline.svg">
                         </button>
                         {{pi.rootProfile?pi.rootProfile.name:"No Profile!"}}
+                      </td>
+                      <td>
+                        <!-- <img src="{{pi.logo}}" class="picture-src" id="wizardPicturePreview" title="logo" /> -->
+                        <ng-container *ngIf="pi.logo; else elseTemplatePiLogo">
+                          <img src="{{pi.logo}}" class="dns-full-width">
+                        </ng-container>
+                        <ng-template #elseTemplatePiLogo>
+                          <img src="./assets/images/icons/upload-image.svg" class="dns-full-width">
+                        </ng-template>
                       </td>
                       <td class="text-center">
                         <button class="btns btn-clear" matTooltip="Edit item" (click)="showEditWizard(pi.id)">

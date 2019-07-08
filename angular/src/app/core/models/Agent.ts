@@ -12,7 +12,7 @@ export class Agent {
     staticSubnetIp: IpWithMask[];
     dynamicIpDomain: string;
     rootProfile: SecurityProfile;
-    logo:any;
+    logo?:any;
 }
 
 export interface IpWithMask {
