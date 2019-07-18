@@ -15,22 +15,18 @@
         </div>
         <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="collapsed">
-                <span *ngIf="currentUser">
+                <span *ngIf="currentUser" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     {{currentUser.name}} {{ currentUser.surname }}
-                    <b class="caret"></b>
                 </span>
+                <b class="caret mt-2"></b>
             </a>
             <div class="collapse" id="collapseExample">
                 <ul class="nav">
-                    <li routerLinkActive="active" *ngFor="let menuitem of profileMenuItems; index as ind;" class="nav-item">
+                    <li routerLinkActive="active" *ngFor="let menuitem of profileMenuItems; index as ind;"
+                        class="nav-item">
                         <a [routerLink]="[menuitem.path]" *ngIf="menuitem.type === 'link'" class="nav-link">
-                            <ng-container *ngIf="ind==0; else elseTemplate">
-                                <span class="sidebar-mini">AS</span>
-                            </ng-container>
-                            <ng-template #elseTemplate>
-                                <span class="sidebar-mini">SP</span>
-                            </ng-template>
-                            <p>{{menuitem.title}}</p>
+                            <span class="sidebar-mini">AS</span>
+                            <span class="sidebar-normal">{{menuitem.title}}</span>
                         </a>
                     </li>
                     <li class="nav-item">

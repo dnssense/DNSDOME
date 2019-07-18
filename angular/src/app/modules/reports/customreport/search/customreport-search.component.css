@@ -1,31 +1,7 @@
-.filterTags{
-  width: 100%;
-  margin-top: 2px;
-  padding: 6px;
-  border-radius: 5px;
-}
-
-.filterTag{
-  width: 30%;
-  padding: 6px;
-  margin-top: 6px;
-  border-radius: 5px;
-}
-
-.editButton{ visibility: hidden}
-.filterButton:hover .editButton{
-visibility: visible;
-}
-
-.btnOverFlow{
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 ::ng-deep .mat-option:hover{
-  background-color: #77f !important;
-}
-::ng-deep .mat-option.mat-selected:not(.mat-option-multiple) {
-  background-color: #77f !important;
-}
+    background-color: #77f !important;
+ }
+ 
+ ::ng-deep .mat-option.mat-selected:not(.mat-option-multiple) {
+   background-color: #77f !important;
+ }

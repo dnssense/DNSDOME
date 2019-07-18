@@ -1,10 +1,12 @@
-import {ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
+import { ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { Subject } from 'rxjs';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { CustomReportService } from 'src/app/core/services/CustomReportService';
 import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
 import { FastReportService } from 'src/app/core/services/FastReportService';
+import { ExcelService } from 'src/app/core/services/ExcelService';
+import { PdfService } from 'src/app/core/services/PdfService';
 
 @Component({
   selector: 'app-customreport-result',
@@ -27,8 +29,9 @@ export class CustomReportResultComponent implements OnDestroy {
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
-  
-  constructor(private customReportService: CustomReportService, private fastReportService: FastReportService) {}
+
+  constructor(private customReportService: CustomReportService, private fastReportService: FastReportService,
+    private excelService: ExcelService, private pdfService: PdfService) { }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -124,7 +127,7 @@ export class CustomReportResultComponent implements OnDestroy {
           annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
           title: { text: 'Log Histogram', style: { fontSize: '20px', color: '#eeeeee' } }
         }
-    
+
         var logChart = new ApexCharts(document.querySelector("#customReportChart"), options);
         logChart.render();
         logChart.updateSeries([{ name: "Hits", data: chartSeries }])
@@ -132,7 +135,31 @@ export class CustomReportResultComponent implements OnDestroy {
 
     });
   }
- 
+
+  exportAs(extention: string) {
+    this.selectedColumns
+
+    let jsonString = "[";
+    for (let i = 0; i < this.data.length - 1; i++) {
+      const d = this.data[i];
+      jsonString += "{"
+      for (let j = 0; j < d.length - 1; j++) {
+        const e = d[j];
+        jsonString += '"' + this.selectedColumns[j].label + '" : "' + e + '",';
+      }
+      jsonString+= '"Count": "' + d[d.length-1] +'" },'
+    }
+    jsonString = jsonString.substr(0, jsonString.length - 1);
+    jsonString += "]"
+
+    const d = new Date();
+    if (extention == 'xlsx') {     
+      this.excelService.exportAsExcelFile(JSON.parse(jsonString), 'CustomReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+    }else if ('pdf'){
+      this.pdfService.exportAsPdfFile("landscape", JSON.parse(jsonString), 'CustomReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+    }
+  }
+
   public stopRefreshing() {
     //this.spinnerService.stop();
   }

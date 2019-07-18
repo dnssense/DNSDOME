@@ -10,10 +10,6 @@ const adminlayoutRoutes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: 'hamza',
-        loadChildren: '../../hamza/hamza.module#HamzaModule'
-      },
-      {
         path: 'dashboard',
         loadChildren: '../../dashboard/dashboard.module#DashboardModule'
       },

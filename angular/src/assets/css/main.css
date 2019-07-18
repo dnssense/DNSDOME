@@ -226,6 +226,38 @@ a:hover {
   color: #f5f5f5;
 }
 
+.btnOverFlow{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileBtn{
+  width:180px;
+}
+
+.filterTags{
+  width: 100%;
+  margin-top: 2px;
+  padding: 6px;
+  border-radius: 5px;
+}
+
+.filterTag{
+  width: 30%;
+  padding: 6px;
+  margin-top: 6px;
+  border-radius: 5px;
+}
+
+.editButton{ 
+  visibility: hidden
+}
+
+.filterButton:hover .editButton{
+visibility: visible;
+}
+
 .dropdown-menu {
   background: #3b3b3b;
   min-width: 20rem !important;
@@ -304,6 +336,17 @@ a:hover {
 .dns-table-select.show i.btn-arrow {
   transform: rotate(180deg);
   top: 0;
+}
+
+::ng-deep .mat-option:hover{
+  background-color: #77f !important;
+}
+::ng-deep .mat-option.mat-selected:not(.mat-option-multiple) {
+  background-color: #77f !important;
+}
+
+.row-img{
+  width: 45px;
 }
 
 i.btn-arrow {

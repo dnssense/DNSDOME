@@ -4,6 +4,10 @@ import { MonitorService } from 'src/app/core/services/MonitorService';
 import { Subject } from 'rxjs';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
+import { ExcelService } from 'src/app/core/services/ExcelService';
+import { PdfService } from 'src/app/core/services/PdfService';
+
+
 
 @Component({
   selector: 'app-monitor-result',
@@ -29,7 +33,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
   @ViewChild('columnTablePanel') columnTablePanel: any;
 
-  constructor(private monitorService: MonitorService) { }
+  constructor(private monitorService: MonitorService, private excelService: ExcelService, private pdfService: PdfService) { }
 
   ngOnInit() { }
 
@@ -52,7 +56,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     this.loadGraph(this.searchSetting);
   }
 
-  refresh(ss:SearchSetting) {
+  refresh(ss: SearchSetting) {
     this.loadGraph(ss);
   }
 
@@ -60,7 +64,20 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     // this.spinnerService.stop();
   }
 
-  public loadGraph(ss:SearchSetting) {
+  exportAs(extention: string) {
+    this.tableData.forEach(d => {
+      delete d.id;
+    });
+    const d = new Date();
+
+    if (extention == 'xlsx') {
+      this.excelService.exportAsExcelFile(this.tableData, 'MonitorReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+    } else if (extention == 'pdf') {
+      this.pdfService.exportAsPdfFile("landscape", this.tableData, 'MonitorReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+    }
+  }
+
+  public loadGraph(ss: SearchSetting) {
     // this.spinnerService.start();
     this.monitorService.getGraphData(ss, this.currentPage).takeUntil(this.ngUnsubscribe)
       .subscribe((res: Response) => { this.tableData = res['result']; this.totalItems = res['total']; },

@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
 import { DashBoardService } from 'src/app/core/services/DashBoardService';
 import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -8,7 +8,9 @@ import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { DashboardStats } from 'src/app/core/models/DashboardStats';
 import { NotificationService } from 'src/app/core/services/notification.service';
-
+import * as introJs from 'intro.js/intro.js';
+import { Router } from '@angular/router';
+import { AgentService } from 'src/app/core/services/agent.service';
 declare const $: any;
 
 @Component({
@@ -16,7 +18,8 @@ declare const $: any;
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.sass']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
+
   elasticData: ElasticDashboardResponse[];
   dateParameter: number = 0;
   ds: DashboardStats = new DashboardStats();
@@ -31,26 +34,35 @@ export class DashboardComponent implements OnInit {
   uniqueDomainChart: any;
   trafficChartType: string = 'hit';
   uniqueChartType: string = 'domain';
-  companyId: number;
 
-  constructor(private dashboardService: DashBoardService, private auth: AuthenticationService, private datePipe: DatePipe,
-    private staticService: StaticService, private notification: NotificationService) {
+  constructor(private dashboardService: DashBoardService, private auth: AuthenticationService, private datePipe: DatePipe, private authService: AuthenticationService,
+    private staticService: StaticService, private notification: NotificationService, private router: Router, private agentService: AgentService) {
 
-    this.selectedCategoryForTraffic = null;
-    this.selectedCategoryForUnique = null;
+    let roleName: string = this.authService.currentSession.currentUser.roles.name;
+    //agent yoksa public ip sayfasına yönlendir
+    this.agentService.getAgents().subscribe(res => {
 
-    this.staticService.getCategoryList().subscribe(res => {
-      this.categoryList = res;
-      this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
+      if ((res == null || res.length < 1) && roleName != 'ROLE_USER') {
+        this.router.navigateByUrl('/admin/publicip');
+      } else {
+        this.selectedCategoryForTraffic = null;
+        this.selectedCategoryForUnique = null;
+
+        this.staticService.getCategoryList().subscribe(res => {
+          this.categoryList = res;
+          this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
+        });
+
+        this.elasticData = [];
+        this.ds = new DashboardStats();
+
+        this.auth.getCurrentUser().subscribe(cu => {
+          this.getElasticData(Date.now());
+        });
+      }
     });
 
-    this.elasticData = [];
-    this.ds = new DashboardStats();
 
-    this.auth.getCurrentUser().subscribe(cu => {
-      this.companyId = cu.currentUser.companyId;
-      this.getElasticData(Date.now());
-    });
   }
 
   ngOnInit(): void {
@@ -114,13 +126,17 @@ export class DashboardComponent implements OnInit {
     }, 1000);
   }
 
+  ngAfterViewInit(): void {
+    //introJs().start();
+  }
   private getElasticData(d: number) {
+    //let today = new Date(); todayi d2 ye atayıp aradaki farkı getirecek şekilde dönüştür.
     const date = new Date(d);
 
     let d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
     let d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
-    this.dashboardService.getHourlyCompanySummary(this.companyId.toString(), d1.toISOString(), d2.toISOString()).subscribe(res => {
+    this.dashboardService.getHourlyCompanySummary(d1.toISOString(), d2.toISOString()).subscribe(res => {
       this.elasticData = res;
       this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
       this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
@@ -133,7 +149,7 @@ export class DashboardComponent implements OnInit {
     if (param == -1) {
       param = 0;
     }
-    var today = new Date();
+    let today = new Date();
 
     this.getElasticData(new Date().setDate(today.getDate() - param));
   }
@@ -200,7 +216,7 @@ export class DashboardComponent implements OnInit {
       this.ds.grayCountForDashboardDelta = this.calculatePercentage(grayTotalAverages, this.ds.grayCountForDashboard);
       this.ds.uGrayCountForDashboardDelta = this.calculatePercentage(uGrayCounterAverages, this.ds.uGrayCountForDashboard);
     } else {
-      this.notification.warning('Dashboard data could not get for this date parameter!', true);
+      this.notification.warning('Dashboard data could not get for this date parameter!', false);
     }
 
     // Total Traffic Chart

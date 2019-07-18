@@ -27,8 +27,7 @@ export class UsersComponent implements OnInit {
         this.selectedUser.roles.name = 'ROLE_CUSTOMER';
 
         this.userService.getUsers().subscribe(res => {
-            this.userList = res
-            console.log(res)
+            this.userList = res;            
         });
 
         this.roleList = this.userService.getRoles();

@@ -20,33 +20,6 @@ app.post('/api/login', (req, res) => {
 
 });
 
-
-app.post('/api/dashboard', (req, res) => {
-  var statistics =
-  {
-    rushDay : "Pazar",
-    newUserCount : 12,
-    totalUserCount: 130,
-    onlineUserCount: 5,
-    maleGenderRatio: 56,
-    weeklyUsers: [334,456,766,635,189,389,891]
-  }
-  res.status(200).send(statistics);
-});
-
-app.get('/api/dashboard', (req, res) => {
-  var statistics =
-  {
-    rushDay : "Pazar",
-    newUserCount : 12,
-    totalUserCount: 130,
-    onlineUserCount: 5,
-    maleGenderRatio: 56,
-    weeklyUsers: [334,456,766,635,189,389,891]
-  }
-  res.status(200).send(statistics);
-});
-
 app.listen(port);
 
 console.log('RESTful API server started on: ' + port);

@@ -65,7 +65,7 @@ export class AuthenticationService {
         }
       }
     } catch (err) {
-      this.logger.console(err);
+      //this.logger.console(err);
       this.logout();
     }
 
@@ -75,7 +75,7 @@ export class AuthenticationService {
     if (!this.currentSession || !this.currentSession.refreshToken) {
       return;
     }
-    this.logger.console('refreshing token');
+    //this.logger.console('refreshing token');
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -97,8 +97,8 @@ export class AuthenticationService {
         this.getCurrentUser().subscribe(x => {
 
         });
-        this.logger.console(res.refreshToken);
-        this.logger.console(res.token);
+       // this.logger.console(res.refreshToken);
+       // this.logger.console(res.token);
       } else {
 
       }
@@ -138,7 +138,7 @@ export class AuthenticationService {
       .pipe(
         mergeMap((res: RestUser) => {
 
-          this.logger.console(res);
+      //    this.logger.console(res);
 
           const user = new User();
           user.companyId = Number(res.companyId);
@@ -199,7 +199,7 @@ export class AuthenticationService {
     
     return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
       .pipe(mergeMap((res: any) => {
-        this.logger.console(res);
+        //this.logger.console(res);
         this.currentSession = new Session();
         this.currentSession.token = res.accessToken;
         this.currentSession.refreshToken = res.refreshToken;

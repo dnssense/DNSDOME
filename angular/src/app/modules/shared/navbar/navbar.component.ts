@@ -1,18 +1,19 @@
-import { Component, OnInit, Renderer, ViewChild, ElementRef, Directive } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
-import { Router, ActivatedRoute, NavigationEnd, NavigationStart } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { Location } from '@angular/common';
 import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
+
 const misc: any = {
     navbar_menu_visible: 0,
     active_collapse: true,
-    disabled_collapse_init: 0,
+    disabled_collapse_init: 0
 };
 
 declare var $: any;
@@ -32,12 +33,14 @@ export class NavbarComponent implements OnInit {
 
     @ViewChild('app-navbar-cmp') button: any;
 
-    constructor(location: Location, private renderer: Renderer, private element: ElementRef, private router: Router,private notification:NotificationService,
+    constructor(location: Location, private element: ElementRef, private router: Router,private notification:NotificationService,
         private alert: AlertService, private auth: AuthenticationService, private config: ConfigService, private translator: TranslatorService) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
+        this.minimizeSidebar();
     }
+
     minimizeSidebar() {
         const body = document.getElementsByTagName('body')[0];
 

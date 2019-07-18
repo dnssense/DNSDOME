@@ -227,12 +227,12 @@ export class AccountSettingsComponent implements OnInit {
             this.smsService.sendSmsCommon(this.user.gsmCode + this.user.gsm).subscribe(res => {
                 $('#smsValidationDiv').show(300);
 
-                this.smsInformation = res;                
+                this.smsInformation = res;
                 this.maxRequest = 3;
                 this.isConfirmTimeEnded = false;
                 this.endTime = new Date();
                 this.endTime.setMinutes(new Date().getMinutes() + 2);
-                
+
             });
 
         }

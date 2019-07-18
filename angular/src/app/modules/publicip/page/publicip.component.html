@@ -3,7 +3,8 @@
 
     <section id="publicIpPanel" class="publicIpPanel">
 
-      <form [formGroup]="publicIpForm" class="publicIpForm" id="newIpRow" style="display: none;">
+      <form [formGroup]="publicIpForm" class="publicIpForm" id="newIpRow" style="display: none;" data-step="4"
+        data-intro="Finally, save your agent and let's start!" data-position='bottom-middle-aligned'>
         <div class="container-fluid">
           <div class="row">
             <div class="col-12 pl-0 pr-0 mb-3">
@@ -14,7 +15,10 @@
                   <div class="container-fluid">
                     <div class="row" id="pi_add_filter">
                       <div class="col-12 d-flex">
-                        <h4 class="mr-3 flex-1">Public IP</h4>
+                        <h4 class="mr-3 flex-1">Public IP </h4>
+                        <button class="btns btn-clear text-right close-btn" (click)="openTooltipGuide()">
+                          <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                        </button>
                         <button class="btns btn-clear text-right close-btn" (click)="hideNewWizard()">
                           <img src="./assets/images/icons/close.svg">
                         </button>
@@ -22,11 +26,11 @@
                       <div class="col-12 col-sm-3 d-flex align-items-end">
                         <input type="text" class="dns-form-control reverse-form" name="agentName" id="agentName"
                           placeholder="Public IP/Agent Name" [(ngModel)]="selectedIp.agentAlias"
-                          formControlName="agentName">
-
+                          formControlName="agentName" data-step="1" data-position='bottom-middle-aligned'
+                          data-intro="This is new agent form. Start with a name for your agent">
                       </div>
                       <div class="col-12 col-sm-3 d-flex flex-column">
-                        <div class="flex-1">
+                        <div class="flex-1" style="display: none;">
                           <div class="dns-radio">
                             <input id="IpType1" name="IpType" type="radio" value="staticIp"
                               (click)="onSelectionChangeIPType('staticIp')" checked>
@@ -38,7 +42,8 @@
                               <label for="IpType2">Dynamic IP</label>
                           </div> -->
                         </div>
-                        <div class="flex-1 d-flex flex-column">
+                        <div class="flex-1 d-flex flex-column" data-step="2" data-intro="Enter related IP address and Mask (System may enter automatically your IP for first agent)"
+                          data-position='auto'>
                           <div class="dns-ip-input-container mt-3"
                             *ngFor="let row of selectedIp.staticSubnetIp; index as i">
                             <input type="text" maxlength="15" name="'ip'+i"
@@ -65,12 +70,13 @@
                                 <i class="material-icons">add_circle_outline</i>
                               </button>
                             </ng-template>
-
                           </div>
                         </div>
                       </div>
                       <div class="col-12 col-sm-3 d-flex align-items-end">
-                        <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width">
+                        <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="3"
+                          data-intro="Select a security profile or create a new profile for this agent"
+                          data-position='auto'>
                           <button class="btns dropdown-toggle dns-full-width reverse-form text-left" type="button"
                             id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <ng-container
@@ -98,11 +104,9 @@
                       </div>
                       <div class="col-12 col-sm-3 d-flex align-items-end">
                         <button class="btns reverse-form dns-full-width" id="defaultSaveBtn"
-                          [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile"
-                          [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
-                          (click)="savePublicIp()">
-                          <i class="fa fa-save"></i>
-                          <span class="ml-2">Save</span>
+                          [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile" [matTooltipShowDelay]="800"
+                          [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}" (click)="savePublicIp()">
+                          <i class="fa fa-save"></i> <span class="ml-2">Save</span>
                         </button>
                       </div>
                     </div>
@@ -133,7 +137,7 @@
                           [(ngModel)]="selectedIp.cyberXRayIp" formControlName="cyberXRayIp">
                       </div>
                       <div class="col-12 col-lg-3 mt-3 ml-lg-0 d-flex align-items-end">
-                        <button class="btns reverse-form dns-full-width d-none" id="advancedSaveBtn"
+                        <button class="btns reverse-form dns-full-width" id="advancedSaveBtn"
                           [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile"
                           [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
                           (click)="savePublicIp()">
@@ -166,7 +170,7 @@
               <div class="row">
 
                 <button class="btns btn-teritary border-radius-8" id="pi_card_btn" matTooltip="Create a new Public IP"
-                  (click)="showNewIpForm()">
+                  [matTooltipShowDelay]="800" (click)="showNewIpForm()">
                   <img src="assets/images/icons/add.svg">
                   Create New Agent
                 </button>
@@ -213,7 +217,7 @@
                   <tbody>
                     <tr *ngFor="let pi of publicIpsFiltered; let i = index;">
                       <td class="numeration">{{i+1}}</td>
-                      <td>{{pi.agentAlias}}</td>
+                      <td><small>{{pi.agentAlias}}</small></td>
                       <td>
                         <small>
                           <div *ngIf="pi.staticSubnetIp.length > 0">
@@ -223,28 +227,31 @@
                       </td>
                       <td><small>{{pi.blockMessage?pi.blockMessage:"No Message!"}}</small></td>
                       <td>
-                        <button [disabled]="pi.rootProfile?.isSystem" class="btns btn-clear" matTooltip="Edit Profile"
-                          (click)="showProfileEditWizard(pi.id)">
+                        <button class="btns btn-clear btnOverFlow profileBtn text-left" [matTooltipShowDelay]="800"
+                          matTooltip="Edit Profile" (click)="showProfileEditWizard(pi.id)">
                           <img src="./assets/images/icons/settings-outline.svg">
+                          <small>{{pi.rootProfile?pi.rootProfile.name:"No Profile!"}}</small>
                         </button>
-                        {{pi.rootProfile?pi.rootProfile.name:"No Profile!"}}
+
                       </td>
                       <td>
                         <!-- <img src="{{pi.logo}}" class="picture-src" id="wizardPicturePreview" title="logo" /> -->
                         <ng-container *ngIf="pi.logo; else elseTemplatePiLogo">
-                          <img src="{{pi.logo}}" class="dns-full-width">
+                          <img src="{{pi.logo}}" class="dns-full-width row-img">
                         </ng-container>
                         <ng-template #elseTemplatePiLogo>
-                          <img src="./assets/images/icons/upload-image.svg" class="dns-full-width">
+                          <img src="./assets/images/icons/upload-image.svg" class="dns-full-width row-img">
                         </ng-template>
                       </td>
                       <td class="text-center">
-                        <button class="btns btn-clear" matTooltip="Edit item" (click)="showEditWizard(pi.id)">
+                        <button class="btns btn-clear" matTooltip="Edit item" [matTooltipShowDelay]="800"
+                          (click)="showEditWizard(pi.id)">
                           <img src="./assets/images/icons/edit.svg">
                         </button>
                       </td>
                       <td class="text-center">
-                        <button class="btns btn-clear" matTooltip="Delete item" (click)="deletePublicIp(pi.id)">
+                        <button class="btns btn-clear" matTooltip="Delete item" [matTooltipShowDelay]="800"
+                          (click)="deletePublicIp(pi.id)">
                           <img src="./assets/images/icons/close-red.svg">
                         </button>
                       </td>

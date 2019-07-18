@@ -22,8 +22,8 @@ export class DashBoardService {
 
   }
 
-  public getHourlyCompanySummary(companyId: string, gteDate: string, ltDate: string): Observable<ElasticDashboardResponse[]> {
-    return this.http.get<ElasticDashboardResponse[]>(this._hourlyCompanySummaryURL + companyId + '/' + gteDate + '/' + ltDate).map(res => res);
+  public getHourlyCompanySummary(gteDate: string, ltDate: string): Observable<ElasticDashboardResponse[]> {
+    return this.http.get<ElasticDashboardResponse[]>(this._hourlyCompanySummaryURL + gteDate + '/' + ltDate).map(res => res);
   }
 
   public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {

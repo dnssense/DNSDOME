@@ -66,7 +66,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   inputCollapsed: boolean = true;
   inputSelected: boolean = false;
   @ViewChild('inputElement') inputElement: ElementRef;
-  
+
   visible = true;
   selectable = true;
   removable = true;
@@ -88,14 +88,9 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.reportService.getReportList().subscribe(res => {
       this.savedReports = res;
-      console.log(res);
-
     });
 
-    this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.pipe(
-      startWith(null),
-      map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice())
-    );
+    this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice());
 
     if (!this.searchSetting) {
       this.searchSettingForHtml = new SearchSetting();
@@ -164,6 +159,10 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.locationsService.getLocations().takeUntil(this.ngUnsubscribe).subscribe((res: Location[]) => {
       this.agents = res;
+    });
+
+    $(document).on('click', '.dropdown', function (e) {
+      e.stopPropagation();
     });
   }
 
@@ -764,7 +763,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private filterChips(value: string): string[] {
     $('#tagsDd').addClass('show');
-    
+
     if (value) {
       return this.isOneOfListItems.filter(f => f.toLowerCase().indexOf(value.toLowerCase()) === 0);
     }

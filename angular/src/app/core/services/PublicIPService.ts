@@ -5,6 +5,9 @@ import { ConfigService } from './config.service';
 import { PublicIP } from '../models/PublicIP';
 import { WAgentIpGroup } from '../models/WAgentIpGroup';
 import { OperationResult } from '../models/OperationResult';
+import { geoLocation, GeoLocation } from 'src/app/shared/geoLocation';
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PublicIPService {
@@ -22,8 +25,8 @@ export class PublicIPService {
 
   }
 
-  public getMyIp():Observable<any>{
-    return  this.http.get<any>('https://jsonip.com').map( data => data);
+  public getMyIp(): Observable<any> {
+    return geoLocation.getCurrent(this.http).map(res => res.ip);
   }
 
   public getAgents() {
@@ -43,7 +46,7 @@ export class PublicIPService {
   }
 
   public save(agent: PublicIP): Observable<OperationResult> {
-    
+
     agent.agentIpGroups = [];
     for (let i = 0; i < agent.ips.length; i++) {
       const ip = agent.ips[i];
@@ -51,7 +54,7 @@ export class PublicIPService {
       let g: WAgentIpGroup = new WAgentIpGroup();
       g.initIpBlocks();
       g.ips = nip;
-      agent.agentIpGroups.push(g);      
+      agent.agentIpGroups.push(g);
     }
     let body = JSON.stringify(agent, null, ' ');
 
@@ -61,14 +64,14 @@ export class PublicIPService {
 
   public delete(agent: PublicIP): Observable<OperationResult> {
 
-    let body = JSON.stringify(agent, null, ' ');   
+    let body = JSON.stringify(agent, null, ' ');
 
     return this.http.post<OperationResult>(this._agentDeleteURL, body, this.getOptions()).map(res => res);
   }
 
   private getOptions() {
     let options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json; charset=utf8', 'Accept':'application/json' })
+      headers: new HttpHeaders({ 'Content-Type': 'application/json; charset=utf8', 'Accept': 'application/json' })
     }
 
     return options;

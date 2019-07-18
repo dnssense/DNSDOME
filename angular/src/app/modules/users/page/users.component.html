@@ -41,25 +41,17 @@
           <div class="dns-base-card-content">
             <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
               <thead>
-                <th class="text-center">
-                  E-mail
-                </th>
-                <th class="text-center">
-                  Role
-                </th>
-                <th class="text-center">
-                  Is Locked
-                </th>
-                <th class="text-center">
-                  Is Active
-                </th>
+                <th class="text-center">E-mail</th>
+                <th class="text-center">Role</th>
+                <th class="text-center">Is Locked</th>
+                <th class="text-center">Is Active</th>
                 <th class="text-center">Edit</th>
                 <th class="text-center">Delete</th>
               </thead>
               <tbody>
                 <tr *ngFor="let row of userList">
-                  <td>{{row.username}}</td>
-                  <td>{{userFriendlyRoleName(row.roles[0].name)}}</td>
+                  <td><small>{{row.username}}</small></td>
+                  <td><small>{{userFriendlyRoleName(row.roles[0].name)}}</small></td>
                   <td class="text-center">
                     <ng-container *ngIf="row.isLocked==1; else elseTemplate01">
                       <button class="btns btn-clear">
@@ -86,12 +78,12 @@
                   </td>
                   <td class="text-center">
                     <button class="btns btn-info" (click)="showEditWizard(row.id)">
-                      Edit
+                      <small>Edit</small>
                     </button>
                   </td>
                   <td class="text-center">
                     <button class="btns btn-danger" (click)="deleteUser(row.id)">
-                      Delete
+                      <small>Delete</small>
                     </button>
                   </td>
                 </tr>
@@ -155,8 +147,8 @@
                       </div>
                     </div>
                   </div> -->
-               
-               
+
+
                 <div *ngIf="modalStatus =='edit'" class="row mt-3">
                   <div class="col-6">
                     <label class="dns-checkbox">
@@ -204,8 +196,8 @@
       </div>
     </div>
 
-    
+
 
   </div>
-  
+
 </div>

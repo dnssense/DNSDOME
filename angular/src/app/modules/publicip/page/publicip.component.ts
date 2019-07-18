@@ -6,6 +6,9 @@ import { AgentService } from 'src/app/core/services/agent.service';
 import { Agent, IpWithMask } from 'src/app/core/models/Agent';
 import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
 import { AgentType } from 'src/app/core/models/AgentType';
+import * as introJs from 'intro.js/intro.js';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { PublicIPService } from 'src/app/core/services/PublicIPService';
 
 declare var $: any;
 
@@ -35,10 +38,12 @@ export class PublicipComponent implements AfterViewInit {
   isNewItemUpdated: boolean = false;
   saveMode: string;
   securityProfiles: SecurityProfile[];
+  roleName: string;
+  tooltipGuideCounter: number = 0;
 
-  constructor(private alertService: AlertService, private notification: NotificationService,
-    private formBuilder: FormBuilder, private agentService: AgentService) {
-
+  constructor(private alertService: AlertService, private notification: NotificationService, private authService: AuthenticationService,
+    private formBuilder: FormBuilder, private agentService: AgentService, private publicIpService: PublicIPService) {
+    this.roleName = this.authService.currentSession.currentUser.roles.name;
 
     this.getPublicIpsDataAndProfiles();
 
@@ -54,9 +59,10 @@ export class PublicipComponent implements AfterViewInit {
     this.defineNewAgentForProfile();
 
   }
+
   ngAfterViewInit(): void {
 
-    ///////////adding select options into divs
+    //adding select options into divs
     var container_select, i, j, selElmnt, a, b, c;
     container_select = document.getElementsByClassName("dnssense-select");
     for (i = 0; i < container_select.length; i++) {
@@ -126,30 +132,38 @@ export class PublicipComponent implements AfterViewInit {
     }
     document.addEventListener("click", closeAllSelect);
 
-
     $('#advancedBtn').click(function () {
       $('#advancedContent').toggleClass('d-none');
       $('#defaultSaveBtn').toggleClass('d-none');
-      $('#advancedSaveBtn').toggleClass('d-none');
     });
 
   }
 
   getPublicIpsDataAndProfiles() {
+
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
-      debugger
-      console.log(res);
-      
-      res.forEach(r => {
-        if (r.agentType && r.agentType.toString() == AgentType.LOCATION.toString()) {
-          this.publicIps.push(r);
-        }
-      });
-      this.publicIpsFiltered = this.publicIps;
+
+      if ((res == null || res.length < 1) && this.roleName != 'ROLE_USER' && this.tooltipGuideCounter < 1) {
+        this.showNewIpForm();
+        this.openTooltipGuide();
+      } else {
+        res.forEach(r => {
+          if (r.agentType && r.agentType.toString() == AgentType.LOCATION.toString()) {
+            this.publicIps.push(r);
+          }
+        });
+        this.publicIpsFiltered = this.publicIps;
+      }
+
     });
 
     this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res });
+  }
+
+  openTooltipGuide() {
+    introJs().start();
+    this.tooltipGuideCounter++;
   }
 
   defineNewAgentForProfile() {
@@ -250,7 +264,7 @@ export class PublicipComponent implements AfterViewInit {
       $('#publicIpPanel').toggle("slide", { direction: "left" }, 600);
       $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
       this.startWizard = true;
-      $('#contentLink').click();
+      //$('#contentLink').click();
       document.getElementById('wizardPanel').scrollIntoView();
     } else {
       this.notification.warning('Profile can not find!');
@@ -259,27 +273,24 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   showNewIpForm() {
-
     this.isNewItemUpdated = false;
     this.selectedIp = new Agent();
+    this.selectedIp.logo = null;
     this.selectedIp.staticSubnetIp = [];
     let ip0 = {} as IpWithMask;
     ip0.mask = 0;
     this.selectedIp.staticSubnetIp.push(ip0)
 
-    // this.publicIpService.getMyIp().subscribe(res => {
-    //   let resIp: JsonIP;
-    //   resIp = res;
-    //   let myIp: IpNumber;
-    //   myIp.ip = resIp.ip;
-    //   myIp.range = 31;
-    //   console.log(res);
-    //   this.ipList.push(myIp)
-    // });
-
+    if (this.publicIps == null || this.publicIps.length < 1) {
+      this.publicIpService.getMyIp().subscribe(res => {
+        ip0.baseIp = res;
+        ip0.mask = 32;
+      });
+    }
 
     $('#newIpRow').slideDown(300);
     $('#pi_card_btn').hide();
+    $("#fileUpload").val("");
 
   }
 
@@ -346,18 +357,16 @@ export class PublicipComponent implements AfterViewInit {
     let file = inputValue.files[0];
     let reader = new FileReader();
     let ag = this.selectedIp;
-    if (typeof file !== 'undefined') {
-
-    }
+    if (typeof file !== 'undefined') { }
 
     reader.addEventListener("load", function () {
-        ag.logo = reader.result;
+      ag.logo = reader.result;
     }, false);
 
     if (file) {
-        reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
     }
-}
+  }
 
   deletePublicIp(id: number) {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Public IP and its settings will be deleted!').subscribe(
@@ -470,7 +479,19 @@ export class PublicipComponent implements AfterViewInit {
     if (!this.publicIpForm.valid) {
       this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return false;
+
     }
+
+    if (this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
+      for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
+        const e = this.selectedIp.staticSubnetIp[i];
+        if (e.baseIp == null || e.mask == 0) {
+          this.notification.warning('Select a mask for your IP address!');
+          return false;
+        }
+      }
+    }
+
     if (this.ipType == 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
       this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return false;

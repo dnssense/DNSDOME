@@ -137,7 +137,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       this.savedReports = res;
     });
 
-    this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.pipe(startWith(null), map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice()));
+    this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice());
 
     this.selectedColumns = [];
 

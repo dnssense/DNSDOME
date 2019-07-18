@@ -13,7 +13,7 @@
                     <thead>
                       <tr>
                         <th></th>
-                        <th class="text-center">Total Traffic</th>
+                        <th class="text-center" data-step="1" data-intro="These are details of your traffic!" data-position='right'>Total Traffic</th>
                         <th class="text-center">Blocked</th>
                         <th class="text-center">
                           Security Risk
@@ -221,7 +221,7 @@
               <table class="table dns-base-table table-responsive-md table-responsive-sm">
                 <thead>
                   <tr>
-                    <th>
+                    <th data-step="2" data-intro="You can change date filter from here" data-position='right'>
                       <div class="dns-dropdown d-inline-block dns-table-select pull-right" id="dropdownDate">
                         <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                           data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
@@ -273,12 +273,12 @@
                               <button class="dropdown-item" (click)="changeDateParameter(2)">
                                 2 Days Ago
                               </button>
-                              <button class="dropdown-item" (click)="changeDateParameter(7)">
+                              <!-- <button class="dropdown-item" (click)="changeDateParameter(7)">
                                 Last Week
                               </button>
                               <button class="dropdown-item" (click)="changeDateParameter(14)">
                                 Last 14 Days
-                              </button>
+                              </button> -->
                             </div>
                             <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel"
                               aria-labelledby="profile-tab">
@@ -334,7 +334,7 @@
                 <table class="table mb-0" style="margin-top: -15px">
                   <thead>
                     <tr>
-                      <th>
+                      <th data-step="3" data-intro="You can filter this chart for categories from here" data-position='right'>
                         <div class="dns-dropdown d-inline-block dns-table-select pull-right" id="dropdownDate">
                           <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
@@ -461,8 +461,8 @@
               </div>
             </div>
 
-            <div class="events">
-              <div class="dns-toggle" style="padding: 4px;">
+            <div class="events" >
+              <div class="dns-toggle" style="padding: 4px;" data-step="4" data-intro="You can change chart options from here" data-position='right'>
                 <button class="btns active" [ngClass]="{'active ': uniqueChartType=='domain'}"
                   (click)="changeUniqueChartData('domain')">{{selectedCategoryForUnique?.name}} Unique Domain</button>
                 <button class="btns" [ngClass]="{'active ': uniqueChartType=='subdomain'}"
