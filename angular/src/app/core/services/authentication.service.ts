@@ -40,7 +40,7 @@ export class AuthenticationService {
     private router: Router, private logger: LoggerService) {
 
     this.currentUserPropertiesChanged = new Subject();
-    this.refreshTokenTimer = interval(55 * 60 * 1000);
+    this.refreshTokenTimer = interval(4 * 60 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
 
   }

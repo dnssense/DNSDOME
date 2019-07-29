@@ -30,47 +30,57 @@
                           data-intro="This is new agent form. Start with a name for your agent">
                       </div>
                       <div class="col-12 col-sm-3 d-flex flex-column">
-                        <div class="flex-1" style="display: none;">
+                        <div class="flex-1">
                           <div class="dns-radio">
                             <input id="IpType1" name="IpType" type="radio" value="staticIp"
                               (click)="onSelectionChangeIPType('staticIp')" checked>
                             <label for="IpType1">Static IP</label>
                           </div>
-                          <!-- <div class="dns-radio">
-                              <input id="IpType2" name="IpType" type="radio"
-                              value="dynamicIp" (click)="onSelectionChangeIPType('dynamicIp')" checked>
-                              <label for="IpType2">Dynamic IP</label>
-                          </div> -->
-                        </div>
-                        <div class="flex-1 d-flex flex-column" data-step="2" data-intro="Enter related IP address and Mask (System may enter automatically your IP for first agent)"
-                          data-position='auto'>
-                          <div class="dns-ip-input-container mt-3"
-                            *ngFor="let row of selectedIp.staticSubnetIp; index as i">
-                            <input type="text" maxlength="15" name="'ip'+i"
-                              (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)" placeholder="IP"
-                              [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" formControlName="ip{{i}}">
-                            <span class="color-4a4a4a size-14 mr-2">/</span>
-                            <div class="1dnssense-select light-select">
-                              <select class="options mr-1" [(ngModel)]="selectedIp.staticSubnetIp[i].mask"
-                                [ngModelOptions]="{ standalone: true }">
-                                <option value="0" disabled selected>Mask</option>
-                                <option *ngFor="let ind of ipRanges;" [ngValue]="ind">{{ind}}</option>
-                              </select>
-                            </div>
-                            <ng-container *ngIf="i>0; else elseTemplate11">
-                              <button mat-raised-button type="button"
-                                class="btn btn-danger btn-link btn-just-icon btn-sm"
-                                (click)="removeElementFromIpList(i)">
-                                <i class="material-icons">close</i>
-                              </button>
-                            </ng-container>
-                            <ng-template #elseTemplate11>
-                              <button type="button" class="btn btn-success btn-just-icon btn-sm"
-                                [matTooltipShowDelay]="800" matTooltip="Add Another Ip" (click)="addIpRangeToList()">
-                                <i class="material-icons">add_circle_outline</i>
-                              </button>
-                            </ng-template>
+                          <div class="dns-radio">
+                            <input id="IpType2" name="IpType" type="radio" value="dynamicIp"
+                              (click)="onSelectionChangeIPType('dynamicIp')">
+                            <label for="IpType2">Dynamic IP</label>
                           </div>
+                        </div>
+                        <div class="flex-1 d-flex flex-column" data-step="2"
+                          data-intro="Enter related IP address and Mask or Dynamic Ip (System may enter automatically your IP for first agent)"
+                          data-position='auto'>
+                          <ng-container *ngIf="ipType=='dynamicIp'; else elseTemplateIpType">
+                            <div id="dnsFqnDiv" name="dnsFqnDiv" class="dns-ip-input-container mt-3">
+                              <input type="text" id="dnsFqdn" name="dnsFqdn" class="dns-form-control reverse-form"
+                                [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn" placeholder="DNS FQDN">
+                            </div>
+                          </ng-container>
+                          <ng-template #elseTemplateIpType>
+                            <div class="dns-ip-input-container mt-3"
+                              *ngFor="let row of selectedIp.staticSubnetIp; index as i">
+                              <input type="text" maxlength="15" name="'ip'+i"
+                                (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)" placeholder="IP"
+                                [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" formControlName="ip{{i}}">
+                              <span class="color-4a4a4a size-14 mr-2">/</span>
+                              <div class="1dnssense-select light-select">
+                                <select class="options mr-1" [(ngModel)]="selectedIp.staticSubnetIp[i].mask"
+                                  [ngModelOptions]="{ standalone: true }">
+                                  <option value="0" disabled selected>Mask</option>
+                                  <option *ngFor="let ind of ipRanges;" [ngValue]="ind">{{ind}}</option>
+                                </select>
+                              </div>
+                              <ng-container *ngIf="i>0; else elseTemplate11">
+                                <button mat-raised-button type="button"
+                                  class="btn btn-danger btn-link btn-just-icon btn-sm"
+                                  (click)="removeElementFromIpList(i)">
+                                  <i class="material-icons">close</i>
+                                </button>
+                              </ng-container>
+                              <ng-template #elseTemplate11>
+                                <button type="button" class="btn btn-success btn-just-icon btn-sm"
+                                  [matTooltipShowDelay]="800" matTooltip="Add Another Ip" (click)="addIpRangeToList()">
+                                  <i class="material-icons">add_circle_outline</i>
+                                </button>
+                              </ng-template>
+                            </div>
+                          </ng-template>
+
                         </div>
                       </div>
                       <div class="col-12 col-sm-3 d-flex align-items-end">
@@ -104,8 +114,10 @@
                       </div>
                       <div class="col-12 col-sm-3 d-flex align-items-end">
                         <button class="btns reverse-form dns-full-width" id="defaultSaveBtn"
-                          [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile" [matTooltipShowDelay]="800"
-                          [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}" (click)="savePublicIp()">
+                          [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile"
+                          [matTooltipShowDelay]="800"
+                          [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
+                          (click)="savePublicIp()">
                           <i class="fa fa-save"></i> <span class="ml-2">Save</span>
                         </button>
                       </div>
@@ -113,11 +125,12 @@
 
                     <div class="row align-items-center d-none" id="advancedContent">
                       <div class="col-12 col-lg-3 mt-3 ml-lg-0">
-                        <input type="file" class="inputfile inputfile-4" id="fileUpload" (change)="selectFile($event)">
+                        <input type="file" class="inputfile inputfile-4" id="fileUpload" (change)="selectFile($event)"
+                        accept="image/*">
                         <label for="fileUpload">
                           <figure>
                             <ng-container *ngIf="selectedIp.logo; else elseTemplateLogo">
-                              <img src="{{selectedIp.logo}}" class="dns-full-width">
+                              <img src="{{selectedIp.logo}}" class="dns-full-width" accept="image/png, image/jpeg">
                             </ng-container>
                             <ng-template #elseTemplateLogo>
                               <img src="./assets/images/icons/upload-image.svg" class="dns-full-width">
@@ -237,10 +250,10 @@
                       <td>
                         <!-- <img src="{{pi.logo}}" class="picture-src" id="wizardPicturePreview" title="logo" /> -->
                         <ng-container *ngIf="pi.logo; else elseTemplatePiLogo">
-                          <img src="{{pi.logo}}" class="dns-full-width row-img">
+                          <img src="{{pi.logo}}" class="dns-full-width row-img" accept="image/*">
                         </ng-container>
                         <ng-template #elseTemplatePiLogo>
-                          <img src="./assets/images/icons/upload-image.svg" class="dns-full-width row-img">
+                          <img src="./assets/images/icons/upload-image.svg" accept="image/*" class="dns-full-width row-img">
                         </ng-template>
                       </td>
                       <td class="text-center">
@@ -265,8 +278,6 @@
           </div>
         </div>
       </div>
-
-
     </section>
     <section id="wizardPanel" class="wizardPanel" style="display: none;">
       <div class="row">

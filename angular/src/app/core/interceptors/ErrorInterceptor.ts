@@ -14,6 +14,9 @@ export class ErrorInterceptor implements ErrorHandler {
   ) { }
 
   handleError(error: Error | HttpErrorResponse) {
+
+    console.log("Env: " + environment.production);
+
     const notificationService = this.injector.get(NotificationService);
     const spinnerService = this.injector.get(SpinnerService);
     spinnerService.hide();
@@ -27,22 +30,22 @@ export class ErrorInterceptor implements ErrorHandler {
         const status = error.status;
         if (error.error.code) {
           let message = translatorService.translate(error.error.code);
-          notificationService.error(`${status} - ${message}`);
-
+          console.log(`${status} - ${message}`);
+          notificationService.error('Error ' + status);
         } else {
-
-          if (environment.production === false) {
-            let message = translatorService.translate(error.statusText);
+          let message = translatorService.translate(error.statusText);
+          if (environment.production == false) {
             notificationService.error(`${status} - ${message}`);
           } else {
-             notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
+            notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
+            console.log(`${status} - ${message}`);
           }
-
         }
       }
     } else {
       const message = translatorService.translate(error.message);
-      notificationService.error(message);
+      console.log(message);
+      notificationService.error('Error');
     }
     // Log the error anyway
     //console.error(error.name);

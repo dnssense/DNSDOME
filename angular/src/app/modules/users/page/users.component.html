@@ -128,27 +128,31 @@
                     <option [ngValue]="role.name" *ngFor="let role of roleList">{{role.description}}</option>
                   </select>
                 </div>
-                <div class="form-group password">
+                <div class="form-group">
                   <label for="password">Password</label>
                   <input type="password" class="form-control input-reverse" id="password" placeholder="X X X X X"
-                    [(ngModel)]="selectedUser.password" formControlName="password" />
+                    [(ngModel)]="selectedUser.password" formControlName="password"
+                    (ngModelChange)="checkPasswordStrength()" />
                 </div>
-                <!-- <div class="row">
-                    <div class="col-4">
-                      <span class="color-9d9d9d">Password Strength</span>
+                <div class="row">
+                  <div class="col-4">
+                    <span class="color-9d9d9d">
+                      <small>Password Strength</small>
+                    </span>
+                  </div>
+                  <div class="col-8">
+                    <div class="password-length mt-2">
+                      <div [ngClass]="{'active': passStrength>0}"></div>
+                      <div [ngClass]="{'active': passStrength>1}"></div>
+                      <div [ngClass]="{'active': passStrength>2}"></div>
+                      <div [ngClass]="{'active': passStrength>3}"></div>
                     </div>
-                    <div class="col-8">
-                      <div class="password-length mt-2">
-                        <div class="active"></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                      </div>
-                    </div>
-                  </div> -->
-
-
+                    <span class="color-9d9d9d">
+                      <small>* Your password has to be at least 8 characters with at least one upper case, one lower
+                        case, one number.</small>
+                    </span>
+                  </div>
+                </div>
                 <div *ngIf="modalStatus =='edit'" class="row mt-3">
                   <div class="col-6">
                     <label class="dns-checkbox">
@@ -187,7 +191,7 @@
               </div>
             </div>
             <div class="modal-footer justify-content-start">
-              <button class="btns btn-teritary pl-3 pr-3" (click)="userFormSubmit()">
+              <button class="btns btn-teritary pl-3 pr-3 pull-right" (click)="userFormSubmit()">
                 <i class="fa fa-save mr-3"></i>Save
               </button>
             </div>

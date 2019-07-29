@@ -1,0 +1,59 @@
+<div class="main-content">
+
+  <!-- <section id="listPanel"> -->
+  <div class="container-fluid col-md-11">
+    <div class="row">
+      <div class="col-12">
+        <div class="dns-base-card">
+          <div class="dns-base-card-header pt-3">
+            <div class="row">
+              <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
+                <span class="mr-3 flex-2">Query Category</span>
+              </div>
+            </div>
+          </div>
+          <div class="dns-base-card-content">
+
+            <form [formGroup]="searchForm">
+              <div class="row">
+                <div class="col-md-6 ml-auto mr-auto d-flex">
+                  <input type="text" id="domain" class="dns-form-control input-reverse" placeholder="Enter domain"
+                    [(ngModel)]="domain" (ngModelChange)="checkDomain(domain)" formControlName="domain">
+                  <button class="btns btn-teritary pl-3 pr-3 pull-right ml-2" (click)="searchCategory()"
+                    [disabled]="!isDomain">Search
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <div class="row">
+              <div class="col-md-6 ml-auto mr-auto">
+                <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
+                  <tr>
+                    <td style="width: 150px;">Domain</td>
+                    <td>
+                      {{categoryQuery?.domain}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 150px;">Categories</td>
+                    <td>
+                      <div *ngFor="let item of categoryQuery?.categoryList">
+                        {{item}}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+  </div>
+
+</div>

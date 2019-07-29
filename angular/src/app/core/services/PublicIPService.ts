@@ -5,9 +5,7 @@ import { ConfigService } from './config.service';
 import { PublicIP } from '../models/PublicIP';
 import { WAgentIpGroup } from '../models/WAgentIpGroup';
 import { OperationResult } from '../models/OperationResult';
-import { geoLocation, GeoLocation } from 'src/app/shared/geoLocation';
-import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { geoLocation } from 'src/app/shared/geoLocation';
 
 @Injectable({ providedIn: 'root' })
 export class PublicIPService {

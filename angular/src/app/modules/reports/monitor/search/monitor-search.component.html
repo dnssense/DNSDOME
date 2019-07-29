@@ -298,9 +298,8 @@
                     <div class="input-group" style="width: auto"
                       *ngIf="currentColumn == 'sourceIp' || currentColumn == 'destinationIp'">
                       <input class="filterTags" [(ngModel)]="currentInput" (click)="inputClicked($event)"
-                        [ngModelOptions]="{ standalone: true }" 
-                        (keydown)="checkIPNumber($event, currentInput)"
-                         placeholder="xxx.xxx.xxx.xxx" />
+                        [ngModelOptions]="{ standalone: true }" (keydown)="checkIPNumber($event, currentInput)"
+                        placeholder="xxx.xxx.xxx.xxx" />
                     </div>
                     <div class="input-group" style="width: auto" *ngIf="currentColumn == 'time'">
                       <input class="filterTags"
@@ -349,17 +348,43 @@
             aria-expanded="false">
             <i class="fa fa-floppy-o" style="font-size: 20px"></i>
           </button>
-          <div class="dropdown-menu" style="width: 300px">
+          <div class="dropdown-menu" style="width: 300px" id="saveReportDiv">
             <div class="container-fluid">
               <div class="row">
                 <div class="col-12">
                   <input type="text" class="form-control reverse-form" placeholder="Give a name"
                     [(ngModel)]="newSavedReportName">
                 </div>
-                <div class="col-12 mt-2">
-                  <button class="btns btn-success" (click)="saveReportFilters()">
-                    <i class="fa fa-check-circle-o"></i>
-                    Save
+                <div class="col-7 mt-2 d-flex text-center">
+                  <label class="dns-chk-label">
+                    <span>Schedule Daily</span>
+                    <div data-width="30" class="dns-form-switch">
+                      <ng-container *ngIf="searchSetting.scheduledReport?.period=='d'; else elseTemplateDaily">
+                        <input type="checkbox" id="chk2" checked (change)="changeScheduledPeriod('n')">
+                      </ng-container>
+                      <ng-template #elseTemplateDaily>
+                        <input type="checkbox" id="chk2" (change)="changeScheduledPeriod('d')">
+                      </ng-template>
+                      <i></i><span></span>
+                    </div>
+                  </label>
+                  <label class="dns-chk-label ml-4">
+                    <span>Schedule Weekly</span>
+                    <div data-width="30" class="dns-form-switch">
+                      <ng-container *ngIf="searchSetting.scheduledReport?.period=='w'; else elseTemplateWeekly">
+                        <input type="checkbox" id="chk2" checked (change)="changeScheduledPeriod('n')">
+                      </ng-container>
+                      <ng-template #elseTemplateWeekly>
+                        <input type="checkbox" id="chk2" (change)="changeScheduledPeriod('w')">
+                      </ng-template>
+                      <i></i>
+                      <span></span>
+                    </div>
+                  </label>
+                </div>
+                <div class="col-5 mt-2">
+                  <button class="btns btn-success pull-right" (click)="saveReportFilters()">
+                    <i class="fa fa-check-circle-o"></i>Save
                   </button>
                 </div>
               </div>

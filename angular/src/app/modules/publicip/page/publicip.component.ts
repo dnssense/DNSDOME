@@ -10,7 +10,8 @@ import * as introJs from 'intro.js/intro.js';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
 
-declare var $: any;
+declare let $: any; 
+const fileType = require('file-type');
 
 declare interface JsonIP {
   ip: string
@@ -366,6 +367,11 @@ export class PublicipComponent implements AfterViewInit {
     if (file) {
       reader.readAsDataURL(file);
     }
+ 
+
+    console.log(fileType(ag.logo)); 
+
+
   }
 
   deletePublicIp(id: number) {
@@ -390,14 +396,16 @@ export class PublicipComponent implements AfterViewInit {
 
     if (type === 'dynamicIp') {
       this.ipType = type;
-      $("#dnsFqnDiv").show();
-      $('#staticIPBlock').hide();
+      // $("#dnsFqnDiv").show();
+      // $('#staticIPBlock').hide();
+      this.publicIpForm.controls["ip0"].clearValidators();
+      this.publicIpForm.controls["ip0"].updateValueAndValidity();
       this.publicIpForm.controls["dnsFqdn"].setValidators([Validators.required]);
       this.publicIpForm.controls["dnsFqdn"].updateValueAndValidity();
     } else {
       this.ipType = type;
-      $("#dnsFqnDiv").hide();
-      $('#staticIPBlock').show();
+      // $("#dnsFqnDiv").hide();
+      // $('#staticIPBlock').show();
       this.publicIpForm.controls["dnsFqdn"].clearValidators();
       this.publicIpForm.controls["dnsFqdn"].updateValueAndValidity();
     }
@@ -482,7 +490,7 @@ export class PublicipComponent implements AfterViewInit {
 
     }
 
-    if (this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
+    if (this.ipType == 'staticIp' && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
       for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
         const e = this.selectedIp.staticSubnetIp[i];
         if (e.baseIp == null || e.mask == 0) {
@@ -490,12 +498,14 @@ export class PublicipComponent implements AfterViewInit {
           return false;
         }
       }
+    } else {
+      this.selectedIp.staticSubnetIp = null;
     }
 
     if (this.ipType == 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
       this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return false;
-    } else if (this.ipType == 'dynamicIp' && !this.dnsFqdn) {
+    } else if (this.ipType == 'dynamicIp' && !this.selectedIp.dynamicIpDomain && !this.dnsFqdn) {
       this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return false;
     } else if (!this.ipType) {

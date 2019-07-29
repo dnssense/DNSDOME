@@ -27,7 +27,7 @@ export class UsersComponent implements OnInit {
         this.selectedUser.roles.name = 'ROLE_CUSTOMER';
 
         this.userService.getUsers().subscribe(res => {
-            this.userList = res;            
+            this.userList = res;
         });
 
         this.roleList = this.userService.getRoles();
@@ -40,19 +40,19 @@ export class UsersComponent implements OnInit {
                 //  "name": ["", [Validators.required, Validators.minLength(2)]], "surname": ["", []],
                 "email": ["", [Validators.required, ValidationService.emailValidator]],
                 "role": ["", [Validators.required]],
-                "password": ["", [Validators.required]],
+                "password": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
                 "passwordAgain": ["", []],
             }
                 //, { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
             );
     }
 
-    userFriendlyRoleName(r:string){
-        if (r=='ROLE_CUSTOMER') {
+    userFriendlyRoleName(r: string) {
+        if (r == 'ROLE_CUSTOMER') {
             return 'ADMIN';
-        } else if(r=='ROLE_USER') {
+        } else if (r == 'ROLE_USER') {
             return 'USER';
-        }else {
+        } else {
             return 'Not Defined'
         }
     }
@@ -66,14 +66,14 @@ export class UsersComponent implements OnInit {
     }
 
     showEditWizard(id: Number) {
-        
+
         let u = this.userList.find(r => r.id == id);
         this.selectedUser = JSON.parse(JSON.stringify(u));
         this.selectedUser.roles.name = u.roles[0].name;
         this.modalStatus = 'edit'
         this.openModal();
     }
- 
+
     openModal() {
         $(document.body).addClass('modal-open');
         $('#exampleModal').css('display', 'block');
@@ -126,52 +126,72 @@ export class UsersComponent implements OnInit {
         }
     }
 
-    userFormSubmit() {
-
-
-
-
-        if (this.modalStatus == 'create') {
-            let user = {
-                id: this.selectedUser.id,
-                username: this.selectedUser.username,
-                name: this.selectedUser.name,
-                password: this.selectedUser.password,
-                roles: [this.selectedUser.roles.name]
-            }
-
-            if (this.userForm.dirty && this.userForm.valid && user) {
-                this.userService.save(user).subscribe(res => {
-                    if (res.key) {
-                        this.closeModal();
-                        this.notification.success('User Created.');
-                        this.userService.getUsers().subscribe(res => this.userList = res);
-                    } else {
-                        this.notification.error(res.message);
-                    }
-                });
-            } else {
-                this.notification.warning('User Form is not valid!');
-                return;
-            }
-        } else {
-            
-            let user = {
-                id: this.selectedUser.id,
-                username: this.selectedUser.username,
-                password: this.selectedUser.password,
-                roles: [this.selectedUser.roles.name],
-                isActive: this.selectedUser.isActive,
-                isLocked: this.selectedUser.isLocked
-            }
-            this.userService.update(user).subscribe(res => {
-                this.closeModal();
-                this.notification.success('User updated.');
-                this.userService.getUsers().subscribe(res => this.userList = res);
-            });
+    passStrength = 0;
+    checkPasswordStrength() {
+        this.passStrength = 0;
+        if (!this.selectedUser.password || this.selectedUser.password.length < 1) {
+            return;
         }
 
+        if (/[a-z]/.test(this.selectedUser.password)) {
+            this.passStrength++;
+        }
+        if (/[A-Z]/.test(this.selectedUser.password)) {
+            this.passStrength++;
+        }
+        if (/[0-9]/.test(this.selectedUser.password)) {
+            this.passStrength++;
+        }
+        if (this.selectedUser.password && this.selectedUser.password.length > 7) {
+            this.passStrength++;
+        }
 
+    }
+
+    userFormSubmit() {
+
+        if (this.userForm.dirty && this.userForm.valid) {
+            if (this.modalStatus == 'create') {
+                let user = {
+                    id: this.selectedUser.id,
+                    username: this.selectedUser.username,
+                    name: this.selectedUser.name,
+                    password: this.selectedUser.password,
+                    roles: [this.selectedUser.roles.name]
+                }
+                if (this.userForm.dirty && this.userForm.valid && user) {
+                    this.userService.save(user).subscribe(res => {
+                        if (res.key) {
+                            this.closeModal();
+                            this.notification.success('User Created.');
+                            this.userService.getUsers().subscribe(res => this.userList = res);
+                        } else {
+                            this.notification.error(res.message);
+                        }
+                    });
+                } else {
+                    this.notification.warning('User Form is not valid!');
+                    return;
+                }
+            } else {
+                let user = {
+                    id: this.selectedUser.id,
+                    username: this.selectedUser.username,
+                    password: this.selectedUser.password,
+                    roles: [this.selectedUser.roles.name],
+                    isActive: this.selectedUser.isActive,
+                    isLocked: this.selectedUser.isLocked
+                }
+                this.userService.update(user).subscribe(res => {
+                    this.closeModal();
+                    this.notification.success('User updated.');
+                    this.userService.getUsers().subscribe(res => this.userList = res);
+                });
+            }
+
+        } else {
+            this.notification.warning('User form is not valid');
+        }
     }
 
     deleteUser(id: number) {

@@ -51,6 +51,10 @@ const adminlayoutRoutes: Routes = [
       {
         path: 'roaming',
         loadChildren: '../../roaming/roaming.module#RoamingModule'
+      },
+      {
+        path: 'tools',
+        loadChildren: '../../tools/tools.module#ToolsModule'
       }
     ]
   }
@@ -60,4 +64,4 @@ const adminlayoutRoutes: Routes = [
   imports: [RouterModule.forChild(adminlayoutRoutes)],
   exports: [RouterModule]
 })
-export class AdminLayoutRoutingModule {}
+export class AdminLayoutRoutingModule { }

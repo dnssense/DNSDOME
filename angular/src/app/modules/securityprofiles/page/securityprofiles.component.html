@@ -1,29 +1,43 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
     <section id="securityProfilesPanel" class="securityProfilesPanel">
-      <div class="row" id="newButtonDiv">
+      <!-- <div class="row" id="newButtonDiv">
         <div class="col-md-4"></div>
         <div class="col-md-4">
         </div>
         <div class="col-md-4 text-right">
-          <!-- <button mat-raised-button type="button" class="ml-2 btn btn-success btn-sm"
-            matTooltip="Create a new Public IP" >
-            <i class="material-icons">add_circle_outline</i> Create New Profile
-          </button> -->
           <button class="btns btn-teritary border-radius-8 p-2 card-create-btn" id="newAgentBtn"
             (click)="showNewWizard()" style="z-index: 10;">
             <img src="assets/images/icons/add.svg">
             Create New Profile
           </button>
         </div>
-      </div>
-      <div class="row">
+      </div> -->
+      <div class="row mt-4">
         <div class="col-md-12 ml-auto mr-auto">
           <div class="dns-base-card">
+            <div class="dns-base-card-header pt-3">
+              <div class="row">
+                <button class="btns btn-teritary border-radius-8" id="pi_card_btn" matTooltip="Create a new Profile"
+                  [matTooltipShowDelay]="800" (click)="showNewWizard()">
+                  <img src="assets/images/icons/add.svg">
+                  Create New Profile
+                </button>
+                <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
+                  <span class="mr-3 flex-1">Security Profiles</span>
+                  <div class="search-form flex-1">
+                    <img src="assets/images/icons/search.svg" class="icon">
+                    <input type="search" class="dns-form-control reverse-form" placeholder="Search by name"
+                      [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)" />
+                  </div>
+                  <div class="dns-datatable-pagination ml-3 d-inline-flex align-items-center flex-1"></div>
+                </div>
+              </div>
+            </div>
             <div class="dns-base-card-content">
               <div class="dns-datatable-container container-fluid">
-                <div class="row">
-                  <h4 class="dns-datatable-heading col-sm-4">Security Profiles</h4>
+                <!-- <div class="row">
+                  <h4 class="dns-datatable-heading col-sm-4"></h4>
                   <div class="col-sm-4">
                     <div class="search-form dns-full-width flex-1">
                       <img src="assets/images/icons/search.svg" class="icon">
@@ -31,7 +45,7 @@
                         [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)" />
                     </div>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="row mt-3">

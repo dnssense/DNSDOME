@@ -11,8 +11,11 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import * as introJs from 'intro.js/intro.js';
 import { Router } from '@angular/router';
 import { AgentService } from 'src/app/core/services/agent.service';
-declare const $: any;
+import { MonitorService } from 'src/app/core/services/MonitorService';
+import { SearchSetting } from 'src/app/core/models/SearchSetting';
 
+declare let $: any;
+declare let moment: any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
@@ -36,13 +39,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   uniqueChartType: string = 'domain';
 
   constructor(private dashboardService: DashBoardService, private auth: AuthenticationService, private datePipe: DatePipe, private authService: AuthenticationService,
-    private staticService: StaticService, private notification: NotificationService, private router: Router, private agentService: AgentService) {
+    private staticService: StaticService, private notification: NotificationService, private router: Router, private agentService: AgentService,
+    private monitorService: MonitorService) {
 
     let roleName: string = this.authService.currentSession.currentUser.roles.name;
     //agent yoksa public ip sayfasına yönlendir
     this.agentService.getAgents().subscribe(res => {
 
-      if ((res == null || res.length < 1) && roleName != 'ROLE_USER') {
+      if ((res == null || res.length < 1) && roleName != 'ROLE_USER') {// if there is no agent and role is not user redirect
         this.router.navigateByUrl('/admin/publicip');
       } else {
         this.selectedCategoryForTraffic = null;
@@ -56,17 +60,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.elasticData = [];
         this.ds = new DashboardStats();
 
-        this.auth.getCurrentUser().subscribe(cu => {
-          this.getElasticData(Date.now());
-        });
+        this.getElasticData(Date.now());
       }
     });
 
-
+    //this.prepareWorldMap();
   }
 
   ngOnInit(): void {
+    this.prepareWorldMap();
+  }
 
+  ngAfterViewInit(): void {
+    //introJs().start();
+  }
+
+  prepareWorldMap() {
     let values: Map<string, number> = new Map();
     values.set('ru', 234);
     values.set('ca', 154);
@@ -82,30 +91,33 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     values.set('de', 740);
     values.set('bi', 340);
 
-
     $('#worldMap').vectorMap({
       map: 'world_en',
       backgroundColor: 'transparent',
       borderColor: '#818181',
-      borderOpacity: 0.25,
+      borderOpacity: 0.9,
       borderWidth: 1,
       color: '#b3b3b3',
       enableZoom: true,
+      zoomButtons: true,
+      zoomMin: 1, zoomMax: 8, zoomStep: 1.6,
       hoverColor: '#eee',
-      hoverOpacity: null,
-      normalizeFunction: 'linear',
       scaleColors: ['#b6d6ff', '#005ace'],
       selectedColor: '#c9dfaf',
-      selectedRegions: null,
+      selectedRegions: false,
       showTooltip: false,
-      onRegionClick: function (element, code, region) {
-
-        // var message = 'You clicked "'
-        //   + region
-        //   + '" which has the code: '
-        // + code.toUpperCase() + ' value:' + values.get(code);
-
-        //alert(message);
+      series: {
+        regions: [{
+          values: values,
+          scale: ['#C8EEFF', '#0071A4'],
+          normalizeFunction: 'polynomial'
+        }]
+      },
+      onRegionOver: function (e, code, region) {
+      },
+      onRegionClick: function (e, code, region) {
+        e.preventDefault();
+        var message = region + ' : value:' + values.get(code);
       }
     });
 
@@ -126,9 +138,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }, 1000);
   }
 
-  ngAfterViewInit(): void {
-    //introJs().start();
-  }
   private getElasticData(d: number) {
     //let today = new Date(); todayi d2 ye atayıp aradaki farkı getirecek şekilde dönüştür.
     const date = new Date(d);
@@ -136,7 +145,24 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     let d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
     let d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
+    //Below code gets map data
+    // let ss = new SearchSetting();
+    // let startDate = d1 == null ? '' : moment(d1, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+    // let endDate = d2 == null ? '' : moment(d2, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+    // const dateVal = startDate + ' - ' + endDate;
+    // ss.dateInterval = dateVal;
+
+    // bu metotta paging var ülkelere göre group by yapıp count donecek yeni api lazım
+    // this.monitorService.getGraphData(ss, 0).subscribe((res: Response) => {
+    //   let tableData = res['result'];
+    //   console.log(res);
+
+    //   console.log(tableData);
+    // });
+
+
     this.dashboardService.getHourlyCompanySummary(d1.toISOString(), d2.toISOString()).subscribe(res => {
+
       this.elasticData = res;
       this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
       this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
@@ -225,7 +251,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 6] },
       colors: ['#9d60fb', '#4a90e2'],
-      series: [[0], [0]],
+      series: [{ data: [1] }, { data: [1] }],
       markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
@@ -243,7 +269,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
-      series: [[0], [0]],
+      series: [{ data: [1] }, { data: [1] }],
       markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       tooltip: { theme: 'dark' },
@@ -261,7 +287,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
-      series: [0, 0],
+      series: [{ data: [1] }, { data: [1] }],
       markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       tooltip: { theme: 'dark' },
@@ -279,7 +305,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
-      series: [[0], [0]],
+      series: [{ data: [1] }, { data: [1] }],
       markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       tooltip: { theme: 'dark' },
@@ -317,7 +343,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         }
       },
       colors: ['#fa1e1e'],
-      series: [0],
+      series: [{ data: 1 }],
       labels: ['Risk Score'],
 
     }

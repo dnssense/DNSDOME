@@ -13,7 +13,8 @@
                     <thead>
                       <tr>
                         <th></th>
-                        <th class="text-center" data-step="1" data-intro="These are details of your traffic!" data-position='right'>Total Traffic</th>
+                        <th class="text-center" data-step="1" data-intro="These are details of your traffic!"
+                          data-position='right'>Total Traffic</th>
                         <th class="text-center">Blocked</th>
                         <th class="text-center">
                           Security Risk
@@ -312,9 +313,9 @@
                   </tr>
                 </thead>
               </table>
-              <div id="gaugeChart" matTooltipPosition="above" [matTooltipShowDelay]="800"
-                matTooltip="Risk Score: {{(ds.totalBlockCountForDashboard/ds.totalHitCountForDashboard*100000 | number)/100000}}"
+              <div id="gaugeChart"
                 style="max-height: 110px; min-height: 50px; margin-bottom:-115px; margin-top: -20px;">
+                <!--  matTooltipPosition="above" [matTooltipShowDelay]="800" matTooltip="Risk Score: {{(ds.totalBlockCountForDashboard/ds.totalHitCountForDashboard*100000 | number)/100000}}" -->
               </div>
             </div>
           </div>
@@ -334,7 +335,8 @@
                 <table class="table mb-0" style="margin-top: -15px">
                   <thead>
                     <tr>
-                      <th data-step="3" data-intro="You can filter this chart for categories from here" data-position='right'>
+                      <th data-step="3" data-intro="You can filter this chart for categories from here"
+                        data-position='right'>
                         <div class="dns-dropdown d-inline-block dns-table-select pull-right" id="dropdownDate">
                           <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
@@ -389,10 +391,12 @@
           <div class="dns-base-card-header">
             World Traffic
           </div>
-          <div class="dns-base-card-content" disabled="true">
+          <div class="dns-base-card-content">
             <div class="card card-chart mb-2" style="box-shadow: none; background-color: #262626">
               <div class="card-body">
                 <div #worldMap id="worldMap" class="map" style="max-height: 220px;"></div>
+
+                <!-- </div> -->
               </div>
             </div>
           </div>
@@ -461,8 +465,9 @@
               </div>
             </div>
 
-            <div class="events" >
-              <div class="dns-toggle" style="padding: 4px;" data-step="4" data-intro="You can change chart options from here" data-position='right'>
+            <div class="events">
+              <div class="dns-toggle" style="padding: 4px;" data-step="4"
+                data-intro="You can change chart options from here" data-position='right'>
                 <button class="btns active" [ngClass]="{'active ': uniqueChartType=='domain'}"
                   (click)="changeUniqueChartData('domain')">{{selectedCategoryForUnique?.name}} Unique Domain</button>
                 <button class="btns" [ngClass]="{'active ': uniqueChartType=='subdomain'}"

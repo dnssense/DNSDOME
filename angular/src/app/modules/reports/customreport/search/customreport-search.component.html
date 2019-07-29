@@ -15,16 +15,11 @@
                 </div>
             </div>
             <div class="col-md-5 d-flex mt-2">
-                <!-- <button mat-raised-button class="btn btn-light mt-0 mr-2 ml-auto" style="height: 40px;">
-                    <span class="btn-label">
-                        <i class="fa fa-save size-20 position-relative top-3"></i>
-                    </span>
-                    Save
-                </button> -->
                 <div class="dns-dropdown d-inline-block dns-table-select pull-right ml-auto mr-2"
                     style="min-width:180px">
-                    <button class="btns reverse-form dropdown-toggle text-left btnOverFlow" type="button" data-toggle="dropdown"
-                        aria-haspopup="false" aria-expanded="false" style="overflow:hidden; text-overflow: ellipsis;">
+                    <button class="btns reverse-form dropdown-toggle text-left btnOverFlow" type="button"
+                        data-toggle="dropdown" aria-haspopup="false" aria-expanded="false"
+                        style="overflow:hidden; text-overflow: ellipsis;">
                         <span class="btn-label">
                             <i class="fa fa-save size-20 position-relative top-3"></i>
                         </span>
@@ -65,8 +60,8 @@
                     </div>
                 </div>
                 <div class="dns-dropdown d-inline-block dns-table-select pull-right ml-auto" id="searchBoxDropdownDate">
-                    <button class="btns reverse-form dropdown-toggle text-left btnOverFlow" type="button" id="dropdownMenuButton"
-                        data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                    <button class="btns reverse-form dropdown-toggle text-left btnOverFlow" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                         <img src="assets/images/icons/calendar.svg">
                         <span [ngSwitch]="searchSetting.dateInterval">
                             <ng-container *ngSwitchCase="5">
@@ -408,26 +403,56 @@
             </div>
             <div class="col-2 d-flex align-items-center">
                 <div class="dropdown d-inline-block d-flex" id="dropdownFilter">
-                    <button class="btn btn-link btn-sm btn-just-icon ml-0 mr-0" (click)="removeAllTags()"
-                        type="button" [matTooltipShowDelay]="800" matTooltip="CLEAR ALL FILTERS">
+                    <button class="btn btn-link btn-sm btn-just-icon ml-0 mr-0" (click)="removeAllTags()" type="button"
+                        [matTooltipShowDelay]="800" matTooltip="CLEAR ALL FILTERS">
                         <i class="fa fa-eraser"></i>
                     </button>
                     <button class="btn btn-link btn-sm btn-just-icon dropdown-toggle circle-dropdown-btn ml-0 mr-0"
                         type="button" data-toggle="dropdown" [matTooltipShowDelay]="900" matTooltip="SAVE FILTERS"
-                        aria-haspopup="true" aria-expanded="false">
+                        aria-haspopup="true" aria-expanded="false" >
                         <i class="fa fa-floppy-o" style="font-size: 20px"></i>
                     </button>
-                    <div class="dropdown-menu" style="width: 300px">
+                    <div class="dropdown-menu" style="width: 300px" id="saveReportDiv">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-12">
                                     <input type="text" class="form-control reverse-form" placeholder="Give a name"
                                         [(ngModel)]="newSavedReportName">
                                 </div>
-                                <div class="col-12 mt-2">
-                                    <button class="btns btn-success" (click)="saveReportFilters()">
-                                        <i class="fa fa-check-circle-o"></i>
-                                        Save
+                                <div class="col-7 mt-2 d-flex text-center">
+                                    <label class="dns-chk-label">
+                                        <span>Schedule Daily</span>
+                                        <div data-width="30" class="dns-form-switch">
+                                            <ng-container
+                                                *ngIf="searchSetting.scheduledReport?.period=='d'; else elseTemplateDaily">
+                                                <input type="checkbox" id="chk2" checked
+                                                    (change)="changeScheduledPeriod('n')">
+                                            </ng-container>
+                                            <ng-template #elseTemplateDaily>
+                                                <input type="checkbox" id="chk2" (change)="changeScheduledPeriod('d')">
+                                            </ng-template>
+                                            <i></i><span></span>
+                                        </div>
+                                    </label>
+                                    <label class="dns-chk-label ml-4">
+                                        <span>Schedule Weekly</span>
+                                        <div data-width="30" class="dns-form-switch">
+                                            <ng-container
+                                                *ngIf="searchSetting.scheduledReport?.period=='w'; else elseTemplateWeekly">
+                                                <input type="checkbox" id="chk2" checked
+                                                    (change)="changeScheduledPeriod('n')">
+                                            </ng-container>
+                                            <ng-template #elseTemplateWeekly>
+                                                <input type="checkbox" id="chk2" (change)="changeScheduledPeriod('w')">
+                                            </ng-template>
+                                            <i></i>
+                                            <span></span>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-5 mt-2">
+                                    <button class="btns btn-success pull-right" (click)="saveReportFilters()">
+                                        <i class="fa fa-check-circle-o"></i>Save
                                     </button>
                                 </div>
                             </div>

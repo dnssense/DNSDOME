@@ -24,6 +24,7 @@ import { FormControl } from '@angular/forms';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { ReportService } from 'src/app/core/services/ReportService';
 import { startWith, map } from 'rxjs/operators';
+import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
 
 declare var $: any;
 //declare var Flatpickr: any;
@@ -182,11 +183,16 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     this.locationsService.getLocations().subscribe((res: Location[]) => {
       this.agents = res;
     });
+
   }
 
   ngAfterViewInit() {
     this.setDropdown();
+
     $('#tagsDd').click(function (e) {
+      e.stopPropagation();
+    });
+    $('#saveReportDiv').click(function (e) {
       e.stopPropagation();
     });
 
@@ -201,6 +207,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     let sr = this.savedReports.find(r => r.id == id);
     this.searchSetting = JSON.parse(JSON.stringify(sr));
     this.selectedSavedReportName = sr.name;
+    this.newSavedReportName = sr.name;
 
     if (sr.should) {
       this.searchSettingForHtml.should = [];
@@ -245,6 +252,19 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     })
   }
 
+  changeScheduledPeriod(p: string) {
+
+    $('#saveReportDiv').addClass('show');
+
+    this.searchSetting.scheduledReport = new ScheduledReport();
+    if (p == 'd' || p == 'w') {
+      this.searchSetting.scheduledReport.period = p;
+    } else {
+      this.searchSetting.scheduledReport.period = null;
+    }
+
+  }
+
   deleteSavedReport(report: any) {
     this.alertService.alertWarningAndCancel('Are You Sure?', report.name + ' report settings will be deleted!').subscribe(
       res => {
@@ -279,7 +299,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public checkUncheckColumn(col: LogColumn) {
-    
+
     if (this._columns.find(c => c.name == col.name).checked == false && this._columns.filter(c => c.checked == true).length >= 5) {
       this.notification.warning('You can selecy 5 columns!');
       return;
@@ -510,13 +530,13 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   changeCurrentColumn(colName: string) {
-    
+
     $('#tagsDd').click(function (e) { e.stopPropagation(); });
 
     this.currentColumn = colName;
-   
+
     if (this.currentOperator == 'isoneof' || this.currentOperator == 'isnotoneof') {
-       this.isOneOfListItems = [];
+      this.isOneOfListItems = [];
       if (colName == 'category') {
         //this.mainCategories.forEach(m => this.isOneOfListItems.push(m.categoryName))
 
@@ -790,14 +810,14 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public editTag(tag: any, type: string) {
-    
+
     this.editedTag = tag;
     this.editedTagType = type;
 
     this.currentColumn = tag.field;
     this.currentOperator = type;
 
-    if (type == 'isoneof' || (type == 'isnot' && tag.value.includes(','))) {
+    if (type == 'isoneof' || (type == 'isnot' && tag.value && tag.value.includes(','))) {
 
       if (this.currentColumn == 'reasonType') {
         tag.value.split(',').forEach(x => {
@@ -845,7 +865,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     if (type == 'is') {
       this.searchSetting.must.splice(this.searchSetting.must.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
     } else if (type == 'isnot') {
-      if (tag.value.includes(',')) {
+      if (tag.value && tag.value.includes(',')) {
         this.searchSetting.mustnot.splice(this.searchSetting.mustnot.findIndex(a => a.field == tag.field));
         this.searchSettingForHtml.mustnot.splice(this.searchSettingForHtml.mustnot.findIndex(a => a.field == tag.field));
       } else {
@@ -868,7 +888,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
           this.searchSetting = new SearchSetting();
           this.searchSettingForHtml = new SearchSetting();
           this.selectedSavedReportName = null;
-
+          this.newSavedReportName = null;
           this.currentinputValue = '';
         }
       }

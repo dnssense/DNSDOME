@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private privacyPolicy: boolean = false;
   private captcha: string;
   public host: ConfigHost;
-  public captcha_key: string = "6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58";//"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
+  public captcha_key: string = ""// "6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58";//"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
 
   emailFormControl = new FormControl('', [
@@ -53,7 +53,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.host = this.configService.host;
     this.captcha_key = this.host.captcha_key;
     this.createRegisterForm();
-
+    
   }
 
   createRegisterForm() {
@@ -62,8 +62,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.registerForm =
       this.formBuilder.group({
         "username": ["", [Validators.required, ValidationService.emailValidator]],
-        "password": ["", [Validators.required, Validators.minLength(6)]],
-        "passwordAgain": ["", [Validators.required, Validators.minLength(6)]]
+        "password": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
+        "passwordAgain": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]]
       }
         , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
       );

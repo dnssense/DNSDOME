@@ -44,14 +44,14 @@ export const ROUTES: RouteInfo[] = [
     title: 'Dashboard',
     type: 'link',
     icontype: 'dashboard',
-    role: 'ROLE_CUSTOMER,ROLE_ADMIN,ROLE_USER'
+    role: 'ROLE_CUSTOMER,ROLE_USER'
   },
   {
     path: '/admin/reports/monitor',
     title: ' Monitor',
     type: 'link',
     icontype: 'av_timer',
-    role: 'ROLE_CUSTOMER,ROLE_ADMIN,ROLE_USER'
+    role: 'ROLE_CUSTOMER,ROLE_USER'
   },
   {
     path: '/admin/reports/customreport',
@@ -65,7 +65,7 @@ export const ROUTES: RouteInfo[] = [
     title: 'Network',
     type: 'sub',
     icontype: 'wifi_tethering',
-    role: 'ROLE_CUSTOMER,ROLE_ADMIN',
+    role: 'ROLE_CUSTOMER',
     collapse: 'network',
     children: [
       { path: 'publicip', title: 'Public IP', ab: 'PI' },
@@ -78,12 +78,13 @@ export const ROUTES: RouteInfo[] = [
     title: 'Settings',
     type: 'sub',
     icontype: 'settings',
-    role: 'ROLE_CUSTOMER,ROLE_ADMIN',
+    role: 'ROLE_CUSTOMER',
     collapse: 'settings',
     children: [
       { path: 'users', title: 'Users', ab: 'U' },
-      // { path: 'scheduledreports', title: 'Scheduled Reports', ab: 'SP' },
-      { path: 'profiles', title: 'Security Profiles', ab: 'EP' }
+      //{ path: 'scheduledreports', title: 'Scheduled Reports', ab: 'SP' },
+      { path: 'profiles', title: 'Security Profiles', ab: 'SP' },
+      { path: 'tools', title: 'Tools', ab: 'T' }
     ]
   },
   {

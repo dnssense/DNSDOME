@@ -5,15 +5,15 @@
     "InvalidUrl": "Hatalı url",
     "AboutUs": "Hakkımızda",
     "AreYouSure": "Emin misiniz?",
-    "LanguageChanged":"Dil Değişti",
+    "LanguageChanged": "Dil Değişti",
     "CaptchaMessage": "Robot ya da Bot olmadığınızı doğrulamak için tıklamanız gerekiyor.",
-    "Required" :"zorunlu alan",
-    "PleaseSpecify" :"Lütfen Seçiniz",
-    "LOGOUT":{
-       "Logout":"Oturumu Kapat",
-       "LogoutMessage": "Sistemden çıkış yapmak istiyor musunuz?",
-       "LoggingOut":"Çıkış Yapılıyor...",
-       "LoggingOutMessage": "Sistemden güvenli bir şekilde çıkış yapılıyor."
+    "Required": "zorunlu alan",
+    "PleaseSpecify": "Lütfen Seçiniz",
+    "LOGOUT": {
+        "Logout": "Oturumu Kapat",
+        "LogoutMessage": "Sistemden çıkış yapmak istiyor musunuz?",
+        "LoggingOut": "Çıkış Yapılıyor...",
+        "LoggingOutMessage": "Sistemden güvenli bir şekilde çıkış yapılıyor."
     },
     "LOGIN": {
         "InvalidEmailOrPassword": "Hatalı email yada şifre",
@@ -35,6 +35,7 @@
         "ConfirmEmail": "Epostayı Doğrula",
         "GSM": "GSM",
         "Password": "Parola",
+        "PasswordRequired":"Parolalar en az bir büyük harf, bir küçük harf ve bir rakam içeren en az 8 karakterden oluşmalıdır.",
         "SendActivationCode": "Aktivasyon Kodu Gönder",
         "PasswordStrength": "Parola Güvenlik Seviyesi",
         "ConfirmPassword": "Parolayı Doğrula",
@@ -56,7 +57,7 @@
         "City": "Şehir",
         "PostCode": "Posta / Posta Kodu",
         "RegionState": "Bölge / Eyalet",
-        "ActivateAccount":"Hesap Aktifleştirme"
+        "ActivateAccount": "Hesap Aktifleştirme"
     },
     "DASHBOARD": {
         "SETTING_EXISTS": "Mevcut paneliniz bu raporu zaten içeriyor. Lütfen başka bir rapor seçiniz.",
@@ -64,26 +65,31 @@
         "DELETEMESSAGE": "Paneli silmek istediğinizden emin misiniz?",
         "DELETEDASHBOARD": "Paneli Sil"
     },
-    "ErrOAuthTestError":"Test hatası",
-    "ErrOAuthJwtVerificationFailed":"Hatalı Jwt",
-     "ErrOAuthNotAuthorized":"Yetki verilmedi",
-     "ErrOAuthNotFound":"Kaynak bulunamadı",
-     "ErrOAuthUnknownError":"Bilinmeyen hata",
-     "ErrOAuthInternalError":"İç sistemlerde hata oluştur",
-     "ErrOAuthUserLockedOrPassiveOrNotVerified":"Kullanıcı kilitli, pasif yada doğrulanmamış",
-     "ErrUserNotFound":"Kullanıcı bulunamadı",
-   "ErrUserNotAuthorized":"Yetki verilmedi",
-   "ErrUserNotActiveOrLockedOrVerified":"Kullanıcı aktif değil yada kilitli",
-   "ErrUserBadGsmNumber":"Hatalı telefon numarası",
-   "ErrUserNeedsCodeArg":"Code bilgisi eksik",
-   "ErrUserBadArgument":"Hatalı veri girişi",
-   "ErrUserNeedsUsernameAndPassword":"Kullanıcı adı yada şifresi eksik",
-   "ErrUserNeedsPrelogin":"Prelogin bilgisi eksik",
-   "ErrUserNeedsPreloginCodeSmscode":"Prelogin,code yada sms code bilgisi eksik",
-   "ErrUserBadSmsCode":"Hatalı sms code",
-   "ErrUserInternalError":"İç sistemlerde hata oluştu.",
-   "ErrUserBadOldPassword":"Hatalı eski şifre",
-   "ErrUserNotFoundUser":"Kullanıcı bulunamadı",
-   "ErrUserBadArgumentEmail":"Hatalı email"
-
+    "ErrOAuthTestError": "Test hatası",
+    "ErrOAuthJwtVerificationFailed": "Hatalı Jwt",
+    "ErrOAuthNotAuthorized": "Yetki verilmedi",
+    "ErrOAuthNotFound": "Kaynak bulunamadı",
+    "ErrOAuthUnknownError": "Bilinmeyen hata",
+    "ErrOAuthInternalError": "İç sistemlerde hata oluştur",
+    "ErrOAuthUserLockedOrPassiveOrNotVerified": "Kullanıcı kilitli, pasif yada doğrulanmamış",
+    "ErrUserNotFound": "Kullanıcı bulunamadı",
+    "ErrUserNotAuthorized": "Yetki verilmedi",
+    "ErrUserNotActiveOrLockedOrVerified": "Kullanıcı aktif değil yada kilitli",
+    "ErrUserBadGsmNumber": "Hatalı telefon numarası",
+    "ErrUserNeedsCodeArg": "Code bilgisi eksik",
+    "ErrUserBadArgument": "Hatalı veri girişi",
+    "ErrUserNeedsUsernameAndPassword": "Kullanıcı adı yada şifresi eksik",
+    "ErrUserNeedsPrelogin": "Prelogin bilgisi eksik",
+    "ErrUserNeedsPreloginCodeSmscode": "Prelogin,code yada sms code bilgisi eksik",
+    "ErrUserBadSmsCode": "Hatalı sms code",
+    "ErrUserInternalError": "İç sistemlerde hata oluştu.",
+    "ErrUserBadOldPassword": "Hatalı eski şifre",
+    "ErrUserNotFoundUser": "Kullanıcı bulunamadı",
+    "ErrUserBadArgumentEmail": "Hatalı email",
+    "ErrUserTooManyRequests":"Aşırı istek oluşturuldu!",
+    "ErrUserMaxLimitReached": "Maksimum istek sınırı aşıldı!",
+    "ErrUserPasswordPolicy": "Parola güvenlik politikasına uygun değil!",
+    "FORGOTPASSWORD": {
+        "Title": "Parola Yenileme"
+    }
 }

@@ -137,26 +137,26 @@ export class CustomReportResultComponent implements OnDestroy {
   }
 
   exportAs(extention: string) {
-    this.selectedColumns
-
-    let jsonString = "[";
-    for (let i = 0; i < this.data.length - 1; i++) {
-      const d = this.data[i];
-      jsonString += "{"
-      for (let j = 0; j < d.length - 1; j++) {
-        const e = d[j];
-        jsonString += '"' + this.selectedColumns[j].label + '" : "' + e + '",';
+    if (this.data && this.data.length > 0) {
+      let jsonString = "[";
+      for (let i = 0; i < this.data.length - 1; i++) {
+        const d = this.data[i];
+        jsonString += "{"
+        for (let j = 0; j < d.length - 1; j++) {
+          const e = d[j];
+          jsonString += '"' + this.selectedColumns[j].label + '" : "' + e + '",';
+        }
+        jsonString += '"Count": "' + d[d.length - 1] + '" },'
       }
-      jsonString+= '"Count": "' + d[d.length-1] +'" },'
-    }
-    jsonString = jsonString.substr(0, jsonString.length - 1);
-    jsonString += "]"
+      jsonString = jsonString.substr(0, jsonString.length - 1);
+      jsonString += "]"
 
-    const d = new Date();
-    if (extention == 'xlsx') {     
-      this.excelService.exportAsExcelFile(JSON.parse(jsonString), 'CustomReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
-    }else if ('pdf'){
-      this.pdfService.exportAsPdfFile("landscape", JSON.parse(jsonString), 'CustomReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+      const d = new Date();
+      if (extention == 'xlsx') {
+        this.excelService.exportAsExcelFile(JSON.parse(jsonString), 'CustomReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+      } else if ('pdf') {
+        this.pdfService.exportAsPdfFile("landscape", JSON.parse(jsonString), 'CustomReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+      }
     }
   }
 

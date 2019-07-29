@@ -65,16 +65,20 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   exportAs(extention: string) {
-    this.tableData.forEach(d => {
-      delete d.id;
-    });
-    const d = new Date();
 
-    if (extention == 'xlsx') {
-      this.excelService.exportAsExcelFile(this.tableData, 'MonitorReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
-    } else if (extention == 'pdf') {
-      this.pdfService.exportAsPdfFile("landscape", this.tableData, 'MonitorReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+    if (this.tableData && this.tableData.length > 0) {
+      this.tableData.forEach(d => {
+        delete d.id;
+      });
+      const d = new Date();
+
+      if (extention == 'xlsx') {
+        this.excelService.exportAsExcelFile(this.tableData, 'MonitorReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+      } else if (extention == 'pdf') {
+        this.pdfService.exportAsPdfFile("landscape", this.tableData, 'MonitorReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+      }
     }
+
   }
 
   public loadGraph(ss: SearchSetting) {
