@@ -22,7 +22,7 @@ export class ConfigHost{
 export class ConfigService {
    host:ConfigHost;
   constructor(private translationservice: TranslatorService) {
-    console.log('constructor configservice');
+    
     this.host=new ConfigHost();
     if (window.location.host.indexOf("dnssense") >= 0) {
       this.host.www = 'https://www.dnssense.com';

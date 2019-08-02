@@ -45,6 +45,7 @@ export class AccountSettingsComponent implements OnInit {
     matcher = new MyErrorStateMatcher();
     current2FAPreference: boolean;
     endTime: Date;
+    isTimeSetted = false;
     maxRequest: number = 3;
     private smsInformation: RestSmsResponse;
     isConfirmTimeEnded: boolean = true;
@@ -232,6 +233,7 @@ export class AccountSettingsComponent implements OnInit {
                 this.isConfirmTimeEnded = false;
                 this.endTime = new Date();
                 this.endTime.setMinutes(new Date().getMinutes() + 2);
+                this.isTimeSetted = true;
 
             });
 
@@ -272,10 +274,15 @@ export class AccountSettingsComponent implements OnInit {
         }
     }
 
+    notificationIndex = 0;
     timeEnd() {
-        this.notification.error('Confirmation time is up!');
-        location.reload();
+        if (this.isTimeSetted && this.notificationIndex < 1) {
+            this.notification.error('Confirmation time is up!');
+            location.reload();
+            this.notificationIndex++;
+        }
     }
+    
 
 
 }

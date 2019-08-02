@@ -32,13 +32,13 @@
                       <div class="col-12 col-sm-3 d-flex flex-column">
                         <div class="flex-1">
                           <div class="dns-radio">
-                            <input id="IpType1" name="IpType" type="radio" value="staticIp"
-                              (click)="onSelectionChangeIPType('staticIp')" checked>
+                            <input id="IpType1" name="ipType" type="radio" value="staticIp" [(ngModel)]="ipType"
+                              (click)="onSelectionChangeIPType('staticIp')" formControlName="ipType">
                             <label for="IpType1">Static IP</label>
                           </div>
                           <div class="dns-radio">
-                            <input id="IpType2" name="IpType" type="radio" value="dynamicIp"
-                              (click)="onSelectionChangeIPType('dynamicIp')">
+                            <input id="IpType2" name="ipType" type="radio" value="dynamicIp" [(ngModel)]="ipType"
+                              (click)="onSelectionChangeIPType('dynamicIp')" formControlName="ipType">
                             <label for="IpType2">Dynamic IP</label>
                           </div>
                         </div>
@@ -48,7 +48,8 @@
                           <ng-container *ngIf="ipType=='dynamicIp'; else elseTemplateIpType">
                             <div id="dnsFqnDiv" name="dnsFqnDiv" class="dns-ip-input-container mt-3">
                               <input type="text" id="dnsFqdn" name="dnsFqdn" class="dns-form-control reverse-form"
-                                [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn" placeholder="DNS FQDN">
+                                [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn"
+                                placeholder="DNS FQDN">
                             </div>
                           </ng-container>
                           <ng-template #elseTemplateIpType>
@@ -99,10 +100,14 @@
                             <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <button class="dropdown-item" *ngFor="let p of securityProfiles"
-                              (click)="securityProfileChanged(p.id)">
-                              {{p.name}}
-                            </button>
+
+                            <div class="table-responsive" style="max-height: 300px;">
+                              <button class="dropdown-item" *ngFor="let p of securityProfiles"
+                                (click)="securityProfileChanged(p.id)">
+                                {{p.name}}
+                              </button>
+                            </div>
+
                             <div class="dropdown-divider"></div>
                             <button class="btns btn-teritary dropdown-item-btn border-radius-8 dns-full-width m-2"
                               (click)="showNewProfileWizard()">
@@ -126,7 +131,7 @@
                     <div class="row align-items-center d-none" id="advancedContent">
                       <div class="col-12 col-lg-3 mt-3 ml-lg-0">
                         <input type="file" class="inputfile inputfile-4" id="fileUpload" (change)="selectFile($event)"
-                        accept="image/*">
+                          accept="image/*">
                         <label for="fileUpload">
                           <figure>
                             <ng-container *ngIf="selectedIp.logo; else elseTemplateLogo">
@@ -221,7 +226,8 @@
                   <thead>
                     <th class="no-border"></th>
                     <th style="border-bottom: white;">Name</th>
-                    <th style="border-bottom: white;">Ip Address</th>
+                    <th style="border-bottom: white;">Ip Type</th>
+                    <th style="border-bottom: white;">Ip Address/Domain</th>
                     <th style="border-bottom: white;">Block Message</th>
                     <th style="border-bottom: white;">Profile</th>
                     <th style="border-bottom: white;">Block Logo</th>
@@ -232,10 +238,23 @@
                       <td class="numeration">{{i+1}}</td>
                       <td><small>{{pi.agentAlias}}</small></td>
                       <td>
+                        <ng-container
+                          *ngIf="pi.staticSubnetIp && pi.staticSubnetIp.length > 0; else elseTemplateIpType2">
+                          <small>Static</small>
+                        </ng-container>
+                        <ng-template #elseTemplateIpType2>
+                          <small>Dynamic</small>
+                        </ng-template>
+                      </td>
+                      <td>
                         <small>
-                          <div *ngIf="pi.staticSubnetIp.length > 0">
+                          <div *ngIf="pi.staticSubnetIp && pi.staticSubnetIp.length > 0">
                             <div *ngFor="let pis of pi.staticSubnetIp">[{{pis.baseIp}}]/[{{pis.mask}}] </div>
                           </div>
+                          <div *ngIf="!pi.staticSubnetIp && pi.dynamicIpDomain">
+                            [{{pi.dynamicIpDomain}}]
+                          </div>
+
                         </small>
                       </td>
                       <td><small>{{pi.blockMessage?pi.blockMessage:"No Message!"}}</small></td>
@@ -253,7 +272,8 @@
                           <img src="{{pi.logo}}" class="dns-full-width row-img" accept="image/*">
                         </ng-container>
                         <ng-template #elseTemplatePiLogo>
-                          <img src="./assets/images/icons/upload-image.svg" accept="image/*" class="dns-full-width row-img">
+                          <img src="./assets/images/icons/upload-image.svg" accept="image/*"
+                            class="dns-full-width row-img">
                         </ng-template>
                       </td>
                       <td class="text-center">

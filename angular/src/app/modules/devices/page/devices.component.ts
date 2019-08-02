@@ -8,6 +8,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { Agent } from 'src/app/core/models/Agent';
 import { AgentType } from 'src/app/core/models/AgentType';
 import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 declare var $: any;
 
@@ -40,9 +41,10 @@ export class DevicesComponent implements OnInit {
     startWizard: boolean;
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService,
-        private notification: NotificationService) {
+        private notification: NotificationService, private authService: AuthenticationService) {
 
-      //  this.initializeVariables();
+        this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
+        //  this.initializeVariables();
 
         this.agentService.getAgents().subscribe(res => {
             res.forEach(r => {

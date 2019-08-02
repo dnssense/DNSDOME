@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
     selector: 'app-roaming',
@@ -8,7 +9,9 @@ import { Component, OnInit } from '@angular/core';
 export class RoamingComponent implements OnInit {
 
 
-    constructor() {
+    constructor(private authService: AuthenticationService) {
+
+        this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
 
     }
 

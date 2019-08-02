@@ -38,9 +38,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   trafficChartType: string = 'hit';
   uniqueChartType: string = 'domain';
 
-  constructor(private dashboardService: DashBoardService, private auth: AuthenticationService, private datePipe: DatePipe, private authService: AuthenticationService,
+  constructor(private dashboardService: DashBoardService, private datePipe: DatePipe, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router, private agentService: AgentService,
-    private monitorService: MonitorService) {
+  ) {
+ 
+    this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/")+1));
 
     let roleName: string = this.authService.currentSession.currentUser.roles.name;
     //agent yoksa public ip sayfasına yönlendir

@@ -36,6 +36,8 @@ export class ScheduledReportsComponent implements OnInit {
     constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private notification: NotificationService,
         private alert: AlertService, private reportService: ReportService) {
 
+        this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
+
         this.selectedReport.scheduledReport = new ScheduledReport();
         this.loadReports();
 

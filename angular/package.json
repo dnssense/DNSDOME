@@ -1,6 +1,6 @@
 {
   "name": "ui.dnssense",
-  "version": "1.0.53",
+  "version": "1.0.56",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -52,6 +52,7 @@
     "bootstrap-tagsinput": "0.7.1",
     "chartist": "0.9.8",
     "chartist-plugin-zoom": "0.4.1",
+    "classlist.js": "^1.1.20150312",
     "core-js": "^2.5.4",
     "countries-list": "^2.4.2",
     "datatables": "1.10.18",
@@ -97,10 +98,11 @@
     "tslib": "^1.9.0",
     "twitter-bootstrap-wizard": "1.2.0",
     "uglify-js": "3.3.28",
+    "url-search-params-polyfill": "^7.0.0",
     "validate": "3.0.1",
     "validator": "^9.4.1",
     "waypoints": "^4.0.1",
-    "web-animations-js": "2.3.1",
+    "web-animations-js": "^2.3.1",
     "webui-popover": "^1.2.18",
     "xlsx": "^0.14.3",
     "zone.js": "~0.8.26"

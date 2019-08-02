@@ -55,7 +55,7 @@ export class AuthenticationService {
   checkSessionIsValid() {
 
     try {
-      
+
       const sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
         const session: Session = JSON.parse(sessionString);
@@ -97,8 +97,8 @@ export class AuthenticationService {
         this.getCurrentUser().subscribe(x => {
 
         });
-       // this.logger.console(res.refreshToken);
-       // this.logger.console(res.token);
+        // this.logger.console(res.refreshToken);
+        // this.logger.console(res.token);
       } else {
 
       }
@@ -138,7 +138,7 @@ export class AuthenticationService {
       .pipe(
         mergeMap((res: RestUser) => {
 
-      //    this.logger.console(res);
+          //    this.logger.console(res);
 
           const user = new User();
           user.companyId = Number(res.companyId);
@@ -191,12 +191,12 @@ export class AuthenticationService {
         'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
       })
     };
-    
+
     let body = new URLSearchParams();
     body.set('grant_type', 'password');
     body.set('username', email);
     body.set('password', pass);
-    
+
     return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
       .pipe(mergeMap((res: any) => {
         //this.logger.console(res);
@@ -230,6 +230,19 @@ export class AuthenticationService {
     return this.http.post<any>(this._forgotPasswordChangeURL,
       JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions())
 
+  }
+
+  canActivate(path: string) {
+    this.checkSessionIsValid();
+
+    const adminPages = ['dashboard', 'monitor', 'customreport', 'publicip', 'devices', 'roaming', 'users', 'profiles', 'tools','scheduledreports', 'help'];
+    const userPages = ['dashboard', 'monitor', 'customreport', 'tools', 'help'];
+
+    if (this.currentSession.currentUser.roles.name == 'ROLE_CUSTOMER' && !adminPages.includes(path)) {
+      this.logout();
+    } else if (this.currentSession.currentUser.roles.name == 'ROLE_USER' && !userPages.includes(path)) {
+      this.logout();
+    }
   }
 
 

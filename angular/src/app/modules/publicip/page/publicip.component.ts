@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -9,13 +9,9 @@ import { AgentType } from 'src/app/core/models/AgentType';
 import * as introJs from 'intro.js/intro.js';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
+import { Router, ActivationStart, RouterOutlet } from '@angular/router';
 
-declare let $: any; 
-const fileType = require('file-type');
-
-declare interface JsonIP {
-  ip: string
-}
+declare let $: any;
 
 @Component({
   selector: 'app-publicip',
@@ -23,7 +19,6 @@ declare interface JsonIP {
   styleUrls: ['./publicip.component.sass']
 })
 export class PublicipComponent implements AfterViewInit {
-
 
   ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
   publicIps: Agent[] = [];
@@ -41,15 +36,19 @@ export class PublicipComponent implements AfterViewInit {
   securityProfiles: SecurityProfile[];
   roleName: string;
   tooltipGuideCounter: number = 0;
+  @ViewChild(RouterOutlet) outlet: RouterOutlet;
 
   constructor(private alertService: AlertService, private notification: NotificationService, private authService: AuthenticationService,
     private formBuilder: FormBuilder, private agentService: AgentService, private publicIpService: PublicIPService) {
-    this.roleName = this.authService.currentSession.currentUser.roles.name;
 
+    this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
+
+    this.roleName = this.authService.currentSession.currentUser.roles.name;
     this.getPublicIpsDataAndProfiles();
 
     this.publicIpForm = this.formBuilder.group({
       "agentName": ["", [Validators.required]],
+      "ipType": ["", [Validators.required]],
       "blockMessage": ["", []],
       "dnsFqdn": ["", []],
       "ip0": ["", [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]],
@@ -60,6 +59,13 @@ export class PublicipComponent implements AfterViewInit {
     this.defineNewAgentForProfile();
 
   }
+
+  // ngOnInit(): void {
+  //   this.router.events.subscribe(e => {
+  //     if (e instanceof ActivationStart && e.snapshot.outlet === "publicip")
+  //       this.outlet.deactivate();
+  //   });
+  // }
 
   ngAfterViewInit(): void {
 
@@ -289,6 +295,8 @@ export class PublicipComponent implements AfterViewInit {
       });
     }
 
+    this.ipType = 'staticIp';
+
     $('#newIpRow').slideDown(300);
     $('#pi_card_btn').hide();
     $("#fileUpload").val("");
@@ -317,18 +325,26 @@ export class PublicipComponent implements AfterViewInit {
     this.selectedIp.staticSubnetIp = selectedUpdateIp.staticSubnetIp;
     this.selectedIp.isCpEnabled = selectedUpdateIp.isCpEnabled;
     this.selectedIp.logo = selectedUpdateIp.logo;
-
+    
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
-      for (let i = 1; i < this.selectedIp.staticSubnetIp.length; i++) {
 
+      for (let i = 1; i < this.selectedIp.staticSubnetIp.length; i++) {
         const cname = 'ip' + i;
         this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
         this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]);
         this.publicIpForm.controls[cname].updateValueAndValidity();
       }
+
     } else {
       this.selectedIp.staticSubnetIp = [];
       this.selectedIp.staticSubnetIp.push({} as IpWithMask);
+
+    }
+
+    if (this.selectedIp.dynamicIpDomain && this.selectedIp.dynamicIpDomain.length > 0) {
+      this.ipType = 'dynamicIp';
+    } else {
+      this.ipType = 'staticIp';
     }
 
     $('#newIpRow').slideDown(300);
@@ -354,23 +370,38 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   selectFile($event) {
+
     var inputValue = $event.target;
     let file = inputValue.files[0];
+    
+    if (typeof file == 'undefined' || !file.type.toString().startsWith('image/')) {
+      return;
+    }
+
     let reader = new FileReader();
     let ag = this.selectedIp;
-    if (typeof file !== 'undefined') { }
 
-    reader.addEventListener("load", function () {
-      ag.logo = reader.result;
-    }, false);
+    reader.onload = function (e) {
+      try {
+        imageExists(reader.result, function (exists) {
+          if (exists) {
+            ag.logo = reader.result;
+          }
+        });
+      } catch (error) {
+      }
+    };
 
     if (file) {
       reader.readAsDataURL(file);
     }
- 
 
-    console.log(fileType(ag.logo)); 
-
+    function imageExists(url, callback) {
+      var img = new Image();
+      img.onload = function () { callback(true); };
+      img.onerror = function () { callback(false); };
+      img.src = url;
+    }
 
   }
 

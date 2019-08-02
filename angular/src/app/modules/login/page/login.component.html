@@ -53,7 +53,7 @@
                   </mat-error>
                   <div class="form-group text-center">
                     <br />
-                    <button mat-button class="btn btn-info btn-secondary btn-sm" (click)="login()">
+                    <button class="btns btn-info btn-sm" (click)="login()">
                       {{'LOGIN.Login'|translate}}
                     </button>
                   </div>
@@ -74,7 +74,7 @@
                 </div>
                 <div class=""><a class="btn btn-sm btn-link" (click)="openLogin()">* Login</a></div>
                 <div class="text-center">
-                  <button class="btn btn-info btn-sm" (click)="sendPasswordActivationCode()">Send Activation
+                  <button class="btns btn-info btn-sm" (click)="sendPasswordActivationCode()">Send Activation
                     Code</button>
                 </div>
               </div>
@@ -87,7 +87,7 @@
                   <input type="smsCode" matInput placeholder="SMS Code" [(ngModel)]="smsCode">
                 </mat-form-field>
                 <div class="text-center">
-                  <button class="btn btn-info btn-sm" (click)="confirm2FACode()">Confirm</button>
+                  <button class="btns btn-info btn-sm" (click)="confirm2FACode()">Confirm</button>
                 </div>
               </div>
             </div>
@@ -96,7 +96,7 @@
       </div>
       <div class="row">
         <div class="col text-center" style="color: black">
-          version: 1.0.53
+          version: 1.0.56
         </div>
       </div>
     </div>

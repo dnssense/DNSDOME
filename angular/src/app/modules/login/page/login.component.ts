@@ -202,7 +202,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   notificationIndex = 0;
   timeEnd() {
-    if (this.notificationIndex < 2) {
+    if (this.notificationIndex < 1) {
       this.notification.error('SMS Code Expired. Please Try Again.');
       this.isConfirmTimeEnded = true;
       this.openLogin();

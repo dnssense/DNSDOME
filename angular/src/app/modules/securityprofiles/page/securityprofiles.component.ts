@@ -7,6 +7,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { AlertService } from 'src/app/core/services/alert.service';
 import { Agent } from 'src/app/core/models/Agent';
 import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 declare var $: any;
 
@@ -25,17 +26,19 @@ export class SecurityProfilesComponent {
     saveMode: string;
     updateCount: number = 0;
     constructor(private agentService: AgentService, private notification: NotificationService,
-        private alert: AlertService) {
+        private alert: AlertService, private authService: AuthenticationService) {
+
+        this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
 
         this.getProfiles();
         this.defineNewAgentForProfile();
 
         $('#newAgentBtn').click(function () {
-            
+
             $('#closeNewAgentBtn').removeClass('d-none');
             $(this).addClass('d-none');
             $('#agent-wizard').removeClass('d-none');
-          });
+        });
     }
 
     getProfiles() {

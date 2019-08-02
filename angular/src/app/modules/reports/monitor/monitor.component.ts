@@ -7,6 +7,7 @@ import { MonitorSearchComponent } from './search/monitor-search.component';
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { OperationResult } from 'src/app/core/models/OperationResult';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
   selector: 'app-monitor',
@@ -23,15 +24,16 @@ export class MonitorComponent implements OnInit {
   private monitorResultComponent: MonitorResultComponent;
 
   constructor(
-    private monitorService: MonitorService,
-    private notificationService: NotificationService,
-    public dateFormatPipe: DateFormatPipe
-  ) { }
+    public dateFormatPipe: DateFormatPipe,
+    private authService: AuthenticationService) {
+
+    this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
+  }
 
   ngOnInit() { }
 
   public search(ss: SearchSetting) {
-    
+
     this.searchSetting = ss;
     this.monitorResultComponent.currentPage = 1;
     this.monitorResultComponent.refresh(ss);
@@ -47,7 +49,7 @@ export class MonitorComponent implements OnInit {
       }
     }
     if (exists) {
- //     this.notificationService.warning(column + "=" + value + " exists in your criteria");
+      //     this.notificationService.warning(column + "=" + value + " exists in your criteria");
       return;
     }
     this.searchSetting.must.push(new ColumnTagInput(column, '=', value));

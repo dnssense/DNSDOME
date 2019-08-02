@@ -58,7 +58,7 @@ export const ROUTES: RouteInfo[] = [
     title: 'Custom Reports',
     type: 'link',
     icontype: 'timeline',
-    role: 'ROLE_CUSTOMER,ROLE_ADMIN,ROLE_USER'
+    role: 'ROLE_CUSTOMER,ROLE_USER'
   },
   {
     path: '/admin',
