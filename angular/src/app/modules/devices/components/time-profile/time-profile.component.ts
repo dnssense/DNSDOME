@@ -97,11 +97,11 @@ export class TimeProfileComponent implements OnInit {
       }
     }
 
-    this.agentService.saveProfile(this.selectedProfile).subscribe(data => {
-      this.selectedProfile = data;
-      this.closeProfilePanel();
-      this.alertService.alertSuccessMessage("Operation Successful", "Profile Changes committed");
-    });
+    // this.agentService.saveProfile(this.selectedProfile).subscribe(data => {
+    //   this.selectedProfile = data;
+    //   this.closeProfilePanel();
+    //   this.alertService.alertSuccessMessage("Operation Successful", "Profile Changes committed");
+    // });
 
   }
 

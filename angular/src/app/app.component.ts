@@ -11,10 +11,11 @@ export class AppComponent {
   host: ConfigHost;
   title?: string;
   iconImage?: string;
-  constructor(private config: ConfigService, private authenticationService: AuthenticationService, private configService: ConfigService) {
-    config.init();
+  constructor(private config: ConfigService, private authenticationService: AuthenticationService,
+     private configService: ConfigService) {
+    this.config.init();
     this.authenticationService.checkSessionIsValid();
-    this.host = configService.host;
+    this.host = this.configService.host;
     this.title = this.host.title;
     this.iconImage = this.host.iconImage;
     // authenticationService.checkSessionIsValid();

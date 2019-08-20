@@ -1,13 +1,9 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { TimeProfileResponse } from 'src/app/core/models/TimeProfileResponse';
+import { Component } from '@angular/core';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MobileCategory } from 'src/app/core/models/MobileCategory';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { Agent } from 'src/app/core/models/Agent';
 import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 declare var $: any;
 
@@ -26,9 +22,7 @@ export class SecurityProfilesComponent {
     saveMode: string;
     updateCount: number = 0;
     constructor(private agentService: AgentService, private notification: NotificationService,
-        private alert: AlertService, private authService: AuthenticationService) {
-
-        this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
+        private alert: AlertService) {
 
         this.getProfiles();
         this.defineNewAgentForProfile();
@@ -124,7 +118,7 @@ export class SecurityProfilesComponent {
         }
     }
 
-    searchByKeyword(e: any) {
+    searchByKeyword() {
         if (this.searchKey && this.searchKey.length > 0) {
             this.securityProfilesFiltered = this.securityProfiles.filter(f => f.name.toLowerCase().includes(this.searchKey.toLowerCase()));
         } else {

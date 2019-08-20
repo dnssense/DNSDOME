@@ -3,41 +3,44 @@
     <section id="devicePanel" class="devicePanel">
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
-          <div class="card mt-1">
-            <div class="card-header card-header-icon card-header-info">
-              <div class="card-icon">
-                <i class="material-icons">all_inbox</i>
-              </div>
-              <h4 class="card-title ">Boxes</h4>
+          <div class="dns-base-card mt-1">
+            <div class="dns-base-card-header pt-3">
+              <span>DNS Relays</span>
             </div>
-            <div class="card-body">
-              <div class="table-responsive" style="max-height:230px; min-height: 200px;">
-                <table class="table">
-                  <thead class="text-warning">
+            <div class="dns-base-card-content">
+              <div class="table-responsive" style="max-height:250px; min-height: 200px;">
+                <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
+                  <thead>
                     <tr>
-                      <th>Box Headers</th>
-                      <th>Security Profile</th>
-                      <th>Is Captive Portal</th>
-                      <th>Is CP Enabled</th>
-                      <th>Message</th>
-                      <th>Operation</th>
+                      <th class="no-border"></th>
+                      <th style="border-bottom: white;">Relay Name</th>
+                      <th style="border-bottom: white;">Security Profile</th>
+                      <th style="border-bottom: white;">Is Captive Portal</th>
+                      <th style="border-bottom: white;">Is CP Enabled</th>
+                      <!-- <th style="border-bottom: white;">Message</th> -->
+                      <th class="text-center" style="border-bottom: white;">Operation</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let b of boxAgents">
-                      <td>{{b.agentAlias}}</td>
-                      <td>profile XYZ</td>
+                    <tr *ngFor="let b of boxAgents; let i = index;">
+                      <td class="numeration">{{i+1}}</td>
+                      <td><small>{{b.agentAlias}}</small></td>
+                      <td> <button class="btns btn-clear btnOverFlow profileBtn text-left" [matTooltipShowDelay]="800"
+                          matTooltip="Edit Profile" (click)="showProfileEditWizard(pi.id)">
+                          <img src="./assets/images/icons/settings-outline.svg">
+                          <small>{{b.rootProfile?b.rootProfile.name:"No Profile!"}}</small>
+                        </button></td>
                       <td>{{b.captivePortalIp}}</td>
                       <td>{{b.isCpEnabled}}</td>
-                      <td>{{b?.blockMessage?b.blockMessage:"---"}}</td>
+                      <!-- <td>{{b?.blockMessage?b.blockMessage:"---"}}</td> -->
                       <td class="text-center">
-                        <button mat-raised-button type="button" class="btn btn-info btn-just-icon btn-sm"
-                          mattooltip="Edit item" (click)="showEditWizard('BOX', b.id)">
-                          <i class="material-icons">settings</i>
+                        <button class="btns btn-clear" [matTooltipShowDelay]="800" matTooltip="Edit item"
+                          (click)="showEditWizard('BOX', b.id)">
+                          <img src="./assets/images/icons/edit.svg">
                         </button>
-                        <button mat-raised-button type="button" class="btn btn-danger btn-just-icon btn-sm"
-                          mattooltip="Delete item" (click)="deleteBox(b.id)">
-                          <i class="material-icons">close</i>
+                        <button class="btns btn-clear" matTooltip="Delete item" [matTooltipShowDelay]="800"
+                          (click)="deleteBox(b.id)">
+                          <img src="./assets/images/icons/close-red.svg">
                         </button>
                       </td>
                     </tr>
@@ -48,23 +51,20 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row mt-2">
         <div class="col-md-6 ml-auto mr-auto">
-          <div class="card mt-1">
-            <div class="card-header card-header-icon card-header-warning">
-              <div class="card-icon">
-                <i class="material-icons">assignment</i>
-              </div>
-              <h4 class="card-title ">Unregistered Agents ({{unregisteredCount}})</h4>
+          <div class="dns-base-card mt-1">
+            <div class="dns-base-card-header pt-3 mb-2">
+              <span>Unregistered Local Devices</span>
             </div>
-            <div class="card-body">
+            <div class="dns-base-card-content">
               <div class="table-responsive" style="max-height: 270px;  min-height: 250px;">
-                <table class="table">
-                  <thead class="text-warning">
+                <table class="table table-bordered">
+                  <thead>
                     <tr>
-                      <th>Name</th>
-                      <th class="text-left">Security Profile</th>
-                      <th class="text-right">Action</th>
+                      <th style="border-bottom: white;">Name</th>
+                      <th class="text-left" style="border-bottom: white;">Security Profile</th>
+                      <th class="text-center" style="border-bottom: white;">Operation</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -98,37 +98,34 @@
           </div>
         </div>
         <div class="col-md-6 ml-auto mr-auto">
-          <div class="card mt-1">
-            <div class="card-header card-header-icon card-header-success">
-              <div class="card-icon">
-                <i class="material-icons">save</i>
-              </div>
-              <h4 class="card-title">Registered Agents ({{registeredCount}})</h4>
+          <div class="dns-base-card mt-1">
+            <div class="dns-base-card-header pt-3 mb-2">
+              <span>Registered Local Devices</span>
             </div>
-            <div class="card-body">
+            <div class="dns-base-card-content">
               <div class="table-responsive" style="max-height: 270px;  min-height: 250px;">
-                <table class="table">
-                  <thead class="text-warning">
+                <table class="table table-bordered">
+                  <thead>
                     <tr>
-                      <th>Name</th>
-                      <th class="text-left">Security Profile</th>
-                      <th class="text-right">Actions</th>
+                      <th style="border-bottom: white;">Name</th>
+                      <th class="text-left" style="border-bottom: white;">Security Profile</th>
+                      <th class="text-center" style="border-bottom: white;">Operation</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let agent of deviceAgents">
                       <td>{{agent.agentAlias}}</td>
                       <td class="text-left">
-                        <button mat-raised-button type="button" class="btn btn-info btn-sm btn-just-icon"
-                          (click)="showEditWizard('DEVICE', agent.id)">
-                          <i class="material-icons">settings</i>
+                        <button class="btns btn-clear btnOverFlow profileBtn text-left" [matTooltipShowDelay]="800"
+                          matTooltip="Edit Profile" (click)="showProfileEditWizard(pi.id)">
+                          <img src="./assets/images/icons/settings-outline.svg">
+                          <small>{{agent.rootProfile?agent.rootProfile.name:"No Profile!"}}</small>
                         </button>
-                        Profile-{{agent.agentAlias}}
                       </td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" class="btn btn-danger mr-1"
+                      <td class="td-actions text-center">
+                        <button class="btns btn-clear" matTooltip="Delete item" [matTooltipShowDelay]="800"
                           (click)="deleteAgent(agent)">
-                          <i class="material-icons">close</i>
+                          <img src="./assets/images/icons/close-red.svg">
                         </button>
                       </td>
                     </tr>
@@ -146,7 +143,8 @@
           <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
             <i class="material-icons">arrow_back</i>
           </button>
-          <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard" (saveEmitter)="hideWizardWithoutConfirm();">
+          <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard"
+            (saveEmitter)="hideWizardWithoutConfirm();">
           </app-profile-wizard>
         </div>
       </div>

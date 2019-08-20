@@ -1,26 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HelpComponent } from './help.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
-
-describe('HelpComponent', () => {
-  let component: HelpComponent;
-  let fixture: ComponentFixture<HelpComponent>;
-
-  beforeEach(async(() => {
+describe('HelpComponent (minimal)', () => {
+  it('should create', () => {
     TestBed.configureTestingModule({
       declarations: [ HelpComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HelpComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    });
+    const fixture = TestBed.createComponent(HelpComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
   });
 });

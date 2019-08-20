@@ -41,8 +41,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   constructor(private dashboardService: DashBoardService, private datePipe: DatePipe, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router, private agentService: AgentService,
   ) {
- 
-    this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/")+1));
 
     let roleName: string = this.authService.currentSession.currentUser.roles.name;
     //agent yoksa public ip sayfasına yönlendir
@@ -74,7 +72,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    //introJs().start();
+   // introJs().start();
   }
 
   prepareWorldMap() {
@@ -249,7 +247,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // Total Traffic Chart
     var trafficChartoptions = {
-      chart: { height: 270, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
+      chart: { height: 310, type: 'line', zoom: { enabled: false }, 
+      foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 6] },
       colors: ['#9d60fb', '#4a90e2'],
@@ -257,7 +256,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'left', show: true },
+      legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
       tooltip: { theme: 'dark' }
     }
@@ -267,7 +266,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     //Uniquer Domain Chart
     var uniqueDomainOptions = {
-      chart: { height: 250, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
+      chart: { height: 280, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
@@ -276,7 +275,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       tooltip: { theme: 'dark' },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'left', show: true },
+      legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
     }
     this.uniqueDomainChart = new ApexCharts(document.querySelector("#uniqueDomainChart"), uniqueDomainOptions);
@@ -285,7 +284,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     //Unique Subdomain Chart
     var uniqueSubdomainChartOptions = {
-      chart: { height: 250, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
+      chart: { height: 280, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
@@ -294,7 +293,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       tooltip: { theme: 'dark' },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'left', show: true },
+      legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
     }
     var uniqueSubdomainChart = new ApexCharts(document.querySelector("#uniqueSubdomainChart"), uniqueSubdomainChartOptions);
@@ -303,7 +302,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // Unique Dest Ip Chart
     var uniqueDestIpChartOptions = {
-      chart: { height: 250, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
+      chart: { height: 280, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
@@ -312,7 +311,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
       tooltip: { theme: 'dark' },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'left', show: true },
+      legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
     }
     var uniqueDestIpChart = new ApexCharts(document.querySelector("#uniqueDestIpChart"), uniqueDestIpChartOptions);

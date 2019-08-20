@@ -1,18 +1,13 @@
 import { OnInit, ElementRef, OnDestroy, Component, ViewChild } from '@angular/core';
-import * as Chartist from 'chartist';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { HistogramComponent } from '../shared/histogram/histogram.component';
 import { Subscription, Subject } from 'rxjs';
 import { CustomReportSearchComponent } from './search/customreport-search.component';
 import { CustomReportResultComponent } from './result/customreport-result.component';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { CustomReportService } from 'src/app/core/services/CustomReportService';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 
 @Component({
@@ -44,15 +39,10 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   public customReportSearchComponent: CustomReportSearchComponent;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
-  private tableColumnsubscription: Subscription;
-  private categoriesSubscription: Subscription;
-  private applicationSubscription: Subscription;
 
 
-  constructor(private customReportService: CustomReportService, private fastReportService: FastReportService,
-    private notificationService: NotificationService, private authService: AuthenticationService) {
-
-    this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
+  constructor(private fastReportService: FastReportService,
+    private notificationService: NotificationService) {
 
   }
 

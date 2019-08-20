@@ -223,15 +223,34 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   saveReportFilters() {
-    this.searchSetting.name = this.newSavedReportName;
-    this.reportService.saveReport(this.searchSetting).subscribe(res => {
-      if (res.status == 200) {
-        this.notification.success(res.message);
-        this.reportService.getReportList().subscribe(res => this.savedReports = res);
+
+    if (this.searchSetting.system == true &&
+      (this.searchSetting.scheduledReport == null || this.searchSetting.scheduledReport.period == null)) {
+      this.notification.warning('System reports can only be saved with a schedule option.');
+      return;
+    }
+
+    if (this.newSavedReportName) {
+      if (this.searchSetting.system && this.searchSetting.system == true) {
+        this.searchSetting.id = -1;
+        this.searchSetting.name = 'Customized-' + this.newSavedReportName;
       } else {
-        this.notification.error(res.message);
+        this.searchSetting.name = this.newSavedReportName;
       }
-    })
+
+      this.searchSetting.system = false;
+      this.reportService.saveReport(this.searchSetting).subscribe(res => {
+        if (res.status == 200) {
+          this.notification.success(res.message);
+          this.reportService.getReportList().subscribe(res => this.savedReports = res);
+        } else {
+          this.notification.error(res.message);
+        }
+      });
+    } else {
+      this.notification.warning('Please enter a name');
+    }
+
   }
 
   changeScheduledPeriod(p: string) {
@@ -368,8 +387,12 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.currentColumn = colName;
 
-    this.isOneOfListItems = [];
     if (this.currentOperator == 'isoneof' || this.currentOperator == 'isnotoneof') {
+      this.isOneOfListItems = [];
+      if (this.currentInput && !this.isOneOfList.includes(this.currentInput)) {
+        this.isOneOfList.push(this.currentInput);
+      }
+
       if (colName == 'category') {
         this.mainCategories.forEach(m => this.isOneOfListItems.push(m.categoryName))
       }
@@ -390,12 +413,16 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
         this.isOneOfListItems.push('Block');
       }
 
+    } else {
+      if (this.isOneOfList && this.isOneOfList.length > 0) {
+        this.currentInput = this.isOneOfList[0];
+      }
     }
 
   }
 
   addTag($event) {
-
+    debugger
     $event.stopPropagation();
     if (this.editedTag) {
       this.removeTag(this.editedTag, this.editedTagType);
@@ -435,11 +462,10 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
       } else {
         this.currentInput = this.isOneOfList.join(',');
       }
-
     }
 
     if (this.currentInput == '') {
-      //this.tagInput.nativeElement.focus();
+      this.notification.warning('Please enter a valid input')
       return;
     }
 
@@ -454,6 +480,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     } else if (this.currentColumn == 'domain' || this.currentColumn == 'subdomain') {
       let result = ValidationService.domainValidation({ value: this.currentInput })
       if (result != true) {
+        this.notification.warning('Please enter a valid domain');
         return;
       }
     }
@@ -636,7 +663,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     this.currentColumn = tag.field;
     this.currentOperator = type;
 
-    if (type == 'isoneof' || (type == 'isnot' && tag.value && tag.value.includes(','))) {
+    if (type == 'isoneof' || (type == 'isnot' && tag.value && tag.value.toString().includes(','))) {
 
       if (this.currentColumn == 'reasonType') {
         tag.value.split(',').forEach(x => {
@@ -685,7 +712,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     if (type == 'is') {
       this.searchSetting.must.splice(this.searchSetting.must.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
     } else if (type == 'isnot') {
-      if (tag.value && tag.value.includes(',')) {
+      if (tag.value && tag.value.toString().includes(',')) {
         this.searchSetting.mustnot.splice(this.searchSetting.mustnot.findIndex(a => a.field == tag.field));
         this.searchSettingForHtml.mustnot.splice(this.searchSettingForHtml.mustnot.findIndex(a => a.field == tag.field));
       } else {
@@ -726,7 +753,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
       if ((val || '').trim()) {
         if (this.currentColumn == 'domain' || this.currentColumn == 'subdomain') {
           let result = ValidationService.domainValidation({ value: val });
-          if (result == true) {
+          if (result == true && this.isOneOfList) {
             this.isOneOfList.push(val.trim());
           } else {
             this.notification.warning('Please enter a valid item!');

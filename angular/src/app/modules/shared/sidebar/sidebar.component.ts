@@ -69,8 +69,8 @@ export const ROUTES: RouteInfo[] = [
     collapse: 'network',
     children: [
       { path: 'publicip', title: 'Public IP', ab: 'PI' },
-      //{ path: 'devices', title: 'Local Devices', ab: 'LD' },
-      // { path: 'roaming', title: 'Roaming Clients', ab: 'RC' }
+     // { path: 'devices', title: 'Devices', ab: 'LD' },
+      { path: 'roaming', title: 'Roaming Clients', ab: 'RC' }
     ]
   },
   {
@@ -82,7 +82,7 @@ export const ROUTES: RouteInfo[] = [
     collapse: 'settings',
     children: [
       { path: 'users', title: 'Users', ab: 'U' },
-      //{ path: 'scheduledreports', title: 'Scheduled Reports', ab: 'SP' },
+      { path: 'scheduledreports', title: 'Saved Reports', ab: 'SP' },
       { path: 'profiles', title: 'Security Profiles', ab: 'SP' },
       { path: 'tools', title: 'Tools', ab: 'T' }
     ]

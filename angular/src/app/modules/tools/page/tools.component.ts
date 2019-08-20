@@ -1,11 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { NotificationService } from 'src/app/core/services/notification.service';
+import { Component } from '@angular/core';
 import { ToolsService } from 'src/app/core/services/ToolsService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { CategoryQuery } from 'src/app/core/models/CategoryQuery';
-import { map } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 
 @Component({
@@ -19,9 +16,7 @@ export class ToolsComponent {
     isDomain: boolean;
     domain: string;
     categoryQuery: CategoryQuery;
-    constructor(private toolsService: ToolsService, private formBuilder: FormBuilder, private authService: AuthenticationService) {
-
-        this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
+    constructor(private toolsService: ToolsService, private formBuilder: FormBuilder) {
 
         this.searchForm = this.formBuilder.group({
             "domain": ["", [Validators.required]]

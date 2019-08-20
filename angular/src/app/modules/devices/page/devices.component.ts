@@ -41,15 +41,17 @@ export class DevicesComponent implements OnInit {
     startWizard: boolean;
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService,
-        private notification: NotificationService, private authService: AuthenticationService) {
+        private notification: NotificationService) {
 
-        this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
         //  this.initializeVariables();
+
 
         this.agentService.getAgents().subscribe(res => {
             res.forEach(r => {
                 if (r.agentType && r.agentType.toString() == AgentType.BOX.toString()) {
                     this.boxAgents.push(r);
+                    console.log(this.boxAgents);
+
                 } else if (r.agentType && r.agentType.toString() == AgentType.DEVICE.toString()) {
                     this.deviceAgents.push(r);
                 }

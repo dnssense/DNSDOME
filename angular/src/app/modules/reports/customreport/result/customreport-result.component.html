@@ -52,10 +52,10 @@
                                 <table #tableDivComponent id="table-data" class="table table-bordered">
                                     <thead>
                                         <th class="no-border"></th>
-                                        <th *ngFor="let colz of selectedColumns">
+                                        <th style="border-bottom: white;" *ngFor="let colz of selectedColumns">
                                             <strong>{{colz.label}}</strong></th>
-                                        <th>Count</th>
-                                        <th>Percent</th>
+                                        <th style="border-bottom: white;">Count</th>
+                                        <th style="border-bottom: white;">Percent</th>
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let dat of data;  let i = index"

@@ -1,13 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { MonitorService } from 'src/app/core/services/MonitorService';
 import { MonitorResultComponent } from './result/monitor-result.component';
 import { MonitorSearchComponent } from './search/monitor-search.component';
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { OperationResult } from 'src/app/core/models/OperationResult';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
   selector: 'app-monitor',
@@ -23,12 +19,7 @@ export class MonitorComponent implements OnInit {
   @ViewChild(MonitorResultComponent)
   private monitorResultComponent: MonitorResultComponent;
 
-  constructor(
-    public dateFormatPipe: DateFormatPipe,
-    private authService: AuthenticationService) {
-
-    this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
-  }
+  constructor(public dateFormatPipe: DateFormatPipe) { }
 
   ngOnInit() { }
 

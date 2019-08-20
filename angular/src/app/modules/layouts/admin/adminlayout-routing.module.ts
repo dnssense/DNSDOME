@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminLayoutComponent } from './page/adminlayout.component';
 import { AuthGuard } from 'src/app/core/guards/AuthGuard';
+import { RoleGuard } from 'src/app/core/guards/RoleGuard';
 
 const adminlayoutRoutes: Routes = [
   {
@@ -11,51 +12,94 @@ const adminlayoutRoutes: Routes = [
     children: [
       {
         path: 'dashboard',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
         loadChildren: '../../dashboard/dashboard.module#DashboardModule'
       },
       {
         path: 'reports',
+        canActivate: [RoleGuard], 
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
         loadChildren: '../../reports/reports.module#ReportsModule'
       },
       {
         path: 'devices',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER'
+        },
         loadChildren: '../../devices/devices.module#DevicesModule'
       },
       {
         path: 'publicip',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER'
+        },
         loadChildren: '../../publicip/publicip.module#PublicipModule'
       },
       {
         path: 'profiles',
-        loadChildren:
-          '../../securityprofiles/securityprofiles.module#SecurityProfilesModule'
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER'
+        },
+        loadChildren: '../../securityprofiles/securityprofiles.module#SecurityProfilesModule'
       },
       {
         path: 'accountsettings',
-        loadChildren:
-          '../../accountsettings/accountsettings.module#AccountSettingsModule'
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
+        loadChildren:'../../accountsettings/accountsettings.module#AccountSettingsModule'
       },
       {
         path: 'scheduledreports',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER'
+        },
         loadChildren:
           '../../scheduledreports/scheduledreports.module#ScheduledReportsModule'
       },
       {
         path: 'users',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER'
+        },
         loadChildren: '../../users/users.module#UsersModule'
       },
       {
         path: 'help',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
         loadChildren: '../../help/help.module#HelpModule'
       },
       {
         path: 'roaming',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER'
+        },
         loadChildren: '../../roaming/roaming.module#RoamingModule'
       },
       {
         path: 'tools',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
         loadChildren: '../../tools/tools.module#ToolsModule'
-      }
+      },
+      { path: '**', redirectTo: '', pathMatch: 'full' }
     ]
   }
 ];

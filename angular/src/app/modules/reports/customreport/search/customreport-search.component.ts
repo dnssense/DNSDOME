@@ -241,15 +241,32 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   saveReportFilters() {
-    this.searchSetting.name = this.newSavedReportName;
-    this.reportService.saveReport(this.searchSetting).subscribe(res => {
-      if (res.status == 200) {
-        this.notification.success(res.message);
-        this.reportService.getReportList().subscribe(res => this.savedReports = res);
+    if (this.searchSetting.system == true &&
+      (this.searchSetting.scheduledReport == null || this.searchSetting.scheduledReport.period == null)) {
+      this.notification.warning('System reports can only be saved with a schedule option.');
+      return;
+    }
+
+    if (this.newSavedReportName) {
+      if (this.searchSetting.system && this.searchSetting.system == true) {
+        this.searchSetting.id = -1;
+        this.searchSetting.name = 'Customized-' + this.newSavedReportName;
       } else {
-        this.notification.error(res.message);
+        this.searchSetting.name = this.newSavedReportName;
       }
-    })
+      this.searchSetting.system = false;
+      this.reportService.saveReport(this.searchSetting).subscribe(res => {
+        if (res.status == 200) {
+          this.notification.success(res.message);
+          this.reportService.getReportList().subscribe(res => this.savedReports = res);
+        } else {
+          this.notification.error(res.message);
+        }
+      });
+    } else {
+      this.notification.warning('Please enter a name');
+    }
+
   }
 
   changeScheduledPeriod(p: string) {
@@ -323,94 +340,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       this.columnListLength = 12;
     }
   }
-
-  // public inputChecked(column: LogColumn) {
-  //   if (column.checked) {
-  //     this.selectedColumns.push(column);
-  //   } else {
-  //     for (let a of this.selectedColumns) {
-  //       if (a.name == column.name) {
-  //         let cindex = this.selectedColumns.indexOf(a);
-  //         this.selectedColumns.splice(cindex, 1);
-  //         break;
-  //       }
-  //     }
-  //   }
-  // }
-
-  // public showDatePanel($event) {
-  //   let value = $event.target.value;
-
-  //   if (value == -1 || value.indexOf("-") > -1) {
-  //     if (this.searchSetting.dateInterval.indexOf("-") > 0) {
-  //       let dd = this.searchSetting.dateInterval.split('-');
-  //       this.startDateee = moment(dd[0], "DD.MM.YYYY HH:mm:ss").toDate();
-  //       this.endDateee = moment(dd[1], "DD.MM.YYYY HH:mm:ss").toDate();
-  //     } else {
-  //       let startDate = moment();
-  //       startDate.add(-1, 'day');
-  //       this.startDateee = startDate.toDate();
-  //       this.endDateee = moment().toDate();
-  //     }
-
-  //     this.start_date_pickr = new Flatpickr(this.startDateCal.nativeElement, {
-  //       animate: false,
-  //       allowInput: false,
-  //       enableTime: true,
-  //       defaultDate: this.startDateee,
-  //       maxDate: new Date(),
-  //       dateFormat: "d.m.Y H:i:S",
-  //       time_24hr: true,
-  //       utc: false,
-  //       onValueUpdate: (e, args) => {
-  //         this.startDateee = args;
-  //         //   this.start_date_pickr.toggle();
-  //         //     this.end_date_pickr.toggle();
-  //       }
-  //     });
-  //     //alert(start_date_pickr.selectedDateObj);
-  //     this.end_date_pickr = new Flatpickr(this.endDateCal.nativeElement, {
-  //       animate: false,
-  //       allowInput: false,
-  //       enableTime: true,
-  //       defaultDate: this.endDateee,
-  //       maxDate: new Date(),
-  //       dateFormat: "d.m.Y H:i:S",
-  //       time_24hr: true,
-  //       utc: false,
-  //       onValueUpdate: (e, args) => {
-  //         this.endDateee = args;
-  //         // this.end_date_pickr.toggle();
-  //       }
-  //     });
-  //     this.dateOverlay.show($event);
-  //   } else {
-
-  //     $(this.dateSelect.nativeElement).val(value);
-  //     this.searchSetting.dateInterval = value;
-  //     this.dateOverlay.hide();
-  //   }
-  // }
-
-  // public hideDatePopover() {
-  //   var option = this.customdaterange.nativeElement;
-  //   let startDate = this.startDateee == null ? "" : moment(this.startDateee, 'DD.MM.YYYY HH:mm:ss', true).format("DD.MM.YYYY HH:mm:ss");
-  //   let endDate = this.endDateee == null ? "" : moment(this.endDateee, 'DD.MM.YYYY HH:mm:ss', true).format("DD.MM.YYYY HH:mm:ss");
-  //   let vall = startDate + " - " + endDate;
-  //   this.start_date_pickr.destroy();
-  //   this.end_date_pickr.destroy();
-
-  //   if (vall != ' - ') {
-  //     this.searchSetting.dateInterval = vall;
-  //     option.text = vall;
-  //     option.value = vall;
-  //   } else {
-  //     option.innerHTML = "Custom Range";
-  //     option.value = "-1";
-  //   }
-
-  //   this.dateOverlay.hide();
-  // }
 
   closeCalendarTab(tabId: string) {
     this.selectedTab = tabId;
@@ -537,29 +466,19 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
 
     if (this.currentOperator == 'isoneof' || this.currentOperator == 'isnotoneof') {
       this.isOneOfListItems = [];
+      if (this.currentInput && !this.isOneOfList.includes(this.currentInput)) {
+        this.isOneOfList.push(this.currentInput);
+      }
+
       if (colName == 'category') {
-        //this.mainCategories.forEach(m => this.isOneOfListItems.push(m.categoryName))
-
-        for (let i = 0; i < this.mainCategories.length; i++) {
-          this.isOneOfListItems.push(this.mainCategories[i].categoryName)
-        }
-
+        this.mainCategories.forEach(m => this.isOneOfListItems.push(m.categoryName))
       }
       else if (colName == 'applicationName') {
-        //this.mainApplications.forEach(m => this.isOneOfListItems.push(m.name))
-        for (let i = 0; i < this.mainApplications.length; i++) {
-          this.isOneOfListItems.push(this.mainApplications[i].name)
-        }
+        this.mainApplications.forEach(m => this.isOneOfListItems.push(m.name))
       } else if (colName == 'sourceIpCountryCode' || colName == 'destinationIpCountryCode') {
-        //this.countries.forEach(c => this.isOneOfListItems.push(c.name))
-        for (let i = 0; i < this.countries.length; i++) {
-          this.isOneOfListItems.push(this.countries[i].name)
-        }
+        this.countries.forEach(c => this.isOneOfListItems.push(c.name))
       } else if (colName == 'agentAlias') {
-        //this.agents.forEach(c => this.isOneOfListItems.push(c.agentAlias))
-        for (let i = 0; i < this.agents.length; i++) {
-          this.isOneOfListItems.push(this.agents[i].agentAlias)
-        }
+        this.agents.forEach(c => this.isOneOfListItems.push(c.agentAlias))
       } else if (colName == 'reasonType') {
         this.isOneOfListItems.push('Category');
         this.isOneOfListItems.push('Application');
@@ -571,12 +490,16 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
         this.isOneOfListItems.push('Block');
       }
 
+    } else {
+      if (this.isOneOfList && this.isOneOfList.length > 0) {
+        this.currentInput = this.isOneOfList[0];
+      }
     }
 
   }
 
   addTag($event) {
-
+    debugger
     $event.stopPropagation();
     if (this.editedTag) {
       this.removeTag(this.editedTag, this.editedTagType);
@@ -616,11 +539,10 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       } else {
         this.currentInput = this.isOneOfList.join(',');
       }
-
     }
 
     if (this.currentInput == '') {
-      //this.tagInput.nativeElement.focus();
+      this.notification.warning('Please enter a valid input')
       return;
     }
 
@@ -635,6 +557,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     } else if (this.currentColumn == 'domain' || this.currentColumn == 'subdomain') {
       let result = ValidationService.domainValidation({ value: this.currentInput })
       if (result != true) {
+        this.notification.warning('Please enter a valid domain');
         return;
       }
     }
@@ -817,7 +740,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     this.currentColumn = tag.field;
     this.currentOperator = type;
 
-    if (type == 'isoneof' || (type == 'isnot' && tag.value && tag.value.includes(','))) {
+    if (type == 'isoneof' || (type == 'isnot' && tag.value && tag.value.toString().includes(','))) {
 
       if (this.currentColumn == 'reasonType') {
         tag.value.split(',').forEach(x => {
@@ -858,6 +781,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     $('.filterButton').click(function (e) {
       e.stopPropagation();
     });
+
   }
 
   public removeTag(tag: any, type: string) {
@@ -865,7 +789,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     if (type == 'is') {
       this.searchSetting.must.splice(this.searchSetting.must.findIndex(a => a.field == tag.field && a.value == tag.value), 1);
     } else if (type == 'isnot') {
-      if (tag.value && tag.value.includes(',')) {
+      if (tag.value && tag.value.toString().includes(',')) {
         this.searchSetting.mustnot.splice(this.searchSetting.mustnot.findIndex(a => a.field == tag.field));
         this.searchSettingForHtml.mustnot.splice(this.searchSettingForHtml.mustnot.findIndex(a => a.field == tag.field));
       } else {
@@ -898,18 +822,16 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   addChip(event: MatChipInputEvent): void {
 
     $('#tagsDd').addClass('show');
+
     if (!this.matAutocomplete.isOpen) {
       const input = event.input;
       const val = event.value;
 
       if ((val || '').trim()) {
-
         if (this.currentColumn == 'domain' || this.currentColumn == 'subdomain') {
-
           let result = ValidationService.domainValidation({ value: val });
-          if (result == true) {
+          if (result == true && this.isOneOfList) {
             this.isOneOfList.push(val.trim());
-
           } else {
             this.notification.warning('Please enter a valid item!');
             return;
@@ -925,9 +847,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
           }
 
         } else {
-
           this.isOneOfList.push(val.trim());
-
         }
       }
 

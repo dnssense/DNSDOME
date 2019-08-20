@@ -14,7 +14,6 @@ import { OperationResult } from '../models/OperationResult';
 import { Role, RestRole, RestRight, RestUserRoleRight } from '../models/Role';
 import { Clearance } from '../models/Clearance';
 import { RestPreloginResponse, RestUser } from '../models/RestServiceModels';
-import { restoreView } from '@angular/core/src/render3';
 
 
 @Injectable({
@@ -29,13 +28,13 @@ export class AuthenticationService {
   private refreshTokenUrl = this.loginUrl; // this.configuration.getApiUrl() + '/oauth/refresh_token';
   private userInfo = this.configuration.getApiUrl() + '/user/current';
   private userRole = this.configuration.getApiUrl() + '/user/current/role';
-
   private preloginUrl = this.configuration.getApiUrl() + '/user/prelogin';
 
   currentSession: Session;
   private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
   currentUserPropertiesChanged: Subject<any>;
+
   constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
     private router: Router, private logger: LoggerService) {
 
@@ -44,7 +43,6 @@ export class AuthenticationService {
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
 
   }
-
 
   saveSession() {
 
@@ -69,6 +67,20 @@ export class AuthenticationService {
       this.logout();
     }
 
+  }
+
+  isCurrentSessionValid(): boolean {
+    try {
+      const sessionString = localStorage.getItem(this.STORAGENAME);
+      if (sessionString) {
+        const session: Session = JSON.parse(sessionString);
+        if (session) {
+          return true;
+        }
+      }
+    } catch (err) {
+      return false;
+    }
   }
 
   refreshToken() {
@@ -230,19 +242,6 @@ export class AuthenticationService {
     return this.http.post<any>(this._forgotPasswordChangeURL,
       JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions())
 
-  }
-
-  canActivate(path: string) {
-    this.checkSessionIsValid();
-
-    const adminPages = ['dashboard', 'monitor', 'customreport', 'publicip', 'devices', 'roaming', 'users', 'profiles', 'tools','scheduledreports', 'help'];
-    const userPages = ['dashboard', 'monitor', 'customreport', 'tools', 'help'];
-
-    if (this.currentSession.currentUser.roles.name == 'ROLE_CUSTOMER' && !adminPages.includes(path)) {
-      this.logout();
-    } else if (this.currentSession.currentUser.roles.name == 'ROLE_USER' && !userPages.includes(path)) {
-      this.logout();
-    }
   }
 
 

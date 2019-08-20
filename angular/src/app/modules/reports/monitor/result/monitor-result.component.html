@@ -54,7 +54,7 @@
             <table class="table table-bordered" style="display: table;" id="resultContent" #resultContent>
               <thead>
                 <th class="no-border"></th>
-                <th *ngFor="let col of selectedColumns">{{col.beautyName}}</th>
+                <th style="border-bottom: white;" *ngFor="let col of selectedColumns">{{col.beautyName}}</th>
               </thead>
               <tr *ngFor="let dat of tableData;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
                 <td class="numeration"><small>

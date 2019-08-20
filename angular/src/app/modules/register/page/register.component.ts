@@ -180,7 +180,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.user != null && this.registerForm.dirty
       && this.registerForm.valid && this.user.password === this.user.passwordAgain) {
 
-      this.accountService.signup({ username: this.user.username, password: this.user.password }).subscribe(res => {
+      this.accountService.signup({ username: this.user.username, password: this.user.password, c_answer: this.user.c_answer }).subscribe(res => {
 
         this.notification.success("Registered successfuly, check your email and active your account");
         this.router.navigateByUrl('/login');

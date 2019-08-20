@@ -6,7 +6,6 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { UserService } from 'src/app/core/services/UserService';
 import { Role } from 'src/app/core/models/Role';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 declare var $: any;
 @Component({
@@ -22,9 +21,7 @@ export class UsersComponent implements OnInit {
     roleList: Role[] = [];
 
     constructor(private formBuilder: FormBuilder, private notification: NotificationService,
-        private alert: AlertService, private userService: UserService, private authService: AuthenticationService) {
-
-        this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
+        private alert: AlertService, private userService: UserService) {
 
         this.selectedUser.roles = new Role();
         this.selectedUser.roles.name = 'ROLE_CUSTOMER';

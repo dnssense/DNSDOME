@@ -9,7 +9,6 @@ import { AgentType } from 'src/app/core/models/AgentType';
 import * as introJs from 'intro.js/intro.js';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
-import { Router, ActivationStart, RouterOutlet } from '@angular/router';
 
 declare let $: any;
 
@@ -36,12 +35,9 @@ export class PublicipComponent implements AfterViewInit {
   securityProfiles: SecurityProfile[];
   roleName: string;
   tooltipGuideCounter: number = 0;
-  @ViewChild(RouterOutlet) outlet: RouterOutlet;
 
   constructor(private alertService: AlertService, private notification: NotificationService, private authService: AuthenticationService,
     private formBuilder: FormBuilder, private agentService: AgentService, private publicIpService: PublicIPService) {
-
-    this.authService.canActivate(document.location.href.substring(document.location.href.lastIndexOf("/") + 1));
 
     this.roleName = this.authService.currentSession.currentUser.roles.name;
     this.getPublicIpsDataAndProfiles();
@@ -59,13 +55,6 @@ export class PublicipComponent implements AfterViewInit {
     this.defineNewAgentForProfile();
 
   }
-
-  // ngOnInit(): void {
-  //   this.router.events.subscribe(e => {
-  //     if (e instanceof ActivationStart && e.snapshot.outlet === "publicip")
-  //       this.outlet.deactivate();
-  //   });
-  // }
 
   ngAfterViewInit(): void {
 
@@ -150,7 +139,7 @@ export class PublicipComponent implements AfterViewInit {
 
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
-
+      
       if ((res == null || res.length < 1) && this.roleName != 'ROLE_USER' && this.tooltipGuideCounter < 1) {
         this.showNewIpForm();
         this.openTooltipGuide();
@@ -325,7 +314,7 @@ export class PublicipComponent implements AfterViewInit {
     this.selectedIp.staticSubnetIp = selectedUpdateIp.staticSubnetIp;
     this.selectedIp.isCpEnabled = selectedUpdateIp.isCpEnabled;
     this.selectedIp.logo = selectedUpdateIp.logo;
-    
+
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
 
       for (let i = 1; i < this.selectedIp.staticSubnetIp.length; i++) {
@@ -373,7 +362,7 @@ export class PublicipComponent implements AfterViewInit {
 
     var inputValue = $event.target;
     let file = inputValue.files[0];
-    
+
     if (typeof file == 'undefined' || !file.type.toString().startsWith('image/')) {
       return;
     }
@@ -501,16 +490,13 @@ export class PublicipComponent implements AfterViewInit {
         },
         blockMessage: {
           required: false
-        },
-        ip0: {
-          required: true,
-          minlength: 8
         }
       }
     });
 
     var $valid = $('.publicIpForm').valid();
     if (!$valid) {
+      this.notification.warning("Public Ip form is not valid. Please enter required fields. ")
       $validator.focusInvalid();
       return false;
     }

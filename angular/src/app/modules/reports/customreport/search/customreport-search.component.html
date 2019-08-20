@@ -38,9 +38,9 @@
                                     Reports</span>
                                 <div *ngFor="let r of savedReports">
                                     <button class="dropdown-item" *ngIf="r.system == null || r.system == false"
-                                        (click)="selectSavedReport(r.id)">
+                                        (click)="selectSavedReport(r.id)" title="{{r.name}}">
                                         <div class="row">
-                                            <div class="col-md-10">{{r.name}}</div>
+                                            <div class="col-md-10 btnOverFlow">{{r.name}}</div>
                                             <div class="col-md-2 text-right"><i class="close-btn icon-cancel"
                                                     (click)="deleteSavedReport(r)"></i></div>
                                         </div>
@@ -138,7 +138,7 @@
                                 <div class="dropdown-divider"></div>
                                 <div class="container-fluid">
                                     <div class="row mt-2 mb-3">
-                                        <div class="col-5 mr-auto ml-auto">
+                                        <div class="col-md-5 mr-auto ml-auto">
                                             <span class="dns-dropdown-label" style="padding-left: 0px">Start Date
                                                 Time</span>
                                             <!-- <input type="text" readonly [(ngModel)]="searchStartDate" class="dns-form-control reverse-form "> -->
@@ -147,7 +147,7 @@
                                                 [dateFormat]="'H:i'" [noCalendar]="true" [inline]="true"
                                                 [time24hr]="true">
                                         </div>
-                                        <div class="col-5 mr-auto ml-auto">
+                                        <div class="col-md-5 mr-auto ml-auto">
                                             <span class="dns-dropdown-label" style="padding-left: 0px">End Date
                                                 Time</span>
                                             <input type="text" style="display: none;" mwlFlatpickr
@@ -174,7 +174,7 @@
     </div>
     <div class="dns-base-card-content mt-3">
         <div class="row" style="margin-top: -15px">
-            <div class="col-12">
+            <div class="col-md-12">
                 <div class="dns-datatable-labels">
                     <span *ngFor="let col of _columns; let i = index;">
                         <span class="dns-label" *ngIf="i < columnListLength" [ngClass]="{'dns-active' : col.checked}"
@@ -201,7 +201,7 @@
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col-10">
+            <div class="col-md-10">
                 <button class="btns btn-success size-13 mr-1 mt-1 mb-1 filterButton"
                     *ngFor="let item of searchSetting.must">
                     {{item.field}}, Is, <span style="color: black"><b>{{item.value}}</b></span>
@@ -239,7 +239,7 @@
                     <div class="dropdown-menu" style="width: 600px" id="tagsDd">
                         <div class="container-fluid">
                             <div class="row">
-                                <div class="col-12 col-lg-3 pr-0 mt-2">
+                                <div class="col-md-12 col-lg-3 pr-0 mt-2">
                                     <div class="1dnssense-select light-select full-width">
                                         <select class="filterTags" (change)="changeCurrentColumn(currentColumn)"
                                             [(ngModel)]="currentColumn" [ngModelOptions]="{ standalone: true }">
@@ -248,7 +248,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-12 col-lg-3 pr-0 mt-2">
+                                <div class="col-md-12 col-lg-3 pr-0 mt-2">
                                     <div class="1dnssense-select light-select full-width">
                                         <select class="filterTags" [(ngModel)]="currentOperator"
                                             [ngModelOptions]="{ standalone: true }"
@@ -260,7 +260,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-12 col-lg-6 mt-2">
+                                <div class="col-md-12 col-lg-6 mt-2">
                                     <ng-container
                                         *ngIf="currentOperator=='isoneof' || currentOperator=='isnotoneof'; else elseTemplateofTags">
                                         <!-- <mat-form-field class="example-chip-list"> -->
@@ -291,11 +291,12 @@
                                     <ng-template #elseTemplateofTags>
                                         <div class="input-group" style="width: auto" *ngIf="currentColumn == 'domain'">
                                             <input type="text" [ngModelOptions]="{ standalone: true }"
-                                                [(ngModel)]="currentInput" class=" filterTags" placeholder="Domain">
+                                                (keydown.enter)="addTag($event)" [(ngModel)]="currentInput"
+                                                class=" filterTags" placeholder="Domain">
                                         </div>
                                         <div class="input-group" style="width: auto"
                                             *ngIf="currentColumn == 'subdomain'">
-                                            <input type="text" name="filterValue"
+                                            <input type="text" (keydown.enter)="addTag($event)"
                                                 [ngModelOptions]="{ standalone: true }" [(ngModel)]="currentInput"
                                                 class="filterTags" placeholder="Subdomain">
                                         </div>
@@ -392,7 +393,7 @@
                                     </ng-template>
 
                                 </div>
-                                <div class="col-12 mt-2">
+                                <div class="col-md-12 mt-2">
                                     <button class="btns btn-teritary" (click)="addTag($event)">Apply</button>
                                     <button class="btns btn-clear" (click)="cancelFilterPopup()">Cancel</button>
                                 </div>
@@ -401,7 +402,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2 d-flex align-items-center">
+            <div class="col-md-2 d-flex align-items-center">
                 <div class="dropdown d-inline-block d-flex" id="dropdownFilter">
                     <button class="btn btn-link btn-sm btn-just-icon ml-0 mr-0" (click)="removeAllTags()" type="button"
                         [matTooltipShowDelay]="800" matTooltip="CLEAR ALL FILTERS">
@@ -409,17 +410,17 @@
                     </button>
                     <button class="btn btn-link btn-sm btn-just-icon dropdown-toggle circle-dropdown-btn ml-0 mr-0"
                         type="button" data-toggle="dropdown" [matTooltipShowDelay]="900" matTooltip="SAVE FILTERS"
-                        aria-haspopup="true" aria-expanded="false" >
+                        aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-floppy-o" style="font-size: 20px"></i>
                     </button>
                     <div class="dropdown-menu" style="width: 300px" id="saveReportDiv">
                         <div class="container-fluid">
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-md-12">
                                     <input type="text" class="form-control reverse-form" placeholder="Give a name"
                                         [(ngModel)]="newSavedReportName">
                                 </div>
-                                <div class="col-7 mt-2 d-flex text-center">
+                                <div class="col-md-7 mt-2 d-flex text-center">
                                     <label class="dns-chk-label">
                                         <span>Schedule Daily</span>
                                         <div data-width="30" class="dns-form-switch">
@@ -450,7 +451,7 @@
                                         </div>
                                     </label>
                                 </div>
-                                <div class="col-5 mt-2">
+                                <div class="col-md-5 mt-2">
                                     <button class="btns btn-success pull-right" (click)="saveReportFilters()">
                                         <i class="fa fa-check-circle-o"></i>Save
                                     </button>

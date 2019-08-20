@@ -11,7 +11,7 @@ declare const $: any;
 export class NotificationComponent implements OnInit {
 
   constructor(private notificationService:NotificationService) { 
-    notificationService.getMessage().subscribe(x=>{  
+    this.notificationService.getMessage().subscribe(x=>{  
       if(x && x.type && x.text)
       this.showNotification('top','right',x.type,x.text);
     });

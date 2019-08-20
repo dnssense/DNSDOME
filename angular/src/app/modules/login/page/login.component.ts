@@ -61,8 +61,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   endTime: Date;
   isConfirmTimeEnded: boolean = true;
   maxRequest: number = 3;
-
   host: ConfigHost;
+  isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent)
 
   private smsInformation: RestPreloginSmsResponse;
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,

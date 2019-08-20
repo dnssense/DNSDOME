@@ -14,7 +14,6 @@ export class ErrorInterceptor implements ErrorHandler {
   ) { }
 
   handleError(error: Error | HttpErrorResponse) {
- 
     const notificationService = this.injector.get(NotificationService);
     const spinnerService = this.injector.get(SpinnerService);
     spinnerService.hide();
