@@ -139,6 +139,7 @@ export class PublicipComponent implements AfterViewInit {
 
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
+      console.log(res);
       
       if ((res == null || res.length < 1) && this.roleName != 'ROLE_USER' && this.tooltipGuideCounter < 1) {
         this.showNewIpForm();
@@ -343,7 +344,7 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   hideWizard() {
-    this.alertService.alertWarningAndCancel('Are You Sure?', 'Your Changes will be cancelled!').subscribe(
+    this.alertService.alertWarningAndCancel('Are You Sure?', 'If you made changes, Your Changes will be cancelled!').subscribe(
       res => {
         if (res) {
           this.hideWizardWithoutConfirm();

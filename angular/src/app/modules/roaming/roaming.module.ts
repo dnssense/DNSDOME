@@ -17,7 +17,8 @@ import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.mod
     ReactiveFormsModule,
     CommonModule,
     MaterialModule,
-    RoamingRoutingModule,
+    RoamingRoutingModule,  
+    ProfileWizardModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

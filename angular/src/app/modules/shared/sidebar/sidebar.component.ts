@@ -62,14 +62,14 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: '/admin',
-    title: 'Network',
+    title: 'Deployment',
     type: 'sub',
     icontype: 'wifi_tethering',
     role: 'ROLE_CUSTOMER',
     collapse: 'network',
     children: [
       { path: 'publicip', title: 'Public IP', ab: 'PI' },
-     // { path: 'devices', title: 'Devices', ab: 'LD' },
+      { path: 'devices', title: 'Devices', ab: 'LD' },
       { path: 'roaming', title: 'Roaming Clients', ab: 'RC' }
     ]
   },

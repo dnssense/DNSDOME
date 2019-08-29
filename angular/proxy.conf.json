@@ -1,42 +1,6 @@
 {
-  "/api/monitor/*": {
-    "target": "http://localhost:8181",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/api": ""
-    }
-  },
-  "/api/quick-reports/*": {
-    "target": "http://localhost:8181",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/api": ""
-    }
-  },
-  "/api/custom-reports/*": {
-    "target": "http://localhost:8181",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/api": ""
-    }
-  },
-  "/api/locations/*": {
-    "target": "http://localhost:8181",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/api": ""
-    }
-  },
   "/api/*": {
-    "target": "http://beta.dnssense.com",
+    "target": "https://beta.roksit.com",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

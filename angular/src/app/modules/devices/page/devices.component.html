@@ -1,6 +1,116 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
     <section id="devicePanel" class="devicePanel">
+
+      <form [formGroup]="boxForm" id="newBoxRow" class="boxForm" style="display: none;" data-step="4"
+        data-intro="Finally, save your box and let's start!" data-position='bottom-middle-aligned'>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12 pl-0 pr-0 mb-3">
+              <div class="dns-base-card d-none d-block" id="filterCard">
+                <div class="dns-base-card-header">
+                </div>
+                <div class="dns-base-card-content">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-12 d-flex">
+                        <h4 class="mr-3 flex-1">DNS Relay</h4>
+                        <!-- <button class="btns btn-clear text-right close-btn" (click)="openTooltipGuide()">
+                          <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                        </button> -->
+                        <button class="btns btn-clear text-right close-btn" (click)="hideForm('box')">
+                          <img src="./assets/images/icons/close.svg">
+                        </button>
+                      </div>
+                      <div class="col-12 col-sm-3 d-flex align-items-end">
+                        <input type="text" class="dns-form-control reverse-form" name="boxName" id="boxName"
+                          placeholder="Box Name" [(ngModel)]="selectedBox.host" formControlName="boxName" data-step="1"
+                          data-position='bottom-middle-aligned'
+                          data-intro="This is new box form. Start with a name for your box">
+                      </div>
+                      <div class="col-12 col-sm-3 d-flex flex-column">
+                        <input type="text" class="dns-form-control reverse-form" placeholder="Block Message"
+                          [(ngModel)]="selectedBox.agent.blockMessage" formControlName="blockMessage">
+
+                      </div>
+                      <div class="col-12 col-sm-3 d-flex align-items-end">
+                        <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="3"
+                          data-intro="Select a security profile or create a new profile for this box"
+                          data-position='auto'>
+                          <button class="btns dropdown-toggle dns-full-width reverse-form text-left" type="button"
+                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <ng-container
+                              *ngIf="selectedBox.agent && selectedBox.agent.rootProfile && selectedBox.agent.rootProfile.name; else elseTemplatesp1">
+                              {{selectedBox.agent.rootProfile.name}}
+                            </ng-container>
+                            <ng-template #elseTemplatesp1>
+                              Select Profile
+                            </ng-template>
+                            <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                            <div class="table-responsive" style="max-height: 300px;">
+                              <button class="dropdown-item" *ngFor="let p of securityProfiles"
+                                (click)="securityProfileChanged('box', p.id)">
+                                {{p.name}}
+                              </button>
+                            </div>
+
+                            <div class="dropdown-divider"></div>
+                            <button class="btns btn-teritary dropdown-item-btn border-radius-8 dns-full-width m-2"
+                              (click)="showNewProfileWizardForBox()">
+                              <img src="./assets/images/icons/settings.svg">
+                              <span class="ml-2">New Profile</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12 col-sm-3 d-flex align-items-end">
+
+                        <button class="btns reverse-form dns-full-width" id="defaultSaveBtn"
+                          matTooltip="Save with selected profile" [matTooltipShowDelay]="800"
+                          [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
+                          (click)="saveBox()">
+                          <i class="fa fa-save"></i> <span class="ml-2">Save</span>
+                        </button>
+
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-md-3">
+                        <label class="dns-checkbox">
+                          <ng-container *ngIf="selectedBox.agent.isCpEnabled; else elseTemplate13">
+                            <input type="checkbox" checked (change)="changeBoxCPStatus()">
+                          </ng-container>
+                          <ng-template #elseTemplate13>
+                            <input type="checkbox" (change)="changeBoxCPStatus()">
+                          </ng-template>
+                          <span>Is Captive Portal Enabled
+                            <button class="btn btn-clear p-0 m-0" data-toggle="tooltip" data-placement="top"
+                              title="Enable or Disable Captive Portal">
+                              <i class="fa fa-question-circle ml-3"></i>
+                            </button>
+                          </span>
+                        </label>
+                      </div>
+                      <div class="col-md-3">
+                        <input *ngIf="selectedBox.agent?.isCpEnabled" type="text" class="dns-form-control reverse-form"
+                          placeholder="Captive Portal Ip" [(ngModel)]="selectedBox.agent.captivePortalIp"
+                          (keydown)="checkIPNumber($event, selectedBox.agent.captivePortalIp)"
+                          formControlName="captivePortalIp">
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
           <div class="dns-base-card mt-1">
@@ -8,30 +118,60 @@
               <span>DNS Relays</span>
             </div>
             <div class="dns-base-card-content">
-              <div class="table-responsive" style="max-height:250px; min-height: 200px;">
+              <div class="table-responsive" style="max-height:600px; min-height: 200px;">
                 <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
                   <thead>
                     <tr>
                       <th class="no-border"></th>
                       <th style="border-bottom: white;">Relay Name</th>
                       <th style="border-bottom: white;">Security Profile</th>
-                      <th style="border-bottom: white;">Is Captive Portal</th>
                       <th style="border-bottom: white;">Is CP Enabled</th>
+                      <th style="border-bottom: white;">Captive Portal IP</th>
                       <!-- <th style="border-bottom: white;">Message</th> -->
                       <th class="text-center" style="border-bottom: white;">Operation</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let b of boxAgents; let i = index;">
+                    <tr *ngFor="let b of boxes; let i = index;">
                       <td class="numeration">{{i+1}}</td>
-                      <td><small>{{b.agentAlias}}</small></td>
+                      <td><small>{{b.host}}</small></td>
                       <td> <button class="btns btn-clear btnOverFlow profileBtn text-left" [matTooltipShowDelay]="800"
-                          matTooltip="Edit Profile" (click)="showProfileEditWizard(pi.id)">
+                          matTooltip="Edit Profile" (click)="showNewProfileEditWizardForBox(b.id)">
                           <img src="./assets/images/icons/settings-outline.svg">
-                          <small>{{b.rootProfile?b.rootProfile.name:"No Profile!"}}</small>
+                          <small>
+                            <ng-container *ngIf="b.agent; else elseTemplate221">
+                              <ng-container *ngIf="b.agent.rootProfile; else elseTemplate123">
+                                {{b.agent.rootProfile?.name}}
+                              </ng-container>
+                              <ng-template #elseTemplate123>
+                                No Profile!
+                              </ng-template>
+                            </ng-container>
+                            <ng-template #elseTemplate221>
+                              No Agent!
+                            </ng-template>
+                          </small>
                         </button></td>
-                      <td>{{b.captivePortalIp}}</td>
-                      <td>{{b.isCpEnabled}}</td>
+                      <td>
+                        <ng-container *ngIf="b.agent?.isCpEnabled; else elseTemplate11">
+                          <button class="btns btn-clear">
+                            <img src="./assets/images/icons/checkbox.svg" title="Enabled">
+                          </button>
+                        </ng-container>
+                        <ng-template #elseTemplate11>
+                          <button class="btns btn-clear">
+                            <img src="./assets/images/icons/close.svg" title="Disabled">
+                          </button>
+                        </ng-template>
+                      </td>
+                      <td>
+                        <ng-container *ngIf="b.agent?.captivePortalIp; else elseTemplate2">
+                          {{b.agent?.captivePortalIp}}
+                        </ng-container>
+                        <ng-template #elseTemplate2>
+                          -
+                        </ng-template>
+                      </td>
                       <!-- <td>{{b?.blockMessage?b.blockMessage:"---"}}</td> -->
                       <td class="text-center">
                         <button class="btns btn-clear" [matTooltipShowDelay]="800" matTooltip="Edit item"
@@ -51,7 +191,7 @@
           </div>
         </div>
       </div>
-      <div class="row mt-2">
+      <!-- <div class="row mt-2">
         <div class="col-md-6 ml-auto mr-auto">
           <div class="dns-base-card mt-1">
             <div class="dns-base-card-header pt-3 mb-2">
@@ -135,41 +275,19 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </section>
-    <section id="wizardPanel" class="wizardPanel" style="display: none;" *ngIf="device">
+    <section id="wizardPanel" class="wizardPanel" style="display: none;">
       <div class="row">
         <div class="col-md-12">
           <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
             <i class="material-icons">arrow_back</i>
           </button>
-          <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard"
-            (saveEmitter)="hideWizardWithoutConfirm();">
+          <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard" [selectedBox]="selectedBox"
+            [saveMode]="saveMode" (saveEmitter)="hideWizardWithoutConfirm();">
           </app-profile-wizard>
         </div>
       </div>
     </section>
   </div>
 </div>
-<style>
-  /* width */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #eee;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: rgb(187, 187, 187);
-    border-radius: 9px;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #888888;
-  }
-</style>

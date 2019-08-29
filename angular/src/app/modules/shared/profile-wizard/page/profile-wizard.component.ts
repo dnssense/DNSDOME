@@ -9,6 +9,9 @@ import { SecurityProfile, BlackWhiteListProfile, SecurityProfileItem } from 'src
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AlertService } from 'src/app/core/services/alert.service';
+import { RoamingService } from 'src/app/core/services/roaming.service';
+import { Box } from 'src/app/core/models/Box';
+import { BoxService } from 'src/app/core/services/box.service';
 
 declare var $: any;
 
@@ -35,6 +38,7 @@ export class ProfileWizardComponent {
   whiteListItem: string;
   categoryList: categoryItem[] = [];
   applicationList: applicationItem[] = [];
+  public _selectedBox: Box;
   public _selectedAgent: Agent;
   public _startWizard: boolean;
   public _saveMode: string;
@@ -53,6 +57,13 @@ export class ProfileWizardComponent {
     return this._selectedAgent;
   }
 
+  @Input() set selectedBox(value: Box) {
+    this._selectedBox = value;
+  }
+  get selectedBox(): Box {
+    return this._selectedBox;
+  }
+
   @Input() set startWizard(value: boolean) {
     this._startWizard = value;
     if (value) {
@@ -69,8 +80,8 @@ export class ProfileWizardComponent {
 
   @Output() public saveEmitter = new EventEmitter();
 
-  constructor(private notification: NotificationService, private alertService: AlertService,
-    private staticService: StaticService, private agentService: AgentService) {
+  constructor(private notification: NotificationService, private alertService: AlertService, private staticService: StaticService,
+    private agentService: AgentService, private roamingService: RoamingService, private boxService: BoxService) {
 
     this.getCategoriesAndApps();
 
@@ -122,7 +133,8 @@ export class ProfileWizardComponent {
       this.selectedAgent.rootProfile.applicationProfile.categories.forEach(x => {
         this.applicationList.find(y => y.application.id == x.id).isBlocked = x.isBlocked;
       });
-    } else if (this.saveMode == 'NewProfileWithAgent') {
+    } else if (this.saveMode == 'NewProfileWithAgent' || this.saveMode == 'NewProfileWithRoaming' ||
+      this.saveMode == 'NewProfileWithBox') {
 
       this.categoryList.forEach(c => {
         if (c.category.isVisible) {
@@ -203,6 +215,27 @@ export class ProfileWizardComponent {
                 this.notification.error(res.message)
               }
             });
+          } else if (this.saveMode == 'NewProfileWithRoaming') {
+            this.roamingService.saveClient(this.selectedAgent).subscribe(res => {
+              if (res.status == 200) {
+                this.notification.success(res.message)
+                this.saveEmitter.emit();
+              } else {
+                this.notification.error(res.message)
+              }
+            });
+          } else if (this.saveMode == 'NewProfileWithBox') {
+            this.selectedBox.agent = this.selectedAgent;
+            this.boxService.saveBox(this.selectedBox).subscribe(res => {
+              if (res.status == 200) {
+                this.notification.success(res.message)
+                this.saveEmitter.emit();
+              } else {
+                this.notification.error(res.message)
+              }
+
+            })
+
           }
         }
       }
@@ -309,7 +342,7 @@ export class ProfileWizardComponent {
   }
 
   controlStep() {
-
+    debugger
     let prevButton = $('#prevBtn');
     let nextButton = $('#nextBtn');
     let finishButton = $('#finishBtn');
@@ -319,10 +352,16 @@ export class ProfileWizardComponent {
       applications = $('#applications'),
       blackWhiteLists = $('#blackWhiteLists');
 
+    prevButton.hide();
+    nextButton.hide();
+    finishButton.hide();
+
     if (this.currentStep === 0) {
       prevButton.hide();
+      nextButton.show();
       finishButton.hide();
     } else if (this.currentStep === 3) {
+      prevButton.show();
       nextButton.hide();
       finishButton.show();
     } else {

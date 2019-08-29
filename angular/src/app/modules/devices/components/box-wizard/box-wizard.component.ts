@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Box } from 'src/app/core/models/Box';
-import { BoxService } from 'src/app/core/services/BoxService';
 import { DomainProfile } from 'src/app/core/models/DomainProfile';
 import { ApplicationProfilesService } from 'src/app/core/services/ApplicationProfilesService';
 import { DomainProfilesService } from 'src/app/core/services/DomainProfilesService';
@@ -10,6 +9,7 @@ import { ApplicationProfile } from 'src/app/core/models/ApplicationProfile';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { log } from 'util';
+import { BoxService } from 'src/app/core/services/box.service';
 
 declare var $: any;
 
@@ -199,7 +199,7 @@ export class BoxWizardComponent implements OnInit {
     }
     this.selectedBox.ipAddress = this.etvIp;
 
-    this.boxService.save(this.selectedBox).subscribe(res => {
+    this.boxService.saveBox(this.selectedBox).subscribe(res => {
       if (res.status == 200) {
         this.notification.success(res.message);
         this.saveEmitter.emit();
