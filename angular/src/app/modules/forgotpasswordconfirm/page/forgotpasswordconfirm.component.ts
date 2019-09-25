@@ -42,9 +42,8 @@ export class ForgotPasswordConfirmComponent implements OnInit, OnDestroy {
   private forgotId: string;
   public captcha_key: string;
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
-  /**
-   *
-   */
+  matcher = new MyErrorStateMatcher(); 
+
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
     private element: ElementRef, private notification: NotificationService,
     private smsService: SmsService, private capthaService: CaptchaService, private route: ActivatedRoute, private configService: ConfigService) {

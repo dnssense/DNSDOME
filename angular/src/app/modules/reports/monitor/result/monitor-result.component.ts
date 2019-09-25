@@ -6,6 +6,7 @@ import { LogColumn } from 'src/app/core/models/LogColumn';
 import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
 import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
+import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
 
 
 
@@ -13,7 +14,7 @@ import { PdfService } from 'src/app/core/services/PdfService';
   selector: 'app-monitor-result',
   templateUrl: 'monitor-result.component.html',
   styleUrls: ['monitor-result.component.css'],
-  providers: [CountryPipe]
+  providers: [CountryPipe, MacAddressFormatterPipe]
 })
 export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy {
   public totalItems: number = 0;

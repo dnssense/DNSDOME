@@ -21,7 +21,7 @@
                                         x-placement="top-start" style="min-width: 120px !important;">
                                         <button class="dropdown-item" (click)="exportAs('xlsx')">
                                             <i class="fa fa-table mr-3"></i> Excel
-                                        </button> 
+                                        </button>
                                         <button class="dropdown-item" (click)="exportAs('pdf')">
                                             <i class="fa  fa-file-pdf-o mr-3"></i> PDF
                                         </button>
@@ -48,11 +48,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
+                            <div class="table-responsive col-md-12">
                                 <table #tableDivComponent id="table-data" class="table table-bordered">
                                     <thead>
                                         <th class="no-border"></th>
-                                        <th style="border-bottom: white;" *ngFor="let colz of selectedColumns">
+                                        <th nowrap style="border-bottom: white;" *ngFor="let colz of selectedColumns">
                                             <strong>{{colz.label}}</strong></th>
                                         <th style="border-bottom: white;">Count</th>
                                         <th style="border-bottom: white;">Percent</th>
@@ -61,16 +61,16 @@
                                         <tr *ngFor="let dat of data;  let i = index"
                                             [ngClass]="{'baseTableRow': i%2==0}">
                                             <td class="numeration">{{i+1}}</td>
-                                            <td *ngFor="let col of selectedColumns; let inde=index">
-                                                <a *ngIf="col.column.name == 'action'">
-                                                    <app-customreport-result-column
-                                                        [value]="dat[inde]== 'false' ? false:true"
+                                            <td nowrap *ngFor="let col of selectedColumns; let inde=index">
+                                                <a *ngIf="col.column.name!='action'">
+                                                    <app-customreport-result-column [value]="dat[inde]"
                                                         [columnName]="col.column.name"
                                                         (addColumnValueEmitter)="addValuesIntoSelected($event)">
                                                     </app-customreport-result-column>
                                                 </a>
-                                                <a *ngIf="col.column.name!='action'">
-                                                    <app-customreport-result-column [value]="dat[inde]"
+                                                <a *ngIf="col.column.name == 'action'">
+                                                    <app-customreport-result-column
+                                                        [value]="dat[inde]== 'false' ? false:true"
                                                         [columnName]="col.column.name"
                                                         (addColumnValueEmitter)="addValuesIntoSelected($event)">
                                                     </app-customreport-result-column>

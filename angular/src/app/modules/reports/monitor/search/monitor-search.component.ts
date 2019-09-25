@@ -422,7 +422,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   addTag($event) {
-    debugger
+    
     $event.stopPropagation();
     if (this.editedTag) {
       this.removeTag(this.editedTag, this.editedTagType);

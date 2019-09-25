@@ -140,7 +140,7 @@ export class PublicipComponent implements AfterViewInit {
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
       console.log(res);
-      
+
       if ((res == null || res.length < 1) && this.roleName != 'ROLE_USER' && this.tooltipGuideCounter < 1) {
         this.showNewIpForm();
         this.openTooltipGuide();
@@ -275,7 +275,7 @@ export class PublicipComponent implements AfterViewInit {
     this.selectedIp.logo = null;
     this.selectedIp.staticSubnetIp = [];
     let ip0 = {} as IpWithMask;
-    ip0.mask = 0;
+    ip0.mask = 32;
     this.selectedIp.staticSubnetIp.push(ip0)
 
     if (this.publicIps == null || this.publicIps.length < 1) {
@@ -435,7 +435,9 @@ export class PublicipComponent implements AfterViewInit {
 
   addIpRangeToList() {
     if (this.selectedIp.staticSubnetIp.length < 10) {
-      this.selectedIp.staticSubnetIp.push({} as IpWithMask);
+      let ip0 = {} as IpWithMask;
+      ip0.mask = 32;
+      this.selectedIp.staticSubnetIp.push(ip0);
       const cname = 'ip' + (this.selectedIp.staticSubnetIp.length - 1);
       this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
       this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]);

@@ -64,12 +64,6 @@
               "node_modules/jqvmap/dist/maps/jquery.vmap.world.js",
               "node_modules/jquery-validation/dist/jquery.validate.min.js",
               "node_modules/gridstack/dist/gridstack.js",
-              "src/assets/js/highcharts/highcharts.js",
-              "src/assets/js/highcharts/highcharts-more.js",
-              "src/assets/js/highcharts/modules/map.js",
-              "src/assets/js/highcharts/modules/exporting.js",
-              "src/assets/js/world.js",
-              "src/assets/js/tr-all.js",
               "node_modules/flatpickr/dist/flatpickr.min.js",
               "node_modules/webui-popover/dist/jquery.webui-popover.min.js",
               "node_modules/select2/dist/js/select2.full.min.js",
@@ -165,8 +159,6 @@
               "node_modules/jqvmap/dist/maps/jquery.vmap.world.js",
               "node_modules/jquery-validation/dist/jquery.validate.min.js",
               "node_modules/gridstack/dist/gridstack.js",
-              "node_modules/highcharts/js/highcharts.js",
-              "node_modules/highcharts/js/modules/exporting.js",
               "node_modules/flatpickr/dist/flatpickr.min.js"
             ],
             "assets": [

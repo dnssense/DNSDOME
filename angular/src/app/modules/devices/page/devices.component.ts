@@ -41,6 +41,7 @@ export class DevicesComponent implements OnInit {
     securityProfiles: SecurityProfile[] = [];
     startWizard: boolean;
     saveMode: String;
+    isNewItemUpdated: boolean = true;
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService,
         private boxService: BoxService, private notification: NotificationService) {

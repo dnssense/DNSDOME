@@ -18,7 +18,7 @@
               <div class="row">
                 <div class="col-md-6 ml-auto mr-auto d-flex">
                   <input type="text" id="domain" class="dns-form-control input-reverse" placeholder="Enter domain"
-                    [(ngModel)]="domain" (ngModelChange)="checkDomain(domain)" formControlName="domain">
+                    [(ngModel)]="domain" (ngModelChange)="checkDomain()" formControlName="domain">
                   <button class="btns btn-teritary pl-3 pr-3 pull-right ml-2" (click)="searchCategory()"
                     [disabled]="!isDomain">Search
                   </button>

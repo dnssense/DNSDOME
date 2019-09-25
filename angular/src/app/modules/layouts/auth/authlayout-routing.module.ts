@@ -12,6 +12,9 @@ const authlayoutRoutes: Routes = [
     children: [{
       path: 'login',
       loadChildren: '../../login/login.module#LoginModule'
+    },{
+      path: 'cytelogin',
+      loadChildren: '../../cytelogin/cytelogin.module#CyteLoginModule'
     }, {
       path: 'register',
       loadChildren: '../../register/register.module#RegisterModule'

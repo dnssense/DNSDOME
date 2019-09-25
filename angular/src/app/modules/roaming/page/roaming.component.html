@@ -76,8 +76,7 @@
                       </div>
                       <div class="col-12 col-sm-3 d-flex align-items-end">
                         <button class="btns reverse-form dns-full-width" id="defaultSaveBtn"
-                           matTooltip="Save with selected profile"
-                          [matTooltipShowDelay]="800"
+                          matTooltip="Save with selected profile" [matTooltipShowDelay]="800"
                           [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
                           (click)="saveClient()">
                           <i class="fa fa-save"></i> <span class="ml-2">Save</span>
@@ -112,8 +111,8 @@
                     <input type="text" class="dns-form-control reverse-form" placeholder="Search by name"
                       [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword()" />
                   </div>
-                  <div class="dns-datatable-pagination ml-3 flex-1">
-                    <button class="btns btn-clear pull-right" matTooltip="Copy download link"
+                  <div class="dns-datatable-pagination ml-3 flex-1"> 
+                    <button class="btns btn-clear pull-right" id="copyLink" matTooltip="Copy download link"
                       [matTooltipShowDelay]="800" (click)="copyLink()">
                       <img src="./assets/images/icons/copy.png">
                     </button>

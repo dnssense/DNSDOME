@@ -50,19 +50,20 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12">
+          <div class="table-responsive col-md-12">
             <table class="table table-bordered" style="display: table;" id="resultContent" #resultContent>
               <thead>
                 <th class="no-border"></th>
-                <th style="border-bottom: white;" *ngFor="let col of selectedColumns">{{col.beautyName}}</th>
+                <th nowrap style="border-bottom: white;" *ngFor="let col of selectedColumns">{{col.beautyName}}</th>
               </thead>
-              <tr *ngFor="let dat of tableData;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
+              <tr  *ngFor="let dat of tableData;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
                 <td class="numeration"><small>
                     {{((this.currentPage-1)*searchSetting.topNumber)==0?i+1:((this.currentPage-1)*searchSetting.topNumber)+(i+1)}}
                   </small></td>
-                <td *ngFor="let colName of selectedColumns"><small>
-                    <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])" *ngIf="(colName.name!= 'sourceIpCountryCode' && colName.name!='destinationIpCountryCode' && colName.name!='action'
-                   && colName.name!='category' && colName.name!='applicationName' )">
+                <td nowrap *ngFor="let colName of selectedColumns"><small>
+                    <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
+                      *ngIf="(colName.name!= 'sourceIpCountryCode' && colName.name!='destinationIpCountryCode' && colName.name!='action'
+                   && colName.name!='category' && colName.name!='applicationName' && colName.name != 'clientMacAddress' )">
                       <app-text-limit [text]="colName.name == 'time'?(dat[colName.name]| dateFormat):dat[colName.name]"
                         [limit]="colName.name == 'domain'|| colName.name=='subdomain'?100:40"></app-text-limit>
                     </a>
@@ -76,10 +77,14 @@
                       {{dat[colName.name]? "Allow":"Block"}}
                     </a>
                     <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
+                      *ngIf="colName.name== 'clientMacAddress'">
+                      {{dat[colName.name] | MacAddressFormatterPipe}}
+                    </a>
+                    <a (click)="addColumnValueIntoSelectedValues(colName.name,dat[colName.name])"
                       *ngIf="(colName.name== 'applicationName' )">
                       {{dat[colName.name]}}
                     </a>
-                    <ul *ngIf="(colName.name== 'category' )" style="list-style: none;">
+                    <ul class="mb-0" *ngIf="(colName.name== 'category' )" style="list-style: none;">
                       <li *ngFor="let ca of dat[colName.name]">
                         <a (click)="addColumnValueIntoSelectedValues(colName.name,ca)">
                           {{ca}}

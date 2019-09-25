@@ -3,7 +3,7 @@
 
     <section id="publicIpPanel" class="publicIpPanel">
 
-      <form [formGroup]="publicIpForm" class="publicIpForm" id="newIpRow" style="display: none;" data-step="4"
+      <form [formGroup]="publicIpForm" class="publicIpForm" id="newIpRow" style="display: none;" data-step="5"
         data-intro="Finally, save your agent and let's start!" data-position='bottom-middle-aligned'>
         <div class="container-fluid">
           <div class="row">
@@ -16,21 +16,25 @@
                     <div class="row" id="pi_add_filter">
                       <div class="col-12 d-flex">
                         <h4 class="mr-3 flex-1">Public IP </h4>
-                        <button class="btns btn-clear text-right close-btn" (click)="openTooltipGuide()">
-                          <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                        <button class="btns btn-clear text-right close-btn" (click)="openTooltipGuide()"
+                          title="Start Form Guide">
+                          <i class="fa fa-lightbulb-o" style="color: orange;" aria-hidden="true"></i>
                         </button>
-                        <button class="btns btn-clear text-right close-btn" (click)="hideNewWizard()">
+                        <button class="btns btn-clear text-right close-btn" (click)="hideNewWizard()"
+                          title="Close Form">
                           <img src="./assets/images/icons/close.svg">
                         </button>
                       </div>
                       <div class="col-12 col-sm-3 d-flex align-items-end">
                         <input type="text" class="dns-form-control reverse-form" name="agentName" id="agentName"
                           placeholder="Public IP/Agent Name" [(ngModel)]="selectedIp.agentAlias"
-                          formControlName="agentName" data-step="1" data-position='bottom-middle-aligned'
-                          data-intro="This is new agent form. Start with a name for your agent">
+                          formControlName="agentName" data-step="2" data-position='bottom-middle-aligned'
+                          data-intro="Enter a name for your agent">
                       </div>
                       <div class="col-12 col-sm-3 d-flex flex-column">
-                        <div class="flex-1">
+                        <div class="flex-1" data-step="1"
+                          data-intro="This is new agent form. Start with selecting IP type of your agent"
+                          data-position='auto'>
                           <div class="dns-radio">
                             <input id="IpType1" name="ipType" type="radio" value="staticIp" [(ngModel)]="ipType"
                               (click)="onSelectionChangeIPType('staticIp')" formControlName="ipType">
@@ -42,7 +46,7 @@
                             <label for="IpType2">Dynamic IP</label>
                           </div>
                         </div>
-                        <div class="flex-1 d-flex flex-column" data-step="2"
+                        <div class="flex-1 d-flex flex-column" data-step="3"
                           data-intro="Enter related IP address and Mask or Dynamic Ip (System may enter automatically your IP for first agent)"
                           data-position='auto'>
                           <ng-container *ngIf="ipType=='dynamicIp'; else elseTemplateIpType">
@@ -85,7 +89,7 @@
                         </div>
                       </div>
                       <div class="col-12 col-sm-3 d-flex align-items-end">
-                        <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="3"
+                        <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="4"
                           data-intro="Select a security profile or create a new profile for this agent"
                           data-position='auto'>
                           <button class="btns dropdown-toggle dns-full-width reverse-form text-left" type="button"

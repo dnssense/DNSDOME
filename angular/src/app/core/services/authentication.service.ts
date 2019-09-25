@@ -26,8 +26,8 @@ export class AuthenticationService {
   private _forgotPasswordChangeURL = this.configuration.getApiUrl() + '/user/forgot/password/confirm';
   private loginUrl = this.configuration.getApiUrl() + '/oauth/token';
   private refreshTokenUrl = this.loginUrl; // this.configuration.getApiUrl() + '/oauth/refresh_token';
-  private userInfo = this.configuration.getApiUrl() + '/user/current';
-  private userRole = this.configuration.getApiUrl() + '/user/current/role';
+  private userInfoUrl = this.configuration.getApiUrl() + '/user/current';
+  private userRoleUrl = this.configuration.getApiUrl() + '/user/current/role';
   private preloginUrl = this.configuration.getApiUrl() + '/user/prelogin';
 
   currentSession: Session;
@@ -120,7 +120,7 @@ export class AuthenticationService {
 
   getCurrentUserRoles(): Observable<Session> {
 
-    return this.http.get<RestUserRoleRight>(this.userRole).pipe(map((x: RestUserRoleRight) => {
+    return this.http.get<RestUserRoleRight>(this.userRoleUrl).pipe(map((x: RestUserRoleRight) => {
       // TODO: buranın ciddi sorunları var.
       x.roles.forEach((y: RestRole) => {
         const role = new Role();
@@ -146,7 +146,7 @@ export class AuthenticationService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
-    return this.http.get<RestUser>(this.userInfo, options)
+    return this.http.get<RestUser>(this.userInfoUrl, options)
       .pipe(
         mergeMap((res: RestUser) => {
 
@@ -220,6 +220,18 @@ export class AuthenticationService {
         this.currentSession = null;
         throw err;
       }));
+  }
+
+  loginWithToken(token: string, refToken: string): Observable<Session> {
+    if (token && refToken) {
+      this.currentSession = new Session();
+      this.currentSession.token = token;
+      this.currentSession.refreshToken = refToken;
+      return this.getCurrentUser();
+    }
+    
+    return null;
+
   }
 
   clear() {

@@ -31,7 +31,7 @@ export class RoamingComponent {
     startWizard: boolean = false;
     constructor(private formBuilder: FormBuilder, private agentService: AgentService, private alertService: AlertService,
         private notification: NotificationService, private roamingService: RoamingService) {
-        debugger
+
         this.clients = [];
 
         this.loadClients();
@@ -78,7 +78,7 @@ export class RoamingComponent {
 
     openTooltipGuide() {
         introJs().start();
-    }
+    } 
 
     showForm() {
         $('#newClientRow').slideDown(300);

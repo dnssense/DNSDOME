@@ -342,7 +342,7 @@ export class ProfileWizardComponent {
   }
 
   controlStep() {
-    debugger
+
     let prevButton = $('#prevBtn');
     let nextButton = $('#nextBtn');
     let finishButton = $('#finishBtn');

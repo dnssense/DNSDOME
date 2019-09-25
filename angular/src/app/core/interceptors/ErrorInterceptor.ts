@@ -28,11 +28,13 @@ export class ErrorInterceptor implements ErrorHandler {
         if (error.error.code) {
           let message = translatorService.translate(error.error.code);
           console.log(`${status} - ${message}`);
-          notificationService.error(`${message}`);
+          if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
+            notificationService.error(`${message}`);
+          }
         } else {
           let message = translatorService.translate(error.statusText);
           notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
-          console.log(`${status} - ${message}`);           
+          console.log(`${status} - ${message}`);
         }
       }
     } else {

@@ -1,7 +1,7 @@
 @echo off
 set /p version="Enter version: "
 cd angular
-call npm run build
+call npm run build-prod
 cd..
 docker build -t ui.dnssense .
 docker tag ui.dnssense registry.sea.net/dnssense/ui.dnssense:%version%

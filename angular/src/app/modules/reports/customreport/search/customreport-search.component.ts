@@ -499,7 +499,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   addTag($event) {
-    debugger
+    
     $event.stopPropagation();
     if (this.editedTag) {
       this.removeTag(this.editedTag, this.editedTagType);

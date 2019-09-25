@@ -1,5 +1,6 @@
 import { OnInit, OnDestroy, Component, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
+import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
 
 @Component({
   selector: 'app-customreport-result-column',
@@ -18,7 +19,8 @@ export class CustomReportResultColumnComponent implements OnInit {
   constructor(private countryPipe: CountryPipe) { }
 
   ngOnInit(): void {
-    if (this.columnName != 'sourceIpCountryCode' && this.columnName != 'destinationIpCountryCode' && this.columnName != 'action') {
+    if (this.columnName != 'sourceIpCountryCode' && this.columnName != 'destinationIpCountryCode'
+      && this.columnName != 'action' && this.columnName != 'clientMacAddress') {
       this.data = this.value;
     } else if (this.columnName == 'sourceIpCountryCode' || this.columnName == 'destinationIpCountryCode') {
       if (this.value != null) {
@@ -34,6 +36,8 @@ export class CustomReportResultColumnComponent implements OnInit {
       }
     } else if (this.columnName == 'action') {
       this.data = this.value == true ? "Allow" : "Block";
+    } else if (this.columnName == 'clientMacAddress') {
+      this.data = this.value == null ? null : this.value.match(/.{1,2}/g).join(':');
     }
   }
 
