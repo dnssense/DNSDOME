@@ -22,6 +22,7 @@ import { Location } from 'src/app/core/models/Location';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { ReportService } from 'src/app/core/services/ReportService';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
+import { RoamingService } from 'src/app/core/services/roaming.service';
 
 
 declare var $: any;
@@ -85,7 +86,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
   constructor(private fastReportService: FastReportService, private locationsService: LocationsService, private datePipe: DatePipe,
     private customReportService: CustomReportService, private notification: NotificationService, private alertService: AlertService,
-    private reportService: ReportService) {
+    private reportService: ReportService, private roamingService: RoamingService) {
 
     this.reportService.getReportList().subscribe(res => {
       this.savedReports = res;
@@ -158,8 +159,26 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     });
 
-    this.locationsService.getLocations().takeUntil(this.ngUnsubscribe).subscribe((res: Location[]) => {
+    this.locationsService.getLocations().subscribe((res: Location[]) => {
       this.agents = res;
+    });
+
+    this.roamingService.getClients().subscribe(res => {
+      res.forEach(r =>
+        this.agents.push(
+          {
+            agentAlias: r.agentAlias,
+            id: 0,
+            user: null,
+            profile: null,
+            bwList: null,
+            agentIpGroups: null,
+            appUserProfile: null,
+            blockMessage: null,
+            blockip: null,
+            etvUser: null,
+            logo: null
+          }));
     });
 
     // $(document).on('click', '.dropdown', function (e) {
@@ -422,7 +441,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   addTag($event) {
-    
+
     $event.stopPropagation();
     if (this.editedTag) {
       this.removeTag(this.editedTag, this.editedTagType);
@@ -831,7 +850,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
   checkIPNumber(event: KeyboardEvent, inputValue: string) {
 
-    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", "."];
+    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", ".","Tab"];
     let isValid: boolean = false;
 
     for (let i = 0; i < allowedChars.length; i++) {

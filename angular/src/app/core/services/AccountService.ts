@@ -1,43 +1,31 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { User } from '../models/User';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OperationResult } from '../models/OperationResult';
 import { ConfigService } from './config.service';
-import { SignupBean, RegisterUser } from '../models/SignupBean';
-
-import { RestUser, RestUserUpdateRequest, RestEmptyResponse } from '../models/RestServiceModels';
-
-import { catchError, delay, map, mergeMap } from 'rxjs/operators';
-import { of, from } from 'rxjs';
+import { RegisterUser } from '../models/SignupBean';
+import { RestUserUpdateRequest, RestEmptyResponse } from '../models/RestServiceModels';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { countries } from 'countries-list';
 import { geoLocation, GeoLocation } from 'src/app/shared/geoLocation';
-import { NullTemplateVisitor } from '@angular/compiler';
-import { httpFactory } from '@angular/http/src/http_module';
 
-
-/**
- * Created by fatih on 02.08.2016.
- */
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
 
-
   private _signupURL = this.config.getApiUrl() + '/user';
   private _accountActiveURL = this.config.getApiUrl() + '/user/confirm';
   private _updateAccountURL = this.config.getApiUrl() + '/user/current';
   private _savePasswordURL = this.config.getApiUrl() + '/user/current';
-  private _savePersonalSettingURL = this.config.getApiUrl() + '/services/account/savePersonalSetting';
   /*   private _currentUserURL = this.config.getApiUrl() + '/user/current';
     private _currentUserRightsURL = this.config.getApiUrl() + '/user/current/role'; */
 
 
   constructor(private http: HttpClient, private config: ConfigService) {
-
   }
 
   public update(user: RestUserUpdateRequest): Observable<RestEmptyResponse> {
@@ -67,7 +55,7 @@ export class AccountService {
     }
 
     return geoLocation.getCurrent(this.http).timeout(2000).pipe(
-      catchError((err) => {
+      catchError(() => {
 
         return of(null);
       }),
@@ -82,7 +70,9 @@ export class AccountService {
           user.timezone = value.timezone;
           user.ip = value.ip;
           if (user.countryCode && countries[user.countryCode]) {
-            user.gsmCode = countries[user.countryCode].phone || undefined;
+            if (user.brand == null || user.brand != 'DNSCyte') {
+              user.gsmCode = countries[user.countryCode].phone || undefined;  
+            }            
             if (countries[user.countryCode].languages && countries[user.countryCode].languages.length > 0) {
               user.language = countries[user.countryCode].languages[0];
             }
@@ -93,7 +83,7 @@ export class AccountService {
           }
         }
 
-      }), mergeMap(x => {
+      }), mergeMap(() => {
 
         return this.http.post<any>(this._signupURL, user, this.getOptions());
 

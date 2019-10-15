@@ -36,14 +36,14 @@ export class ConfigService {
       this.host.captcha_key='6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
 
     }else if (window.location.host.indexOf("cyte") >= 0) {
-      this.host.www = 'https://www.cybercyte.io';
+      this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'DNSCyte';
-      this.host.aboutus='https://www.cybercyte.io/the-company/';
+      this.host.aboutus='https://www.cybercyte.com/about-us/';
       this.host.logoImage='logo-dnscyte.png';
       this.host.iconImage='favicon-dnscyte.png'
       this.host.logofullUrl=window.location.protocol+'://'+window.location.host+(window.location.port||'')+'/assets/img/logo-dnscyte.png';
       this.host.title="DnsCyte";
-      this.host.privacyUrl='https://www.cybercyte.io/privacy-and-cookie-policy/';
+      this.host.privacyUrl='https://www.cybercyte.com/privacy-and-cookie-policy/';
       this.host.captcha_key='6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';// dnccyte için yenisi gerekli
     } else
       if (window.location.host.indexOf("roksit") >= 0) {

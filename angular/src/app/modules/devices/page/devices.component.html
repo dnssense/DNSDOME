@@ -123,12 +123,12 @@
                   <thead>
                     <tr>
                       <th class="no-border"></th>
-                      <th style="border-bottom: white;">Relay Name</th>
-                      <th style="border-bottom: white;">Security Profile</th>
-                      <th style="border-bottom: white;">Is CP Enabled</th>
-                      <th style="border-bottom: white;">Captive Portal IP</th>
-                      <!-- <th style="border-bottom: white;">Message</th> -->
-                      <th class="text-center" style="border-bottom: white;">Operation</th>
+                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Relay Name</th>
+                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Security Profile</th>
+                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Is CP Enabled</th>
+                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Captive Portal IP</th>
+                      <!-- <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Message</th> -->
+                      <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Operation</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -184,6 +184,10 @@
                         </button>
                       </td>
                     </tr>
+                    <tr *ngIf="boxes == null || boxes.length<1">
+                        <td class="numeration"></td>
+                        <td colspan="10">No Data</td>
+                      </tr>
                   </tbody>
                 </table>
               </div>
@@ -202,9 +206,9 @@
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th style="border-bottom: white;">Name</th>
-                      <th class="text-left" style="border-bottom: white;">Security Profile</th>
-                      <th class="text-center" style="border-bottom: white;">Operation</th>
+                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Name</th>
+                      <th class="text-left" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Security Profile</th>
+                      <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Operation</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -247,9 +251,9 @@
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th style="border-bottom: white;">Name</th>
-                      <th class="text-left" style="border-bottom: white;">Security Profile</th>
-                      <th class="text-center" style="border-bottom: white;">Operation</th>
+                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Name</th>
+                      <th class="text-left" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Security Profile</th>
+                      <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Operation</th>
                     </tr>
                   </thead>
                   <tbody>

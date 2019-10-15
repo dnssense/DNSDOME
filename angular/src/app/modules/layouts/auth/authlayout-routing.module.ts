@@ -24,6 +24,9 @@ const authlayoutRoutes: Routes = [
     },{
       path: 'account-confirm',
       loadChildren: '../../accountconfirm/accountconfirm.module#AccountConfirmModule'
+    },{
+      path: 'info',
+      loadChildren: '../../publichelp/publichelp.module#PublicHelpModule'
     }, {
       path: '',
       loadChildren: '../../login/login.module#LoginModule'

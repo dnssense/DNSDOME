@@ -43,56 +43,40 @@
                   <div class="form-group-sm has-default">
                     <div class="row">
                       <div class="col-md-6 mt-4 text-danger">
-                        In order to login via two factor authentication and use sms service, enable this feature.
+                        In order to login via two factor authentication and use sms service, enable 2FA feature.
                       </div>
                       <div class="col-md-6 mt-4">
-                        <label for="chk" class="dns-chk-label">
-                          <span>Enable two factor Authentication</span>
-                          <div class="dns-form-switch ml-5">
-                            <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
-                              <input type="checkbox" id="chk" checked (change)="change2FASubmit()">
-                            </ng-container>
-                            <ng-template #elseTemplate1>
-                              <input type="checkbox" id="chk" (change)="change2FASubmit()">
-                            </ng-template>
-
-                            <i></i>
-                            <span></span>
-                          </div>
-                        </label>
-
-
-                        <!-- <ng-container *ngIf="user.gsmCode && user.gsm; else elseTemplate2FA">
-                          <div class="togglebutton">
-                            <label>Enable two factor Authentication
+                        <ng-container *ngIf="user.gsmCode && user.gsm; else elseTemplate2FA">
+                          <label for="chk" class="dns-chk-label">
+                            <span>Enable two factor Authentication</span>
+                            <div class="dns-form-switch ml-5">
                               <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
-                                <input type="checkbox" checked (change)="change2FASubmit()">
-                                <span class="toggle"></span> On
+                                <input type="checkbox" id="chk" checked (change)="change2FASubmit()">
                               </ng-container>
                               <ng-template #elseTemplate1>
-                                <input type="checkbox" (change)="change2FASubmit()">
-                                <span class="toggle"></span> Off
+                                <input type="checkbox" id="chk" (change)="change2FASubmit()">
                               </ng-template>
-                            </label>
-                          </div>
-                        </ng-container> -->
+                              <i></i><span></span>
+                            </div>
+                          </label>
+                        </ng-container>
                         <ng-template #elseTemplate2FA>
                           <p>Before using two factor authentication please enter a gsm number. </p>
                         </ng-template>
                       </div>
                     </div>
                   </div>
-                  <div *ngIf="user.twoFactorAuthentication || user.gsm == null ">
+                  <div *ngIf="user.twoFactorAuthentication || user.gsm == null || user.gsm =='' ">
 
                     <div class="row">
                       <div class="col-md-6">
                         <div class="form-group">
                           <label for="gsmCode">GSM Code</label>
-                          <select class="dns-form-control reverse-form" [(ngModel)]="user.gsmCode"
+                          <select class="dns-form-control reverse-form" [(ngModel)]="gsmCodeTemp"
                             formControlName="gsmCode">
                             <option value="0" disabled selected>Select</option>
-                            <option *ngFor="let pc of phoneNumberCodes" [ngValue]="pc.dial_code">{{pc.name}} (
-                              {{pc.dial_code}} )</option>
+                            <option *ngFor="let pc of phoneNumberCodes" [(ngValue)]="pc.dial_code">
+                              {{pc.name}} ( {{pc.dial_code}} )</option>
                           </select>
                         </div>
                       </div>
@@ -107,7 +91,7 @@
                     </div>
                     <div class="row">
                       <div class="col-md-12">
-                        <button type="button" id="changePhoneBtn" (click)="changePhoneNumber()"
+                        <button type="button" id="changePhoneBtn" disabled (click)="changePhoneNumber()"
                           class="btns btn-teritary pull-right">Validate</button>
                       </div>
                     </div>

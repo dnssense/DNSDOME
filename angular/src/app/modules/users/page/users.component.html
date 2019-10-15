@@ -41,29 +41,16 @@
           <div class="dns-base-card-content">
             <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
               <thead>
-                <th class="text-center" style="border-bottom: white;">E-mail</th>
-                <th class="text-center" style="border-bottom: white;">Role</th>
-                <th class="text-center" style="border-bottom: white;">Is Locked</th>
-                <th class="text-center" style="border-bottom: white;">Is Active</th>
-                <th class="text-center" style="border-bottom: white;">Edit</th>
-                <th class="text-center" style="border-bottom: white;">Delete</th>
+                <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">E-mail</th>
+                <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Role</th>
+                <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Is Active</th>
+                <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Edit</th>
+
               </thead>
               <tbody>
                 <tr *ngFor="let row of userList">
                   <td><small>{{row.username}}</small></td>
                   <td><small>{{userFriendlyRoleName(row.roles[0].name)}}</small></td>
-                  <td class="text-center">
-                    <ng-container *ngIf="row.isLocked==1; else elseTemplate01">
-                      <button class="btns btn-clear">
-                        <img src="./assets/images/icons/checkbox.svg" title="Locked">
-                      </button>
-                    </ng-container>
-                    <ng-template #elseTemplate01>
-                      <button class="btns btn-clear">
-                        <img src="./assets/images/icons/close.svg" title="Not Locked">
-                      </button>
-                    </ng-template>
-                  </td>
                   <td class="text-center">
                     <ng-container *ngIf="row.isActive==1; else elseTemplate2">
                       <button class="btns btn-clear">
@@ -81,11 +68,7 @@
                       <small>Edit</small>
                     </button>
                   </td>
-                  <td class="text-center">
-                    <button class="btns btn-danger" (click)="deleteUser(row.id)">
-                      <small>Delete</small>
-                    </button>
-                  </td>
+
                 </tr>
               </tbody>
             </table>
@@ -155,15 +138,18 @@
                 </div>
                 <div *ngIf="modalStatus =='edit'" class="row mt-3">
                   <div class="col-6">
-                    <label class="dns-checkbox">
-                      <ng-container *ngIf="selectedUser.isActive == 1; else elseTemplate133">
-                        <input type="checkbox" checked (change)="changeActiveStatus()">
-                      </ng-container>
-                      <ng-template #elseTemplate133>
-                        <input type="checkbox" (change)="changeActiveStatus()">
-                      </ng-template>
-                      <span>Active
-                      </span>
+                    <label class="dns-chk-label">
+                      <span>Activity </span>
+                      <div data-width="30" class="dns-form-switch">
+                        <ng-container *ngIf="selectedUser.isActive===1; else elseTemplateDaily">
+                          <input type="checkbox" id="chk2" checked (change)="changeActiveStatus()"
+                            title="Activation Status">
+                        </ng-container>
+                        <ng-template #elseTemplateDaily>
+                          <input type="checkbox" id="chk2" (change)="changeActiveStatus()">
+                        </ng-template>
+                        <i></i><span></span>
+                      </div>
                     </label>
                     <button class="btn btn-clear p-0 m-0" tabindex="0" data-toggle="tooltip" data-placement="bottom"
                       title="Activation of User">
@@ -171,20 +157,14 @@
                     </button>
                   </div>
                   <div class="col-6">
-                    <label class="dns-checkbox">
-                      <ng-container *ngIf="selectedUser.isLocked == 1; else elseTemplate13">
-                        <input type="checkbox" checked (change)="changeLockStatus()">
-                      </ng-container>
-                      <ng-template #elseTemplate13>
-                        <input type="checkbox" (change)="changeLockStatus()">
-                      </ng-template>
-                      <span>Locked
-                        <button class="btn btn-clear p-0 m-0" data-toggle="tooltip" data-placement="top"
-                          title="Status of User">
-                          <i class="fa fa-question-circle ml-3"></i>
-                        </button>
-                      </span>
-                    </label>
+                    Status:
+                    <ng-container *ngIf="selectedUser.isActive===0; else elseTemplateStatus1">
+                      Locked
+                    </ng-container>
+                    <ng-template #elseTemplateStatus1>
+                      Active
+                    </ng-template>
+
                   </div>
                 </div>
 

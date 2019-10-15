@@ -25,6 +25,7 @@ import { ValidationService } from 'src/app/core/services/validation.service';
 import { ReportService } from 'src/app/core/services/ReportService';
 import { startWith, map } from 'rxjs/operators';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
+import { RoamingService } from 'src/app/core/services/roaming.service';
 
 declare var $: any;
 //declare var Flatpickr: any;
@@ -54,17 +55,17 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   public categoriesMap = new Map<number, Category[]>();
   public agents: Location[];
 
-  @ViewChild('settingNameConfirmationModal') settingNameConfirmationModal: ElementRef;
-  @ViewChild('popoverbtn') popoverbtn: ElementRef;
-  @ViewChild('dateSelect') dateSelect: ElementRef;
-  @ViewChild('startDateCal') startDateCal: ElementRef;
-  @ViewChild('endDateCal') endDateCal: ElementRef;
-  @ViewChild('customdaterange') customdaterange: ElementRef;
-  @ViewChild('columnsOverlay') columnsOverlay: ElementRef;
-  @ViewChild('customSearchSetting') customSearchSetting: ElementRef;
-  @ViewChild('dateOverlay') dateOverlay: any;
-  @ViewChildren(ColumnTagInputComponent)
-  public columnTagInputComponents: QueryList<ColumnTagInputComponent>;
+  // @ViewChild('settingNameConfirmationModal') settingNameConfirmationModal: ElementRef;
+  // @ViewChild('popoverbtn') popoverbtn: ElementRef;
+  // @ViewChild('dateSelect') dateSelect: ElementRef;
+  // @ViewChild('startDateCal') startDateCal: ElementRef;
+  // @ViewChild('endDateCal') endDateCal: ElementRef;
+  // @ViewChild('customdaterange') customdaterange: ElementRef;
+  // @ViewChild('columnsOverlay') columnsOverlay: ElementRef;
+  // @ViewChild('customSearchSetting') customSearchSetting: ElementRef;
+  // @ViewChild('dateOverlay') dateOverlay: any;
+  // @ViewChildren(ColumnTagInputComponent)
+  // public columnTagInputComponents: QueryList<ColumnTagInputComponent>;
   // @ViewChild(SavedReportSelectComponent)
   // public savedReportsSelectComponent: SavedReportSelectComponent;
 
@@ -132,7 +133,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   constructor(public customReportService: CustomReportService, public fastReportService: FastReportService,
     public searchSettingService: SearchSettingService, public locationsService: LocationsService,
     private reportService: ReportService, private notification: NotificationService, private alertService: AlertService,
-    private datePipe: DatePipe) {
+    private datePipe: DatePipe, private roamingService:RoamingService) {
 
     this.reportService.getReportList().subscribe(res => {
       this.savedReports = res;
@@ -182,6 +183,24 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     // });
     this.locationsService.getLocations().subscribe((res: Location[]) => {
       this.agents = res;
+    });
+
+    this.roamingService.getClients().subscribe(res => {
+      res.forEach(r =>
+        this.agents.push(
+          {
+            agentAlias: r.agentAlias,
+            id: 0,
+            user: null,
+            profile: null,
+            bwList: null,
+            agentIpGroups: null,
+            appUserProfile: null,
+            blockMessage: null,
+            blockip: null,
+            etvUser: null,
+            logo: null
+          }));
     });
 
   }
@@ -499,7 +518,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   addTag($event) {
-    
+
     $event.stopPropagation();
     if (this.editedTag) {
       this.removeTag(this.editedTag, this.editedTagType);

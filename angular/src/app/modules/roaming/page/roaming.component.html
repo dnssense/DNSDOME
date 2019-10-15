@@ -111,7 +111,7 @@
                     <input type="text" class="dns-form-control reverse-form" placeholder="Search by name"
                       [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword()" />
                   </div>
-                  <div class="dns-datatable-pagination ml-3 flex-1"> 
+                  <div class="dns-datatable-pagination ml-3 flex-1">
                     <button class="btns btn-clear pull-right" id="copyLink" matTooltip="Copy download link"
                       [matTooltipShowDelay]="800" (click)="copyLink()">
                       <img src="./assets/images/icons/copy.png">
@@ -131,11 +131,12 @@
                 <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
                   <thead>
                     <th class="no-border"></th>
-                    <th style="border-bottom: white;">Device Name</th>
-                    <th style="border-bottom: white;">Type</th>
-                    <th style="border-bottom: white;">Block Message</th>
-                    <th style="border-bottom: white;">Profile</th>
-                    <th style="border-bottom: white;" colspan="2" class="text-center">Operation</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Device Name</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Type</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Block Message</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Profile</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);" colspan="2" class="text-center">
+                      Operation</th>
                   </thead>
                   <tbody>
                     <tr *ngFor="let c of clientsFiltered; let i = index;">
@@ -162,6 +163,10 @@
                           <img src="./assets/images/icons/close-red.svg">
                         </button>
                       </td>
+                    </tr>
+                    <tr *ngIf="clientsFiltered == null || clientsFiltered.length<1">
+                      <td class="numeration"></td>
+                      <td colspan="10">No Data</td>
                     </tr>
                   </tbody>
 

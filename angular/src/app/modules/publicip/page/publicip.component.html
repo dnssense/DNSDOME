@@ -4,7 +4,7 @@
     <section id="publicIpPanel" class="publicIpPanel">
 
       <form [formGroup]="publicIpForm" class="publicIpForm" id="newIpRow" style="display: none;" data-step="5"
-        data-intro="Finally, save your agent and let's start!" data-position='bottom-middle-aligned'>
+        data-intro="Save to start" data-position='bottom-middle-aligned'>
         <div class="container-fluid">
           <div class="row">
             <div class="col-12 pl-0 pr-0 mb-3">
@@ -29,11 +29,10 @@
                         <input type="text" class="dns-form-control reverse-form" name="agentName" id="agentName"
                           placeholder="Public IP/Agent Name" [(ngModel)]="selectedIp.agentAlias"
                           formControlName="agentName" data-step="2" data-position='bottom-middle-aligned'
-                          data-intro="Enter a name for your agent">
+                          data-intro="Please give a name for this connection">
                       </div>
                       <div class="col-12 col-sm-3 d-flex flex-column">
-                        <div class="flex-1" data-step="1"
-                          data-intro="This is new agent form. Start with selecting IP type of your agent"
+                        <div class="flex-1" data-step="1" data-intro="Please identify your external IP type. It can be static or dynamic"
                           data-position='auto'>
                           <div class="dns-radio">
                             <input id="IpType1" name="ipType" type="radio" value="staticIp" [(ngModel)]="ipType"
@@ -47,7 +46,7 @@
                           </div>
                         </div>
                         <div class="flex-1 d-flex flex-column" data-step="3"
-                          data-intro="Enter related IP address and Mask or Dynamic Ip (System may enter automatically your IP for first agent)"
+                          data-intro="Please identify your external IP Address. Please ask your network administrator  or google “What is my IP”"
                           data-position='auto'>
                           <ng-container *ngIf="ipType=='dynamicIp'; else elseTemplateIpType">
                             <div id="dnsFqnDiv" name="dnsFqnDiv" class="dns-ip-input-container mt-3">
@@ -90,8 +89,7 @@
                       </div>
                       <div class="col-12 col-sm-3 d-flex align-items-end">
                         <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="4"
-                          data-intro="Select a security profile or create a new profile for this agent"
-                          data-position='auto'>
+                          data-intro="Please select a profile" data-position='top'>
                           <button class="btns dropdown-toggle dns-full-width reverse-form text-left" type="button"
                             id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <ng-container
@@ -154,7 +152,7 @@
                           formControlName="blockMessage"></textarea>
                       </div>
                       <div class="col-12 col-lg-3 mt-3 ml-lg-0">
-                        <input type="text" placeholder="Cyber X-Ray Ip" class="dns-form-control reverse-form"
+                        <input type="text" placeholder="Sinkhole IP" class="dns-form-control reverse-form"
                           name="cyberXRayIp" id="cyberXRayIp" (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)"
                           [(ngModel)]="selectedIp.cyberXRayIp" formControlName="cyberXRayIp">
                       </div>
@@ -229,13 +227,13 @@
                 <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
                   <thead>
                     <th class="no-border"></th>
-                    <th style="border-bottom: white;">Name</th>
-                    <th style="border-bottom: white;">Ip Type</th>
-                    <th style="border-bottom: white;">Ip Address/Domain</th>
-                    <!-- <th style="border-bottom: white;">Block Message</th> -->
-                    <th style="border-bottom: white;">Profile</th>
-                    <th style="border-bottom: white;">Block Logo</th>
-                    <th style="border-bottom: white;" colspan="2" class="text-center">Operation</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Name</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Ip Type</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Ip Address/Domain</th>
+                    <!-- <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Block Message</th> -->
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Profile</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Block Logo</th>
+                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);" colspan="2" class="text-center">Operation</th>
                   </thead>
                   <tbody>
                     <tr *ngFor="let pi of publicIpsFiltered; let i = index;">
@@ -292,6 +290,10 @@
                           <img src="./assets/images/icons/close-red.svg">
                         </button>
                       </td>
+                    </tr>
+                    <tr *ngIf="publicIpsFiltered == null || publicIpsFiltered.length<1">
+                      <td class="numeration"></td>
+                      <td colspan="10">No Data</td>
                     </tr>
                   </tbody>
 

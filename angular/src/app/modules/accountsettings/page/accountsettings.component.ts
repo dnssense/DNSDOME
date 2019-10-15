@@ -37,6 +37,7 @@ export class AccountSettingsComponent implements OnInit {
     validEmailRegister: true | false;
     user: User;
     currentGsm: string;
+    gsmCodeTemp: string;
     phoneNumberTemp: string;
     smsCode: string;
     signupUser: SignupBean;
@@ -89,7 +90,7 @@ export class AccountSettingsComponent implements OnInit {
         if (!isValid) {
             event.preventDefault();
         }
-
+        
         if (this.phoneNumberTemp == this.user.gsm) {
             $('#changePhoneBtn').attr('disabled', 'disabled');
         } else {
@@ -100,8 +101,10 @@ export class AccountSettingsComponent implements OnInit {
     ngOnInit() {
 
         if (this.authService.currentSession) {
+             
             this.user = this.authService.currentSession.currentUser;
             this.current2FAPreference = this.user.twoFactorAuthentication;
+            this.gsmCodeTemp = this.user.gsmCode;
             this.phoneNumberTemp = this.user.gsm;
             this.currentGsm = this.user.gsm;
         }
@@ -115,10 +118,8 @@ export class AccountSettingsComponent implements OnInit {
 
         this.userPhoneForm =
             this.formBuilder.group({
-
                 "gsmCode": ["", [Validators.required]],
                 "gsm": ["", [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(number)]],
-
                 "smsCode": [""]
             });
 
@@ -140,6 +141,12 @@ export class AccountSettingsComponent implements OnInit {
             }
                 , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
             );
+
+        if (this.phoneNumberTemp == this.user.gsm) {
+            $('#changePhoneBtn').attr('disabled', 'disabled');
+        } else {
+            $('#changePhoneBtn').removeAttr("disabled");
+        }
     }
 
     selectFile($event) {
@@ -189,10 +196,8 @@ export class AccountSettingsComponent implements OnInit {
         if (this.changePasswordForm.valid && this.changePasswordForm.dirty && this.signupUser.password === this.signupUser.passwordAgain) {
             this.accountService.changePassword(this.currentPassword, this.signupUser.password)
                 .subscribe(res => {
-
                     this.alert.alertSuccessMessage("Operation Successful", "Password changed.");
                     this.authService.saveSession();
-
                 });
         } else {
             this.notification.warning("Password change form is not valid! Please enter required fields with valid values.");
@@ -201,20 +206,18 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     change2FASubmit() {
-
         if (this.user.gsm && this.user.gsmCode) {
             let request: RestUserUpdateRequest = {};
             request.isTwoFactorAuthentication = this.user.twoFactorAuthentication ? 0 : 1;
 
             this.accountService.update(request).subscribe(res => {
-
                 this.user.twoFactorAuthentication = !this.user.twoFactorAuthentication;
                 this.notification.success("Operation Successful Two factor authentication updated.");
                 this.authService.saveSession();
-
             });
         } else {
             this.notification.warning("User GSM is missing!");
+            this.user.twoFactorAuthentication = false;
         }
 
     }
@@ -224,17 +227,16 @@ export class AccountSettingsComponent implements OnInit {
         if (this.userPhoneForm.get('gsmCode').valid && this.userPhoneForm.get('gsm').valid && this.phoneNumberTemp && this.phoneNumberTemp.length == 10) {
 
             this.user.gsm = this.phoneNumberTemp;
+            this.user.gsmCode = this.gsmCodeTemp;
 
             this.smsService.sendSmsCommon(this.user.gsmCode + this.user.gsm).subscribe(res => {
                 $('#smsValidationDiv').show(300);
-
                 this.smsInformation = res;
                 this.maxRequest = 3;
                 this.isConfirmTimeEnded = false;
                 this.endTime = new Date();
                 this.endTime.setMinutes(new Date().getMinutes() + 2);
                 this.isTimeSetted = true;
-
             });
 
         }
@@ -245,21 +247,19 @@ export class AccountSettingsComponent implements OnInit {
         if (this.maxRequest != 0 && !this.isConfirmTimeEnded) {
             this.maxRequest -= 1;
             if (this.smsInformation) {
-
                 let request: RestSmsConfirmRequest = { id: this.smsInformation.id, code: this.smsCode };
                 this.smsService.confirmCommonSms(request).subscribe(res1 => {
 
                     this.user.gsm = this.phoneNumberTemp;
                     let updateRequest: RestUserUpdateRequest = {};
                     updateRequest.gsm = this.phoneNumberTemp;
-                    updateRequest.gsmCode = this.user.gsmCode;
+                    updateRequest.gsmCode = this.gsmCodeTemp;
 
                     this.accountService.update(updateRequest).subscribe(res2 => {
-
                         this.notification.success("Phone number updated");
                         this.user.gsm = this.phoneNumberTemp;
+                        this.user.gsmCode = this.gsmCodeTemp;
                         this.authService.saveSession();
-
                     });
                     $('#smsValidationDiv').hide(200);
 
@@ -282,7 +282,7 @@ export class AccountSettingsComponent implements OnInit {
             this.notificationIndex++;
         }
     }
-    
+
 
 
 }

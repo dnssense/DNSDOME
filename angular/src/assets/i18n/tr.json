@@ -75,6 +75,7 @@
     "ErrUserNotFound": "Kullanıcı bulunamadı",
     "ErrUserNotAuthorized": "Yetki verilmedi",
     "ErrUserNotActiveOrLockedOrVerified": "Kullanıcı aktif değil yada kilitli",
+    "ErrUserAllreadyExitsUser": "Zaten kayıtlısınız, Şifrenizi sıfırlayanız",
     "ErrUserBadGsmNumber": "Hatalı telefon numarası",
     "ErrUserNeedsCodeArg": "Code bilgisi eksik",
     "ErrUserBadArgument": "Hatalı veri girişi",

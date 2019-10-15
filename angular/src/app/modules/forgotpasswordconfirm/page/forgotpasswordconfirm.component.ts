@@ -90,9 +90,7 @@ export class ForgotPasswordConfirmComponent implements OnInit, OnDestroy {
   }
 
   handleCaptcha($event) {
-    this.captcha = $event;
-    console.log(this.captcha);
-    
+    this.captcha = $event;    
   }
 
   forgotPasswordConfirm() {

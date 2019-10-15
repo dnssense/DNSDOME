@@ -37,5 +37,10 @@ export class RegisterUser {
     public countryCode?: string;
     public gsmCode?: string;
 
+    public name?: string;
+    public companyName?: string;
+    public gsm?: string;
+    public campaignCode?: string;
+    public brand?: string;
 
 }

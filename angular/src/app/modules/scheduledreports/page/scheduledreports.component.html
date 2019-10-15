@@ -20,9 +20,9 @@
                   <table class="table table-bordered">
                     <thead>
                       <th class="no-border"></th>
-                      <th style="border-bottom: white;">Report Name</th>
-                      <th style="border-bottom: white;">Schedule Interval</th>
-                      <th class="text-center" style="border-bottom: white;">Delete</th>
+                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Report Name</th>
+                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Schedule Interval</th>
+                      <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Delete</th>
                     </thead>
                     <tbody>
                       <tr *ngFor="let row of userReports; let i = index;">
@@ -61,6 +61,10 @@
                             <img src="./assets/images/icons/close-red.svg">
                           </button>
                         </td>
+                      </tr>
+                      <tr *ngIf="userReports == null || userReports.length<1">
+                        <td class="numeration"></td>
+                        <td colspan="10">No Data</td>
                       </tr>
                     </tbody>
                   </table>

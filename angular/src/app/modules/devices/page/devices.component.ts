@@ -60,7 +60,6 @@ export class DevicesComponent implements OnInit {
     loadBoxes() {
         this.boxService.getBoxes().subscribe(res => {
             this.boxes = res;
-            console.log(res);
         });
         this.agentService.getSecurityProfiles().subscribe(res => this.securityProfiles = res);
     }
@@ -282,7 +281,7 @@ export class DevicesComponent implements OnInit {
 
     checkIPNumber(event: KeyboardEvent, inputValue: string) {
 
-        let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", "."];
+        let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", ".", "Tab"];
         let isValid: boolean = false;
 
         for (let i = 0; i < allowedChars.length; i++) {

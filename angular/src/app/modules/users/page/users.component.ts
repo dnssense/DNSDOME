@@ -80,8 +80,8 @@ export class UsersComponent implements OnInit {
         $('#exampleModal').attr('aria-hidden', 'false');
         $('#exampleModal').addClass('show');
     }
-    closeModal() {
 
+    closeModal() {
         $(document.body).removeClass('modal-open');
         $('#exampleModal').css('display', 'none');
         $('#exampleModal').attr('aria-hidden', 'true');
@@ -100,6 +100,9 @@ export class UsersComponent implements OnInit {
         if (id) {
             let user = this.userList.find(u => u.id == id);
             user.locked = user.locked === true ? false : true;
+            user.isLocked = user.isLocked === 1 ? 0 : 1;
+            user.active = user.active === true ? false : true;
+            user.isActive = user.isActive === 1 ? 0 : 1;
             this.userService.save(user).subscribe(res => {
                 if (res.status == 200) {
                     this.userService.getUsers().subscribe(res => this.userList = res);
@@ -115,6 +118,9 @@ export class UsersComponent implements OnInit {
         if (id) {
             let user = this.userList.find(u => u.id == id);
             user.active = user.active === true ? false : true;
+            user.isActive = user.isActive === 1 ? 0 : 1;
+            user.locked = user.locked === true ? false : true;
+            user.isLocked = user.isLocked === 1 ? 0 : 1;
             this.userService.save(user).subscribe(res => {
                 if (res.status == 200) {
                     this.userService.getUsers().subscribe(res => this.userList = res);
@@ -149,9 +155,8 @@ export class UsersComponent implements OnInit {
     }
 
     userFormSubmit() {
-
-        if (this.userForm.dirty && this.userForm.valid) {
-            if (this.modalStatus == 'create') {
+        if (this.selectedUser.id && this.selectedUser.username) {
+            if (this.modalStatus == 'create' && this.userForm.dirty && this.userForm.valid) {
                 let user = {
                     id: this.selectedUser.id,
                     username: this.selectedUser.username,
@@ -173,15 +178,16 @@ export class UsersComponent implements OnInit {
                     this.notification.warning('User Form is not valid!');
                     return;
                 }
-            } else {
+            } else if (this.modalStatus == 'edit') {
                 let user = {
                     id: this.selectedUser.id,
                     username: this.selectedUser.username,
-                    password: this.selectedUser.password,
-                    roles: [this.selectedUser.roles.name],
+                    password: this.selectedUser.password ? this.selectedUser.password : null,
+                    roles: this.selectedUser.roles ? [this.selectedUser.roles.name] : null,
                     isActive: this.selectedUser.isActive,
                     isLocked: this.selectedUser.isLocked
                 }
+
                 this.userService.update(user).subscribe(res => {
                     this.closeModal();
                     this.notification.success('User updated.');
@@ -191,25 +197,6 @@ export class UsersComponent implements OnInit {
 
         } else {
             this.notification.warning('User form is not valid');
-        }
-    }
-
-    deleteUser(id: number) {
-        if (id) {
-            this.alert.alertWarningAndCancel('Are You Sure?', 'Selected User will be deleted!').subscribe(
-                res => {
-                    if (res) {
-                        this.userService.delete(this.userList.find(u => u.id == id)).subscribe(res => {
-                            this.userService.getUsers().subscribe(us => this.userList = us);
-                            if (res.status == 200) {
-                                this.notification.success(res.message);
-                            } else {
-                                this.notification.error(res.message);
-                            }
-                        });
-                    }
-                }
-            );
         }
     }
 

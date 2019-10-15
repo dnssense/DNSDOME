@@ -3,7 +3,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormBuilder } from '@angular/forms';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
-import { SignupBean } from 'src/app/core/models/SignupBean';
+import { SignupBean, RegisterUser } from 'src/app/core/models/SignupBean';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { Company } from 'src/app/core/models/Company';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
@@ -11,7 +11,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { AccountService } from 'src/app/core/services/AccountService';
 import { Router } from '@angular/router';
-
+import * as phoneNumberCodesList from "src/app/core/models/PhoneNumberCodes";
 declare var $: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -37,13 +37,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
   public host: ConfigHost;
   public captcha_key: string = ""// "6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58";//"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
-
+  phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
   emailFormControl = new FormControl('', [
     Validators.required,
     Validators.email,
   ]);
   validEmailRegister: true | false;
   validPasswordRegister: true | false;
+  campaignCode: string;
+  title: string;
 
   constructor(private formBuilder: FormBuilder, private element: ElementRef,
     private accountService: AccountService, private notification: NotificationService,
@@ -53,24 +55,46 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.host = this.configService.host;
     this.captcha_key = this.host.captcha_key;
     this.createRegisterForm();
-    
+
   }
 
   createRegisterForm() {
-    const number = `[0-9]+`;
 
     this.registerForm =
       this.formBuilder.group({
         "username": ["", [Validators.required, ValidationService.emailValidator]],
         "password": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
-        "passwordAgain": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]]
+        "passwordAgain": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
+        "company": ["", []],
+        "gsmCode": ["", []],
+        "gsm": ["", []],
+        "name": ["", []],
+        "surname": ["", []],
+        "title": ["", []],
+        "campaignCode": ["", []],
+
       }
         , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
       );
 
     this.user = new SignupBean();
     this.user.company = new Company();
-    this.user.company.name = " ";
+    this.user.company.name = "";
+
+    if (this.host && this.host.brand == 'DNSCyte') {
+      this.registerForm.controls['company'].setValidators([Validators.required]);
+      this.registerForm.controls['company'].updateValueAndValidity();
+      this.registerForm.controls['name'].setValidators([Validators.required]);
+      this.registerForm.controls['name'].updateValueAndValidity();
+      this.registerForm.controls['surname'].setValidators([Validators.required]);
+      this.registerForm.controls['surname'].updateValueAndValidity();
+      this.registerForm.controls['gsmCode'].setValidators([Validators.required]);
+      this.registerForm.controls['gsmCode'].updateValueAndValidity();
+      this.registerForm.controls['gsm'].setValidators([Validators.required]);
+      this.registerForm.controls['gsm'].updateValueAndValidity();
+    }
+
+
 
   }
 
@@ -139,7 +163,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   checkisTelNumber(event: KeyboardEvent) {
-    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight"];
+    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", "Tab"];
     let isValid: boolean = false;
 
     for (let i = 0; i < allowedChars.length; i++) {
@@ -180,7 +204,23 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.user != null && this.registerForm.dirty
       && this.registerForm.valid && this.user.password === this.user.passwordAgain) {
 
-      this.accountService.signup({ username: this.user.username, password: this.user.password, c_answer: this.user.c_answer }).subscribe(res => {
+      let rUser: RegisterUser = {
+        username: this.user.username,
+        password: this.user.password,
+        c_answer: this.user.c_answer
+      };
+
+      if (this.host.brand == 'DNSCyte') {
+        rUser.name = this.user.name + ' ' + this.user.surname;
+        rUser.companyName = this.user.company.name;
+        rUser.gsm = this.user.gsm;
+        rUser.gsmCode = this.user.gsmCode;
+        rUser.campaignCode = this.campaignCode;
+        rUser.brand = 'DNSCyte';
+      }
+
+
+      this.accountService.signup(rUser).subscribe(res => {
 
         this.notification.success("Registered successfuly, check your email and active your account");
         this.router.navigateByUrl('/login');

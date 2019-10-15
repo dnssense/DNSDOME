@@ -182,7 +182,7 @@ export class ProfileWizardComponent {
 
   saveProfile() {
     if (!this.selectedAgent.rootProfile.name) {
-      this.notification.error('Profile name is empty!');
+      this.notification.warning('Profile name is empty!');
       return;
     }
     let alertMessage = '', alertTitle = '';
@@ -260,7 +260,7 @@ export class ProfileWizardComponent {
   addToBlackList() {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b == this.blackListItem)) {
-        this.notification.error("This domain already in black list.")
+        this.notification.warning("This domain already in black list.")
       } else {
         this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(this.blackListItem);
         this.blackListItem = ""

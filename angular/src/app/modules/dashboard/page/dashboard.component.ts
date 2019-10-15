@@ -39,8 +39,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   uniqueChartType: string = 'domain';
 
   constructor(private dashboardService: DashBoardService, private datePipe: DatePipe, private authService: AuthenticationService,
-    private staticService: StaticService, private notification: NotificationService, private router: Router, private agentService: AgentService,
-  ) {
+    private staticService: StaticService, private notification: NotificationService, private router: Router,
+    private agentService: AgentService) {
 
     let roleName: string = this.authService.currentSession.currentUser.roles.name;
     //agent yoksa public ip sayfasına yönlendir
@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-   // introJs().start();
+    // introJs().start();
   }
 
   prepareWorldMap() {
@@ -230,7 +230,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.uGrayCountForDashboard = uGrayCounter;
     }
 
-    this.ds.riskScore = 47;//Math.round(this.ds.totalBlockCountForDashboard / this.ds.totalHitCountForDashboard);
+    this.ds.riskScore = 0;
+    if (this.ds.totalHitCountForDashboard && this.ds.totalHitCountForDashboard > 0) {
+      this.ds.riskScore = Math.round(100*((2 * this.ds.uMalwareCountForDashboard) + this.ds.uGrayCountForDashboard) / this.ds.totalUniqueDomain);
+    }
+
 
     if (this.elasticData && this.elasticData.length > 0) {
       this.ds.totalHitCountForDashboardDelta = this.calculatePercentage(this.ds.hitAverages.reduce((a, b) => a + b), this.ds.totalHitCountForDashboard);
@@ -242,13 +246,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.grayCountForDashboardDelta = this.calculatePercentage(grayTotalAverages, this.ds.grayCountForDashboard);
       this.ds.uGrayCountForDashboardDelta = this.calculatePercentage(uGrayCounterAverages, this.ds.uGrayCountForDashboard);
     } else {
-      this.notification.warning('Dashboard data could not get for this date parameter!', false);
+      this.notification.warning('There is no dashboard data!', false);
     }
 
     // Total Traffic Chart
     var trafficChartoptions = {
-      chart: { height: 310, type: 'line', zoom: { enabled: false }, 
-      foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
+      chart: {
+        height: 310, type: 'line', zoom: { enabled: false },
+        foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } },
+      },
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 6] },
       colors: ['#9d60fb', '#4a90e2'],

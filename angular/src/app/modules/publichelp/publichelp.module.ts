@@ -1,29 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoginComponent } from './page/login.component';
+import { PublicHelpComponent } from './page/publichelp.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NouisliderModule } from 'ng2-nouislider';
 import { MaterialModule } from 'src/app/shared/components/material.module';
-import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
-import { LoginRoutingModule } from './login-routing.module';
-import { TranslatorService } from 'src/app/core/services/translator.service';
+import { PublicHelpRoutingModule } from './publichelp-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
-import { ReCaptchaModule } from 'angular2-recaptcha';
 import { CountdownTimerModule } from 'ngx-countdown-timer';
 import { FooterModule } from '../shared/footer/footer.module';
 
 @NgModule({
-  declarations: [LoginComponent, FieldErrorDisplayComponent],
+  declarations: [PublicHelpComponent],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    NouisliderModule,
     MaterialModule,
-    ReCaptchaModule,
-    LoginRoutingModule,
+    PublicHelpRoutingModule,
     FooterModule,
     CountdownTimerModule.forRoot(),
     TranslateModule.forChild({
@@ -37,4 +31,4 @@ import { FooterModule } from '../shared/footer/footer.module';
   ]
 
 })
-export class LoginModule { }
+export class PublicHelpModule { }

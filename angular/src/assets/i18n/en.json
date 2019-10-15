@@ -89,7 +89,7 @@
     "ErrUserNeedsKeyPassword": "Needs key and password",
     "ErrUserBadArgumentPasswordsAreNotSame": "Passwords are not same",
     "ErrUserBadArgumentEmailAndPassword": "Email and passwords are wrong",
-    "ErrUserAllreadyExitsUser": "Allready exits email, please reset your password",
+    "ErrUserAllreadyExitsUser": "Allready exists email, please reset your password",
     "ErrUserTooManyRequests": "You created too many requests!",
     "ErrUserPasswordPolicy": "Password is not appropriate for security policy!",
     "ErrUserMaxLimitReached": "Max limit of requests exceeded!",

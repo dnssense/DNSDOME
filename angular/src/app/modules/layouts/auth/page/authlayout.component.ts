@@ -12,7 +12,11 @@ import { TranslatorService } from 'src/app/core/services/translator.service';
 export class AuthLayoutComponent implements OnInit {
   private sidebarVisible: boolean;
   private toggleButton: any;
-  constructor(private config: ConfigService, private notification:NotificationService, private translator:TranslatorService) { }
+  hostName:string;
+
+  constructor(private config: ConfigService, private notification:NotificationService, private translator:TranslatorService) { 
+    this.hostName = this.config.host.brand;
+  }
 
   ngOnInit() {
   }
