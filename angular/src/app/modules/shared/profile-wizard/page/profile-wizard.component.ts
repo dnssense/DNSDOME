@@ -93,11 +93,14 @@ export class ProfileWizardComponent {
       res.forEach(r => {
         this.categoryList.push(new categoryItem(r, false));
       });
+      this.categoryList = this.categoryList.sort((x, y) => { return x.category.name > y.category.name ? 1 : -1 })
     });
+    
     this.staticService.getApplicationList().subscribe(res => {
       res.forEach(r => {
         this.applicationList.push(new applicationItem(r, false));
       });
+      this.applicationList = this.applicationList.sort((x, y) => { return x.application.name > y.application.name ? 1 : -1 })
     });
   }
 
@@ -354,18 +357,19 @@ export class ProfileWizardComponent {
 
     prevButton.hide();
     nextButton.hide();
-    finishButton.hide();
+    finishButton.show();
+    //finishButton.hide();
 
     if (this.currentStep === 0) {
       prevButton.hide();
       nextButton.show();
-      finishButton.hide();
+      //finishButton.hide();
     } else if (this.currentStep === 3) {
       prevButton.show();
       nextButton.hide();
-      finishButton.show();
+      // finishButton.show();
     } else {
-      finishButton.hide();
+      //finishButton.hide();
       prevButton.show();
       nextButton.show();
     }

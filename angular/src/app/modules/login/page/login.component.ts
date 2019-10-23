@@ -23,7 +23,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
-} 
+}
 
 @Component({
   selector: 'app-login-cmp',
@@ -137,7 +137,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   emailValidationLogin(e) {
-    this.email = e;
+    if (e) {
+      this.email = String(e).toLowerCase();  
+    }    
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(String(e).toLowerCase())) {
       this.validEmailLogin = true;

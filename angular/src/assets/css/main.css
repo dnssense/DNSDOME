@@ -834,7 +834,7 @@ button:disabled {
 }
 
 .password-length .active {
-  background: #fa3f3f;
+  background: var(--color-accent);
 }
 
 .tooltip-inner {

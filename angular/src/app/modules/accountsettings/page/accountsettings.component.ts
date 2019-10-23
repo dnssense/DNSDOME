@@ -256,7 +256,7 @@ export class AccountSettingsComponent implements OnInit {
                     updateRequest.gsmCode = this.gsmCodeTemp;
 
                     this.accountService.update(updateRequest).subscribe(res2 => {
-                        this.notification.success("Phone number updated");
+                        this.notification.success("Phone number is updated");
                         this.user.gsm = this.phoneNumberTemp;
                         this.user.gsmCode = this.gsmCodeTemp;
                         this.authService.saveSession();

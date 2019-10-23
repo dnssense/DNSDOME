@@ -7,10 +7,10 @@ export class DashboardStats {
     totalUniqueDomainDelta: number = 0;
     totalUniqueBlockedDomainForDashboard: number = 0;
     totalUniqueBlockedDomainForDashboardDelta: number = 0;
-    malwareCountForDashboard: number = 0;
-    malwareCountForDashboardDelta: number = 0;
-    uMalwareCountForDashboard: number = 0;
-    uMalwareCountForDashboardDelta: number = 0;
+    securityRiskCountForDashboard: number = 0;
+    securityRiskCountForDashboardDelta: number = 0;
+    uSecurityRiskCountForDashboard: number = 0;
+    uSecurityRiskCountForDashboardDelta: number = 0;
     grayCountForDashboard: number = 0;
     grayCountForDashboardDelta: number = 0;
     uGrayCountForDashboard: number = 0;

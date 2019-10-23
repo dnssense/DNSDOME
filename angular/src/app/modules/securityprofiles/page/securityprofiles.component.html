@@ -1,18 +1,6 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
     <section id="securityProfilesPanel" class="securityProfilesPanel">
-      <!-- <div class="row" id="newButtonDiv">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
-        </div>
-        <div class="col-md-4 text-right">
-          <button class="btns btn-teritary border-radius-8 p-2 card-create-btn" id="newAgentBtn"
-            (click)="showNewWizard()" style="z-index: 10;">
-            <img src="assets/images/icons/add.svg">
-            Create New Profile
-          </button>
-        </div>
-      </div> -->
       <div class="row mt-4">
         <div class="col-md-12 ml-auto mr-auto">
           <div class="dns-base-card">
@@ -49,17 +37,21 @@
                         <tr *ngFor="let p of securityProfilesFiltered; let i = index;">
                           <td class="numeration">{{i}}</td>
                           <td>{{p.name}}</td>
-                          <td style="width: 200px">{{p.numberOfUsage}}</td>
+                          <td style="width: 200px" title="Connected with {{p.numberOfUsage}} record">{{p.numberOfUsage}}</td>
                           <td style="width: 120px" class="text-center">
                             <!-- <span *ngIf="p.isSystem" class="text-muted" >Default</span> -->
-                            <button mat-raised-button type="button" class="btn btn-info btn-link btn-just-icon btn-sm"
+                            <button *ngIf="!p.isSystem" mat-raised-button type="button" class="btn btn-info btn-link btn-just-icon btn-sm"
                               mattooltip="Edit item" (click)="showEditWizard(p.id)">
                               <i class="material-icons">edit</i>
                             </button>
+                            <button *ngIf="p.isSystem" mat-raised-button type="button" class="btn btn-info btn-link btn-just-icon btn-sm"
+                              title="View profile settings" (click)="showEditWizard(p.id)">
+                              <img class="mb-2" src="./assets/images/icons/view.svg" style="height: 70%;">
+                            </button>
                             <button *ngIf="p.isSystem" mat-raised-button type="button"
-                              class="btn btn-danger btn-link btn-just-icon btn-sm"
-                              title="Default profile can not delete!">
-                              <i class="material-icons">close</i>
+                              class="btn btn-just-icon btn-clear btn-link" (click)="cloneDefaultProfile(p.id)"
+                              title="Clone this to create a new profile">
+                              <img src="./assets/images/icons/copy.png" style="height: 70%;">
                             </button>
                             <button *ngIf="!p.isSystem" mat-raised-button type="button"
                               class="btn btn-danger btn-link btn-just-icon btn-sm" mattooltip="Delete item"

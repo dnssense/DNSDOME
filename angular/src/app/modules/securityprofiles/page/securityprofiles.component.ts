@@ -81,13 +81,17 @@ export class SecurityProfilesComponent {
     }
 
     hideWizard() {
-        this.alert.alertWarningAndCancel('Are You Sure?', 'If you made changes, Your Changes will be cancelled!').subscribe(
-            res => {
-                if (res) {
-                    this.hideWizardWithoutConfirm();
+        if (this.selectedAgent.rootProfile.isSystem) {
+            this.hideWizardWithoutConfirm();
+        } else {
+            this.alert.alertWarningAndCancel('Are You Sure?', 'If you made changes, Your Changes will be cancelled!').subscribe(
+                res => {
+                    if (res) {
+                        this.hideWizardWithoutConfirm();
+                    }
                 }
-            }
-        );
+            );
+        }
     }
 
     hideWizardWithoutConfirm() {
@@ -116,6 +120,20 @@ export class SecurityProfilesComponent {
                 }
             );
         }
+    }
+
+    cloneDefaultProfile(id: number) {
+        this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(p => p.id == id)));
+        this.selectedAgent.rootProfile.id = null;
+        this.selectedAgent.rootProfile.name = this.selectedAgent.rootProfile.name + '-Clone';
+        this.selectedAgent.rootProfile.isSystem = false;
+        $('#securityProfilesPanel').toggle("slide", { direction: "left" }, 600);
+        $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+
+        this.saveMode = 'ProfileUpdate';
+        this.updateCount++;
+        this.startWizard = true;
+        document.getElementById('wizardPanel').scrollIntoView();
     }
 
     searchByKeyword() {

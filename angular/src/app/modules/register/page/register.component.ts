@@ -146,6 +146,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   emailValidationRegister(e) {
+    if (e) {
+      this.user.username = e.toLowerCase();
+    }
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(String(e).toLowerCase())) {
       this.validEmailRegister = true;

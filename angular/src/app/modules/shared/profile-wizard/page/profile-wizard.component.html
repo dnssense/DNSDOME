@@ -62,7 +62,7 @@
             <div class="row">
               <div class="col-12 d-flex align-items-center flex-column">
                 <div class="d-flex dns-full-width align-items-center">
-                  <h5 class="mt-3 flex-3">Content Categories</h5>
+                  <h5 class="mt-3 flex-3">Harmful Categories</h5>
                   <!-- <span class="flex-1 text-right size-13 color-9d9d9d">Select All</span> -->
                 </div>
                 <hr class="dns-full-width mt-1 mb-2">
@@ -534,7 +534,7 @@
           <div>
             <button class="btn wizard-btn prev-btn" id="prevBtn" (click)="prevStep()"></button>
             <button class="btn wizard-btn next-btn" id="nextBtn" (click)="nextStep()"></button>
-            <button class="btn wizard-btn finish-btn" id="finishBtn" (click)="saveProfile()"
+            <button class="btn wizard-btn finish-btn" style="height: 45px;" id="finishBtn" (click)="saveProfile()"
               *ngIf="selectedAgent.rootProfile && selectedAgent.rootProfile.isSystem == false;"></button>
 
           </div>

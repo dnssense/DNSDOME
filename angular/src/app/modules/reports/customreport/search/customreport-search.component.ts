@@ -26,6 +26,7 @@ import { ReportService } from 'src/app/core/services/ReportService';
 import { startWith, map } from 'rxjs/operators';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
 import { RoamingService } from 'src/app/core/services/roaming.service';
+import { ActivatedRoute } from '@angular/router';
 
 declare var $: any;
 //declare var Flatpickr: any;
@@ -55,27 +56,21 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   public categoriesMap = new Map<number, Category[]>();
   public agents: Location[];
 
-  // @ViewChild('settingNameConfirmationModal') settingNameConfirmationModal: ElementRef;
-  // @ViewChild('popoverbtn') popoverbtn: ElementRef;
-  // @ViewChild('dateSelect') dateSelect: ElementRef;
-  // @ViewChild('startDateCal') startDateCal: ElementRef;
-  // @ViewChild('endDateCal') endDateCal: ElementRef;
-  // @ViewChild('customdaterange') customdaterange: ElementRef;
-  // @ViewChild('columnsOverlay') columnsOverlay: ElementRef;
-  // @ViewChild('customSearchSetting') customSearchSetting: ElementRef;
-  // @ViewChild('dateOverlay') dateOverlay: any;
-  // @ViewChildren(ColumnTagInputComponent)
-  // public columnTagInputComponents: QueryList<ColumnTagInputComponent>;
-  // @ViewChild(SavedReportSelectComponent)
-  // public savedReportsSelectComponent: SavedReportSelectComponent;
-
   @Input() searchSetting: SearchSetting;
   @Input() set columns(value: LogColumn[]) {
     if (value && value.length > 0) {
       value.forEach(c => { if (c.name == 'domain') { c.checked = true; } else { c.checked = false } });
       this._columns = value;
 
-      this.search();
+      this.route.queryParams.subscribe(res => {
+        if (res['type']) {
+          this.searchWithParam(res['type'])
+        } else {
+          this.search();
+        }
+      });
+
+
     }
 
   }
@@ -133,7 +128,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   constructor(public customReportService: CustomReportService, public fastReportService: FastReportService,
     public searchSettingService: SearchSettingService, public locationsService: LocationsService,
     private reportService: ReportService, private notification: NotificationService, private alertService: AlertService,
-    private datePipe: DatePipe, private roamingService:RoamingService) {
+    private datePipe: DatePipe, private roamingService: RoamingService, private route: ActivatedRoute) {
 
     this.reportService.getReportList().subscribe(res => {
       this.savedReports = res;
@@ -330,6 +325,43 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     this.searchEmitter.emit(this.searchSetting);
   }
 
+  public searchWithParam(param: string) {
+    this.searchSetting.columns.columns = []
+    this.searchSetting.dateInterval = '1440';
+    this._columns.forEach(c => { if (c.name == 'domain') { c.checked = false } });
+    this._columns.filter(c => c.name == 'subdomain' || c.name == 'destinationIpCountryCode' || c.name == 'agentAlias' ||
+      c.name == 'action' || c.name == 'category').forEach(c => {
+        c.checked = true
+        this.searchSetting.columns.columns.push({ column: c, label: c.beautyName });
+      });
+
+    if (param == 'securityRisk') {
+      this.searchSetting.should = [
+        { field: "category", operator: "=", value: "Malware/Virus", id: 0 },
+        { field: "category", operator: "=", value: "Phishing", id: 0 },
+        { field: "category", operator: "=", value: "Potentially Dangerous", id: 0 }
+      ]
+      this.searchSettingForHtml.should.push(new ColumnTagInput('category', '=', 'Malware/Virus,Phishing,Potentially Dangerous'))
+    } else if (param == 'gray') {
+      this.searchSetting.should = [
+        { field: "category", operator: "=", value: "Unknown", id: 0 },
+        { field: "category", operator: "=", value: "Undecided Not Safe", id: 0 },
+        { field: "category", operator: "=", value: "Undecided Safe", id: 0 },
+        { field: "category", operator: "=", value: "Domain Parking", id: 0 },
+        { field: "category", operator: "=", value: "Newly Up", id: 0 },
+        { field: "category", operator: "=", value: "Newly Register", id: 0 },
+        { field: "category", operator: "=", value: "Dead Sites", id: 0 },
+        { field: "category", operator: "=", value: "Firstly Seen", id: 0 }
+      ]
+      this.searchSettingForHtml.should.push(new ColumnTagInput("category", '=', "Unknown, Undecided Not Safe,Undecided Safe,Domain Parking,Newly Register,Newly Up,Dead Sites,Firstly Seen"))
+    }
+    debugger
+    this.currentOperator = 'isoneof';
+    this.currentInput = 'Unknown, Undecided Not Safe,Undecided Safe,Domain Parking,Newly Register,Newly Up,Dead Sites,Firstly Seen';
+    this.searchEmitter.emit(this.searchSetting);
+
+  }
+
   public setSearchSetting(searchSetting: SearchSetting) {
     this.searchSetting = searchSetting;
   }
@@ -478,9 +510,8 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   changeCurrentColumn(colName: string) {
-
+    debugger
     $('#tagsDd').click(function (e) { e.stopPropagation(); });
-
     this.currentColumn = colName;
 
     if (this.currentOperator == 'isoneof' || this.currentOperator == 'isnotoneof') {
@@ -752,7 +783,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public editTag(tag: any, type: string) {
-
+    debugger
     this.editedTag = tag;
     this.editedTagType = type;
 
@@ -783,6 +814,9 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
               break;
           }
         });
+      } else if (this.currentColumn == 'category') {
+        this.mainCategories.forEach(m => this.isOneOfListItems.push(m.categoryName))
+        this.isOneOfList = tag.value.split(',');
       } else if (this.currentColumn == 'sourceIpCountryCode' || this.currentColumn == 'destinationIpCountryCode') {
         tag.value.split(',').forEach(x => { this.isOneOfList.push(this.countries.find(c => c.code == x).name) });
       } else {

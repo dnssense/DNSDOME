@@ -1,6 +1,6 @@
 import { OnInit, ElementRef, OnDestroy, Component, ViewChild } from '@angular/core';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { CustomReportSearchComponent } from './search/customreport-search.component';
 import { CustomReportResultComponent } from './result/customreport-result.component';
 import { LogColumn } from 'src/app/core/models/LogColumn';
@@ -19,20 +19,14 @@ export class CustomReportComponent implements OnInit, OnDestroy {
 
   public total: number = 0;
   public multiplier: number = 1;
-  //public histogramIsActive: boolean = false;
   public searchSetting: SearchSetting = new SearchSetting();
   public selectedColumns: AggregationItem[];
   public columns: LogColumn[];
   public columnsTemp: LogColumn[];
   public data: any[];
-  // chartSeries: any;
-  // chartOptions: any;
-  // chartTitle:string='Total Domain Hit Count';
 
   @ViewChild("tableDivComponent")
   tableDivComponent: ElementRef;
-  // @ViewChild(HistogramComponent)
-  // public histogramComponent: HistogramComponent;
   @ViewChild(CustomReportResultComponent)
   public customReportResultComponent: CustomReportResultComponent;
   @ViewChild(CustomReportSearchComponent)
@@ -41,10 +35,7 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<any> = new Subject<any>();
 
 
-  constructor(private fastReportService: FastReportService,
-    private notificationService: NotificationService) {
-
-  }
+  constructor(private fastReportService: FastReportService, private notificationService: NotificationService) {  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -56,13 +47,8 @@ export class CustomReportComponent implements OnInit, OnDestroy {
     });
   }
 
-  // public updateSearchSetting(setting: any) {
-  //   
-  //   this.searchSetting = setting;
-  // }
-
   public search(setting: any) {
-
+    
     this.searchSetting = setting;
     if (!this.searchSetting.columns.columns || this.searchSetting.columns.columns.length == 0) {
       this.notificationService.warning("You must select at least one column for a report.");
@@ -71,9 +57,6 @@ export class CustomReportComponent implements OnInit, OnDestroy {
     }
 
   }
-
-
-
 
   public addValuesIntoSelected($event) {
 

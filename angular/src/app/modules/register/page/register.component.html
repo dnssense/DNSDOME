@@ -77,8 +77,10 @@
                                     placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="user.gsm"
                                     formControlName="gsm">
                                   <mat-hint align="end">{{gsm.value.length}} / 10</mat-hint>
-                                  <app-field-error-display errorMsg="Add a number!">
-                                  </app-field-error-display>
+                                  <mat-error *ngIf="registerForm.get('gsm').hasError('required')">
+                                    {{'REGISTER.GSM' | translate}} <strong>{{'Required' | translate}}</strong>
+                                  </mat-error>
+                                  <app-field-error-display errorMsg="Add a number!"></app-field-error-display>
                                 </mat-form-field>
                               </div>
                             </div>

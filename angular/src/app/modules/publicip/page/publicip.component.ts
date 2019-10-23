@@ -139,7 +139,7 @@ export class PublicipComponent implements AfterViewInit {
 
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
-     
+
       if ((res == null || res.length < 1) && this.roleName != 'ROLE_USER' && this.tooltipGuideCounter < 1) {
         this.showNewIpForm();
         this.openTooltipGuide();
@@ -466,6 +466,8 @@ export class PublicipComponent implements AfterViewInit {
 
   savePublicIp() {
 
+    introJs().exit()
+
     if (!this.validatePublicIpForm()) {
       return;
     }
@@ -498,22 +500,28 @@ export class PublicipComponent implements AfterViewInit {
 
     var $valid = $('.publicIpForm').valid();
     if (!$valid) {
-      this.notification.warning("Public Ip form is not valid. Please enter required fields. ")
+      if (!this.selectedIp.agentAlias) {
+        this.notification.warning("Please enter a name")
+      }
       $validator.focusInvalid();
       return false;
     }
 
-    if (!this.publicIpForm.valid) {
-      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
+    if (this.ipType == 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
+      this.notification.warning("Form is not valid! Please enter IP fields with valid values.");
       return false;
-
+    } else if (this.ipType == 'dynamicIp' && !this.selectedIp.dynamicIpDomain && !this.dnsFqdn) {
+      this.notification.warning("Form is not valid! Please enter IP fields with valid values.");
+      return false;
+    } else if (!this.ipType) {
+      return false;
     }
 
     if (this.ipType == 'staticIp' && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
       for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
         const e = this.selectedIp.staticSubnetIp[i];
         if (e.baseIp == null || e.mask == 0) {
-          this.notification.warning('Select a mask for your IP address!');
+          this.notification.warning('Please enter IP fields with valid values and select a mask for your IP address!');
           return false;
         }
       }
@@ -521,14 +529,10 @@ export class PublicipComponent implements AfterViewInit {
       this.selectedIp.staticSubnetIp = null;
     }
 
-    if (this.ipType == 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
+    if (!this.publicIpForm.valid) {
       this.notification.warning("Form is not valid! Please enter required fields with valid values.");
       return false;
-    } else if (this.ipType == 'dynamicIp' && !this.selectedIp.dynamicIpDomain && !this.dnsFqdn) {
-      this.notification.warning("Form is not valid! Please enter required fields with valid values.");
-      return false;
-    } else if (!this.ipType) {
-      return false;
+
     }
 
     return true;

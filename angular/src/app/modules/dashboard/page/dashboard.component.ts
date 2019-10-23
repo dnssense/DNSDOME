@@ -19,7 +19,7 @@ declare let moment: any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
-  styleUrls: ['dashboard.component.sass']
+  styleUrls: ['dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
 
@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   searchKey: string;
   public labelArray = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
     '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'];
+
   categoryList = [];
   categoryListFiltered = [];
   selectedCategoryForTraffic = CategoryV2;
@@ -162,7 +163,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
     this.dashboardService.getHourlyCompanySummary(d1.toISOString(), d2.toISOString()).subscribe(res => {
-
       this.elasticData = res;
       this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
       this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
@@ -182,7 +182,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   createCharts() {
     this.ds = new DashboardStats();
-    let mCounter = 0, mTotalAverages = 0, uMCounter = 0, uMAverages = 0, grayCounter = 0, grayTotalAverages = 0,
+    let sRCounter = 0, mTotalAverages = 0, uSRCounter = 0, uSRAverages = 0, grayCounter = 0, grayTotalAverages = 0,
       uGrayCounter = 0, uGrayCounterAverages = 0;
 
     const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
@@ -207,11 +207,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
       Object.keys(data.category_hits).forEach(function eachKey(key) {
         if (key.toString() == 'Malware/Virus' || key.toString() == 'Potentially Dangerous' || key.toString() == 'Phishing') {
-          mCounter += data.category_hits[key].hits;
+          sRCounter += data.category_hits[key].hits;
           mTotalAverages += data.category_hits[key].average;
 
-          uMCounter += data.category_hits[key].unique_domain;
-          uMAverages += data.category_hits[key].unique_domain_average
+          uSRCounter += data.category_hits[key].unique_domain;
+          uSRAverages += data.category_hits[key].unique_domain_average
 
         } else if (key.toString() == 'Unknown' || key.toString() == 'Undecided Not Safe' || key.toString() == 'Undecided Safe'
           || key.toString() == 'Domain Parking' || key.toString() == 'Newly Register' || key.toString() == 'Newly Up'
@@ -224,15 +224,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         }
       });
 
-      this.ds.malwareCountForDashboard = mCounter;
-      this.ds.uMalwareCountForDashboard = uMCounter;
+      this.ds.securityRiskCountForDashboard = sRCounter;
+      this.ds.uSecurityRiskCountForDashboard = uSRCounter;
       this.ds.grayCountForDashboard = grayCounter;
       this.ds.uGrayCountForDashboard = uGrayCounter;
     }
 
     this.ds.riskScore = 0;
     if (this.ds.totalHitCountForDashboard && this.ds.totalHitCountForDashboard > 0) {
-      this.ds.riskScore = Math.round(100*((2 * this.ds.uMalwareCountForDashboard) + this.ds.uGrayCountForDashboard) / this.ds.totalUniqueDomain);
+      this.ds.riskScore = Math.round(100 * ((2 * this.ds.uSecurityRiskCountForDashboard) + this.ds.uGrayCountForDashboard) / this.ds.totalUniqueDomain);
     }
 
 
@@ -241,8 +241,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.totalBlockCountForDashboardDelta = this.calculatePercentage(this.ds.blockAverages.reduce((a, b) => a + b), this.ds.totalBlockCountForDashboard);
       this.ds.totalUniqueBlockedDomainForDashboardDelta = this.calculatePercentage(this.ds.uniqueBlockedDomain.reduce((a, b) => a + b), this.ds.totalUniqueBlockedDomainForDashboard);
       this.ds.totalUniqueDomainDelta = this.calculatePercentage(this.ds.uniqueDomainAvg.reduce((a, b) => a + b), this.ds.totalUniqueDomain);
-      this.ds.malwareCountForDashboardDelta = this.calculatePercentage(mTotalAverages, this.ds.malwareCountForDashboard);
-      this.ds.uMalwareCountForDashboardDelta = this.calculatePercentage(uMAverages, this.ds.uMalwareCountForDashboard);
+      this.ds.securityRiskCountForDashboardDelta = this.calculatePercentage(mTotalAverages, this.ds.securityRiskCountForDashboard);
+      this.ds.uSecurityRiskCountForDashboardDelta = this.calculatePercentage(uSRAverages, this.ds.uSecurityRiskCountForDashboard);
       this.ds.grayCountForDashboardDelta = this.calculatePercentage(grayTotalAverages, this.ds.grayCountForDashboard);
       this.ds.uGrayCountForDashboardDelta = this.calculatePercentage(uGrayCounterAverages, this.ds.uGrayCountForDashboard);
     } else {
@@ -461,5 +461,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private resetCategoryListFiltered() {
     this.searchKey = null;
     this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
+  }
+
+  showInReport(param: string) {
+    if (param == 'securityRisk') {
+      this.router.navigate(['/admin/reports/customreport'], { queryParams: { type: param } });
+    } else if (param == 'gray') {
+      this.router.navigate(['/admin/reports/customreport'], { queryParams: { type: param } });
+    }
   }
 }

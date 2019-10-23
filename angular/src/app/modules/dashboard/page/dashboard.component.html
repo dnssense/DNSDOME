@@ -79,20 +79,24 @@
                         <td>
                           <div class="row">
                             <div class="col-md-6 text-right">
-                              <span class="size-20 ">{{ds.malwareCountForDashboard| number}}</span>
+                              <span class="size-20">
+                                <a class="linkNumber" (click)="showInReport('securityRisk')" title="Show Details">
+                                  {{ds.securityRiskCountForDashboard| number}}
+                                </a>
+                              </span>
                             </div>
                             <div class="col-md-6 text-left">
                               <ng-container
-                                *ngIf="ds.malwareCountForDashboardDelta>0 || ds.malwareCountForDashboardDelta==0; else elseTemplate3">
+                                *ngIf="ds.securityRiskCountForDashboardDelta>0 || ds.securityRiskCountForDashboardDelta==0; else elseTemplate3">
                                 <span class="status up">
                                   <i class="fa fa-arrow-up"></i>
-                                  %{{ds.malwareCountForDashboardDelta | number}}
+                                  %{{ds.securityRiskCountForDashboardDelta | number}}
                                 </span>
                               </ng-container>
                               <ng-template #elseTemplate3>
                                 <span class="status down">
                                   <i class="fa fa-arrow-down"></i>
-                                  %{{ds.malwareCountForDashboardDelta | number}}
+                                  %{{ds.securityRiskCountForDashboardDelta | number}}
                                 </span>
                               </ng-template>
                             </div>
@@ -101,7 +105,9 @@
                         <td>
                           <div class="row">
                             <div class="col-md-6 text-right">
-                              <span class="size-20">{{ds.grayCountForDashboard| number}}</span>
+                              <span class="size-20">
+                                <a class="linkNumber" (click)="showInReport('gray')" title="Show Details">
+                                  {{ds.grayCountForDashboard| number}}</a></span>
                             </div>
                             <div class="col-md-6 text-left">
                               <ng-container
@@ -170,20 +176,20 @@
                         <td>
                           <div class="row">
                             <div class="col-md-6 text-right">
-                              <span class="size-20 ">{{ds.uMalwareCountForDashboard| number}}</span>
+                              <span class="size-20 ">{{ds.uSecurityRiskCountForDashboard| number}}</span>
                             </div>
                             <div class="col-md-6 text-left">
                               <ng-container
-                                *ngIf="ds.uMalwareCountForDashboardDelta>0 || ds.uMalwareCountForDashboardDelta==0 ; else elseTemplate5">
+                                *ngIf="ds.uSecurityRiskCountForDashboardDelta>0 || ds.uSecurityRiskCountForDashboardDelta==0 ; else elseTemplate5">
                                 <span class="status up">
                                   <i class="fa fa-arrow-up"></i>
-                                  %{{ds.uMalwareCountForDashboardDelta | number}}
+                                  %{{ds.uSecurityRiskCountForDashboardDelta | number}}
                                 </span>
                               </ng-container>
                               <ng-template #elseTemplate5>
                                 <span class="status down">
                                   <i class="fa fa-arrow-down"></i>
-                                  %{{ds.uMalwareCountForDashboardDelta | number}}
+                                  %{{ds.uSecurityRiskCountForDashboardDelta | number}}
                                 </span>
                               </ng-template>
                             </div>
