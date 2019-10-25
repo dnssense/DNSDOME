@@ -10,7 +10,7 @@ export class SpinnerService {
   private subject: Subject<boolean>;
 
   constructor(private spinner: NgxUiLoaderService) {
-    console.log('constructor spinnerservice');
+    //console.log('constructor spinnerservice');
     this.subject = new Subject<boolean>();
     this.subject.asObservable().subscribe((val) => {
       if (val) {

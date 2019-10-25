@@ -1,6 +1,6 @@
 {
   "/api/*": {
-    "target": "https://portal.roksit.com",
+    "target": "https://portal.dnssense.com",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

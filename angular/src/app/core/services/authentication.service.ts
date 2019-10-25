@@ -229,7 +229,7 @@ export class AuthenticationService {
       this.currentSession.refreshToken = refToken;
       return this.getCurrentUser();
     }
-    
+
     return null;
 
   }
@@ -254,6 +254,17 @@ export class AuthenticationService {
     return this.http.post<any>(this._forgotPasswordChangeURL,
       JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions())
 
+  }
+
+  getCurrentSession(): Session {
+    const sessionString = localStorage.getItem(this.STORAGENAME);
+    if (sessionString) {
+      const session: Session = JSON.parse(sessionString);
+      if (session) {
+        return session;
+      }
+    }
+    return null;
   }
 
 

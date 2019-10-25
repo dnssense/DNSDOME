@@ -58,8 +58,7 @@
                                         <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Percent</th>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let dat of data;  let i = index"
-                                            [ngClass]="{'baseTableRow': i%2==0}">
+                                        <tr *ngFor="let dat of data;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
                                             <td class="numeration">{{i+1}}</td>
                                             <td nowrap *ngFor="let col of selectedColumns; let inde=index">
                                                 <a *ngIf="col.column.name!='action'">

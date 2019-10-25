@@ -62,17 +62,15 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       value.forEach(c => { if (c.name == 'domain') { c.checked = true; } else { c.checked = false } });
       this._columns = value;
 
-      this.route.queryParams.subscribe(res => {
-        if (res['type']) {
-          this.searchWithParam(res['type'])
-        } else {
-          this.search();
-        }
-      });
-
+      if (localStorage.getItem('dashboardParam') && localStorage.getItem('dashboardParam').includes('&')) {
+        let param = localStorage.getItem('dashboardParam').split('&');
+        localStorage.removeItem('dashboardParam');
+        this.searchWithParam(param[0], param[1])
+      } else {
+        this.search();
+      }
 
     }
-
   }
   @Input() public columnsTemp: LogColumn[];
   @Output() public searchEmitter = new EventEmitter();
@@ -116,9 +114,9 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   public selectedColumns: LogColumn[];
   editedTag: any;
   editedTagType: string;
-  searchStartDate: string;
+  public searchStartDate: string;
   searchStartDateTime: string = '08:00';
-  searchEndDate: string;
+  public searchEndDate: string;
   searchEndDateTime: string = '18:00';
   selectedTab: string = 'home';
   savedReports: SearchSetting[] = []
@@ -325,9 +323,23 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     this.searchEmitter.emit(this.searchSetting);
   }
 
-  public searchWithParam(param: string) {
+  public searchWithParam(param: string, time: string) {
     this.searchSetting.columns.columns = []
-    this.searchSetting.dateInterval = '1440';
+    this.searchSetting.dateInterval = '5';
+    if (time == '0') {
+      let d = new Date();
+      this.searchSetting.dateInterval = ((d.getUTCHours() * 60) + d.getUTCMinutes()).toString();
+    } else if (time == '-1') {
+      this.searchSetting.dateInterval = '60';
+    } else if (time == '1') {
+      let d = new Date();
+      d.setDate(d.getDate() - 1)
+      let startDate = moment(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+      let endDate = moment(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+      const dateVal = startDate + ' - ' + endDate;
+      this.searchSetting.dateInterval = dateVal;
+    }
+
     this._columns.forEach(c => { if (c.name == 'domain') { c.checked = false } });
     this._columns.filter(c => c.name == 'subdomain' || c.name == 'destinationIpCountryCode' || c.name == 'agentAlias' ||
       c.name == 'action' || c.name == 'category').forEach(c => {
@@ -355,7 +367,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       ]
       this.searchSettingForHtml.should.push(new ColumnTagInput("category", '=', "Unknown, Undecided Not Safe,Undecided Safe,Domain Parking,Newly Register,Newly Up,Dead Sites,Firstly Seen"))
     }
-    debugger
     this.currentOperator = 'isoneof';
     this.currentInput = 'Unknown, Undecided Not Safe,Undecided Safe,Domain Parking,Newly Register,Newly Up,Dead Sites,Firstly Seen';
     this.searchEmitter.emit(this.searchSetting);
@@ -510,7 +521,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   changeCurrentColumn(colName: string) {
-    debugger
     $('#tagsDd').click(function (e) { e.stopPropagation(); });
     this.currentColumn = colName;
 
@@ -783,7 +793,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
 
   public editTag(tag: any, type: string) {
-    debugger
     this.editedTag = tag;
     this.editedTagType = type;
 

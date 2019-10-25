@@ -7,7 +7,9 @@ import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
+import { CustomReportSearchComponent } from '../search/customreport-search.component';
 
+declare var moment: any;
 @Component({
   selector: 'app-customreport-result',
   templateUrl: 'customreport-result.component.html',
@@ -19,7 +21,14 @@ export class CustomReportResultComponent implements OnDestroy {
   public loading: boolean = false;
   public selectedColumns: AggregationItem[];
 
-  @Input() public searchSetting: SearchSetting;
+  //@Input() public searchSetting: SearchSetting;
+  public ss: SearchSetting
+  @Input() set searchSetting(value: SearchSetting) {
+    this.ss = value;
+  };
+  get searchSetting(): SearchSetting {
+    return this.ss;
+  }
   @Input() public data: any[];
   @Input() public total: number = 0;
   @Input() public multiplier: number = 1;
@@ -27,6 +36,8 @@ export class CustomReportResultComponent implements OnDestroy {
   @Output() public searchEmitter = new EventEmitter();
 
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
+  @ViewChild(CustomReportSearchComponent)
+  public customReportSearchComponent: CustomReportSearchComponent;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
 
@@ -59,24 +70,27 @@ export class CustomReportResultComponent implements OnDestroy {
 
   public search(searchSetting: SearchSetting) {
 
+    this.firstDate = searchSetting.dateInterval;
     this.drawChart(searchSetting);
+    this.fillResultTable(searchSetting);
 
+
+  }
+
+  fillResultTable(searchSetting: SearchSetting) {
     this.customReportService.getData(searchSetting).takeUntil(this.ngUnsubscribe).subscribe((res: Response) => {
 
       if (res['searchSetting'] != null) {
         this.searchSetting = res['searchSetting'];
       }
-
       let total = 0;
       let data: any = res;
       this.selectedColumns = <AggregationItem[]>JSON.parse(JSON.stringify(searchSetting.columns.columns));
-
       if (data && data.length > 0) {
         for (let i = 0; i < data.length; i++) {
           let val = parseInt(data[i][this.selectedColumns.length]);
           total += val;
         }
-
         var maxPercentage = 0;
         for (let i = 0; i < data.length; i++) {
           let val = parseInt(data[i][this.selectedColumns.length]);
@@ -86,43 +100,50 @@ export class CustomReportResultComponent implements OnDestroy {
           }
         }
         let multiplier = Math.floor(100 / (maxPercentage * 100));
-
         this.multiplier = multiplier;
         this.total = total;
-
       }
       this.data = data;
-
     }, () => this.stopRefreshing(),
       () => this.stopRefreshing()
     );
-
   }
 
   drawChart(settings: SearchSetting) {
 
     this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
       let data: any[] = res;
-
       if (data) {
-        var labelArray = [];
+        let labelArray = [];
         let chartSeries = [];
         for (let i = 0; i < data.length; i++) {
           const d = new Date(data[i].date);
-          labelArray.push(d.getHours() + ":" + (d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes()))
+          labelArray.push(moment(d).format('YYYY-MM-DDTHH:mm:ss.sssZ'))
           chartSeries.push(data[i].value)
         }
 
         var options = {
-          chart: { height: 300, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
+          chart: {
+            height: 300, type: 'area', foreColor: '#ababab',
+            toolbar: {
+              tools:{
+                download:false,
+                pan:false
+              }
+            },
+            events: {
+              zoomed: (chartContext, { xaxis, yaxis }) => {
+                this.updateResultTable(xaxis.min, xaxis.max);
+              }
+            }
+          },
           dataLabels: { enabled: false },
-          stroke: { width: 3, curve: 'smooth' },
-          colors: ['#9d60fb'],
+          stroke: { curve: 'smooth' },
+          markers: { size: 0, hover: { sizeOffset: 5 } },
           series: [{ name: "Hits", data: [[]] }],
-          markers: { size: 0, hover: { sizeOffset: 6 } },
-          xaxis: { categories: labelArray, labels: { minHeight: 20 } },
-          tooltip: { theme: 'dark' },
-          grid: { borderColor: '#626262', strokeDashArray: 6, },
+          xaxis: { type: 'datetime', categories: labelArray, tickAmount: 1, style: { color: '#f0f0f0' } },
+          tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
+          grid: { borderColor: '#626262' },
           legend: { show: false },
           annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
           title: { text: 'Log Histogram', style: { fontSize: '20px', color: '#eeeeee' } }
@@ -134,6 +155,31 @@ export class CustomReportResultComponent implements OnDestroy {
       }
 
     });
+  }
+
+  firstDate: any;
+  updateResultTable(min: any, max: any): void {
+    
+    if (min && max) {
+      let md = new Date(min);
+      md.setHours(md.getUTCHours());
+      md.setDate(md.getUTCDate());
+
+      let mxd = new Date(max);
+      mxd.setHours(mxd.getUTCHours());
+      mxd.setDate(mxd.getUTCDate());
+
+      let startDate = moment(md).format('DD.MM.YYYY HH:mm:ss');
+      let endDate = moment(mxd).format('DD.MM.YYYY HH:mm:ss');
+
+      const dateVal = startDate + ' - ' + endDate; 
+      this.searchSetting.dateInterval = dateVal;
+      this.fillResultTable(this.searchSetting);
+    } else {
+      this.searchSetting.dateInterval = this.firstDate;
+      this.fillResultTable(this.searchSetting);
+    }
+
   }
 
   exportAs(extention: string) {

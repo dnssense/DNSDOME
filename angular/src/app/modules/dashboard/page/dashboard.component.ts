@@ -465,9 +465,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   showInReport(param: string) {
     if (param == 'securityRisk') {
-      this.router.navigate(['/admin/reports/customreport'], { queryParams: { type: param } });
+      localStorage.setItem('dashboardParam', param + '&' + this.dateParameter)
     } else if (param == 'gray') {
-      this.router.navigate(['/admin/reports/customreport'], { queryParams: { type: param } });
-    }
+      localStorage.setItem('dashboardParam', param + '&' + this.dateParameter)
+    } 
+    this.router.navigate(['/admin/reports/customreport']);
   }
 }

@@ -1,255 +1,286 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
+
     <div class="row">
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12 ml-auto mr-auto">
-            <div class="dns-base-card">
-              <div class="dns-base-card-header">
-                <h5>User Information</h5>
-              </div>
-              <div class="dns-base-card-content">
-                <form [formGroup]="userInfoForm" (ngSubmit)="userFormSubmit()">
-                  <div class="form-ux" id="userInformationForm">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <div class="form-group">
-                            <label for="fullName">Full name</label>
-                            <input type="text " class="dns-form-control input-reverse" id="fullName"
-                              [(ngModel)]="user.name" formControlName="name" placeholder="Enter full name">
+      <div class="col-md-12">
+        <div class="dns-base-card">
+          <div class="dns-base-card-header pt-3" style="border-bottom-color: aliceblue;
+              border-bottom: 1px solid #8b8b8b;">
+            <ul class="nav nav-pills nav-pills-success nav-pills-icons justify-content-center" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link mb-1 active" style="color: whitesmoke;" data-toggle="tab" href="#link1"
+                  role="tablist"> User Information </a>
+              </li>
+              <li class="nav-item mb-1"><a class="nav-link" data-toggle="tab" style="color: whitesmoke;" href="#link2"
+                  role="tablist"> Company Information</a>
+              </li>
+              <li class="nav-item mb-1"><a class="nav-link" data-toggle="tab" style="color: whitesmoke;" href="#link3"
+                  role="tablist">Change Password</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="dns-base-card-content">
+            <div class="row mt-1">
+              <div class="col-md-8 ml-auto mr-auto">
+                <div class="tab-content">
+                  <div class="tab-pane active" id="link1">
+                    <div class="dns-base-card-header">
+                      <div class="row">
+                        <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
+                          <span class="mr-3 flex-2">User Information</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="dns-base-card-content">
+                      <form [formGroup]="userInfoForm" (ngSubmit)="userFormSubmit()">
+                        <div class="form-ux" id="userInformationForm">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <div class="form-group">
+                                  <label for="fullName">Full name</label>
+                                  <input type="text " class="dns-form-control input-reverse" id="fullName"
+                                    [(ngModel)]="user.name" formControlName="name" placeholder="Enter full name">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="dns-form-control input-reverse" id="email"
+                                  value={{user.username}} disabled>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="email">Email</label>
-                          <input type="email" class="dns-form-control input-reverse" id="email" value={{user.username}}
-                            disabled>
+                        <div class="form-group-sm has-default">
+                          <div class="input-group">
+                            <div class="col-md-12 text-right" style="width:100%;">
+                              <button type="submit" class="btns btn-teritary">Save</button>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                      <form [formGroup]="userPhoneForm">
+
+                        <div class="form-group-sm has-default">
+                          <div class="row">
+                            <div class="col-md-6 mt-4 text-danger">
+                              In order to login via two factor authentication and use sms service, enable 2FA feature.
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <ng-container *ngIf="user.gsmCode && user.gsm; else elseTemplate2FA">
+                                <label for="chk" class="dns-chk-label">
+                                  <span>Enable two factor Authentication</span>
+                                  <div class="dns-form-switch ml-5">
+                                    <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
+                                      <input type="checkbox" id="chk" checked (change)="change2FASubmit()">
+                                    </ng-container>
+                                    <ng-template #elseTemplate1>
+                                      <input type="checkbox" id="chk" (change)="change2FASubmit()">
+                                    </ng-template>
+                                    <i></i><span></span>
+                                  </div>
+                                </label>
+                              </ng-container>
+                              <ng-template #elseTemplate2FA>
+                                <p>Before using two factor authentication please enter a gsm number. </p>
+                              </ng-template>
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngIf="user.twoFactorAuthentication || user.gsm == null || user.gsm =='' ">
+
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="gsmCode">GSM Code</label>
+                                <select class="dns-form-control reverse-form" [(ngModel)]="gsmCodeTemp"
+                                  formControlName="gsmCode">
+                                  <option value="0" disabled selected>Select</option>
+                                  <option *ngFor="let pc of phoneNumberCodes" [(ngValue)]="pc.dial_code">
+                                    {{pc.name}} ( {{pc.dial_code}} )</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="gsm">GSM</label>
+                                <input type="tel" maxlength="10" name="gsm" class="dns-form-control input-reverse"
+                                  (keydown)="checkisTelNumber($event)" [(ngModel)]="phoneNumberTemp"
+                                  formControlName="gsm" placeholder="Enter GSM">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <button type="button" id="changePhoneBtn" disabled (click)="changePhoneNumber()"
+                                class="btns btn-teritary pull-right">Validate</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div id="smsValidationDiv" class="form-group-sm has-default" style="display: none;">
+                          <div class="row">
+                            <div class="col-md-6 text-center text-danger">
+                              <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="smsCode">SMS Code</label>
+                                <input type="text" class="dns-form-control input-reverse"
+                                  placeholder="SMS Validation Code" [(ngModel)]="smsCode" formControlName="smsCode">
+                              </div>
+                            </div>
+                            <div class="col-md-12">
+                              <button type="button" (click)="confirmGsm()"
+                                class="btns btn-teritary pull-right">Confirm</button>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+
+
+                    </div>
+                  </div>
+                  <div class="tab-pane" id="link2">
+                    <div class="dns-base-card-header">
+                      <div class="row">
+                        <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
+                          <span class="mr-3 flex-2">Company Information</span>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="form-group-sm has-default">
-                    <div class="input-group">
-                      <div class="col-md-12 text-right" style="width:100%;">
-                        <button type="submit" class="btns btn-teritary">Save</button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-                <form [formGroup]="userPhoneForm">
+                    <form [formGroup]="companyInfoForm" (ngSubmit)="companyFormSubmit()">
+                      <div class="dns-base-card-content">
+                        <div class="form-group dns-full-width">
+                          <label>Company Name</label>
+                          <input type="text" class="dns-form-control input-reverse" placeholder="Company Name"
+                            [(ngModel)]="signupUser.company.name" formControlName="companyName" />
+                        </div>
 
-                  <div class="form-group-sm has-default">
-                    <div class="row">
-                      <div class="col-md-6 mt-4 text-danger">
-                        In order to login via two factor authentication and use sms service, enable 2FA feature.
-                      </div>
-                      <div class="col-md-6 mt-4">
-                        <ng-container *ngIf="user.gsmCode && user.gsm; else elseTemplate2FA">
-                          <label for="chk" class="dns-chk-label">
-                            <span>Enable two factor Authentication</span>
-                            <div class="dns-form-switch ml-5">
-                              <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
-                                <input type="checkbox" id="chk" checked (change)="change2FASubmit()">
-                              </ng-container>
-                              <ng-template #elseTemplate1>
-                                <input type="checkbox" id="chk" (change)="change2FASubmit()">
-                              </ng-template>
-                              <i></i><span></span>
-                            </div>
-                          </label>
-                        </ng-container>
-                        <ng-template #elseTemplate2FA>
-                          <p>Before using two factor authentication please enter a gsm number. </p>
-                        </ng-template>
-                      </div>
-                    </div>
-                  </div>
-                  <div *ngIf="user.twoFactorAuthentication || user.gsm == null || user.gsm =='' ">
-
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="gsmCode">GSM Code</label>
-                          <select class="dns-form-control reverse-form" [(ngModel)]="gsmCodeTemp"
-                            formControlName="gsmCode">
-                            <option value="0" disabled selected>Select</option>
-                            <option *ngFor="let pc of phoneNumberCodes" [(ngValue)]="pc.dial_code">
-                              {{pc.name}} ( {{pc.dial_code}} )</option>
+                        <div class="form-group light-select dns-full-width">
+                          <label>Industry</label>
+                          <select class="dns-form-control reverse-form" [(ngModel)]="signupUser.company.industry"
+                            formControlName="industry">
+                            <option selected="selected">PleaseSpecify</option>
+                            <option value="Cloud Computing/Saas">Cloud Computing/Saas</option>
+                            <option value="Computer HW, SW">Computer HW, SW</option>
+                            <option value="Consumer Goods/Retail">Consumer Goods/Retail</option>
+                            <option value="Ecommerce/Online Advertising">Ecommerce/Online Advertising</option>
+                            <option value="Energy/Utility ">Energy/Utility</option>
+                            <option value="Financial Services/Insurance">Financial Services/Insurance</option>
+                            <option value="Healthcare/Lifesciences/Pharmaceuticals">
+                              Healthcare/Lifesciences/Pharmaceuticals
+                            </option>
+                            <option value="ISP / Hosting ">ISP / Hosting</option>
+                            <option value="IT Services">IT Services</option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Media/Entertainment">Media/Entertainment</option>
+                            <option value="Professional Services (Legal, Accounting, etc.) ">Professional
+                              Services (Legal,Accounting, etc.)</option>
+                            <option value="Telecommunications">Telecommunications</option>
+                            <option value="University">University</option>
+                            <option value="K12">K-12 Education</option>
+                            <option value="non-profits">Non-Profits</option>
+                            <option value="Other">Other</option>
                           </select>
                         </div>
-                      </div>
-                      <div class="col-md-6">
+
+                        <div class="row">
+                          <div class="col-8">
+                            <div class="form-group dns-full-width">
+                              <label>Web Site</label>
+                              <input type="text" class="dns-form-control input-reverse"
+                                [(ngModel)]="signupUser.company.url" formControlName="url" placeholder="Website URL" />
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="form-group dns-full-width">
+                              <label>Personnel</label>
+                              <select class="dns-form-control reverse-form"
+                                [(ngModel)]="signupUser.company.personnelCount" formControlName="personnelCount">
+                                <option selected>Please Specify</option>
+                                <option value="1-50">1-50</option>
+                                <option value="50-99">50-99</option>
+                                <option value="100-249">100-249</option>
+                                <option value="250-499">250-499</option>
+                                <option value="500-999">500-999</option>
+                                <option value="1000-2499">1000-2499</option>
+                                <option value="2500-4999">2500-4999</option>
+                                <option value="5000-9999">5000-9999</option>
+                                <option value="10000-19999">10000-19999</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group dns-full-width">
+                          <label>Block Message</label>
+                          <input type="text" class="dns-form-control input-reverse" placeholder="Block Message"
+                            [(ngModel)]="signupUser.company.blockMessage" formControlName="blockMessage" />
+                        </div>
                         <div class="form-group">
-                          <label for="gsm">GSM</label>
-                          <input type="tel" maxlength="10" name="gsm" class="dns-form-control input-reverse"
-                            (keydown)="checkisTelNumber($event)" [(ngModel)]="phoneNumberTemp" formControlName="gsm"
-                            placeholder="Enter GSM">
+                          <button class="btn btn-teritary pull-right">
+                            <i class="fa fa-save"></i>
+                            <span class="ml-3">Save</span>
+                          </button>
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <button type="button" id="changePhoneBtn" disabled (click)="changePhoneNumber()"
-                          class="btns btn-teritary pull-right">Validate</button>
-                      </div>
-                    </div>
+                    </form>
                   </div>
-                  <div id="smsValidationDiv" class="form-group-sm has-default" style="display: none;">
-                    <div class="row">
-                      <div class="col-md-6 text-center text-danger">
-                        <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="smsCode">SMS Code</label>
-                          <input type="text" class="dns-form-control input-reverse" placeholder="SMS Validation Code"
-                            [(ngModel)]="smsCode" formControlName="smsCode">
+                  <div class="tab-pane" id="link3">
+                    <div class="dns-base-card-header">
+                      <div class="row">
+                        <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
+                          <span class="mr-3 flex-2">Change Password</span>
                         </div>
                       </div>
-                      <div class="col-md-12">
-                        <button type="button" (click)="confirmGsm()"
-                          class="btns btn-teritary pull-right">Confirm</button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
 
-
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row mt-3">
-          <div class="col-md-12 ml-auto mr-auto">
-            <div class="dns-base-card">
-              <div class="dns-base-card-header">
-                <h5>Change Password</h5>
-              </div>
-              <div class="dns-base-card-content">
-                <form [formGroup]="changePasswordForm" (ngSubmit)="changePasswordFormSubmit()">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label for="currentPassword">Current Password</label>
-                        <input type="password" class="dns-form-control input-reverse" id="currentPassword"
-                          [(ngModel)]="currentPassword" formControlName="currentPassword"
-                          placeholder="Current Password">
-                      </div>
                     </div>
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label for="newPassword">New Password</label>
-                        <input type="password" class="dns-form-control input-reverse" id="newPassword"
-                          placeholder="New Password" [(ngModel)]="signupUser.password" formControlName="password">
-                      </div>
+                    <div class="dns-base-card-content">
+                      <form [formGroup]="changePasswordForm" (ngSubmit)="changePasswordFormSubmit()">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="currentPassword">Current Password</label>
+                              <input type="password" class="dns-form-control input-reverse" id="currentPassword"
+                                [(ngModel)]="currentPassword" formControlName="currentPassword"
+                                placeholder="Current Password">
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="newPassword">New Password</label>
+                              <input type="password" class="dns-form-control input-reverse" id="newPassword"
+                                placeholder="New Password" [(ngModel)]="signupUser.password" formControlName="password">
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="newPasswordAgain">Confirm New Password</label>
+                              <input type="password" class="dns-form-control input-reverse"
+                                placeholder="Confirm New Password" [(ngModel)]="signupUser.passwordAgain"
+                                formControlName="passwordAgain">
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <button type="submit" class="btns btn-teritary pull-right">Save</button>
+                          </div>
+                        </div>
+                      </form>
                     </div>
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label for="newPasswordAgain">Confirm New Password</label>
-                        <input type="password" class="dns-form-control input-reverse" placeholder="Confirm New Password"
-                          [(ngModel)]="signupUser.passwordAgain" formControlName="passwordAgain">
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                      <button type="submit" class="btns btn-teritary pull-right">Save</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12 ml-auto mr-auto">
-
-            <div class="dns-base-card">
-              <div class="dns-base-card-header">
-                <h5>Company Info</h5>
-              </div>
-              <form [formGroup]="companyInfoForm" (ngSubmit)="companyFormSubmit()">
-                <div class="dns-base-card-content">
-                  <div class="form-group dns-full-width">
-                    <label>Company Name</label>
-                    <input type="text" class="dns-form-control input-reverse" placeholder="Company Name"
-                      [(ngModel)]="signupUser.company.name" formControlName="companyName" />
-                  </div>
-
-                  <div class="form-group light-select dns-full-width">
-                    <label>Industry</label>
-                    <select class="dns-form-control reverse-form" [(ngModel)]="signupUser.company.industry"
-                      formControlName="industry">
-                      <option selected="selected">PleaseSpecify</option>
-                      <option value="Cloud Computing/Saas">Cloud Computing/Saas</option>
-                      <option value="Computer HW, SW">Computer HW, SW</option>
-                      <option value="Consumer Goods/Retail">Consumer Goods/Retail</option>
-                      <option value="Ecommerce/Online Advertising">Ecommerce/Online Advertising</option>
-                      <option value="Energy/Utility ">Energy/Utility</option>
-                      <option value="Financial Services/Insurance">Financial Services/Insurance</option>
-                      <option value="Healthcare/Lifesciences/Pharmaceuticals">Healthcare/Lifesciences/Pharmaceuticals
-                      </option>
-                      <option value="ISP / Hosting ">ISP / Hosting</option>
-                      <option value="IT Services">IT Services</option>
-                      <option value="Manufacturing">Manufacturing</option>
-                      <option value="Media/Entertainment">Media/Entertainment</option>
-                      <option value="Professional Services (Legal, Accounting, etc.) ">Professional
-                        Services (Legal,Accounting, etc.)</option>
-                      <option value="Telecommunications">Telecommunications</option>
-                      <option value="University">University</option>
-                      <option value="K12">K-12 Education</option>
-                      <option value="non-profits">Non-Profits</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-8">
-                      <div class="form-group dns-full-width">
-                        <label>Web Site</label>
-                        <input type="text" class="dns-form-control input-reverse" [(ngModel)]="signupUser.company.url"
-                          formControlName="url" placeholder="Website URL" />
-                      </div>
-                    </div>
-                    <div class="col-4">
-                      <div class="form-group dns-full-width">
-                        <label>Personnel</label>
-                        <select class="dns-form-control reverse-form" [(ngModel)]="signupUser.company.personnelCount"
-                          formControlName="personnelCount">
-                          <option selected>Please Specify</option>
-                          <option value="1-50">1-50</option>
-                          <option value="50-99">50-99</option>
-                          <option value="100-249">100-249</option>
-                          <option value="250-499">250-499</option>
-                          <option value="500-999">500-999</option>
-                          <option value="1000-2499">1000-2499</option>
-                          <option value="2500-4999">2500-4999</option>
-                          <option value="5000-9999">5000-9999</option>
-                          <option value="10000-19999">10000-19999</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group dns-full-width">
-                    <label>Block Message</label>
-                    <input type="text" class="dns-form-control input-reverse" placeholder="Block Message"
-                      [(ngModel)]="signupUser.company.blockMessage" formControlName="blockMessage" />
-                  </div>
-                  <div class="form-group">
-                    <button class="btn btn-teritary pull-right">
-                      <i class="fa fa-save"></i>
-                      <span class="ml-3">Save</span>
-                    </button>
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
 
           </div>
+
         </div>
+
       </div>
     </div>
+
+
   </div>
 </div>
