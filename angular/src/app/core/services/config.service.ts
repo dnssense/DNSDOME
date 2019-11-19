@@ -14,6 +14,8 @@ export class ConfigHost{
   title:string;
   privacyUrl:string;
   captcha_key:string;
+  docUrl:string;
+  portal:string;
 }
 
 @Injectable({
@@ -34,7 +36,8 @@ export class ConfigService {
       this.host.title="DnsSense";
       this.host.privacyUrl='https://www.dnssense.com/privacy-statement.htm';
       this.host.captcha_key='6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
-
+      this.host.docUrl = 'http://docs.dnssense.com/DnsSense_Secure_DNS_Setup_Guide.pdf';
+      this.host.portal = 'https:portal.dnssense.com';
     }else if (window.location.host.indexOf("cyte") >= 0) {
       this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'DNSCyte';
@@ -45,6 +48,8 @@ export class ConfigService {
       this.host.title="DnsCyte";
       this.host.privacyUrl='https://www.cybercyte.com/privacy-and-cookie-policy/';
       this.host.captcha_key='6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';// dnccyte için yenisi gerekli
+      this.host.docUrl='http://docs.netcyte.co/Secure_DNS_Setup_Guide.pdf';
+      this.host.portal = 'https:portal.dnscyte.com';
     } else
       if (window.location.host.indexOf("roksit") >= 0) {
         this.host.www = 'https://www.roksit.com';
@@ -56,6 +61,8 @@ export class ConfigService {
         this.host.title='Roksit';
         this.host.privacyUrl='https://www.roksit.com/privacy-statement.htm';
         this.host.captcha_key='6LdZopwUAAAAALG7uO9JV88w2y9sQnTJ9M0Lqhrg';
+        this.host.docUrl = 'http://docs.roksit.com/Roksit_Secure_DNS_Setup_Guide.pdf';
+        this.host.portal = 'https:portal.roksit.com';
       } else {
        /*  this.host.www = 'https://www.roksit.com';
         this.host.brand = 'Roksit';
@@ -71,6 +78,8 @@ export class ConfigService {
         this.host.title='DnsSense';
         this.host.privacyUrl='https://www.dnssense.com/privacy-statement.htm';
         this.host.captcha_key='6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
+        this.host.docUrl = 'http://docs.dnssense.com/DnsSense_Secure_DNS_Setup_Guide.pdf';
+        this.host.portal = 'https:portal.dnssense.com';
       }
   }
 

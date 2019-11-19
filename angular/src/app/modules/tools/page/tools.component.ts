@@ -50,10 +50,6 @@ export class ToolsComponent {
                     }
                 } this.isDomainForReq = res;
             }
-
-
-
-
         }
     }
 

@@ -12,7 +12,7 @@
                 <div class="card-header" role="tab" id="heading1" style="background-color: transparent;">
                   <h5 class="mb-0">
                     <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1"
-                      style="color:#f5f5f5" class="collapsed">
+                      style="color:#f5f5f5" class="collapsed btns btn-success">
                       How DNS Forwarding Works?
                       <i class="material-icons">keyboard_arrow_down</i>
                     </a>
@@ -25,8 +25,8 @@
                     Applications can not communicate if they can not resolve the IP address of the domain they want to
                     access. Because of this providing security over DNS is very effective.
 
-                    DNSCyte Secure DNS service handles DNS requests from its users and redirects malicious requests that
-                    are not allowed to access to the DNSCyte sinkhole IP address. This way, harmful traffic is stopped
+                    {{brand}} Secure DNS service handles DNS requests from its users and redirects malicious requests that
+                    are not allowed to access to the {{brand}} sinkhole IP address. This way, harmful traffic is stopped
                     before it even begins.
                   </div>
                 </div>
@@ -35,7 +35,7 @@
                 <div class="card-header" role="tab" id="heading4" style="background-color: transparent;">
                   <h5 class="mb-0">
                     <a data-toggle="collapse" href="#collapse4" aria-expanded="true" aria-controls="collapse4"
-                      style="color:#f5f5f5" class="collapsed">
+                      style="color:#f5f5f5" class="collapsed btns btn-success">
                       How Can I implement DNS Forwarding?
                       <i class="material-icons">keyboard_arrow_down</i>
                     </a>
@@ -45,14 +45,14 @@
                   style="padding: 10px">
                   <div class="card-body">
                     <ol start="1" type="1">
-                      <li>Open an account from <a href="http://portal.dnscyte.com/"
-                          target="_blank">portal.dnscyte.com</a>
+                      <li>Open an account from <a href="{{siteUrl}}"
+                          target="_blank">{{siteUrl}}</a>
                       </li>
-                      <li>Click the "Register" button at <a href="https://portal.dnscyte.com/#/register"
-                          target="_blank">https://portal.dnscyte.com</a> and fill out the
+                      <li>Click the "Register" button at <a href="{{siteUrl}}/#/register"
+                          target="_blank">{{siteUrl}}</a> and fill out the
                         form. All you need is to register an email address.</li>
                       <li>Identify your external IP Address and security policy from the portal.</li>
-                      <li>The DNSCyte user portal is designed to be extremely easy to configure. Use Deployment ->
+                      <li>The {{brand}} user portal is designed to be extremely easy to configure. Use Deployment ->
                         Public IP
                         menu to define the external address.</li>
                       <li>Select a profile from the profile list that you think is appropriate, or click "New Profile"
@@ -60,18 +60,18 @@
                         create a
                         new profile</li>
                       <li>Save your settings by clicking the Save Button.</li>
-                      <li>Enable devices on your network to use DNSCyte DNS Servers. Steps to enable this is based on
+                      <li>Enable devices on your network to use {{brand}} DNS Servers. Steps to enable this is based on
                         how DNS is configured in your organisation.
                         <ul>
-                          <li><strong>- DNSCyte DNS Servers are 199.244.90.90 and 199.244.90.91</strong></li>
-                          <li>- If you use a local DNS server, you must define DNSCyte DNS IP Addresses as forwarder DNS on your local DNS Server.</li>
-                          <li>- If you do not use Local DNS, you must deploy DNSCyte DNS IP addresses as the DNS Server IP Address over DHCP.</li>
+                          <li><strong>- {{brand}} DNS Servers are 199.244.90.90 and 199.244.90.91</strong></li>
+                          <li>- If you use a local DNS server, you must define {{brand}} DNS IP Addresses as forwarder DNS on your local DNS Server.</li>
+                          <li>- If you do not use Local DNS, you must deploy {{brand}} DNS IP addresses as the DNS Server IP Address over DHCP.</li>
                         </ul>
                       </li>
                     </ol>
                     <ol start="8" type="1">
-                      <li>Please refer “DNSCyte Secure DNS Setup Guide(PDF)” for more details. You can download it from
-                        <a download href="http://docs.netcyte.co/Secure_DNS_Setup_Guide.pdf" target="_blank">here</a>
+                      <li>Please refer “{{brand}} Secure DNS Setup Guide(PDF)” for more details. You can download it from
+                        <a download href="{{docUrl}}" target="_blank">here</a>
                       </li>
                       <li>For roaming clients you can download the Windows Client from Deployment -> Roaming Client menu
                         inside the GUI.</li>
@@ -83,7 +83,7 @@
                 <div class="card-header" role="tab" id="headingOne" style="background-color: transparent;">
                   <h5 class="mb-0">
                     <a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
-                      style="color:#f5f5f5" class="collapsed">
+                      style="color:#f5f5f5" class="collapsed btns btn-success">
                       How Can I Define New Agent?
                       <i class="material-icons">keyboard_arrow_down</i>
                     </a>
@@ -103,7 +103,7 @@
                 <div class="card-header" role="tab" id="heading2" style="background-color: transparent;">
                   <h5 class="mb-0">
                     <a data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapse2"
-                      style="color:#f5f5f5" class="collapsed">
+                      style="color:#f5f5f5" class="collapsed btns btn-success">
                       How Can I Define Security Profiles?
                       <i class="material-icons">keyboard_arrow_down</i>
                     </a>
@@ -121,7 +121,7 @@
                 <div class="card-header" role="tab" id="heading3" style="background-color: transparent;">
                   <h5 class="mb-0">
                     <a data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapse3"
-                      style="color:#f5f5f5" class="collapsed">
+                      style="color:#f5f5f5" class="collapsed btns btn-success">
                       How Can I activate Two Factor Authentication (2FA)?
                       <i class="material-icons">keyboard_arrow_down</i>
                     </a>
@@ -139,7 +139,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="row">
           <div class="col-md-9 ml-auto mr-auto mt-4">
             <!-- <iframe width="420" height="315" style="border-radius: 5px;"

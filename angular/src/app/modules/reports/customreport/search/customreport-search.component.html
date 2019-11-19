@@ -63,7 +63,7 @@
                     <button class="btns reverse-form dropdown-toggle text-left btnOverFlow" type="button"
                         id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                         <img src="assets/images/icons/calendar.svg">
-                        <span [ngSwitch]="searchSetting.dateInterval">
+                        <span [ngSwitch]="searchSetting.dateInterval" title="{{searchSetting.dateInterval}}">
                             <ng-container *ngSwitchCase="5">
                                 Last 5 minutes
                             </ng-container>
@@ -92,7 +92,12 @@
                                 Last 1 week
                             </ng-container>
                             <ng-container *ngSwitchDefault>
-                                {{searchStartDate}} - {{searchEndDate}}
+                                <ng-container *ngIf="searchSetting.dateInterval>0; else customIntervalTempl">
+                                    Last {{searchSetting.dateInterval}} minutes
+                                </ng-container>
+                                <ng-template #customIntervalTempl>
+                                    {{searchStartDate}} - {{searchEndDate}}
+                                </ng-template>
                             </ng-container>
                         </span>
                         <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>

@@ -69,12 +69,10 @@ export class CustomReportResultComponent implements OnDestroy {
   }
 
   public search(searchSetting: SearchSetting) {
-
     this.firstDate = searchSetting.dateInterval;
+
     this.drawChart(searchSetting);
     this.fillResultTable(searchSetting);
-
-
   }
 
   fillResultTable(searchSetting: SearchSetting) {

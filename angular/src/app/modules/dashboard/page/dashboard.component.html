@@ -57,7 +57,10 @@
                         <td>
                           <div class="row">
                             <div class="col-md-6 text-right">
-                              <span class="size-20">{{ds.totalBlockCountForDashboard | number}}</span>
+                              <span class="size-20">
+                                <a class="linkNumber" (click)="showInReport('block')" title="Show Details">
+                                  {{ds.totalBlockCountForDashboard | number}}
+                                </a></span>
                             </div>
                             <div class="col-md-6 text-left">
                               <ng-container
@@ -240,16 +243,13 @@
                               Today
                             </ng-container>
                             <ng-container *ngSwitchCase="1">
-                              Yesterday
+                              Last 2 Days
                             </ng-container>
                             <ng-container *ngSwitchCase="2">
-                              2 Days Ago
+                              Last 3 Days
                             </ng-container>
-                            <ng-container *ngSwitchCase="7">
+                            <ng-container *ngSwitchCase="6">
                               Last Week
-                            </ng-container>
-                            <ng-container *ngSwitchCase="14">
-                              Last 14 Days
                             </ng-container>
                           </span>
                           <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
@@ -275,17 +275,14 @@
                                 Today
                               </button>
                               <button class="dropdown-item" (click)="changeDateParameter(1)">
-                                Yesterday
+                                Last 2 Days
                               </button>
                               <button class="dropdown-item" (click)="changeDateParameter(2)">
-                                2 Days Ago
+                                Last 3 Days
                               </button>
-                              <!-- <button class="dropdown-item" (click)="changeDateParameter(7)">
+                              <button class="dropdown-item" (click)="changeDateParameter(6)">
                                 Last Week
                               </button>
-                              <button class="dropdown-item" (click)="changeDateParameter(14)">
-                                Last 14 Days
-                              </button> -->
                             </div>
                             <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel"
                               aria-labelledby="profile-tab">
@@ -381,7 +378,7 @@
             </div>
           </div>
           <div class="dns-base-card-content">
-            <div class="chart" style="min-height: 300px; margin-bottom: -18px; margin-top:-40px;">
+            <div class="chart" style="min-height: 300px; margin-bottom: -18px; margin-top:-10px;">
               <div id="hitChartDiv">
                 <div id="trafficChartHits"></div>
               </div>
@@ -400,9 +397,7 @@
           <div class="dns-base-card-content">
             <div class="card card-chart mb-2" style="box-shadow: none; background-color: #262626">
               <div class="card-body">
-                <div #worldMap id="worldMap" class="map" style="max-height: 220px;"></div>
-
-                <!-- </div> -->
+                <div #worldMap id="worldMap" class="map" style="max-height: 250px;"></div>
               </div>
             </div>
           </div>
@@ -459,7 +454,7 @@
 
           </div>
           <div class="dns-base-card-content">
-            <div class="chart" style="min-height: 200px; margin-top:-40px;">
+            <div class="chart" style="min-height: 200px; margin-top:-10px;">
               <div id="uniqueDomainChartDiv">
                 <div id="uniqueDomainChart"></div>
               </div>

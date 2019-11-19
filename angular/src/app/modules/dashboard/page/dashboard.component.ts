@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DashBoardService } from 'src/app/core/services/DashBoardService';
 import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -8,11 +8,12 @@ import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { DashboardStats } from 'src/app/core/models/DashboardStats';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import * as introJs from 'intro.js/intro.js';
 import { Router } from '@angular/router';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { MonitorService } from 'src/app/core/services/MonitorService';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
+import { CustomReportService } from 'src/app/core/services/CustomReportService';
+import { AggregationItem } from 'src/app/core/models/AggregationItem';
+import { LogColumn } from 'src/app/core/models/LogColumn';
 
 declare let $: any;
 declare let moment: any;
@@ -21,15 +22,13 @@ declare let moment: any;
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.css']
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements AfterViewInit {
 
   elasticData: ElasticDashboardResponse[];
   dateParameter: number = 0;
   ds: DashboardStats = new DashboardStats();
   searchKey: string;
-  public labelArray = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
-    '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'];
-
+  labelArray: string[] = []
   categoryList = [];
   categoryListFiltered = [];
   selectedCategoryForTraffic = CategoryV2;
@@ -39,20 +38,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   trafficChartType: string = 'hit';
   uniqueChartType: string = 'domain';
 
-  constructor(private dashboardService: DashBoardService, private datePipe: DatePipe, private authService: AuthenticationService,
+  constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router,
-    private agentService: AgentService) {
+    private agentService: AgentService, private customReportService: CustomReportService) {
 
     let roleName: string = this.authService.currentSession.currentUser.roles.name;
     //agent yoksa public ip sayfasına yönlendir
     this.agentService.getAgents().subscribe(res => {
-
       if ((res == null || res.length < 1) && roleName != 'ROLE_USER') {// if there is no agent and role is not user redirect
         this.router.navigateByUrl('/admin/publicip');
       } else {
         this.selectedCategoryForTraffic = null;
         this.selectedCategoryForUnique = null;
-
         this.staticService.getCategoryList().subscribe(res => {
           this.categoryList = res;
           this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
@@ -60,16 +57,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
         this.elasticData = [];
         this.ds = new DashboardStats();
-
-        this.getElasticData(Date.now());
+        this.changeDateParameter(0);
       }
     });
-
-    //this.prepareWorldMap();
-  }
-
-  ngOnInit(): void {
-    this.prepareWorldMap();
   }
 
   ngAfterViewInit(): void {
@@ -78,117 +68,108 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   prepareWorldMap() {
     let values: Map<string, number> = new Map();
-    values.set('ru', 234);
-    values.set('ca', 154);
-    values.set('us', 834);
-    values.set('br', 128);
-    values.set('tr', 500);
-    values.set('fr', 400);
-    values.set('it', 200);
-    values.set('au', 320);
-    values.set('bg', 340);
-    values.set('cn', 340);
-    values.set('cd', 240);
-    values.set('de', 740);
-    values.set('bi', 340);
+    let searchSetting = new SearchSetting();
+    let col: LogColumn = { name: "destinationIpCountryCode", beautyName: "Dst.Country", hrType: "COUNTRY_FLAG", aggsType: "TERM", checked: true };
+    let item = new AggregationItem(col, col.beautyName);
+    searchSetting.columns.columns.push(item);
+    searchSetting.topNumber = 250
+    searchSetting.dateInterval = '5'
+    const time = this.dateParameter.toString()
+    if (time == '0') {
+      let d = new Date();
+      searchSetting.dateInterval = ((d.getHours() * 60) + d.getMinutes()).toString();
+    } else if (time == '-1') {
+      searchSetting.dateInterval = '60';
+    } else if (time == '1' || time == '2' || time == '3' || time == '6' || time == '7') {
+      let d1 = new Date();
+      let d2 = new Date();
+      d1.setDate(d1.getDate() - Number(time))
+      let startDate = moment(new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+      let endDate = moment(new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(), 23, 59, 59), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+      const dateVal = startDate + ' - ' + endDate;
+      searchSetting.dateInterval = dateVal;
+    } else {
+      searchSetting.dateInterval = time;
+    }
 
-    $('#worldMap').vectorMap({
-      map: 'world_en',
-      backgroundColor: 'transparent',
-      borderColor: '#818181',
-      borderOpacity: 0.9,
-      borderWidth: 1,
-      color: '#b3b3b3',
-      enableZoom: true,
-      zoomButtons: true,
-      zoomMin: 1, zoomMax: 8, zoomStep: 1.6,
-      hoverColor: '#eee',
-      scaleColors: ['#b6d6ff', '#005ace'],
-      selectedColor: '#c9dfaf',
-      selectedRegions: false,
-      showTooltip: false,
-      series: {
-        regions: [{
-          values: values,
-          scale: ['#C8EEFF', '#0071A4'],
-          normalizeFunction: 'polynomial'
-        }]
-      },
-      onRegionOver: function (e, code, region) {
-      },
-      onRegionClick: function (e, code, region) {
-        e.preventDefault();
-        var message = region + ' : value:' + values.get(code);
+    this.customReportService.getData(searchSetting).subscribe(res => {
+      if (res instanceof Array) {
+        for (let i = 0; i < res.length; i++) {
+          values.set(res[i][0].toLowerCase(), Number(res[i][1]));
+        }
+
+        var max = 0, min = Number.MAX_VALUE, cc, startColor = [200, 238, 255], endColor = [0, 100, 145], colors = <any>{}, hex;
+
+        values.forEach((value: number, key: string) => {
+          if (value > max) { max = value }
+          if (value < min) { min = value }
+        });
+        values.forEach((value: number, key: string) => {
+          if (value > 0) {
+            colors[key] = '#';
+            for (var i = 0; i < 3; i++) {
+              hex = Math.round(startColor[i] + (endColor[i] - startColor[i]) * (value == max ? 1 : (value / (max - min)))).toString(16);
+              if (hex.length == 1) { hex = '0' + hex; }
+              colors[key] += (hex.length == 1 ? '0' : '') + hex;
+            }
+          }
+        });
+
+        $('#worldMap').vectorMap({
+          map: 'world_en',
+          backgroundColor: 'transparent',
+          borderColor: '#818181',
+          borderOpacity: 0.25,
+          borderWidth: 1,
+          color: '#f4f3f0',
+          enableZoom: true,
+          hoverColor: '#c9dfaf',
+          showTooltip: true,
+          colors: colors,
+          series: {
+            regions: [{
+              values: values,
+              scale: ['#C8EEFF', '#0071A4'],
+              normalizeFunction: 'polynomial'
+            }]
+          },
+          onRegionClick: (element, code, region) => {
+            let elements = $('.jqvmap-label')
+            if (elements && elements.length > 0) {
+              for (let i = 0; i < elements.length; i++) {
+                const e = elements[i];
+                e.style.display = "none"
+              }
+            }
+            this.showInReport('map' + code)
+          },
+          onLabelShow: function (event, label, code) {
+            label[0].innerText = label[0].innerText + ' : ' + (values.has(code) ? values.get(code) : 0);
+          }
+        });
       }
     });
 
-    window.setTimeout(function () {
-      values.forEach((value: number, key: string) => {
-        var element = document.getElementById('jqvmap1_' + key);
-
-        if (element) {
-          if (value < 300) {
-            element.setAttribute('fill', '#6c84fa');
-          } else {
-            element.setAttribute('fill', '#4c546a');
-          }
-          element.title = value.toString();
-        }
-      });
-
-    }, 1000);
   }
 
-  private getElasticData(d: number) {
-    //let today = new Date(); todayi d2 ye atayıp aradaki farkı getirecek şekilde dönüştür.
-    const date = new Date(d);
-
-    let d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-    let d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-
-    //Below code gets map data
-    // let ss = new SearchSetting();
-    // let startDate = d1 == null ? '' : moment(d1, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-    // let endDate = d2 == null ? '' : moment(d2, 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-    // const dateVal = startDate + ' - ' + endDate;
-    // ss.dateInterval = dateVal;
-
-    // bu metotta paging var ülkelere göre group by yapıp count donecek yeni api lazım
-    // this.monitorService.getGraphData(ss, 0).subscribe((res: Response) => {
-    //   let tableData = res['result'];
-    //   console.log(res);
-
-    //   console.log(tableData);
-    // });
-
-
-    this.dashboardService.getHourlyCompanySummary(d1.toISOString(), d2.toISOString()).subscribe(res => {
+  private getElasticData(d1: string, d2: string) {
+    this.dashboardService.getHourlyCompanySummary(d1, d2).subscribe(res => {
       this.elasticData = res;
-      this.elasticData.forEach(d => { d.hourIndex = new Date(d.time_range.gte).getHours(); });
-      this.elasticData.sort((x, y) => { return x.hourIndex - y.hourIndex; });
+      this.elasticData.sort((x, y) => { return new Date(x.date).getTime() - new Date(y.date).getTime(); });
       this.createCharts();
     });
-  }
-
-  changeDateParameter(param: number) {
-    this.dateParameter = param;
-    if (param == -1) {
-      param = 0;
-    }
-    let today = new Date();
-
-    this.getElasticData(new Date().setDate(today.getDate() - param));
   }
 
   createCharts() {
     this.ds = new DashboardStats();
     let sRCounter = 0, mTotalAverages = 0, uSRCounter = 0, uSRAverages = 0, grayCounter = 0, grayTotalAverages = 0,
       uGrayCounter = 0, uGrayCounterAverages = 0;
-
+    this.labelArray = [];
     const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
 
     for (let i = indexLimit; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
+      this.labelArray.push(moment(data.date).format('YYYY-MM-DDTHH:mm:ss.sssZ'))
       this.ds.totalHitCountForDashboard += data.total_hit;
       this.ds.totalBlockCountForDashboard += data.blocked_count;
       this.ds.totalUniqueBlockedDomainForDashboard += data.unique_blocked_domain;
@@ -235,7 +216,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.riskScore = Math.round(100 * ((2 * this.ds.uSecurityRiskCountForDashboard) + this.ds.uGrayCountForDashboard) / this.ds.totalUniqueDomain);
     }
 
-
     if (this.elasticData && this.elasticData.length > 0) {
       this.ds.totalHitCountForDashboardDelta = this.calculatePercentage(this.ds.hitAverages.reduce((a, b) => a + b), this.ds.totalHitCountForDashboard);
       this.ds.totalBlockCountForDashboardDelta = this.calculatePercentage(this.ds.blockAverages.reduce((a, b) => a + b), this.ds.totalBlockCountForDashboard);
@@ -252,19 +232,24 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // Total Traffic Chart
     var trafficChartoptions = {
       chart: {
-        height: 310, type: 'line', zoom: { enabled: false },
-        foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } },
+        height: 310, type: 'line', foreColor: '#9b9b9b',
+        toolbar: { tools: { download: false, pan: false } },
+        events: {
+          zoomed: (chartContext, { xaxis, yaxis }) => {
+            this.updateCharts(xaxis.min, xaxis.max);
+          }
+        }
       },
       dataLabels: { enabled: false },
-      stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 6] },
+      stroke: { width: [3, 3], curve: 'smooth' },
       colors: ['#9d60fb', '#4a90e2'],
       series: [{ data: [1] }, { data: [1] }],
       markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
+      xaxis: { type: 'datetime', categories: this.labelArray, tickAmount: 1, style: { color: '#f0f0f0' } },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
-      tooltip: { theme: 'dark' }
+      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' }
     }
     this.trafficChart = new ApexCharts(document.querySelector("#trafficChartHits"), trafficChartoptions);
     this.trafficChart.render();
@@ -272,14 +257,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     //Uniquer Domain Chart
     var uniqueDomainOptions = {
-      chart: { height: 280, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
+      chart: {
+        height: 280, type: 'line', foreColor: '#9b9b9b',
+        toolbar: { tools: { download: false, pan: false } },
+        events: {
+          zoomed: (chartContext, { xaxis, yaxis }) => {
+            this.updateCharts(xaxis.min, xaxis.max);
+          }
+        }
+      },
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
       series: [{ data: [1] }, { data: [1] }],
       markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
-      tooltip: { theme: 'dark' },
+      xaxis: { type: 'datetime', categories: this.labelArray, labels: { minHeight: 20 } },
+      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
@@ -290,14 +283,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     //Unique Subdomain Chart
     var uniqueSubdomainChartOptions = {
-      chart: { height: 280, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
+      chart: {
+        height: 280, type: 'line', foreColor: '#9b9b9b',
+        toolbar: { tools: { download: false, pan: false } },
+        events: {
+          zoomed: (chartContext, { xaxis, yaxis }) => {
+            this.updateCharts(xaxis.min, xaxis.max);
+          }
+        }
+      },
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
       series: [{ data: [1] }, { data: [1] }],
       markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
-      tooltip: { theme: 'dark' },
+      xaxis: { type: 'datetime', categories: this.labelArray, labels: { minHeight: 20 } },
+      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
@@ -308,14 +309,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // Unique Dest Ip Chart
     var uniqueDestIpChartOptions = {
-      chart: { height: 280, type: 'line', zoom: { enabled: false }, foreColor: '#9b9b9b', toolbar: { show: false, tools: { download: false } }, },
+      chart: {
+        height: 280, type: 'line', foreColor: '#9b9b9b',
+        toolbar: { tools: { download: false, pan: false } },
+        events: {
+          zoomed: (chartContext, { xaxis, yaxis }) => {
+            this.updateCharts(xaxis.min, xaxis.max);
+          }
+        }
+      },
       dataLabels: { enabled: false },
       stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
       colors: ['#9d60fb', '#4a90e2'],
       series: [{ data: [1] }, { data: [1] }],
       markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { categories: this.labelArray, labels: { minHeight: 20 } },
-      tooltip: { theme: 'dark' },
+      xaxis: { type: 'datetime', categories: this.labelArray, labels: { minHeight: 20 } },
+      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
       grid: { borderColor: '#626262', strokeDashArray: 6, },
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
@@ -357,6 +366,32 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     var gaugeChart = new ApexCharts(document.querySelector("#gaugeChart"), gaugeOptions);
     gaugeChart.render();
     gaugeChart.updateSeries([this.ds.riskScore])
+
+  }
+
+  changeDateParameter(param: number) {
+    this.dateParameter = param;
+    if (param == -1) {
+      param = 0;
+    }
+    let today = new Date();
+    let d1 = new Date();
+    d1.setDate(d1.getDate() - param);
+    d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0);
+    let d2 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+
+    this.getElasticData(d1.toISOString(), d2.toISOString());  
+    this.prepareWorldMap();  
+  }
+
+  updateCharts(min: any, max: any) {
+    if (min && max) {
+      let md = new Date(min);
+      let mxd = new Date(max);
+      this.getElasticData(md.toISOString(), mxd.toISOString());
+    } else {
+      this.changeDateParameter(0);
+    }
 
   }
 
@@ -464,11 +499,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   showInReport(param: string) {
-    if (param == 'securityRisk') {
-      localStorage.setItem('dashboardParam', param + '&' + this.dateParameter)
-    } else if (param == 'gray') {
-      localStorage.setItem('dashboardParam', param + '&' + this.dateParameter)
-    } 
+    localStorage.setItem('dashboardParam', param + '&' + this.dateParameter);
     this.router.navigate(['/admin/reports/customreport']);
   }
 }

@@ -93,6 +93,7 @@
     "ErrUserTooManyRequests": "You created too many requests!",
     "ErrUserPasswordPolicy": "Password is not appropriate for security policy!",
     "ErrUserMaxLimitReached": "Max limit of requests exceeded!",
+    "ErrDashboardInternalError":"Dashboard data could not get",
     "FORGOTPASSWORD": {
         "Title": "Change Password"
     }

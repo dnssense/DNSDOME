@@ -16,3 +16,17 @@
 .linkNumber:hover {
     text-decoration: underline !important;
  }
+
+.jqvmap-label {
+  position: absolute;
+  display: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: #292929;
+  color: #fff;
+  font-family: sans-serif,Verdana;
+  font-size: smaller;
+  padding: 3px;
+  pointer-events: none;
+ }

@@ -106,11 +106,44 @@ export class ForgotPasswordConfirmComponent implements OnInit, OnDestroy {
   }
 
 
+  passStrength = 0;
+  numStrength = false;
+  upStrength = false;
+  lowStrength = false;
+  lengthStrength = false;
+  checkPasswordStrength() {
+    this.passStrength = 0;
+    this.numStrength = false;
+    this.upStrength = false;
+    this.lowStrength = false;
+    this.lengthStrength = false;
+
+    if (this.model.password) {
+      if (this.model.password.length > 7) {
+        this.passStrength++;
+        this.lengthStrength = true;
+      }
+      if (/[a-z]/.test(this.model.password)) {
+        this.passStrength++;
+        this.lowStrength = true;
+      }
+      if (/[A-Z]/.test(this.model.password)) {
+        this.passStrength++;
+        this.upStrength = true;
+      }
+      if (/[0-9]/.test(this.model.password)) {
+        this.passStrength++;
+        this.numStrength = true;
+      }
+
+      if (this.passStrength > 3) {
+        $('#passDetails').hide(300);
+      }else{
+        $('#passDetails').show(300);
+      }
+    }
 
 
-
-
-
-
+  }
 
 }

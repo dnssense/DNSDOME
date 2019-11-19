@@ -1,9 +1,5 @@
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import {
-  HttpClient,
-  HttpClientModule,
-  HTTP_INTERCEPTORS
-} from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -11,20 +7,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 import {
-  BsDropdownModule,
-  BsModalService,
-  CollapseModule,
-  ModalModule,
-  PaginationModule,
-  PopoverModule,
-  TabsModule,
-  TooltipModule
+  BsDropdownModule, BsModalService, CollapseModule, ModalModule, PaginationModule,
+  PopoverModule, TabsModule, TooltipModule
 } from 'ngx-bootstrap';
-import {
-  NgxUiLoaderHttpModule,
-  NgxUiLoaderModule,
-  NgxUiLoaderRouterModule
-} from 'ngx-ui-loader';
+import { NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule } from 'ngx-ui-loader';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './core/guards/AuthGuard';
@@ -43,9 +29,6 @@ import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
 import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
 import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
 import { NotificationModule } from './modules/shared/notification/notification.module';
-
-import { FooterModule } from './modules/shared/footer/footer.module';
-
 
 @NgModule({
   declarations: [AppComponent],

@@ -3,7 +3,6 @@ import { Response } from '@angular/http';
 import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ErrorService } from './ErrorService';
-import { Constants } from 'src/app/Constants';
 import { Category } from '../models/Category';
 import { WApplication } from '../models/WApplication';
 import { SearchSetting } from '../models/SearchSetting';

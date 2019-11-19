@@ -4,7 +4,7 @@ import { LogColumn } from 'src/app/core/models/LogColumn';
 import { Category } from 'src/app/core/models/Category';
 import { WApplication } from 'src/app/core/models/WApplication';
 import { Subject, Subscription, Observable } from 'rxjs';
-import { ArrayUtils } from 'src/app/ArrayUtils';
+import { ArrayUtils } from 'src/app/core/ArrayUtils';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { LocationsService } from 'src/app/core/services/LocationService';
 import { CustomReportService } from 'src/app/core/services/CustomReportService';

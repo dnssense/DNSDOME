@@ -14,7 +14,6 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
 import { ReCaptchaComponent, ReCaptchaModule } from 'angular2-recaptcha';
 import { FooterModule } from '../shared/footer/footer.module';
-import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 
 
 @NgModule({
@@ -27,7 +26,6 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     TagInputModule,
     MaterialModule,
     ReCaptchaModule,
-    MatPasswordStrengthModule,
     RegisterRoutingModule,
     FooterModule,
     TranslateModule.forChild({

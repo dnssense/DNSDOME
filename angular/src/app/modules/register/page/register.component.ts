@@ -23,7 +23,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 @Component({
   selector: 'app-register',
-  templateUrl: 'register.component.html'
+  templateUrl: 'register.component.html',
+  styleUrls: ['register.component.sass']
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   private toggleButton: any;
@@ -35,7 +36,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private privacyPolicy: boolean = false;
   private captcha: string;
   public host: ConfigHost;
-  public captcha_key: string = ""// "6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58";//"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";// TODO: environment.API_CAPTCHA_KEY; servis tarafındaki key ile eşleşmeli
+  public captcha_key: string = ""
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
   emailFormControl = new FormControl('', [
@@ -222,14 +223,51 @@ export class RegisterComponent implements OnInit, OnDestroy {
         rUser.brand = 'DNSCyte';
       }
 
-
       this.accountService.signup(rUser).subscribe(res => {
-
         this.notification.success("Registered successfuly, check your email and active your account");
         this.router.navigateByUrl('/login');
-
       });
     }
+
+  }
+
+  passStrength = 0;
+  numStrength = false;
+  upStrength = false;
+  lowStrength = false;
+  lengthStrength = false;
+  checkPasswordStrength() {
+    this.passStrength = 0;
+    this.numStrength = false;
+    this.upStrength = false;
+    this.lowStrength = false;
+    this.lengthStrength = false;
+
+    if (this.user.password) {
+      if (this.user.password.length > 7) {
+        this.passStrength++;
+        this.lengthStrength = true;
+      }
+      if (/[a-z]/.test(this.user.password)) {
+        this.passStrength++;
+        this.lowStrength = true;
+      }
+      if (/[A-Z]/.test(this.user.password)) {
+        this.passStrength++;
+        this.upStrength = true;
+      }
+      if (/[0-9]/.test(this.user.password)) {
+        this.passStrength++;
+        this.numStrength = true;
+      }
+
+      if (this.passStrength > 3) {
+        $('#passDetails').hide(300);
+      }else{
+        $('#passDetails').show(300);
+      }
+    }
+
 
   }
 

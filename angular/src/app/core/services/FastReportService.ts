@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import 'rxjs/Rx';
 import { BehaviorSubject, Observable } from 'rxjs/Rx';
-import { Constants } from 'src/app/Constants';
 import { ConfigItem } from '../models/ConfigItem';
 import { Dashboard } from '../models/Dashboard';
 import { LogColumn } from '../models/LogColumn';

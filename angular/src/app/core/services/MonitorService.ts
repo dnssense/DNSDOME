@@ -3,7 +3,6 @@ import { Response } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/Rx';
 import { Observable } from 'rxjs/Rx';
-import { Constants } from 'src/app/Constants';
 import { SearchSetting } from '../models/SearchSetting';
 import { ErrorService } from './ErrorService';
 import { ConfigService } from './config.service';

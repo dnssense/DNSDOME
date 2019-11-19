@@ -1,4 +1,4 @@
-import { Category } from './core/models/Category';
+import { Category } from './models/Category';
 
 /**
  * Created by fatih on 28.10.2016.

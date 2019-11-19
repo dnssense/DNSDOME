@@ -12,6 +12,8 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { Box } from 'src/app/core/models/Box';
 import { BoxService } from 'src/app/core/services/box.service';
+import { DEVICE_GROUP } from 'src/app/core/Constants';
+import { DeviceGroup, AgentInfo } from 'src/app/core/models/DeviceGroup';
 
 declare var $: any;
 
@@ -95,7 +97,7 @@ export class ProfileWizardComponent {
       });
       this.categoryList = this.categoryList.sort((x, y) => { return x.category.name > y.category.name ? 1 : -1 })
     });
-    
+
     this.staticService.getApplicationList().subscribe(res => {
       res.forEach(r => {
         this.applicationList.push(new applicationItem(r, false));
@@ -136,8 +138,7 @@ export class ProfileWizardComponent {
       this.selectedAgent.rootProfile.applicationProfile.categories.forEach(x => {
         this.applicationList.find(y => y.application.id == x.id).isBlocked = x.isBlocked;
       });
-    } else if (this.saveMode == 'NewProfileWithAgent' || this.saveMode == 'NewProfileWithRoaming' ||
-      this.saveMode == 'NewProfileWithBox') {
+    } else {
 
       this.categoryList.forEach(c => {
         if (c.category.isVisible) {
@@ -236,9 +237,49 @@ export class ProfileWizardComponent {
               } else {
                 this.notification.error(res.message)
               }
+            });
+          } else if (this.saveMode == 'NewProfileWithDevice') {
+            let dg = new DeviceGroup()
+            dg.rootProfile = this.selectedAgent.rootProfile
 
-            })
+            let ai: AgentInfo= new AgentInfo();
+            ai.mac = this.selectedAgent.mac
+            ai.blockMessage = this.selectedAgent.blockMessage
+            ai.agentType = this.selectedAgent.agentType
+            ai.agentAlias = this.selectedAgent.agentAlias
 
+            dg.agents = [ai]
+            delete dg.agentGroup
+
+            this.agentService.saveDevice(dg).subscribe(res => {
+              if (res.status == 200) {
+                this.notification.success(res.message)
+                this.saveEmitter.emit();
+              } else {
+                this.notification.error(res.message)
+              }
+            });
+          } else if (this.saveMode == 'NewProfileWithDeviceGroup') {
+
+            if (localStorage.getItem(DEVICE_GROUP)) {
+              let deviceGroup: DeviceGroup = JSON.parse(localStorage.getItem(DEVICE_GROUP));
+              deviceGroup.rootProfile = this.selectedAgent.rootProfile;
+
+              if (deviceGroup.agents.length > 0 && deviceGroup.agentGroup.groupName && deviceGroup.rootProfile) {
+                this.agentService.saveDevice(deviceGroup).subscribe(res => {
+                  if (res.status == 200) {
+                    this.notification.success(res.message)
+                    this.saveEmitter.emit();
+                  } else {
+                    this.notification.error(res.message)
+                  }
+                });
+              } else {
+                this.notification.warning('Missing Information! Please provide required fields.')
+              }
+
+
+            }
           }
         }
       }

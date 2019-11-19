@@ -16,8 +16,6 @@ import { ForgotPasswordConfirmComponentRoutingModule } from './forgotpasswordcon
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
 import { FooterModule } from '../shared/footer/footer.module';
-import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
-
 
 
 @NgModule({
@@ -30,7 +28,6 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
     TagInputModule,
     MaterialModule,
     ReCaptchaModule,
-    MatPasswordStrengthModule,
     FooterModule,
     ForgotPasswordConfirmComponentRoutingModule,
     TranslateModule.forChild({

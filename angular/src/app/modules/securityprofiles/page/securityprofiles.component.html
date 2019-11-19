@@ -35,7 +35,7 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let p of securityProfilesFiltered; let i = index;">
-                          <td class="numeration">{{i}}</td>
+                          <td class="numeration">{{i+1}}</td>
                           <td>{{p.name}}</td>
                           <td style="width: 200px" title="Connected with {{p.numberOfUsage}} record">{{p.numberOfUsage}}</td>
                           <td style="width: 120px" class="text-center">

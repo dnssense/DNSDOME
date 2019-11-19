@@ -1,9 +1,5 @@
-import {environment} from "../environments/environment";
-
-/**
- * Created by fatih on 15.01.2017.
- */
-
+import {environment} from "../../environments/environment";
+ 
 //Headers HTTP
 export const HEADER_X_SECRET: string = 'X-Secret';
 export const HEADER_X_TOKEN_ACCESS: string = 'X-TokenAccess';
@@ -17,6 +13,7 @@ export const CSRF_CLAIM_HEADER: string = "X-HMAC-CSRF";
 export const STORAGE_ACCOUNT_TOKEN: string = 'token';
 export const STORAGE_REFRESH_TOKEN: string = 'refreshToken';
 export const STORAGE_ACCOUNT: string = 'account';
+export const DEVICE_GROUP: string = 'DEVICEGROUP';
 //Common http root api
 export const BACKEND_API_PATH: string = '/api';
 export const BACKEND_API_AUTHENTICATE_PATH: string = '/authenticate';

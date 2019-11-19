@@ -11,7 +11,6 @@ import { ColumnTagInputComponent } from '../../shared/columntaginput/column-tag-
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { SearchSettingService } from 'src/app/core/services/SearchSettingService';
 import { LocationsService } from 'src/app/core/services/LocationService';
-import { ArrayUtils } from 'src/app/ArrayUtils';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { AlertService } from 'src/app/core/services/alert.service';
@@ -23,16 +22,13 @@ import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { FormControl } from '@angular/forms';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { ReportService } from 'src/app/core/services/ReportService';
-import { startWith, map } from 'rxjs/operators';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { ActivatedRoute } from '@angular/router';
+import { ArrayUtils } from 'src/app/core/ArrayUtils';
 
 declare var $: any;
-//declare var Flatpickr: any;
 declare var moment: any;
-//declare var Waypoint: any;
-//declare var WebuiPopovers: any;
 
 @Component({
   selector: 'app-customreport-search',
@@ -46,7 +42,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   public end_date_pickr = null;
   public popover: any;
   public dateShown: boolean = false;
-  // public columnsPopover: any;
   public configItem: ConfigItem;
   startDateee: Date = null;
   endDateee: Date = null;
@@ -74,16 +69,12 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   }
   @Input() public columnsTemp: LogColumn[];
   @Output() public searchEmitter = new EventEmitter();
-  // @Output() public searchSettingEmitter = new EventEmitter();
-
-
-  public observable: Observable<any> = null;
   public subscription: Subscription = null;
   private ngUnsubscribe: Subject<any> = new Subject<any>();
   private applicationsSubscription: Subscription;
   private categoriesSubscription: Subscription;
 
-  searchSettingForHtml: SearchSetting;
+  searchSettingForHtml: SearchSetting = new SearchSetting();
   visible = true;
   selectable = true;
   removable = true;
@@ -151,7 +142,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     this.applicationsSubscription = this.customReportService.applications.subscribe((res: WApplication[]) => {
       let allApplications = res;
       if (res != null) {
-        let tempcategoris = [];
+        let tempcategoris = <any>[];
         for (let cat of allApplications) {
           tempcategoris.push(cat);
         }
@@ -179,21 +170,23 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     });
 
     this.roamingService.getClients().subscribe(res => {
-      res.forEach(r =>
-        this.agents.push(
-          {
-            agentAlias: r.agentAlias,
-            id: 0,
-            user: null,
-            profile: null,
-            bwList: null,
-            agentIpGroups: null,
-            appUserProfile: null,
-            blockMessage: null,
-            blockip: null,
-            etvUser: null,
-            logo: null
-          }));
+      if (res && res instanceof Array) {
+        res.forEach(r =>
+          this.agents.push(
+            {
+              agentAlias: r.agentAlias,
+              id: 0,
+              user: null,
+              profile: null,
+              bwList: null,
+              agentIpGroups: null,
+              appUserProfile: null,
+              blockMessage: null,
+              blockip: null,
+              etvUser: null,
+              logo: null
+            }));
+      }
     });
 
   }
@@ -316,28 +309,36 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   public search() {
 
     this.searchSetting.columns.columns = []
-    this._columns.filter(c => c.checked == true).forEach(c => {
-      this.searchSetting.columns.columns.push({ column: c, label: c.beautyName });
-    });
+    const cols = this._columns.filter(c => c.checked == true)
+    if (cols) {
+      cols.forEach(c => {
+        this.searchSetting.columns.columns.push({ column: c, label: c.beautyName });
+      });
+    }
 
     this.searchEmitter.emit(this.searchSetting);
   }
 
   public searchWithParam(param: string, time: string) {
-    this.searchSetting.columns.columns = []
+    this.searchSetting.columns.columns = [];
     this.searchSetting.dateInterval = '5';
     if (time == '0') {
       let d = new Date();
-      this.searchSetting.dateInterval = ((d.getUTCHours() * 60) + d.getUTCMinutes()).toString();
+      this.searchSetting.dateInterval = ((d.getHours() * 60) + d.getMinutes()).toString();
     } else if (time == '-1') {
       this.searchSetting.dateInterval = '60';
-    } else if (time == '1') {
-      let d = new Date();
-      d.setDate(d.getDate() - 1)
-      let startDate = moment(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-      let endDate = moment(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+    } else if (time == '1' || time == '2' || time == '3' || time == '6') {
+      let d1 = new Date();
+      let d2 = new Date();
+      d1.setDate(d1.getDate() - Number(time))
+      let startDate = moment(new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+      let endDate = moment(new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(), 23, 59, 59), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
       const dateVal = startDate + ' - ' + endDate;
+      this.searchStartDate = startDate
+      this.searchEndDate = endDate
       this.searchSetting.dateInterval = dateVal;
+    } else {
+      this.searchSetting.dateInterval = time;
     }
 
     this._columns.forEach(c => { if (c.name == 'domain') { c.checked = false } });
@@ -347,6 +348,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
         this.searchSetting.columns.columns.push({ column: c, label: c.beautyName });
       });
 
+    this.searchSettingForHtml.must = [];
     if (param == 'securityRisk') {
       this.searchSetting.should = [
         { field: "category", operator: "=", value: "Malware/Virus", id: 0 },
@@ -354,6 +356,12 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
         { field: "category", operator: "=", value: "Potentially Dangerous", id: 0 }
       ]
       this.searchSettingForHtml.should.push(new ColumnTagInput('category', '=', 'Malware/Virus,Phishing,Potentially Dangerous'))
+    } else if (param == 'block') {
+      this.searchSetting.must = [{ field: "action", operator: "=", value: "false", id: 0 }]
+      this.searchSettingForHtml.must.push(new ColumnTagInput('action', '=', 'false'))
+    } else if (param.startsWith('map')) {
+      this.searchSetting.must = [{ field: "destinationIpCountryCode", operator: "=", value: param.substr(3).toUpperCase(), id: 0 }]
+      this.searchSettingForHtml.must.push(new ColumnTagInput('destinationIpCountryCode', '=', param.substr(3).toUpperCase()))
     } else if (param == 'gray') {
       this.searchSetting.should = [
         { field: "category", operator: "=", value: "Unknown", id: 0 },

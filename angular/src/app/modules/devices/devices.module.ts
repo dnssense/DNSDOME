@@ -7,11 +7,11 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/shared/components/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NouisliderModule } from 'ng2-nouislider';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
 import { TimeProfileComponent } from './components/time-profile/time-profile.component';
 import { BoxWizardComponent } from './components/box-wizard/box-wizard.component';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
+import { PipesModule } from '../shared/pipes/pipes.module';
 
 
 
@@ -24,7 +24,7 @@ import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.mod
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    NouisliderModule,
+    PipesModule,
     MaterialModule,
     DevicesRoutingModule,
     AmazingTimePickerModule,
@@ -36,7 +36,8 @@ import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.mod
         deps: [HttpClient]
       }
     })
-  ]
+  ],
+  providers:[PipesModule]
 
 })
 export class DevicesModule { }

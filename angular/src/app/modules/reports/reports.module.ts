@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DndModule } from "ng2-dnd";
-import { NouisliderModule } from 'ng2-nouislider';
 import { CollapseModule, PopoverModule, PaginationModule, TooltipModule } from 'ngx-bootstrap';
 import { OverlayPanelModule } from "primeng/primeng";
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
@@ -20,7 +19,6 @@ import { TextLimitComponent } from './shared/textlimit/text-limit.component';
 import { CustomReportSearchComponent } from './customreport/search/customreport-search.component';
 import { CustomReportResultComponent } from './customreport/result/customreport-result.component';
 import { CustomReportResultColumnComponent } from './customreport/result/column/customreport-result-column.component';
-import { HistogramComponent } from './shared/histogram/histogram.component';
 import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
 import { FlatpickrModule } from 'angularx-flatpickr';
 
@@ -34,16 +32,14 @@ import { FlatpickrModule } from 'angularx-flatpickr';
     MonitorSearchComponent,
     MonitorResultComponent,
     ColumnTagInputComponent,
-    HistogramComponent,
     TextLimitComponent
   ],
   imports: [
     FormsModule,
+    MaterialModule,
     ReactiveFormsModule,    
     CommonModule,
-    NgApexchartsModule,
-    NouisliderModule,
-    MaterialModule,
+    NgApexchartsModule,    
     ReportsRoutingModule,
     PipesModule,
     FlatpickrModule.forRoot(),
