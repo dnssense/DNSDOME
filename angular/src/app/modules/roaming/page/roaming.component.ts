@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Agent } from 'src/app/core/models/Agent';
 import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { AgentType } from 'src/app/core/models/AgentType';
 import * as introJs from 'intro.js/intro.js';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { AlertService } from 'src/app/core/services/alert.service';
+import { ValidationService } from 'src/app/core/services/validation.service';
+import { BoxService } from 'src/app/core/services/box.service';
 
 declare let $: any;
 
@@ -16,10 +17,14 @@ declare let $: any;
     templateUrl: 'roaming.component.html',
     styleUrls: ['roaming.component.sass']
 })
-export class RoamingComponent {
+export class RoamingComponent implements OnInit {
+    confParameters: string
     clientForm: FormGroup;
     clients: Agent[];
     clientsFiltered: Agent[];
+    clientGroups: Agent[];
+    selectedClients: Agent[] = [];
+    clientListForGroup: Agent[] = [];
     selectedClient: Agent = new Agent();
     securityProfiles: SecurityProfile[];
     clientType: string;
@@ -30,19 +35,19 @@ export class RoamingComponent {
     saveMode: string;
     startWizard: boolean = false;
     constructor(private formBuilder: FormBuilder, private agentService: AgentService, private alertService: AlertService,
-        private notification: NotificationService, private roamingService: RoamingService) {
+        private notification: NotificationService, private roamingService: RoamingService, private boxService: BoxService) { }
 
+    ngOnInit(): void {
         this.clients = [];
-
-        this.loadClients();
         this.clientForm = this.formBuilder.group({
             "name": ["", [Validators.required]],
             "type": ["", [Validators.required]],
             "blockMessage": []
         });
 
+        this.loadClients();
+        this.getConfParameters()
         this.defineNewAgentForProfile();
-
     }
 
     loadClients() {
@@ -53,6 +58,12 @@ export class RoamingComponent {
             this.clientsFiltered = this.clients;
         });
 
+    }
+
+    getConfParameters() {
+        this.boxService.getVirtualBox().subscribe(res => {
+            this.confParameters = res.conf.split(',').map(d => { d = d.slice(1); return d; }).join(',');
+        });
     }
 
     defineNewAgentForProfile() {
@@ -78,7 +89,7 @@ export class RoamingComponent {
 
     openTooltipGuide() {
         introJs().start();
-    } 
+    }
 
     showForm() {
         $('#newClientRow').slideDown(300);
@@ -151,7 +162,7 @@ export class RoamingComponent {
 
     hideWizard() {
         this.alertService.alertWarningAndCancel('Are You Sure?', 'If you made changes, your Changes will be cancelled!').subscribe(
-            res => {
+            () => {
                 $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
                 $('#clientsPanel').toggle("slide", { direction: "left" }, 600);
                 $('#newClientRow').slideUp(300);
@@ -211,28 +222,22 @@ export class RoamingComponent {
     }
 
     copyLink() {
-        if (this.fileLink) {
-            this.copyToClipBoard(this.fileLink)
-            this.notification.info('File link copied to clipboard');
-        } else {
-            this.agentService.getProgramLink().subscribe(res => {
-                if (res && res.link) {
-                    this.fileLink = res.link;
-                    this.copyToClipBoard(this.fileLink)
-                    this.notification.info('File link copied to clipboard')
-                } else {
-                    this.notification.error('Could not create link')
-                }
-            });
-        }
+        let domains = this.dontDomains.split(',').map(d => { d = '.'.concat(d); return d; }).join(',')
+        this.boxService.getProgramLink(domains).subscribe(res => {
+            if (res && res.link) {
+                this.getConfParameters()
+                this.closeModal();
+                this.fileLink = res.link;
+                this.copyToClipBoard(this.fileLink)
+                this.notification.info('File link copied to clipboard')
+            } else {
+                this.notification.error('Could not create link')
+            }
+        });
     }
 
     copyToClipBoard(input: string) {
         let selBox = document.createElement('textarea');
-        // selBox.style.position = 'fixed';
-        // selBox.style.left = '0';
-        // selBox.style.top = '0';
-        // selBox.style.opacity = '0';
         selBox.value = input;
         document.body.appendChild(selBox);
         selBox.focus();
@@ -241,23 +246,71 @@ export class RoamingComponent {
         document.body.removeChild(selBox);
     }
 
+    dontDomains: string
     downloadFile() {
+        let domains = this.dontDomains.split(',').map(d => { d = '.'.concat(d.trim()); return d; }).join(',')
 
-        if (this.fileLink) {
-            window.open('http://' + this.fileLink, "_blank");
+        this.boxService.getProgramLink(domains).subscribe(res => {
+            if (res && res.link) {
+                this.getConfParameters()
+                this.closeModal();
+                this.fileLink = res.link
+                window.open('http://' + this.fileLink, "_blank");
+            } else {
+                this.notification.error('Could not create link')
+            }
+        });
+    }
+
+    isDontDomainsValid: boolean = true
+    checkDomain() {
+        this.isDontDomainsValid = true;
+        const d = this.dontDomains.split(',');
+        if (d.length > 10) {
+            this.notification.warning('You can report 10 domains per request');
+            this.isDontDomainsValid = false;
         } else {
-            this.agentService.getProgramLink().subscribe(res => {
-                if (res && res.link) {
-                    this.fileLink = res.link
-                    window.open('http://' + this.fileLink, "_blank");
-                } else {
-                    this.notification.error('Could not create link')
+            for (let i = 0; i < d.length; i++) {
+                let f = d[i];
+                if (f.toLowerCase().startsWith('http')) {
+                    f = f.toLowerCase().replace('http://', '').replace('https://', '');
                 }
-            });
+                const res = ValidationService.isDomainValid(f);
+                if (!res) {
+                    this.isDontDomainsValid = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    moveDeviceInGroup(opType: number, id: number) {
+        if (opType == 1) {
+            this.selectedClients.push(this.clientListForGroup.find(u => u.id == id));
+            this.clientListForGroup.splice(this.clientListForGroup.findIndex(x => x.id == id), 1);
+        } else {
+            this.clientListForGroup.push(this.selectedClients.find(u => u.id == id));
+            this.selectedClients.splice(this.selectedClients.findIndex(x => x.id == id), 1);
         }
 
     }
 
+    openModal() {
+        this.dontDomains = JSON.parse(JSON.stringify(this.confParameters))
+        this.checkDomain()
+        this.clientListForGroup = JSON.parse(JSON.stringify(this.clientsFiltered));
+        $(document.body).addClass('modal-open');
+        $('#exampleModal').css('display', 'block');
+        $('#exampleModal').attr('aria-hidden', 'false');
+        $('#exampleModal').addClass('show');
+    }
+
+    closeModal() {
+        $(document.body).removeClass('modal-open');
+        $('#exampleModal').css('display', 'none');
+        $('#exampleModal').attr('aria-hidden', 'true');
+        $('#exampleModal').removeClass('show');
+    }
 
 
 }

@@ -1,4 +1,4 @@
-import {User} from './User'; 
+import { User } from './User';
 import { PublicIP } from './PublicIP';
 import { Agent } from './Agent';
 
@@ -11,7 +11,7 @@ export class Box {
   public user: User;
   public location: PublicIP = new PublicIP();
   public isActive: boolean = false;
-
+  public conf: string=''
   public ipAddress: string = "";//
   public ips: number[] = [];//
   public isCaptivePortal: boolean;

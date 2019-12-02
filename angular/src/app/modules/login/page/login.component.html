@@ -1,92 +1,88 @@
-<div class="wrapper wrapper-full-page">
-  <div class="page-header login-page header-filter" filter-color="white" data-color="blue">
-    <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4 col-md-6 col-sm-6 ml-auto mr-auto">
-          <div class="card card-signup">
-            <div class="card-title">
-              <h2 class="card-title text-center" (click)="openLogin()">{{'LOGIN.Login' | translate}}</h2>
-            </div>
-            <div class="card-body">
-              <div id="loginDiv">
-                <form [formGroup]="loginForm" ng-submit="loginform.$valid && loginForm.submit()">
-                  <p class="card-description text-center">Easiest way to be secure!</p>
-                  <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
-                    <input type="email" matInput placeholder="{{'LOGIN.Email' | translate}} *" [(ngModel)]="email"
-                      [errorStateMatcher]="matcher" (ngModelChange)="emailValidationLogin($event)"
-                      formControlName="email">
-                    <mat-error
-                      *ngIf="emailFormControl.hasError('email') || loginForm.get('email').hasError('required')">
-                      {{'LOGIN.EmailRequired' | translate}}
-                    </mat-error>
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width" [ngClass]="{'has-success':validPasswordLogin===true}">
-                    <input type="password" matInput placeholder="{{'LOGIN.Password' | translate}} *"
+<div class="row wrapper wrapper-full-page" style="background-color: white !important;">
+  <div class="col-md-5">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row" style="min-height: 91vh;">
+          <div class="col-lg-8 col-md-8 col-sm-8 ml-auto mr-auto">
+            <div class="card-login">
+              <div class="card-login-title text-center">
+                <img src="/assets/img/{{host.logoImage}}" style="max-height: 40px;" />
+              </div>
+              <div class="card-body">
+                <div id="loginDiv">
+                  <form [formGroup]="loginForm" ng-submit="loginform.$valid && loginForm.submit()">
+
+                    <input type="email" class="formInput" placeholder="E-mail" [(ngModel)]="email"
+                      (ngModelChange)="emailValidationLogin($event)" formControlName="email">
+
+                    <input type="password" class="formInput mt-3" placeholder="{{'LOGIN.Password' | translate}}"
                       [(ngModel)]="password" formControlName="password">
-                    <mat-error *ngIf="loginForm.get('password').hasError('required')">
-                      {{'LOGIN.Password' | translate}}<strong> {{'Required' | translate}}</strong>
-                    </mat-error>
-                  </mat-form-field>
-                  <div class="">
-                    <a class="btn btn-sm btn-link" (click)="openForgotPassword()">* Forgot Your Password?</a>
+
+
+                    <div class="">
+                      <a style="color: #868e96;" (click)="openForgotPassword()">Forgot password?</a>
+                    </div>
+                    <div class="form-group text-center">
+                      <br />
+                      <button class="btns login-btns" (click)="login()">
+                        {{'LOGIN.Login'|translate}}
+                      </button>
+                      <a class="nav-link mt-1" [routerLink]="['/register']" style="color: #4353ff; font-weight: 500;">
+                        Sign Up for a Free Trial
+                      </a>
+                      <div class="row">
+                        <div *ngIf="isIEOrEdge" class="col-12 text-center" style="color: gray; font-size: 12px;">
+                          *Use the latest version of Google Chrome, Firefox or Opera for the best
+                          compatibility.
+                        </div>
+                        <div class="col-12 text-center" style="color: white">
+                          version: 1.0.98
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div id="forgotPasswordDiv" style="display:none">
+                  <input type="email" class="formInput mb-3" placeholder="{{'LOGIN.Email' | translate}} *"
+                    [(ngModel)]="forgoterEmail" (ngModelChange)="emailValidationLogin($event)">
+                  <div>
+                    <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
+                    </re-captcha>
                   </div>
-                  <mat-error class="ui-state-error-text" *ngIf="isFailed">
-                    {{ 'LOGIN.WrongEmailOrPassword' | translate}}
-                  </mat-error>
-                  <div class="form-group text-center">
+                  <div class="mt-2"><a style="color: #868e96;" (click)="openLogin()">Login</a></div>
+                  <div class="text-center">
                     <br />
-                    <button class="btns btn-info btn-sm" (click)="login()">
-                      {{'LOGIN.Login'|translate}}
-                    </button>
+                    <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()">Send Activation
+                      Code</button>
                   </div>
-                </form>
-              </div>
-              <div id="forgotPasswordDiv" style="display:none">
-                <p class="card-description text-center">Send password reset request</p>
-                <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailLogin===true}">
-                  <input type="email" matInput placeholder="{{'LOGIN.Email' | translate}} *" [(ngModel)]="forgoterEmail"
-                    (ngModelChange)="emailValidationLogin($event)">
-                  <mat-error *ngIf="emailFormControl.hasError('required')">
-                    <strong>{{'LOGIN.EmailRequired' | translate}}</strong>
-                  </mat-error>
-                </mat-form-field>
-                <div>
-                  <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
-                  </re-captcha>
                 </div>
-                <div class=""><a class="btn btn-sm btn-link" (click)="openLogin()">* Login</a></div>
-                <div class="text-center">
-                  <button class="btns btn-info btn-sm" (click)="sendPasswordActivationCode()">Send Activation
-                    Code</button>
-                </div>
-              </div>
-              <div id="twoFactorDiv" style="display:none">
-                <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
-                <mat-form-field class="example-full-width">
-                  <input type="text" disabled matInput [(value)]="twoFactorPhone">
-                </mat-form-field>
-                <mat-form-field class="example-full-width">
-                  <input type="smsCode" matInput placeholder="SMS Code" [(ngModel)]="smsCode">
-                </mat-form-field>
-                <div class="text-center">
-                  <button class="btns btn-info btn-sm" (click)="confirm2FACode()">Confirm</button>
+                <div id="twoFactorDiv" style="display:none">
+                  <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
+                  <mat-form-field class="example-full-width">
+                    <input type="text" disabled matInput [(value)]="twoFactorPhone">
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width">
+                    <input type="smsCode" matInput placeholder="SMS Code" [(ngModel)]="smsCode">
+                  </mat-form-field>
+                  <div class="text-center">
+                    <button class="btns login-btns" (click)="confirm2FACode()">Confirm</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div *ngIf="isIEOrEdge" class="col-12 text-center" style="color: gray; font-size: 12px;">
-          *Use the latest version of Google Chrome, Firefox or Opera for the best
-          compatibility.
-        </div>
-        <div class="col-12 text-center" style="color: black">
-          version: 1.0.93
+        <div class="row">
+          <div class="col-md-12 ml-auto mr-auto" style="width: 40%;">
+            <app-footer-cmp></app-footer-cmp>
+          </div>
         </div>
       </div>
     </div>
-    <app-footer-cmp></app-footer-cmp>
+  </div>
+  <div class="col-md-7 order-first order-md-2"
+    style="background-image: url(./assets/img/loginbg.png);background-size: cover;background-position: top center; min-height: 250px;">
+    <img src="/assets/img/CyberCyte_white.png" *ngIf="host.brand=='DNSCyte'"
+      style="position: absolute; bottom: 5%; right: 7%;" />
   </div>
 </div>

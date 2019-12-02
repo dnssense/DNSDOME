@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DashBoardService } from 'src/app/core/services/DashBoardService';
 import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { DatePipe } from '@angular/common';
 import { StaticService } from 'src/app/core/services/StaticService';
 import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
@@ -14,6 +13,9 @@ import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { CustomReportService } from 'src/app/core/services/CustomReportService';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { LogColumn } from 'src/app/core/models/LogColumn';
+import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
+import { BoxService } from 'src/app/core/services/box.service';
+import { RoamingService } from 'src/app/core/services/roaming.service';
 
 declare let $: any;
 declare let moment: any;
@@ -22,8 +24,8 @@ declare let moment: any;
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.css']
 })
-export class DashboardComponent implements AfterViewInit {
-
+export class DashboardComponent implements OnInit, AfterViewInit {
+  host: ConfigHost;
   elasticData: ElasticDashboardResponse[];
   dateParameter: number = 0;
   ds: DashboardStats = new DashboardStats();
@@ -40,33 +42,58 @@ export class DashboardComponent implements AfterViewInit {
 
   constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router,
-    private agentService: AgentService, private customReportService: CustomReportService) {
+    private agentService: AgentService, private customReportService: CustomReportService, private config: ConfigService,
+    private boxService: BoxService, private roamingService: RoamingService) { }
 
-    let roleName: string = this.authService.currentSession.currentUser.roles.name;
-    //agent yoksa public ip sayfasına yönlendir
-    this.agentService.getAgents().subscribe(res => {
-      if ((res == null || res.length < 1) && roleName != 'ROLE_USER') {// if there is no agent and role is not user redirect
-        this.router.navigateByUrl('/admin/publicip');
-      } else {
-        this.selectedCategoryForTraffic = null;
-        this.selectedCategoryForUnique = null;
-        this.staticService.getCategoryList().subscribe(res => {
-          this.categoryList = res;
-          this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
-        });
+  ngOnInit() {
+    this.host = this.config.host;
+    this.startDashboardOperations();
+   // let roleName: string = this.authService.currentSession.currentUser.roles.name;
+    //TODO: ikinci karara kadar kapali //agent, box, client yoksa modal ac
+    // if (false && roleName != 'ROLE_USER') {
+    //   this.agentService.getAgents().subscribe(res => {
+    //     if (res == null || res.length < 1) {//yönlendirme yapma box roaming ip yoksa modalı aç if there is no agent and role is not user redirect
+    //       this.boxService.getBoxes().subscribe(res2 => {
+    //         if (res2 == null || res2.length < 1) {
+    //           this.roamingService.getClients().subscribe(res3 => {
+    //             if (res3 == null || res3.length < 1) {
+    //               this.openModal();
+    //             } else {
+    //               this.startDashboardOperations();
+    //             }
+    //           })
+    //         } else {
+    //           this.startDashboardOperations();
+    //         }
+    //       })
+    //     } else {
+    //       this.startDashboardOperations();
+    //     }
+    //   });
+    // } else {
+    //   this.startDashboardOperations();
+    // }
 
-        this.elasticData = [];
-        this.ds = new DashboardStats();
-        this.changeDateParameter(0);
-      }
-    });
   }
 
   ngAfterViewInit(): void {
     // introJs().start();
   }
 
-  prepareWorldMap() {
+  startDashboardOperations() {
+    this.selectedCategoryForTraffic = null;
+    this.selectedCategoryForUnique = null;
+    this.staticService.getCategoryList().subscribe(res => {
+      this.categoryList = res;
+      this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
+    });
+
+    this.elasticData = [];
+    this.ds = new DashboardStats();
+    this.changeDateParameter(0);
+  }
+
+  prepareWorldMap(time: string) {
     let values: Map<string, number> = new Map();
     let searchSetting = new SearchSetting();
     let col: LogColumn = { name: "destinationIpCountryCode", beautyName: "Dst.Country", hrType: "COUNTRY_FLAG", aggsType: "TERM", checked: true };
@@ -74,7 +101,7 @@ export class DashboardComponent implements AfterViewInit {
     searchSetting.columns.columns.push(item);
     searchSetting.topNumber = 250
     searchSetting.dateInterval = '5'
-    const time = this.dateParameter.toString()
+
     if (time == '0') {
       let d = new Date();
       searchSetting.dateInterval = ((d.getHours() * 60) + d.getMinutes()).toString();
@@ -98,12 +125,13 @@ export class DashboardComponent implements AfterViewInit {
           values.set(res[i][0].toLowerCase(), Number(res[i][1]));
         }
 
-        var max = 0, min = Number.MAX_VALUE, cc, startColor = [200, 238, 255], endColor = [0, 100, 145], colors = <any>{}, hex;
+        let max = 0, min = Number.MAX_VALUE, startColor = [200, 238, 255], endColor = [0, 100, 145], colors = <any>{}, hex;
 
         values.forEach((value: number, key: string) => {
           if (value > max) { max = value }
           if (value < min) { min = value }
         });
+
         values.forEach((value: number, key: string) => {
           if (value > 0) {
             colors[key] = '#';
@@ -133,6 +161,9 @@ export class DashboardComponent implements AfterViewInit {
               normalizeFunction: 'polynomial'
             }]
           },
+          onRegionOver: (event, code, region) => {
+            event.preventDefault();
+          },
           onRegionClick: (element, code, region) => {
             let elements = $('.jqvmap-label')
             if (elements && elements.length > 0) {
@@ -143,7 +174,7 @@ export class DashboardComponent implements AfterViewInit {
             }
             this.showInReport('map' + code)
           },
-          onLabelShow: function (event, label, code) {
+          onLabelShow: (event, label, code) => {
             label[0].innerText = label[0].innerText + ' : ' + (values.has(code) ? values.get(code) : 0);
           }
         });
@@ -380,15 +411,20 @@ export class DashboardComponent implements AfterViewInit {
     d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0);
     let d2 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
-    this.getElasticData(d1.toISOString(), d2.toISOString());  
-    this.prepareWorldMap();  
+    this.getElasticData(d1.toISOString(), d2.toISOString());
+    this.prepareWorldMap(this.dateParameter.toString());
   }
 
   updateCharts(min: any, max: any) {
     if (min && max) {
-      let md = new Date(min);
-      let mxd = new Date(max);
-      this.getElasticData(md.toISOString(), mxd.toISOString());
+      let mn = new Date(min);
+      let mx = new Date(max);
+      this.getElasticData(mn.toISOString(), mx.toISOString());
+
+      let startDate = moment(mn).format('DD.MM.YYYY HH:mm:ss');
+      let endDate = moment(mx).format('DD.MM.YYYY HH:mm:ss');
+      const time = startDate + ' - ' + endDate;
+      this.prepareWorldMap(time)
     } else {
       this.changeDateParameter(0);
     }
@@ -501,5 +537,19 @@ export class DashboardComponent implements AfterViewInit {
   showInReport(param: string) {
     localStorage.setItem('dashboardParam', param + '&' + this.dateParameter);
     this.router.navigate(['/admin/reports/customreport']);
+  }
+
+  openModal() {
+    $(document.body).addClass('modal-open');
+    $('#exampleModal').css('display', 'block');
+    $('#exampleModal').attr('aria-hidden', 'false');
+    $('#exampleModal').addClass('show');
+  }
+
+  closeModal() {
+    $(document.body).removeClass('modal-open');
+    $('#exampleModal').css('display', 'none');
+    $('#exampleModal').attr('aria-hidden', 'true');
+    $('#exampleModal').removeClass('show');
   }
 }

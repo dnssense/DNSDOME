@@ -492,7 +492,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     this.current.operator = '=' // default and only value is equal
     this.current.field = this.currentColumn;
 
-    if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp') {
+    if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp' || this.currentColumn == 'clientLocalIp') {
       if (!this.checkIp(this.currentInput)) {
         return;
       }
@@ -778,9 +778,9 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
             this.notification.warning('Please enter a valid item!');
             return;
           }
-        } else if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp') {
+        } else if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp' || this.currentColumn == 'clientLocalIp') {
 
-          let result = ValidationService.isValidIpString(val);
+          let result = this.checkIp(val) //ValidationService.isValidIpString(val);
           if (result == true) {
             this.isOneOfList.push(val.trim());
           } else {
@@ -835,22 +835,30 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     return null;
   }
 
-  public checkIp(ipForCheck: string) {
-    let isValid =
-      ipForCheck != '0.0.0.0' &&
-      ipForCheck != '255.255.255.255' &&
-      ipForCheck.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/);
-
-    if (!isValid) {
-      this.notification.error("Invalid IP");
-      return false;
+  public checkIp(ipForCheck: string): boolean {
+    if (ipForCheck.includes(',')) {
+      const ips = ipForCheck.split(',');
+      ips.forEach(ip => {
+        const res = ValidationService.isValidIpWithLocals(ip);
+        if (!res) {
+          this.notification.warning("Invalid IP");
+          return res;
+        }
+      });
+    } else {
+      const res = ValidationService.isValidIpWithLocals(ipForCheck);
+      if (!res) {
+        this.notification.warning("Invalid IP");
+        return res;
+      }
     }
+
     return true;
   }
 
   checkIPNumber(event: KeyboardEvent, inputValue: string) {
 
-    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", ".","Tab"];
+    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", ".", "Tab"];
     let isValid: boolean = false;
 
     for (let i = 0; i < allowedChars.length; i++) {

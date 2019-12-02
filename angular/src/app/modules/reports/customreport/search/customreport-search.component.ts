@@ -56,6 +56,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     if (value && value.length > 0) {
       value.forEach(c => { if (c.name == 'domain') { c.checked = true; } else { c.checked = false } });
       this._columns = value;
+      this.defaultColumns = JSON.parse(JSON.stringify(this._columns))
 
       if (localStorage.getItem('dashboardParam') && localStorage.getItem('dashboardParam').includes('&')) {
         let param = localStorage.getItem('dashboardParam').split('&');
@@ -88,6 +89,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   _columns: LogColumn[];
+  defaultColumns: LogColumn[];
   columnListLength: number = 12;
   currentColumn: string = 'domain';
   currentInput: any;
@@ -102,7 +104,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   @ViewChild('mainInputElement') mainInputElement: ElementRef;
   @ViewChild('tagInput') tagInput: ElementRef;
   @ViewChild('select') select: ElementRef;
-  public selectedColumns: LogColumn[];
+  //public selectedColumns: LogColumn[];
   editedTag: any;
   editedTagType: string;
   public searchStartDate: string;
@@ -125,7 +127,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
 
     this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice());
 
-    this.selectedColumns = [];
+    //this.selectedColumns = [];
 
     if (!this.searchSetting) {
       this.searchSettingForHtml = new SearchSetting();
@@ -210,9 +212,20 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
 
   selectSavedReport(id: number) {
     let sr = this.savedReports.find(r => r.id == id);
+
     this.searchSetting = JSON.parse(JSON.stringify(sr));
     this.selectedSavedReportName = sr.name;
     this.newSavedReportName = sr.name;
+
+    if (sr.columns.columns) {
+      this._columns.forEach(c => c.checked = false);
+      this._columns.find(c => c.name == 'domain').checked = true;
+
+      for (let i = 0; i < sr.columns.columns.length; i++) {
+        const col = sr.columns.columns[i].column.beautyName;
+        this._columns.find(c => c.beautyName == col).checked = true;
+      }
+    }
 
     if (sr.should) {
       this.searchSettingForHtml.should = [];
@@ -260,6 +273,15 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
         this.searchSetting.name = this.newSavedReportName;
       }
       this.searchSetting.system = false;
+      //seçili sütunları rapora ekle
+      this.searchSetting.columns.columns = []
+      const cols = this._columns.filter(c => c.checked == true)
+      if (cols) {
+        cols.forEach(c => {
+          this.searchSetting.columns.columns.push({ column: c, label: c.beautyName });
+        });
+      }
+
       this.reportService.saveReport(this.searchSetting).subscribe(res => {
         if (res.status == 200) {
           this.notification.success(res.message);
@@ -496,8 +518,6 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
 
   public addColumnToSelectedColumns(col: LogColumn) {
 
-    // this.notificationService.clearToasties();
-
     let selectedColumns = this.searchSetting.columns.columns;
     let cindex = -1;
     for (let ci = 0; ci < selectedColumns.length; ci++) {
@@ -507,7 +527,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       }
     }
     if (cindex > -1) {
-      return; //todo growl da message goster . aynı kolon var diye..
+      return;
     }
     let item = new AggregationItem(col, col.beautyName);
     this.searchSetting.columns.columns.push(item);
@@ -522,6 +542,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
         break;
       }
     }
+    this.searchSetting.columns.columns = selectedColumns;
   }
 
   public inputClicked($event) {
@@ -618,7 +639,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
     this.current.operator = '=' // default and only value is equal
     this.current.field = this.currentColumn;
 
-    if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp') {
+    if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp' || this.currentColumn == 'clientLocalIp') {
       if (!this.checkIp(this.currentInput)) {
         return;
       }
@@ -906,9 +927,9 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
             this.notification.warning('Please enter a valid item!');
             return;
           }
-        } else if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp') {
+        } else if (this.currentColumn == 'sourceIp' || this.currentColumn == 'destinationIp' || this.currentColumn == 'clientLocalIp') {
 
-          let result = ValidationService.isValidIpString(val);
+          let result =this.checkIp(val); // ValidationService.isValidIpString(val);
           if (result == true) {
             this.isOneOfList.push(val.trim());
           } else {
@@ -968,15 +989,25 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       'select2:select', e => { this.currentInput = e.target.value; });
   }
 
-  public checkIp(ipForCheck: string) {
-    let isValid =
-      ipForCheck != '0.0.0.0' &&
-      ipForCheck != '255.255.255.255' &&
-      ipForCheck.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/);
-    if (!isValid) {
-      this.notification.error("Invalid IP");
-      return false;
+  public checkIp(ipForCheck: string): boolean {
+    if (ipForCheck.includes(',')) {
+      const ips = ipForCheck.split(',');
+      ips.forEach(ip => {
+        const res = ValidationService.isValidIpWithLocals(ip);
+        if (!res) {
+          this.notification.warning("Invalid IP");
+          return res;
+        }
+      });
+    } else {
+      const res = ValidationService.isValidIpWithLocals(ipForCheck);
+      if (!res) {
+        this.notification.warning("Invalid IP");
+        return res;
+      }
     }
+
     return true;
   }
+
 }

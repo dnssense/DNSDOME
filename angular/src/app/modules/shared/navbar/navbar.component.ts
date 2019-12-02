@@ -101,7 +101,7 @@ export class NavbarComponent implements OnInit {
 
     ngOnInit() {
         this.listTitles = ROUTES.filter(listTitle => listTitle);
-        this.listTitles.push(...ProfileRoutes);
+       // this.listTitles.push(...ProfileRoutes);
 
         const navbar: HTMLElement = this.element.nativeElement;
         const body = document.getElementsByTagName('body')[0];

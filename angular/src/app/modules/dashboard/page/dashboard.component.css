@@ -30,3 +30,28 @@
   padding: 3px;
   pointer-events: none;
  }
+
+.startBtn{
+  width: 88%;
+  min-width: 80px;
+  height: 50px;
+  margin-top: 20px;
+  background-color: #4353ff;
+ }
+  
+.tickIcon{
+  width: 14px;
+}
+
+.subText{
+   font-size: 13px;
+ }
+
+.subHeader{
+  font-size: 14x;
+  font-weight: 500;
+}
+
+.subImg{
+  max-height: 140px;
+}

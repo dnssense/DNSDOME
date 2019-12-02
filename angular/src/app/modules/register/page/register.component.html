@@ -1,225 +1,230 @@
-<div class="wrapper wrapper-full-page">
-  <div class="page-header register-page header-filter" filter-color="white" data-color="blue">
-    <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
-    <div class="container">
+<div class="wrapper wrapper-full-page" style="background-color: white;">
+
+  <div class="row ml-1 mr-1" style="min-height: 92vh;">
+    <div class="col-md-8 ml-auto mr-auto" *ngIf="pageMode=='register'">
+      <div class="row mt-4 mb-4">
+        <div class="col-md-3 text-left">
+          <img src="/assets/img/{{host.logoImage}}" style="max-height: 40px;" />
+        </div>
+        <div class="col-md-9">
+          <a class="nav-link pull-right" [routerLink]="['/login']"
+            style="color: #868e96; font-weight: 500; font-size: 16px;">
+            Log In
+          </a>
+        </div>
+      </div>
       <div class="row">
-
-        <div class="ml-auto mr-auto"
-          [ngClass]="{'col-lg-6 col-md-8 col-sm-8': host.brand=='DNSCyte','col-lg-4 col-md-6 col-sm-8': host.brand!='DNSCyte'}">
-          <div class="card card-signup mt-6">
-            <div class="card-title">
-              <h3 class="card-title text-center">Register</h3>
-              <h4 class="card-title text-center">Cloud Base Security Service</h4>
+        <div class="col-md-12 signUpHeader text-center">Sign Up</div>
+        <div class="col-md-12 mt-4 mb-3" style="border: 0.5px solid #eeeeee"></div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12 signUpHeader mt-4" style="font-size: 36px;">
+              <p>60 Day Free Protection From Threats</p>
             </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-12 mr-auto">
-                  <form [formGroup]="registerForm" (ngSubmit)="register()" class="form-horizontal">
-                    <div class="row">
-
-                      <div class="col-md-6" *ngIf="host.brand=='DNSCyte'">
-
-                        <div class="form-group-sm has-default">
-                          <div class="input-group">
-                            <div class="input-group-prepend" style="width:100%;">
-                              <mat-form-field class="example-full-width">
-                                <input type="text" matInput placeholder="{{'REGISTER.FormCompany' | translate}}"
-                                  [(ngModel)]="user.company.name" formControlName="company">
-                                <mat-error *ngIf="registerForm.get('company').hasError('required')">
-                                  {{'REGISTER.FormCompany' | translate}} <strong>{{'Required' | translate}}</strong>
-                                </mat-error>
-                              </mat-form-field>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="form-group-sm has-default">
-                          <div class="input-group">
-                            <div class="input-group-prepend" style="width:100%;">
-                              <div>
-                                <mat-form-field class="example-full-width">
-                                  <input type="text" matInput placeholder="{{'REGISTER.FirstName' | translate}}"
-                                    [(ngModel)]="user.name" formControlName="name">
-                                  <mat-error *ngIf="registerForm.get('name').hasError('required')">
-                                    {{'REGISTER.FirstName' | translate}} <strong>{{'Required' | translate}}</strong>
-                                  </mat-error>
-                                </mat-form-field>
-                              </div>
-                              <div class="ml-1">
-                                <mat-form-field class="example-full-width">
-                                  <input type="text" matInput placeholder="{{'REGISTER.LastName' | translate}}"
-                                    [(ngModel)]="user.surname" formControlName="surname">
-                                  <mat-error *ngIf="registerForm.get('surname').hasError('required')">
-                                    {{'REGISTER.LastName' | translate}} <strong>{{'Required' | translate}}</strong>
-                                  </mat-error>
-                                </mat-form-field>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="form-group-sm has-default">
-                          <div class="input-group">
-                            <div class="input-group-prepend" style="width:100%;">
-                              <div style="min-width: 80px;">
-                                <mat-form-field class="example-full-width">
-                                  <mat-select placeholder="GSM Code" [(ngModel)]="user.gsmCode"
-                                    formControlName="gsmCode">
-                                    <mat-option *ngFor="let pc of phoneNumberCodes" [value]="pc.dial_code">
-                                      {{pc.name}} ( {{pc.dial_code}} )
-                                    </mat-option>
-                                  </mat-select>
-                                </mat-form-field>
-                              </div>
-                              <div class="ml-2">
-                                <mat-form-field class="example-full-width">
-                                  <input type="tel" #gsm maxlength="10" name="gsm" (keydown)="checkisTelNumber($event)"
-                                    placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="user.gsm"
-                                    formControlName="gsm">
-                                  <mat-hint align="end">{{gsm.value.length}} / 10</mat-hint>
-                                  <mat-error *ngIf="registerForm.get('gsm').hasError('required')">
-                                    {{'REGISTER.GSM' | translate}} <strong>{{'Required' | translate}}</strong>
-                                  </mat-error>
-                                  <app-field-error-display errorMsg="Add a number!"></app-field-error-display>
-                                </mat-form-field>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="form-group-sm has-default">
-                          <div class="input-group">
-                            <div class="input-group-prepend" style="width:100%;">
-                              <mat-form-field class="example-full-width">
-                                <input type="text" matInput placeholder="Campaign Code" [(ngModel)]="campaignCode"
-                                  formControlName="campaignCode">
-                              </mat-form-field>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-
-                      <div [ngClass]="{'col-md-6': host.brand=='DNSCyte','col-md-12': host.brand!='DNSCyte'}">
-                        <div class="form-group-sm has-default">
-                          <div class="input-group">
-                            <div class="input-group-prepend" style="width:100%;">
-                              <mat-form-field class="example-full-width"
-                                [ngClass]="{'has-success':validEmailRegister===true}">
-                                <input type="email" matInput placeholder="{{'REGISTER.Email' | translate}}"
-                                  [errorStateMatcher]="matcher" [(ngModel)]="user.username"
-                                  (ngModelChange)="emailValidationRegister($event)" formControlName="username">
-                                <mat-error *ngIf="registerForm.get('username').hasError('email')">
-                                  {{'LOGIN.EmailRequired' | translate}}
-                                </mat-error>
-                                <mat-error *ngIf="registerForm.get('username').hasError('required')">
-                                  {{'REGISTER.Email' | translate}} <strong>{{'Required' | translate}}</strong>
-                                </mat-error>
-                              </mat-form-field>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group-sm has-default">
-                          <div class="input-group">
-                            <div class="input-group-prepend" style="width:100%;">
-                              <mat-form-field class="example-full-width"
-                                [ngClass]="{'has-success':validPasswordRegister===true}">
-                                <input type="password" matInput placeholder="{{'REGISTER.Password' | translate}}*"
-                                  (keyup)="checkPasswordStrength()" [errorStateMatcher]="matcher"
-                                  [(ngModel)]="user.password" formControlName="password">
-                                <mat-error *ngIf="registerForm.get('password').hasError('required')">
-                                  {{'REGISTER.Password' | translate}} <strong>{{'Required' | translate}}</strong>
-                                </mat-error>
-                              </mat-form-field>
-                            </div>
-                          </div>
-                          <div class="password-length">
-                            <div [ngClass]="{'active': passStrength>0}"></div>
-                            <div [ngClass]="{'active': passStrength>1}"></div>
-                            <div [ngClass]="{'active': passStrength>2}"></div>
-                            <div [ngClass]="{'active': passStrength>3}"></div>
-                          </div>
-                        </div>
-                        <div class="form-group-sm has-default color-9d9d9d" style="font-size: 12px;" id="passDetails">
-                          * Your password has to be at least:
-                          <div class="row">
-                            <div class="col-md-6">
-                              <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': upStrength}">one upper case</i>
-                              <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': lowStrength}">one lower case</i>
-                            </div>
-                            <div class="col-md-6">
-                              <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': numStrength}">one number</i>
-                              <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': lengthStrength}">8 characters</i></div>
-                          </div>
-                        </div>
-                        <div class="form-group-sm has-default mt-1">
-                          <div class="input-group">
-                            <div class="input-group-prepend" style="width:100%;">
-                              <mat-form-field class="example-full-width"
-                                [ngClass]="{'has-success':validPasswordRegister===true}">
-                                <input type="password" matInput placeholder="{{'REGISTER.ConfirmPassword' | translate}}"
-                                  [errorStateMatcher]="matcher" [(ngModel)]="user.passwordAgain"
-                                  formControlName="passwordAgain">
-                                <mat-error *ngIf="registerForm.get('passwordAgain').hasError('required')">
-                                  {{'LOGIN.PasswordRequired' | translate}}
-                                </mat-error>
-                                <mat-error *ngIf="registerForm.get('passwordAgain').hasError('required')">
-                                  {{'REGISTER.ConfirmPassword' | translate}}
-                                  <strong>{{'Required' | translate}}</strong>
-                                </mat-error>
-                              </mat-form-field>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group-sm has-default text-center ml-auto">
-                          <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)"></re-captcha>
-                        </div>
-                        <div class="form-group form-check text-center">
-                          <ng-container *ngIf="host.brand=='DNSCyte'">
-                            <p>By clicking the 'Register' button, you are creating a DNSCyte account and you agree to
-                              <a href="{{host.privacyUrl}}" target="_blank">DNSCyte Privacy Policy.</a>
-                            </p>
-                          </ng-container>
-                          <ng-container *ngIf="host.brand=='Roksit'">
-                            <p>By clicking the 'Register' button, you are creating a ROKSIT account and you agree to
-                              <a href="{{host.privacyUrl}}" target="_blank">ROKSIT Privacy Policy.</a>
-                            </p>
-                          </ng-container>
-                          <ng-container *ngIf="host.brand=='DNSSense'">
-                            <p>By clicking the 'Register' button, you are creating a DNSSENSE account and you agree to
-                              <a href="{{host.privacyUrl}}" target="_blank">DNSSENSE Privacy Policy.</a>
-                            </p>
-                          </ng-container>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="text-center">
-                          <button type="submit" class="btns btn-info btn-sm mt-4"
-                            [disabled]="!isRegisterFormValid()">Register</button>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
+          </div>
+          <div class="row mt-4 ml-1">
+            <div class="col-md-6" style="border-right: 1px solid #eeeeee;">
+              <p class="signUpHeader mt-2" style="font-size: 21px;">Protect your organisation in minutes.</p>
+              <p class="signUpHeader mt-2" style="font-size: 14px;">Why {{host.brand}}?</p>
+              <div class="mb-3">
+                <img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Stop zero-day attacks.
+              </div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Pre & Post infection
+                protection.</div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Define and enforce
+                internet usage policy.</div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">White list
+                categorisation
+                of internet traffic (all ports and protocols)</div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Next Generation
+                protection
+                using machine learning & artificial intelligence.</div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">
+                Simple deployment with no overhead.</div>
+              <div class="ml-4">
+                <div class="container">
+                  <img src="/assets/img/dashboardImage.png" alt="Dashboard" />
+                  <img src="/assets/img/play.svg" style="transform: translate(-240%, 0%);" />
                 </div>
               </div>
+            </div>
+            <div class="col-md-6">
+
+              <!-- Form started -->
+              <form [formGroup]="registerForm" class="form-horizontal mt-3">
+                <div class="row">
+                  <div class="col-md-12" style="max-width: 450px;">
+                    <p style="font-size: 12px; margin-top: -15px; margin-bottom: 0px;">All fields are required.</p>
+                    <input type="text" class="formInput" placeholder="Company Name" [(ngModel)]="user.company.name"
+                      formControlName="company">
+
+                    <input type="text" class="formInput mt-2" placeholder="{{'REGISTER.FirstName' | translate}}"
+                      [(ngModel)]="user.name" formControlName="name">
+
+                    <input type="text" class="formInput mt-2" placeholder="{{'REGISTER.LastName' | translate}}"
+                      [(ngModel)]="user.surname" formControlName="surname">
+
+                    <div class="form-group-sm has-default">
+                      <div class="input-group">
+                        <div class="input-group-prepend" style="width:100%;">
+
+                          <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="4"
+                            data-intro="Please select GSM Code" data-position='top' style="width: 130px;">
+                            <button class="btns dropdown-toggle reverse-form text-left formInput mt-2"
+                              id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <ng-container *ngIf="user && user.gsmCode; else elseTemplateSelectedProfile">
+                                {{user.gsmCode}}
+                              </ng-container>
+                              <ng-template #elseTemplateSelectedProfile>
+                                Select
+                              </ng-template>
+                              <i class="icon-down-open-big btn-arrow"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                              style="background-color: white;">
+                              <div class="table-responsive" style="max-height: 300px;">
+                                <button class="dropdown-item" style="color: black;" *ngFor="let pc of phoneNumberCodes"
+                                  (click)="userGsmCodeChanged(pc.dial_code)" >
+                                  {{pc.dial_code}} {{pc.name}}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <input type="tel" class="formInput ml-2 mt-2" name="gsm" (keydown)="checkisTelNumber($event)"
+                            placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="user.gsm"
+                            formControlName="gsm">
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <input type="email" class="formInput mt-2" placeholder="{{'REGISTER.Email' | translate}}"
+                      [(ngModel)]="user.username" (ngModelChange)="emailValidationRegister($event)"
+                      formControlName="username">
+
+                    <input type="password" class="formInput mt-2" placeholder="{{'REGISTER.Password' | translate}}*"
+                      (keyup)="checkPasswordStrength()" [(ngModel)]="user.password" formControlName="password">
+
+                    <div class="password-length mt-2" style="max-width: 100%;">
+                      <div [ngClass]="{'active': passStrength>0}"></div>
+                      <div [ngClass]="{'active': passStrength>1}"></div>
+                      <div [ngClass]="{'active': passStrength>2}"></div>
+                      <div [ngClass]="{'active': passStrength>3}"></div>
+                    </div>
+
+                    <div class="form-group-sm has-default color-9d9d9d" style="font-size: 12px;" id="passDetails">
+                      * Your password has to be at least:
+                      <div class="row">
+                        <div class="col-md-6">
+                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': upStrength}">one upper
+                            case</i>
+                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': lowStrength}">one lower
+                            case</i>
+                        </div>
+                        <div class="col-md-6">
+                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': numStrength}">one number</i>
+                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': lengthStrength}">8
+                            characters</i></div>
+                      </div>
+                    </div>
+
+                    <input type="password" class="formInput mt-2 mb-3"
+                      placeholder="{{'REGISTER.ConfirmPassword' | translate}}" [(ngModel)]="user.passwordAgain"
+                      formControlName="passwordAgain">
+
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group-sm has-default text-center ml-auto">
+                      <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
+                      </re-captcha>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div>
+                          <button type="submit" class="btns signup-btns mt-3 mb-4" [disabled]="!isRegisterFormValid()"
+                            (click)="register()">Register</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group form-check">
+                      <ng-container *ngIf="host.brand=='DNSCyte'">
+                        <p>By clicking the 'Register' button, you are creating a DNSCyte account and you agree
+                          to
+                          <a href="{{host.privacyUrl}}" target="_blank">DNSCyte Privacy Policy.</a>
+                        </p>
+                      </ng-container>
+                      <ng-container *ngIf="host.brand=='Roksit'">
+                        <p>By clicking the 'Register' button, you are creating a ROKSIT account and you agree
+                          to
+                          <a href="{{host.privacyUrl}}" target="_blank">ROKSIT Privacy Policy.</a>
+                        </p>
+                      </ng-container>
+                      <ng-container *ngIf="host.brand=='DNSSense'">
+                        <p>By clicking the 'Register', you are agree to our
+                          <a href="{{host.privacyUrl}}" target="_blank">Terms of Service</a> and you understand that
+                          your personal information
+                          may be transferred for processing outside your country of residence.
+                        </p>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+              <!-- Form ended -->
+
 
             </div>
           </div>
+
         </div>
-
-
-
-
       </div>
 
     </div>
-    <app-footer-cmp></app-footer-cmp>
-
+    <div class="col-md-8 ml-auto mr-auto" *ngIf="pageMode=='mailSent'">
+      <div class="row mt-4 mb-4">
+        <div class="col-md-3 text-left">
+          <img src="/assets/img/{{host.logoImage}}" style="max-height: 40px;" />
+        </div>
+        <div class="col-md-9">
+          <a class="nav-link pull-right" [routerLink]="['/login']"
+            style="color: #868e96; font-weight: 500; font-size: 16px;">
+            Log In
+          </a>
+        </div>
+      </div>
+      <div class="mailSentCard col-md-8 mr-auto ml-auto mt-4">
+        <div class="row" style="padding:50px">
+          <div class="col-md-10 mr-auto ml-auto">
+            <div class="row">
+              <div class="col-md-2 col-sm-12 col-xs-12 mb-2">
+                <img src="/assets/img/check-ring.svg" />
+              </div>
+              <div class="col-md-10 col-sm-12 mb-2" style="font-family: Roboto; font-size: 25px; font-weight: normal;">
+                <p>Great News!</p>
+                <p>Your free trial is almost ready!</p>
+              </div>
+              <div class="col-md-12 mr-auto ml-auto"
+                style="font-weight: normal; background-color: rgba(67, 83, 255, 0.08)">
+                <p class="mt-2">A verification email has been sent</p>
+                <p> to: <b>{{user.username}}</b></p>
+                <p>Please click the activation link sent to your e-mail address.<p>
+              </div>
+              <div class="col-md-12 mr-auto ml-auto mt-3" style="font-weight: normal;">
+                <p>To re-send the verification e-mail please click <a href="#">here </a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <app-footer-cmp></app-footer-cmp>
+
+</div>

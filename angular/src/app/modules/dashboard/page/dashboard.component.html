@@ -485,3 +485,84 @@
 
   </div>
 </div>
+
+
+<!-- Modal start -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  style="display: none;" aria-hidden="true">
+  <div class="modal-dialog" style="max-width: 60%;" role="document">
+    <div class="modal-content" style="background: white; color: black; border-radius: 15px; margin-top: -50px;">
+      <div class="modal-header" style="border-bottom: none;">
+        <h4 id="exampleModalLabel" style="font-weight: bold;">Welcome to {{host.brand}}</h4>
+        <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="padding-top: 0px;">
+        <div class=" form-ux activated">
+          <div class="row">
+            <div class="col-md-12 ml-auto mr-auto">
+              <p class="mb-0" style="font-size: 12px; max-width: 500px;">{{host.brand}} is a recursive DNS Service based
+                on global cyber threat intelligence and machine learning to block threats and targeted attacks in real-time.</p>
+              <p class="mb-0" style="font-size: 13px; font-weight: normal;">{{host.brand}} will provide the following
+                benefits once enabled:</p>
+              <div class="subText">
+                <img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Stop zero-day attacks.
+              </div>
+              <div class="subText">
+                <img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Pre & Post infection protection.</div>
+              <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Define and enforce
+                internet usage policy.</div>
+              <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">White list
+                categorisation of internet traffic </div>
+              <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Next Generation
+                protection using machine learning & artificial intelligence.</div>
+              <div class="subHeader mt-2">
+                Deployment Types:
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-4">
+                  <img class="subImg" src="/assets/img/office.png" alt="Protect your network" />
+                  <p class="subHeader mt-3 mb-0">Protect your network</p>
+                  <div class="ml-1">
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Create Public Ip</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile Assignment</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">DNS Forwarding</div>
+                  </div>
+                  <button class="btns startBtn" [routerLink]="['/admin/publicip']">Start using</button>
+                </div>
+                <div class="col-md-4">
+                  <img class="subImg" src="/assets/img/woman.png" alt="Roaming Client" />
+                  <p class="subHeader mt-3 mb-0">Roaming Client</p>
+                  <div class="ml-1">
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Application Setup</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile Assignment</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Disabling Local Domain</div>
+                  </div>
+                  <button class="btns startBtn" [routerLink]="['/admin/roaming']">Start using</button>
+                </div>
+                <div class="col-md-4">
+                  <img class="subImg" src="/assets/img/keyboard.png" alt="DNS Relay" />
+                  <p class="subHeader mt-3 mb-0">DNS Relay</p>
+                  <div class="ml-1">
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Application Setup</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile Assignment</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Disabling Local Domain</div>
+                  </div>
+                  <button class="btns startBtn" [routerLink]="['/admin/devices']">Start using</button>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-12">
+                  <p class="subText">You can close this welcome screen to initiate the wizard which will guide for the
+                    basic steps to enable</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
+<!-- Modal end -->

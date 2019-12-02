@@ -29,9 +29,10 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 @Component({
   selector: 'app-forgotpasswordconfirm',
-  templateUrl: 'forgotpasswordconfirm.component.html'
+  templateUrl: 'forgotpasswordconfirm.component.html',
+  styleUrls: ['forgotpasswordconfirm.component.sass']
 })
-export class ForgotPasswordConfirmComponent implements OnInit, OnDestroy {
+export class ForgotPasswordConfirmComponent implements OnInit {
   host: ConfigHost;
   forgotPasswordConfirmForm: any;
   validPasswordLogin: true | false;
@@ -46,7 +47,7 @@ export class ForgotPasswordConfirmComponent implements OnInit, OnDestroy {
 
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
     private element: ElementRef, private notification: NotificationService,
-    private smsService: SmsService, private capthaService: CaptchaService, private route: ActivatedRoute, private configService: ConfigService) {
+    private capthaService: CaptchaService, private route: ActivatedRoute, private configService: ConfigService) {
     this.host = configService.host;
     this.captcha_key = this.host.captcha_key;
     this.forgotId = this.route.snapshot.queryParams.key;
@@ -60,22 +61,18 @@ export class ForgotPasswordConfirmComponent implements OnInit, OnDestroy {
 
 
 
-  }
-  ngOnDestroy(): void {
-
-
-  }
+  } 
   ngOnInit() {
-    const navbar: HTMLElement = this.element.nativeElement;
-    this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
-    const body = document.getElementsByTagName('body')[0];
-    body.classList.add('register-page');
-    body.classList.add('off-canvas-sidebar');
-    const card = document.getElementsByClassName('card')[0];
-    setTimeout(function () {
-      // after 1000 ms we add the class animated to the login/register card
-      card.classList.remove('card-hidden');
-    }, 700);
+    // const navbar: HTMLElement = this.element.nativeElement;
+    // this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
+    // const body = document.getElementsByTagName('body')[0];
+    // body.classList.add('register-page');
+    // body.classList.add('off-canvas-sidebar');
+    // const card = document.getElementsByClassName('card')[0];
+    // setTimeout(function () {
+    //   // after 1000 ms we add the class animated to the login/register card
+    //   card.classList.remove('card-hidden');
+    // }, 700);
 
   }
 

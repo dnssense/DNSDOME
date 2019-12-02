@@ -5,6 +5,7 @@
 
 export var phoneNumberCodes = [
   {'name': 'United Kingdom', 'dial_code': '+44', 'code': 'GB'},
+  {'name': 'Turkey', 'dial_code': '+90', 'code': 'TR'},
   {'name': 'United States', 'dial_code': '+1', 'code': 'US'},
   {'name': 'Afghanistan', 'dial_code': '+93', 'code': 'AF'},
   {'name': 'Albania', 'dial_code': '+355', 'code': 'AL'},

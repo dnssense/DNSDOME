@@ -23,7 +23,7 @@ export class AgentService {
   private saveSecurityProfileURL = this.config.getApiUrl() + "/profiles/save";
   private deleteSecurityProfileURL = this.config.getApiUrl() + "/profiles/delete";
 
-  private getLinkURL = this.config.getApiUrl() + "/box/roamingclientlink";
+  
 
   constructor(private http: HttpClient, private config: ConfigService) { }
 
@@ -69,10 +69,6 @@ export class AgentService {
 
   deleteSecurityProfile(id: number): Observable<OperationResult> {
     return this.http.post<OperationResult>(this.deleteSecurityProfileURL, { "id": id }, this.getOptions()).map(res => res);
-  }
-
-  getProgramLink(): Observable<any> {
-    return this.http.get<any>(this.getLinkURL).map(data => data);
   }
 
   getOptions() {

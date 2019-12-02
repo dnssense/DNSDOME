@@ -35,7 +35,7 @@
                           <div class="col-md-6 ml-auto mr-auto d-flex">
                             <input type="text" id="domain" class="dns-form-control input-reverse"
                               placeholder="Enter domain" [(ngModel)]="domain" (ngModelChange)="checkDomain('category')"
-                              formControlName="domain">
+                              formControlName="domain" (keydown.space)="$event.preventDefault();">
                             <button class="btns btn-teritary pl-3 pr-3 pull-right ml-2" (click)="searchCategory()"
                               [disabled]="!isDomain">Search
                             </button>
@@ -79,7 +79,7 @@
                         <div class="col-md-5 ml-auto mt-2">
                           <textarea type="text" id="domainReq" class="dns-form-control input-reverse" rows="5"
                             placeholder="Enter a domain or max. 5 domains with comma separated"
-                            [(ngModel)]="domainForReq" (ngModelChange)="checkDomain('report')"></textarea>
+                            [(ngModel)]="domainForReq" (ngModelChange)="checkDomain('report')" (keydown.space)="$event.preventDefault();"></textarea>
                         </div>
                         <div class="col-md-1 mr-auto mt-2">
                           <button class="btns btn-teritary" (click)="reportDomain()"

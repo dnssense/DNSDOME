@@ -11,7 +11,9 @@ import { OperationResult } from '../models/OperationResult';
 export class BoxService {
   private getBoxesURL = this.config.getApiUrl() + "/boxes";
   private saveBoxURL = this.config.getApiUrl() + "/boxes/save";
-  private deleteBoxURL = this.config.getApiUrl() + "/boxes/delete/";
+  private deleteBoxURL = this.config.getApiUrl() + "/boxes/delete/"; 
+  private virtualBoxURL = this.config.getApiUrl() + "/boxes/virtual"
+  private getLinkURL = this.config.getApiUrl() + "/box/roamingclientlink";
 
   constructor(private http: HttpClient, private config: ConfigService) { }
   
@@ -25,6 +27,14 @@ export class BoxService {
 
   deleteBox(id: number): Observable<OperationResult> {
     return this.http.post<OperationResult>(this.deleteBoxURL, { "id": id }, this.getOptions()).map(res => res);
+  }
+
+  getVirtualBox(): Observable<Box> {
+    return this.http.get<Box>(this.virtualBoxURL).map(data => data);
+  }
+  
+  getProgramLink(domains: string): Observable<any> {
+    return this.http.post<any>(this.getLinkURL, domains).map(data => data);
   }
   
   private getOptions() {

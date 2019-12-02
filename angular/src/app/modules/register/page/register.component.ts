@@ -47,92 +47,97 @@ export class RegisterComponent implements OnInit, OnDestroy {
   validPasswordRegister: true | false;
   campaignCode: string;
   title: string;
+  pageMode: string = 'register'
 
-  constructor(private formBuilder: FormBuilder, private element: ElementRef,
-    private accountService: AccountService, private notification: NotificationService,
-    private capthaService: CaptchaService, private configService: ConfigService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private element: ElementRef, private accountService: AccountService,
+    private capthaService: CaptchaService, private configService: ConfigService, private router: Router) { }
+
+  ngOnInit() {
+    document.body.style.backgroundColor = "white";
+
     this.isFailed = false;
     this.sidebarVisible = false;
     this.host = this.configService.host;
     this.captcha_key = this.host.captcha_key;
     this.createRegisterForm();
 
+    // const navbar: HTMLElement = this.element.nativeElement;
+    // this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
+    //const body = document.getElementsByTagName('body')[0];
+    // body.classList.add('register-page');
+    // body.classList.add('off-canvas-sidebar');
+    // const card = document.getElementsByClassName('card')[0];
+    // setTimeout(function () {
+    //   // after 1000 ms we add the class animated to the login/register card
+    //   card.classList.remove('card-hidden');
+    // }, 700);
+
   }
 
   createRegisterForm() {
+    this.user = new SignupBean();
+    this.user.company = new Company();
+    this.user.company.name = "";
 
     this.registerForm =
       this.formBuilder.group({
         "username": ["", [Validators.required, ValidationService.emailValidator]],
         "password": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
         "passwordAgain": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
-        "company": ["", []],
+        "company": ["", [Validators.required]],
         "gsmCode": ["", []],
-        "gsm": ["", []],
-        "name": ["", []],
-        "surname": ["", []],
-        "title": ["", []],
-        "campaignCode": ["", []],
-
-      }
-        , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
+        "gsm": ["", [Validators.required]],
+        "name": ["", [Validators.required]],
+        "surname": ["", [Validators.required]]
+      }, { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
       );
 
-    this.user = new SignupBean();
-    this.user.company = new Company();
-    this.user.company.name = "";
 
-    if (this.host && this.host.brand == 'DNSCyte') {
-      this.registerForm.controls['company'].setValidators([Validators.required]);
-      this.registerForm.controls['company'].updateValueAndValidity();
-      this.registerForm.controls['name'].setValidators([Validators.required]);
-      this.registerForm.controls['name'].updateValueAndValidity();
-      this.registerForm.controls['surname'].setValidators([Validators.required]);
-      this.registerForm.controls['surname'].updateValueAndValidity();
-      this.registerForm.controls['gsmCode'].setValidators([Validators.required]);
+    if (this.host.brand == 'DNSCyte') {
+      this.user.gsmCode = '+44';
+      this.registerForm.controls['gsmCode'].setValue('+44');
       this.registerForm.controls['gsmCode'].updateValueAndValidity();
-      this.registerForm.controls['gsm'].setValidators([Validators.required]);
-      this.registerForm.controls['gsm'].updateValueAndValidity();
+    } else {
+      this.user.gsmCode = '+90';
+      this.registerForm.controls['gsmCode'].setValue('+90');
+      this.registerForm.controls['gsmCode'].updateValueAndValidity();
     }
 
-
-
-  }
-
-  ngOnInit() {
-    const navbar: HTMLElement = this.element.nativeElement;
-    this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
-    const body = document.getElementsByTagName('body')[0];
-    body.classList.add('register-page');
-    body.classList.add('off-canvas-sidebar');
-    const card = document.getElementsByClassName('card')[0];
-    setTimeout(function () {
-      // after 1000 ms we add the class animated to the login/register card
-      card.classList.remove('card-hidden');
-    }, 700);
+    // if (this.host && this.host.brand == 'DNSCyte') {
+    //   this.registerForm.controls['company'].setValidators([Validators.required]);
+    //   this.registerForm.controls['company'].updateValueAndValidity();
+    //   this.registerForm.controls['name'].setValidators([Validators.required]);
+    //   this.registerForm.controls['name'].updateValueAndValidity();
+    //   this.registerForm.controls['surname'].setValidators([Validators.required]);
+    //   this.registerForm.controls['surname'].updateValueAndValidity();
+    //   this.registerForm.controls['gsmCode'].setValidators([Validators.required]);
+    //   this.registerForm.controls['gsmCode'].updateValueAndValidity();
+    //   this.registerForm.controls['gsm'].setValidators([Validators.required]);
+    //   this.registerForm.controls['gsm'].updateValueAndValidity();
+    // }
 
   }
 
   sidebarToggle() {
-    const toggleButton = this.toggleButton;
-    const body = document.getElementsByTagName('body')[0];
-    if (this.sidebarVisible === false) {
-      setTimeout(function () {
-        toggleButton.classList.add('toggled');
-      }, 500);
-      body.classList.add('nav-open');
-      this.sidebarVisible = true;
-    } else {
-      this.toggleButton.classList.remove('toggled');
-      this.sidebarVisible = false;
-      body.classList.remove('nav-open');
-    }
+    // const toggleButton = this.toggleButton;
+    // const body = document.getElementsByTagName('body')[0];
+    // if (this.sidebarVisible === false) {
+    //   setTimeout(function () {
+    //     toggleButton.classList.add('toggled');
+    //   }, 500);
+    //   body.classList.add('nav-open');
+    //   this.sidebarVisible = true;
+    // } else {
+    //   this.toggleButton.classList.remove('toggled');
+    //   this.sidebarVisible = false;
+    //   body.classList.remove('nav-open');
+    // }
   }
 
   ngOnDestroy() {
-    const body = document.getElementsByTagName('body')[0];
-    body.classList.remove('register-page');
-    body.classList.remove('off-canvas-sidebar');
+    // const body = document.getElementsByTagName('body')[0];
+    // body.classList.remove('register-page');
+    // body.classList.remove('off-canvas-sidebar');
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -214,21 +219,26 @@ export class RegisterComponent implements OnInit, OnDestroy {
         c_answer: this.user.c_answer
       };
 
-      if (this.host.brand == 'DNSCyte') {
-        rUser.name = this.user.name + ' ' + this.user.surname;
-        rUser.companyName = this.user.company.name;
-        rUser.gsm = this.user.gsm;
-        rUser.gsmCode = this.user.gsmCode;
-        rUser.campaignCode = this.campaignCode;
-        rUser.brand = 'DNSCyte';
-      }
+      rUser.name = this.user.name + ' ' + this.user.surname;
+      rUser.companyName = this.user.company.name;
+      rUser.gsm = this.user.gsm;
+      rUser.gsmCode = this.user.gsmCode;
+      //rUser.campaignCode = this.campaignCode;
+      rUser.brand = this.host.brand;
 
       this.accountService.signup(rUser).subscribe(res => {
-        this.notification.success("Registered successfuly, check your email and active your account");
-        this.router.navigateByUrl('/login');
+        //this.notification.success("Registered successfuly, check your email and active your account");
+        //this.router.navigateByUrl('/login');
+        this.pageMode = 'mailSent'
       });
     }
 
+  }
+
+  userGsmCodeChanged(code) {
+    this.registerForm.controls['gsmCode'].setValue(code);
+    this.registerForm.controls['gsmCode'].updateValueAndValidity();
+    this.user.gsmCode = code
   }
 
   passStrength = 0;
@@ -263,7 +273,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
       if (this.passStrength > 3) {
         $('#passDetails').hide(300);
-      }else{
+      } else {
         $('#passDetails').show(300);
       }
     }

@@ -43,7 +43,6 @@ export class ValidationService {
   }
 
   static domainValidation(control) {
-
     if (control == null || control.value == null || control.value === '') {
       return null;
     }
@@ -62,6 +61,27 @@ export class ValidationService {
       return result;
     }
     return { 'invalidDomain': true };
+
+  }
+
+  static isDomainValid(control: string) {
+    if (control == null || control === '') {
+      return false;
+    }
+    let domain = control;
+    if (domain) {
+      domain = domain.trim();
+      if (String(domain).charAt(domain.length - 1).toLowerCase() === String(domain).charAt(domain.length - 1).toUpperCase()) {
+        return false;
+      }
+      const domObject = tldjs.parse(domain);
+      const result = (domObject.isValid && domObject.tldExists);
+      if (!result) {
+        return false;
+      }
+      return true;
+    }
+    return false;
 
   }
 
@@ -206,6 +226,20 @@ export class ValidationService {
       return true;
     }
 
+  }
+
+  static isValidIpWithLocals(ipForCheck: string) {
+    let isValid = ipForCheck.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/);
+    if (isValid) {
+      let a = ipForCheck.split('.');
+      if (a.length != 4) {
+        return false;
+      }
+    }
+    if (!isValid) {
+      return false;
+    }
+    return true;
   }
 
 }

@@ -1,24 +1,38 @@
 <footer class="footer ">
-    <div class="container">
-      <nav class="pull-left">
-        <ul>
-          <li></li>
-          <li>
-            <a [href]="host.www" target="_blank">
-              {{host.brand}}
-            </a>
-          </li>
-          <li>
-            <a [href]='host.aboutus' target="_blank">
-              About Us
-            </a>
-          </li>
-        </ul>
-      </nav>
-      <div class="copyright pull-right">
-        &copy;
-        {{test | date: 'yyyy'}} made by
-        <a [href]="host.www" target="_blank">{{host.brand}}</a> for a better world.
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="copyright  ml-2" style="color: #868e96;">
+          Copyright &copy; {{test | date: 'yyyy'}} <a [href]="host.www" target="_blank">{{host.brand}}</a> Ltd.
+        </div>
+      </div>
+      <div class="col-md-6" style="display: contents;">
+        <nav class="text-left" style="color:#868e96">
+          <ul>
+            <li>
+              <a style="text-transform: none;" [href]="host.www" target="_blank">
+                Terms of Use
+              </a>
+            </li>
+            <li>|</li>
+            <li>
+              <a style="text-transform: none;" [href]="host.privacyUrl" target="_blank">
+                Privacy Policy
+              </a>
+            </li>
+            <li>|</li>
+            <li>
+              <a style="text-transform: none;" [href]='host.aboutus' target="_blank">
+                Support
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
-  </footer>
+
+
+
+
+  </div>
+</footer>

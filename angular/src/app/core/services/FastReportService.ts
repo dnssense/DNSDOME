@@ -19,20 +19,13 @@ import { Config } from 'protractor';
 export class FastReportService {
   public _initContentURL = this.configService.getApiUrl() + '/quick-reports/init'; // URL to subcategories api
   public _graphURL = this.configService.getApiUrl() + '/quick-reports/tableData'; // URL to graph api
-  public _histogramURL =
-    this.configService.getApiUrl() + '/quick-reports/logCountHistogram'; // URL to graph api
-  public _dashboardHistogramURL =
-    this.configService.getApiUrl() + '/quick-reports/dashboardHistogram'; // URL to graph api
-  public _saveSearchSettingURL =
-    this.configService.getApiUrl() + '/quick-reports/saveSearchSetting'; // URL to graph api
-  public _savedSearchURL =
-    this.configService.getApiUrl() + '/quick-reports/saved-search?'; // URL to graph api
-  public _savedSearchListURL =
-    this.configService.getApiUrl() + '/quick-reports/saved-search-list'; // URL to graph api
-  public _initTableColumnsURL =
-    this.configService.getApiUrl() + '/quick-reports/tableColumns'; // URL to subcategories api
-  public _multiValueHistogramDataURL =
-    this.configService.getApiUrl() + '/quick-reports/multiValueHistogramData'; // URL to graph api
+  public _histogramURL = this.configService.getApiUrl() + '/quick-reports/logCountHistogram'; // URL to graph api
+  public _dashboardHistogramURL = this.configService.getApiUrl() + '/quick-reports/dashboardHistogram'; // URL to graph api
+  public _saveSearchSettingURL = this.configService.getApiUrl() + '/quick-reports/saveSearchSetting'; // URL to graph api
+  public _savedSearchURL = this.configService.getApiUrl() + '/quick-reports/saved-search?'; // URL to graph api
+  public _savedSearchListURL = this.configService.getApiUrl() + '/quick-reports/saved-search-list'; // URL to graph api
+  public _initTableColumnsURL = this.configService.getApiUrl() + '/quick-reports/tableColumns'; // URL to subcategories api
+  public _multiValueHistogramDataURL = this.configService.getApiUrl() + '/quick-reports/multiValueHistogramData'; // URL to graph api
 
   public _tableColumns: BehaviorSubject<LogColumn[]> = new BehaviorSubject(
     null

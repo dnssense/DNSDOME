@@ -8,6 +8,7 @@ import { LogColumn } from 'src/app/core/models/LogColumn';
 import { WApplication } from 'src/app/core/models/WApplication';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { ValidationService } from 'src/app/core/services/validation.service';
 
 declare var jQuery: any;
 
@@ -189,7 +190,7 @@ export class ColumnTagInputComponent implements OnInit {
       this.currentColumn == 'sourceIp' ||
       this.currentColumn == 'destinationIp'
     ) {
-      if (!this.checkIp()) {
+      if (!this.checkIp(this.currentInput)) {
         return;
       }
     }
@@ -289,18 +290,12 @@ export class ColumnTagInputComponent implements OnInit {
       });
   }
 
-  public checkIp() {
-    let isValid =
-      this.currentInput != '0.0.0.0' &&
-      this.currentInput != '255.255.255.255' &&
-      this.currentInput.match(
-        /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/
-      );
-    if (!isValid) {
-      this.notificationService.error("Invalid IP");
-      return false;
+  public checkIp(ipForCheck: string) {
+    const res = ValidationService.isValidIpWithLocals(ipForCheck);
+    if (!res) {
+      this.notificationService.warning("Invalid IP");
     }
-    return true;
+    return res;
   }
 
   public updateColumns(cols: LogColumn[]) {
