@@ -29,7 +29,7 @@
                         <input type="text" class="dns-form-control reverse-form" name="agentName" id="agentName"
                           placeholder="Name" [(ngModel)]="selectedIp.agentAlias"
                           formControlName="agentName" data-step="2" data-position='bottom-middle-aligned'
-                          data-intro="Please give a name for this connection">
+                          data-intro="Please give a name for the Public Ip">
                       </div>
                       <div class="col-12 col-sm-3 d-flex flex-column">
                         <div class="flex-1" data-step="1" data-intro="Please identify your external IP type. It can be static or dynamic"
@@ -37,12 +37,12 @@
                           <div class="dns-radio">
                             <input id="IpType1" name="ipType" type="radio" value="staticIp" [(ngModel)]="ipType"
                               (click)="onSelectionChangeIPType('staticIp')" formControlName="ipType">
-                            <label for="IpType1">Static IP</label>
+                            <label for="IpType1" class="ipType">Static IP</label>
                           </div>
                           <div class="dns-radio">
                             <input id="IpType2" name="ipType" type="radio" value="dynamicIp" [(ngModel)]="ipType"
                               (click)="onSelectionChangeIPType('dynamicIp')" formControlName="ipType">
-                            <label for="IpType2">Dynamic IP</label>
+                            <label for="IpType2" class="ipType">Dynamic IP</label>
                           </div>
                         </div>
                         <div class="flex-1 d-flex flex-column" data-step="3"
@@ -89,7 +89,7 @@
                       </div>
                       <div class="col-12 col-sm-3 d-flex align-items-end">
                         <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="4"
-                          data-intro="Please select a profile" data-position='top'>
+                          data-intro="Please select a predefined security profile or create new one" data-position='top'>
                           <button class="btns dropdown-toggle dns-full-width reverse-form text-left" type="button"
                             id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <ng-container
@@ -169,7 +169,7 @@
                     <div class="row">
                       <div class="col-12 text-right">
                         <button class="btns btn-clear p-0" id="advancedBtn">
-                          <i class="icon-down-open-big mr-2"></i>
+                          <i class="icon-down-open-big mr-2" id="advancedBtnIcon"></i>
                           Advanced
                         </button>
                       </div>

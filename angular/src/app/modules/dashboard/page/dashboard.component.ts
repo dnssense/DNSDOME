@@ -47,32 +47,33 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.host = this.config.host;
-    this.startDashboardOperations();
-   // let roleName: string = this.authService.currentSession.currentUser.roles.name;
-    //TODO: ikinci karara kadar kapali //agent, box, client yoksa modal ac
-    // if (false && roleName != 'ROLE_USER') {
-    //   this.agentService.getAgents().subscribe(res => {
-    //     if (res == null || res.length < 1) {//yönlendirme yapma box roaming ip yoksa modalı aç if there is no agent and role is not user redirect
-    //       this.boxService.getBoxes().subscribe(res2 => {
-    //         if (res2 == null || res2.length < 1) {
-    //           this.roamingService.getClients().subscribe(res3 => {
-    //             if (res3 == null || res3.length < 1) {
-    //               this.openModal();
-    //             } else {
-    //               this.startDashboardOperations();
-    //             }
-    //           })
-    //         } else {
-    //           this.startDashboardOperations();
-    //         }
-    //       })
-    //     } else {
-    //       this.startDashboardOperations();
-    //     }
-    //   });
-    // } else {
-    //   this.startDashboardOperations();
-    // }
+    let roleName: string = this.authService.currentSession.currentUser.roles.name;
+    
+    if (roleName != 'ROLE_USER') {
+      this.agentService.getAgents().subscribe(res => {
+        if (res == null || res.length < 1) {
+          this.boxService.getBoxes().subscribe(res2 => {
+            if (res2 == null || res2.length < 1) {
+              this.roamingService.getClients().subscribe(res3 => {
+                if (res3 == null || res3.length < 1) {
+                  //TODO: redericeting temporarily
+                  this.router.navigateByUrl('/admin/publicip');
+                  //this.openModal();
+                } else {
+                  this.startDashboardOperations();
+                }
+              })
+            } else {
+              this.startDashboardOperations();
+            }
+          })
+        } else {
+          this.startDashboardOperations();
+        }
+      });
+    } else {
+      this.startDashboardOperations();
+    }
 
   }
 

@@ -1,7 +1,13 @@
 <div class="main-content">
   <div class="container-fluid col-md-11">
+    <div class="row" *ngIf="host.brand=='CyberCyte'" style="height: 650px;">
+      <div class="col-md-12 ml-auto mr-auto" >
+        <iframe width="100%" height="100%" style="border-radius: 5px;" src="https://docs.dnscyte.com/">
+        </iframe>
+      </div>
+    </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12" *ngIf="host.brand!='CyberCyte'">
         <div class="dns-base-card">
           <div class="dns-base-card-header">
             Frequently Asked Questions
@@ -25,8 +31,11 @@
                     Applications can not communicate if they can not resolve the IP address of the domain they want to
                     access. Because of this providing security over DNS is very effective.
 
-                    {{brand}} Secure DNS service handles DNS requests from its users and redirects malicious requests that
-                    are not allowed to access to the {{brand}} sinkhole IP address. This way, harmful traffic is stopped
+                    {{host.brand}} Secure DNS service handles DNS requests from its users and redirects malicious
+                    requests
+                    that
+                    are not allowed to access to the {{host.brand}} sinkhole IP address. This way, harmful traffic is
+                    stopped
                     before it even begins.
                   </div>
                 </div>
@@ -45,14 +54,14 @@
                   style="padding: 10px">
                   <div class="card-body">
                     <ol start="1" type="1">
-                      <li>Open an account from <a href="{{siteUrl}}"
-                          target="_blank">{{siteUrl}}</a>
+                      <li>Open an account from <a href="{{host.siteUrl}}" target="_blank">{{host.siteUrl}}</a>
                       </li>
-                      <li>Click the "Register" button at <a href="{{siteUrl}}/#/register"
-                          target="_blank">{{siteUrl}}</a> and fill out the
+                      <li>Click the "Register" button at <a href="{{host.siteUrl}}/#/register"
+                          target="_blank">{{host.siteUrl}}</a> and fill out the
                         form. All you need is to register an email address.</li>
                       <li>Identify your external IP Address and security policy from the portal.</li>
-                      <li>The {{brand}} user portal is designed to be extremely easy to configure. Use Deployment ->
+                      <li>The {{host.brand}} user portal is designed to be extremely easy to configure. Use Deployment
+                        ->
                         Public IP
                         menu to define the external address.</li>
                       <li>Select a profile from the profile list that you think is appropriate, or click "New Profile"
@@ -60,18 +69,24 @@
                         create a
                         new profile</li>
                       <li>Save your settings by clicking the Save Button.</li>
-                      <li>Enable devices on your network to use {{brand}} DNS Servers. Steps to enable this is based on
+                      <li>Enable devices on your network to use {{host.brand}} DNS Servers. Steps to enable this is
+                        based on
                         how DNS is configured in your organisation.
                         <ul>
-                          <li><strong>- {{brand}} DNS Servers are 199.244.90.90 and 199.244.90.91</strong></li>
-                          <li>- If you use a local DNS server, you must define {{brand}} DNS IP Addresses as forwarder DNS on your local DNS Server.</li>
-                          <li>- If you do not use Local DNS, you must deploy {{brand}} DNS IP addresses as the DNS Server IP Address over DHCP.</li>
+                          <li><strong>- {{host.brand}} DNS Servers are 199.244.90.90 and 199.244.90.91</strong></li>
+                          <li>- If you use a local DNS server, you must define {{host.brand}} DNS IP Addresses as
+                            forwarder
+                            DNS on your local DNS Server.</li>
+                          <li>- If you do not use Local DNS, you must deploy {{host.brand}} DNS IP addresses as the DNS
+                            Server IP Address over DHCP.</li>
                         </ul>
                       </li>
                     </ol>
                     <ol start="8" type="1">
-                      <li>Please refer “{{brand}} Secure DNS Setup Guide(PDF)” for more details. You can download it from
-                        <a download href="{{docUrl}}" target="_blank">here</a>
+                      <li>Please refer “{{host.brand}} Secure DNS Setup Guide(PDF)” for more details. You can download
+                        it
+                        from
+                        <a download href="{{host.docUrl}}" target="_blank">here</a>
                       </li>
                       <li>For roaming clients you can download the Windows Client from Deployment -> Roaming Client menu
                         inside the GUI.</li>

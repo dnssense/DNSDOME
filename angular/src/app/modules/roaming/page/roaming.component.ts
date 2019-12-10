@@ -264,6 +264,7 @@ export class RoamingComponent implements OnInit {
 
     isDontDomainsValid: boolean = true
     checkDomain() {
+        this.dontDomains = this.dontDomains.toLowerCase()
         this.isDontDomainsValid = true;
         const d = this.dontDomains.split(',');
         if (d.length > 10) {
@@ -275,7 +276,7 @@ export class RoamingComponent implements OnInit {
                 if (f.toLowerCase().startsWith('http')) {
                     f = f.toLowerCase().replace('http://', '').replace('https://', '');
                 }
-                const res = ValidationService.isDomainValid(f);
+                const res = f.match(/^[a-z0-9.-]+$/i);//alpha or num or - or .
                 if (!res) {
                     this.isDontDomainsValid = false;
                     break;

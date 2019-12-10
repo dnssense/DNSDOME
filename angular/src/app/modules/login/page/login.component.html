@@ -13,10 +13,11 @@
                   <form [formGroup]="loginForm" ng-submit="loginform.$valid && loginForm.submit()">
 
                     <input type="email" class="formInput" placeholder="E-mail" [(ngModel)]="email"
-                      (ngModelChange)="emailValidationLogin($event)" formControlName="email">
+                      [ngClass]="{'formInputHasError': isFailed}" (ngModelChange)="emailValidationLogin($event)"
+                      formControlName="email">
 
                     <input type="password" class="formInput mt-3" placeholder="{{'LOGIN.Password' | translate}}"
-                      [(ngModel)]="password" formControlName="password">
+                      [ngClass]="{'formInputHasError': isFailed}" [(ngModel)]="password" formControlName="password">
 
 
                     <div class="">
@@ -24,6 +25,7 @@
                     </div>
                     <div class="form-group text-center">
                       <br />
+                      <p style="color: red;" *ngIf="isFailed">E-mail or password is wrong!</p>
                       <button class="btns login-btns" (click)="login()">
                         {{'LOGIN.Login'|translate}}
                       </button>
@@ -36,7 +38,7 @@
                           compatibility.
                         </div>
                         <div class="col-12 text-center" style="color: white">
-                          version: 1.0.98
+                          version: 1.1.7
                         </div>
                       </div>
                     </div>
@@ -56,8 +58,8 @@
                       Code</button>
                   </div>
                 </div>
-                <div id="twoFactorDiv" style="display:none">
-                  <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
+                <div id="twoFactorDiv" class="text-success text-center" style="display:none;">
+                  <countdown-timer style="font-size: 25px; font-weight: 500;" (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
                   <mat-form-field class="example-full-width">
                     <input type="text" disabled matInput [(value)]="twoFactorPhone">
                   </mat-form-field>
@@ -82,7 +84,7 @@
   </div>
   <div class="col-md-7 order-first order-md-2"
     style="background-image: url(./assets/img/loginbg.png);background-size: cover;background-position: top center; min-height: 250px;">
-    <img src="/assets/img/CyberCyte_white.png" *ngIf="host.brand=='DNSCyte'"
+    <img src="/assets/img/CyberCyte_white.png" *ngIf="host.brand=='CyberCyte'"
       style="position: absolute; bottom: 5%; right: 7%;" />
   </div>
 </div>

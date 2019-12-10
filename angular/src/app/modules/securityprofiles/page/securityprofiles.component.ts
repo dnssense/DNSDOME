@@ -127,6 +127,11 @@ export class SecurityProfilesComponent {
         this.selectedAgent.rootProfile.id = null;
         this.selectedAgent.rootProfile.name = this.selectedAgent.rootProfile.name + '-Clone';
         this.selectedAgent.rootProfile.isSystem = false;
+
+        this.selectedAgent.rootProfile.applicationProfile.id = null;
+        this.selectedAgent.rootProfile.domainProfile.id = null;
+        this.selectedAgent.rootProfile.blackWhiteListProfile.id = null;
+        
         $('#securityProfilesPanel').toggle("slide", { direction: "left" }, 600);
         $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
 

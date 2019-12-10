@@ -4,7 +4,7 @@ import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 import {
   BsDropdownModule, BsModalService, CollapseModule, ModalModule, PaginationModule,
@@ -70,6 +70,7 @@ import { NotificationModule } from './modules/shared/notification/notification.m
     BsModalService,
     DashBoardService,
     NotificationService,
+    TranslateService,
     MonitorService,
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     {

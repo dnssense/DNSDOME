@@ -147,7 +147,8 @@
                       <td><small>{{c.blockMessage?c.blockMessage:'-'}}</small></td>
                       <td>
                         <button class="btns btn-clear btnOverFlow profileBtn text-left" [matTooltipShowDelay]="800"
-                          matTooltip="Edit Profile" (click)="showProfileEditWizard(c.id)">
+                          title="{{c.rootProfile?c.rootProfile.name: '-'}}" matTooltip="Edit Profile"
+                          (click)="showProfileEditWizard(c.id)">
                           <img src="./assets/images/icons/settings-outline.svg">
                           <small>{{c.rootProfile?c.rootProfile.name: '-'}}</small>
                         </button>
@@ -396,11 +397,11 @@
           <div class="modal-footer">
             <button class="btns btn-info pl-3 pr-3 mr-2 pull-right" (click)="copyLink()"
               [disabled]="!isDontDomainsValid" title="Create a link with above parameters and copy to clipboard">
-              <i class="fa fa-copy mr-3"></i>Copy File Link
+              <i class="fa fa-copy mr-3"></i>Copy Packet Link
             </button>
             <button class="btns btn-teritary pl-3 pr-3 pull-right" (click)="downloadFile()"
               [disabled]="!isDontDomainsValid" title="Download the file created with above parameters">
-              <i class="fa fa-download mr-3"></i>Download File
+              <i class="fa fa-download mr-3"></i>Download Packet
             </button>
           </div>
         </div>

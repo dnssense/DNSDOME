@@ -87,11 +87,30 @@
                                 </label>
                               </ng-container>
                               <ng-template #elseTemplate2FA>
-                                <p>Before using two factor authentication please enter a gsm number. </p>
+                                <p>Before using two factor authentication please enter and validate a gsm number. </p>
                               </ng-template>
                             </div>
                           </div>
                         </div>
+
+                        <div *ngIf="!user.twoFactorAuthentication && user.gsm != null && user.gsm !='' ">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="gsmCode">GSM Code</label>
+                                <input type="tel" disabled class="dns-form-control input-reverse" value="{{user.gsmCode}}">
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="gsm">GSM</label>
+                                <input type="tel" disabled class="dns-form-control input-reverse" value="{{user.gsm}}">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
                         <div *ngIf="user.twoFactorAuthentication || user.gsm == null || user.gsm =='' ">
 
                           <div class="row">
@@ -99,7 +118,7 @@
                               <div class="form-group">
                                 <label for="gsmCode">GSM Code</label>
                                 <select class="dns-form-control reverse-form" [(ngModel)]="gsmCodeTemp"
-                                  formControlName="gsmCode">
+                                (change)="gsmCodeChange()" formControlName="gsmCode">
                                   <option value="0" disabled selected>Select</option>
                                   <option *ngFor="let pc of phoneNumberCodes" [(ngValue)]="pc.dial_code">
                                     {{pc.name}} ( {{pc.dial_code}} )</option>
@@ -110,7 +129,7 @@
                               <div class="form-group">
                                 <label for="gsm">GSM</label>
                                 <input type="tel" maxlength="10" name="gsm" class="dns-form-control input-reverse"
-                                  (keydown)="checkisTelNumber($event)" [(ngModel)]="phoneNumberTemp"
+                                  (keydown)="checkisTelNumber($event)" [(ngModel)]="phoneNumberTemp" (ngModelChange)="gsmChange()"
                                   formControlName="gsm" placeholder="Enter GSM">
                               </div>
                             </div>
@@ -124,7 +143,7 @@
                         </div>
                         <div id="smsValidationDiv" class="form-group-sm has-default" style="display: none;">
                           <div class="row">
-                            <div class="col-md-6 text-center text-danger">
+                            <div class="col-md-6 mt-5 text-center text-success" style="font-size: 38px; font-weight: 500;">
                               <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
                             </div>
                             <div class="col-md-6">

@@ -85,15 +85,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
         "password": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
         "passwordAgain": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
         "company": ["", [Validators.required]],
-        "gsmCode": ["", []],
-        "gsm": ["", [Validators.required]],
+        "gsmCode": ["", [Validators.required]],
+        "gsm": ["", [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
         "name": ["", [Validators.required]],
         "surname": ["", [Validators.required]]
       }, { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
       );
 
 
-    if (this.host.brand == 'DNSCyte') {
+    if (this.host.brand == 'CyberCyte') {
       this.user.gsmCode = '+44';
       this.registerForm.controls['gsmCode'].setValue('+44');
       this.registerForm.controls['gsmCode'].updateValueAndValidity();
@@ -102,19 +102,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.registerForm.controls['gsmCode'].setValue('+90');
       this.registerForm.controls['gsmCode'].updateValueAndValidity();
     }
-
-    // if (this.host && this.host.brand == 'DNSCyte') {
-    //   this.registerForm.controls['company'].setValidators([Validators.required]);
-    //   this.registerForm.controls['company'].updateValueAndValidity();
-    //   this.registerForm.controls['name'].setValidators([Validators.required]);
-    //   this.registerForm.controls['name'].updateValueAndValidity();
-    //   this.registerForm.controls['surname'].setValidators([Validators.required]);
-    //   this.registerForm.controls['surname'].updateValueAndValidity();
-    //   this.registerForm.controls['gsmCode'].setValidators([Validators.required]);
-    //   this.registerForm.controls['gsmCode'].updateValueAndValidity();
-    //   this.registerForm.controls['gsm'].setValidators([Validators.required]);
-    //   this.registerForm.controls['gsm'].updateValueAndValidity();
-    // }
 
   }
 
@@ -162,15 +149,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.validEmailRegister = false;
     }
   }
-
-  passwordValidationRegister(e) {
-    if (e.length > 5) {
-      this.validPasswordRegister = true;
-    } else {
-      this.validPasswordRegister = false;
-    }
-  }
-
+ 
   checkisTelNumber(event: KeyboardEvent) {
     let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", "Tab"];
     let isValid: boolean = false;
@@ -193,22 +172,26 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   isRegisterFormValid() {
     if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.captcha != null) {
-      return true;
+      const ca = this.captchaComponent.getResponse();
+      if (ca == this.captcha) {
+        return true
+      }
+      return false;
     }
     return false;
   }
-
-  resolved(captchaResponse: string) {
-    //console.log(`Resolved captcha with response ${captchaResponse}:`);
-  }
-
+ 
   register() {
 
     if (!this.capthaService.validCaptcha(this.captcha)) {
+      this.captchaComponent.reset();
       return;
     } else {
       this.user.c_answer = this.captcha;
+      this.captchaComponent.reset();
+      this.isRegisterFormValid()
     }
+    
 
     if (this.user != null && this.registerForm.dirty
       && this.registerForm.valid && this.user.password === this.user.passwordAgain) {
@@ -223,12 +206,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
       rUser.companyName = this.user.company.name;
       rUser.gsm = this.user.gsm;
       rUser.gsmCode = this.user.gsmCode;
-      //rUser.campaignCode = this.campaignCode;
       rUser.brand = this.host.brand;
 
       this.accountService.signup(rUser).subscribe(res => {
-        //this.notification.success("Registered successfuly, check your email and active your account");
-        //this.router.navigateByUrl('/login');
         this.pageMode = 'mailSent'
       });
     }

@@ -30,9 +30,11 @@
 .dns-radio input[type="radio"]:checked+label:before {
   border-color: white;
   animation: ripple 0.2s linear forwards;
+  
 }
 
 .dns-radio input[type="radio"]:checked+label:after {
+  border: 1px solid black;
   transform: scale(1);
 }
 

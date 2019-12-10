@@ -131,6 +131,8 @@ export class PublicipComponent implements AfterViewInit {
     $('#advancedBtn').click(function () {
       $('#advancedContent').toggleClass('d-none');
       $('#defaultSaveBtn').toggleClass('d-none');
+      $('#advancedBtnIcon').toggleClass('icon-down-open-big');
+      $('#advancedBtnIcon').toggleClass('icon-up-open-big');
     });
 
   }

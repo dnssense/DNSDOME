@@ -56,23 +56,16 @@ export class AccountService {
 
     return geoLocation.getCurrent(this.http).timeout(2000).pipe(
       catchError(() => {
-
         return of(null);
       }),
       map((value: GeoLocation) => {
-
-
         if (value) {
-
           user.city = value.city;
           user.country = value.country_name;
           user.countryCode = value.country;
           user.timezone = value.timezone;
           user.ip = value.ip;
-          if (user.countryCode && countries[user.countryCode]) {
-            if (user.brand == null || user.brand != 'DNSCyte') {
-              user.gsmCode = countries[user.countryCode].phone || undefined;  
-            }            
+          if (user.countryCode && countries[user.countryCode]) {           
             if (countries[user.countryCode].languages && countries[user.countryCode].languages.length > 0) {
               user.language = countries[user.countryCode].languages[0];
             }
@@ -88,16 +81,12 @@ export class AccountService {
         return this.http.post<any>(this._signupURL, user, this.getOptions());
 
       }));
-
-
   }
 
   activateAccount(accountActivateId: string): Observable<any> {
     return this.http.post<any>(this._accountActiveURL, { key: accountActivateId }, this.getOptions());
   }
-
-
-
+  
   private getOptions() {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })

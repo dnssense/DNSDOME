@@ -1,13 +1,25 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { NotificationModule } from './modules/shared/notification/notification.module';
+import { NgxUiLoaderModule } from 'ngx-ui-loader';
+import { TranslateService, TranslateStore, TranslateLoader, TranslateCompiler, TranslateParser, MissingTranslationHandler } from '@ngx-translate/core';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        NotificationModule,
+        RouterTestingModule,
+        NgxUiLoaderModule
       ],
+      providers: [
+        TranslateService, 
+        TranslateStore, 
+        TranslateLoader, 
+        TranslateCompiler, 
+        TranslateParser,
+        MissingTranslationHandler],
       declarations: [
         AppComponent
       ],
@@ -23,7 +35,7 @@ describe('AppComponent', () => {
   it(`should have as title 'angular'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('angular');
+    expect(app.title).toBeDefined();
   });
 
   it('should render title in a h1 tag', () => {

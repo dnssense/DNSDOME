@@ -117,6 +117,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   login() {
     if (this.loginForm.valid) {
+      this.isFailed = false;
 
       this.authService.prelogin(this.email, this.password).subscribe(
         val => {
@@ -140,8 +141,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   emailValidationLogin(e) {
     if (e) {
-      this.email = String(e).toLowerCase();  
-    }    
+      this.email = String(e).toLowerCase();
+    }
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(String(e).toLowerCase())) {
       this.validEmailLogin = true;
@@ -209,6 +210,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.notification.error('SMS Code Expired. Please Try Again.');
       this.isConfirmTimeEnded = true;
       this.openLogin();
+      $('#twoFactorDiv').slideUp(400);
       this.notificationIndex++;
     }
 

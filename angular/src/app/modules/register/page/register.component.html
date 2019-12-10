@@ -20,14 +20,22 @@
       <div class="row">
         <div class="col-md-12">
           <div class="row">
-            <div class="col-md-12 signUpHeader mt-4" style="font-size: 36px;">
-              <p>60 Day Free Protection From Threats</p>
+            <div class="col-md-12 signUpHeader mt-2" style="font-size: 30px;">
+              <p>
+                <ng-container *ngIf="host.brand == 'CyberCyte'; else elseTemplate">
+                  60
+                </ng-container>
+                <ng-template #elseTemplate>
+                  14
+                </ng-template>
+                Days Free Protection From Threats
+              </p>
             </div>
           </div>
-          <div class="row mt-4 ml-1">
+          <div class="row mt-0 ml-1">
             <div class="col-md-6" style="border-right: 1px solid #eeeeee;">
               <p class="signUpHeader mt-2" style="font-size: 21px;">Protect your organisation in minutes.</p>
-              <p class="signUpHeader mt-2" style="font-size: 14px;">Why {{host.brand}}?</p>
+              <p class="signUpHeader mt-2" style="font-size: 14px;">Why {{host.title}}?</p>
               <div class="mb-3">
                 <img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Stop zero-day attacks.
               </div>
@@ -57,23 +65,27 @@
                 <div class="row">
                   <div class="col-md-12" style="max-width: 450px;">
                     <p style="font-size: 12px; margin-top: -15px; margin-bottom: 0px;">All fields are required.</p>
+
                     <input type="text" class="formInput" placeholder="Company Name" [(ngModel)]="user.company.name"
-                      formControlName="company">
+                      formControlName="company" [ngClass]="{'formInputHasError':(registerForm.get('company').dirty|| registerForm.get('company').touched) 
+                      && !registerForm.get('company').valid}">
 
                     <input type="text" class="formInput mt-2" placeholder="{{'REGISTER.FirstName' | translate}}"
-                      [(ngModel)]="user.name" formControlName="name">
+                      [(ngModel)]="user.name" formControlName="name" [ngClass]="{'formInputHasError':(registerForm.get('name').dirty|| registerForm.get('name').touched) 
+                      && !registerForm.get('name').valid}">
 
                     <input type="text" class="formInput mt-2" placeholder="{{'REGISTER.LastName' | translate}}"
-                      [(ngModel)]="user.surname" formControlName="surname">
+                      [(ngModel)]="user.surname" formControlName="surname" [ngClass]="{'formInputHasError':(registerForm.get('surname').dirty|| registerForm.get('surname').touched) 
+                      && registerForm.get('surname').hasError('required')}">
 
                     <div class="form-group-sm has-default">
                       <div class="input-group">
                         <div class="input-group-prepend" style="width:100%;">
 
-                          <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="4"
-                            data-intro="Please select GSM Code" data-position='top' style="width: 130px;">
-                            <button class="btns dropdown-toggle reverse-form text-left formInput mt-2"
-                              id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" style="width: 130px;">
+                            <button class="btns dropdown-toggle reverse-form text-left formInput mt-2" [ngClass]="{'formInputHasError':(registerForm.get('gsmCode').dirty|| registerForm.get('gsmCode').touched) 
+                      && !registerForm.get('gsmCode').valid}" id="dropdownMenuButton" data-toggle="dropdown"
+                              aria-haspopup="true" aria-expanded="false">
                               <ng-container *ngIf="user && user.gsmCode; else elseTemplateSelectedProfile">
                                 {{user.gsmCode}}
                               </ng-container>
@@ -86,7 +98,7 @@
                               style="background-color: white;">
                               <div class="table-responsive" style="max-height: 300px;">
                                 <button class="dropdown-item" style="color: black;" *ngFor="let pc of phoneNumberCodes"
-                                  (click)="userGsmCodeChanged(pc.dial_code)" >
+                                  (click)="userGsmCodeChanged(pc.dial_code)">
                                   {{pc.dial_code}} {{pc.name}}
                                 </button>
                               </div>
@@ -94,8 +106,9 @@
                           </div>
 
                           <input type="tel" class="formInput ml-2 mt-2" name="gsm" (keydown)="checkisTelNumber($event)"
-                            placeholder="{{'REGISTER.GSM' | translate}}" matInput [(ngModel)]="user.gsm"
-                            formControlName="gsm">
+                            placeholder="{{'REGISTER.GSM' | translate}}" maxlength="10" minlength="10"
+                            [(ngModel)]="user.gsm" formControlName="gsm" title="5XX1234567" [ngClass]="{'formInputHasError':(registerForm.get('gsm').dirty|| registerForm.get('gsm').touched) 
+                                        && !registerForm.get('gsm').valid }">
 
                         </div>
                       </div>
@@ -103,10 +116,16 @@
 
                     <input type="email" class="formInput mt-2" placeholder="{{'REGISTER.Email' | translate}}"
                       [(ngModel)]="user.username" (ngModelChange)="emailValidationRegister($event)"
-                      formControlName="username">
+                      formControlName="username" [ngClass]="{'formInputHasError':(registerForm.get('username').dirty|| registerForm.get('username').touched) 
+                      && (registerForm.get('username').hasError('required') || !validEmailRegister || 
+                      !registerForm.get('username').valid )}">
+                    <p style="color: red;" *ngIf="registerForm.get('username').hasError('unsolicitedMailAddress')">
+                      Instant or Temporary e-mail services are not valid!</p>
 
                     <input type="password" class="formInput mt-2" placeholder="{{'REGISTER.Password' | translate}}*"
-                      (keyup)="checkPasswordStrength()" [(ngModel)]="user.password" formControlName="password">
+                      (keyup)="checkPasswordStrength()" [(ngModel)]="user.password" formControlName="password"
+                      [ngClass]="{'formInputHasError':(registerForm.get('password').dirty|| registerForm.get('password').touched) 
+                      && !registerForm.get('password').valid}">
 
                     <div class="password-length mt-2" style="max-width: 100%;">
                       <div [ngClass]="{'active': passStrength>0}"></div>
@@ -114,7 +133,6 @@
                       <div [ngClass]="{'active': passStrength>2}"></div>
                       <div [ngClass]="{'active': passStrength>3}"></div>
                     </div>
-
                     <div class="form-group-sm has-default color-9d9d9d" style="font-size: 12px;" id="passDetails">
                       * Your password has to be at least:
                       <div class="row">
@@ -131,9 +149,10 @@
                       </div>
                     </div>
 
-                    <input type="password" class="formInput mt-2 mb-3"
+                    <input type="password" class="formInput mt-2 mb-3" title="Enter same password again"
                       placeholder="{{'REGISTER.ConfirmPassword' | translate}}" [(ngModel)]="user.passwordAgain"
-                      formControlName="passwordAgain">
+                      formControlName="passwordAgain" [ngClass]="{'formInputHasError':(registerForm.get('passwordAgain').dirty|| registerForm.get('passwordAgain').touched) 
+                      && !registerForm.get('passwordAgain').valid}">
 
                   </div>
                 </div>
@@ -147,30 +166,17 @@
                       <div class="col-md-12">
                         <div>
                           <button type="submit" class="btns signup-btns mt-3 mb-4" [disabled]="!isRegisterFormValid()"
+                            title="By clicking the 'Register', you are agree to our Terms of Service and Privacy Policy and you understand that your personal information may be transferred for processing outside your country of residence."
                             (click)="register()">Register</button>
                         </div>
                       </div>
                     </div>
-                    <div class="form-group form-check">
-                      <ng-container *ngIf="host.brand=='DNSCyte'">
-                        <p>By clicking the 'Register' button, you are creating a DNSCyte account and you agree
-                          to
-                          <a href="{{host.privacyUrl}}" target="_blank">DNSCyte Privacy Policy.</a>
-                        </p>
-                      </ng-container>
-                      <ng-container *ngIf="host.brand=='Roksit'">
-                        <p>By clicking the 'Register' button, you are creating a ROKSIT account and you agree
-                          to
-                          <a href="{{host.privacyUrl}}" target="_blank">ROKSIT Privacy Policy.</a>
-                        </p>
-                      </ng-container>
-                      <ng-container *ngIf="host.brand=='DNSSense'">
-                        <p>By clicking the 'Register', you are agree to our
-                          <a href="{{host.privacyUrl}}" target="_blank">Terms of Service</a> and you understand that
-                          your personal information
-                          may be transferred for processing outside your country of residence.
-                        </p>
-                      </ng-container>
+                    <div style="font-size: 12px; max-width: 400px; color: #868e96; line-height: normal;">
+                      <p>By clicking the 'Register', you are agree to our
+                        <a href="{{host.privacyUrl}}" target="_blank">Terms of Service and Privacy Policy</a> and you
+                        understand that
+                        your personal information may be transferred for processing outside your country of residence.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -216,7 +222,7 @@
                 <p>Please click the activation link sent to your e-mail address.<p>
               </div>
               <div class="col-md-12 mr-auto ml-auto mt-3" style="font-weight: normal;">
-                <p>To re-send the verification e-mail please click <a href="#">here </a></p>
+                <!-- <p>To re-send the verification e-mail please click <a href="#">here </a></p> -->
               </div>
             </div>
           </div>

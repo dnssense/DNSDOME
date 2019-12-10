@@ -90,8 +90,20 @@ export class AccountSettingsComponent implements OnInit {
         if (!isValid) {
             event.preventDefault();
         }
-        
-        if (this.phoneNumberTemp == this.user.gsm) {
+    }
+
+    gsmChange() {
+        debugger
+        if (this.phoneNumberTemp == this.user.gsm || this.phoneNumberTemp.length < 10 || !this.gsmCodeTemp) {
+            $('#changePhoneBtn').attr('disabled', 'disabled');
+        } else {
+            $('#changePhoneBtn').removeAttr("disabled");
+        }
+    }
+
+    gsmCodeChange() {
+
+        if (this.phoneNumberTemp == this.user.gsm || this.phoneNumberTemp.length < 10 || !this.gsmCodeTemp) {
             $('#changePhoneBtn').attr('disabled', 'disabled');
         } else {
             $('#changePhoneBtn').removeAttr("disabled");
@@ -101,7 +113,7 @@ export class AccountSettingsComponent implements OnInit {
     ngOnInit() {
 
         if (this.authService.currentSession) {
-             
+
             this.user = this.authService.currentSession.currentUser;
             this.current2FAPreference = this.user.twoFactorAuthentication;
             this.gsmCodeTemp = this.user.gsmCode;
@@ -230,9 +242,11 @@ export class AccountSettingsComponent implements OnInit {
             this.user.gsmCode = this.gsmCodeTemp;
 
             this.smsService.sendSmsCommon(this.user.gsmCode + this.user.gsm).subscribe(res => {
+                $('#changePhoneBtn').hide(200);
                 $('#smsValidationDiv').show(300);
                 this.smsInformation = res;
                 this.maxRequest = 3;
+                this.notificationIndex = 0;
                 this.isConfirmTimeEnded = false;
                 this.endTime = new Date();
                 this.endTime.setMinutes(new Date().getMinutes() + 2);
@@ -243,6 +257,11 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     confirmGsm() {
+
+        if (!this.smsCode || this.smsCode.length < 4) {
+            this.notification.warning('Please enter sms code');
+            return;
+        }
 
         if (this.maxRequest != 0 && !this.isConfirmTimeEnded) {
             this.maxRequest -= 1;
@@ -257,10 +276,13 @@ export class AccountSettingsComponent implements OnInit {
 
                     this.accountService.update(updateRequest).subscribe(res2 => {
                         this.notification.success("Phone number is updated");
+                        $('#changePhoneBtn').attr('disabled', 'disabled');
+                        this.notificationIndex++;
                         this.user.gsm = this.phoneNumberTemp;
                         this.user.gsmCode = this.gsmCodeTemp;
                         this.authService.saveSession();
                     });
+                    $('#changePhoneBtn').show(300);
                     $('#smsValidationDiv').hide(200);
 
                 }, err => {
