@@ -7,7 +7,7 @@ import { DndModule } from "ng2-dnd";
 import { CollapseModule, PopoverModule, PaginationModule, TooltipModule } from 'ngx-bootstrap';
 import { OverlayPanelModule } from "primeng/primeng";
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
-import { MaterialModule } from 'src/app/shared/components/material.module';
+import { MaterialModule } from 'src/app/material.module';
 import { PipesModule } from '../shared/pipes/pipes.module';
 import { CustomReportComponent } from './customreport/customreport.component';
 import { MonitorComponent } from './monitor/monitor.component';

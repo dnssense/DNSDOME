@@ -2,15 +2,19 @@
 
 import { TestBed, async, inject } from '@angular/core/testing';
 import { AgentService } from './agent.service';
+import { HttpClient } from '@angular/common/http';
 
 describe('Service: Agent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AgentService]
+      providers: [AgentService,HttpClient]
     });
   });
 
-  it('should ...', inject([AgentService], (service: AgentService) => {
+  it('should ...', inject([AgentService, HttpClient], (service: AgentService) => {
     expect(service).toBeTruthy();
   }));
+ 
+
+
 });

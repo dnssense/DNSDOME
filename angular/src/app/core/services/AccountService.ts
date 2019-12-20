@@ -9,7 +9,7 @@ import { RestUserUpdateRequest, RestEmptyResponse } from '../models/RestServiceM
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { countries } from 'countries-list';
-import { geoLocation, GeoLocation } from 'src/app/shared/geoLocation';
+import { geoLocation, GeoLocation } from 'src/app/core/services/geoLocation';
 
 
 @Injectable({

@@ -10,9 +10,10 @@
     <div class="row">
       <div class="col-5 ml-auto mr-auto">
         <div class="dns-full-width flex-1">
-          <input type="text" class="dns-form-control reverse-form" placeholder="Profile Name"
-            [(ngModel)]="selectedAgent.rootProfile.name"/>
-
+          <input type="text" class="dns-form-control reverse-form" style="min-width: 150px;" placeholder="Profile Name"
+            name="profileName" id="profileName" [(ngModel)]="selectedAgent.rootProfile.name"
+            (ngModelChange)="profileNameChanged()" />
+          <span class="profileNameToolTip">Profile name is required!</span>
         </div>
       </div>
     </div>
@@ -444,7 +445,9 @@
                   <div class="row mt-3">
                     <form class="dns-form-group">
                       <input type="text" placeholder="White List Domain" name="whiteListText"
-                        [(ngModel)]="whiteListItem" (ngModelChange)="whiteListItemValidation()">
+                        [(ngModel)]="whiteListItem.domain" (ngModelChange)="whiteListItemValidation()">
+                      <input name="whiteListComment" placeholder="Comment" type="text" maxlength="255"
+                        [(ngModel)]="whiteListItem.comment" style="border-left: 1px solid #262626;">
                       <button class="btns btn-gray" [disabled]="!isNewWhiteListItem"
                         [ngClass]="{'btn-success' : isNewWhiteListItem, 'btn-default' : !isNewWhiteListItem}"
                         (click)="addToWhiteList()">
@@ -459,11 +462,13 @@
                       <table class="table table-hover">
                         <tbody>
                           <tr class="table-success" style="color: black;"
-                            *ngFor="let item of selectedAgent.rootProfile.blackWhiteListProfile?.whiteList.slice().reverse(); let i=index;">
-                            <td class="text-right">{{i+1}}</td>
-                            <td>{{item}}</td>
+                            *ngFor="let item of selectedAgent.rootProfile.blackWhiteListProfile?.whiteList; let i=index;">
+                            <td class="text-right">{{i+1}}.</td>
+                            <td style="border-right: 1px solid #262626;">{{item.domain}}</td>
+                            <td>{{item.comment}}</td>
                             <td>
-                              <button class="btns btn-clear float-right p-0 m-0" (click)="removeFromWhiteList(item)">
+                              <button class="btns btn-clear float-right p-0 m-0"
+                                (click)="removeFromWhiteList(item.domain)">
                                 <img src="./assets/images/icons/close.svg">
                               </button>
                             </td>
@@ -488,7 +493,9 @@
                   <div class="row mt-3">
                     <form class="dns-form-group">
                       <input type="text" name="blackListText" placeholder="Black List Domain"
-                        [(ngModel)]="blackListItem" (ngModelChange)="blackListItemValidation()">
+                        [(ngModel)]="blackListItem.domain" (ngModelChange)="blackListItemValidation()">
+                      <input name="blackListComment" placeholder="Comment" type="text" maxlength="255"
+                        [(ngModel)]="blackListItem.comment" style="border-left: 1px solid #262626;">
                       <button class="btns" [disabled]="!isNewBlackListItem"
                         [ngClass]="{'btn-success' : isNewBlackListItem, 'btn-default' : !isNewBlackListItem}"
                         (click)="addToBlackList()">
@@ -512,7 +519,8 @@
                           <tr class="table-danger" style="color: black;"
                             *ngFor="let item of selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse(); let i=index;">
                             <td class="text-right">{{i+1}}</td>
-                            <td>{{item}}</td>
+                            <td style="border-right: 1px solid #262626;">{{item.domain}}</td>
+                            <td>{{item.comment}}</td>
                             <td>
                               <button class="btns btn-clear float-right p-0 m-0" (click)="removeFromBlackList(item)">
                                 <img src="./assets/images/icons/close.svg">

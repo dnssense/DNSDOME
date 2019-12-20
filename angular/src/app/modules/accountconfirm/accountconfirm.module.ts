@@ -1,23 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { TagInputModule } from 'ngx-chips';
-
-import { MaterialModule } from 'src/app/shared/components/material.module';
-
+import { MaterialModule } from 'src/app/material.module';
 import { ReCaptchaModule } from 'angular2-recaptcha';
-
 import { FooterModule } from '../shared/footer/footer.module';
 import { AccountConfirmComponent } from './page/accountconfirm.component';
 import { AccountConfirmComponentRoutingModule } from './accountconfirm-routing.module';
-
 
 
 @NgModule({

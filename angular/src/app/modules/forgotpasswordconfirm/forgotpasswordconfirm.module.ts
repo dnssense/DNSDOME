@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { TagInputModule } from 'ngx-chips';
 
-import { MaterialModule } from 'src/app/shared/components/material.module';
+import { MaterialModule } from 'src/app/material.module';
 import { ForgotPasswordConfirmComponent } from './page/forgotpasswordconfirm.component';
 import { ForgotPasswordConfirmComponentRoutingModule } from './forgotpasswordconfirm-routing.module';
 import { ReCaptchaModule } from 'angular2-recaptcha';

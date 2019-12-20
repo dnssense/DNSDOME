@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PublicipComponent } from './page/publicip.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MaterialModule } from 'src/app/shared/components/material.module';
+import { MaterialModule } from 'src/app/material.module';
 import { PublicipRoutingModule } from '../publicip/publicip-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';

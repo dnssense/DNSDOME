@@ -4,7 +4,7 @@ import { CyteLoginComponent } from './page/cytelogin.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { TagInputModule } from 'ngx-chips';
-import { MaterialModule } from 'src/app/shared/components/material.module';
+import { MaterialModule } from 'src/app/material.module';
 import { CyteLoginRoutingModule } from './cytelogin-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';

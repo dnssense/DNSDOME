@@ -14,9 +14,14 @@ export class SecurityProfile {
 
 export interface BlackWhiteListProfile {
     id: number
-    blackList: string[]
-    whiteList: string[]
+    blackList: ListItem[]
+    whiteList: ListItem[]
 }
+
+export class ListItem {
+    domain: string;
+    comment: string;
+  }
 
 export interface SecurityProfileItem {
     id: number

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoginComponent } from './page/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
-import { MaterialModule } from 'src/app/shared/components/material.module';
+import { MaterialModule } from 'src/app/material.module';
 import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
 import { LoginRoutingModule } from './login-routing.module';
 import { TranslatorService } from 'src/app/core/services/translator.service';

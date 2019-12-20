@@ -93,7 +93,6 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     gsmChange() {
-        debugger
         if (this.phoneNumberTemp == this.user.gsm || this.phoneNumberTemp.length < 10 || !this.gsmCodeTemp) {
             $('#changePhoneBtn').attr('disabled', 'disabled');
         } else {

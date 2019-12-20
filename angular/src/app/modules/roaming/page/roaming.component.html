@@ -383,26 +383,47 @@
             <div class=" form-ux activated">
               <div class="row mb-2">
                 <div class="col-md-6 ml-auto mr-auto">
-                  <p style="font-size: 12px;">*Enter a dont touch domain or max. 10 domains with comma separated like
-                    dns1.org,dns2.com</p>
-                  <textarea type="text" name="dontDomains" id="dontDomains" class="dns-form-control input-reverse"
-                    cols="60" rows="5" placeholder="dns1.org,dns2.com" [(ngModel)]="dontDomains"
-                    (ngModelChange)="checkDomain()" (keydown.space)="$event.preventDefault();"
-                    title="*Enter a dont touch domain or max. 10 domains with comma separated like dns1.org,dns2.com"
-                    (keydown.enter)="$event.preventDefault();"></textarea>
+                  <p style="font-size: 12px; margin-bottom: 0px;">*Enter max. 10 dont touch domains. e.g. dns1.org,
+                    dns2.com</p>
+                  <div class="dns-ip-input-container mt-3" *ngFor="let row of dontDomains2; index as i">
+                    <p style="margin-left: -24px;margin-right: 11px; padding-top: 10px;">{{i+1}}.</p> <input type="text"
+                      placeholder="Enter domain here" [(ngModel)]="dontDomains[i]" (ngModelChange)="checkDomain()"
+                      (keydown.space)="$event.preventDefault();">
+                    <ng-container *ngIf="i>0; else elseTemplate11">
+                      <button mat-raised-button type="button" class="btn btn-danger btn-link btn-just-icon btn-sm"
+                        (click)="removeElementFromDomainList(i)">
+                        <i class="material-icons">close</i>
+                      </button>
+                    </ng-container>
+                    <ng-template #elseTemplate11>
+                      <button type="button" class="btn btn-success btn-just-icon btn-sm" [matTooltipShowDelay]="800"
+                        matTooltip="Add Another Domain" (click)="addDomainToList()">
+                        <i class="material-icons">add_circle_outline</i>
+                      </button>
+                    </ng-template>
+                  </div>
+
+                  <button class="btns btn-teritary pl-3 pr-3 mb-4 mt-3 dns-full-width" (click)="saveDomainChanges()"
+                  [disabled]="!isDontDomainsValid" title="Save Changes">
+                  <i class="fa fa-save mr-3"></i>Save</button>
                 </div>
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btns btn-info pl-3 pr-3 mr-2 pull-right" (click)="copyLink()"
-              [disabled]="!isDontDomainsValid" title="Create a link with above parameters and copy to clipboard">
-              <i class="fa fa-copy mr-3"></i>Copy Packet Link
-            </button>
-            <button class="btns btn-teritary pl-3 pr-3 pull-right" (click)="downloadFile()"
-              [disabled]="!isDontDomainsValid" title="Download the file created with above parameters">
-              <i class="fa fa-download mr-3"></i>Download Packet
-            </button>
+            <div class="row">
+              <div class="col-md-12">
+                <button class="btn btn-link pl-3 pr-3 mr-2 mt-2 pull-right" (click)="downloadFile()" style="color: white;"
+                  [disabled]="!isDontDomainsValid" title="Download the file created with above parameters">
+                  <i class="fa fa-download mr-3"></i>Download Packet
+                </button>
+                <button class="btn btn-link pl-3 pr-3 mr-2 mt-2 pull-right" (click)="copyLink()" style="color: white;"
+                  [disabled]="!isDontDomainsValid" title="Create a link with above parameters and copy to clipboard">
+                  <i class="fa fa-copy mr-3"></i>Copy Packet Link
+                </button>                
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

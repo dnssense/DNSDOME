@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { TagInputModule } from 'ngx-chips';
 import { SelectModule } from 'ng2-select';
-import { MaterialModule } from 'src/app/shared/components/material.module';
+import { MaterialModule } from 'src/app/material.module';
 import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
 import { RegisterRoutingModule } from './register-routing.module';
 import { TranslatorService } from 'src/app/core/services/translator.service';

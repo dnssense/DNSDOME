@@ -5,7 +5,7 @@ import { StaticService } from 'src/app/core/services/StaticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { Agent } from 'src/app/core/models/Agent';
 import { ApplicationV2 } from 'src/app/core/models/ApplicationV2';
-import { SecurityProfile, BlackWhiteListProfile, SecurityProfileItem } from 'src/app/core/models/SecurityProfile';
+import { SecurityProfile, BlackWhiteListProfile, SecurityProfileItem, ListItem } from 'src/app/core/models/SecurityProfile';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AlertService } from 'src/app/core/services/alert.service';
@@ -36,8 +36,8 @@ export class ProfileWizardComponent {
   profileName: string;
   isNewBlackListItem: boolean = false;
   isNewWhiteListItem: boolean = false;
-  blackListItem: string;
-  whiteListItem: string;
+  blackListItem: ListItem = new ListItem();
+  whiteListItem: ListItem = new ListItem();
   categoryList: categoryItem[] = [];
   applicationList: applicationItem[] = [];
   public _selectedBox: Box;
@@ -184,9 +184,22 @@ export class ProfileWizardComponent {
     }
   }
 
+  profileNameChanged() {
+    if (!this.selectedAgent.rootProfile.name) {
+      $('#profileName').addClass('profileNameHasError');
+      $('.profileNameToolTip').show(300)
+    } else {
+      $('#profileName').removeClass('profileNameHasError');
+      $('.profileNameToolTip').hide(200)
+    }
+  }
+
   saveProfile() {
     if (!this.selectedAgent.rootProfile.name) {
-      this.notification.warning('Profile name is empty!');
+      $('#profileName').focus();
+      $('#profileName').addClass('profileNameHasError');
+      $('.profileNameToolTip').css("visibility", 'hidden');
+      setTimeout(() => {$('.profileNameToolTip').css("visibility", 'visible');}, 100);
       return;
     }
     let alertMessage = '', alertTitle = '';
@@ -242,7 +255,7 @@ export class ProfileWizardComponent {
             let dg = new DeviceGroup()
             dg.rootProfile = this.selectedAgent.rootProfile
 
-            let ai: AgentInfo= new AgentInfo();
+            let ai: AgentInfo = new AgentInfo();
             ai.mac = this.selectedAgent.mac
             ai.blockMessage = this.selectedAgent.blockMessage
             ai.agentType = this.selectedAgent.agentType
@@ -289,10 +302,10 @@ export class ProfileWizardComponent {
   }
 
   blackListItemValidation() {
-    if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b == this.blackListItem)) {
+    if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.blackListItem.domain)) {
       this.isNewBlackListItem = false;
     } else {
-      let result = ValidationService.domainValidation({ value: this.blackListItem });
+      let result = ValidationService.domainValidation({ value: this.blackListItem.domain });
       if (result == true) {
         this.isNewBlackListItem = true;
       } else {
@@ -303,11 +316,12 @@ export class ProfileWizardComponent {
 
   addToBlackList() {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
-      if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b == this.blackListItem)) {
+      if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.blackListItem.domain)) {
         this.notification.warning("This domain already in black list.")
       } else {
-        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(this.blackListItem);
-        this.blackListItem = ""
+        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(JSON.parse(JSON.stringify(this.blackListItem)));
+        this.blackListItem.domain = ""
+        this.blackListItem.comment = ""
         this.isNewBlackListItem = false;
       }
     }
@@ -316,15 +330,15 @@ export class ProfileWizardComponent {
   removeFromBlackList(item: string) {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.splice(
-        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b == item), 1);
+        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b.domain == item), 1);
     }
   }
 
   whiteListItemValidation() {
-    if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b == this.whiteListItem)) {
+    if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.whiteListItem.domain)) {
       this.isNewWhiteListItem = false;
     } else {
-      let result = ValidationService.domainValidation({ value: this.whiteListItem });
+      let result = ValidationService.domainValidation({ value: this.whiteListItem.domain });
       if (result == true) {
         this.isNewWhiteListItem = true;
       } else {
@@ -335,11 +349,12 @@ export class ProfileWizardComponent {
 
   addToWhiteList() {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
-      if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b == this.whiteListItem)) {
+      if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.whiteListItem.domain)) {
         this.notification.warning("This domain already in white list.")
       } else {
-        this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.push(this.whiteListItem);
-        this.whiteListItem = ""
+        this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.push(JSON.parse(JSON.stringify(this.whiteListItem)));
+        this.whiteListItem.domain = ""
+        this.whiteListItem.comment = ""
         this.isNewWhiteListItem = false;
       }
     }
@@ -348,7 +363,7 @@ export class ProfileWizardComponent {
   removeFromWhiteList(item: string) {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.splice(
-        this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.findIndex(b => b == item), 1);
+        this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.findIndex(b => b.domain == item), 1);
     }
   }
 

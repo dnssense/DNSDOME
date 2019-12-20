@@ -7,7 +7,7 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { ProfileWizardRoutingModule } from './profile-wizard-routing.module';
 import { ProfileWizardComponent } from './page/profile-wizard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MaterialModule } from 'src/app/shared/components/material.module';
+import { MaterialModule } from 'src/app/material.module';
 
 
 @NgModule({

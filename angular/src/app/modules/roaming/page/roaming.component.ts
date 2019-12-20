@@ -18,7 +18,6 @@ declare let $: any;
     styleUrls: ['roaming.component.sass']
 })
 export class RoamingComponent implements OnInit {
-    confParameters: string
     clientForm: FormGroup;
     clients: Agent[];
     clientsFiltered: Agent[];
@@ -34,10 +33,14 @@ export class RoamingComponent implements OnInit {
     selectedAgent: Agent = new Agent();
     saveMode: string;
     startWizard: boolean = false;
+    dontDomains: string[] = [];
+    dontDomains2: string[] = []
+    confParameters: string[] = [];
     constructor(private formBuilder: FormBuilder, private agentService: AgentService, private alertService: AlertService,
         private notification: NotificationService, private roamingService: RoamingService, private boxService: BoxService) { }
 
     ngOnInit(): void {
+
         this.clients = [];
         this.clientForm = this.formBuilder.group({
             "name": ["", [Validators.required]],
@@ -61,8 +64,13 @@ export class RoamingComponent implements OnInit {
     }
 
     getConfParameters() {
+        this.dontDomains2 = [];
         this.boxService.getVirtualBox().subscribe(res => {
-            this.confParameters = res.conf.split(',').map(d => { d = d.slice(1); return d; }).join(',');
+            this.dontDomains = res.conf.split(',').map(d => { d = d.slice(1); return d; });
+            this.confParameters = JSON.parse(JSON.stringify(this.dontDomains));
+            this.dontDomains.forEach(d => {
+                this.dontDomains2.push('');
+            });
         });
     }
 
@@ -89,11 +97,6 @@ export class RoamingComponent implements OnInit {
 
     openTooltipGuide() {
         introJs().start();
-    }
-
-    showForm() {
-        $('#newClientRow').slideDown(300);
-        //$('#pi_card_btn').hide();
     }
 
     hideForm() {
@@ -141,7 +144,7 @@ export class RoamingComponent implements OnInit {
 
     showEditWizard(id: number) {
         this.selectedClient = JSON.parse(JSON.stringify(this.clients.find(c => c.id == id)));
-        this.showForm()
+        $('#newClientRow').slideDown(300);
     }
 
     showProfileEditWizard(id: number) {
@@ -166,7 +169,6 @@ export class RoamingComponent implements OnInit {
                 $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
                 $('#clientsPanel').toggle("slide", { direction: "left" }, 600);
                 $('#newClientRow').slideUp(300);
-                // $('#pi_card_btn').show();
                 this.loadClients();
             }
         );
@@ -176,7 +178,6 @@ export class RoamingComponent implements OnInit {
         $('#wizardPanel').toggle("slide", { direction: "right" }, 800);
         $('#clientsPanel').toggle("slide", { direction: "left" }, 800);
         $('#newClientRow').slideUp(300);
-        // $('#pi_card_btn').show();
         this.loadClients();
     }
 
@@ -207,10 +208,7 @@ export class RoamingComponent implements OnInit {
                         }
                     });
                 }
-            }
-        );
-
-
+            });
     }
 
     searchByKeyword() {
@@ -222,7 +220,7 @@ export class RoamingComponent implements OnInit {
     }
 
     copyLink() {
-        let domains = this.dontDomains.split(',').map(d => { d = '.'.concat(d); return d; }).join(',')
+        let domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',')
         this.boxService.getProgramLink(domains).subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters()
@@ -246,9 +244,23 @@ export class RoamingComponent implements OnInit {
         document.body.removeChild(selBox);
     }
 
-    dontDomains: string
+    saveDomainChanges() {
+        let domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',')
+        if (this.isDontDomainsValid) {
+            this.boxService.getProgramLink(domains).subscribe(res => {
+                if (res && res.link) {
+                    this.getConfParameters()
+                    this.closeModal();
+                } else {
+                    this.notification.error('Changes could not save!')
+                }
+            });
+        }
+
+    }
+
     downloadFile() {
-        let domains = this.dontDomains.split(',').map(d => { d = '.'.concat(d.trim()); return d; }).join(',')
+        let domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',')
 
         this.boxService.getProgramLink(domains).subscribe(res => {
             if (res && res.link) {
@@ -262,11 +274,31 @@ export class RoamingComponent implements OnInit {
         });
     }
 
+    addDomainToList() {
+        if (this.dontDomains && this.dontDomains.length < 10) {
+            if (!this.isDontDomainsValid) {
+                this.notification.warning('Please fill all fields with valid domains, before a new one');
+                return;
+            }
+            this.dontDomains.push('');
+            this.dontDomains2.push('');
+            this.checkDomain();
+        } else {
+            this.notification.warning('You can add max. 10 domains')
+        }
+    }
+
+    removeElementFromDomainList(i: number) {
+        this.dontDomains2.splice(i, 1);
+        this.dontDomains.splice(i, 1);
+        this.checkDomain();
+    }
+
     isDontDomainsValid: boolean = true
     checkDomain() {
-        this.dontDomains = this.dontDomains.toLowerCase()
+        this.dontDomains.forEach(d => d = d.toLowerCase());
         this.isDontDomainsValid = true;
-        const d = this.dontDomains.split(',');
+        const d = this.dontDomains// this.dontDomains.split(',');
         if (d.length > 10) {
             this.notification.warning('You can report 10 domains per request');
             this.isDontDomainsValid = false;
@@ -298,6 +330,10 @@ export class RoamingComponent implements OnInit {
 
     openModal() {
         this.dontDomains = JSON.parse(JSON.stringify(this.confParameters))
+        this.dontDomains2 = []
+        this.dontDomains.forEach(d => {
+            this.dontDomains2.push('');
+        });
         this.checkDomain()
         this.clientListForGroup = JSON.parse(JSON.stringify(this.clientsFiltered));
         $(document.body).addClass('modal-open');
