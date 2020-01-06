@@ -14,6 +14,7 @@ import { Box } from 'src/app/core/models/Box';
 import { BoxService } from 'src/app/core/services/box.service';
 import { DEVICE_GROUP } from 'src/app/core/Constants';
 import { DeviceGroup, AgentInfo } from 'src/app/core/models/DeviceGroup';
+import { BWListItem } from 'src/app/core/models/BWListItem';
 
 declare var $: any;
 
@@ -318,6 +319,9 @@ export class ProfileWizardComponent {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.blackListItem.domain)) {
         this.notification.warning("This domain already in black list.")
+      }else
+      if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.blackListItem.domain)) {
+        this.notification.warning("This domain already in white list.")
       } else {
         this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(JSON.parse(JSON.stringify(this.blackListItem)));
         this.blackListItem.domain = ""
@@ -327,10 +331,10 @@ export class ProfileWizardComponent {
     }
   }
 
-  removeFromBlackList(item: string) {
+  removeFromBlackList(item: ListItem) {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.splice(
-        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b.domain == item), 1);
+        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b.domain == item.domain), 1);
     }
   }
 
@@ -351,7 +355,11 @@ export class ProfileWizardComponent {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.whiteListItem.domain)) {
         this.notification.warning("This domain already in white list.")
-      } else {
+      }else
+      if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.whiteListItem.domain)) {
+        this.notification.warning("This domain already in black list.")
+      }
+       else {
         this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.push(JSON.parse(JSON.stringify(this.whiteListItem)));
         this.whiteListItem.domain = ""
         this.whiteListItem.comment = ""
