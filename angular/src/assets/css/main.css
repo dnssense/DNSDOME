@@ -259,6 +259,7 @@ visibility: visible;
 }
 
 .dropdown-menu {
+  background-color: #3b3b3b;
   background: #3b3b3b;
   min-width: 20rem !important;
   border-radius: 8px;
