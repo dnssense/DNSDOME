@@ -326,7 +326,7 @@ visibility: visible;
   margin-right: 10px;
 }
 
-.dns-dropdown-toggle::after {
+.dropdown-toggle::after {
   display: none;
 }
 

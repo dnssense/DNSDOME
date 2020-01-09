@@ -16,6 +16,7 @@ import { LogColumn } from 'src/app/core/models/LogColumn';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
+import { ThrowStmt } from '@angular/compiler';
 
 declare let $: any;
 declare let moment: any;
@@ -37,6 +38,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   selectedCategoryForUnique = CategoryV2;
   trafficChart: any;
   uniqueDomainChart: any;
+  uniqueSubdomainChart:any;
+  uniqueDestIpChart:any;
+  gaugeChart:any;
   trafficChartType: string = 'hit';
   uniqueChartType: string = 'domain';
 
@@ -283,9 +287,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
       tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' }
     }
-    this.trafficChart = new ApexCharts(document.querySelector("#trafficChartHits"), trafficChartoptions);
-    this.trafficChart.render();
-    this.trafficChart.updateSeries([{ name: "Today Hits", data: this.ds.totalHits }, { name: " Total Hit Averages", data: this.ds.hitAverages }])
+    if(!this.trafficChart){
+      this.trafficChart = new ApexCharts(document.querySelector("#trafficChartHits"), trafficChartoptions);
+      this.trafficChart.render();
+     // this.trafficChart.updateSeries([{ name: "Today Hits", data:this.elasticData.length? this.ds.totalHits:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] }, { name: " Total Hit Averages", data:this.elasticData.length? this.ds.hitAverages:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] }])
+    }
+    this.trafficChart.updateOptions(trafficChartoptions);
+    //this.trafficChart.render();
+    this.trafficChart.updateSeries([{ name: "Today Hits", data:this.ds.totalHits }, { name: " Total Hit Averages", data: this.ds.hitAverages }])
+    
 
     //Uniquer Domain Chart
     var uniqueDomainOptions = {
@@ -309,9 +319,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
     }
-    this.uniqueDomainChart = new ApexCharts(document.querySelector("#uniqueDomainChart"), uniqueDomainOptions);
+    if(!this.uniqueDomainChart){
+      this.uniqueDomainChart = new ApexCharts(document.querySelector("#uniqueDomainChart"), uniqueDomainOptions);
     this.uniqueDomainChart.render();
+    }
+    this.uniqueDomainChart.updateOptions(uniqueDomainOptions);
     this.uniqueDomainChart.updateSeries([{ name: "Unique Domain", data: this.ds.uniqueDomain }, { name: "Unique Domain Avg", data: this.ds.uniqueDomainAvg }]);
+    
 
     //Unique Subdomain Chart
     var uniqueSubdomainChartOptions = {
@@ -335,9 +349,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
     }
-    var uniqueSubdomainChart = new ApexCharts(document.querySelector("#uniqueSubdomainChart"), uniqueSubdomainChartOptions);
-    uniqueSubdomainChart.render();
-    uniqueSubdomainChart.updateSeries([{ name: "Unique Subdomain", data: this.ds.uniqueSubdomain }, { name: "Unique Subdomain Avg", data: this.ds.uniqueSubdomainAvg }])
+    if(!this.uniqueSubdomainChart){
+      this.uniqueSubdomainChart = new ApexCharts(document.querySelector("#uniqueSubdomainChart"), uniqueSubdomainChartOptions);
+    this.uniqueSubdomainChart.render();
+    }
+    this.uniqueSubdomainChart.updateOptions(uniqueSubdomainChartOptions);
+    this.uniqueSubdomainChart.updateSeries([{ name: "Unique Subdomain", data: this.ds.uniqueSubdomain }, { name: "Unique Subdomain Avg", data: this.ds.uniqueSubdomainAvg }])
 
     // Unique Dest Ip Chart
     var uniqueDestIpChartOptions = {
@@ -361,9 +378,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
     }
-    var uniqueDestIpChart = new ApexCharts(document.querySelector("#uniqueDestIpChart"), uniqueDestIpChartOptions);
-    uniqueDestIpChart.render();
-    uniqueDestIpChart.updateSeries([{ name: "Unique Dest. Ip", data: this.ds.uniqueDesIp }, { name: "Unique Dest. Ip Avg", data: this.ds.uniqueDesIpAvg }])
+    if(!this.uniqueDestIpChart){
+     this.uniqueDestIpChart = new ApexCharts(document.querySelector("#uniqueDestIpChart"), uniqueDestIpChartOptions);
+      this.uniqueDestIpChart.render();
+    }
+    this.uniqueDestIpChart.updateOptions(uniqueDestIpChartOptions);
+    this.uniqueDestIpChart.updateSeries([{ name: "Unique Dest. Ip", data: this.ds.uniqueDesIp }, { name: "Unique Dest. Ip Avg", data: this.ds.uniqueDesIpAvg }])
 
     // GAUGE Chart
     var gaugeOptions = {
@@ -395,9 +415,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       labels: ['Risk Score'],
 
     }
-    var gaugeChart = new ApexCharts(document.querySelector("#gaugeChart"), gaugeOptions);
-    gaugeChart.render();
-    gaugeChart.updateSeries([this.ds.riskScore])
+    if(!this.gaugeChart){
+      this.gaugeChart = new ApexCharts(document.querySelector("#gaugeChart"), gaugeOptions);
+    this.gaugeChart.render();
+    }
+    this.gaugeChart.updateOptions(gaugeOptions);
+    this.gaugeChart.updateSeries([this.ds.riskScore]);
+  
 
   }
 

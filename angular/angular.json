@@ -34,6 +34,8 @@
               "src/assets/css/demo.css",
               "src/assets/scss/material-dashboard.scss",
               "node_modules/intro.js/introjs.css",
+              "src/assets/fonts/entypo/entypo.css",
+              "src/assets/css/bootstrap.css",
               "src/assets/css/main.css"
 
             ],
