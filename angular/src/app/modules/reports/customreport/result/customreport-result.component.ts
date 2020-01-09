@@ -20,6 +20,7 @@ export class CustomReportResultComponent implements OnDestroy {
   public date = new Date();
   public loading: boolean = false;
   public selectedColumns: AggregationItem[];
+  private logChart:any;
 
   //@Input() public searchSetting: SearchSetting;
   public ss: SearchSetting
@@ -146,10 +147,12 @@ export class CustomReportResultComponent implements OnDestroy {
           annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
           title: { text: 'Log Histogram', style: { fontSize: '20px', color: '#eeeeee' } }
         }
-
-        var logChart = new ApexCharts(document.querySelector("#customReportChart"), options);
-        logChart.render();
-        logChart.updateSeries([{ name: "Hits", data: chartSeries }])
+        if(!this.logChart){
+          this.logChart = new ApexCharts(document.querySelector("#customReportChart"), options);
+          this.logChart.render();
+        }
+        this.logChart.updateOptions(options);
+        this.logChart.updateSeries([{ name: "Hits", data: chartSeries }])
       }
 
     });
