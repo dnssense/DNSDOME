@@ -2,7 +2,7 @@
 
 @import "variables.css";
 @import "forms.css";
-@import "card.css";
+@import "card.scss";
 @import "table.css";
 @import "label.css";
 @import "toggle.css";
@@ -17,6 +17,9 @@
 @import "wizard.css";
 @import "switch.css";
 @import "input-file.css";
+@import "layout.scss";
+@import "utility.scss";
+
 
 body {
   font-family: "Roboto", sans-serif !important;

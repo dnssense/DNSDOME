@@ -1,4 +1,5 @@
 import {SearchSetting} from "../models/SearchSetting";
+import { KeyValueModel } from './Utility';
 /**
  * Created by fatih on 02.09.2016.
  */
@@ -15,4 +16,11 @@ export class Dashboard {
   public system: boolean = false;
 
 
+}
+
+
+export class DataPanelModel {
+  name : string;
+  activeCount : number;
+  passiveCount: number;
 }

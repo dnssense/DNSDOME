@@ -3,6 +3,30 @@
     <div class="row" style="margin-top: -10px">
       <div class="col-md-12">
         <div class="dns-base-card">
+          <div class="card-item" *ngFor="let data of dataPanels">
+            <div class="dns-grow dns-v-center">
+              {{ data.name }}
+            </div>
+            <div class="dns-row">
+              <div class="dns-data-row active">
+                <span class="name">Active</span>
+                <span class="value">{{ data.activeCount }}</span>
+              </div>
+
+              <div class="dns-data-row   m-l-15">
+                <span class="name">Passive</span>
+                <span class="value">{{ data.passiveCount }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:  10px">
+      <div class="col-md-12">
+        <div class="dns-base-card">
 
           <!-- NUMERIC CARD -->
           <div class="row" style="margin-top: -10px">
@@ -503,7 +527,8 @@
           <div class="row">
             <div class="col-md-12 ml-auto mr-auto">
               <p class="mb-0" style="font-size: 12px; max-width: 500px;">{{host.title}} is a recursive DNS Service based
-                on global cyber threat intelligence and machine learning to block threats and targeted attacks in real-time.</p>
+                on global cyber threat intelligence and machine learning to block threats and targeted attacks in
+                real-time.</p>
               <p class="mb-0" style="font-size: 13px; font-weight: normal;">{{host.title}} will provide the following
                 benefits once enabled:</p>
               <div class="subText">
@@ -525,9 +550,12 @@
                   <img class="subImg" src="/assets/img/office.png" alt="Protect your network" />
                   <p class="subHeader mt-3 mb-0">Protect your network</p>
                   <div class="ml-1">
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Create Public Ip</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile Assignment</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">DNS Forwarding</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Create Public Ip
+                    </div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile
+                      Assignment</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">DNS Forwarding
+                    </div>
                   </div>
                   <button class="btns startBtn" [routerLink]="['/admin/publicip']">Start using</button>
                 </div>
@@ -535,9 +563,12 @@
                   <img class="subImg" src="/assets/img/woman.png" alt="Roaming Client" />
                   <p class="subHeader mt-3 mb-0">Roaming Client</p>
                   <div class="ml-1">
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Application Setup</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile Assignment</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Disabling Local Domain</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Application
+                      Setup</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile
+                      Assignment</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Disabling Local
+                      Domain</div>
                   </div>
                   <button class="btns startBtn" [routerLink]="['/admin/roaming']">Start using</button>
                 </div>
@@ -545,9 +576,12 @@
                   <img class="subImg" src="/assets/img/keyboard.png" alt="DNS Relay" />
                   <p class="subHeader mt-3 mb-0">DNS Relay</p>
                   <div class="ml-1">
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Application Setup</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile Assignment</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Disabling Local Domain</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Application
+                      Setup</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile
+                      Assignment</div>
+                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Disabling Local
+                      Domain</div>
                   </div>
                   <button class="btns startBtn" [routerLink]="['/admin/devices']">Start using</button>
                 </div>
@@ -561,7 +595,7 @@
             </div>
           </div>
         </div>
-      </div> 
+      </div>
     </div>
   </div>
 </div>

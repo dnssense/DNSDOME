@@ -16,6 +16,7 @@ import { LogColumn } from 'src/app/core/models/LogColumn';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
+import { DataPanelModel } from 'src/app/core/models/Dashboard';
 
 declare let $: any;
 declare let moment: any;
@@ -40,6 +41,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   trafficChartType: string = 'hit';
   uniqueChartType: string = 'domain';
 
+  dataPanels: DataPanelModel[] = [];
+
   constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router,
     private agentService: AgentService, private customReportService: CustomReportService, private config: ConfigService,
@@ -48,7 +51,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.host = this.config.host;
     let roleName: string = this.authService.currentSession.currentUser.roles.name;
-    
+
     if (roleName != 'ROLE_USER') {
       this.agentService.getAgents().subscribe(res => {
         if (res == null || res.length < 1) {
@@ -75,6 +78,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.startDashboardOperations();
     }
 
+
+    this.dataPanels.push({ name: "Public IP", activeCount: 8, passiveCount: 3 });
+    this.dataPanels.push({ name: "Roming Client", activeCount: 6, passiveCount: 4 });
+    this.dataPanels.push({ name: "DNS Relay", activeCount: 12, passiveCount: 5 });
   }
 
   ngAfterViewInit(): void {

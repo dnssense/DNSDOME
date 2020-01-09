@@ -34,8 +34,7 @@
               "src/assets/css/demo.css",
               "src/assets/scss/material-dashboard.scss",
               "node_modules/intro.js/introjs.css",
-              "src/assets/css/main.css"
-
+              "src/assets/css/main.scss"
             ],
             "scripts": [
               "node_modules/intro.js/intro.js",
@@ -206,5 +205,10 @@
       }
     }
   },
-  "defaultProject": "dnssense"
+  "defaultProject": "dnssense",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }
