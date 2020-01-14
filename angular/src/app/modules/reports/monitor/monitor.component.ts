@@ -14,9 +14,9 @@ import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
 export class MonitorComponent implements OnInit {
   public searchSetting: SearchSetting = new SearchSetting();
 
-  @ViewChild(MonitorSearchComponent)
+  @ViewChild(MonitorSearchComponent, { static : false })
   private monitorSearchComponent: MonitorSearchComponent;
-  @ViewChild(MonitorResultComponent)
+  @ViewChild(MonitorResultComponent, { static : false })
   private monitorResultComponent: MonitorResultComponent;
 
   constructor(public dateFormatPipe: DateFormatPipe) { }

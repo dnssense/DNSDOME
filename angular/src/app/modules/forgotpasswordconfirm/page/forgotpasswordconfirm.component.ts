@@ -42,7 +42,7 @@ export class ForgotPasswordConfirmComponent implements OnInit {
   private captcha: string;
   private forgotId: string;
   public captcha_key: string;
-  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
+  @ViewChild(ReCaptchaComponent, { static : false }) captchaComponent: ReCaptchaComponent;
   matcher = new MyErrorStateMatcher(); 
 
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,

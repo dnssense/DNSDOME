@@ -85,8 +85,8 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   filteredIsOneOfs: Observable<string[]>;
   isOneOfList: string[] = [];
   isOneOfListItems: string[] = [];
-  @ViewChild('isOneOfInput') isOneOfInput: ElementRef<HTMLInputElement>;
-  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  @ViewChild('isOneOfInput', { static : false }) isOneOfInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto', { static : false }) matAutocomplete: MatAutocomplete;
 
   _columns: LogColumn[];
   defaultColumns: LogColumn[];
@@ -100,10 +100,10 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
   select2: any = null;
   inputCollapsed: boolean = true;
   inputSelected: boolean = false;
-  @ViewChild('inputElement') inputElement: ElementRef;
-  @ViewChild('mainInputElement') mainInputElement: ElementRef;
-  @ViewChild('tagInput') tagInput: ElementRef;
-  @ViewChild('select') select: ElementRef;
+  @ViewChild('inputElement', { static : false }) inputElement: ElementRef;
+  @ViewChild('mainInputElement', { static : false }) mainInputElement: ElementRef;
+  @ViewChild('tagInput', { static : false }) tagInput: ElementRef;
+  @ViewChild('select', { static : false }) select: ElementRef;
   //public selectedColumns: LogColumn[];
   editedTag: any;
   editedTagType: string;

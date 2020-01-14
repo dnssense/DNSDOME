@@ -67,7 +67,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   select2: any = null;
   inputCollapsed: boolean = true;
   inputSelected: boolean = false;
-  @ViewChild('inputElement') inputElement: ElementRef;
+  @ViewChild('inputElement', { static : false }) inputElement: ElementRef;
 
   visible = true;
   selectable = true;
@@ -81,8 +81,8 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   savedReports: SearchSetting[] = []
   selectedSavedReportName: string;
   newSavedReportName: string;
-  @ViewChild('isOneOfInput') isOneOfInput: ElementRef<HTMLInputElement>;
-  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  @ViewChild('isOneOfInput', { static : false }) isOneOfInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto', { static : false }) matAutocomplete: MatAutocomplete;
 
   constructor(private fastReportService: FastReportService, private locationsService: LocationsService, private datePipe: DatePipe,
     private customReportService: CustomReportService, private notification: NotificationService, private alertService: AlertService,

@@ -35,10 +35,10 @@ export class ColumnTagInputComponent implements OnInit {
   public inputCollapsed: boolean = true;
   public inputSelected: boolean = false;
 
-  @ViewChild('inputElement') inputElement: ElementRef;
-  @ViewChild('mainInputElement') mainInputElement: ElementRef;
-  @ViewChild('tagInput') tagInput: ElementRef;
-  @ViewChild('select') select: ElementRef;
+  @ViewChild('inputElement', { static : false }) inputElement: ElementRef;
+  @ViewChild('mainInputElement', { static : false }) mainInputElement: ElementRef;
+  @ViewChild('tagInput', { static : false }) tagInput: ElementRef;
+  @ViewChild('select', { static : false }) select: ElementRef;
 
   public select2: any = null;
 

@@ -35,8 +35,8 @@ export class CustomReportResultComponent implements OnDestroy {
   @Output() public addColumnValueEmitter = new EventEmitter();
   @Output() public searchEmitter = new EventEmitter();
 
-  @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
-  @ViewChild(CustomReportSearchComponent)
+  @ViewChild('tableDivComponent', { static : false }) tableDivComponent: ElementRef;
+  @ViewChild(CustomReportSearchComponent, { static : false })
   public customReportSearchComponent: CustomReportSearchComponent;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();

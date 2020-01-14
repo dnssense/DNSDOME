@@ -26,19 +26,34 @@
 
 
     <div class="dns-base-card">
-      <div class="card-item dns-row">
-        <div class="dns-grow" >
-          Total traffic timeline
+      <div class="card-item dns-col">
+        <div class="traffic-timeline dns-row">
+          <div class=" dns-grow">
+            <div class="timeline-title">Total traffic timeline</div>
+            <div class="timeline-sub-title"> 365 total days</div>
+          </div>
+
+          <div>
+
+          </div>
+
+          <div class="dns-v-center">
+            <span>Time Range</span>
+            <div class="dns-row m-l-15 dns-v-center">
+              <button *ngFor="let tRange of timeRangeButtons" class="btn btn-default m-r-5"> {{ tRange.key }} </button>
+              <span style="color:#97a5bb"> = </span>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <i-feather></i-feather>
-        </div>
-
-        <div>
-          <span>Time Range</span>
-          <div class="dns-row" >
-
+        <div class="dns-col">
+          <div class="dns-panel">
+            <div class="dns-panel-header" >
+              Traffic Based Anomaly
+            </div>
+            <div class="dns-panel-item" style="background-color: white;" >
+              Test
+            </div>
           </div>
         </div>
       </div>

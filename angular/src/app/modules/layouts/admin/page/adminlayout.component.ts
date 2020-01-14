@@ -23,8 +23,8 @@ export class AdminLayoutComponent implements OnInit {
     url: string;
     location: Location;
 
-    @ViewChild('sidebar') sidebar: any;
-    @ViewChild(NavbarComponent) navbar: NavbarComponent;
+    @ViewChild('sidebar', { static : false }) sidebar: any;
+    @ViewChild(NavbarComponent, { static : false }) navbar: NavbarComponent;
     constructor( private router: Router, location: Location ) {
       this.location = location;
     }
