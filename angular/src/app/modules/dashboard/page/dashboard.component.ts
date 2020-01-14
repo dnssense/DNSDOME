@@ -17,6 +17,7 @@ import { ConfigHost, ConfigService } from 'src/app/core/services/config.service'
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { DataPanelModel } from 'src/app/core/models/Dashboard';
+import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
 
 declare let $: any;
 declare let moment: any;
@@ -42,13 +43,23 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   uniqueChartType: string = 'domain';
 
   dataPanels: DataPanelModel[] = [];
+  timeRangeButtons: KeyValueModel<string, TimeRangeEnum>[] = [];
 
   constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router,
     private agentService: AgentService, private customReportService: CustomReportService, private config: ConfigService,
     private boxService: BoxService, private roamingService: RoamingService) { }
 
+
+
+
   ngOnInit() {
+    this.timeRangeButtons.push({ key: "Last Year", value: TimeRangeEnum.lastYear });
+    this.timeRangeButtons.push({ key: "Last 3 Month", value: TimeRangeEnum.last3Month });
+    this.timeRangeButtons.push({ key: "Last Month", value: TimeRangeEnum.lastMonth });
+    this.timeRangeButtons.push({ key: "Last Week", value: TimeRangeEnum.lastWeek });
+    this.timeRangeButtons.push({ key: "Today", value: TimeRangeEnum.Today });
+
     this.host = this.config.host;
     let roleName: string = this.authService.currentSession.currentUser.roles.name;
 
