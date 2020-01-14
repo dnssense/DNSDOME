@@ -29,8 +29,7 @@ import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
 import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
 import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
 import { NotificationModule } from './modules/shared/notification/notification.module';
-import { RoksitModule } from 'roksit-lib'
-
+import { RoksitModule } from 'roksit-lib';
 @NgModule({
   declarations: [AppComponent],
   imports: [

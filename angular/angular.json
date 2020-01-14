@@ -34,7 +34,8 @@
               "src/assets/css/demo.css",
               "src/assets/scss/material-dashboard.scss",
               "node_modules/intro.js/introjs.css",
-              "src/assets/css/main.scss"
+              "src/assets/css/main.scss",
+              "node_modules/roksit-lib/assets/scss/roksit.core.scss"
             ],
             "scripts": [
               "node_modules/intro.js/intro.js",
