@@ -7,8 +7,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { RkMenuModule } from 'roksit-lib/lib/modules/rk-menu/rk-menu.module';
-import { RoksitModule } from 'roksit-lib';
+import { RkProgressBarModule, RkDateModule } from 'roksit-lib';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -19,14 +18,15 @@ import { RoksitModule } from 'roksit-lib';
     MaterialModule,
     CommonModule,
     DashboardRoutingModule,
+    RkProgressBarModule,
+    RkDateModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    }),
-    RoksitModule
+    })
   ],
   schemas : [NO_ERRORS_SCHEMA]
 

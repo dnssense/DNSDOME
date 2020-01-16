@@ -2,18 +2,18 @@
   <div class="container-fluid ">
     <div class="row" style="margin-top: -10px">
       <div class="col-md-12">
-        <div class="dns-base-card">
+        <div class="rk-base-card">
           <div class="card-item" *ngFor="let data of dataPanels">
-            <div class="dns-grow dns-v-center">
+            <div class="rk-grow rk-v-center rk-title-1">
               {{ data.name }}
             </div>
-            <div class="dns-row">
-              <div class="dns-data-row active">
+            <div class="rk-row">
+              <div class="rk-data-row active">
                 <span class="name">Active</span>
                 <span class="value">{{ data.activeCount }}</span>
               </div>
 
-              <div class="dns-data-row   m-l-15">
+              <div class="rk-data-row   m-l-15">
                 <span class="name">Passive</span>
                 <span class="value">{{ data.passiveCount }}</span>
               </div>
@@ -25,11 +25,11 @@
     </div>
 
 
-    <div class="dns-base-card">
-      <div class="card-item dns-col">
-        <div class="traffic-timeline dns-row">
-          <div class=" dns-grow">
-            <div class="timeline-title">Total traffic timeline</div>
+    <div class="rk-base-card">
+      <div class="card-item rk-col">
+        <div class="traffic-timeline rk-row">
+          <div class="rk-v-center">
+            <div class="rk-title-2">Total traffic timeline</div>
             <div class="timeline-sub-title"> 365 total days</div>
           </div>
 
@@ -37,38 +37,30 @@
 
           </div>
 
-          <div class="dns-v-center">
-            <span>Time Range</span>
-            <div class="dns-row m-l-15 dns-v-center">
-              <button *ngFor="let tRange of timeRangeButtons" class="btn btn-default m-r-5"> {{ tRange.key }} </button>
-              <span style="color:#97a5bb"> = </span>
+          <div class="rk-row m-l-20 rk-grow" style="justify-content: flex-end;">
+            <span class="rk-title-2 rk-v-center">Time Range</span>
+            <div class="rk-row m-l-15 ">
+              <button *ngFor="let tRange of timeRangeButtons" class="btn btn-small btn-default ml-2 m-r-5">
+                {{ tRange.key }} </button>
+              <span class="rk-v-center m-l-10 m-r-14" style="color:#97a5bb"> = </span>
+              <rk-date (complete)="completed($event)"></rk-date>
             </div>
           </div>
         </div>
 
-        <div class="dns-col">
-          <div class="dns-panel">
-            <div class="dns-panel-header" >
-              Traffic Based Anomaly
-            </div>
-            <div class="dns-panel-item" style="background-color: white;" >
-              Test
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
     <div class="row" style="margin-top:  10px">
       <div class="col-md-12">
-        <div class="dns-base-card">
+        <div class="rk-base-card">
 
           <!-- NUMERIC CARD -->
           <div class="row" style="margin-top: -10px">
             <div class="col-9">
               <div class="row">
                 <div class="col-12">
-                  <table class="table dns-base-table table-responsive-md table-responsive-sm">
+                  <table class="table rk-base-table table-responsive-md table-responsive-sm">
                     <thead>
                       <tr>
                         <th></th>
@@ -287,11 +279,11 @@
 
             </div>
             <div class="col-3">
-              <table class="table dns-base-table table-responsive-md table-responsive-sm">
+              <table class="table rk-base-table table-responsive-md table-responsive-sm">
                 <thead>
                   <tr>
                     <th data-step="2" data-intro="You can change date filter from here" data-position='right'>
-                      <div class="dns-dropdown d-inline-block dns-table-select pull-right" id="dropdownDate">
+                      <div class="rk-dropdown d-inline-block rk-table-select pull-right" id="dropdownDate">
                         <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                           data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                           <span [ngSwitch]="dateParameter">
@@ -389,8 +381,8 @@
 
     <div class="row mt-3">
       <div class="col-md-8">
-        <div class="dns-base-card">
-          <div class="dns-base-card-header">
+        <div class="rk-base-card">
+          <div class="rk-base-card-header">
             <div class="row">
               <div class="col-md-6">Traffic Based Anomaly</div>
               <div class="col-md-6" style="z-index: 10;">
@@ -399,15 +391,15 @@
                     <tr>
                       <th data-step="3" data-intro="You can filter this chart for categories from here"
                         data-position='right'>
-                        <div class="dns-dropdown d-inline-block dns-table-select pull-right" id="dropdownDate">
+                        <div class="rk-dropdown d-inline-block rk-table-select pull-right" id="dropdownDate">
                           <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                             <ng-container *ngIf="selectedCategoryForTraffic; else elseTemplateTraficCat">
-                              <span class="dns-label"
+                              <span class="rk-label"
                                 style="margin: 0px; margin-top: -5px; margin-bottom: -5px; height: 34px;">
-                                <span class="dns-label-color"></span>
+                                <span class="rk-label-color"></span>
                                 <span>{{selectedCategoryForTraffic.name}}</span>
-                                <i class="dns-close-btn icon-cancel"
+                                <i class="rk-close-btn icon-cancel"
                                   (click)="deleteCatFromTraffic(selectedCategoryForTraffic.id)"></i>
                               </span>
                             </ng-container>
@@ -418,13 +410,13 @@
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
                             style="max-height: 400px;  overflow: auto; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
-                            <div class="dns-dropdown-searchbar">
-                              <input type="text" class="dns-form-control reverse-form" matInput placeholder="Search"
+                            <div class="rk-dropdown-searchbar">
+                              <input type="text" class="rk-form-control reverse-form" matInput placeholder="Search"
                                 [(ngModel)]="searchKey" (ngModelChange)="searchCategoryForTraffic($event)">
                             </div>
                             <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
                               (click)="addCategoryToTraffic(cat.id)">
-                              <span class="dns-color-point" style="background:#fa3f3f"></span>
+                              <span class="rk-color-point" style="background:#fa3f3f"></span>
                               {{cat.name}}
                             </button>
                           </div>
@@ -436,7 +428,7 @@
               </div>
             </div>
           </div>
-          <div class="dns-base-card-content">
+          <div class="rk-base-card-content">
             <div class="chart" style="min-height: 300px; margin-bottom: -18px; margin-top:-10px;">
               <div id="hitChartDiv">
                 <div id="trafficChartHits"></div>
@@ -449,11 +441,11 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="dns-base-card">
-          <div class="dns-base-card-header">
+        <div class="rk-base-card">
+          <div class="rk-base-card-header">
             World Traffic
           </div>
-          <div class="dns-base-card-content">
+          <div class="rk-base-card-content">
             <div class="card card-chart mb-2" style="box-shadow: none; background-color: #262626">
               <div class="card-body">
                 <div #worldMap id="worldMap" class="map" style="max-height: 250px;"></div>
@@ -465,8 +457,8 @@
     </div>
     <div class="row mt-3">
       <div class="col-md-12">
-        <div class="dns-base-card">
-          <div class="dns-base-card-header">
+        <div class="rk-base-card">
+          <div class="rk-base-card-header">
             <div class="row">
               <div class="col-md-6">Unique Counter Based Anomaly</div>
               <div class="col-md-6" style="z-index: 10;">
@@ -474,15 +466,15 @@
                   <thead>
                     <tr>
                       <th>
-                        <div class="dns-dropdown d-inline-block dns-table-select pull-right" id="dropdownDate">
+                        <div class="rk-dropdown d-inline-block rk-table-select pull-right" id="dropdownDate">
                           <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                             <ng-container *ngIf="selectedCategoryForUnique; else elseTemplateBlockedCat">
-                              <span class="dns-label"
+                              <span class="rk-label"
                                 style="margin: 0px; margin-top: -5px; margin-bottom: -5px; height: 34px;">
-                                <span class="dns-label-color"></span>
+                                <span class="rk-label-color"></span>
                                 <span>{{selectedCategoryForUnique.name}}</span>
-                                <i class="dns-close-btn icon-cancel"
+                                <i class="rk-close-btn icon-cancel"
                                   (click)="deleteCatFromUnique(selectedCategoryForUnique.id)"></i>
                               </span>
                             </ng-container>
@@ -494,12 +486,12 @@
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
                             style="max-height: 400px; overflow: auto; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
                             <div class="dropdown-searchbar" style="width: 95%">
-                              <input type="text" class="dns-form-control reverse-form" matInput placeholder="Search"
+                              <input type="text" class="rk-form-control reverse-form" matInput placeholder="Search"
                                 [(ngModel)]="searchKey" (ngModelChange)="searchCategoryForTraffic($event)">
                             </div>
                             <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
                               (click)="addCategoryToUnique(cat.id)">
-                              <span class="dns-color-point" style="background:#fa3f3f"></span>
+                              <span class="rk-color-point" style="background:#fa3f3f"></span>
                               {{cat.name}}
                             </button>
                           </div>
@@ -512,7 +504,7 @@
             </div>
 
           </div>
-          <div class="dns-base-card-content">
+          <div class="rk-base-card-content">
             <div class="chart" style="min-height: 200px; margin-top:-10px;">
               <div id="uniqueDomainChartDiv">
                 <div id="uniqueDomainChart"></div>
@@ -526,7 +518,7 @@
             </div>
 
             <div class="events">
-              <div class="dns-toggle" style="padding: 4px;" data-step="4"
+              <div class="rk-toggle" style="padding: 4px;" data-step="4"
                 data-intro="You can change chart options from here" data-position='right'>
                 <button class="btns active" [ngClass]="{'active ': uniqueChartType=='domain'}"
                   (click)="changeUniqueChartData('domain')">{{selectedCategoryForUnique?.name}} Unique Domain</button>

@@ -29,14 +29,15 @@ import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
 import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
 import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
 import { NotificationModule } from './modules/shared/notification/notification.module';
-import { RoksitModule } from 'roksit-lib';
+import { RoksitModule, RkProgressBarModule } from 'roksit-lib';
+import { RkSwitchModule } from 'roksit-lib/lib/modules/rk-switch/rk-switch.module';
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule,
     AuthLayoutModule,
     AdminLayoutModule,
     PagenotfoundModule,
@@ -60,7 +61,7 @@ import { RoksitModule } from 'roksit-lib';
         deps: [HttpClient]
       }
     }),
-    RoksitModule
+    RoksitModule.forRoot()
   ],
   providers: [
     AuthGuard,
