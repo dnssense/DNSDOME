@@ -33,10 +33,6 @@
             <div class="timeline-sub-title"> 365 total days</div>
           </div>
 
-          <div>
-
-          </div>
-
           <div class="rk-row m-l-20 rk-grow" style="justify-content: flex-end;">
             <span class="rk-title-2 rk-v-center">Time Range</span>
             <div class="rk-row m-l-15 ">
@@ -48,6 +44,163 @@
           </div>
         </div>
 
+        <div class="rk-panel" style="margin-top: 30px;">
+          <div class="rk-panel-header rk-title-2">
+            Traffic Based Anomaly
+          </div>
+          <div class="rk-panel-item" style="background-color: white;display: flex;">
+            <div>
+              <rk-infobox [active]="true" [title]="'Total'" [color]="'#4353ff'" [type]="1" [valueOne]="345"
+                [valueTwo]="345">
+              </rk-infobox>
+            </div>
+
+
+            <div style="margin-left: 15px;">
+              <rk-infobox [active]="false" [type]="2" [title]="'Safe'" [color]="'#3dd49a'" [valueOne]="'35.000'"
+                [valueTwo]="'32.000'">
+              </rk-infobox>
+            </div>
+
+            <div style="margin-left: 15px;">
+              <rk-infobox [active]="false" [type]="2" [title]="'Malicious'" [color]="'#f95656'" [valueOne]="'35.000'"
+                [valueTwo]="'32.000'">
+              </rk-infobox>
+            </div>
+
+            <div style="margin-left: 15px;">
+              <rk-infobox [active]="false" [type]="2" [title]="'Variable'" [color]="'#d8d8d8'" [valueOne]="'35.000'"
+                [valueTwo]="'32.000'">
+              </rk-infobox>
+            </div>
+
+            <div style="margin-left: 15px;">
+              <rk-infobox [active]="false" [type]="2" [title]="'Harmful Content'" [color]="'#f9df56'"
+                [valueOne]="'35.000'" [valueTwo]="'32.000'">
+              </rk-infobox>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <!-- Malicious -->
+          <div class="col-4 rk-panel" style="margin-top: 30px;">
+            <div class="rk-panel-header rk-title-2">
+              Malicious
+            </div>
+            <div class="rk-panel-item rk-info-table " style="background-color: white;">
+              <rk-table [info]="true" [showPagination]="false">
+                <ng-template #header>
+                  <tr>
+                    <th class="index">#</th>
+                    <th scope="col">
+                      Domain
+                    </th>
+                    <th scope="col">
+                      Count
+                    </th>
+                    <th scope="col">
+                      Percent
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template #body>
+                  <tr>
+                    <td class="index">1</td>
+                    <td>google.com</td>
+                    <td>
+                      364545
+                    </td>
+                    <td>
+                      <rk-progressbar [value]="75" [showType]="'outside'" [type]="'danger'" [sizeType]="'medium'">
+                      </rk-progressbar>
+                    </td>
+                  </tr>
+                </ng-template>
+              </rk-table>
+            </div>
+          </div>
+
+          <!-- New Domains -->
+          <div class="col-4 rk-panel" style="margin-top: 30px;">
+            <div class="rk-panel-header rk-title-2">
+              New Domains
+            </div>
+            <div class="rk-panel-item" style="background-color: white;">
+              <rk-table [info]="true" [showPagination]="false">
+                <ng-template #header>
+                  <tr>
+                    <th class="index">#</th>
+                    <th scope="col">
+                      Domain
+                    </th>
+                    <th scope="col">
+                      Count
+                    </th>
+                    <th scope="col">
+                      Percent
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template #body>
+                  <tr>
+                    <td class="index">1</td>
+                    <td>google.com</td>
+                    <td>
+                      364545
+                    </td>
+                    <td>
+                      <rk-progressbar [value]="75" [showType]="'outside'" [type]="'primary'" [sizeType]="'medium'">
+                      </rk-progressbar>
+                    </td>
+                  </tr>
+                </ng-template>
+              </rk-table>
+            </div>
+          </div>
+
+          <!-- Harmful -->
+          <div class="col-4 rk-panel" style="margin-top: 30px;">
+            <div class="rk-panel-header rk-title-2">
+              Harmful
+            </div>
+            <div class="rk-panel-item" style="background-color: white;">
+              <rk-table [info]="true" [showPagination]="false">
+                <ng-template #header>
+                  <tr>
+                    <th class="index">#</th>
+                    <th scope="col">
+                      Domain
+                    </th>
+                    <th scope="col">
+                      Count
+                    </th>
+                    <th scope="col">
+                      Percent
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template #body>
+                  <tr>
+                    <td class="index">1</td>
+                    <td>google.com</td>
+                    <td>
+                      364545
+                    </td>
+                    <td>
+                      <rk-progressbar [value]="75" [showType]="'outside'" [type]="'warning'" [sizeType]="'medium'">
+                      </rk-progressbar>
+                    </td>
+                  </tr>
+                </ng-template>
+              </rk-table>
+            </div>
+          </div>
+
+
+
+        </div>
       </div>
     </div>
 

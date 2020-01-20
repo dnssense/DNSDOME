@@ -4,18 +4,18 @@
 }
 
 .dnsTooltip {
-  background-color:red;
+  background-color: red;
   color: yellow;
 }
 
 .linkNumber {
-  color:white;
+  color: white;
   cursor: pointer;
 }
 
 .linkNumber:hover {
-    text-decoration: underline !important;
- }
+  text-decoration: underline !important;
+}
 
 .jqvmap-label {
   position: absolute;
@@ -25,41 +25,42 @@
   border-radius: 3px;
   background: #292929;
   color: #fff;
-  font-family: sans-serif,Verdana;
+  font-family: sans-serif, Verdana;
   font-size: smaller;
   padding: 3px;
   pointer-events: none;
- }
+}
 
-.startBtn{
+.startBtn {
   width: 88%;
   min-width: 80px;
   height: 50px;
   margin-top: 20px;
   background-color: #4353ff;
- }
-  
-.tickIcon{
+}
+
+.tickIcon {
   width: 14px;
 }
 
-.subText{
-   font-size: 13px;
- }
+.subText {
+  font-size: 13px;
+}
 
-.subHeader{
+.subHeader {
   font-size: 14x;
   font-weight: 500;
 }
 
-.subImg{
+.subImg {
   max-height: 140px;
 }
 
 .traffic-timeline {
+  margin-left: 10px;
 
   .timeline-sub-title {
     font-size: 12px;
-    color : #ff7b00;
+    color: #ff7b00;
   }
 }
