@@ -24,6 +24,17 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-12">
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="chart" id="chart"></div>
+      </div>
+    </div>
 
     <div class="rk-base-card">
       <div class="card-item rk-col">
@@ -39,7 +50,7 @@
               <button *ngFor="let tRange of timeRangeButtons" class="btn btn-small btn-default ml-2 m-r-5">
                 {{ tRange.key }} </button>
               <span class="rk-v-center m-l-10 m-r-14" style="color:#97a5bb"> = </span>
-              <rk-date (complete)="completed($event)"></rk-date>
+              <rk-date (complete)="completed($event)" [alignment]="'left'"></rk-date>
             </div>
           </div>
         </div>

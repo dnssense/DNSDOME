@@ -3,7 +3,6 @@ import { DashBoardService } from 'src/app/core/services/DashBoardService';
 import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { StaticService } from 'src/app/core/services/StaticService';
-import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { DashboardStats } from 'src/app/core/models/DashboardStats';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -18,6 +17,7 @@ import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { DataPanelModel } from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
+import { RkApexHelper } from 'roksit-lib';
 
 declare let $: any;
 declare let moment: any;
@@ -29,18 +29,18 @@ declare let moment: any;
 export class DashboardComponent implements OnInit, AfterViewInit {
   host: ConfigHost;
   elasticData: ElasticDashboardResponse[];
-  dateParameter: number = 0;
+  dateParameter = 0;
   ds: DashboardStats = new DashboardStats();
   searchKey: string;
-  labelArray: string[] = []
+  labelArray: string[] = [];
   categoryList = [];
   categoryListFiltered = [];
   selectedCategoryForTraffic = CategoryV2;
   selectedCategoryForUnique = CategoryV2;
   trafficChart: any;
   uniqueDomainChart: any;
-  trafficChartType: string = 'hit';
-  uniqueChartType: string = 'domain';
+  trafficChartType = 'hit';
+  uniqueChartType = 'domain';
 
   dataPanels: DataPanelModel[] = [];
   timeRangeButtons: KeyValueModel<string, TimeRangeEnum>[] = [];
@@ -50,18 +50,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private agentService: AgentService, private customReportService: CustomReportService, private config: ConfigService,
     private boxService: BoxService, private roamingService: RoamingService) { }
 
-
-
-
   ngOnInit() {
-    this.timeRangeButtons.push({ key: "Last Year", value: TimeRangeEnum.lastYear });
-    this.timeRangeButtons.push({ key: "Last 3 Month", value: TimeRangeEnum.last3Month });
-    this.timeRangeButtons.push({ key: "Last Month", value: TimeRangeEnum.lastMonth });
-    this.timeRangeButtons.push({ key: "Last Week", value: TimeRangeEnum.lastWeek });
-    this.timeRangeButtons.push({ key: "Today", value: TimeRangeEnum.Today });
+    this.timeRangeButtons.push({ key: 'Last Year', value: TimeRangeEnum.lastYear });
+    this.timeRangeButtons.push({ key: 'Last 3 Month', value: TimeRangeEnum.last3Month });
+    this.timeRangeButtons.push({ key: 'Last Month', value: TimeRangeEnum.lastMonth });
+    this.timeRangeButtons.push({ key: 'Last Week', value: TimeRangeEnum.lastWeek });
+    this.timeRangeButtons.push({ key: 'Today', value: TimeRangeEnum.Today });
 
     this.host = this.config.host;
-    let roleName: string = this.authService.currentSession.currentUser.roles.name;
+    const roleName: string = this.authService.currentSession.currentUser.roles.name;
+
+    this.prepareTimeline();
 
     if (roleName != 'ROLE_USER') {
       this.agentService.getAgents().subscribe(res => {
@@ -70,17 +69,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             if (res2 == null || res2.length < 1) {
               this.roamingService.getClients().subscribe(res3 => {
                 if (res3 == null || res3.length < 1) {
-                  //TODO: redericeting temporarily
+                  // TODO: redericeting temporarily
                   this.router.navigateByUrl('/admin/publicip');
-                  //this.openModal();
+                  // this.openModal();
                 } else {
                   this.startDashboardOperations();
                 }
-              })
+              });
             } else {
               this.startDashboardOperations();
             }
-          })
+          });
         } else {
           this.startDashboardOperations();
         }
@@ -90,13 +89,131 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
 
-    this.dataPanels.push({ name: "Public IP", activeCount: 8, passiveCount: 3 });
-    this.dataPanels.push({ name: "Roming Client", activeCount: 6, passiveCount: 4 });
-    this.dataPanels.push({ name: "DNS Relay", activeCount: 12, passiveCount: 5 });
+    this.dataPanels.push({ name: 'Public IP', activeCount: 8, passiveCount: 3 });
+    this.dataPanels.push({ name: 'Roming Client', activeCount: 6, passiveCount: 4 });
+    this.dataPanels.push({ name: 'DNS Relay', activeCount: 12, passiveCount: 5 });
   }
 
   ngAfterViewInit(): void {
     // introJs().start();
+  }
+
+  private prepareTimeline() {
+    function generateDayWiseTimeSeries(baseval, count, yrange) {
+      let i = 0;
+      const series = [];
+      while (i < count) {
+        const x = baseval;
+        const y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+
+        series.push([x, y]);
+        baseval += 86400000;
+        i++;
+      }
+      return series;
+    }
+
+    const data = generateDayWiseTimeSeries(new Date('11 Feb 2017').getTime(), 185, {
+      min: 10,
+      max: 500
+    });
+
+    RkApexHelper.render('#chart', {
+      series: [{
+        data
+      }],
+      chart: {
+        id: 'chart2',
+        type: 'line',
+        height: 350,
+        toolbar: {
+          autoSelected: 'pan',
+          show: false
+        }
+      },
+      markers: {
+        size: 4,
+        colors: ['#FFA41B'],
+        strokeColors: '#FFA41B',
+        strokeWidth: 2,
+        hover: {
+          size: 7,
+        }
+      },
+      colors: ['#0084ff'],
+      stroke: {
+        width: 3
+      },
+      dataLabels: {
+        enabled: false
+      },
+      fill: {
+        opacity: 1,
+      },
+      xaxis: {
+        type: 'datetime'
+      }
+    });
+
+    RkApexHelper.render('#timeline', {
+      series: [{
+        data
+      }],
+      chart: {
+        id: 'chart1',
+        height: 120,
+        type: 'bar',
+        brush: {
+          target: 'chart2',
+          enabled: true
+        },
+        selection: {
+          enabled: true,
+          type: 'x',
+          fill: {
+            color: 'transparent',
+            opacity: 0.1
+          },
+          stroke: {
+            width: 4,
+            color: '#97a5bb',
+            opacity: 1,
+            dashArray: 0,
+            radius: 10
+          },
+          xaxis: {
+            min: new Date('19 Jun 2017').getTime(),
+            max: new Date('14 Aug 2017').getTime()
+          },
+        }
+      },
+      colors: [function ({ value, seriesIndex, w }) {
+        if (value < 55) {
+          return '#f95656';
+        } else if (value >= 55 && value < 80) {
+          return '#3dd49a';
+        } else {
+          return '#f99256';
+        }
+      }],
+      // colors: ['#f95656', '#3dd49a', '#f99256', '#f9df56', '#d8d8d8'],
+      // fill: {
+      //   type: 'gradient',
+      //   gradient: {
+      //     opacityFrom: 0.91,
+      //     opacityTo: 0.1,
+      //   }
+      // },
+      xaxis: {
+        type: 'datetime',
+        tooltip: {
+          enabled: false
+        }
+      },
+      yaxis: {
+        tickAmount: 2
+      }
+    });
   }
 
   startDashboardOperations() {
@@ -104,7 +221,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.selectedCategoryForUnique = null;
     this.staticService.getCategoryList().subscribe(res => {
       this.categoryList = res;
-      this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
+      this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
     });
 
     this.elasticData = [];
@@ -113,25 +230,25 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   prepareWorldMap(time: string) {
-    let values: Map<string, number> = new Map();
-    let searchSetting = new SearchSetting();
-    let col: LogColumn = { name: "destinationIpCountryCode", beautyName: "Dst.Country", hrType: "COUNTRY_FLAG", aggsType: "TERM", checked: true };
-    let item = new AggregationItem(col, col.beautyName);
+    const values: Map<string, number> = new Map();
+    const searchSetting = new SearchSetting();
+    const col: LogColumn = { name: 'destinationIpCountryCode', beautyName: 'Dst.Country', hrType: 'COUNTRY_FLAG', aggsType: 'TERM', checked: true };
+    const item = new AggregationItem(col, col.beautyName);
     searchSetting.columns.columns.push(item);
-    searchSetting.topNumber = 250
-    searchSetting.dateInterval = '5'
+    searchSetting.topNumber = 250;
+    searchSetting.dateInterval = '5';
 
     if (time == '0') {
-      let d = new Date();
+      const d = new Date();
       searchSetting.dateInterval = ((d.getHours() * 60) + d.getMinutes()).toString();
     } else if (time == '-1') {
       searchSetting.dateInterval = '60';
     } else if (time == '1' || time == '2' || time == '3' || time == '6' || time == '7') {
-      let d1 = new Date();
-      let d2 = new Date();
-      d1.setDate(d1.getDate() - Number(time))
-      let startDate = moment(new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-      let endDate = moment(new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(), 23, 59, 59), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+      const d1 = new Date();
+      const d2 = new Date();
+      d1.setDate(d1.getDate() - Number(time));
+      const startDate = moment(new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
+      const endDate = moment(new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(), 23, 59, 59), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
       const dateVal = startDate + ' - ' + endDate;
       searchSetting.dateInterval = dateVal;
     } else {
@@ -147,14 +264,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         let max = 0, min = Number.MAX_VALUE, startColor = [200, 238, 255], endColor = [0, 100, 145], colors = <any>{}, hex;
 
         values.forEach((value: number, key: string) => {
-          if (value > max) { max = value }
-          if (value < min) { min = value }
+          if (value > max) { max = value; }
+          if (value < min) { min = value; }
         });
 
         values.forEach((value: number, key: string) => {
           if (value > 0) {
             colors[key] = '#';
-            for (var i = 0; i < 3; i++) {
+            for (let i = 0; i < 3; i++) {
               hex = Math.round(startColor[i] + (endColor[i] - startColor[i]) * (value == max ? 1 : (value / (max - min)))).toString(16);
               if (hex.length == 1) { hex = '0' + hex; }
               colors[key] += (hex.length == 1 ? '0' : '') + hex;
@@ -184,14 +301,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             event.preventDefault();
           },
           onRegionClick: (element, code, region) => {
-            let elements = $('.jqvmap-label')
+            const elements = $('.jqvmap-label');
             if (elements && elements.length > 0) {
               for (let i = 0; i < elements.length; i++) {
                 const e = elements[i];
-                e.style.display = "none"
+                e.style.display = 'none'
               }
             }
-            this.showInReport('map' + code)
+            this.showInReport('map' + code);
           },
           onLabelShow: (event, label, code) => {
             label[0].innerText = label[0].innerText + ' : ' + (values.has(code) ? values.get(code) : 0);
@@ -205,7 +322,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private getElasticData(d1: string, d2: string) {
     this.dashboardService.getHourlyCompanySummary(d1, d2).subscribe(res => {
       this.elasticData = res;
-      this.elasticData.sort((x, y) => { return new Date(x.date).getTime() - new Date(y.date).getTime(); });
+      this.elasticData.sort((x, y) => new Date(x.date).getTime() - new Date(y.date).getTime());
       this.createCharts();
     });
   }
@@ -219,7 +336,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     for (let i = indexLimit; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
-      this.labelArray.push(moment(data.date).format('YYYY-MM-DDTHH:mm:ss.sssZ'))
+      this.labelArray.push(moment(data.date).format('YYYY-MM-DDTHH:mm:ss.sssZ'));
       this.ds.totalHitCountForDashboard += data.total_hit;
       this.ds.totalBlockCountForDashboard += data.blocked_count;
       this.ds.totalUniqueBlockedDomainForDashboard += data.unique_blocked_domain;
@@ -230,11 +347,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.blockAverages.push(Math.round(data.averages.blocked_count));
       this.ds.totalBlocks.push(data.blocked_count);
       this.ds.uniqueDomain.push(data.unique_domain);
-      this.ds.uniqueDomainAvg.push(Math.round(data.averages.unique_domain))
-      this.ds.uniqueDesIp.push(data.unique_destip)
-      this.ds.uniqueDesIpAvg.push(Math.round(data.averages.unique_destip))
-      this.ds.uniqueSubdomain.push(data.unique_subdomain)
-      this.ds.uniqueSubdomainAvg.push(Math.round(data.averages.unique_subdomain))
+      this.ds.uniqueDomainAvg.push(Math.round(data.averages.unique_domain));
+      this.ds.uniqueDesIp.push(data.unique_destip);
+      this.ds.uniqueDesIpAvg.push(Math.round(data.averages.unique_destip));
+      this.ds.uniqueSubdomain.push(data.unique_subdomain);
+      this.ds.uniqueSubdomainAvg.push(Math.round(data.averages.unique_subdomain));
 
       Object.keys(data.category_hits).forEach(function eachKey(key) {
         if (key.toString() == 'Malware/Virus' || key.toString() == 'Potentially Dangerous' || key.toString() == 'Phishing') {
@@ -242,7 +359,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           mTotalAverages += data.category_hits[key].average;
 
           uSRCounter += data.category_hits[key].unique_domain;
-          uSRAverages += data.category_hits[key].unique_domain_average
+          uSRAverages += data.category_hits[key].unique_domain_average;
 
         } else if (key.toString() == 'Unknown' || key.toString() == 'Undecided Not Safe' || key.toString() == 'Undecided Safe'
           || key.toString() == 'Domain Parking' || key.toString() == 'Newly Register' || key.toString() == 'Newly Up'
@@ -280,7 +397,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     // Total Traffic Chart
-    var trafficChartoptions = {
+    let trafficChartoptions = {
       chart: {
         height: 310, type: 'line', foreColor: '#9b9b9b',
         toolbar: { tools: { download: false, pan: false } },
@@ -300,13 +417,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
       tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' }
-    }
-    this.trafficChart = new ApexCharts(document.querySelector("#trafficChartHits"), trafficChartoptions);
+    };
+    this.trafficChart = new ApexCharts(document.querySelector('#trafficChartHits'), trafficChartoptions);
     this.trafficChart.render();
-    this.trafficChart.updateSeries([{ name: "Today Hits", data: this.ds.totalHits }, { name: " Total Hit Averages", data: this.ds.hitAverages }])
+    this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: ' Total Hit Averages', data: this.ds.hitAverages }]);
 
-    //Uniquer Domain Chart
-    var uniqueDomainOptions = {
+    // Uniquer Domain Chart
+    let uniqueDomainOptions = {
       chart: {
         height: 280, type: 'line', foreColor: '#9b9b9b',
         toolbar: { tools: { download: false, pan: false } },
@@ -326,13 +443,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       grid: { borderColor: '#626262', strokeDashArray: 6, },
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
-    }
-    this.uniqueDomainChart = new ApexCharts(document.querySelector("#uniqueDomainChart"), uniqueDomainOptions);
+    };
+    this.uniqueDomainChart = new ApexCharts(document.querySelector('#uniqueDomainChart'), uniqueDomainOptions);
     this.uniqueDomainChart.render();
-    this.uniqueDomainChart.updateSeries([{ name: "Unique Domain", data: this.ds.uniqueDomain }, { name: "Unique Domain Avg", data: this.ds.uniqueDomainAvg }]);
+    this.uniqueDomainChart.updateSeries([{ name: 'Unique Domain', data: this.ds.uniqueDomain }, { name: 'Unique Domain Avg', data: this.ds.uniqueDomainAvg }]);
 
-    //Unique Subdomain Chart
-    var uniqueSubdomainChartOptions = {
+    // Unique Subdomain Chart
+    let uniqueSubdomainChartOptions = {
       chart: {
         height: 280, type: 'line', foreColor: '#9b9b9b',
         toolbar: { tools: { download: false, pan: false } },
@@ -352,13 +469,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       grid: { borderColor: '#626262', strokeDashArray: 6, },
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
-    }
-    var uniqueSubdomainChart = new ApexCharts(document.querySelector("#uniqueSubdomainChart"), uniqueSubdomainChartOptions);
+    };
+    let uniqueSubdomainChart = new ApexCharts(document.querySelector('#uniqueSubdomainChart'), uniqueSubdomainChartOptions);
     uniqueSubdomainChart.render();
-    uniqueSubdomainChart.updateSeries([{ name: "Unique Subdomain", data: this.ds.uniqueSubdomain }, { name: "Unique Subdomain Avg", data: this.ds.uniqueSubdomainAvg }])
+    uniqueSubdomainChart.updateSeries([{ name: 'Unique Subdomain', data: this.ds.uniqueSubdomain }, { name: 'Unique Subdomain Avg', data: this.ds.uniqueSubdomainAvg }]);
 
     // Unique Dest Ip Chart
-    var uniqueDestIpChartOptions = {
+    let uniqueDestIpChartOptions = {
       chart: {
         height: 280, type: 'line', foreColor: '#9b9b9b',
         toolbar: { tools: { download: false, pan: false } },
@@ -378,13 +495,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       grid: { borderColor: '#626262', strokeDashArray: 6, },
       legend: { position: 'top', horizontalAlign: 'center', show: true },
       annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
-    }
-    var uniqueDestIpChart = new ApexCharts(document.querySelector("#uniqueDestIpChart"), uniqueDestIpChartOptions);
+    };
+    let uniqueDestIpChart = new ApexCharts(document.querySelector('#uniqueDestIpChart'), uniqueDestIpChartOptions);
     uniqueDestIpChart.render();
-    uniqueDestIpChart.updateSeries([{ name: "Unique Dest. Ip", data: this.ds.uniqueDesIp }, { name: "Unique Dest. Ip Avg", data: this.ds.uniqueDesIpAvg }])
+    uniqueDestIpChart.updateSeries([{ name: 'Unique Dest. Ip', data: this.ds.uniqueDesIp }, { name: 'Unique Dest. Ip Avg', data: this.ds.uniqueDesIpAvg }]);
 
     // GAUGE Chart
-    var gaugeOptions = {
+    let gaugeOptions = {
       chart: { height: 250, type: 'radialBar', },
       plotOptions: {
         radialBar: {
@@ -412,10 +529,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       series: [{ data: 1 }],
       labels: ['Risk Score'],
 
-    }
-    var gaugeChart = new ApexCharts(document.querySelector("#gaugeChart"), gaugeOptions);
+    };
+    let gaugeChart = new ApexCharts(document.querySelector('#gaugeChart'), gaugeOptions);
     gaugeChart.render();
-    gaugeChart.updateSeries([this.ds.riskScore])
+    gaugeChart.updateSeries([this.ds.riskScore]);
 
   }
 
@@ -424,11 +541,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (param == -1) {
       param = 0;
     }
-    let today = new Date();
+    const today = new Date();
     let d1 = new Date();
     d1.setDate(d1.getDate() - param);
     d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0);
-    let d2 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+    const d2 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
     this.getElasticData(d1.toISOString(), d2.toISOString());
     this.prepareWorldMap(this.dateParameter.toString());
@@ -436,14 +553,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   updateCharts(min: any, max: any) {
     if (min && max) {
-      let mn = new Date(min);
-      let mx = new Date(max);
+      const mn = new Date(min);
+      const mx = new Date(max);
       this.getElasticData(mn.toISOString(), mx.toISOString());
 
-      let startDate = moment(mn).format('DD.MM.YYYY HH:mm:ss');
-      let endDate = moment(mx).format('DD.MM.YYYY HH:mm:ss');
+      const startDate = moment(mn).format('DD.MM.YYYY HH:mm:ss');
+      const endDate = moment(mx).format('DD.MM.YYYY HH:mm:ss');
       const time = startDate + ' - ' + endDate;
-      this.prepareWorldMap(time)
+      this.prepareWorldMap(time);
     } else {
       this.changeDateParameter(0);
     }
@@ -490,9 +607,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   addCategoryToTraffic(id: number) {
     this.selectedCategoryForTraffic = this.categoryList.find(c => c.id == id);
-    let catName = this.selectedCategoryForTraffic.name;
+    const catName = this.selectedCategoryForTraffic.name;
 
-    let catHits = [], catAvs = []
+    const catHits = [], catAvs = [];
     const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
     for (let i = indexLimit; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
@@ -506,7 +623,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       });
     }
 
-    this.trafficChart.updateSeries([{ name: catName + " Hits", data: catHits }, { name: "Average Hits", data: catAvs }])
+    this.trafficChart.updateSeries([{ name: catName + ' Hits', data: catHits }, { name: 'Average Hits', data: catAvs }]);
 
     this.resetCategoryListFiltered();
   }
@@ -514,14 +631,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   deleteCatFromTraffic(id: number) {
     if (id && id > 0) {
       this.selectedCategoryForTraffic = null;
-      this.trafficChart.updateSeries([{ name: "Today Hits", data: this.ds.totalHits }, { name: "Average Hits", data: this.ds.hitAverages }])
+      this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: 'Average Hits', data: this.ds.hitAverages }]);
     }
   }
 
   addCategoryToUnique(id: number) {
     this.selectedCategoryForUnique = this.categoryList.find(c => c.id == id);
-    let catName = this.selectedCategoryForUnique.name;
-    let catHits = [], catAvs = []
+    const catName = this.selectedCategoryForUnique.name;
+    const catHits = [], catAvs = [];
     const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
     for (let i = indexLimit; i < this.elasticData.length; i++) {
       const data = this.elasticData[i];
@@ -535,7 +652,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       });
     }
 
-    this.uniqueDomainChart.updateSeries([{ name: catName + "Unique Domain", data: catHits }, { name: "Unique Domain Avg", data: catAvs }]);
+    this.uniqueDomainChart.updateSeries([{ name: catName + 'Unique Domain', data: catHits }, { name: 'Unique Domain Avg', data: catAvs }]);
 
     this.resetCategoryListFiltered();
   }
@@ -543,14 +660,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   deleteCatFromUnique(id: number) {
     if (id && id > 0) {
       this.selectedCategoryForUnique = null;
-      this.uniqueDomainChart.updateSeries([{ name: "Unique Domain", data: this.ds.uniqueDomain }, { name: "Unique Domain Avg", data: this.ds.uniqueDomainAvg }]);
+      this.uniqueDomainChart.updateSeries([{ name: 'Unique Domain', data: this.ds.uniqueDomain }, { name: 'Unique Domain Avg', data: this.ds.uniqueDomainAvg }]);
     }
 
   }
 
   private resetCategoryListFiltered() {
     this.searchKey = null;
-    this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
+    this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
   }
 
   showInReport(param: string) {
