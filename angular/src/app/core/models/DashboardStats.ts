@@ -2,6 +2,7 @@ export class DashboardStats {
     totalHitCountForDashboard: number = 0;
     totalHitCountForDashboardDelta: number = 0;
     totalBlockCountForDashboard: number = 0;
+    totalAllowedCountForDashboard: number = 0;
     totalBlockCountForDashboardDelta: number = 0;
     totalUniqueDomain: number = 0;
     totalUniqueDomainDelta: number = 0;

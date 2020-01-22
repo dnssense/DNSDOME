@@ -47,7 +47,8 @@
           <div class="rk-row m-l-20 rk-grow" style="justify-content: flex-end;">
             <span class="rk-title-2 rk-v-center">Time Range</span>
             <div class="rk-row m-l-15 ">
-              <button *ngFor="let tRange of timeRangeButtons" class="btn btn-small btn-default ml-2 m-r-5">
+              <button *ngFor="let tRange of timeRangeButtons" (click)="changeDateParameter(tRange.dateParam)"
+                class="btn btn-small btn-default ml-2 m-r-5">
                 {{ tRange.key }} </button>
               <span class="rk-v-center m-l-10 m-r-14" style="color:#97a5bb"> = </span>
               <rk-date (complete)="completed($event)" [alignment]="'left'"></rk-date>
@@ -61,33 +62,33 @@
           </div>
           <div class="rk-panel-item" style="background-color: white;display: flex;">
             <div>
-              <rk-infobox [active]="true" [title]="'Total'" [color]="'#4353ff'" [type]="1" [valueOne]="345"
-                [valueTwo]="345">
+              <rk-infobox [active]="true" [title]="'Total'" [color]="'#4353ff'" [type]="1"
+                [valueOne]="ds.totalAllowedCountForDashboard" [valueTwo]="ds.totalBlockCountForDashboard">
               </rk-infobox>
             </div>
 
 
-            <div style="margin-left: 15px;">
+            <!-- <div style="margin-left: 15px;">
               <rk-infobox [active]="false" [type]="2" [title]="'Safe'" [color]="'#3dd49a'" [valueOne]="'35.000'"
                 [valueTwo]="'32.000'">
               </rk-infobox>
-            </div>
+            </div> -->
 
             <div style="margin-left: 15px;">
-              <rk-infobox [active]="false" [type]="2" [title]="'Malicious'" [color]="'#f95656'" [valueOne]="'35.000'"
-                [valueTwo]="'32.000'">
+              <rk-infobox [active]="false" [type]="2" [title]="'Blocked'" [color]="'#f95656'" [valueOne]="ds.totalBlockCountForDashboard"
+                [valueTwo]="ds.totalUniqueBlockedDomainForDashboard">
               </rk-infobox>
             </div>
 
             <div style="margin-left: 15px;">
-              <rk-infobox [active]="false" [type]="2" [title]="'Variable'" [color]="'#d8d8d8'" [valueOne]="'35.000'"
-                [valueTwo]="'32.000'">
+              <rk-infobox [active]="false" [type]="2" [title]="'Variable'" [color]="'#d8d8d8'" [valueOne]="ds.grayCountForDashboard"
+                [valueTwo]="ds.uGrayCountForDashboard">
               </rk-infobox>
             </div>
 
             <div style="margin-left: 15px;">
-              <rk-infobox [active]="false" [type]="2" [title]="'Harmful Content'" [color]="'#f9df56'"
-                [valueOne]="'35.000'" [valueTwo]="'32.000'">
+              <rk-infobox [active]="false" [type]="2" [title]="'Security Risk'" [color]="'#f9df56'"
+                [valueOne]="ds.securityRiskCountForDashboard" [valueTwo]="ds.uSecurityRiskCountForDashboard">
               </rk-infobox>
             </div>
           </div>
@@ -100,36 +101,38 @@
             <div class="rk-panel-header rk-title-2">
               Malicious
             </div>
-            <div class="rk-panel-item rk-info-table " style="background-color: white;">
-              <rk-table [info]="true" [showPagination]="false">
-                <ng-template #header>
-                  <tr>
-                    <th class="index">#</th>
-                    <th scope="col">
-                      Domain
-                    </th>
-                    <th scope="col">
-                      Count
-                    </th>
-                    <th scope="col">
-                      Percent
-                    </th>
-                  </tr>
-                </ng-template>
-                <ng-template #body>
-                  <tr>
-                    <td class="index">1</td>
-                    <td>google.com</td>
-                    <td>
-                      364545
-                    </td>
-                    <td>
-                      <rk-progressbar [value]="75" [showType]="'outside'" [type]="'danger'" [sizeType]="'medium'">
-                      </rk-progressbar>
-                    </td>
-                  </tr>
-                </ng-template>
-              </rk-table>
+            <div class="rk-panel-item rk-info-table " style="background-color: white;padding: 0;">
+              <rk-table-container>
+                <rk-table [info]="true" [showPagination]="false">
+                  <ng-template #header>
+                    <tr>
+                      <th class="index">#</th>
+                      <th scope="col">
+                        Domain
+                      </th>
+                      <th scope="col">
+                        Count
+                      </th>
+                      <th scope="col">
+                        Percent
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template #body>
+                    <tr>
+                      <td class="index">1</td>
+                      <td>google.com</td>
+                      <td>
+                        364545
+                      </td>
+                      <td>
+                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'danger'" [sizeType]="'medium'">
+                        </rk-progressbar>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </rk-table>
+              </rk-table-container>
             </div>
           </div>
 
@@ -138,36 +141,38 @@
             <div class="rk-panel-header rk-title-2">
               New Domains
             </div>
-            <div class="rk-panel-item" style="background-color: white;">
-              <rk-table [info]="true" [showPagination]="false">
-                <ng-template #header>
-                  <tr>
-                    <th class="index">#</th>
-                    <th scope="col">
-                      Domain
-                    </th>
-                    <th scope="col">
-                      Count
-                    </th>
-                    <th scope="col">
-                      Percent
-                    </th>
-                  </tr>
-                </ng-template>
-                <ng-template #body>
-                  <tr>
-                    <td class="index">1</td>
-                    <td>google.com</td>
-                    <td>
-                      364545
-                    </td>
-                    <td>
-                      <rk-progressbar [value]="75" [showType]="'outside'" [type]="'primary'" [sizeType]="'medium'">
-                      </rk-progressbar>
-                    </td>
-                  </tr>
-                </ng-template>
-              </rk-table>
+            <div class="rk-panel-item" style="background-color: white;padding: 0;">
+              <rk-table-container>
+                <rk-table [info]="true" [showPagination]="false">
+                  <ng-template #header>
+                    <tr>
+                      <th class="index">#</th>
+                      <th scope="col">
+                        Domain
+                      </th>
+                      <th scope="col">
+                        Count
+                      </th>
+                      <th scope="col">
+                        Percent
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template #body>
+                    <tr>
+                      <td class="index">1</td>
+                      <td>google.com</td>
+                      <td>
+                        364545
+                      </td>
+                      <td>
+                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'primary'" [sizeType]="'medium'">
+                        </rk-progressbar>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </rk-table>
+              </rk-table-container>
             </div>
           </div>
 
@@ -176,618 +181,47 @@
             <div class="rk-panel-header rk-title-2">
               Harmful
             </div>
-            <div class="rk-panel-item" style="background-color: white;">
-              <rk-table [info]="true" [showPagination]="false">
-                <ng-template #header>
-                  <tr>
-                    <th class="index">#</th>
-                    <th scope="col">
-                      Domain
-                    </th>
-                    <th scope="col">
-                      Count
-                    </th>
-                    <th scope="col">
-                      Percent
-                    </th>
-                  </tr>
-                </ng-template>
-                <ng-template #body>
-                  <tr>
-                    <td class="index">1</td>
-                    <td>google.com</td>
-                    <td>
-                      364545
-                    </td>
-                    <td>
-                      <rk-progressbar [value]="75" [showType]="'outside'" [type]="'warning'" [sizeType]="'medium'">
-                      </rk-progressbar>
-                    </td>
-                  </tr>
-                </ng-template>
-              </rk-table>
-            </div>
-          </div>
-
-
-
-        </div>
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:  10px">
-      <div class="col-md-12">
-        <div class="rk-base-card">
-
-          <!-- NUMERIC CARD -->
-          <div class="row" style="margin-top: -10px">
-            <div class="col-9">
-              <div class="row">
-                <div class="col-12">
-                  <table class="table rk-base-table table-responsive-md table-responsive-sm">
-                    <thead>
-                      <tr>
-                        <th></th>
-                        <th class="text-center" data-step="1" data-intro="These are details of your traffic!"
-                          data-position='right'>Total Traffic</th>
-                        <th class="text-center">Blocked</th>
-                        <th class="text-center">
-                          Security Risk
-                          <span matTooltip="Involved Categories: Malware/Virus, Potentially Dangerous, Phishing">
-                            <i class="fa fa-question-circle ml-3"></i></span>
-                        </th>
-                        <th class="text-center">
-                          Grey
-                          <span
-                            matTooltip="Involved Categories: Unknown, Undecided Not Safe, Undecided Safe, Domain Parking, Newly Register, Newly Up, Dead Sites, Firstly Seen">
-                            <i class="fa fa-question-circle ml-3"></i></span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Hit Count</td>
-                        <td>
-                          <div class="row">
-                            <div class="col-md-6 text-right">
-                              <span class="size-20 bold">{{ds.totalHitCountForDashboard | number}}</span>
-                            </div>
-                            <div class="col-md-6 text-left">
-                              <ng-container
-                                *ngIf="ds.totalHitCountForDashboardDelta>0||ds.totalHitCountForDashboardDelta==0; else elseTemplate1">
-                                <span class="status up">
-                                  <i class="fa fa-arrow-up"></i>
-                                  %{{ds.totalHitCountForDashboardDelta | number}}
-                                </span>
-                              </ng-container>
-                              <ng-template #elseTemplate1>
-                                <span class="status down">
-                                  <i class="fa fa-arrow-down"></i>
-                                  %{{ds.totalHitCountForDashboardDelta | number}}
-                                </span>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="row">
-                            <div class="col-md-6 text-right">
-                              <span class="size-20">
-                                <a class="linkNumber" (click)="showInReport('block')" title="Show Details">
-                                  {{ds.totalBlockCountForDashboard | number}}
-                                </a></span>
-                            </div>
-                            <div class="col-md-6 text-left">
-                              <ng-container
-                                *ngIf="ds.totalBlockCountForDashboardDelta>0||ds.totalBlockCountForDashboardDelta==0; else elseTemplate2">
-                                <span class="status up">
-                                  <i class="fa fa-arrow-up"></i>
-                                  %{{ds.totalBlockCountForDashboardDelta | number}}
-                                </span>
-                              </ng-container>
-                              <ng-template #elseTemplate2>
-                                <span class="status down">
-                                  <i class="fa fa-arrow-down"></i>
-                                  %{{ds.totalBlockCountForDashboardDelta | number}}
-                                </span>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="row">
-                            <div class="col-md-6 text-right">
-                              <span class="size-20">
-                                <a class="linkNumber" (click)="showInReport('securityRisk')" title="Show Details">
-                                  {{ds.securityRiskCountForDashboard| number}}
-                                </a>
-                              </span>
-                            </div>
-                            <div class="col-md-6 text-left">
-                              <ng-container
-                                *ngIf="ds.securityRiskCountForDashboardDelta>0 || ds.securityRiskCountForDashboardDelta==0; else elseTemplate3">
-                                <span class="status up">
-                                  <i class="fa fa-arrow-up"></i>
-                                  %{{ds.securityRiskCountForDashboardDelta | number}}
-                                </span>
-                              </ng-container>
-                              <ng-template #elseTemplate3>
-                                <span class="status down">
-                                  <i class="fa fa-arrow-down"></i>
-                                  %{{ds.securityRiskCountForDashboardDelta | number}}
-                                </span>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="row">
-                            <div class="col-md-6 text-right">
-                              <span class="size-20">
-                                <a class="linkNumber" (click)="showInReport('gray')" title="Show Details">
-                                  {{ds.grayCountForDashboard| number}}</a></span>
-                            </div>
-                            <div class="col-md-6 text-left">
-                              <ng-container
-                                *ngIf="ds.grayCountForDashboardDelta>0||ds.grayCountForDashboardDelta==0; else elseTemplate4">
-                                <span class="status up">
-                                  <i class="fa fa-arrow-up"></i>
-                                  %{{ds.grayCountForDashboardDelta | number}}
-                                </span>
-                              </ng-container>
-                              <ng-template #elseTemplate4>
-                                <span class="status down">
-                                  <i class="fa fa-arrow-down"></i>
-                                  %{{ds.grayCountForDashboardDelta | number}}
-                                </span>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Unique Domain</td>
-                        <td>
-                          <div class="row">
-                            <div class="col-md-6 text-right">
-                              <span class="size-20 bold ">{{ds.totalUniqueDomain | number}}</span>
-                            </div>
-                            <div class="col-md-6 text-left">
-                              <ng-container
-                                *ngIf="ds.totalUniqueDomainDelta>0 || ds.totalUniqueDomainDelta==0 ; else elseTemplate5">
-                                <span class="status up">
-                                  <i class="fa fa-arrow-up"></i>
-                                  %{{ds.totalUniqueDomainDelta | number}}
-                                </span>
-                              </ng-container>
-                              <ng-template #elseTemplate5>
-                                <span class="status down">
-                                  <i class="fa fa-arrow-down"></i>
-                                  %{{ds.totalUniqueDomainDelta | number}}
-                                </span>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="row">
-                            <div class="col-md-6 text-right">
-                              <span class="size-20">{{ds.totalUniqueBlockedDomainForDashboard}}</span>
-                            </div>
-                            <div class="col-md-6 text-left">
-                              <ng-container
-                                *ngIf="ds.totalUniqueBlockedDomainForDashboardDelta>0 || ds.totalUniqueBlockedDomainForDashboardDelta==0 ; else elseTemplate5">
-                                <span class="status up">
-                                  <i class="fa fa-arrow-up"></i>
-                                  %{{ds.totalUniqueBlockedDomainForDashboardDelta | number}}
-                                </span>
-                              </ng-container>
-                              <ng-template #elseTemplate5>
-                                <span class="status down">
-                                  <i class="fa fa-arrow-down"></i>
-                                  %{{ds.totalUniqueBlockedDomainForDashboardDelta | number}}
-                                </span>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="row">
-                            <div class="col-md-6 text-right">
-                              <span class="size-20 ">{{ds.uSecurityRiskCountForDashboard| number}}</span>
-                            </div>
-                            <div class="col-md-6 text-left">
-                              <ng-container
-                                *ngIf="ds.uSecurityRiskCountForDashboardDelta>0 || ds.uSecurityRiskCountForDashboardDelta==0 ; else elseTemplate5">
-                                <span class="status up">
-                                  <i class="fa fa-arrow-up"></i>
-                                  %{{ds.uSecurityRiskCountForDashboardDelta | number}}
-                                </span>
-                              </ng-container>
-                              <ng-template #elseTemplate5>
-                                <span class="status down">
-                                  <i class="fa fa-arrow-down"></i>
-                                  %{{ds.uSecurityRiskCountForDashboardDelta | number}}
-                                </span>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="row">
-                            <div class="col-md-6 text-right">
-                              <span class="size-20 ">{{ds.uGrayCountForDashboard| number}}</span>
-                            </div>
-                            <div class="col-md-6 text-left">
-                              <ng-container
-                                *ngIf="ds.uGrayCountForDashboardDelta>0 || ds.uGrayCountForDashboardDelta==0 ; else elseTemplate5">
-                                <span class="status up">
-                                  <i class="fa fa-arrow-up"></i>
-                                  %{{ds.uGrayCountForDashboardDelta | number}}
-                                </span>
-                              </ng-container>
-                              <ng-template #elseTemplate5>
-                                <span class="status down">
-                                  <i class="fa fa-arrow-down"></i>
-                                  %{{ds.uGrayCountForDashboardDelta | number}}
-                                </span>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-            </div>
-            <div class="col-3">
-              <table class="table rk-base-table table-responsive-md table-responsive-sm">
-                <thead>
-                  <tr>
-                    <th data-step="2" data-intro="You can change date filter from here" data-position='right'>
-                      <div class="rk-dropdown d-inline-block rk-table-select pull-right" id="dropdownDate">
-                        <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
-                          data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                          <span [ngSwitch]="dateParameter">
-                            <ng-container *ngSwitchCase="-1">
-                              Last Hour
-                            </ng-container>
-                            <ng-container *ngSwitchCase="0">
-                              Today
-                            </ng-container>
-                            <ng-container *ngSwitchCase="1">
-                              Last 2 Days
-                            </ng-container>
-                            <ng-container *ngSwitchCase="2">
-                              Last 3 Days
-                            </ng-container>
-                            <ng-container *ngSwitchCase="6">
-                              Last Week
-                            </ng-container>
-                          </span>
-                          <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
-                          style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
-                          <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
-                            <li class="nav-item">
-                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                                aria-controls="home" aria-selected="true">Date Range</a>
-                            </li>
-                            <!-- <li class="nav-item">
-                              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                                aria-controls="profile" aria-selected="false">Calendar</a>
-                            </li> -->
-                          </ul>
-                          <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
-                              <button class="dropdown-item" (click)="changeDateParameter(-1)">
-                                Last Hour
-                              </button>
-                              <button class="dropdown-item" (click)="changeDateParameter(0)">
-                                Today
-                              </button>
-                              <button class="dropdown-item" (click)="changeDateParameter(1)">
-                                Last 2 Days
-                              </button>
-                              <button class="dropdown-item" (click)="changeDateParameter(2)">
-                                Last 3 Days
-                              </button>
-                              <button class="dropdown-item" (click)="changeDateParameter(6)">
-                                Last Week
-                              </button>
-                            </div>
-                            <div class="tab-pane fade overflow-hidden" id="profile" role="tabpanel"
-                              aria-labelledby="profile-tab">
-
-                              <!-- <input type="hidden" class="dt datepicker"> -->
-                              <mat-form-field>
-                                <input matInput [matDatepicker]="picker" placeholder="Choose a date"
-                                  (click)="picker.open()">
-                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                <mat-datepicker #picker></mat-datepicker>
-                              </mat-form-field>
-
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <!-- <span class="dropdown-label">Enter Range</span>
-                            <div class="container-fluid">
-                              <div class="row mt-2 mb-3">
-                                <div class="col-6">
-                                  <input type="text" value="01/01/2019" class="form-control">
-                                </div>
-                                <div class="col-6">
-                                  <input type="text" value="01/01/2019" class="form-control">
-                                </div>
-                              </div>
-                            </div> -->
-                          </div>
-
-                        </div>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-              </table>
-              <div id="gaugeChart"
-                style="max-height: 110px; min-height: 50px; margin-bottom:-115px; margin-top: -20px;">
-                <!--  matTooltipPosition="above" [matTooltipShowDelay]="800" matTooltip="Risk Score: {{(ds.totalBlockCountForDashboard/ds.totalHitCountForDashboard*100000 | number)/100000}}" -->
-              </div>
-            </div>
-          </div>
-          <!-- NUMERIC CARD -->
-
-        </div>
-      </div>
-    </div>
-
-    <div class="row mt-3">
-      <div class="col-md-8">
-        <div class="rk-base-card">
-          <div class="rk-base-card-header">
-            <div class="row">
-              <div class="col-md-6">Traffic Based Anomaly</div>
-              <div class="col-md-6" style="z-index: 10;">
-                <table class="table mb-0" style="margin-top: -15px">
-                  <thead>
+            <div class="rk-panel-item" style="background-color: white;padding: 0;">
+              <rk-table-container>
+                <rk-table [info]="true" [showPagination]="false">
+                  <ng-template #header>
                     <tr>
-                      <th data-step="3" data-intro="You can filter this chart for categories from here"
-                        data-position='right'>
-                        <div class="rk-dropdown d-inline-block rk-table-select pull-right" id="dropdownDate">
-                          <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                            <ng-container *ngIf="selectedCategoryForTraffic; else elseTemplateTraficCat">
-                              <span class="rk-label"
-                                style="margin: 0px; margin-top: -5px; margin-bottom: -5px; height: 34px;">
-                                <span class="rk-label-color"></span>
-                                <span>{{selectedCategoryForTraffic.name}}</span>
-                                <i class="rk-close-btn icon-cancel"
-                                  (click)="deleteCatFromTraffic(selectedCategoryForTraffic.id)"></i>
-                              </span>
-                            </ng-container>
-                            <ng-template #elseTemplateTraficCat>
-                              Select Category
-                            </ng-template>
-                            <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
-                            style="max-height: 400px;  overflow: auto; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
-                            <div class="rk-dropdown-searchbar">
-                              <input type="text" class="rk-form-control reverse-form" matInput placeholder="Search"
-                                [(ngModel)]="searchKey" (ngModelChange)="searchCategoryForTraffic($event)">
-                            </div>
-                            <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
-                              (click)="addCategoryToTraffic(cat.id)">
-                              <span class="rk-color-point" style="background:#fa3f3f"></span>
-                              {{cat.name}}
-                            </button>
-                          </div>
-                        </div>
+                      <th class="index">#</th>
+                      <th scope="col">
+                        Domain
+                      </th>
+                      <th scope="col">
+                        Count
+                      </th>
+                      <th scope="col">
+                        Percent
                       </th>
                     </tr>
-                  </thead>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="rk-base-card-content">
-            <div class="chart" style="min-height: 300px; margin-bottom: -18px; margin-top:-10px;">
-              <div id="hitChartDiv">
-                <div id="trafficChartHits"></div>
-              </div>
-              <div id="blockChartDiv" style="display: none">
-                <div id="trafficChartBlocked"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="rk-base-card">
-          <div class="rk-base-card-header">
-            World Traffic
-          </div>
-          <div class="rk-base-card-content">
-            <div class="card card-chart mb-2" style="box-shadow: none; background-color: #262626">
-              <div class="card-body">
-                <div #worldMap id="worldMap" class="map" style="max-height: 250px;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-md-12">
-        <div class="rk-base-card">
-          <div class="rk-base-card-header">
-            <div class="row">
-              <div class="col-md-6">Unique Counter Based Anomaly</div>
-              <div class="col-md-6" style="z-index: 10;">
-                <table class="table mb-0" style="margin-top: -15px">
-                  <thead>
+                  </ng-template>
+                  <ng-template #body>
                     <tr>
-                      <th>
-                        <div class="rk-dropdown d-inline-block rk-table-select pull-right" id="dropdownDate">
-                          <button class="btns dropdown-toggle text-left" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                            <ng-container *ngIf="selectedCategoryForUnique; else elseTemplateBlockedCat">
-                              <span class="rk-label"
-                                style="margin: 0px; margin-top: -5px; margin-bottom: -5px; height: 34px;">
-                                <span class="rk-label-color"></span>
-                                <span>{{selectedCategoryForUnique.name}}</span>
-                                <i class="rk-close-btn icon-cancel"
-                                  (click)="deleteCatFromUnique(selectedCategoryForUnique.id)"></i>
-                              </span>
-                            </ng-container>
-                            <ng-template #elseTemplateBlockedCat>
-                              Select Category
-                            </ng-template>
-                            <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="top-start"
-                            style="max-height: 400px; overflow: auto; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -115px, 0px);">
-                            <div class="dropdown-searchbar" style="width: 95%">
-                              <input type="text" class="rk-form-control reverse-form" matInput placeholder="Search"
-                                [(ngModel)]="searchKey" (ngModelChange)="searchCategoryForTraffic($event)">
-                            </div>
-                            <button class="dropdown-item" *ngFor="let cat of categoryListFiltered"
-                              (click)="addCategoryToUnique(cat.id)">
-                              <span class="rk-color-point" style="background:#fa3f3f"></span>
-                              {{cat.name}}
-                            </button>
-                          </div>
-                        </div>
-                      </th>
+                      <td class="index">1</td>
+                      <td>google.com</td>
+                      <td>
+                        364545
+                      </td>
+                      <td>
+                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'warning'" [sizeType]="'medium'">
+                        </rk-progressbar>
+                      </td>
                     </tr>
-                  </thead>
-                </table>
-              </div>
+                  </ng-template>
+                </rk-table>
+              </rk-table-container>
             </div>
-
           </div>
-          <div class="rk-base-card-content">
-            <div class="chart" style="min-height: 200px; margin-top:-10px;">
-              <div id="uniqueDomainChartDiv">
-                <div id="uniqueDomainChart"></div>
-              </div>
-              <div id="uniqueSubdomainChartDiv" style="display: none">
-                <div id="uniqueSubdomainChart"></div>
-              </div>
-              <div id="uniqueDestIpChartDiv" style="display: none">
-                <div id="uniqueDestIpChart"></div>
-              </div>
-            </div>
 
-            <div class="events">
-              <div class="rk-toggle" style="padding: 4px;" data-step="4"
-                data-intro="You can change chart options from here" data-position='right'>
-                <button class="btns active" [ngClass]="{'active ': uniqueChartType=='domain'}"
-                  (click)="changeUniqueChartData('domain')">{{selectedCategoryForUnique?.name}} Unique Domain</button>
-                <button class="btns" [ngClass]="{'active ': uniqueChartType=='subdomain'}"
-                  (click)="changeUniqueChartData('subdomain')">Unique Subdomain</button>
-                <button class="btns" [ngClass]="{'active ': uniqueChartType=='destIp'}"
-                  (click)="changeUniqueChartData('destIp')">Unique IP</button>
-              </div>
-            </div>
 
-          </div>
+
         </div>
       </div>
-    </div>
-
+    </div> 
   </div>
 </div>
 
-
-<!-- Modal start -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  style="display: none;" aria-hidden="true">
-  <div class="modal-dialog" style="max-width: 60%;" role="document">
-    <div class="modal-content" style="background: white; color: black; border-radius: 15px; margin-top: -50px;">
-      <div class="modal-header" style="border-bottom: none;">
-        <h4 id="exampleModalLabel" style="font-weight: bold;">Welcome to {{host.title}}</h4>
-        <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" style="padding-top: 0px;">
-        <div class=" form-ux activated">
-          <div class="row">
-            <div class="col-md-12 ml-auto mr-auto">
-              <p class="mb-0" style="font-size: 12px; max-width: 500px;">{{host.title}} is a recursive DNS Service based
-                on global cyber threat intelligence and machine learning to block threats and targeted attacks in
-                real-time.</p>
-              <p class="mb-0" style="font-size: 13px; font-weight: normal;">{{host.title}} will provide the following
-                benefits once enabled:</p>
-              <div class="subText">
-                <img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Stop zero-day attacks.
-              </div>
-              <div class="subText">
-                <img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Pre & Post infection protection.</div>
-              <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Define and enforce
-                internet usage policy.</div>
-              <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">White list
-                categorisation of internet traffic </div>
-              <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Next Generation
-                protection using machine learning & artificial intelligence.</div>
-              <div class="subHeader mt-2">
-                Deployment Types:
-              </div>
-              <div class="row mt-3">
-                <div class="col-md-4">
-                  <img class="subImg" src="/assets/img/office.png" alt="Protect your network" />
-                  <p class="subHeader mt-3 mb-0">Protect your network</p>
-                  <div class="ml-1">
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Create Public Ip
-                    </div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile
-                      Assignment</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">DNS Forwarding
-                    </div>
-                  </div>
-                  <button class="btns startBtn" [routerLink]="['/admin/publicip']">Start using</button>
-                </div>
-                <div class="col-md-4">
-                  <img class="subImg" src="/assets/img/woman.png" alt="Roaming Client" />
-                  <p class="subHeader mt-3 mb-0">Roaming Client</p>
-                  <div class="ml-1">
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Application
-                      Setup</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile
-                      Assignment</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Disabling Local
-                      Domain</div>
-                  </div>
-                  <button class="btns startBtn" [routerLink]="['/admin/roaming']">Start using</button>
-                </div>
-                <div class="col-md-4">
-                  <img class="subImg" src="/assets/img/keyboard.png" alt="DNS Relay" />
-                  <p class="subHeader mt-3 mb-0">DNS Relay</p>
-                  <div class="ml-1">
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Application
-                      Setup</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Security Profile
-                      Assignment</div>
-                    <div class="subText"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Disabling Local
-                      Domain</div>
-                  </div>
-                  <button class="btns startBtn" [routerLink]="['/admin/devices']">Start using</button>
-                </div>
-              </div>
-              <div class="row mt-3">
-                <div class="col-md-12">
-                  <p class="subText">You can close this welcome screen to initiate the wizard which will guide for the
-                    basic steps to enable</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal end -->
+ 

@@ -1,5 +1,5 @@
 import {SearchSetting} from "../models/SearchSetting";
-import { KeyValueModel } from './Utility';
+import { KeyValueModel, TimeRangeEnum } from './Utility';
 /**
  * Created by fatih on 02.09.2016.
  */
@@ -24,3 +24,8 @@ export class DataPanelModel {
   activeCount : number;
   passiveCount: number;
 }
+
+
+export class DateParamModel extends  KeyValueModel<string, TimeRangeEnum> {
+  dateParam : number = 0;
+} 
