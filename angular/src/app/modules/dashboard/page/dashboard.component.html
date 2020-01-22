@@ -26,12 +26,6 @@
 
     <div class="row">
       <div class="col-12">
-        <div class="timeline" id="timeline"></div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-12">
         <div class="chart" id="chart"></div>
       </div>
     </div>
@@ -49,6 +43,12 @@
             <div class="rk-row m-l-15 ">
               <rk-date (complete)="completed($event)" [alignment]="'right'"></rk-date>
             </div>
+          </div>
+        </div>
+
+        <div class="rk-panel mt-4">
+          <div class="rk-panel-item">
+            <div class="timeline" id="timeline"></div>
           </div>
         </div>
 
@@ -77,8 +77,8 @@
             </div>
 
             <div style="margin-left: 15px;">
-              <rk-infobox [active]="false" [type]="2" [title]="'Variable'" [color]="'#d8d8d8'" [valueOne]="ds.grayCountForDashboard"
-                [valueTwo]="ds.uGrayCountForDashboard">
+              <rk-infobox [active]="false" [type]="2" [title]="'Variable'" [color]="'#d8d8d8'"
+                [valueOne]="ds.grayCountForDashboard" [valueTwo]="ds.uGrayCountForDashboard">
               </rk-infobox>
             </div>
 
@@ -216,8 +216,6 @@
 
         </div>
       </div>
-    </div> 
+    </div>
   </div>
 </div>
-
- 
