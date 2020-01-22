@@ -16,7 +16,7 @@ import { LogColumn } from 'src/app/core/models/LogColumn';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
-import { DataPanelModel } from 'src/app/core/models/Dashboard';
+import { DataPanelModel, DateParamModel } from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
 
 declare let $: any;
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   uniqueChartType: string = 'domain';
 
   dataPanels: DataPanelModel[] = [];
-  timeRangeButtons: KeyValueModel<string, TimeRangeEnum>[] = [];
+  timeRangeButtons: DateParamModel[] = [];
 
   constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router,
@@ -54,11 +54,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit() {
-    this.timeRangeButtons.push({ key: "Last Year", value: TimeRangeEnum.lastYear });
-    this.timeRangeButtons.push({ key: "Last 3 Month", value: TimeRangeEnum.last3Month });
-    this.timeRangeButtons.push({ key: "Last Month", value: TimeRangeEnum.lastMonth });
-    this.timeRangeButtons.push({ key: "Last Week", value: TimeRangeEnum.lastWeek });
-    this.timeRangeButtons.push({ key: "Today", value: TimeRangeEnum.Today });
+    this.timeRangeButtons.push({ key: "Last Hour", value: TimeRangeEnum.lastHour, dateParam: -1 });
+    this.timeRangeButtons.push({ key: "Today", value: TimeRangeEnum.Today, dateParam: 0 });
+    this.timeRangeButtons.push({ key: "Last 2 Days", value: TimeRangeEnum.last3Days, dateParam: 1 });
+    this.timeRangeButtons.push({ key: "Last 3 Days", value: TimeRangeEnum.last3Days, dateParam: 2 });
+    this.timeRangeButtons.push({ key: "Last Week", value: TimeRangeEnum.lastWeek, dateParam: 3 });
 
     this.host = this.config.host;
     let roleName: string = this.authService.currentSession.currentUser.roles.name;
@@ -109,7 +109,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     this.elasticData = [];
     this.ds = new DashboardStats();
-    this.changeDateParameter(0);
+    this.changeDateParameter(6);
   }
 
   prepareWorldMap(time: string) {
@@ -222,6 +222,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.labelArray.push(moment(data.date).format('YYYY-MM-DDTHH:mm:ss.sssZ'))
       this.ds.totalHitCountForDashboard += data.total_hit;
       this.ds.totalBlockCountForDashboard += data.blocked_count;
+      this.ds.totalAllowedCountForDashboard += data.allowed_count;
       this.ds.totalUniqueBlockedDomainForDashboard += data.unique_blocked_domain;
       this.ds.uniqueBlockedDomain.push(Math.round(data.averages.unique_blocked_domain));
       this.ds.totalUniqueDomain += data.unique_domain;
@@ -416,7 +417,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     var gaugeChart = new ApexCharts(document.querySelector("#gaugeChart"), gaugeOptions);
     gaugeChart.render();
     gaugeChart.updateSeries([this.ds.riskScore])
-
   }
 
   changeDateParameter(param: number) {

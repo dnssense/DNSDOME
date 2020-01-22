@@ -4,8 +4,8 @@ export class KeyValueModel<Key,Value> {
 }
 
 export enum TimeRangeEnum {
-    lastYear = 1,
-    last3Month,
+    lastHour = 1,
+    last3Days,
     lastMonth,
     lastWeek,
     Today
