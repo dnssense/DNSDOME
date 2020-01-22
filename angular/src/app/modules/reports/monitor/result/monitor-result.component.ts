@@ -143,6 +143,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
       .subscribe((res: Response) => {
         this.tableData = res['result']; this.totalItems = res['total'];
 
+        this.tableConfig.rows = [];
+
         this.tableData.forEach(item => {
           let rowItem : RkTableRowModel  = item;
           rowItem.selected = false;
