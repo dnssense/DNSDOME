@@ -47,11 +47,7 @@
           <div class="rk-row m-l-20 rk-grow" style="justify-content: flex-end;">
             <span class="rk-title-2 rk-v-center">Time Range</span>
             <div class="rk-row m-l-15 ">
-              <button *ngFor="let tRange of timeRangeButtons" (click)="changeDateParameter(tRange.dateParam)"
-                class="btn btn-small btn-default ml-2 m-r-5">
-                {{ tRange.key }} </button>
-              <span class="rk-v-center m-l-10 m-r-14" style="color:#97a5bb"> = </span>
-              <rk-date (complete)="completed($event)" [alignment]="'left'"></rk-date>
+              <rk-date (complete)="completed($event)" [alignment]="'right'"></rk-date>
             </div>
           </div>
         </div>
