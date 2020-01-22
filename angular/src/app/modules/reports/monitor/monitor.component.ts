@@ -24,11 +24,11 @@ export class MonitorComponent implements OnInit {
   ngOnInit() { }
 
   public search(ss: SearchSetting) {
-
     this.searchSetting = ss;
     this.monitorResultComponent.currentPage = 1;
     this.monitorResultComponent.refresh(ss);
   }
+
   public addValuesIntoSelected($event) {
     let column: string = $event.column;
     let value = $event.data;

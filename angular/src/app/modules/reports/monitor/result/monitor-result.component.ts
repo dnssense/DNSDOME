@@ -7,8 +7,35 @@ import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
 import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
+import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 
+const COUNTRIES: any[] = [
+  {
+    name: 'Russia',
+    flag: 'f/f3/Flag_of_Russia.svg',
+    area: 17075200,
+    population: 146989754
+  },
 
+  {
+    name: 'Canada',
+    flag: 'c/cf/Flag_of_Canada.svg',
+    area: 9976140,
+    population: 36624199
+  },
+  {
+    name: 'United States',
+    flag: 'a/a4/Flag_of_the_United_States.svg',
+    area: 9629091,
+    population: 324459463
+  },
+  {
+    name: 'China',
+    flag: 'f/fa/Flag_of_the_People%27s_Republic_of_China.svg',
+    area: 9596960,
+    population: 1409517397
+  }
+];
 
 @Component({
   selector: 'app-monitor-result',
@@ -28,11 +55,39 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
   columnListLength: number = 12;
 
+  tableConfig: RkTableConfigModel = {
+    columns: [
+      { id: 0, name: 'time', displayText: 'Time', },
+      { id: 1, name: 'domain', displayText: 'Domain' },
+      { id: 2, name: 'subdomain', displayText: 'Subdomain' },
+      { id: 3, name: 'sourceIp', displayText: 'Src.Ip' },
+      { id: 4, name: 'sourceIpCountryCode', displayText: 'Src. Country' },
+      { id: 5, name: 'destinationIp', displayText: 'Dst.Ip' },
+      { id: 6, name: 'destinationIpCountryCode', displayText: 'Dst.Country' },
+      { id: 7, name: 'agentAlias', displayText: 'Location/Agent' },
+      { id: 8, name: 'userId', displayText: 'User Id' },
+      { id: 9, name: 'action', displayText: 'Action' },
+      { id: 10, name: 'applicationName', displayText: 'Application' },
+      { id: 11, name: 'category', displayText: 'Category' },
+      { id: 12, name: 'reason', displayText: 'Reason' },
+      { id: 13, name: 'clientLocalIp', displayText: 'Local Src. Ip' },
+      { id: 14, name: 'clientMacAddress', displayText: 'Mac Address' },
+      { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial' },
+      { id: 16, name: 'hostName', displayText: 'Host Name' }
+    ],
+    rows: [
+      
+    ],
+    selectableRows: true
+  };
+
+  countries = COUNTRIES;
+
   @Input() public searchSetting: SearchSetting;
   @Output() public addColumnValueEmitter = new EventEmitter();
 
-  @ViewChild('tableDivComponent', { static : false }) tableDivComponent: ElementRef;
-  @ViewChild('columnTablePanel', { static : false }) columnTablePanel: any;
+  @ViewChild('tableDivComponent', { static: false }) tableDivComponent: ElementRef;
+  @ViewChild('columnTablePanel', { static: false }) columnTablePanel: any;
 
   constructor(private monitorService: MonitorService, private excelService: ExcelService, private pdfService: PdfService) { }
 
@@ -85,7 +140,16 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   public loadGraph(ss: SearchSetting) {
     // this.spinnerService.start();
     this.monitorService.getGraphData(ss, this.currentPage).takeUntil(this.ngUnsubscribe)
-      .subscribe((res: Response) => { this.tableData = res['result']; this.totalItems = res['total']; },
+      .subscribe((res: Response) => {
+        this.tableData = res['result']; this.totalItems = res['total'];
+
+        this.tableData.forEach(item => {
+          let rowItem : RkTableRowModel  = item;
+          rowItem.selected = false;
+
+          this.tableConfig.rows.push(rowItem);
+        });
+      },
         () => this.stopRefreshing(), () => this.stopRefreshing());
   }
 

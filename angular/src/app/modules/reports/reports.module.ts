@@ -21,6 +21,7 @@ import { CustomReportResultComponent } from './customreport/result/customreport-
 import { CustomReportResultColumnComponent } from './customreport/result/column/customreport-result-column.component';
 import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
 import { FlatpickrModule } from 'angularx-flatpickr';
+import { RkRadioModule, RkSelectModule, IconsModule, RkTableModule } from 'roksit-lib';
 
 @NgModule({
   declarations: [
@@ -37,9 +38,9 @@ import { FlatpickrModule } from 'angularx-flatpickr';
   imports: [
     FormsModule,
     MaterialModule,
-    ReactiveFormsModule,    
+    ReactiveFormsModule,
     CommonModule,
-    NgApexchartsModule,    
+    NgApexchartsModule,
     ReportsRoutingModule,
     PipesModule,
     FlatpickrModule.forRoot(),
@@ -55,8 +56,12 @@ import { FlatpickrModule } from 'angularx-flatpickr';
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    RkRadioModule,
+    RkSelectModule,
+    IconsModule.forRoot(),
+    RkTableModule
   ],
-  providers: [PipesModule,DatePipe]
+  providers: [PipesModule, DatePipe]
 })
 export class ReportsModule { }
