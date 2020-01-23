@@ -21,7 +21,7 @@ export class ErrorInterceptor implements ErrorHandler {
     if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
       if (!navigator.onLine) {
-        notificationService.danger('No Internet Connection');
+        // notificationService.danger('No Internet Connection');
       } else {
         // Handle Http Error (error.status === 403, 404...)
         const status = error.status;
@@ -29,11 +29,11 @@ export class ErrorInterceptor implements ErrorHandler {
           let message = translatorService.translate(error.error.code);
           console.log(`${status} - ${message}`);
           if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
-            notificationService.error(`${message}`);
+            // notificationService.error(`${message}`);
           }
         } else {
           let message = translatorService.translate(error.statusText);
-          notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
+          // notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
           console.log(`${status} - ${message}`);
         }
       }
@@ -42,7 +42,7 @@ export class ErrorInterceptor implements ErrorHandler {
       const message = translatorService.translate(error.message);
       console.log(message); 
       if (!(message.includes("'push' of undefined") && error.stack.includes("reports-module"))) { // TODO: will remove; after unfound push error fixed 
-        notificationService.error('Error');
+        // notificationService.error('Error');
       }
     }
     // Log the error anyway
