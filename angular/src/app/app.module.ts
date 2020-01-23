@@ -29,8 +29,7 @@ import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
 import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
 import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
 import { NotificationModule } from './modules/shared/notification/notification.module';
-import { RoksitModule, RkProgressBarModule } from 'roksit-lib';
-import { RkSwitchModule } from 'roksit-lib/lib/modules/rk-switch/rk-switch.module';
+import { RoksitModule, ServicesModule } from 'roksit-lib';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -61,7 +60,8 @@ import { RkSwitchModule } from 'roksit-lib/lib/modules/rk-switch/rk-switch.modul
         deps: [HttpClient]
       }
     }),
-    RoksitModule.forRoot()
+    RoksitModule.forRoot(),
+    ServicesModule.forRoot()
   ],
   providers: [
     AuthGuard,

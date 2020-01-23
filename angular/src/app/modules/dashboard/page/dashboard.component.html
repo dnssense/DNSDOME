@@ -24,12 +24,6 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-12">
-        <div class="chart" id="chart"></div>
-      </div>
-    </div>
-
     <div class="rk-base-card">
       <div class="card-item rk-col">
         <div class="traffic-timeline rk-row">
@@ -56,40 +50,44 @@
           <div class="rk-panel-header rk-title-2">
             Traffic Based Anomaly
           </div>
-          <div class="rk-panel-item" style="background-color: white;display: flex;">
+          <div class="rk-panel-item d-flex flex-column">
+            <div class="row">
+              <div class="col">
+                <rk-infobox [active]="true" [title]="'Total'" [color]="'#4353ff'" [type]="1"
+                  [valueOne]="ds.totalAllowedCountForDashboard" [valueTwo]="ds.totalBlockCountForDashboard">
+                </rk-infobox>
+              </div>
+
+              <!-- <div style="margin-left: 15px;">
+                <rk-infobox [active]="false" [type]="2" [title]="'Safe'" [color]="'#3dd49a'" [valueOne]="'35.000'"
+                  [valueTwo]="'32.000'">
+                </rk-infobox>
+              </div> -->
+
+              <div class="col">
+                <rk-infobox [active]="false" [type]="2" [title]="'Malicious'" [color]="'#f95656'"
+                  [valueOne]="ds.totalBlockCountForDashboard" [valueTwo]="ds.totalUniqueBlockedDomainForDashboard">
+                </rk-infobox>
+              </div>
+
+              <div class="col">
+                <rk-infobox [active]="false" [type]="2" [title]="'Variable'" [color]="'#d8d8d8'"
+                  [valueOne]="ds.grayCountForDashboard" [valueTwo]="ds.uGrayCountForDashboard">
+                </rk-infobox>
+              </div>
+
+              <div class="col">
+                <rk-infobox [active]="false" [type]="2" [title]="'Harmful Content'" [color]="'#f9df56'"
+                  [valueOne]="ds.securityRiskCountForDashboard" [valueTwo]="ds.uSecurityRiskCountForDashboard">
+                </rk-infobox>
+              </div>
+            </div>
+
             <div>
-              <rk-infobox [active]="true" [title]="'Total'" [color]="'#4353ff'" [type]="1"
-                [valueOne]="ds.totalAllowedCountForDashboard" [valueTwo]="ds.totalBlockCountForDashboard">
-              </rk-infobox>
-            </div>
-
-
-            <!-- <div style="margin-left: 15px;">
-              <rk-infobox [active]="false" [type]="2" [title]="'Safe'" [color]="'#3dd49a'" [valueOne]="'35.000'"
-                [valueTwo]="'32.000'">
-              </rk-infobox>
-            </div> -->
-
-            <div style="margin-left: 15px;">
-              <rk-infobox [active]="false" [type]="2" [title]="'Malicious'" [color]="'#f95656'" [valueOne]="ds.totalBlockCountForDashboard"
-                [valueTwo]="ds.totalUniqueBlockedDomainForDashboard">
-              </rk-infobox>
-            </div>
-
-            <div style="margin-left: 15px;">
-              <rk-infobox [active]="false" [type]="2" [title]="'Variable'" [color]="'#d8d8d8'"
-                [valueOne]="ds.grayCountForDashboard" [valueTwo]="ds.uGrayCountForDashboard">
-              </rk-infobox>
-            </div>
-
-            <div style="margin-left: 15px;">
-              <rk-infobox [active]="false" [type]="2" [title]="'Harmful Content'" [color]="'#f9df56'"
-                [valueOne]="ds.securityRiskCountForDashboard" [valueTwo]="ds.uSecurityRiskCountForDashboard">
-              </rk-infobox>
+              <div class="chart" id="chart"></div>
             </div>
           </div>
         </div>
-
 
         <div class="row">
           <!-- Malicious -->

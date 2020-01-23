@@ -8,48 +8,63 @@ import 'rxjs/add/operator/filter';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { NavbarComponent } from 'src/app/modules/shared/navbar/navbar.component';
 import { NavItem, NavItemType } from 'src/app/modules/shared/md/md.module';
+import { RkLayoutService } from 'roksit-lib';
+import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 
 @Component({
-  selector: 'app-adminlayout',
-  templateUrl: './adminlayout.component.html',
-  styleUrls: ['./adminlayout.component.sass']
+    selector: 'app-adminlayout',
+    templateUrl: './adminlayout.component.html',
+    styleUrls: ['./adminlayout.component.sass']
 })
 export class AdminLayoutComponent implements OnInit {
 
-  public navItems: NavItem[];
+    public navItems: NavItem[];
     private _router: Subscription;
     private lastPoppedUrl: string;
     private yScrollStack: number[] = [];
     url: string;
     location: Location;
 
-    @ViewChild('sidebar', { static : false }) sidebar: any;
-    @ViewChild(NavbarComponent, { static : false }) navbar: NavbarComponent;
-    constructor( private router: Router, location: Location ) {
-      this.location = location;
+    @ViewChild('sidebar', { static: false }) sidebar: any;
+    @ViewChild(NavbarComponent, { static: false }) navbar: NavbarComponent;
+
+    collapsed: boolean;
+
+
+    constructor(
+        private router: Router,
+        location: Location,
+        private rkLayoutService: RkLayoutService
+    ) {
+        this.location = location;
+
+        rkLayoutService.sidebarCollapsed.subscribe(collapsed => {
+            this.collapsed = collapsed;
+        });
     }
+
     ngOnInit() {
         const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
         const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
-        this.location.subscribe((ev:PopStateEvent) => {
+        this.location.subscribe((ev: PopStateEvent) => {
             this.lastPoppedUrl = ev.url;
         });
-         this.router.events.subscribe((event:any) => {
+        this.router.events.subscribe((event: any) => {
             if (event instanceof NavigationStart) {
-               if (event.url != this.lastPoppedUrl)
-                   this.yScrollStack.push(window.scrollY);
-           } else if (event instanceof NavigationEnd) {
-               if (event.url == this.lastPoppedUrl) {
-                   this.lastPoppedUrl = undefined;
-                   window.scrollTo(0, this.yScrollStack.pop());
-               }
-               else
-                   window.scrollTo(0, 0);
-           }
+                if (event.url != this.lastPoppedUrl)
+                    this.yScrollStack.push(window.scrollY);
+            } else if (event instanceof NavigationEnd) {
+                if (event.url == this.lastPoppedUrl) {
+                    this.lastPoppedUrl = undefined;
+                    window.scrollTo(0, this.yScrollStack.pop());
+                }
+                else
+                    window.scrollTo(0, 0);
+            }
         });
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
-             elemMainPanel.scrollTop = 0;
-             elemSidebar.scrollTop = 0;
+            elemMainPanel.scrollTop = 0;
+            elemSidebar.scrollTop = 0;
         });
         const html = document.getElementsByTagName('html')[0];
         if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
@@ -61,10 +76,10 @@ export class AdminLayoutComponent implements OnInit {
             html.classList.add('perfect-scrollbar-off');
         }
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
-          this.navbar.sidebarClose();
+            this.navbar.sidebarClose();
         });
 
-         this.navItems = [];
+        this.navItems = [];
         //   { type: NavItemType.NavbarLeft, title: 'Dashboard', iconClass: 'fa fa-dashboard' },
         //   {
         //     type: NavItemType.NavbarRight,
@@ -113,6 +128,11 @@ export class AdminLayoutComponent implements OnInit {
     ngAfterViewInit() {
         this.runOnRouteChange();
     }
+
+    toggleCollapse() {
+        this.rkLayoutService.setSidebarCollapse(!this.collapsed);
+    }
+
     public isMap() {
         if (this.location.prepareExternalUrl(this.location.path()) === '/maps/fullscreen') {
             return true;
@@ -120,15 +140,17 @@ export class AdminLayoutComponent implements OnInit {
             return false;
         }
     }
+
     runOnRouteChange(): void {
-      if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
-        const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
-        const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
-        let ps = new PerfectScrollbar(elemMainPanel);
-        ps = new PerfectScrollbar(elemSidebar);
-        ps.update();
-      }
+        if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
+            const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
+            const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
+            let ps = new PerfectScrollbar(elemMainPanel);
+            ps = new PerfectScrollbar(elemSidebar);
+            ps.update();
+        }
     }
+
     isMac(): boolean {
         let bool = false;
         if (navigator.platform.toUpperCase().indexOf('MAC') >= 0 || navigator.platform.toUpperCase().indexOf('IPAD') >= 0) {

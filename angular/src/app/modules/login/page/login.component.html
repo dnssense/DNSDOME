@@ -1,90 +1,93 @@
-<div class="row wrapper wrapper-full-page" style="background-color: white !important;">
-  <div class="col-md-5">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="row" style="min-height: 91vh;">
-          <div class="col-lg-8 col-md-8 col-sm-8 ml-auto mr-auto">
-            <div class="card-login">
-              <div class="card-login-title text-center">
-                <img src="/assets/img/{{host.logoImage}}" style="max-height: 40px;" />
-              </div>
-              <div class="card-body">
-                <div id="loginDiv">
-                  <form [formGroup]="loginForm" ng-submit="loginform.$valid && loginForm.submit()">
+<div class="container-fluid">
+  <div class="row wrapper-full-page" style="background-color: white !important;">
+    <div class="col-md-5">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row" style="min-height: 91vh;">
+            <div class="col-lg-8 col-md-8 col-sm-8 ml-auto mr-auto">
+              <div class="card-login">
+                <div class="card-login-title text-center">
+                  <img src="/assets/img/{{host.logoImage}}" style="max-height: 40px;" />
+                </div>
+                <div class="card-body">
+                  <div id="loginDiv">
+                    <form [formGroup]="loginForm" ng-submit="loginform.$valid && loginForm.submit()">
 
-                    <input type="email" class="formInput" placeholder="E-mail" [(ngModel)]="email"
-                      [ngClass]="{'formInputHasError': isFailed}" (ngModelChange)="emailValidationLogin($event)"
-                      formControlName="email">
+                      <input type="email" class="formInput" placeholder="E-mail" [(ngModel)]="email"
+                        [ngClass]="{'formInputHasError': isFailed}" (ngModelChange)="emailValidationLogin($event)"
+                        formControlName="email">
 
-                    <input type="password" class="formInput mt-3" placeholder="{{'LOGIN.Password' | translate}}"
-                      [ngClass]="{'formInputHasError': isFailed}" [(ngModel)]="password" formControlName="password">
+                      <input type="password" class="formInput mt-3" placeholder="{{'LOGIN.Password' | translate}}"
+                        [ngClass]="{'formInputHasError': isFailed}" [(ngModel)]="password" formControlName="password">
 
 
-                    <div class="">
-                      <a style="color: #868e96;" (click)="openForgotPassword()">Forgot password?</a>
-                    </div>
-                    <div class="form-group text-center">
-                      <br />
-                      <p style="color: red;" *ngIf="isFailed">E-mail or password is wrong!</p>
-                      <button class="btns login-btns" (click)="login()">
-                        {{'LOGIN.Login'|translate}}
-                      </button>
-                      <a class="nav-link mt-1" [routerLink]="['/register']" style="color: #4353ff; font-weight: 500;">
-                        Sign Up for a Free Trial
-                      </a>
-                      <div class="row">
-                        <div *ngIf="isIEOrEdge" class="col-12 text-center" style="color: gray; font-size: 12px;">
-                          *Use the latest version of Google Chrome, Firefox or Opera for the best
-                          compatibility.
-                        </div>
-                        <div class="col-12 text-center" style="color: white">
-                          version: 1.1.12
+                      <div class="">
+                        <a style="color: #868e96;" (click)="openForgotPassword()">Forgot password?</a>
+                      </div>
+                      <div class="form-group text-center d-flex align-items-center flex-column">
+                        <br />
+                        <p style="color: red;" *ngIf="isFailed">E-mail or password is wrong!</p>
+                        <button class="btns login-btns" (click)="login()">
+                          {{'LOGIN.Login'|translate}}
+                        </button>
+                        <a class="nav-link mt-1" [routerLink]="['/register']" style="color: #4353ff; font-weight: 500;">
+                          Sign Up for a Free Trial
+                        </a>
+                        <div class="row">
+                          <div *ngIf="isIEOrEdge" class="col-12 text-center" style="color: gray; font-size: 12px;">
+                            *Use the latest version of Google Chrome, Firefox or Opera for the best
+                            compatibility.
+                          </div>
+                          <div class="col-12 text-center" style="color: white">
+                            version: 1.1.12
+                          </div>
                         </div>
                       </div>
+                    </form>
+                  </div>
+                  <div id="forgotPasswordDiv" style="display:none">
+                    <input type="email" class="formInput mb-3" placeholder="{{'LOGIN.Email' | translate}} *"
+                      [(ngModel)]="forgoterEmail" (ngModelChange)="emailValidationLogin($event)">
+                    <div>
+                      <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
+                      </re-captcha>
                     </div>
-                  </form>
-                </div>
-                <div id="forgotPasswordDiv" style="display:none">
-                  <input type="email" class="formInput mb-3" placeholder="{{'LOGIN.Email' | translate}} *"
-                    [(ngModel)]="forgoterEmail" (ngModelChange)="emailValidationLogin($event)">
-                  <div>
-                    <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
-                    </re-captcha>
+                    <div class="mt-2"><a style="color: #868e96;" (click)="openLogin()">Login</a></div>
+                    <div class="text-center">
+                      <br />
+                      <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()">Send Activation
+                        Code</button>
+                    </div>
                   </div>
-                  <div class="mt-2"><a style="color: #868e96;" (click)="openLogin()">Login</a></div>
-                  <div class="text-center">
-                    <br />
-                    <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()">Send Activation
-                      Code</button>
-                  </div>
-                </div>
-                <div id="twoFactorDiv" class="text-success text-center" style="display:none;">
-                  <countdown-timer style="font-size: 25px; font-weight: 500;" (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
-                  <mat-form-field class="example-full-width">
-                    <input type="text" disabled matInput [(value)]="twoFactorPhone">
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width">
-                    <input type="smsCode" matInput placeholder="SMS Code" [(ngModel)]="smsCode">
-                  </mat-form-field>
-                  <div class="text-center">
-                    <button class="btns login-btns" (click)="confirm2FACode()">Confirm</button>
+                  <div id="twoFactorDiv" class="text-success text-center" style="display:none;">
+                    <countdown-timer style="font-size: 25px; font-weight: 500;" (zeroTrigger)="timeEnd()"
+                      [end]="endTime"></countdown-timer>
+                    <mat-form-field class="example-full-width">
+                      <input type="text" disabled matInput [(value)]="twoFactorPhone">
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width">
+                      <input type="smsCode" matInput placeholder="SMS Code" [(ngModel)]="smsCode">
+                    </mat-form-field>
+                    <div class="text-center">
+                      <button class="btns login-btns" (click)="confirm2FACode()">Confirm</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12 ml-auto mr-auto" style="width: 40%;">
-            <app-footer-cmp></app-footer-cmp>
+          <div class="row">
+            <div class="col-md-12 ml-auto mr-auto" style="width: 40%;">
+              <app-footer-cmp></app-footer-cmp>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-7 order-first order-md-2"
-    style="background-image: url(./assets/img/loginbg.png);background-size: cover;background-position: top center; min-height: 250px;">
-    <img src="/assets/img/CyberCyte_white.png" *ngIf="host.brand=='CyberCyte'"
-      style="position: absolute; bottom: 5%; right: 7%;" />
+    <div class="col-md-7 order-first order-md-2"
+      style="background-image: url(./assets/img/loginbg.png);background-size: cover;background-position: top center; min-height: 250px;">
+      <img src="/assets/img/CyberCyte_white.png" *ngIf="host.brand=='CyberCyte'"
+        style="position: absolute; bottom: 5%; right: 7%;" />
+    </div>
   </div>
 </div>

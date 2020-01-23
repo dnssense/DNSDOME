@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin-ext")
+
+body
+  font-family: "Roboto", sans-serif !important
+  background: var(--color-primary)
+  overflow-x: hidden
+
+*
+  font-family: "Roboto", sans-serif !important
+  -webkit-font-smoothing: antialiased
+  outline: none !important
+
+ul
+  list-style: none
+
+.wrapper-full-page
+  height: auto
+  min-height: 100vh
+
+@media (max-width: 991px)
+  .footer:not(.footer-big) nav>ul li, .social-line.pull-right
+    float: none
+
+.footer ul
+  margin-bottom: 0
+  padding: 0
+  list-style: none
+
+.footer ul li
+  display: inline-block
+
+.footer ul li a
+  color: inherit
+  padding: .9375rem
+  font-weight: 500
+  font-size: 12px
+  text-transform: uppercase
+  border-radius: 3px
+  text-decoration: none
+  position: relative
+  display: block
+
+.footer
+  color: #868e96
