@@ -34,7 +34,7 @@ declare var Waypoint: any;
 @Component({
   selector: 'app-monitor-search',
   templateUrl: 'monitor-search.component.html',
-  styleUrls: ['monitor-search.component.css']
+  styleUrls: ['monitor-search.component.scss']
 })
 export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   public columns: LogColumn[];
@@ -44,6 +44,20 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   public startDateee: Date = null;
   public endDateee: Date = null;
   private ngUnsubscribe: Subject<any> = new Subject<any>(); // ne icin kullaniliyor? gereksizse silelim
+
+  options: any[] = [
+    { displayText: 'Last 5 Minutes', value: 5 },
+    { displayText: 'Last 15 Minutes', value: 15 },
+    { displayText: 'Last 30 Minutes', value: 30 },
+    { displayText: 'Last 1 Hour', value: 60 },
+    { displayText: 'Last 3 Hour', value: 180 },
+    { displayText: 'Last 12 Hour', value: 720 },
+    { displayText: 'Last 1 Day', value: 1440 },
+    { displayText: 'Last 2 Day', value: 2880 },
+    { displayText: 'Last 1 Week', value: 10080 }
+  ];
+
+
 
   @Input() searchSetting: SearchSetting;
   @Output() public searchEmitter = new EventEmitter();
@@ -67,7 +81,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   select2: any = null;
   inputCollapsed: boolean = true;
   inputSelected: boolean = false;
-  @ViewChild('inputElement', { static : false }) inputElement: ElementRef;
+  @ViewChild('inputElement', { static: false }) inputElement: ElementRef;
 
   visible = true;
   selectable = true;
@@ -81,8 +95,8 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   savedReports: SearchSetting[] = []
   selectedSavedReportName: string;
   newSavedReportName: string;
-  @ViewChild('isOneOfInput', { static : false }) isOneOfInput: ElementRef<HTMLInputElement>;
-  @ViewChild('auto', { static : false }) matAutocomplete: MatAutocomplete;
+  @ViewChild('isOneOfInput', { static: false }) isOneOfInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
   constructor(private fastReportService: FastReportService, private locationsService: LocationsService, private datePipe: DatePipe,
     private customReportService: CustomReportService, private notification: NotificationService, private alertService: AlertService,
@@ -103,6 +117,10 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
     }
 
+  }
+
+  onSelectedDateChange(value: string) {
+    this.search();
   }
 
   ngOnInit() {
@@ -184,6 +202,8 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     // $(document).on('click', '.dropdown', function (e) {
     //   e.stopPropagation();
     // });
+
+    this.searchSetting.dateInterval = this.options[this.options.length -1].value;
   }
 
   ngAfterViewInit() {
