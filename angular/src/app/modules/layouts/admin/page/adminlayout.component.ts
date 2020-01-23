@@ -76,7 +76,7 @@ export class AdminLayoutComponent implements OnInit {
             html.classList.add('perfect-scrollbar-off');
         }
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
-            this.navbar.sidebarClose();
+            // this.navbar.sidebarClose();
         });
 
         this.navItems = [];
