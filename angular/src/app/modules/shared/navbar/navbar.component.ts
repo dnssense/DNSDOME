@@ -78,7 +78,9 @@ export class NavbarComponent implements OnInit {
     }
 
     getPath() {
-        return this.location.prepareExternalUrl(this.location.path());
+        const path = this.location.prepareExternalUrl(this.location.path());
+        
+        return path;
     }
 
     logout() {

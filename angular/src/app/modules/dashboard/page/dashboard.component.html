@@ -53,38 +53,186 @@
           <div class="rk-panel-item d-flex flex-column">
             <div class="row">
               <div class="col">
-                <rk-infobox [active]="true" [title]="'Total'" [color]="'#4353ff'" [type]="1"
-                  [valueOne]="ds.totalAllowedCountForDashboard" [valueTwo]="ds.totalBlockCountForDashboard">
+                <rk-infobox [active]="true" [title]="'Total'" [color]="'#4353ff'" className="blue" [type]="1"
+                  [valueOne]="ds.totalAllowedCountForDashboard" [valueTwo]="ds.totalBlockCountForDashboard"
+                  description="Toplam DNS sorgu sayısı">
                 </rk-infobox>
               </div>
 
               <!-- <div style="margin-left: 15px;">
-                <rk-infobox [active]="false" [type]="2" [title]="'Safe'" [color]="'#3dd49a'" [valueOne]="'35.000'"
-                  [valueTwo]="'32.000'">
+                <rk-infobox [active]="false" [type]="2" [title]="'Safe'" [color]="'#3dd49a'" className="green" [valueOne]="'35.000'"
+                  [valueTwo]="'32.000'" description="Haber, Spor, Arama motoru gibi içerik ve güvenlik anlamında risk içermeyen domainleri kapsar.">
                 </rk-infobox>
               </div> -->
 
               <div class="col">
-                <rk-infobox [active]="false" [type]="2" [title]="'Malicious'" [color]="'#f95656'"
-                  [valueOne]="ds.totalBlockCountForDashboard" [valueTwo]="ds.totalUniqueBlockedDomainForDashboard">
+                <rk-infobox [active]="false" [type]="2" [title]="'Malicious'" className="red" [color]="'#f95656'"
+                  [valueOne]="ds.totalBlockCountForDashboard" [valueTwo]="ds.totalUniqueBlockedDomainForDashboard"
+                  description="Malware, Botnet, Phishing gibi güvenlik riski yüksek domainleri kapsar.">
                 </rk-infobox>
               </div>
 
               <div class="col">
-                <rk-infobox [active]="false" [type]="2" [title]="'Variable'" [color]="'#d8d8d8'"
-                  [valueOne]="ds.grayCountForDashboard" [valueTwo]="ds.uGrayCountForDashboard">
+                <rk-infobox [active]="false" [type]="2" [title]="'Variable'" className="gray" [color]="'#d8d8d8'"
+                  [valueOne]="ds.grayCountForDashboard" [valueTwo]="ds.uGrayCountForDashboard"
+                  description="Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.">
                 </rk-infobox>
               </div>
 
               <div class="col">
-                <rk-infobox [active]="false" [type]="2" [title]="'Harmful Content'" [color]="'#f9df56'"
-                  [valueOne]="ds.securityRiskCountForDashboard" [valueTwo]="ds.uSecurityRiskCountForDashboard">
+                <rk-infobox [active]="false" [type]="2" [title]="'Harmful Content'" className="yellow"
+                  [color]="'#f9df56'" [valueOne]="ds.securityRiskCountForDashboard"
+                  [valueTwo]="ds.uSecurityRiskCountForDashboard"
+                  description="Pornogrphy, Adult, Gamblig gibi istenmeyen domainleri içerir.">
                 </rk-infobox>
               </div>
             </div>
 
-            <div>
-              <div class="chart" id="chart"></div>
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-2"
+              style="border-top: 1px solid rgba(68, 81, 101, 0.2);">
+              <div>
+                <div class="rk-selectable-table">
+                  <div class="rk-item">
+                    <div class="rk-i-header">
+                      <div class="d-flex align-items-center">
+                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-badge">232</span>
+                      </div>
+                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+
+                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    </rk-progressbar>
+                  </div>
+
+                  <div class="rk-item">
+                    <div class="rk-i-header">
+                      <div class="d-flex align-items-center">
+                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-badge">232</span>
+                      </div>
+                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+
+                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    </rk-progressbar>
+                  </div>
+
+                  <div class="rk-item active">
+                    <div class="rk-i-header">
+                      <div class="d-flex align-items-center">
+                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-badge">232</span>
+                      </div>
+                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+
+                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    </rk-progressbar>
+                  </div>
+
+                  <div class="rk-item">
+                    <div class="rk-i-header">
+                      <div class="d-flex align-items-center">
+                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-badge">232</span>
+                      </div>
+                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+
+                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    </rk-progressbar>
+                  </div>
+
+                  <div class="rk-item">
+                    <div class="rk-i-header">
+                      <div class="d-flex align-items-center">
+                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-badge">232</span>
+                      </div>
+                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+
+                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    </rk-progressbar>
+                  </div>
+
+                  <div class="rk-item">
+                    <div class="rk-i-header">
+                      <div class="d-flex align-items-center">
+                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-badge">232</span>
+                      </div>
+                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+
+                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    </rk-progressbar>
+                  </div>
+
+                  <div class="rk-item">
+                    <div class="rk-i-header">
+                      <div class="d-flex align-items-center">
+                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-badge">232</span>
+                      </div>
+                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+
+                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    </rk-progressbar>
+                  </div>
+
+                  <div class="rk-item">
+                    <div class="rk-i-header">
+                      <div class="d-flex align-items-center">
+                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-badge">232</span>
+                      </div>
+                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+
+                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    </rk-progressbar>
+                  </div>
+
+                  <div class="rk-item">
+                    <div class="rk-i-header">
+                      <div class="d-flex align-items-center">
+                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-badge">232</span>
+                      </div>
+                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+
+                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    </rk-progressbar>
+                  </div>
+
+
+                </div>
+              </div>
+
+              <div class="px-4" style="flex: 1;">
+                <div class="chart" id="chart"></div>
+              </div>
+
+              <div>
+                <div class="chart-info">
+                  <div class="section">
+                    <span class="section-title">Selected <br /> Time Hit</span>
+                    <span class="value">3100</span>
+                  </div>
+                  <div class="section active">
+                    <i-feather name="arrow-up"></i-feather>
+                    <span class="value">%20</span>
+                  </div>
+                  <div class="section">
+                    <div class="section-title">Avarage Hit</div>
+                    <span class="value">2001</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

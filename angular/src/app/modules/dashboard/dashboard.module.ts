@@ -7,11 +7,11 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { RkProgressBarModule, RkDateModule, RkTableModule, RkInfoBoxModule } from 'roksit-lib';
+import { RkProgressBarModule, RkDateModule, RkTableModule, RkInfoBoxModule, IconsModule } from 'roksit-lib';
 
 @NgModule({
   declarations: [DashboardComponent],
-  providers:[DatePipe],
+  providers: [DatePipe],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -22,6 +22,7 @@ import { RkProgressBarModule, RkDateModule, RkTableModule, RkInfoBoxModule } fro
     RkDateModule,
     RkTableModule,
     RkInfoBoxModule,
+    IconsModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
@@ -30,7 +31,7 @@ import { RkProgressBarModule, RkDateModule, RkTableModule, RkInfoBoxModule } fro
       }
     })
   ],
-  schemas : [NO_ERRORS_SCHEMA]
+  schemas: [NO_ERRORS_SCHEMA]
 
 })
 export class DashboardModule { }
