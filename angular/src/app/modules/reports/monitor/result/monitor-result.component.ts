@@ -8,34 +8,7 @@ import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
 import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
-
-const COUNTRIES: any[] = [
-  {
-    name: 'Russia',
-    flag: 'f/f3/Flag_of_Russia.svg',
-    area: 17075200,
-    population: 146989754
-  },
-
-  {
-    name: 'Canada',
-    flag: 'c/cf/Flag_of_Canada.svg',
-    area: 9976140,
-    population: 36624199
-  },
-  {
-    name: 'United States',
-    flag: 'a/a4/Flag_of_the_United_States.svg',
-    area: 9629091,
-    population: 324459463
-  },
-  {
-    name: 'China',
-    flag: 'f/fa/Flag_of_the_People%27s_Republic_of_China.svg',
-    area: 9596960,
-    population: 1409517397
-  }
-];
+ 
 
 @Component({
   selector: 'app-monitor-result',
@@ -76,12 +49,11 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
       { id: 16, name: 'hostName', displayText: 'Host Name' }
     ],
     rows: [
-      
+
     ],
     selectableRows: true
   };
 
-  countries = COUNTRIES;
 
   @Input() public searchSetting: SearchSetting;
   @Output() public addColumnValueEmitter = new EventEmitter();
@@ -146,7 +118,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
         this.tableConfig.rows = [];
 
         this.tableData.forEach(item => {
-          let rowItem : RkTableRowModel  = item;
+          let rowItem: RkTableRowModel = item;
           rowItem.selected = false;
 
           this.tableConfig.rows.push(rowItem);
@@ -207,4 +179,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   // public changeColumns($event) {
   //   //you may implement here...
   // }
+
+  onPageChange(pageNumber: number) {
+    this.pageChanged({ page : pageNumber});
+  }
+
+  onPageViewCountChange(event : any) {
+    
+  }
 }

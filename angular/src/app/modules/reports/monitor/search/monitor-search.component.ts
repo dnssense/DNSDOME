@@ -54,7 +54,7 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     { displayText: 'Last 12 Hour', value: 720 },
     { displayText: 'Last 1 Day', value: 1440 },
     { displayText: 'Last 2 Day', value: 2880 },
-    { displayText: 'Last 1 Week', value: 10080 }
+    { displayText: 'Last 1 Week', value: 10080, select : true }
   ];
 
 
