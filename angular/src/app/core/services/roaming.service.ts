@@ -9,7 +9,7 @@ import { OperationResult } from '../models/OperationResult';
 export class RoamingService {
   private getRoamingsURL = this.config.getApiUrl() + "/roamingclients";
   private saveRoamingClientURL = this.config.getApiUrl() + "/roamingclients/save";
-  private deleteRoamingClientURL = this.config.getApiUrl() + "/roamingclients/delete/";
+  private deleteRoamingClientURL = this.config.getApiUrl() + "/roamingclients/delete";
 
   constructor(private http: HttpClient, private config: ConfigService) { }
 

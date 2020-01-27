@@ -1,4 +1,40 @@
 {
+  "/api/agents": {
+    "target": "http://localhost:9030",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/api/profiles": {
+    "target": "http://localhost:9030",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/api/devices": {
+    "target": "http://localhost:9030",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/api/roamingclients": {
+    "target": "http://localhost:9030",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/api/boxes": {
+    "target": "http://localhost:9030",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/api/box": {
+    "target": "http://localhost:9030",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
   "/api/*": {
     "target": "http://beta.roksit.com",
     "secure": false,

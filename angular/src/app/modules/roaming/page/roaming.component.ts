@@ -203,6 +203,7 @@ export class RoamingComponent implements OnInit {
                     this.roamingService.deleteClient(id).subscribe(res => {
                         if (res.status == 200) {
                             this.notification.success(res.message);
+                            this.roamingService.getClients();
                         } else {
                             this.notification.error(res.message);
                         }

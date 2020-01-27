@@ -404,6 +404,7 @@ export class DevicesComponent implements OnInit {
     }
 
     securityProfileChanged(type: string, profileId: number) {
+        debugger;
         if (type && type.toLowerCase() == 'box') {
             this.selectedBox.agent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id == profileId)));
         } else if (type && type.toLowerCase() == 'agent') {
@@ -412,6 +413,7 @@ export class DevicesComponent implements OnInit {
     }
 
     deviceProfileChanged(mac: string, profileId: number) {
+        debugger;
         this.unregistereds.find(d => d.agentInfo.mac == mac).agentGroup = null
         this.unregistereds.find(d => d.agentInfo.mac == mac).rootProfile =
             JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id == profileId)));
@@ -422,7 +424,7 @@ export class DevicesComponent implements OnInit {
     deviceGroupChanged(mac: string, groupId: number) {
         this.unregistereds.find(d => d.agentInfo.mac == mac).agentGroup =
             { id: groupId, groupName: this.groupList.find(g => g.id == groupId).groupName };
-        this.unregistereds.find(d => d.agentInfo.mac == mac).rootProfile = null;
+       // this.unregistereds.find(d => d.agentInfo.mac == mac).rootProfile = null;
         $('#unregisteredTable').animate({ scrollLeft: '+=500' }, 1000);
     }
 
