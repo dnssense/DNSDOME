@@ -22,6 +22,7 @@ import { CustomReportResultColumnComponent } from './customreport/result/column/
 import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { RkRadioModule, RkSelectModule, IconsModule, RkTableModule } from 'roksit-lib';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { RkRadioModule, RkSelectModule, IconsModule, RkTableModule } from 'roksi
     RkRadioModule,
     RkSelectModule,
     IconsModule.forRoot(),
-    RkTableModule
+    RkTableModule,
+    SharedModule
   ],
   providers: [PipesModule, DatePipe]
 })
