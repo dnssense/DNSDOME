@@ -112,10 +112,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       max: 500
     });
 
+    const data2 = generateDayWiseTimeSeries(new Date('11 Feb 2017').getTime(), 185, {
+      min: 150,
+      max: 250
+    });
+
     RkApexHelper.render('#chart', {
-      series: [{
-        data
-      }],
+      series: [
+        { name: 'Normal Traffic Count', type: 'line', data: data },
+        { name: 'Hit Count', type: 'area', data: data2 }
+      ],
       chart: {
         id: 'chart2',
         type: 'line',
@@ -126,17 +132,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         }
       },
       markers: {
-        size: 4,
-        colors: ['#FFA41B'],
-        strokeColors: '#FFA41B',
+        size: [4, 0],
+        colors: ['#f95656'],
+        strokeColors: '#f95656',
         strokeWidth: 2,
         hover: {
           size: 7,
         }
       },
-      colors: ['#0084ff'],
+      colors: ['#0084ff', '#b1dcff'],
       stroke: {
-        width: 3
+        width: 3,
+        curve: ['straight', 'smooth']
       },
       dataLabels: {
         enabled: false
