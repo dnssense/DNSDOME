@@ -32,11 +32,11 @@ declare var WebuiPopovers: any;
 declare var Waypoint: any;
 
 @Component({
-  selector: 'app-monitor-search',
-  templateUrl: 'monitor-search.component.html',
-  styleUrls: ['monitor-search.component.scss']
+  selector: 'app-roksit-search',
+  templateUrl: 'roksit-search.component.html',
+  styleUrls: ['roksit-search.component.scss']
 })
-export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy {
+export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   public columns: LogColumn[];
   public agents: Location[];
   public mainCategories: Category[];
