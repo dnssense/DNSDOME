@@ -51,12 +51,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private boxService: BoxService, private roamingService: RoamingService) { }
 
   ngOnInit() {
-    this.timeRangeButtons.push({ key: "Last Hour", value: TimeRangeEnum.lastHour, dateParam: -1 });
-    this.timeRangeButtons.push({ key: "Today", value: TimeRangeEnum.Today, dateParam: 0 });
-    this.timeRangeButtons.push({ key: "Last 2 Days", value: TimeRangeEnum.last3Days, dateParam: 1 });
-    this.timeRangeButtons.push({ key: "Last 3 Days", value: TimeRangeEnum.last3Days, dateParam: 2 });
-    this.timeRangeButtons.push({ key: "Last Week", value: TimeRangeEnum.lastWeek, dateParam: 3 });
-
     this.host = this.config.host;
     const roleName: string = this.authService.currentSession.currentUser.roles.name;
 
@@ -176,10 +170,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           },
           stroke: {
             width: 4,
-            color: '#97a5bb',
+            color: '#3397c5',
             opacity: 1,
             dashArray: 0,
-            radius: 10
+            radius: 50
           },
           xaxis: {
             min: new Date('19 Jun 2017').getTime(),
@@ -196,14 +190,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           return '#f99256';
         }
       }],
-      // colors: ['#f95656', '#3dd49a', '#f99256', '#f9df56', '#d8d8d8'],
-      // fill: {
-      //   type: 'gradient',
-      //   gradient: {
-      //     opacityFrom: 0.91,
-      //     opacityTo: 0.1,
-      //   }
-      // },
       xaxis: {
         type: 'datetime',
         tooltip: {
