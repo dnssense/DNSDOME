@@ -8,6 +8,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
+import { IconsModule, RkModalModule, RkTableModule } from 'roksit-lib';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [PublicipComponent],
@@ -24,7 +26,11 @@ import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.mod
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    IconsModule,
+    RkModalModule,
+    RkTableModule,
+    SharedModule
   ]
 
 })
