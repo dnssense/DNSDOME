@@ -11,13 +11,6 @@
           </button>
         </div>
 
-        <input type="text" [(ngModel)]="zz">
-
-        {{zz}}
-
-
-        {{ searchKey }}
-
         <rk-modal #agentModal>
           <rk-modal-header icon="plus">
             <rk-modal-header-title>
@@ -28,7 +21,29 @@
 
           <rk-modal-body>
 
-            <form [formGroup]="publicIpForm"></form>
+            <form [formGroup]="publicIpForm">
+              <div class="row">
+                <div class="col-6">
+                  <rk-radio name="ipType" [checked]="ipType" (click)="onSelectionChangeIPType('staticIp')">Static IP
+                  </rk-radio>
+                </div>
+                <div class="col-6">
+                  <rk-radio name="ipType" [checked]="ipType" (click)="onSelectionChangeIPType('dynamicIp')">Dynamic IP
+                  </rk-radio>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <input type="text" class="rk-input w-100" placeholder="Name" [(ngModel)]="selectedIp.agentAlias"
+                    formControlName="agentName">
+                </div>
+
+                <div class="col-12">
+                  <input type="text" class="rk-input w-100" placeholder="">
+                </div>
+              </div>
+            </form>
 
           </rk-modal-body>
 
@@ -48,12 +63,10 @@
 
                 <div class="search ml-5">
                   <div class="rk-autocomplete-container" style="width: 220px;">
-                    <input type="text" placeholder="Search" [(ngModel)]="zz"
-                       class="rk-input rk-autocomplete">
+                    <input type="text" placeholder="Search" [(ngModel)]="searchKey" class="rk-input rk-autocomplete">
                     <i-feather class="search-icon" name="search"></i-feather>
                   </div>
                 </div>
-
               </div>
             </div>
 
@@ -436,4 +449,4 @@
 
 
   </div>
-</div> -->
+</div>

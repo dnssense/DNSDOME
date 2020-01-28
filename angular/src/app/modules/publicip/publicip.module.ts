@@ -8,7 +8,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
-import { IconsModule, RkModalModule, RkTableModule } from 'roksit-lib';
+import { IconsModule, RkModalModule, RkTableModule, RkRadioModule } from 'roksit-lib';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -30,7 +30,8 @@ import { SharedModule } from '../shared/shared.module';
     IconsModule,
     RkModalModule,
     RkTableModule,
-    SharedModule
+    SharedModule,
+    RkRadioModule
   ]
 
 })
