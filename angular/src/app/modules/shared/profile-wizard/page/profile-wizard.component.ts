@@ -303,6 +303,7 @@ export class ProfileWizardComponent {
   }
 
   blackListItemValidation() {
+    
     if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.blackListItem.domain)) {
       this.isNewBlackListItem = false;
     } else {
@@ -316,6 +317,7 @@ export class ProfileWizardComponent {
   }
 
   addToBlackList() {
+    this.blackListItem.domain=this.cleanDomain(this.blackListItem.domain);
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.blackListItem.domain)) {
         this.notification.warning("This domain already in black list.")
@@ -323,7 +325,9 @@ export class ProfileWizardComponent {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.blackListItem.domain)) {
         this.notification.warning("This domain already in white list.")
       } else {
-        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(JSON.parse(JSON.stringify(this.blackListItem)));
+        let cloned=JSON.parse(JSON.stringify(this.blackListItem)) as ListItem;
+        
+        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(cloned);
         this.blackListItem.domain = ""
         this.blackListItem.comment = ""
         this.isNewBlackListItem = false;
@@ -337,8 +341,11 @@ export class ProfileWizardComponent {
         this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b.domain == item.domain), 1);
     }
   }
-
+  cleanDomain(domain:string):string{
+    return domain.replace(/https|http|\/|:/gm, '').replace(/\//g, '').trim();
+  }
   whiteListItemValidation() {
+    
     if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.whiteListItem.domain)) {
       this.isNewWhiteListItem = false;
     } else {
@@ -352,6 +359,7 @@ export class ProfileWizardComponent {
   }
 
   addToWhiteList() {
+    this.whiteListItem.domain=this.cleanDomain(this.whiteListItem.domain);
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.whiteListItem.domain)) {
         this.notification.warning("This domain already in white list.")
