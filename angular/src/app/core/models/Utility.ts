@@ -10,3 +10,8 @@ export enum TimeRangeEnum {
     lastWeek,
     Today
 }
+
+export enum PageEnum {
+    monitor = 1,
+    customerReports = 2
+}

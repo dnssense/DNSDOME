@@ -49,44 +49,44 @@
                         </div>
                         <div class="row">
                             <div class="table-responsive col-md-12">
-                                <table #tableDivComponent id="table-data" class="table table-bordered">
-                                    <thead>
-                                        <th class="no-border"></th>
-                                        <th nowrap style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);" *ngFor="let colz of selectedColumns">
-                                            <strong>{{colz.label}}</strong></th>
-                                        <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Count</th>
-                                        <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Percent</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let dat of data;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
-                                            <td class="numeration">{{i+1}}</td>
-                                            <td nowrap *ngFor="let col of selectedColumns; let inde=index">
-                                                <a *ngIf="col.column.name!='action'">
-                                                    <app-customreport-result-column [value]="dat[inde]"
-                                                        [columnName]="col.column.name"
-                                                        (addColumnValueEmitter)="addValuesIntoSelected($event)">
-                                                    </app-customreport-result-column>
-                                                </a>
-                                                <a *ngIf="col.column.name == 'action'">
-                                                    <app-customreport-result-column
-                                                        [value]="dat[inde]== 'false' ? false:true"
-                                                        [columnName]="col.column.name"
-                                                        (addColumnValueEmitter)="addValuesIntoSelected($event)">
-                                                    </app-customreport-result-column>
-                                                </a>
-                                            <td>
-                                                {{dat[selectedColumns.length] | customDecimalPipe}}
-                                            </td>
-                                            <td>
-                                                {{100*dat[selectedColumns.length]/total | number:'1.0-0'}}%
-                                                <mat-progress-bar mode="determinate"
-                                                    value="{{100*dat[selectedColumns.length]/total}}">
-                                                </mat-progress-bar>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-
-                                </table>
+                                <rk-table-container [config]="tableConfig" >
+                                    <rk-table  (pageChange)="onPageChange($event)"
+                                        [totalCount]="40" [pageViewCount]="10"
+                                        (pageViewCountChange)="onPageViewCountChange($event)" [info]="true">
+                                        <ng-template #header>
+                                            <tr>
+                                                <th class="index">#</th>
+                                                <th scope="col" *ngFor="let colz of selectedColumns">
+                                                    {{ colz.label }}
+                                                    <button class="table-btn ripple">
+                                                        <i-feather name="more-vertical"></i-feather>
+                                                    </button>
+                                                </th>
+                                                <th scope="col">
+                                                    Count
+                                                    <button class="table-btn ripple">
+                                                        <i-feather name="more-vertical"></i-feather>
+                                                    </button>
+                                                </th>
+                                                <th scope="col">
+                                                    Percent
+                                                    <button class="table-btn ripple">
+                                                        <i-feather name="more-vertical"></i-feather>
+                                                    </button>
+                                                </th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template #body>
+                                            <tr *ngFor="let dat of data;let i = index">
+                                                <td class="index">{{ i + 1 }}</td>
+                                                <td *ngFor="let col of selectedColumns;let colIndex = index"> {{ dat[colIndex] }} </td>
+                                                <td>  {{dat[selectedColumns.length] | customDecimalPipe}} </td>
+                                                <td> <rk-progressbar [value]="(100 * dat[selectedColumns.length] /  total)" [showType]="'outside'" [sizeType]="'small'">
+                                                </rk-progressbar></td>
+                                            </tr>
+                                        </ng-template>
+                                    </rk-table>
+                                </rk-table-container>
                             </div>
                         </div>
                     </div>

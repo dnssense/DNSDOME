@@ -8,7 +8,7 @@ import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
 import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
- 
+
 
 @Component({
   selector: 'app-monitor-result',
@@ -30,7 +30,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   tableConfig: RkTableConfigModel = {
     columns: [
-      { id: 0, name: 'time', displayText: 'Time', },
+      { id: 0, name: 'time', displayText: 'Time' },
       { id: 1, name: 'domain', displayText: 'Domain' },
       { id: 2, name: 'subdomain', displayText: 'Subdomain' },
       { id: 3, name: 'sourceIp', displayText: 'Src.Ip' },
@@ -72,6 +72,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngAfterViewInit() {
     this.monitorService.initTableColumns().takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
+
       this.columns = res;
       var tempcolumns = [];
       for (let data of this.columns) {
@@ -79,7 +80,15 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
           tempcolumns.push(data);
         }
       }
+
       this.selectedColumns = tempcolumns;
+
+      this.selectedColumns.forEach(item => {
+        let col = this.tableConfig.columns.find(colItem => colItem.name == item.name);
+
+        if (col)
+          col.selected = true;
+      });
     });
     this.loadGraph(this.searchSetting);
   }
@@ -117,6 +126,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
         this.tableConfig.rows = [];
 
+        debugger;
         this.tableData.forEach(item => {
           let rowItem: RkTableRowModel = item;
           rowItem.selected = false;
@@ -181,10 +191,10 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   // }
 
   onPageChange(pageNumber: number) {
-    this.pageChanged({ page : pageNumber});
+    this.pageChanged({ page: pageNumber });
   }
 
-  onPageViewCountChange(event : any) {
-    
+  onPageViewCountChange(event: any) {
+
   }
 }

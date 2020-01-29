@@ -124,7 +124,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onValueChange(val: boolean) {
-    this.searchSetting.type = val ? "roksit" : "roksitblock";
+    // this.searchSetting.type = val ? "roksit" : "roksitblock";
     this.searchSettingEmitter.emit(this.searchSetting);
   }
 

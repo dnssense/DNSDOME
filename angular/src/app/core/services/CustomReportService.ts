@@ -7,6 +7,7 @@ import { Category } from '../models/Category';
 import { WApplication } from '../models/WApplication';
 import { SearchSetting } from '../models/SearchSetting';
 import { ConfigService } from './config.service';
+import { LogColumn } from '../models/LogColumn';
 
 /**
  * Created by fatih on 02.08.2016.
@@ -29,10 +30,17 @@ export class CustomReportService {
   public _dashboardHeaderURL =
     this.configService.getApiUrl() + '/custom-reports/dashboard-header'; // URL to graph api
 
+  public _initTableColumnsURL = this.configService.getApiUrl() + '/custom-reports/tableColumns'; // URL to subcategories api
+
+
   public _categories: BehaviorSubject<Category[]> = new BehaviorSubject(null);
   public _applications: BehaviorSubject<WApplication[]> = new BehaviorSubject(
     null
   );
+
+  public initTableColumns(): Observable<LogColumn[]> {
+    return this.http.post<LogColumn[]>(this._initTableColumnsURL, this.getOptions()).map(res => res);
+  }
 
   constructor(private http: HttpClient, private errorService: ErrorService, private configService: ConfigService) {
     this.getCategorylist();

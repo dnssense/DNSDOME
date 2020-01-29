@@ -8,6 +8,7 @@ import { FastReportService } from 'src/app/core/services/FastReportService';
 import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
 import { CustomReportSearchComponent } from '../search/customreport-search.component';
+import { RkTableConfigModel, RkTableRowModel, RkTableColumnModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 
 declare var moment: any;
 @Component({
@@ -36,10 +37,37 @@ export class CustomReportResultComponent implements OnDestroy {
   @Output() public searchEmitter = new EventEmitter();
 
   @ViewChild('tableDivComponent', { static : false }) tableDivComponent: ElementRef;
-  @ViewChild(CustomReportSearchComponent, { static : false })
-  public customReportSearchComponent: CustomReportSearchComponent;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
+
+
+  
+  tableConfig: RkTableConfigModel = {
+    columns: [
+      { id: 0, name: 'time', displayText: 'Time' },
+      { id: 1, name: 'domain', displayText: 'Domain' },
+      { id: 2, name: 'subdomain', displayText: 'Subdomain' },
+      { id: 3, name: 'sourceIp', displayText: 'Src.Ip' },
+      { id: 4, name: 'sourceIpCountryCode', displayText: 'Src. Country' },
+      { id: 5, name: 'destinationIp', displayText: 'Dst.Ip' },
+      { id: 6, name: 'destinationIpCountryCode', displayText: 'Dst.Country' },
+      { id: 7, name: 'agentAlias', displayText: 'Location/Agent' },
+      { id: 8, name: 'userId', displayText: 'User Id' },
+      { id: 9, name: 'action', displayText: 'Action' },
+      { id: 10, name: 'applicationName', displayText: 'Application' },
+      { id: 11, name: 'category', displayText: 'Category' },
+      { id: 12, name: 'reason', displayText: 'Reason' },
+      { id: 13, name: 'clientLocalIp', displayText: 'Local Src. Ip' },
+      { id: 14, name: 'clientMacAddress', displayText: 'Mac Address' },
+      { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial' },
+      { id: 16, name: 'hostName', displayText: 'Host Name' }
+    ],
+    rows: [
+
+    ],
+    selectableRows: true
+  };
+
 
   constructor(private customReportService: CustomReportService, private fastReportService: FastReportService,
     private excelService: ExcelService, private pdfService: PdfService) { }
@@ -70,20 +98,22 @@ export class CustomReportResultComponent implements OnDestroy {
 
   public search(searchSetting: SearchSetting) {
     this.firstDate = searchSetting.dateInterval;
-
-    this.drawChart(searchSetting);
+    // this.drawChart(searchSetting);
     this.fillResultTable(searchSetting);
   }
 
   fillResultTable(searchSetting: SearchSetting) {
     this.customReportService.getData(searchSetting).takeUntil(this.ngUnsubscribe).subscribe((res: Response) => {
-
       if (res['searchSetting'] != null) {
         this.searchSetting = res['searchSetting'];
       }
+      
       let total = 0;
       let data: any = res;
+      
       this.selectedColumns = <AggregationItem[]>JSON.parse(JSON.stringify(searchSetting.columns.columns));
+
+
       if (data && data.length > 0) {
         for (let i = 0; i < data.length; i++) {
           let val = parseInt(data[i][this.selectedColumns.length]);
@@ -101,7 +131,25 @@ export class CustomReportResultComponent implements OnDestroy {
         this.multiplier = multiplier;
         this.total = total;
       }
+
       this.data = data;
+
+      this.tableConfig.columns.forEach(col => {
+        let selectedCol = this.selectedColumns.find(item => item.column.name == col.name);
+
+        col.selected = !!selectedCol;
+      });
+
+      this.data.forEach(item => {
+        let rowItem: RkTableRowModel = { selected : false };
+
+        this.selectedColumns.forEach((selectedCol, index) => {
+          rowItem[selectedCol.column.name] = item[index];
+        }); 
+
+        this.tableConfig.rows.push(rowItem);
+      });
+
     }, () => this.stopRefreshing(),
       () => this.stopRefreshing()
     );
@@ -110,6 +158,8 @@ export class CustomReportResultComponent implements OnDestroy {
   drawChart(settings: SearchSetting) {
 
     this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
+      debugger;
+
       let data: any[] = res;
       if (data) {
         let labelArray = [];

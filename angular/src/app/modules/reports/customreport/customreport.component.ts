@@ -50,11 +50,15 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   public search(setting: any) {
     
     this.searchSetting = setting;
-    if (!this.searchSetting.columns.columns || this.searchSetting.columns.columns.length == 0) {
-      this.notificationService.warning("You must select at least one column for a report.");
-    } else {
-      this.customReportResultComponent.search(this.searchSetting);
-    }
+    // if (!this.searchSetting.columns.columns || this.searchSetting.columns.columns.length == 0) {
+    //   this.notificationService.warning("You must select at least one column for a report.");
+    // } else {
+    //   this.customReportResultComponent.search(this.searchSetting);
+    // }
+
+    (this.searchSetting.columns.columns as any) = [JSON.parse('{"column":{"name":"domain","beautyName":"Domain","hrType":"","aggsType":"TERM","checked":true},"label":"Domain"}')];
+
+    this.customReportResultComponent.search(this.searchSetting);
 
   }
 
