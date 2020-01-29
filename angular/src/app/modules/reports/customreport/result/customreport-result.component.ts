@@ -155,6 +155,16 @@ export class CustomReportResultComponent implements OnDestroy {
     );
   }
 
+  onPageChange(pageNumber: number) {
+    // this.pageChanged({ page: pageNumber });
+  }
+
+  onPageViewCountChange(pageViewCount: number) {
+    this.searchSetting.topNumber = pageViewCount;
+
+    this.refresh();
+  }
+
   drawChart(settings: SearchSetting) {
 
     this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
