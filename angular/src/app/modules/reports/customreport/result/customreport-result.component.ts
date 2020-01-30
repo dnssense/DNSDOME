@@ -168,7 +168,7 @@ export class CustomReportResultComponent implements OnDestroy {
   drawChart(settings: SearchSetting) {
 
     this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
-      debugger;
+      
 
       let data: any[] = res;
       if (data) {

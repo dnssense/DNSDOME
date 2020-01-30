@@ -21,7 +21,7 @@ import { CustomReportResultComponent } from './customreport/result/customreport-
 import { CustomReportResultColumnComponent } from './customreport/result/column/customreport-result-column.component';
 import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
 import { FlatpickrModule } from 'angularx-flatpickr';
-import { RkRadioModule, RkSelectModule, IconsModule, RkTableModule, RkProgressBarModule } from 'roksit-lib';
+import { RkRadioModule, RkSelectModule, IconsModule, RkTableModule, RkProgressBarModule, RkModalModule } from 'roksit-lib';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -63,7 +63,8 @@ import { SharedModule } from '../shared/shared.module';
     IconsModule.forRoot(),
     RkTableModule,
     RkProgressBarModule,
-    SharedModule
+    SharedModule,
+    RkModalModule
   ],
   providers: [PipesModule, DatePipe]
 })

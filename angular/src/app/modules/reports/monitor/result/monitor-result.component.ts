@@ -57,6 +57,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @Input() public searchSetting: SearchSetting;
   @Output() public addColumnValueEmitter = new EventEmitter();
+  @Output() public tableColumnsChanged = new EventEmitter();
 
   @ViewChild('tableDivComponent', { static: false }) tableDivComponent: ElementRef;
   @ViewChild('columnTablePanel', { static: false }) columnTablePanel: any;
@@ -72,8 +73,11 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngAfterViewInit() {
     this.monitorService.initTableColumns().takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
-
       this.columns = res;
+      
+
+      this.tableColumnsChanged.next();
+
       var tempcolumns = [];
       for (let data of this.columns) {
         if (data["checked"]) {
@@ -82,6 +86,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
       }
 
       this.selectedColumns = tempcolumns;
+
+      
 
       this.selectedColumns.forEach(item => {
         let col = this.tableConfig.columns.find(colItem => colItem.name == item.name);
@@ -126,7 +132,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
         this.tableConfig.rows = [];
 
-        debugger;
+        
         this.tableData.forEach(item => {
           let rowItem: RkTableRowModel = item;
           rowItem.selected = false;

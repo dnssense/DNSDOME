@@ -92,10 +92,10 @@
               style="border-top: 1px solid rgba(68, 81, 101, 0.2);">
               <div>
                 <div class="rk-selectable-table">
-                  <div class="rk-item">
+                  <div class="rk-item" *ngFor="let cat of categoryListFiltered" >
                     <div class="rk-i-header">
                       <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title">Adult</span>
+                        <span class="rk-selectable-table-item-title"> {{ cat.name }} </span>
                         <span class="rk-selectable-badge">232</span>
                       </div>
                       <i-feather name="arrow-right"></i-feather>
@@ -103,113 +103,7 @@
 
                     <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
                     </rk-progressbar>
-                  </div>
-
-                  <div class="rk-item">
-                    <div class="rk-i-header">
-                      <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title">Adult</span>
-                        <span class="rk-selectable-badge">232</span>
-                      </div>
-                      <i-feather name="arrow-right"></i-feather>
-                    </div>
-
-                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
-                    </rk-progressbar>
-                  </div>
-
-                  <div class="rk-item active">
-                    <div class="rk-i-header">
-                      <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title">Adult</span>
-                        <span class="rk-selectable-badge">232</span>
-                      </div>
-                      <i-feather name="arrow-right"></i-feather>
-                    </div>
-
-                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
-                    </rk-progressbar>
-                  </div>
-
-                  <div class="rk-item">
-                    <div class="rk-i-header">
-                      <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title">Adult</span>
-                        <span class="rk-selectable-badge">232</span>
-                      </div>
-                      <i-feather name="arrow-right"></i-feather>
-                    </div>
-
-                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
-                    </rk-progressbar>
-                  </div>
-
-                  <div class="rk-item">
-                    <div class="rk-i-header">
-                      <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title">Adult</span>
-                        <span class="rk-selectable-badge">232</span>
-                      </div>
-                      <i-feather name="arrow-right"></i-feather>
-                    </div>
-
-                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
-                    </rk-progressbar>
-                  </div>
-
-                  <div class="rk-item">
-                    <div class="rk-i-header">
-                      <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title">Adult</span>
-                        <span class="rk-selectable-badge">232</span>
-                      </div>
-                      <i-feather name="arrow-right"></i-feather>
-                    </div>
-
-                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
-                    </rk-progressbar>
-                  </div>
-
-                  <div class="rk-item">
-                    <div class="rk-i-header">
-                      <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title">Adult</span>
-                        <span class="rk-selectable-badge">232</span>
-                      </div>
-                      <i-feather name="arrow-right"></i-feather>
-                    </div>
-
-                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
-                    </rk-progressbar>
-                  </div>
-
-                  <div class="rk-item">
-                    <div class="rk-i-header">
-                      <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title">Adult</span>
-                        <span class="rk-selectable-badge">232</span>
-                      </div>
-                      <i-feather name="arrow-right"></i-feather>
-                    </div>
-
-                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
-                    </rk-progressbar>
-                  </div>
-
-                  <div class="rk-item">
-                    <div class="rk-i-header">
-                      <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title">Adult</span>
-                        <span class="rk-selectable-badge">232</span>
-                      </div>
-                      <i-feather name="arrow-right"></i-feather>
-                    </div>
-
-                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
-                    </rk-progressbar>
-                  </div>
-
-
+                  </div> 
                 </div>
               </div>
 

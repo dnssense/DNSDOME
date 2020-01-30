@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { MonitorResultComponent } from './result/monitor-result.component';
-import { MonitorSearchComponent } from './search/monitor-search.component';
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
+import { RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
 
 @Component({
   selector: 'app-monitor',
@@ -11,17 +11,26 @@ import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
   styleUrls: ['monitor.component.sass'],
   providers: [DateFormatPipe]
 })
-export class MonitorComponent implements OnInit {
+export class MonitorComponent implements OnInit, AfterViewInit {
   public searchSetting: SearchSetting = new SearchSetting();
 
-  @ViewChild(MonitorSearchComponent, { static : false })
-  private monitorSearchComponent: MonitorSearchComponent;
-  @ViewChild(MonitorResultComponent, { static : false })
+  @ViewChild(RoksitSearchComponent, { static: false })
+  private roksitSearchComponent: RoksitSearchComponent;
+  @ViewChild(MonitorResultComponent, { static: false })
   private monitorResultComponent: MonitorResultComponent;
 
   constructor(public dateFormatPipe: DateFormatPipe) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+    this.monitorResultComponent.tableColumnsChanged.subscribe(res => {
+      this.monitorResultComponent.columns.forEach(col => {
+        this.roksitSearchComponent.columnFilterOptions.push({ displayText: col.beautyName, value: col.name })
+      });
+    });
+  }
 
   public search(ss: SearchSetting) {
     this.searchSetting = ss;
@@ -45,7 +54,7 @@ export class MonitorComponent implements OnInit {
     }
     this.searchSetting.must.push(new ColumnTagInput(column, '=', value));
     //this.notificationService.info(column + "=" + (column == 'time' ? this.dateFormatPipe.transform(value, []) : value) + " added into your criteria");
-    this.monitorSearchComponent.setSearchSetting(this.searchSetting);
+    this.roksitSearchComponent.setSearchSetting(this.searchSetting);
   }
 
   // public updateSearchSetting(setting: SearchSetting) {

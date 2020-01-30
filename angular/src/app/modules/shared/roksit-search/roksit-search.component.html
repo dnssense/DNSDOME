@@ -1,22 +1,106 @@
+<rk-modal #modal>
+  <rk-modal-header icon="filter">
+    <rk-modal-header-title>Filtrele</rk-modal-header-title>
+    <rk-modal-header-close (click)="modal.toggle()"></rk-modal-header-close>
+  </rk-modal-header>
+
+  <rk-modal-body>
+    <div class="rk-modal-item">
+      <ul>
+        <li class="modal-item-title">Saved Reports</li>
+        <li>
+
+          <rk-accordion>
+            <rk-accordion-panel>
+              <rk-accordion-header-content>
+                User Saved Reports
+              </rk-accordion-header-content>
+
+              Not Found
+            </rk-accordion-panel>
+
+            <rk-accordion-panel>
+              <rk-accordion-header-content>
+                System Default Reports
+              </rk-accordion-header-content>
+
+              <ul>
+                <li *ngFor="let report of savedReports">
+                  <rk-radio name="userSavedReport">{{ report.name }}</rk-radio>
+                </li>
+              </ul>
+            </rk-accordion-panel>
+          </rk-accordion>
+        </li>
+      </ul>
+
+    </div>
+
+    <div class="rk-modal-item">
+      <ul>
+        <li class="modal-item-title">Action</li>
+        <li class="rk-row rk-j-c-sb">
+          <rk-radio name="actionType">Allow</rk-radio>
+          <rk-radio name="actionType">Deny</rk-radio>
+        </li>
+      </ul>
+    </div>
+
+    <div class="rk-modal-item">
+      <ul>
+        <li class="modal-item-title">Add Filter</li>
+        <li>
+          <rk-select [(value)]="selectedColumnFilter" [options]="columnFilterOptions"></rk-select>
+        </li>
+        <li class="m-t-8" style="display: flex; justify-content: space-between;">
+          <button style="width: 48%;" class="btn btn-default" (click)="isEqual = true">
+            <icon-equal></icon-equal>
+          </button>
+          <button style="width: 48%;" class="btn btn-default m-l-2" (click)="isEqual = false">
+            <icon-not-equal></icon-not-equal>
+          </button>
+        </li>
+        <li class="m-t-8">
+          <input (keyup.enter)="addFilter(selectedColumnFilter,isEqual,filterText )" [(ngModel)]="filterText"
+            style="width: 100%;" type="text" class="rk-input" placeholder="abc.com">
+        </li>
+      </ul>
+    </div>
+  </rk-modal-body>
+
+  <rk-modal-footer>
+    <button class="btn w-100 btn-small mr-2">Apply</button>
+    <button class="btn w-100 btn-default btn-small">Clean</button>
+  </rk-modal-footer>
+</rk-modal>
+
 <div class="monitor-traffic-search">
   <div class="filter-left">
     <span class="monitor-title"> Monitor Traffic</span>
 
     <div class="traffic-types">
-      <rk-radio name="trafficType" checked="true" (valueChange)="onValueChange(true)" >Total traffic</rk-radio>
-      <rk-radio name="trafficType" (valueChange)="onValueChange(false)">Block Page</rk-radio>
+      <rk-radio name="trafficType" checked="true" (valueChange)="onValueChange(true)">Total traffic</rk-radio>
+      <rk-radio class="m-l-10" name="trafficType" (valueChange)="onValueChange(false)">Block Page</rk-radio>
     </div>
   </div>
 
   <div class="filter-right">
     <div style="min-width: 200px;">
-      <rk-select [(value)]="searchSetting.dateInterval" (valueChange)="onSelectedDateChange($event)"  [options]="options" [placeholder]="'Date selection'"></rk-select>
+      <rk-select [(value)]="searchSetting.dateInterval" (valueChange)="onSelectedDateChange($event)" [options]="options"
+        [placeholder]="'Date selection'"></rk-select>
     </div>
     <div>
-      <button class="btn btn-small btn-icon ml-2">
+      <button class="btn btn-small btn-icon ml-2" (click)="modal.toggle()">
         <i-feather name="shopping-cart"></i-feather>
         Filtreler
       </button>
     </div>
+  </div>
+</div>
+
+<div class="filters rk-row" *ngIf="filters.length > 0">
+  <span>Filter;</span>
+  <div *ngFor="let filter of filters" class="m-l-8">
+    <rk-filter-badge [name]="filter.name" [equal]="filter.equal" [values]="filter.values"></rk-filter-badge>
   </div>
 </div>
