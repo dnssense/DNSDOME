@@ -23,12 +23,12 @@ export class PublicipComponent implements AfterViewInit {
 
   ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
   publicIps: Agent[] = [];
-  publicIpsFiltered: Agent[];
+  publicIpsFiltered: Agent[] = [];
   publicIpForm: FormGroup;
   startWizard = false;
 
   ipRanges: RkSelectModel[] = [
-    { value: 32, displayText: '32' },
+    { value: 32, displayText: '32', selected: true },
     { value: 31, displayText: '31' },
     { value: 30, displayText: '30' },
     { value: 29, displayText: '29' },
@@ -47,14 +47,22 @@ export class PublicipComponent implements AfterViewInit {
   isNewItemUpdated = false;
   saveMode: string;
   securityProfiles: SecurityProfile[];
+
+  securityProfilesForRkSelect: RkSelectModel[] = [];
+
   roleName: string;
   tooltipGuideCounter = 0;
 
   @ViewChild('agentModal', { static: false }) agentModal;
 
-  constructor(private alertService: AlertService, private notification: NotificationService, private authService: AuthenticationService,
-    private formBuilder: FormBuilder, private agentService: AgentService, private publicIpService: PublicIPService) {
-
+  constructor(
+    private alertService: AlertService,
+    private notification: NotificationService,
+    private authService: AuthenticationService,
+    private formBuilder: FormBuilder,
+    private agentService: AgentService,
+    private publicIpService: PublicIPService
+  ) {
     this.roleName = this.authService.currentSession.currentUser.roles.name;
     this.getPublicIpsDataAndProfiles();
 
@@ -172,7 +180,28 @@ export class PublicipComponent implements AfterViewInit {
 
     });
 
-    this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res; });
+    this.agentService.getSecurityProfiles().subscribe(res => {
+      this.securityProfiles = res;
+
+      this.fillSecurityProfilesArray();
+    });
+  }
+
+  fillSecurityProfilesArray() {
+    this.securityProfilesForRkSelect = [];
+
+    this.securityProfiles.forEach(elem => {
+      const obj = {
+        displayText: elem.name,
+        value: elem.id,
+      } as RkSelectModel;
+
+      if ((this.selectedIp.rootProfile && this.selectedIp.rootProfile.name) && this.selectedIp.rootProfile.id === elem.id) {
+        obj.selected = true;
+      }
+
+      this.securityProfilesForRkSelect.push(obj);
+    });
   }
 
   openTooltipGuide() {
@@ -203,8 +232,8 @@ export class PublicipComponent implements AfterViewInit {
         break;
       }
     }
-    if (inputValue && (event.key != 'Backspace' && event.key != 'ArrowLeft' && event.key != 'ArrowRight')) {
-      if (event.key != '.') {
+    if (inputValue && (event.key !== 'Backspace' && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
+      if (event.key !== '.') {
         inputValue += event.key;
       }
       const lastOcletStr = inputValue.substring(inputValue.lastIndexOf('.') + 1);
@@ -212,7 +241,7 @@ export class PublicipComponent implements AfterViewInit {
       if (isValid && (lastOclet > 255 || lastOclet < 0 || lastOcletStr.length > 3)) {
         isValid = false;
       }
-      if (isValid && event.key == '.') {
+      if (isValid && event.key === '.') {
         const oclets: string[] = inputValue.split('.');
         for (let i = 0; i < oclets.length; i++) {
           const oclet = oclets[i];
@@ -239,10 +268,10 @@ export class PublicipComponent implements AfterViewInit {
       //   }
       // }
 
-      if (isValid && event.key == '.' && (inputValue.endsWith('.') || inputValue.split('.').length >= 4)) {
+      if (isValid && event.key === '.' && (inputValue.endsWith('.') || inputValue.split('.').length >= 4)) {
         isValid = false;
       }
-    } else if (isValid && event.key == '.') {
+    } else if (isValid && event.key === '.') {
       isValid = false;
     }
 
@@ -280,6 +309,8 @@ export class PublicipComponent implements AfterViewInit {
       this.startWizard = true;
 
       this.selectedIp = agent;
+
+      this.fillSecurityProfilesArray();
 
       this.agentModal.toggle();
     } else {
@@ -380,7 +411,7 @@ export class PublicipComponent implements AfterViewInit {
 
   selectFile($event) {
 
-    let inputValue = $event.target;
+    const inputValue = $event.target;
     const file = inputValue.files[0];
 
     if (typeof file == 'undefined' || !file.type.toString().startsWith('image/')) {
@@ -406,7 +437,7 @@ export class PublicipComponent implements AfterViewInit {
     }
 
     function imageExists(url, callback) {
-      let img = new Image();
+      const img = new Image();
       img.onload = function () { callback(true); };
       img.onerror = function () { callback(false); };
       img.src = url;
@@ -518,7 +549,7 @@ export class PublicipComponent implements AfterViewInit {
       }
     });
 
-    let $valid = $('.publicIpForm').valid();
+    const $valid = $('.publicIpForm').valid();
     if (!$valid) {
       if (!this.selectedIp.agentAlias) {
         this.notification.warning('Please enter a name');
@@ -527,20 +558,20 @@ export class PublicipComponent implements AfterViewInit {
       return false;
     }
 
-    if (this.ipType == 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
+    if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
       this.notification.warning('Form is not valid! Please enter IP fields with valid values.');
       return false;
-    } else if (this.ipType == 'dynamicIp' && !this.selectedIp.dynamicIpDomain && !this.dnsFqdn) {
+    } else if (this.ipType === 'dynamicIp' && !this.selectedIp.dynamicIpDomain && !this.dnsFqdn) {
       this.notification.warning('Form is not valid! Please enter IP fields with valid values.');
       return false;
     } else if (!this.ipType) {
       return false;
     }
 
-    if (this.ipType == 'staticIp' && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
+    if (this.ipType === 'staticIp' && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
       for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
         const e = this.selectedIp.staticSubnetIp[i];
-        if (e.baseIp == null || e.mask == 0) {
+        if (e.baseIp == null || e.mask === 0) {
           this.notification.warning('Please enter IP fields with valid values and select a mask for your IP address!');
           return false;
         }
@@ -551,8 +582,8 @@ export class PublicipComponent implements AfterViewInit {
 
     if (!this.publicIpForm.valid) {
       this.notification.warning('Form is not valid! Please enter required fields with valid values.');
-      return false;
 
+      return false;
     }
 
     return true;
