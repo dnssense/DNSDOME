@@ -24,11 +24,11 @@
             <form [formGroup]="publicIpForm">
               <div class="row">
                 <div class="col-6">
-                  <rk-radio name="ipType" [checked]="ipType" (click)="onSelectionChangeIPType('staticIp')">Static IP
+                  <rk-radio name="ipType" >Static IP
                   </rk-radio>
                 </div>
                 <div class="col-6">
-                  <rk-radio name="ipType" [checked]="ipType" (click)="onSelectionChangeIPType('dynamicIp')">Dynamic IP
+                  <rk-radio name="ipType" >Dynamic IP
                   </rk-radio>
                 </div>
               </div>
@@ -39,9 +39,40 @@
                     formControlName="agentName">
                 </div>
 
-                <div class="col-12">
-                  <input type="text" class="rk-input w-100" placeholder="">
-                </div>
+                <ng-container *ngIf="ipType == 'dynamicIp'; else elseTemplateIpType">
+                  <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-12 mt-2">
+                    <input type="text" id="dnsFqdn" name="dnsFqdn" class="rk-input w-100"
+                      [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn" placeholder="DNS FQDN">
+                  </div>
+                </ng-container>
+
+                <ng-template #elseTemplateIpType>
+                  <div class="col-12 d-flex mt-2" *ngFor="let row of selectedIp.staticSubnetIp; index as i">
+                    <div class="rk-input-container">
+                      <span style="flex: 2">
+                        <input type="text" placeholder="IP" maxlength="15" name="'ip'+i"
+                          (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)"
+                          [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" formControlName="ip{{i}}">
+                        /
+                      </span>
+
+                      <rk-select placeholder="" [options]="ipRanges" [(value)]="selectedIp.staticSubnetIp[i].mask">
+                      </rk-select>
+                    </div>
+
+                    <ng-container *ngIf="i > 0; else elseTemplate11">
+                      <button class="btn btn-icon p-0 px-2 ml-1" (click)="removeElementFromIpList(i)">
+                        <i-feather name="trash-2" class="mr-0 fill-red"></i-feather>
+                      </button>
+                    </ng-container>
+
+                    <ng-template #elseTemplate11>
+                      <button class="btn btn-icon bg-primary fill-white p-0 px-2 ml-1" (click)="addIpRangeToList()">
+                        <i-feather name="plus" class="mr-0"></i-feather>
+                      </button>
+                    </ng-template>
+                  </div>
+                </ng-template>
               </div>
             </form>
 
@@ -88,8 +119,8 @@
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
                       <span>{{ pi.agentAlias }}</span>
-                      <button class="btn btn-link btn-icon p-0" (click)="agentModal.toggle()">
-                        <i-feather name="settings"></i-feather>
+                      <button class="btn btn-link btn-icon p-0 hover-gray" (click)="showProfileEditWizard(pi.id)">
+                        <i-feather name="settings" class="mr-0"></i-feather>
                       </button>
                     </div>
                   </td>
@@ -113,14 +144,14 @@
                     <div class="d-flex align-items-center justify-content-between">
                       <span>{{ pi.rootProfile?pi.rootProfile.name: 'No Profile!' }}</span>
 
-                      <button class="btn btn-link btn-icon p-0" (click)="showProfileEditWizard(pi.id)">
-                        <i-feather name="settings"></i-feather>
+                      <button class="btn btn-link btn-icon p-0 hover-gray" (click)="showProfileEditWizard(pi.id)">
+                        <i-feather name="settings" class="mr-0"></i-feather>
                       </button>
                     </div>
                   </td>
                   <td class="text-center">
-                    <button class="btn btn-link btn-icon p-0" (click)="deletePublicIp(pi.id)">
-                      <i-feather name="trash-2"></i-feather>
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deletePublicIp(pi.id)">
+                      <i-feather name="trash-2" class="mr-0"></i-feather>
                     </button>
                   </td>
                 </tr>
@@ -446,7 +477,9 @@
         </div>
       </div>
     </section>
-
+    
 
   </div>
 </div>
+
+-->
