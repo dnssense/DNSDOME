@@ -1,10 +1,12 @@
+<!-- 
+
 <div class="monitor-traffic-search">
   <div class="filter-left">
     <span class="monitor-title"> Monitor Traffic</span>
 
     <div class="traffic-types">
       <rk-radio name="trafficType" checked="true" (valueChange)="onValueChange(true)" >Total traffic</rk-radio>
-      <rk-radio name="trafficType" (valueChange)="onValueChange(false)">Block Page</rk-radio>
+      <rk-radio name="trafficType" (valueChange)="onValueChange(false)"  >Block Page</rk-radio>
     </div>
   </div>
 
@@ -13,10 +15,10 @@
       <rk-select [(value)]="searchSetting.dateInterval" (valueChange)="onSelectedDateChange($event)"  [options]="options" [placeholder]="'Date selection'"></rk-select>
     </div>
     <div>
-      <button class="btn btn-small btn-icon ml-2">
+      <button class="btn btn-small btn-icon ml-2" (click)="onFilterClick()">
         <i-feather name="shopping-cart"></i-feather>
         Filtreler
       </button>
     </div>
   </div>
-</div>
+</div> -->

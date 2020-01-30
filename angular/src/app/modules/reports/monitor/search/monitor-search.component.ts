@@ -128,6 +128,10 @@ export class MonitorSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     this.searchSettingEmitter.emit(this.searchSetting);
   }
 
+  onFilterClick() {
+    
+  }
+
   ngOnInit() {
     this.countries = countryList.countries;
 

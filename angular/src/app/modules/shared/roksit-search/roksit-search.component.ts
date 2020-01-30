@@ -23,6 +23,7 @@ import { ValidationService } from 'src/app/core/services/validation.service';
 import { ReportService } from 'src/app/core/services/ReportService';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
 import { RoamingService } from 'src/app/core/services/roaming.service';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 
 
 declare var $: any;
@@ -57,6 +58,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     { displayText: 'Last 1 Week', value: 10080, select: true }
   ];
 
+  columnFilterOptions : RkSelectModel[] = [
+  
+  ]
 
 
   @Input() searchSetting: SearchSetting;
@@ -117,6 +121,19 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
     }
 
+  }
+
+  filters : Array<{ name : string, equal : boolean, values : string[] }> = [];
+
+  addFilter(name : string, equal : boolean, value : string) {
+    let foundedFilter = this.filters.find(item => item.name == name && item.equal == equal);
+
+    if(foundedFilter) {
+      if(!foundedFilter.values.find(val => val == value))
+      foundedFilter.values.push(value);
+    } else {
+      this.filters.push({ name : name, equal : equal, values : [value] });
+    }
   }
 
   onSelectedDateChange(value: string) {
