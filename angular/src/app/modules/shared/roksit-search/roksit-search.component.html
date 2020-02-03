@@ -12,23 +12,27 @@
 
           <rk-accordion>
             <rk-accordion-panel>
-              <rk-accordion-header-content>
+              <div class="rk-accordion-title">
                 User Saved Reports
-              </rk-accordion-header-content>
+              </div>
 
-              Not Found
+              <div class="rk-accordion-body">
+                Not Found
+              </div>
             </rk-accordion-panel>
 
             <rk-accordion-panel>
-              <rk-accordion-header-content>
+              <div class="rk-accordion-title">
                 System Default Reports
-              </rk-accordion-header-content>
+              </div>
 
-              <ul>
-                <li *ngFor="let report of savedReports">
-                  <rk-radio name="userSavedReport">{{ report.name }}</rk-radio>
-                </li>
-              </ul>
+              <div class="rk-accordion-body">
+                <ul>
+                  <li *ngFor="let report of savedReports">
+                    <rk-radio name="userSavedReport">{{ report.name }}</rk-radio>
+                  </li>
+                </ul>
+              </div>
             </rk-accordion-panel>
           </rk-accordion>
         </li>

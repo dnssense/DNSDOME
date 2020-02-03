@@ -8,6 +8,7 @@ import { ProfileWizardRoutingModule } from './profile-wizard-routing.module';
 import { ProfileWizardComponent } from './page/profile-wizard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
+import { RkLayoutModule, RkToggleButtonModule, RkCollapseModule, IconsModule } from 'roksit-lib';
 
 
 @NgModule({
@@ -24,7 +25,11 @@ import { MaterialModule } from 'src/app/material.module';
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    RkLayoutModule,
+    RkToggleButtonModule,
+    RkCollapseModule,
+    IconsModule
   ],
   exports: [ ProfileWizardComponent ]
 

@@ -32,6 +32,18 @@ export class applicationItem {
   styleUrls: ['./profile-wizard.component.sass']
 })
 export class ProfileWizardComponent {
+
+  constructor(
+    private notification: NotificationService,
+    private alertService: AlertService,
+    private staticService: StaticService,
+    private agentService: AgentService,
+    private roamingService: RoamingService,
+    private boxService: BoxService
+  ) {
+    this.getCategoriesAndApps();
+  }
+
   isSafeSearchEnabled: boolean;
   isYoutubeStrictModeEnabled: boolean;
   profileName: string;
@@ -41,11 +53,14 @@ export class ProfileWizardComponent {
   whiteListItem: ListItem = new ListItem();
   categoryList: categoryItem[] = [];
   applicationList: applicationItem[] = [];
+  activeNumber = 1;
+
+  groupedApplications: { type: string, displayText: string, description: string, applications: applicationItem[] }[] = [];
+
   public _selectedBox: Box;
   public _selectedAgent: Agent;
   public _startWizard: boolean;
   public _saveMode: string;
-  currentStep = 0;
 
   @Input() set saveMode(value: string) {
     this._saveMode = value;
@@ -67,28 +82,11 @@ export class ProfileWizardComponent {
     return this._selectedBox;
   }
 
-  @Input() set startWizard(value: boolean) {
-    this._startWizard = value;
-    if (value) {
-      this.currentStep = 0;
-      this.controlStep();
-    }
-  }
-
-  get startWizard(): boolean {
-    return this._startWizard;
-  }
+  @Input() currentStep: number;
 
   @Input() updateCount: number;
 
   @Output() public saveEmitter = new EventEmitter();
-
-  constructor(private notification: NotificationService, private alertService: AlertService, private staticService: StaticService,
-    private agentService: AgentService, private roamingService: RoamingService, private boxService: BoxService) {
-
-    this.getCategoriesAndApps();
-
-  }
 
   getCategoriesAndApps(): void {
 
@@ -104,7 +102,62 @@ export class ProfileWizardComponent {
         this.applicationList.push(new applicationItem(r, false));
       });
       this.applicationList = this.applicationList.sort((x, y) => { return x.application.name > y.application.name ? 1 : -1 })
+
+      this.fillGroupedApplications();
     });
+  }
+
+  setActiveNumber(val: number) {
+    this.activeNumber = val;
+  }
+
+  fillGroupedApplications() {
+    const clearAds = [];
+    const http = [];
+    const onlineVideo = [];
+    const instantMessaging = [];
+    const remoteAccess = [];
+    const social = [];
+
+    this.applicationList.forEach(el => {
+      switch (el.application.type) {
+        case ApplicationTypes.CLEAR_ADS:
+          clearAds.push(el);
+          break;
+
+        case ApplicationTypes.HTTP:
+          http.push(el);
+          break;
+
+        case ApplicationTypes.INSTANT_MESSAGING:
+          instantMessaging.push(el);
+          break;
+
+        case ApplicationTypes.ONLINE_VIDEO:
+          onlineVideo.push(el);
+          break;
+
+        case ApplicationTypes.REMOTE_ACCESS:
+          remoteAccess.push(el);
+          break;
+
+        case ApplicationTypes.SOCIAL:
+          social.push(el);
+          break;
+
+        default:
+          break;
+      }
+    })
+
+    this.groupedApplications = [
+      { type: ApplicationTypes.CLEAR_ADS, displayText: 'Advertisement', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: clearAds },
+      // { type: ApplicationTypes.HTTP, displayText: 'HTTP', description: '',  applications: http },
+      { type: ApplicationTypes.INSTANT_MESSAGING, displayText: 'Instant Messaging', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: instantMessaging },
+      { type: ApplicationTypes.ONLINE_VIDEO, displayText: 'Online Video', description: 'Pornogrphy, Adult, Gamblig gibi istenmeyen domainleri içerir.', applications: onlineVideo },
+      { type: ApplicationTypes.REMOTE_ACCESS, displayText: 'Remote Access Tools', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: remoteAccess },
+      { type: ApplicationTypes.SOCIAL, displayText: 'Social Media', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: social },
+    ]
   }
 
 
@@ -114,9 +167,6 @@ export class ProfileWizardComponent {
   }
 
   updateModels() {
-    this.currentStep = 0;
-    this.controlStep();
-
     if (this.saveMode == 'NewProfile') {
 
       this.categoryList.forEach(c => {
@@ -156,6 +206,14 @@ export class ProfileWizardComponent {
     }
   }
 
+  categoryChanged(category: categoryItem) {
+    if (category.isBlocked) {
+      this.allowCategory(category.category.id)
+    } else {
+      this.blockCategory(category.category.id)
+    }
+  }
+
   allowCategory(id: number) {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       this.categoryList.find(c => c.category.id == id).isBlocked = false;
@@ -167,6 +225,14 @@ export class ProfileWizardComponent {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       this.categoryList.find(c => c.category.id == id).isBlocked = true;
       this.selectedAgent.rootProfile.domainProfile.categories.find(c => c.id == id).isBlocked = true;
+    }
+  }
+
+  applicationChanged(application: applicationItem) {
+    if (application.isBlocked) {
+      this.allowApplication(application.application.id);
+    } else {
+      this.blockApplication(application.application.id);
     }
   }
 
@@ -185,25 +251,11 @@ export class ProfileWizardComponent {
     }
   }
 
-  profileNameChanged() {
-    if (!this.selectedAgent.rootProfile.name) {
-      $('#profileName').addClass('profileNameHasError');
-      $('.profileNameToolTip').show(300)
-    } else {
-      $('#profileName').removeClass('profileNameHasError');
-      $('.profileNameToolTip').hide(200)
-    }
-  }
-
   saveProfile() {
-    if (!this.selectedAgent.rootProfile.name) {
-      $('#profileName').focus();
-      $('#profileName').addClass('profileNameHasError');
-      $('.profileNameToolTip').css("visibility", 'hidden');
-      setTimeout(() => {$('.profileNameToolTip').css("visibility", 'visible');}, 100);
-      return;
-    }
+    if (!this.selectedAgent.rootProfile.name) { return; }
+
     let alertMessage = '', alertTitle = '';
+
     if (this.selectedAgent.rootProfile.numberOfUsage && this.selectedAgent.rootProfile.numberOfUsage > 0) {
       alertTitle = this.selectedAgent.rootProfile.numberOfUsage + ' Agent/s using this profile!';
       alertMessage = 'Profile configuration will change for all of related agents.';
@@ -291,15 +343,11 @@ export class ProfileWizardComponent {
               } else {
                 this.notification.warning('Missing Information! Please provide required fields.')
               }
-
-
             }
           }
         }
       }
     );
-
-
   }
 
   blackListItemValidation() {
@@ -319,15 +367,15 @@ export class ProfileWizardComponent {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.blackListItem.domain)) {
         this.notification.warning("This domain already in black list.")
-      }else
-      if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.blackListItem.domain)) {
-        this.notification.warning("This domain already in white list.")
-      } else {
-        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(JSON.parse(JSON.stringify(this.blackListItem)));
-        this.blackListItem.domain = ""
-        this.blackListItem.comment = ""
-        this.isNewBlackListItem = false;
-      }
+      } else
+        if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.blackListItem.domain)) {
+          this.notification.warning("This domain already in white list.")
+        } else {
+          this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(JSON.parse(JSON.stringify(this.blackListItem)));
+          this.blackListItem.domain = ""
+          this.blackListItem.comment = ""
+          this.isNewBlackListItem = false;
+        }
     }
   }
 
@@ -355,16 +403,16 @@ export class ProfileWizardComponent {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.whiteListItem.domain)) {
         this.notification.warning("This domain already in white list.")
-      }else
-      if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.whiteListItem.domain)) {
-        this.notification.warning("This domain already in black list.")
-      }
-       else {
-        this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.push(JSON.parse(JSON.stringify(this.whiteListItem)));
-        this.whiteListItem.domain = ""
-        this.whiteListItem.comment = ""
-        this.isNewWhiteListItem = false;
-      }
+      } else
+        if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.whiteListItem.domain)) {
+          this.notification.warning("This domain already in black list.")
+        }
+        else {
+          this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.push(JSON.parse(JSON.stringify(this.whiteListItem)));
+          this.whiteListItem.domain = ""
+          this.whiteListItem.comment = ""
+          this.isNewWhiteListItem = false;
+        }
     }
   }
 
@@ -386,84 +434,13 @@ export class ProfileWizardComponent {
       this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled = this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled ? false : true;
     }
   }
-
-  nextStep() {
-    if (this.currentStep >= 0 && this.currentStep < 3) {
-      this.currentStep++;
-      this.controlStep();
-      document.getElementById('agent-wizard').scrollIntoView();
-    }
-  }
-
-  prevStep() {
-    if (this.currentStep >= 0 && this.currentStep <= 3) {
-      this.currentStep--;
-      this.controlStep();
-      document.getElementById('agent-wizard').scrollIntoView();
-    }
-  }
-
-  changeWizardStep(stepNo: number) {
-    this.currentStep = stepNo;
-    this.controlStep();
-  }
-
-  controlStep() {
-
-    let prevButton = $('#prevBtn');
-    let nextButton = $('#nextBtn');
-    let finishButton = $('#finishBtn');
-
-    let contentFilter = $('#contentFilter'),
-      security = $('#security'),
-      applications = $('#applications'),
-      blackWhiteLists = $('#blackWhiteLists');
-
-    prevButton.hide();
-    nextButton.hide();
-    finishButton.show();
-    //finishButton.hide();
-
-    if (this.currentStep === 0) {
-      prevButton.hide();
-      nextButton.show();
-      //finishButton.hide();
-    } else if (this.currentStep === 3) {
-      prevButton.show();
-      nextButton.hide();
-      // finishButton.show();
-    } else {
-      //finishButton.hide();
-      prevButton.show();
-      nextButton.show();
-    }
-
-    contentFilter.removeClass('d-block');
-    security.removeClass('d-block');
-    applications.removeClass('d-block');
-    blackWhiteLists.removeClass('d-block');
-
-    if (this.currentStep === 0) {
-      contentFilter.addClass('d-block');
-      $('#contentFilterBtn').addClass('activated')
-      $('#securityBtn').removeClass('activated')
-      $('#applicationsBtn').removeClass('activated')
-      $('#blackWhiteListsBtn').removeClass('activated')
-    } else if (this.currentStep === 1) {
-      security.addClass('d-block');
-      $('#securityBtn').addClass('activated')
-      $('#applicationsBtn').removeClass('activated')
-      $('#blackWhiteListsBtn').removeClass('activated')
-    } else if (this.currentStep === 2) {
-      applications.addClass('d-block');
-      $('#applicationsBtn').addClass('activated')
-      $('#blackWhiteListsBtn').removeClass('activated')
-    } else {
-      blackWhiteLists.addClass('d-block');
-      $('#blackWhiteListsBtn').addClass('activated')
-    }
-
-  }
-
-
 }
+
+export const ApplicationTypes = {
+  REMOTE_ACCESS: 'REMOTE_ACCESS',
+  ONLINE_VIDEO: 'ONLINE_VIDEO',
+  INSTANT_MESSAGING: 'INSTANT_MESSAGING',
+  SOCIAL: 'SOCIAL',
+  CLEAR_ADS: 'CLEAR_ADS',
+  HTTP: 'HTTP'
+};

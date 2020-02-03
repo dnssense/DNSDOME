@@ -11,6 +11,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { RkModalComponent } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 
 declare let $: any;
 
@@ -28,7 +29,7 @@ export class PublicipComponent implements AfterViewInit {
   startWizard = false;
 
   ipRanges: RkSelectModel[] = [
-    { value: 32, displayText: '32', selected: true },
+    { value: 32, displayText: '32' },
     { value: 31, displayText: '31' },
     { value: 30, displayText: '30' },
     { value: 29, displayText: '29' },
@@ -54,6 +55,10 @@ export class PublicipComponent implements AfterViewInit {
   tooltipGuideCounter = 0;
 
   @ViewChild('agentModal', { static: false }) agentModal;
+  @ViewChild('profileModal', { static: false }) profileModal;
+  @ViewChild('profileWizard', { static: false }) profileWizard: ProfileWizardComponent;
+
+  currentStep: number = 1;
 
   constructor(
     private alertService: AlertService,
@@ -73,93 +78,22 @@ export class PublicipComponent implements AfterViewInit {
       'dnsFqdn': ['', []],
       'ip0': ['', [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]],
       'cyberXRayIp': ['', []]
-
     });
 
     this.defineNewAgentForProfile();
-
   }
 
-  ngAfterViewInit(): void {
-
-    // adding select options into divs
-    let container_select, i, j, selElmnt, a, b, c;
-    container_select = document.getElementsByClassName('dnssense-select');
-    for (i = 0; i < container_select.length; i++) {
-      selElmnt = container_select[i].getElementsByTagName('select')[0];
-
-      a = document.createElement('DIV');
-      a.setAttribute('class', 'select-selected');
-      a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
-      container_select[i].appendChild(a);
-
-      b = document.createElement('DIV');
-      b.setAttribute('class', 'select-items select-hide');
-      for (j = 1; j < selElmnt.length; j++) {
-
-        c = document.createElement('DIV');
-        c.innerHTML = selElmnt.options[j].innerHTML;
-        c.addEventListener('click', function (e) {
-
-          let y, i, k, s, h;
-          s = this.parentNode.parentNode.getElementsByTagName('select')[0];
-          h = this.parentNode.previousSibling;
-
-          for (i = 0; i < s.length; i++) {
-            if (s.options[i].innerHTML == this.innerHTML) {
-              s.selectedIndex = i;
-              h.innerHTML = this.innerHTML;
-              y = this.parentNode.getElementsByClassName('same-as-selected');
-              for (k = 0; k < y.length; k++) {
-                y[k].removeAttribute('class');
-              }
-              this.setAttribute('class', 'same-as-selected');
-              break;
-            }
-          }
-          h.click();
-        });
-        b.appendChild(c);
-      }
-
-      container_select[i].appendChild(b);
-
-      a.addEventListener('click', function (e) {
-        e.stopPropagation();
-        closeAllSelect(this);
-        this.nextSibling.classList.toggle('select-hide');
-        this.classList.toggle('select-arrow-active');
-      });
-    }
-    function closeAllSelect(elmnt) {
-      /*a function that will close all select boxes in the document,
-      except the current select box:*/
-      let x, y, i, arrNo = [];
-      x = document.getElementsByClassName('select-items');
-      y = document.getElementsByClassName('select-selected');
-      for (i = 0; i < y.length; i++) {
-        if (elmnt == y[i]) {
-          arrNo.push(i);
-        } else {
-          y[i].classList.remove('select-arrow-active');
-        }
-      }
-      for (i = 0; i < x.length; i++) {
-        if (arrNo.indexOf(i)) {
-          x[i].classList.add('select-hide');
-        }
-      }
-    }
-    document.addEventListener('click', closeAllSelect);
-
-    $('#advancedBtn').click(function () {
-      $('#advancedContent').toggleClass('d-none');
-      $('#defaultSaveBtn').toggleClass('d-none');
-      $('#advancedBtnIcon').toggleClass('icon-down-open-big');
-      $('#advancedBtnIcon').toggleClass('icon-up-open-big');
-    });
-
+  saveProfile() {
+    this.profileWizard.saveProfile();
   }
+
+  nextStep() {
+    if (this.currentStep < 3) {
+      this.currentStep++;
+    }
+  }
+
+  ngAfterViewInit(): void { }
 
   getPublicIpsDataAndProfiles() {
 
@@ -187,7 +121,20 @@ export class PublicipComponent implements AfterViewInit {
     });
   }
 
-  fillSecurityProfilesArray() {
+  changeProfile($event) {
+    this.showProfileEditWizard($event, false);
+  }
+
+  clearAgentForm() {
+    this.selectedIp.agentAlias = '';
+    this.selectedIp.blockMessage = '';
+    this.selectedIp.dynamicIpDomain = '';
+    this.selectedIp.staticSubnetIp.forEach(elem => elem.baseIp = '');
+    this.securityProfilesForRkSelect.forEach(elem => elem.selected = false);
+    this.selectedIp.cyberXRayIp = '';
+  }
+
+  fillSecurityProfilesArray(agent?: Agent) {
     this.securityProfilesForRkSelect = [];
 
     this.securityProfiles.forEach(elem => {
@@ -196,8 +143,14 @@ export class PublicipComponent implements AfterViewInit {
         value: elem.id,
       } as RkSelectModel;
 
-      if ((this.selectedIp.rootProfile && this.selectedIp.rootProfile.name) && this.selectedIp.rootProfile.id === elem.id) {
-        obj.selected = true;
+      if (agent) {
+        if (elem.id == agent.rootProfile.id) {
+          obj.selected = true;
+        }
+      } else {
+        if ((this.selectedIp.rootProfile && this.selectedIp.rootProfile.name) && this.selectedIp.rootProfile.id === elem.id) {
+          obj.selected = true;
+        }
       }
 
       this.securityProfilesForRkSelect.push(obj);
@@ -281,10 +234,7 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   showNewProfileWizard() {
-
-    if (!this.validatePublicIpForm()) {
-      return;
-    }
+    if (!this.validatePublicIpForm()) { return; }
 
     this.selectedAgent = this.selectedIp;
     this.defineNewAgentForProfile();
@@ -292,31 +242,35 @@ export class PublicipComponent implements AfterViewInit {
 
     this.saveMode = 'NewProfileWithAgent';
 
-    $('#publicIpPanel').toggle('slide', { direction: 'left' }, 600);
-    $('#wizardPanel').toggle('slide', { direction: 'right' }, 600);
     this.startWizard = true;
-    $('#contentLink').click();
-    document.getElementById('wizardPanel').scrollIntoView();
   }
 
-  showProfileEditWizard(id: number) {
-    const agent = this.publicIps.find(p => p.id === id);
+  showProfileEditWizard(id: number, t: boolean = true) {
+    let agent;
 
-    if (agent.rootProfile && agent.rootProfile.id > 0) {
-      this.selectedAgent = agent;
-      this.saveMode = 'ProfileUpdate';
-
-      this.startWizard = true;
-
-      this.selectedIp = agent;
-
-      this.fillSecurityProfilesArray();
-
-      this.agentModal.toggle();
+    if (t) {
+      agent = this.publicIps.find(p => p.id === id);
     } else {
-      this.notification.warning('Profile can not find!');
+      agent = this.publicIps.find(p => p.rootProfile.id === id);
     }
 
+    if (agent) {
+      if (agent.rootProfile && agent.rootProfile.id > 0) {
+        this.selectedAgent = agent;
+
+        this.fillSecurityProfilesArray(agent);
+
+        this.saveMode = 'ProfileUpdate';
+
+        this.startWizard = true;
+
+        if (t) {
+          this.profileModal.toggle();
+        }
+      } else {
+        this.notification.warning('Profile can not find!');
+      }
+    }
   }
 
   showNewIpForm() {
@@ -337,20 +291,14 @@ export class PublicipComponent implements AfterViewInit {
 
     this.ipType = 'staticIp';
 
-    $('#newIpRow').slideDown(300);
-    $('#pi_card_btn').hide();
-    $('#fileUpload').val('');
-
+    this.agentModal.toggle();
   }
 
   hideNewWizard() {
-    $('#newIpRow').slideUp(300);
-    $('#pi_card_btn').show();
     this.getPublicIpsDataAndProfiles();
   }
 
   showEditWizard(id: string) {
-
     this.isNewItemUpdated = true;
     const selectedUpdateIp = this.publicIps.find(p => p.id == Number(id));
 
@@ -387,10 +335,9 @@ export class PublicipComponent implements AfterViewInit {
       this.ipType = 'staticIp';
     }
 
-    $('#newIpRow').slideDown(300);
-    $('#pi_card_btn').hide();
+    this.fillSecurityProfilesArray();
 
-
+    this.agentModal.toggle();
   }
 
   hideWizard() {
@@ -443,7 +390,7 @@ export class PublicipComponent implements AfterViewInit {
       img.src = url;
     }
 
-  }
+  }  
 
   deletePublicIp(id: number) {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Public IP and its settings will be deleted!').subscribe(
@@ -537,28 +484,20 @@ export class PublicipComponent implements AfterViewInit {
     $('#pi_card_btn').show();
   }
 
+  isNullOrEmpty(val: string) {
+    return val && val.length > 1;
+  }
+
   validatePublicIpForm(): boolean {
-    const $validator = $('.publicIpForm').validate({
-      rules: {
-        agentName: {
-          required: true
-        },
-        blockMessage: {
-          required: false
-        }
-      }
-    });
+    if (!this.isNullOrEmpty(this.selectedIp.agentAlias)) {
+      this.notification.warning('Please enter a name');
 
-    const $valid = $('.publicIpForm').valid();
-    if (!$valid) {
-      if (!this.selectedIp.agentAlias) {
-        this.notification.warning('Please enter a name');
-      }
-      $validator.focusInvalid();
       return false;
-    }
+    } else if (!this.isNullOrEmpty(this.selectedIp.blockMessage)) {
+      this.notification.warning('Plesae enter block message');
 
-    if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
+      return false;
+    } else if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
       this.notification.warning('Form is not valid! Please enter IP fields with valid values.');
       return false;
     } else if (this.ipType === 'dynamicIp' && !this.selectedIp.dynamicIpDomain && !this.dnsFqdn) {
@@ -578,12 +517,6 @@ export class PublicipComponent implements AfterViewInit {
       }
     } else {
       this.selectedIp.staticSubnetIp = null;
-    }
-
-    if (!this.publicIpForm.valid) {
-      this.notification.warning('Form is not valid! Please enter required fields with valid values.');
-
-      return false;
     }
 
     return true;

@@ -5,13 +5,11 @@
         <div class="col-12 p-0 d-flex align-items-center justify-content-between">
           <h5 class="page-title">Public IP</h5>
 
-          <button class="btn btn-icon btn-small ml-2">
+          <button class="btn btn-icon btn-small ml-2" (click)="showNewIpForm()">
             <i-feather name="plus"></i-feather>
             Add New Ip
           </button>
         </div>
-
-        <rk-select [options]="zz"></rk-select>
 
         <rk-modal #agentModal>
           <rk-modal-header icon="plus">
@@ -57,8 +55,8 @@
 
                 <div class="row">
                   <div class="col-12">
-                    <input type="text" class="rk-input w-100" placeholder="Name" [(ngModel)]="selectedIp.agentAlias"
-                      formControlName="agentName">
+                    <input type="text" class="rk-input w-100" placeholder="Name" name="agentName" id="agentName"
+                      [(ngModel)]="selectedIp.agentAlias" formControlName="agentName">
                   </div>
 
                   <ng-container *ngIf="ipType == 'dynamicIp'; else elseTemplateIpType">
@@ -103,8 +101,9 @@
                   </div>
 
                   <div class="col-12 mt-2">
-                    <textarea class="rk-input textarea w-100 resize:none" [(ngModel)]="selectedIp.blockMessage"
-                      placeholder="Block Message" rows="4" [ngModelOptions]="{standalone: true}"></textarea>
+                    <textarea class="rk-input textarea w-100 resize:none" name="blockMessage" id="blockMessage"
+                      [(ngModel)]="selectedIp.blockMessage" placeholder="Block Message" rows="4"
+                      [ngModelOptions]="{standalone: true}"></textarea>
                   </div>
 
                   <div class="col-12 mt-2">
@@ -121,7 +120,35 @@
           <rk-modal-footer>
             <button class="btn w-100 btn-small mr-2" id="defaultSaveBtn" [disabled]="!isNewItemUpdated"
               (click)="savePublicIp()">Apply</button>
-            <button class="btn w-100 btn-default btn-small">Clean</button>
+            <button class="btn w-100 btn-default btn-small" (click)="clearAgentForm()">Clean</button>
+          </rk-modal-footer>
+        </rk-modal>
+
+        <rk-modal #profileModal>
+          <rk-modal-header>
+            <rk-modal-header-title>
+              <h5>Security Profile</h5>
+            </rk-modal-header-title>
+            <rk-modal-header-close (click)="profileModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12 my-3">
+                  <rk-select [options]="securityProfilesForRkSelect" (valueChange)="changeProfile($event)"></rk-select>
+                </div>
+              </div>
+            </div>
+
+            <app-profile-wizard #profileWizard [selectedAgent]="selectedAgent" [currentStep]="currentStep" [saveMode]="saveMode"></app-profile-wizard>
+
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn w-100 btn-small mr-2" (click)="saveProfile()">Save</button>
+            <button class="btn w-100 btn-small" (click)="nextStep()">Next</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -160,7 +187,7 @@
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
                       <span>{{ pi.agentAlias }}</span>
-                      <button class="btn btn-link btn-icon p-0 hover-gray" (click)="showProfileEditWizard(pi.id)">
+                      <button class="btn btn-link btn-icon p-0 hover-gray" (click)="showEditWizard(pi.id)">
                         <i-feather name="settings" class="mr-0"></i-feather>
                       </button>
                     </div>
