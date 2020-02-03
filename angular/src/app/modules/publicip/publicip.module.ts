@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 import { IconsModule, RkModalModule, RkTableModule, RkRadioModule, RkSelectModule, RkLayoutModule, RkToggleButtonModule } from 'roksit-lib';
 import { SharedModule } from '../shared/shared.module';
+import { PipesModule } from '../shared/pipes/pipes.module';
 
 @NgModule({
   declarations: [PublicipComponent],
@@ -34,7 +35,8 @@ import { SharedModule } from '../shared/shared.module';
     RkRadioModule,
     RkSelectModule,
     RkLayoutModule,
-    RkToggleButtonModule
+    RkToggleButtonModule,
+    PipesModule
   ]
 
 })

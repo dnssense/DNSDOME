@@ -4,6 +4,7 @@ import { DateFormatPipe } from './DateFormatPipe';
 import { CountryPipe } from './CountryPipe';
 import { CustomDecimalPipe } from './CustomDecimalPipe';
 import { MacAddressFormatterPipe } from './MacAddressFormatterPipe';
+import { FilterPipe } from './filter.pipe';
 
 @NgModule({
    imports: [
@@ -13,13 +14,15 @@ import { MacAddressFormatterPipe } from './MacAddressFormatterPipe';
       DateFormatPipe,
       CountryPipe,
       CustomDecimalPipe,
-      MacAddressFormatterPipe
+      MacAddressFormatterPipe,
+      FilterPipe
    ],
    exports: [
       DateFormatPipe,
       CountryPipe,
       CustomDecimalPipe,
-      MacAddressFormatterPipe
+      MacAddressFormatterPipe,
+      FilterPipe
    ]
 })
 export class PipesModule { }

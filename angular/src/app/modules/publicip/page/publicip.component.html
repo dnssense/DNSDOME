@@ -142,7 +142,8 @@
               </div>
             </div>
 
-            <app-profile-wizard #profileWizard [selectedAgent]="selectedAgent" [currentStep]="currentStep" [saveMode]="saveMode"></app-profile-wizard>
+            <app-profile-wizard #profileWizard [selectedAgent]="selectedAgent" [currentStep]="currentStep"
+              [saveMode]="saveMode"></app-profile-wizard>
 
           </rk-modal-body>
 
@@ -182,8 +183,8 @@
               </ng-template>
 
               <ng-template #body>
-                <tr *ngFor="let pi of publicIpsFiltered; let i = index;">
-                  <td class="index">{{ i+1 }}</td>
+                <tr *ngFor="let pi of publicIpsFiltered | filter: searchKey : 'agentAlias'; let i = index ">
+                  <td class=" index">{{ i+1 }}</td>
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
                       <span>{{ pi.agentAlias }}</span>
