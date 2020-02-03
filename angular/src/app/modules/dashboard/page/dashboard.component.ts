@@ -35,15 +35,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   labelArray: string[] = [];
   categoryList = [];
   categoryListFiltered = [];
-  selectedCategoryForTraffic = CategoryV2;
+  selectedCategoryForTraffic : number = 0;
   selectedCategoryForUnique = CategoryV2;
   trafficChart: any;
+  timeLineChart: any;
+
   uniqueDomainChart: any;
   trafficChartType = 'hit';
   uniqueChartType = 'domain';
 
   dataPanels: DataPanelModel[] = [];
   timeRangeButtons: DateParamModel[] = [];
+  totalCategoryHits: number = 0;
 
   constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router,
@@ -53,8 +56,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.host = this.config.host;
     const roleName: string = this.authService.currentSession.currentUser.roles.name;
-
-    this.prepareTimeline();
 
     if (roleName != 'ROLE_USER') {
       this.agentService.getAgents().subscribe(res => {
@@ -92,35 +93,70 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // introJs().start();
   }
 
-  private prepareTimeline() {
-    function generateDayWiseTimeSeries(baseval, count, yrange) {
-      let i = 0;
-      const series = [];
-      while (i < count) {
-        const x = baseval;
-        const y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+  dateChanged(ev: any) {
+    this.getElasticData(moment(ev.startDate).format('YYYY-MM-DDTHH:mm:ss.sssZ'), moment(ev.endDate).format('YYYY-MM-DDTHH:mm:ss.sssZ'));
+  }
 
-        series.push([x, y]);
-        baseval += 86400000;
-        i++;
+  prepareUniqueChart() {
+    RkApexHelper.render('#unique-chart', {
+      series: [
+        { name: 'Normal Traffic Count', type: 'line', data: [] },
+      ],
+      chart: {
+        id: 'unique-chart2',
+        type: 'line',
+        height: 350,
+        toolbar: {
+          autoSelected: 'pan',
+          show: false
+        }
+      },
+      markers: {
+        size: [4, 0],
+        colors: ['#f95656'],
+        strokeColors: '#f95656',
+        strokeWidth: 2,
+        hover: {
+          size: 7,
+        }
+      },
+      colors: ['#0084ff', '#b1dcff'],
+      stroke: {
+        width: 3,
+        curve: ['straight', 'smooth']
+      },
+      dataLabels: {
+        enabled: false
+      },
+      fill: {
+        opacity: 1,
+      },
+      xaxis: {
+        type: 'datetime'
       }
-      return series;
+    });
+  }
+
+  onCategoryClick(cat) {
+  }
+
+  private prepareTimeline(catId: number = 0) {
+    const data = [];
+
+    const data2 = [];
+
+    for (let i = 0; i < this.elasticData.length; i++) {
+      let elData = this.elasticData[i];
+      let label = moment(elData.date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
+
+      data2.push([label, elData.averages.total_hit]);
+      data.push([label, elData.total_hit]);
     }
 
-    const data = generateDayWiseTimeSeries(new Date('11 Feb 2017').getTime(), 185, {
-      min: 10,
-      max: 500
-    });
-
-    const data2 = generateDayWiseTimeSeries(new Date('11 Feb 2017').getTime(), 185, {
-      min: 150,
-      max: 250
-    });
-
-    RkApexHelper.render('#chart', {
+    this.trafficChart = new ApexCharts(document.querySelector("#chart"), {
       series: [
-        { name: 'Normal Traffic Count', type: 'line', data: data },
-        { name: 'Hit Count', type: 'area', data: data2 }
+        { name: 'Normal Traffic Count', type: 'line', data: data2 },
+        { name: 'Hit Count', type: 'area', data: data }
       ],
       chart: {
         id: 'chart2',
@@ -156,7 +192,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
     });
 
-    RkApexHelper.render('#timeline', {
+
+    this.trafficChart.render();
+
+    this.timeLineChart = new ApexCharts(document.querySelector("#timeline"), {
       series: [{
         data
       }],
@@ -183,8 +222,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             radius: 50
           },
           xaxis: {
-            min: new Date('19 Jun 2017').getTime(),
-            max: new Date('14 Aug 2017').getTime()
+
           },
         }
       },
@@ -207,10 +245,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         tickAmount: 2
       }
     });
+
+    this.timeLineChart.render();
   }
 
   startDashboardOperations() {
-    this.selectedCategoryForTraffic = null;
+    this.selectedCategoryForTraffic = 0;
     this.selectedCategoryForUnique = null;
     this.staticService.getCategoryList().subscribe(res => {
       this.categoryList = res;
@@ -317,6 +357,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.elasticData = res;
       this.elasticData.sort((x, y) => new Date(x.date).getTime() - new Date(y.date).getTime());
       this.createCharts();
+      this.prepareTimeline();
+      this.prepareUniqueChart();
     });
   }
 
@@ -347,6 +389,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.uniqueSubdomain.push(data.unique_subdomain);
       this.ds.uniqueSubdomainAvg.push(Math.round(data.averages.unique_subdomain));
 
+
+      this.categoryListFiltered.forEach(cat => {
+        cat.value = cat.value ? cat.value : 0;
+
+        let catData = data.category_hits[cat.name];
+        if (!!catData) {
+          cat.value += catData.hits;
+          this.totalCategoryHits += catData.hits;
+        }
+      });
+
       Object.keys(data.category_hits).forEach(function eachKey(key) {
         if (key.toString() == 'Malware/Virus' || key.toString() == 'Potentially Dangerous' || key.toString() == 'Phishing') {
           sRCounter += data.category_hits[key].hits;
@@ -372,6 +425,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.uGrayCountForDashboard = uGrayCounter;
     }
 
+    this.categoryListFiltered.forEach(cat => {
+      cat.percent = +(100 * cat.value / this.totalCategoryHits).toFixed(0);
+    });
+
     this.ds.riskScore = 0;
     if (this.ds.totalHitCountForDashboard && this.ds.totalHitCountForDashboard > 0) {
       this.ds.riskScore = Math.round(100 * ((2 * this.ds.uSecurityRiskCountForDashboard) + this.ds.uGrayCountForDashboard) / this.ds.totalUniqueDomain);
@@ -389,144 +446,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     } else {
       this.notification.warning('There is no dashboard data!', false);
     }
-
-    // Total Traffic Chart
-    let trafficChartoptions = {
-      chart: {
-        height: 310, type: 'line', foreColor: '#9b9b9b',
-        toolbar: { tools: { download: false, pan: false } },
-        events: {
-          zoomed: (chartContext, { xaxis, yaxis }) => {
-            this.updateCharts(xaxis.min, xaxis.max);
-          }
-        }
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: [3, 3], curve: 'smooth' },
-      colors: ['#9d60fb', '#4a90e2'],
-      series: [{ data: [1] }, { data: [1] }],
-      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { type: 'datetime', categories: this.labelArray, tickAmount: 1, style: { color: '#f0f0f0' } },
-      grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'center', show: true },
-      annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
-      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' }
-    };
-    this.trafficChart = new ApexCharts(document.querySelector('#trafficChartHits'), trafficChartoptions);
-    this.trafficChart.render();
-    this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: ' Total Hit Averages', data: this.ds.hitAverages }]);
-
-    // Uniquer Domain Chart
-    let uniqueDomainOptions = {
-      chart: {
-        height: 280, type: 'line', foreColor: '#9b9b9b',
-        toolbar: { tools: { download: false, pan: false } },
-        events: {
-          zoomed: (chartContext, { xaxis, yaxis }) => {
-            this.updateCharts(xaxis.min, xaxis.max);
-          }
-        }
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
-      colors: ['#9d60fb', '#4a90e2'],
-      series: [{ data: [1] }, { data: [1] }],
-      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { type: 'datetime', categories: this.labelArray, labels: { minHeight: 20 } },
-      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
-      grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'center', show: true },
-      annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
-    };
-    this.uniqueDomainChart = new ApexCharts(document.querySelector('#uniqueDomainChart'), uniqueDomainOptions);
-    this.uniqueDomainChart.render();
-    this.uniqueDomainChart.updateSeries([{ name: 'Unique Domain', data: this.ds.uniqueDomain }, { name: 'Unique Domain Avg', data: this.ds.uniqueDomainAvg }]);
-
-    // Unique Subdomain Chart
-    let uniqueSubdomainChartOptions = {
-      chart: {
-        height: 280, type: 'line', foreColor: '#9b9b9b',
-        toolbar: { tools: { download: false, pan: false } },
-        events: {
-          zoomed: (chartContext, { xaxis, yaxis }) => {
-            this.updateCharts(xaxis.min, xaxis.max);
-          }
-        }
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
-      colors: ['#9d60fb', '#4a90e2'],
-      series: [{ data: [1] }, { data: [1] }],
-      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { type: 'datetime', categories: this.labelArray, labels: { minHeight: 20 } },
-      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
-      grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'center', show: true },
-      annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
-    };
-    let uniqueSubdomainChart = new ApexCharts(document.querySelector('#uniqueSubdomainChart'), uniqueSubdomainChartOptions);
-    uniqueSubdomainChart.render();
-    uniqueSubdomainChart.updateSeries([{ name: 'Unique Subdomain', data: this.ds.uniqueSubdomain }, { name: 'Unique Subdomain Avg', data: this.ds.uniqueSubdomainAvg }]);
-
-    // Unique Dest Ip Chart
-    let uniqueDestIpChartOptions = {
-      chart: {
-        height: 280, type: 'line', foreColor: '#9b9b9b',
-        toolbar: { tools: { download: false, pan: false } },
-        events: {
-          zoomed: (chartContext, { xaxis, yaxis }) => {
-            this.updateCharts(xaxis.min, xaxis.max);
-          }
-        }
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
-      colors: ['#9d60fb', '#4a90e2'],
-      series: [{ data: [1] }, { data: [1] }],
-      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { type: 'datetime', categories: this.labelArray, labels: { minHeight: 20 } },
-      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
-      grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'center', show: true },
-      annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
-    };
-    let uniqueDestIpChart = new ApexCharts(document.querySelector('#uniqueDestIpChart'), uniqueDestIpChartOptions);
-    uniqueDestIpChart.render();
-    uniqueDestIpChart.updateSeries([{ name: 'Unique Dest. Ip', data: this.ds.uniqueDesIp }, { name: 'Unique Dest. Ip Avg', data: this.ds.uniqueDesIpAvg }]);
-
-    // GAUGE Chart
-    let gaugeOptions = {
-      chart: { height: 250, type: 'radialBar', },
-      plotOptions: {
-        radialBar: {
-          startAngle: -100, endAngle: 100,
-          dataLabels: {
-            name: { fontSize: '16px', color: '#e4e4e4', offsetY: 25 },
-            value: { offsetY: -20, fontSize: '22px', color: '#fffefe' }
-          }
-        }
-      },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shade: 'dark',
-          type: 'horizontal',
-          shadeIntensity: 0.5,
-          gradientToColors: ['#ffe20b'],
-          inverseColors: true,
-          opacityFrom: 1,
-          opacityTo: 1,
-          stops: [0, 100]
-        }
-      },
-      colors: ['#fa1e1e'],
-      series: [{ data: 1 }],
-      labels: ['Risk Score'],
-
-    };
-    let gaugeChart = new ApexCharts(document.querySelector('#gaugeChart'), gaugeOptions);
-    gaugeChart.render();
-    gaugeChart.updateSeries([this.ds.riskScore]);
   }
 
   changeDateParameter(param: number) {
@@ -598,32 +517,50 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.categoryListFiltered = this.categoryList.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
   }
 
-  addCategoryToTraffic(id: number) {
-    this.selectedCategoryForTraffic = this.categoryList.find(c => c.id == id);
-    const catName = this.selectedCategoryForTraffic.name;
+  addCategoryToTraffic(cat: CategoryV2) {
+    if (cat.id == this.selectedCategoryForTraffic)
+      this.selectedCategoryForTraffic = 0;
+    else
+      this.selectedCategoryForTraffic = cat.id;
 
-    const catHits = [], catAvs = [];
-    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
-    for (let i = indexLimit; i < this.elasticData.length; i++) {
-      const data = this.elasticData[i];
+    let averageData = [];
+    let hitData = [];
 
-      Object.keys(data.category_hits).forEach(function eachKey(key) {
-        if (key.toString() == catName) {
-          catHits.push(data.category_hits[key].hits);
-          catAvs.push(Math.round(data.category_hits[key].average));
+    for (let i = 0; i < this.elasticData.length; i++) {
+      let elData = this.elasticData[i];
 
+      let label = moment(elData.date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
+
+
+      if (this.selectedCategoryForTraffic == 0) {
+        averageData.push([label, elData.averages.total_hit]);
+        hitData.push([label, elData.total_hit]);
+      } else {
+        this.selectedCategoryForTraffic = this.categoryList.find(c => c.id == cat.id).id;
+        let catName = cat.name;
+
+        let catData = elData.category_hits[catName];
+
+        if (catData) {
+          averageData.push([label, catData.average]);
+          hitData.push([label, catData.hits]);
         }
-      });
+      }
     }
 
-    this.trafficChart.updateSeries([{ name: catName + ' Hits', data: catHits }, { name: 'Average Hits', data: catAvs }]);
+    this.trafficChart.updateSeries([
+      { name: cat.name + " Normal Traffic Count", data: averageData, type: "line" },
+      { name: "Hit Count", type: "area", data: hitData }
+    ]);
 
-    this.resetCategoryListFiltered();
+    this.timeLineChart.updateSeries([
+      { data: hitData },
+    ]);
   }
 
   deleteCatFromTraffic(id: number) {
     if (id && id > 0) {
-      this.selectedCategoryForTraffic = null;
+      this.selectedCategoryForTraffic = 0;
       this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: 'Average Hits', data: this.ds.hitAverages }]);
     }
   }

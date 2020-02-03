@@ -64,3 +64,11 @@
     color: #ff7b00;
   }
 }
+
+.categories {
+  .rk-item {
+    &.active {
+      background-color: #3397c5;
+    }
+  }
+}
