@@ -91,17 +91,17 @@
             <div class="d-flex justify-content-between align-items-center mt-3 pt-2"
               style="border-top: 1px solid rgba(68, 81, 101, 0.2);">
               <div>
-                <div class="rk-selectable-table" style="width: auto !important;">
-                  <div class="rk-item" *ngFor="let cat of categoryListFiltered">
+                <div class="rk-selectable-table categories" style="width: auto !important;">
+                  <div class="rk-item" *ngFor="let cat of categoryListFiltered" [ngClass]="{ 'active' : selectedCategoryForTraffic == cat.id }"  (click)="addCategoryToTraffic(cat)" >
                     <div class="rk-i-header">
                       <div class="d-flex align-items-center">
                         <span class="rk-selectable-table-item-title"> {{ cat.name }} </span>
-                        <span class="rk-selectable-badge">232</span>
+                        <span class="rk-selectable-badge">{{ cat.value }}   </span>
                       </div>
                       <i-feather name="arrow-right"></i-feather>
                     </div>
 
-                    <rk-progressbar [value]="75" [showType]="'outside'" [sizeType]="'small'">
+                    <rk-progressbar [value]="cat.percent" [showType]="'outside'" [sizeType]="'small'">
                     </rk-progressbar>
                   </div>
                 </div>

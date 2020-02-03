@@ -35,15 +35,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   labelArray: string[] = [];
   categoryList = [];
   categoryListFiltered = [];
-  selectedCategoryForTraffic = CategoryV2;
+  selectedCategoryForTraffic : number = 0;
   selectedCategoryForUnique = CategoryV2;
   trafficChart: any;
+  timeLineChart: any;
+
   uniqueDomainChart: any;
   trafficChartType = 'hit';
   uniqueChartType = 'domain';
 
   dataPanels: DataPanelModel[] = [];
   timeRangeButtons: DateParamModel[] = [];
+  totalCategoryHits: number = 0;
 
   constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router,
@@ -53,7 +56,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.host = this.config.host;
     const roleName: string = this.authService.currentSession.currentUser.roles.name;
- 
+
     if (roleName != 'ROLE_USER') {
       this.agentService.getAgents().subscribe(res => {
         if (res == null || res.length < 1) {
@@ -90,7 +93,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // introJs().start();
   }
 
-  dateChanged(ev : any) {
+  dateChanged(ev: any) {
     this.getElasticData(moment(ev.startDate).format('YYYY-MM-DDTHH:mm:ss.sssZ'), moment(ev.endDate).format('YYYY-MM-DDTHH:mm:ss.sssZ'));
   }
 
@@ -134,40 +137,26 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private prepareTimeline() {
-    function generateDayWiseTimeSeries(baseval, count, yrange) {
-      let i = 0;
-      const series = [];
-      while (i < count) {
-        const x = baseval;
-        const y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+  onCategoryClick(cat) {
+  }
 
-        series.push([x, y]);
-        baseval += 86400000;
-        i++;
-      }
-      return series;
-    }
-
+  private prepareTimeline(catId: number = 0) {
     const data = [];
 
     const data2 = [];
 
-
     for (let i = 0; i < this.elasticData.length; i++) {
-      const elData = this.elasticData[i];
+      let elData = this.elasticData[i];
       let label = moment(elData.date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
 
-      data.push([label, elData.total_hit]);
-
       data2.push([label, elData.averages.total_hit]);
+      data.push([label, elData.total_hit]);
     }
 
-
-    RkApexHelper.render('#chart', {
+    this.trafficChart = new ApexCharts(document.querySelector("#chart"), {
       series: [
-        { name: 'Normal Traffic Count', type: 'line', data: data },
-        { name: 'Hit Count', type: 'area', data: data2 }
+        { name: 'Normal Traffic Count', type: 'line', data: data2 },
+        { name: 'Hit Count', type: 'area', data: data }
       ],
       chart: {
         id: 'chart2',
@@ -203,7 +192,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
     });
 
-    RkApexHelper.render('#timeline', {
+
+    this.trafficChart.render();
+
+    this.timeLineChart = new ApexCharts(document.querySelector("#timeline"), {
       series: [{
         data
       }],
@@ -230,7 +222,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             radius: 50
           },
           xaxis: {
-            
+
           },
         }
       },
@@ -253,10 +245,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         tickAmount: 2
       }
     });
+
+    this.timeLineChart.render();
   }
 
   startDashboardOperations() {
-    this.selectedCategoryForTraffic = null;
+    this.selectedCategoryForTraffic = 0;
     this.selectedCategoryForUnique = null;
     this.staticService.getCategoryList().subscribe(res => {
       this.categoryList = res;
@@ -395,6 +389,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.uniqueSubdomain.push(data.unique_subdomain);
       this.ds.uniqueSubdomainAvg.push(Math.round(data.averages.unique_subdomain));
 
+
+      this.categoryListFiltered.forEach(cat => {
+        cat.value = cat.value ? cat.value : 0;
+
+        let catData = data.category_hits[cat.name];
+        if (!!catData) {
+          cat.value += catData.hits;
+          this.totalCategoryHits += catData.hits;
+        }
+      });
+
       Object.keys(data.category_hits).forEach(function eachKey(key) {
         if (key.toString() == 'Malware/Virus' || key.toString() == 'Potentially Dangerous' || key.toString() == 'Phishing') {
           sRCounter += data.category_hits[key].hits;
@@ -419,6 +424,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.grayCountForDashboard = grayCounter;
       this.ds.uGrayCountForDashboard = uGrayCounter;
     }
+
+    this.categoryListFiltered.forEach(cat => {
+      cat.percent = +(100 * cat.value / this.totalCategoryHits).toFixed(0);
+    });
 
     this.ds.riskScore = 0;
     if (this.ds.totalHitCountForDashboard && this.ds.totalHitCountForDashboard > 0) {
@@ -508,32 +517,50 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.categoryListFiltered = this.categoryList.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
   }
 
-  addCategoryToTraffic(id: number) {
-    this.selectedCategoryForTraffic = this.categoryList.find(c => c.id == id);
-    const catName = this.selectedCategoryForTraffic.name;
+  addCategoryToTraffic(cat: CategoryV2) {
+    if (cat.id == this.selectedCategoryForTraffic)
+      this.selectedCategoryForTraffic = 0;
+    else
+      this.selectedCategoryForTraffic = cat.id;
 
-    const catHits = [], catAvs = [];
-    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
-    for (let i = indexLimit; i < this.elasticData.length; i++) {
-      const data = this.elasticData[i];
+    let averageData = [];
+    let hitData = [];
 
-      Object.keys(data.category_hits).forEach(function eachKey(key) {
-        if (key.toString() == catName) {
-          catHits.push(data.category_hits[key].hits);
-          catAvs.push(Math.round(data.category_hits[key].average));
+    for (let i = 0; i < this.elasticData.length; i++) {
+      let elData = this.elasticData[i];
 
+      let label = moment(elData.date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
+
+
+      if (this.selectedCategoryForTraffic == 0) {
+        averageData.push([label, elData.averages.total_hit]);
+        hitData.push([label, elData.total_hit]);
+      } else {
+        this.selectedCategoryForTraffic = this.categoryList.find(c => c.id == cat.id).id;
+        let catName = cat.name;
+
+        let catData = elData.category_hits[catName];
+
+        if (catData) {
+          averageData.push([label, catData.average]);
+          hitData.push([label, catData.hits]);
         }
-      });
+      }
     }
 
-    this.trafficChart.updateSeries([{ name: catName + ' Hits', data: catHits }, { name: 'Average Hits', data: catAvs }]);
+    this.trafficChart.updateSeries([
+      { name: cat.name + " Normal Traffic Count", data: averageData, type: "line" },
+      { name: "Hit Count", type: "area", data: hitData }
+    ]);
 
-    this.resetCategoryListFiltered();
+    this.timeLineChart.updateSeries([
+      { data: hitData },
+    ]);
   }
 
   deleteCatFromTraffic(id: number) {
     if (id && id > 0) {
-      this.selectedCategoryForTraffic = null;
+      this.selectedCategoryForTraffic = 0;
       this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: 'Average Hits', data: this.ds.hitAverages }]);
     }
   }
