@@ -34,7 +34,7 @@ export class BoxService {
   }
   
   getProgramLink(domains: string): Observable<any> {
-    return this.http.post<any>(this.getLinkURL, domains).map(data => data);
+    return this.http.post<any>(this.getLinkURL, {donttouchdomains:domains},this.getOptions()).map(data => data);
   }
   
   private getOptions() {
