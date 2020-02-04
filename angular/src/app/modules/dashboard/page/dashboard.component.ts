@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   labelArray: string[] = [];
   categoryList = [];
   categoryListFiltered = [];
-  selectedCategoryForTraffic : number = 0;
+  selectedCategoryForTraffic: number = 0;
   selectedCategoryForUnique = CategoryV2;
   trafficChart: any;
   timeLineChart: any;
@@ -47,6 +47,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   dataPanels: DataPanelModel[] = [];
   timeRangeButtons: DateParamModel[] = [];
   totalCategoryHits: number = 0;
+
+  infoBoxes = {
+    total: true,
+    safe: false,
+    malicious: false,
+    variable: false,
+    harmfulContent: false
+  };
+
+  private startDate: Date;
+  private endDate: Date;
 
   constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
     private staticService: StaticService, private notification: NotificationService, private router: Router,
@@ -89,11 +100,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.dataPanels.push({ name: 'DNS Relay', activeCount: 12, passiveCount: 5 });
   }
 
+  infoboxChanged($event: { active: boolean }, type: string) {
+    Object.keys(this.infoBoxes).forEach(elem => {
+      this.infoBoxes[elem] = false;
+    });
+
+    this.infoBoxes[type] = true;
+  }
+
   ngAfterViewInit(): void {
     // introJs().start();
   }
 
-  dateChanged(ev: any) {
+  dateChanged(ev: { startDate: Date, endDate: Date }) {
+    this.startDate = ev.startDate;
+    this.endDate = ev.endDate;
+
     this.getElasticData(moment(ev.startDate).format('YYYY-MM-DDTHH:mm:ss.sssZ'), moment(ev.endDate).format('YYYY-MM-DDTHH:mm:ss.sssZ'));
   }
 
@@ -141,6 +163,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   private prepareTimeline(catId: number = 0) {
+
+
     const data = [];
 
     const data2 = [];
@@ -151,6 +175,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
       data2.push([label, elData.averages.total_hit]);
       data.push([label, elData.total_hit]);
+    }
+
+    if (this.trafficChart) {
+      this.trafficChart.destroy();
     }
 
     this.trafficChart = new ApexCharts(document.querySelector("#chart"), {
@@ -192,8 +220,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
     });
 
-
     this.trafficChart.render();
+
+    if (this.timeLineChart) {
+      this.timeLineChart.destroy();
+    }
 
     this.timeLineChart = new ApexCharts(document.querySelector("#timeline"), {
       series: [{
@@ -221,9 +252,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             dashArray: 0,
             radius: 50
           },
-          xaxis: {
-
-          },
+          xaxis: {},
         }
       },
       colors: [function ({ value, seriesIndex, w }) {
@@ -388,7 +417,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.ds.uniqueDesIpAvg.push(Math.round(data.averages.unique_destip));
       this.ds.uniqueSubdomain.push(data.unique_subdomain);
       this.ds.uniqueSubdomainAvg.push(Math.round(data.averages.unique_subdomain));
-
 
       this.categoryListFiltered.forEach(cat => {
         cat.value = cat.value ? cat.value : 0;
