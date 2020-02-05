@@ -64,7 +64,10 @@ export class DevicesComponent implements OnInit {
                         this.groupList.push(r.agentGroup);
                     }
                 }
-            })
+            });
+
+            console.log(res);
+
             this.registereds = res.sort((x, y) => {
                 if (!x.agentGroup) {
                     return 1
@@ -75,6 +78,8 @@ export class DevicesComponent implements OnInit {
                 }
                 return -1
             });
+
+            console.log('registereds', this.registereds);
         });
         this.agentService.getUnregisteredDevices().subscribe(res => {
             this.unregistereds = [];
@@ -437,7 +442,6 @@ export class DevicesComponent implements OnInit {
         } else {
             this.notification.warning('Profile can not find!');
         }
-
     }
 
     checkIPNumber(event: KeyboardEvent, inputValue: string) {
@@ -537,6 +541,8 @@ export class DevicesComponent implements OnInit {
                 )
             })
             this.deviceGroup.rootProfile = d.rootProfile;
+
+            console.log('device groups', this.deviceGroup);
         }
         let agents = [];
         this.unregistereds.forEach(u => agents.push(u.agentInfo))

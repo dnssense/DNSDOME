@@ -12,6 +12,7 @@ import { TimeProfileComponent } from './components/time-profile/time-profile.com
 import { BoxWizardComponent } from './components/box-wizard/box-wizard.component';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 import { PipesModule } from '../shared/pipes/pipes.module';
+import { RkTableModule, IconsModule } from 'roksit-lib';
 
 
 
@@ -35,7 +36,9 @@ import { PipesModule } from '../shared/pipes/pipes.module';
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    RkTableModule,
+    IconsModule
   ],
   providers:[PipesModule]
 

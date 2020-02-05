@@ -33,6 +33,9 @@ export class NavbarComponent implements OnInit {
 
     @ViewChild('app-navbar-cmp', { static: false }) button: any;
 
+    title: string;
+    subtitle?: string;
+
     constructor(
         location: Location,
         private element: ElementRef,
@@ -51,7 +54,6 @@ export class NavbarComponent implements OnInit {
         this.listTitles = ROUTES.filter(listTitle => listTitle);
 
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
-
             const $layer = document.getElementsByClassName('close-layer')[0];
             if ($layer) {
                 $layer.remove();
@@ -59,27 +61,21 @@ export class NavbarComponent implements OnInit {
         });
     }
 
-    getTitle() {
-        let titlee: string = this.location.prepareExternalUrl(this.location.path());
-        titlee = titlee.substring(1);
-        for (let i = 0; i < this.listTitles.length; i++) {
-            if (this.listTitles[i].type === "link" && this.listTitles[i].path === titlee) {
-                return this.listTitles[i].title;
-            } else if (this.listTitles[i].type === "sub") {
-                for (let j = 0; j < this.listTitles[i].children.length; j++) {
-                    let subtitle = this.listTitles[i].path + '/' + this.listTitles[i].children[j].path;
-                    if (subtitle === titlee) {
-                        return this.listTitles[i].children[j].title;
-                    }
-                }
-            }
-        }
-        return 'Dashboard';
+    get getTitle() {
+        let title: string = this.location.prepareExternalUrl(this.location.path()).substring(7);
+
+        return title.split('/');
+    }
+
+    getCleanText(t: string) {
+        return t
+            .replace('-', ' ')
+            .replace('/', ' ');
     }
 
     getPath() {
         const path = this.location.prepareExternalUrl(this.location.path());
-        
+
         return path;
     }
 

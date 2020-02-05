@@ -1,10 +1,154 @@
+<div class="rk-base-card">
+  <div class="card-item">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 p-0">
+          <h5 class="page-title">Deployment</h5>
+        </div>
+
+        <div class="col-12 p-0 mt-3">
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content justify-content-start">
+                <div class="rk-table-title">Local DNS Relay Servers</div>
+              </div>
+            </div>
+
+            <rk-table [showPagination]="false">
+              <ng-template #header>
+                <tr>
+                  <th>Profile</th>
+                  <th>Security Profile</th>
+                  <th>Is CP Enabled</th>
+                  <th>Captive Portal IP</th>
+                  <th colspan="2">Operation</th>
+                </tr>
+              </ng-template>
+
+              <ng-template #body>
+                <tr *ngFor="let b of boxes">
+                  <td>
+                    <i-feather name="server" class="icon-blue-grey mr-2"></i-feather>
+                    {{ b.host }}
+                  </td>
+                  <td>
+                    <ng-container *ngIf="b.agent; else elseTemplate221">
+                      <ng-container *ngIf="b.agent.rootProfile; else elseTemplate123">{{b.agent.rootProfile?.name}}
+                      </ng-container>
+                      <ng-template #elseTemplate123>No Profile!</ng-template>
+                    </ng-container>
+                    <ng-template #elseTemplate221>No Agent!</ng-template>
+                  </td>
+                  <td>
+                    <i-feather [name]="b.agent?.isCpEnabled ? 'check' : 'x'"></i-feather>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="b.agent?.captivePortalIp; else elseTemplate2">{{b.agent?.captivePortalIp}}
+                    </ng-container>
+                    <ng-template #elseTemplate2>-</ng-template>
+                  </td>
+                  <td style="width: 60px">
+                    <button class=" btn btn-link btn-icon p-0 hover-gray">
+                      <i-feather name="edit-3"></i-feather>
+                    </button>
+                  </td>
+                  <td style=" width: 60px" (click)="deleteBox(b.id)">
+                    <button class=" btn btn-link btn-icon p-0 hover-gray">
+                      <i-feather name="trash-2"></i-feather>
+                    </button>
+                  </td>
+                </tr>
+              </ng-template>
+            </rk-table>
+          </rk-table-container>
+        </div>
+
+        <div class="col-12 p-0 mt-3">
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content justify-content-start">
+                <div class="rk-table-title">Group Agent</div>
+              </div>
+            </div>
+
+            <rk-table [showPagination]="false">
+              <ng-template #header>
+                <tr>
+                  <th>Group</th>
+                  <th>Member Count</th>
+                  <th>Security Profile</th>
+                  <th colspan="2">Operation</th>
+                </tr>
+              </ng-template>
+
+              <!-- <tbody>
+                <tr *ngFor="let device of registereds;">
+                  <td class="text-center">
+                    {{device.agentGroup?device.agentGroup.groupName:"-"}}
+                  </td>
+                  <td class="btnOverFlow">
+                    <button class="btns btn-clear btnOverFlow profileBtn text-left" style="width: 125px;"
+                      title="{{device.agentAlias}}">{{device.agentAlias}}</button></td>
+                  <td>{{device.mac | MacAddressFormatterPipe}}</td>
+                  <td class="text-left">
+                    <button class="btns btn-clear btnOverFlow profileBtn text-left" title="Edit Profile"
+                      style="width: 150px;" (click)="showProfileEditWizard(device.id)">
+                      <img src="./assets/images/icons/settings-outline.svg">
+                      <small>{{device.rootProfile?device.rootProfile.name:"No Profile!"}}</small>
+                    </button>
+                  </td>
+                  <td class="td-actions text-center" style="min-width: 105px;">
+                    <button class="btns btn-clear" title="Edit item or all group items" *ngIf="device.agentGroup"
+                      (click)="openModalForEdit(device.id)">
+                      <img src="./assets/images/icons/edit.svg">
+                    </button>
+                    <button class="btns btn-clear" matTooltip="Delete item" [matTooltipShowDelay]="800"
+                      (click)="deleteDevice(device.id)">
+                      <img src="./assets/images/icons/close-red.svg">
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="registereds == null || registereds.length<1">
+                  <td colspan="10">No Data</td>
+                </tr>
+              </tbody> -->
+
+              <ng-template #body>
+                <tr *ngFor="let device of registereds">
+                  <td>
+                    {{ device.agentGroup ? device.agentGroup.groupName : '-' }}
+                  </td>
+                  <td>0</td>
+                  <td>
+                    {{ device.rootProfile.name }}
+                  </td>
+                  <td style="width: 60px;">
+                    <button class="btn btn-link btn-icon p-0 hover-gray">
+                      <i-feather name="edit-3"></i-feather>
+                    </button>
+                  </td>
+                  <td style="width: 60px">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deleteDevice(device.id)">
+                      <i-feather name="trash-2"></i-feather>
+                    </button>
+                  </td>
+                </tr>
+              </ng-template>
+            </rk-table>
+          </rk-table-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <div class="main-content">
   <div class="container-fluid col-md-12">
 
 
     <div id="devicePanel" class="devicePanel">
-
-      <!-- box form start -->
       <form [formGroup]="boxForm" id="newBoxRow" class="boxForm" style="display: none;" data-step="4"
         data-intro="Finally, save your box and let's start!" data-position='bottom-middle-aligned'>
         <div class="container-fluid">
@@ -18,9 +162,6 @@
                     <div class="row">
                       <div class="col-12 d-flex">
                         <h4 class="mr-3 flex-1">Local DNS Relay Server</h4>
-                        <!-- <button class="btns btn-clear text-right close-btn" (click)="openTooltipGuide()">
-                            <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
-                          </button> -->
                         <button class="btns btn-clear text-right close-btn" (click)="hideForm('box')">
                           <img src="./assets/images/icons/close.svg">
                         </button>
@@ -113,8 +254,7 @@
           </div>
         </div>
       </form>
-      <!-- box form end -->
-      <!-- dns relays list start -->
+
       <div class="row">
         <div class="col-md-12 ml-auto mr-auto">
           <div class="dns-base-card mt-1">
@@ -131,7 +271,6 @@
                       <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Security Profile</th>
                       <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Is CP Enabled</th>
                       <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Captive Portal IP</th>
-                      <!-- <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Message</th> -->
                       <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
                         Operation
                       </th>
@@ -178,7 +317,6 @@
                           -
                         </ng-template>
                       </td>
-                      <!-- <td>{{b?.blockMessage?b.blockMessage:"---"}}</td> -->
                       <td class="text-center">
                         <button class="btns btn-clear" title="Edit box" (click)="showEditWizard('BOX', b.id)">
                           <img src="./assets/images/icons/edit.svg">
@@ -206,11 +344,11 @@
           </div>
         </div>
       </div>
-      <!-- dns relays list end -->
 
-      <!-- Device list start -->
+
+
       <div class="row mt-2">
-        <!-- unregistereds start -->
+
         <div class="col-md-6 ml-auto mr-auto">
           <div class="dns-base-card mt-1">
             <div class="dns-base-card-header pt-3 mb-2" style="margin-top: -15px;">
@@ -226,7 +364,7 @@
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <!-- <th class="no-border"></th> -->
+
                       <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Hostname</th>
                       <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Mac Address</th>
                       <th class="text-left" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);"
@@ -239,7 +377,7 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let device of unregistereds; let i = index;">
-                      <!-- <td class="numeration">{{i+1}}</td> -->
+
                       <td>
                         <button class="btns btn-clear btnOverFlow profileBtn text-left" style="width: 125px;"
                           title="{{device.agentInfo.agentAlias}}">{{device.agentInfo.agentAlias}}</button>
@@ -321,9 +459,8 @@
             </div>
           </div>
         </div>
-        <!-- unregistereds end -->
 
-        <!-- registereds start -->
+
         <div class="col-md-6 ml-auto mr-auto">
           <div class="dns-base-card mt-1">
             <div class="dns-base-card-header pt-3 mb-2" style="margin-top: -15px;">
@@ -381,9 +518,8 @@
             </div>
           </div>
         </div>
-        <!-- registereds end -->
+
       </div>
-      <!-- Device list end -->
 
     </div>
     <div id="wizardPanel" class="wizardPanel" style="display: none;">
@@ -397,7 +533,6 @@
 
     </div>
 
-    <!-- Modal start -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       style="display: none;" aria-hidden="true">
       <div class="modal-dialog" style="max-width: 70%;" role="document">
@@ -521,7 +656,6 @@
         </div>
       </div>
     </div>
-    <!-- Modal end -->
 
 
   </div>

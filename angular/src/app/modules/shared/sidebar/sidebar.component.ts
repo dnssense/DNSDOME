@@ -56,7 +56,7 @@ export const ROUTES: RouteInfo[] = [
     role: 'ROLE_CUSTOMER,ROLE_USER'
   },
   {
-    path: '/admin/reports/customreport',
+    path: '/admin/reports/custom-reports',
     title: 'Custom Reports',
     type: 'link',
     icontype: 'timeline',
@@ -71,8 +71,8 @@ export const ROUTES: RouteInfo[] = [
     collapse: 'network',
     children: [
       { path: 'publicip', title: 'Public IP', ab: 'PI' },
-      { path: 'devices', title: 'Devices', ab: 'LD' },
-      { path: 'roaming', title: 'Roaming Clients', ab: 'RC' }
+      { path: 'deployments/devices', title: 'Devices', ab: 'LD' },
+      { path: 'roaming-clients', title: 'Roaming Clients', ab: 'RC' }
     ]
   },
   {
@@ -84,7 +84,7 @@ export const ROUTES: RouteInfo[] = [
     collapse: 'settings',
     children: [
       { path: 'users', title: 'Users', ab: 'U' },
-      { path: 'scheduledreports', title: 'Saved Reports', ab: 'SP' },
+      { path: 'scheduled-reports', title: 'Saved Reports', ab: 'SP' },
       { path: 'profiles', title: 'Security Profiles', ab: 'SP' },
       { path: 'tools', title: 'Tools', ab: 'T' }
     ]
@@ -128,22 +128,22 @@ export class SidebarComponent implements OnInit {
   _menuItems: RkMenuItem[] = [
     { id: 0, path: '/admin/dashboard', text: 'Dashboard', icon: 'dashboard', selected: false },
     { id: 1, path: '/admin/reports/monitor', text: 'Monitor', icon: 'monitor', selected: false },
-    { id: 2, path: '/admin/reports/customreport', text: 'Custom Reports', icon: 'custom-reports', selected: false },
+    { id: 2, path: '/admin/reports/custom-reports', text: 'Custom Reports', icon: 'custom-reports', selected: false },
     {
       id: 3, path: '/admin/', text: 'Deployment', icon: 'dashboard', selected: false,
       subMenu: [
-        { id: 3.1, path: 'publicip', text: 'Public IP', icon: 'public-ip', selected: false },
-        { id: 3.2, path: 'devices', text: 'Devices', icon: 'device', selected: false },
-        { id: 3.3, path: 'roaming', text: 'Roaming Clients', icon: 'roaming-clients', selected: false },
+        { id: 3.1, path: 'deployment/public-ip', text: 'Public IP', icon: 'public-ip', selected: false },
+        { id: 3.2, path: 'deployment/devices', text: 'Devices', icon: 'device', selected: false },
+        { id: 3.3, path: 'deployment/roaming-clients', text: 'Roaming Clients', icon: 'roaming-clients', selected: false },
       ]
     },
     {
       id: 4, path: '/admin/', text: 'Settings', icon: 'settings', selected: false,
       subMenu: [
-        { id: 4.1, path: 'users', text: 'User', icon: 'user', selected: false },
-        { id: 4.2, path: 'scheduledreports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
-        { id: 4.3, path: 'profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false },
-        { id: 4.4, path: 'tools', text: 'Tools', icon: 'tools', selected: false },
+        { id: 4.1, path: 'settings/users', text: 'User', icon: 'user', selected: false },
+        { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
+        { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false },
+        { id: 4.4, path: 'settings/tools', text: 'Tools', icon: 'tools', selected: false },
         { id: 4.5, path: '', text: 'Request Changing Domain Category', icon: 'request-category', selected: false },
         { id: 4.6, path: '', text: 'Theme Mode', icon: 'theme-mode', selected: false },
       ]

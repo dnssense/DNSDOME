@@ -27,7 +27,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../reports/reports.module#ReportsModule'
       },
       {
-        path: 'devices',
+        path: 'deployment/devices',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -35,7 +35,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../devices/devices.module#DevicesModule'
       },
       {
-        path: 'publicip',
+        path: 'deployment/public-ip',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -51,7 +51,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../securityprofiles/securityprofiles.module#SecurityProfilesModule'
       },
       {
-        path: 'accountsettings',
+        path: 'account-settings',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
@@ -59,7 +59,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren:'../../accountsettings/accountsettings.module#AccountSettingsModule'
       },
       {
-        path: 'scheduledreports',
+        path: 'scheduled-reports',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -84,7 +84,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../help/help.module#HelpModule'
       },
       {
-        path: 'roaming',
+        path: 'deployment/roaming-clients',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -99,7 +99,7 @@ const adminlayoutRoutes: Routes = [
         },
         loadChildren: '../../tools/tools.module#ToolsModule'
       },
-      { path: '**', redirectTo: '', pathMatch: 'full' }
+      { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
 ];

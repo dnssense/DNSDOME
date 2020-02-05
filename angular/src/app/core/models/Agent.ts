@@ -16,6 +16,8 @@ export class Agent {
     rootProfile: SecurityProfile;
     agentGroup: AgentGroup;
     logo?: any = null;
+
+    agents: any[];
 }
 
 export interface IpWithMask {

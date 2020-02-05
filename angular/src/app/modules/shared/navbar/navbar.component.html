@@ -1,5 +1,10 @@
 <div class="toolbar">
-  <a href="{{ getPath() }}" class="page" routerLinkActive="router-link-active">{{ getTitle() }}</a>
+  <a href="{{ getPath() }}" class="page text-capitalize" routerLinkActive="router-link-active">
+    {{ getTitle[1] }}
+    <ng-container *ngIf="getTitle?.length > 2">
+      <span class="sub-page-title" *ngFor="let t of getTitle?.splice(2)">/ {{ getCleanText(t) }}</span>
+    </ng-container>
+  </a>
 
   <div class="account">
     <button class="notification-btn ripple">
@@ -12,9 +17,7 @@
     <div class="account-dropdown">
       <rk-avatar>
         <div class="rk-img">
-          <img
-            src="https://www.w3schools.com/w3css/img_lights.jpg"
-            alt="" />
+          <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="" />
         </div>
         <div class="rk-text">
           Cihan
@@ -22,7 +25,7 @@
         <div class="rk-dropdown">
           <div class="rk-dropdown-title">Account</div>
           <li>
-            <a [routerLink]="['/admin/accountsettings']" routerLinkActive="router-link-active"  class="dropdown-item">
+            <a [routerLink]="['/admin/accountsettings']" routerLinkActive="router-link-active" class="dropdown-item">
               <i-feather name="settings"></i-feather>
               Account Settings
             </a>

@@ -5,7 +5,7 @@ import { MonitorComponent } from './monitor/monitor.component';
 
 const reportsRoutes: Routes = [
   {
-    path: 'customreport',
+    path: 'custom-reports',
     component: CustomReportComponent
   },
   {

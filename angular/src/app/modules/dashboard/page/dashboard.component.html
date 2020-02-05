@@ -52,7 +52,7 @@
           </div>
           <div class="rk-panel-item d-flex flex-column">
             <div class="row">
-              <div class="col">
+              <div class="col-12 col-md-6 col-lg">
                 <rk-infobox [active]="infoBoxes.total" (change)="infoboxChanged($event, 'total')" [title]="'Total'" [color]="'#4353ff'" className="blue" [type]="1"
                   [valueOne]="ds.totalAllowedCountForDashboard" [valueTwo]="ds.totalBlockCountForDashboard"
                   description="Toplam DNS sorgu sayısı">
@@ -65,21 +65,21 @@
                 </rk-infobox>
               </div> -->
 
-              <div class="col">
+              <div class="col-12 col-md-6 col-lg">
                 <rk-infobox [active]="infoBoxes.malicious" (change)="infoboxChanged($event, 'malicious')" [type]="2" [title]="'Malicious'" className="red" [color]="'#f95656'"
                   [valueOne]="ds.totalBlockCountForDashboard" [valueTwo]="ds.totalUniqueBlockedDomainForDashboard"
                   description="Malware, Botnet, Phishing gibi güvenlik riski yüksek domainleri kapsar.">
                 </rk-infobox>
               </div>
 
-              <div class="col">
+              <div class="col-12 col-md-6 col-lg">
                 <rk-infobox [active]="infoBoxes.variable" (change)="infoboxChanged($event, 'variable')" [type]="2" [title]="'Variable'" className="gray" [color]="'#d8d8d8'"
                   [valueOne]="ds.grayCountForDashboard" [valueTwo]="ds.uGrayCountForDashboard"
                   description="Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.">
                 </rk-infobox>
               </div>
 
-              <div class="col">
+              <div class="col-12 col-md-6 col-lg">
                 <rk-infobox [active]="infoBoxes.harmfulContent" (change)="infoboxChanged($event, 'harmfulContent')" [type]="2" [title]="'Harmful Content'" className="yellow"
                   [color]="'#f9df56'" [valueOne]="ds.securityRiskCountForDashboard"
                   [valueTwo]="ds.uSecurityRiskCountForDashboard"
