@@ -6,13 +6,13 @@ cd angular
 npm run build-prod
 read -p 'versiyon numarası giriniz:  ' version
 cd ..
-docker build -t ui.dnssense .
-docker tag ui.dnssense registry.sea.net/dnssense/ui.dnssense:$version
+docker build -t ui.dnssense.kodiks .
+docker tag ui.dnssense.kodiks registry.sea.net/dnssense/ui.dnssense.kodiks:$version
 
 
     read -p "Do you wish to push this image? y/n " yn
     case $yn in
-        [Yy]* ) docker push registry.sea.net/dnssense/ui.dnssense:$version;;
+        [Yy]* ) docker push registry.sea.net/dnssense/ui.dnssense.kodiks:$version;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;
     esac
