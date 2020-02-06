@@ -62,6 +62,8 @@ export class ProfileWizardComponent {
   public _startWizard: boolean;
   public _saveMode: string;
 
+  @Input() startWizard;
+  
   @Input() set saveMode(value: string) {
     this._saveMode = value;
   }

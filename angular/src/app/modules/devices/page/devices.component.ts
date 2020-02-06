@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AlertService } from 'src/app/core/services/alert.service';
@@ -13,13 +13,20 @@ import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddress
 import { DEVICE_GROUP } from 'src/app/core/Constants';
 import { DeviceGroup, AgentInfo, AgentGroup } from 'src/app/core/models/DeviceGroup';
 import { Agent } from 'src/app/core/models/Agent';
+import { RkTableConfigModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 
 declare var $: any;
 
 export class UnregisteredAgent {
-    agentGroup: AgentGroup
-    agentInfo: AgentInfo = new AgentInfo()
-    rootProfile: SecurityProfile
+    agentGroup: AgentGroup;
+    agentInfo: AgentInfo = new AgentInfo();
+    rootProfile: SecurityProfile;
+
+    /**
+     * @description For UI
+     */
+    selected?= false;
 }
 
 @Component({
@@ -29,21 +36,6 @@ export class UnregisteredAgent {
     providers: [MacAddressFormatterPipe]
 })
 export class DevicesComponent implements OnInit {
-    ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
-    registereds: Agent[] = [];
-    unregistereds: UnregisteredAgent[] = [];
-    devicesForGroup: AgentInfo[] = [];
-    deviceGroup: DeviceGroup = new DeviceGroup();
-    groupList: AgentGroup[] = []
-    boxForm: FormGroup;
-    selectedBox: Box = new Box();
-    isNewProfileSelected: boolean = false;
-    boxes: Box[] = [];
-    selectedAgent: Agent = new Agent();
-    securityProfiles: SecurityProfile[] = [];
-    startWizard: boolean;
-    saveMode: String;
-    isNewItemUpdated: boolean = true;
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService,
         private boxService: BoxService, private notification: NotificationService) {
@@ -52,47 +44,77 @@ export class DevicesComponent implements OnInit {
         this.selectedBox = new Box();
         this.initializeSelectedAgentProfile();
     }
+    ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
+    registereds: Agent[] = [];
+    unregistereds: UnregisteredAgent[] = [];
+    devicesForGroup: AgentInfo[] = [];
+    deviceGroup: DeviceGroup = new DeviceGroup();
+    groupList: AgentGroup[] = [];
+    boxForm: FormGroup;
+    selectedBox: Box = new Box();
+    isNewProfileSelected = false;
+    boxes: Box[] = [];
+    selectedAgent: Agent = new Agent();
+    securityProfiles: SecurityProfile[] = [];
+    startWizard: boolean;
+    saveMode: String;
+    isNewItemUpdated = true;
+
+    deviceCache: AgentInfo[] = [];
+
+    previousGroupId = 0;
+    currentCss = '';
+
+    @ViewChild('groupAgentModal', { static: false }) groupAgentModal;
+
+    securityProfilesForSelect: RkSelectModel[] = [];
 
     loadDevices() {
-        this.agentService.getSecurityProfiles().subscribe(res => this.securityProfiles = res);
+        this.agentService.getSecurityProfiles().subscribe(res => {
+            this.securityProfiles = res;
+
+            this.securityProfiles.forEach(elem => {
+                this.securityProfilesForSelect.push({
+                    displayText: elem.name,
+                    value: elem.id
+                });
+            })
+        });
         this.boxService.getBoxes().subscribe(res => { this.boxes = res; });
         this.agentService.getRegisteredDevices().subscribe(res => {
-            this.groupList = []
+            this.groupList = [];
             res.forEach(r => {
                 if (r.agentGroup && r.agentGroup.id > 0) {
-                    if (!this.groupList.find(g => g.id == r.agentGroup.id)) {
+                    if (!this.groupList.find(g => g.id === r.agentGroup.id)) {
                         this.groupList.push(r.agentGroup);
                     }
                 }
             });
 
-            console.log(res);
-
             this.registereds = res.sort((x, y) => {
                 if (!x.agentGroup) {
-                    return 1
+                    return 1;
                 } else if (!y.agentGroup) {
-                    return -1
+                    return -1;
                 } else if (x.agentGroup.groupName > y.agentGroup.groupName) {
-                    return 1
+                    return 1;
                 }
-                return -1
+                return -1;
             });
-
-            console.log('registereds', this.registereds);
         });
         this.agentService.getUnregisteredDevices().subscribe(res => {
             this.unregistereds = [];
             if (res && res instanceof Array) {
                 res.forEach(d => {
-                    let a = new AgentInfo()
+                    const a = new AgentInfo();
                     a.agentType = AgentType.DEVICE;
-                    a.mac = d.mac
-                    a.agentAlias = d.hostName
-                    this.unregistereds.push({ agentGroup: null, agentInfo: a, rootProfile: null })
-                })
-
+                    a.mac = d.mac;
+                    a.agentAlias = d.hostName;
+                    this.unregistereds.push({ agentGroup: null, agentInfo: a, rootProfile: null });
+                });
             }
+
+            console.log('unregistereds', this.unregistereds);
         });
 
     }
@@ -110,30 +132,30 @@ export class DevicesComponent implements OnInit {
 
     ngOnInit() {
         this.boxForm = this.formBuilder.group({
-            boxName: ["", [Validators.required]],
-            blockMessage: [""],
-            captivePortalIp: [""]
+            boxName: ['', [Validators.required]],
+            blockMessage: [''],
+            captivePortalIp: ['']
         });
     }
 
     openTooltipGuide() {
-        //tooltip istenirse eklenecek
+        // tooltip istenirse eklenecek
     }
 
     showNewProfileWizardForDevice(mac: string) {
 
-        let agentInfo = this.unregistereds.find(a => a.agentInfo.mac == mac).agentInfo;
-        this.selectedAgent.id = agentInfo.id
-        this.selectedAgent.agentType = agentInfo.agentType
-        this.selectedAgent.agentAlias = agentInfo.agentAlias
-        this.selectedAgent.blockMessage = agentInfo.blockMessage
-        this.selectedAgent.mac = agentInfo.mac
+        const agentInfo = this.unregistereds.find(a => a.agentInfo.mac === mac).agentInfo;
+        this.selectedAgent.id = agentInfo.id;
+        this.selectedAgent.agentType = agentInfo.agentType;
+        this.selectedAgent.agentAlias = agentInfo.agentAlias;
+        this.selectedAgent.blockMessage = agentInfo.blockMessage;
+        this.selectedAgent.mac = agentInfo.mac;
 
         this.initializeSelectedAgentProfile();
-        this.selectedAgent.rootProfile.name = this.selectedAgent.agentAlias + "-Profile";
+        this.selectedAgent.rootProfile.name = this.selectedAgent.agentAlias + '-Profile';
         this.saveMode = 'NewProfileWithDevice';
-        $('#devicePanel').toggle("slide", { direction: "left" }, 600);
-        $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+        $('#devicePanel').toggle('slide', { direction: 'left' }, 600);
+        $('#wizardPanel').toggle('slide', { direction: 'right' }, 600);
         this.startWizard = true;
         //  document.getElementById('wizardPanel').scrollIntoView();
 
@@ -145,14 +167,14 @@ export class DevicesComponent implements OnInit {
             localStorage.setItem(DEVICE_GROUP, JSON.stringify(this.deviceGroup));
             this.selectedAgent = new Agent();
             this.initializeSelectedAgentProfile();
-            this.selectedAgent.rootProfile.name = this.deviceGroup.agentGroup.groupName + "-Profile";
+            this.selectedAgent.rootProfile.name = this.deviceGroup.agentGroup.groupName + '-Profile';
             this.saveMode = 'NewProfileWithDeviceGroup';
-            $('#devicePanel').toggle("slide", { direction: "left" }, 600);
-            $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+            $('#devicePanel').toggle('slide', { direction: 'left' }, 600);
+            $('#wizardPanel').toggle('slide', { direction: 'right' }, 600);
             this.startWizard = true;
             //  document.getElementById('wizardPanel').scrollIntoView();
         } else {
-            this.notification.warning('Missing Information! Please provide required fields.')
+            this.notification.warning('Missing Information! Please provide required fields.');
         }
 
 
@@ -164,54 +186,54 @@ export class DevicesComponent implements OnInit {
             && this.deviceGroup.rootProfile.id > 0) {
 
             if (this.deviceCache && this.deviceCache.length > 0) {
-                let ids = [];
+                const ids = [];
                 for (let i = 0; i < this.deviceCache.length; i++) {
                     const e = this.deviceCache[i];
-                    ids.push(e.id)
+                    ids.push(e.id);
                 }
                 this.agentService.deleteDevice(ids).subscribe(res => {
-                    if (res.status == 200) {
-                        this.notification.success(res.message)
+                    if (res.status === 200) {
+                        this.notification.success(res.message);
                     } else {
-                        this.notification.error(res.message)
+                        this.notification.error(res.message);
                     }
                 });
             }
 
             this.agentService.saveDevice(this.deviceGroup).subscribe(res => {
-                if (res.status == 200) {
-                    this.closeModal()
-                    this.notification.success(res.message)
-                    this.loadDevices()
+                if (res.status === 200) {
+                    this.closeModal();
+                    this.notification.success(res.message);
+                    this.loadDevices();
                 } else {
-                    this.notification.error(res.message)
+                    this.notification.error(res.message);
                 }
             });
 
         } else {
-            this.notification.warning('Missing Information! Please provide required fields.')
+            this.notification.warning('Missing Information! Please provide required fields.');
         }
     }
 
     saveDevice(mac: string) {
-        let d = this.unregistereds.find(u => u.agentInfo.mac == mac)
+        const d = this.unregistereds.find(u => u.agentInfo.mac === mac);
 
-        let dg = new DeviceGroup()
-        dg.agents = [d.agentInfo]
+        const dg = new DeviceGroup();
+        dg.agents = [d.agentInfo];
         if (d.agentGroup && d.agentGroup.id > 0) {
-            dg.agentGroup = d.agentGroup
-            dg.rootProfile = this.registereds.find(r => (r.agentGroup && r.agentGroup.id == d.agentGroup.id)).rootProfile
+            dg.agentGroup = d.agentGroup;
+            dg.rootProfile = this.registereds.find(r => (r.agentGroup && r.agentGroup.id === d.agentGroup.id)).rootProfile;
         } else {
-            dg.rootProfile = d.rootProfile
-            delete dg.agentGroup
+            dg.rootProfile = d.rootProfile;
+            delete dg.agentGroup;
         }
 
         this.agentService.saveDevice(dg).subscribe(res => {
-            if (res.status == 200) {
-                this.notification.success(res.message)
-                this.loadDevices()
+            if (res.status === 200) {
+                this.notification.success(res.message);
+                this.loadDevices();
             } else {
-                this.notification.error(res.message)
+                this.notification.error(res.message);
             }
         });
 
@@ -219,21 +241,21 @@ export class DevicesComponent implements OnInit {
 
     showEditWizard(type: string, id: number) {
 
-        if (type == AgentType.BOX.toString()) {
-            this.selectedBox = JSON.parse(JSON.stringify(this.boxes.find(c => c.id == id)));
+        if (type === AgentType.BOX.toString()) {
+            this.selectedBox = JSON.parse(JSON.stringify(this.boxes.find(c => c.id === id)));
             if (!this.selectedBox.agent) {
                 this.initializeSelectedAgentProfile();
                 this.selectedBox.agent = this.selectedAgent;
             }
             $('#newBoxRow').slideDown(300);
         } else {
-            // this.selectedAgent = this.deviceAgents.find(a => a.id == id);
+            // this.selectedAgent = this.deviceAgents.find(a => a.id === id);
             // this.selectedAgent.rootProfile = this.securityProfiles[0];
         }
 
         // $('#devicePanel').toggle("slide", { direction: "left" }, 600);
         // $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
-        // this.startWizard = true; 
+        // this.startWizard = true;
         // document.getElementById('wizardPanel').scrollIntoView();
     }
 
@@ -244,12 +266,12 @@ export class DevicesComponent implements OnInit {
 
         this.selectedAgent = this.selectedBox.agent;
         this.initializeSelectedAgentProfile();
-        this.selectedAgent.rootProfile.name = this.selectedBox.agent.agentAlias + "-Profile";
+        this.selectedAgent.rootProfile.name = this.selectedBox.agent.agentAlias + '-Profile';
 
         this.saveMode = 'NewProfileWithBox';
 
-        $('#devicePanel').toggle("slide", { direction: "left" }, 600);
-        $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+        $('#devicePanel').toggle('slide', { direction: 'left' }, 600);
+        $('#wizardPanel').toggle('slide', { direction: 'right' }, 600);
         this.startWizard = true;
         document.getElementById('wizardPanel').scrollIntoView();
     }
@@ -259,12 +281,12 @@ export class DevicesComponent implements OnInit {
             return;
         }
 
-        let b = this.boxes.find(b => b.id == boxId);
+        const b = this.boxes.find(b => b.id === boxId);
         if (b && b.agent.rootProfile && b.agent.rootProfile.id > 0) {
             this.selectedAgent = b.agent;
             this.saveMode = 'ProfileUpdate';
-            $('#devicePanel').toggle("slide", { direction: "left" }, 600);
-            $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+            $('#devicePanel').toggle('slide', { direction: 'left' }, 600);
+            $('#wizardPanel').toggle('slide', { direction: 'right' }, 600);
             this.startWizard = true;
 
             document.getElementById('wizardPanel').scrollIntoView();
@@ -274,7 +296,7 @@ export class DevicesComponent implements OnInit {
     }
 
     hideForm(type: string) {
-        if (type == 'box') {
+        if (type === 'box') {
             $('#newBoxRow').slideUp(300);
         }
     }
@@ -291,8 +313,8 @@ export class DevicesComponent implements OnInit {
 
     hideWizardWithoutConfirm() {
 
-        $('#wizardPanel').hide("slide", { direction: "right" }, 1000);
-        $('#devicePanel').show("slide", { direction: "left" }, 1000);
+        $('#wizardPanel').hide('slide', { direction: 'right' }, 1000);
+        $('#devicePanel').show('slide', { direction: 'left' }, 1000);
         $('#newBoxRow').slideUp(300);
         this.loadDevices();
     }
@@ -303,8 +325,8 @@ export class DevicesComponent implements OnInit {
         }
 
         this.boxService.saveBox(this.selectedBox).subscribe(res => {
-            if (res.status == 200) {
-                this.notification.success(res.message)
+            if (res.status === 200) {
+                this.notification.success(res.message);
                 $('#newBoxRow').slideUp(300);
                 this.loadDevices();
             } else {
@@ -323,16 +345,16 @@ export class DevicesComponent implements OnInit {
             }
         });
 
-        var $valid = $('.boxForm').valid();
+        const $valid = $('.boxForm').valid();
         if (!$valid) {
-            this.notification.warning("Box form is not valid. Please enter required fields. ")
+            this.notification.warning('Box form is not valid. Please enter required fields. ');
             $validator.focusInvalid();
             return false;
         }
 
         if (this.selectedBox.agent.isCpEnabled && (!this.selectedBox.agent.captivePortalIp
             || !ValidationService.isValidIpString(this.selectedBox.agent.captivePortalIp))) {
-            this.notification.warning("Please enter a valid IP for captive portal");
+            this.notification.warning('Please enter a valid IP for captive portal');
             return false;
         }
 
@@ -343,12 +365,12 @@ export class DevicesComponent implements OnInit {
         this.alertService.alertWarningAndCancel('Are You Sure?', 'Settings for this device will be deleted!').subscribe(
             res => {
                 if (res) {
-                    this.agentService.deleteDevice([id]).subscribe(res => {
-                        if (res.status == 200) {
-                            this.notification.success(res.message)
+                    this.agentService.deleteDevice([id]).subscribe(_res => {
+                        if (_res.status === 200) {
+                            this.notification.success(_res.message);
                             this.loadDevices();
                         } else {
-                            this.notification.error(res.message)
+                            this.notification.error(_res.message);
                         }
                     });
                 }
@@ -361,21 +383,21 @@ export class DevicesComponent implements OnInit {
         this.alertService.alertWarningAndCancel('Are You Sure?', 'Settings for this group will be deleted!').subscribe(
             res => {
                 if (res) {
-                    let ids = [];
+                    const ids = [];
                     for (let i = 0; i < this.registereds.length; i++) {
                         const e = this.registereds[i];
-                        if (e.agentGroup && e.agentGroup.id == id) {
-                            ids.push(e.id)
+                        if (e.agentGroup && e.agentGroup.id === id) {
+                            ids.push(e.id);
                         }
                     }
 
-                    this.agentService.deleteDevice(ids).subscribe(res => {
-                        if (res.status == 200) {
+                    this.agentService.deleteDevice(ids).subscribe(_res => {
+                        if (_res.status === 200) {
                             this.closeModal();
-                            this.notification.success(res.message)
+                            this.notification.success(_res.message);
                             this.loadDevices();
                         } else {
-                            this.notification.error(res.message)
+                            this.notification.error(_res.message);
                         }
                     });
                 }
@@ -389,12 +411,12 @@ export class DevicesComponent implements OnInit {
             this.alertService.alertWarningAndCancel('Are You Sure?', 'Agent of this box will be deleted!').subscribe(
                 res => {
                     if (res) {
-                        this.boxService.deleteBox(id).subscribe(res => {
-                            if (res.status == 200) {
-                                this.notification.success(res.message);
+                        this.boxService.deleteBox(id).subscribe(resu => {
+                            if (resu.status === 200) {
+                                this.notification.success(resu.message);
                                 this.loadDevices();
                             } else {
-                                this.notification.error(res.message);
+                                this.notification.error(resu.message);
                             }
                         });
                     }
@@ -409,35 +431,37 @@ export class DevicesComponent implements OnInit {
     }
 
     securityProfileChanged(type: string, profileId: number) {
-        if (type && type.toLowerCase() == 'box') {
-            this.selectedBox.agent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id == profileId)));
-        } else if (type && type.toLowerCase() == 'agent') {
-            this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id == profileId)));
+        if (type && type.toLowerCase() === 'box') {
+            this.selectedBox.agent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id === profileId)));
+        } else if (type && type.toLowerCase() === 'agent') {
+            this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id === profileId)));
         }
     }
 
     deviceProfileChanged(mac: string, profileId: number) {
-        this.unregistereds.find(d => d.agentInfo.mac == mac).agentGroup = null
-        this.unregistereds.find(d => d.agentInfo.mac == mac).rootProfile =
-            JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id == profileId)));
+        this.unregistereds.find(d => d.agentInfo.mac === mac).agentGroup = null;
+        this.unregistereds.find(d => d.agentInfo.mac === mac).rootProfile =
+            JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id === profileId)));
 
         $('#unregisteredTable').animate({ scrollLeft: '+=500' }, 1000);
     }
 
     deviceGroupChanged(mac: string, groupId: number) {
-        this.unregistereds.find(d => d.agentInfo.mac == mac).agentGroup =
-            { id: groupId, groupName: this.groupList.find(g => g.id == groupId).groupName };
-        this.unregistereds.find(d => d.agentInfo.mac == mac).rootProfile = null;
+        this.unregistereds.find(d => d.agentInfo.mac === mac).agentGroup = {
+            id: groupId,
+            groupName: this.groupList.find(g => g.id === groupId).groupName
+        };
+        this.unregistereds.find(d => d.agentInfo.mac === mac).rootProfile = null;
         $('#unregisteredTable').animate({ scrollLeft: '+=500' }, 1000);
     }
 
     showProfileEditWizard(id: number) {
-        let device = this.registereds.find(r => r.id == id);
+        const device = this.registereds.find(r => r.id === id);
         if (device.rootProfile && device.rootProfile.id > 0) {
             this.selectedAgent = device;
             this.saveMode = 'ProfileUpdate';
-            $('#devicePanel').toggle("slide", { direction: "left" }, 600);
-            $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+            $('#devicePanel').toggle('slide', { direction: 'left' }, 600);
+            $('#wizardPanel').toggle('slide', { direction: 'right' }, 600);
             this.startWizard = true;
         } else {
             this.notification.warning('Profile can not find!');
@@ -446,26 +470,26 @@ export class DevicesComponent implements OnInit {
 
     checkIPNumber(event: KeyboardEvent, inputValue: string) {
 
-        let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", ".", "Tab"];
-        let isValid: boolean = false;
+        const allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'Backspace', 'ArrowLeft', 'ArrowRight', '.', 'Tab'];
+        let isValid = false;
 
         for (let i = 0; i < allowedChars.length; i++) {
-            if (allowedChars[i] == event.key) {
+            if (allowedChars[i] === event.key) {
                 isValid = true;
                 break;
             }
         }
-        if (inputValue && (event.key != 'Backspace' && event.key != 'ArrowLeft' && event.key != 'ArrowRight')) {
-            if (event.key != '.') {
+        if (inputValue && (event.key !== 'Backspace' && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
+            if (event.key !== '.') {
                 inputValue += event.key;
             }
-            let lastOcletStr = inputValue.substring(inputValue.lastIndexOf('.') + 1);
-            let lastOclet = Number(lastOcletStr);
+            const lastOcletStr = inputValue.substring(inputValue.lastIndexOf('.') + 1);
+            const lastOclet = Number(lastOcletStr);
             if (isValid && (lastOclet > 255 || lastOclet < 0 || lastOcletStr.length > 3)) {
                 isValid = false;
             }
-            if (isValid && event.key == '.') {
-                let oclets: string[] = inputValue.split('.');
+            if (isValid && event.key === '.') {
+                const oclets: string[] = inputValue.split('.');
                 for (let i = 0; i < oclets.length; i++) {
                     const oclet = oclets[i];
                     if (Number(oclet) < 0 || Number(oclet) > 255) {
@@ -475,10 +499,10 @@ export class DevicesComponent implements OnInit {
                 }
             }
 
-            if (isValid && event.key == '.' && (inputValue.endsWith('.') || inputValue.split('.').length >= 4)) {
+            if (isValid && event.key === '.' && (inputValue.endsWith('.') || inputValue.split('.').length >= 4)) {
                 isValid = false;
             }
-        } else if (isValid && event.key == '.') {
+        } else if (isValid && event.key === '.') {
             isValid = false;
         }
 
@@ -488,33 +512,32 @@ export class DevicesComponent implements OnInit {
     }
 
     groupProfileChanged(id: number) {
-        this.deviceGroup.rootProfile = this.securityProfiles.find(p => p.id == id);
+        this.deviceGroup.rootProfile = this.securityProfiles.find(p => p.id === id);
     }
 
-    deviceCache: AgentInfo[] = []
     moveDeviceInGroup(opType: number, mac: string) {
-        if (opType == 1) {
-            const d = this.devicesForGroup.find(u => u.mac == mac)
+        if (opType === 1) {
+            const d = this.devicesForGroup.find(u => u.mac === mac);
             this.deviceGroup.agents.push(d);
-            this.devicesForGroup.splice(this.devicesForGroup.findIndex(x => x.mac == mac), 1);
-            if (d.id && d.id > 0 && this.deviceCache.find(c => c.id == d.id)) {
-                this.deviceCache.splice(this.deviceCache.findIndex(c => c.mac == d.mac), 1)
+            this.devicesForGroup.splice(this.devicesForGroup.findIndex(x => x.mac === mac), 1);
+            if (d.id && d.id > 0 && this.deviceCache.find(c => c.id === d.id)) {
+                this.deviceCache.splice(this.deviceCache.findIndex(c => c.mac === d.mac), 1);
             }
         } else {
-            const d = this.deviceGroup.agents.find(u => u.mac == mac)
+            const d = this.deviceGroup.agents.find(u => u.mac === mac);
             if (d.id && d.id > 0) {
                 this.deviceCache.push(d);
             }
             this.devicesForGroup.push(d);
-            this.deviceGroup.agents.splice(this.deviceGroup.agents.findIndex(x => x.mac == mac), 1);
+            this.deviceGroup.agents.splice(this.deviceGroup.agents.findIndex(x => x.mac === mac), 1);
         }
 
     }
 
     openModal() {
         this.deviceGroup = new DeviceGroup();
-        let agents = [];
-        this.unregistereds.forEach(u => agents.push(u.agentInfo))
+        const agents = [];
+        this.unregistereds.forEach(u => agents.push(u.agentInfo));
         this.devicesForGroup = JSON.parse(JSON.stringify(agents));
         $(document.body).addClass('modal-open');
         $('#exampleModal').css('display', 'block');
@@ -522,36 +545,42 @@ export class DevicesComponent implements OnInit {
         $('#exampleModal').addClass('show');
     }
 
-    openModalForEdit(id: number) {
-        this.deviceCache = []
-        this.deviceGroup = new DeviceGroup()
-        const d = this.registereds.find(r => r.id == id);
+    openAgentModal(id?: number) {
+        if (id) {
+            this.deviceCache = [];
+            this.deviceGroup = new DeviceGroup();
+            const d = this.registereds.find(r => r.id === id);
 
-        if (d.agentGroup && d.agentGroup.id > 0) {
-            this.deviceGroup.agentGroup = d.agentGroup
-            this.registereds.filter(r => (r.agentGroup && r.agentGroup.id == d.agentGroup.id)).forEach(f => {
-                this.deviceGroup.agents.push(
-                    {
-                        agentAlias: f.agentAlias,
-                        agentType: AgentType.DEVICE,
-                        mac: f.mac,
-                        blockMessage: f.blockMessage,
-                        id: f.id
-                    }
-                )
-            })
-            this.deviceGroup.rootProfile = d.rootProfile;
+            if (d.agentGroup && d.agentGroup.id > 0) {
+                this.deviceGroup.agentGroup = d.agentGroup;
+                this.registereds
+                    .filter(r => (r.agentGroup && r.agentGroup.id === d.agentGroup.id))
+                    .forEach(f => {
+                        this.deviceGroup.agents.push(
+                            {
+                                agentAlias: f.agentAlias,
+                                agentType: AgentType.DEVICE,
+                                mac: f.mac,
+                                blockMessage: f.blockMessage,
+                                id: f.id
+                            }
+                        );
+                    });
+                this.deviceGroup.rootProfile = d.rootProfile;
 
-            console.log('device groups', this.deviceGroup);
+                console.log('deviceGroup', this.deviceGroup);
+            }
+
+            const agents = [];
+            this.unregistereds.forEach(u => agents.push(u.agentInfo));
+            this.devicesForGroup = JSON.parse(JSON.stringify(agents));
+
+            console.log('Devices For Group', this.devicesForGroup);
+        } else {
+
         }
-        let agents = [];
-        this.unregistereds.forEach(u => agents.push(u.agentInfo))
-        this.devicesForGroup = JSON.parse(JSON.stringify(agents));
 
-        $(document.body).addClass('modal-open');
-        $('#exampleModal').css('display', 'block');
-        $('#exampleModal').attr('aria-hidden', 'false');
-        $('#exampleModal').addClass('show');
+        this.groupAgentModal.toggle();
     }
 
     closeModal() {
@@ -561,20 +590,34 @@ export class DevicesComponent implements OnInit {
         $('#exampleModal').removeClass('show');
     }
 
-    previousGroupId = 0;
-    currentCss = '';
     isSameGroup(gId: AgentGroup) {
-
         if (gId) {
-            if (gId.id == this.previousGroupId) {
+            if (gId.id === this.previousGroupId) {
                 return this.currentCss;
             } else {
-                this.currentCss = this.currentCss == '' ? 'baseTableRow' : '';
+                this.currentCss = this.currentCss === '' ? 'baseTableRow' : '';
             }
-            this.previousGroupId = gId.id
+            this.previousGroupId = gId.id;
         }
 
         return this.currentCss;
+    }
 
+    groupMembersTableCheckboxChanged($event) {
+        this.registereds.forEach(elem => elem.selected = $event);
+    }
+
+    ungroupMemberTableCheckboxChanged($event) {
+        this.unregistereds.forEach(elem => elem.selected = $event);
+    }
+
+    selectRow(ev: boolean, item) {
+        console.log(ev, item);
+    }
+
+    changeTableGroup() {
+        const selecteds = this.registereds.filter(x => x.selected);
+
+        
     }
 }

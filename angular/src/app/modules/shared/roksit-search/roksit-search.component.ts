@@ -87,6 +87,10 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   inputSelected: boolean = false;
   @ViewChild('inputElement', { static: false }) inputElement: ElementRef;
 
+  selectedColumnFilter;
+  filterText;
+  isEqual;
+
   visible = true;
   selectable = true;
   removable = true;

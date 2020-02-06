@@ -3,13 +3,13 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 p-0">
-          <h5 class="page-title">Deployment</h5>
+          <h5 class="page-title">Device</h5>
         </div>
 
         <div class="col-12 p-0 mt-3">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
-              <div class="top-content justify-content-start">
+              <div class="top-content justify-content-between">
                 <div class="rk-table-title">Local DNS Relay Servers</div>
               </div>
             </div>
@@ -63,11 +63,106 @@
           </rk-table-container>
         </div>
 
+        <rk-modal #groupAgentModal>
+          <rk-modal-header icon="plus">
+            <rk-modal-header-title>
+              <h5>Create New Group</h5>
+            </rk-modal-header-title>
+
+            <rk-modal-header-close (click)="groupAgentModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12 mt-3">
+                  <input type="text" class="rk-input w-100" placeholder="Group Name">
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-12 mt-3" *ngFor="let profile of securityProfiles; let index = index">
+                  <rk-radio name="profile" [checked]="index === 0" class="rk-radio-m-0">{{ profile.name }}</rk-radio>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mt-3">
+                  <h5 class="rk-group-title">Select Devices to Join Group</h5>
+                </div>
+
+                <div class="col-12 mt-2">
+                  <h6 class="rk-title mb-2">Other Group Members</h6>
+
+                  <table class="table small-table table-borderless">
+                    <thead>
+                      <tr>
+                        <th>Host Name</th>
+                        <th>Mc. Address</th>
+                        <th>G. Name</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let item of [1,1,1,1,1]">
+                        <td>Ayse_Iphone</td>
+                        <td style="max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                          9C-35-4B-2M3-4F-3A</td>
+                        <td>Genel</td>
+                        <td class="text-right">
+                          <rk-checkbox size="sm"></rk-checkbox>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col-12 mt-2">
+                  <h6 class="rk-title mb-2">No Group Members</h6>
+
+                  <table class="table small-table table-borderless">
+                    <thead>
+                      <tr>
+                        <th>Host Name</th>
+                        <th>Mc. Address</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let item of [1,1,1,1,1]">
+                        <td>Ayse_Iphone</td>
+                        <td style="max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                          9C-35-4B-2M3-4F-3A</td>
+                        <td class="text-right">
+                          <rk-checkbox size="sm" (valueChange)="selectRow($event, item)"></rk-checkbox>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn w-100 btn-small mr-2">Apply</button>
+            <button class="btn w-100 btn-default btn-small">Clean</button>
+          </rk-modal-footer>
+        </rk-modal>
+
         <div class="col-12 p-0 mt-3">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
-              <div class="top-content justify-content-start">
+              <div class="top-content justify-content-between">
                 <div class="rk-table-title">Group Agent</div>
+
+                <button class="btn btn-small btn-icon" (click)="groupAgentModal.toggle()">
+                  <i-feather name="plus" class="mr-2"></i-feather>
+                  Create New Group
+                </button>
               </div>
             </div>
 
@@ -81,38 +176,6 @@
                 </tr>
               </ng-template>
 
-              <!-- <tbody>
-                <tr *ngFor="let device of registereds;">
-                  <td class="text-center">
-                    {{device.agentGroup?device.agentGroup.groupName:"-"}}
-                  </td>
-                  <td class="btnOverFlow">
-                    <button class="btns btn-clear btnOverFlow profileBtn text-left" style="width: 125px;"
-                      title="{{device.agentAlias}}">{{device.agentAlias}}</button></td>
-                  <td>{{device.mac | MacAddressFormatterPipe}}</td>
-                  <td class="text-left">
-                    <button class="btns btn-clear btnOverFlow profileBtn text-left" title="Edit Profile"
-                      style="width: 150px;" (click)="showProfileEditWizard(device.id)">
-                      <img src="./assets/images/icons/settings-outline.svg">
-                      <small>{{device.rootProfile?device.rootProfile.name:"No Profile!"}}</small>
-                    </button>
-                  </td>
-                  <td class="td-actions text-center" style="min-width: 105px;">
-                    <button class="btns btn-clear" title="Edit item or all group items" *ngIf="device.agentGroup"
-                      (click)="openModalForEdit(device.id)">
-                      <img src="./assets/images/icons/edit.svg">
-                    </button>
-                    <button class="btns btn-clear" matTooltip="Delete item" [matTooltipShowDelay]="800"
-                      (click)="deleteDevice(device.id)">
-                      <img src="./assets/images/icons/close-red.svg">
-                    </button>
-                  </td>
-                </tr>
-                <tr *ngIf="registereds == null || registereds.length<1">
-                  <td colspan="10">No Data</td>
-                </tr>
-              </tbody> -->
-
               <ng-template #body>
                 <tr *ngFor="let device of registereds">
                   <td>
@@ -123,7 +186,7 @@
                     {{ device.rootProfile.name }}
                   </td>
                   <td style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="openAgentModal(device.id)">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
@@ -137,12 +200,125 @@
             </rk-table>
           </rk-table-container>
         </div>
+
+        <rk-modal #changeGroupModal>
+          <rk-modal-header icon="plus">
+            <rk-modal-header-title>Change Group</rk-modal-header-title>
+            <rk-modal-header-close (click)="changeGroupModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+            <rk-select [options]="securityProfilesForSelect"></rk-select>
+
+
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn btn-small w-100 mr-2">Apply</button>
+            <button class="btn btn-small btn-default w-100">Clean</button>
+          </rk-modal-footer>
+        </rk-modal>
+
+        <div class="col-12 col-md-6 px-0 pr-md-2 mt-3">
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content justify-content-between">
+                <div>
+                  <div class="rk-table-title">Group Members</div>
+                  <p class="rk-table-description">( uyesi oldugu gurubun politikasi uygulanır )</p>
+                </div>
+
+                <button class="btn btn-small" (click)="changeTableGroup()">Change Group</button>
+              </div>
+            </div>
+
+            <rk-table [showPagination]="false">
+              <ng-template #header>
+                <tr>
+                  <th>
+                    <rk-checkbox size="sm" (valueChange)="groupMembersTableCheckboxChanged($event)"></rk-checkbox>
+                  </th>
+                  <th>Hostname</th>
+                  <th>Mac Address</th>
+                  <th>Group Name</th>
+                </tr>
+              </ng-template>
+
+              <ng-template #body>
+                <tr *ngFor="let device of registereds" [ngClass]="{'selected': device?.selected}">
+                  <td style="width: 40px;">
+                    <rk-checkbox size="sm" [(value)]="device.selected"></rk-checkbox>
+                  </td>
+                  <td>{{ device.agentAlias }}</td>
+                  <td>{{ device.mac | MacAddressFormatterPipe }}</td>
+                  <td>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <span>{{ device.agentGroup ? device.agentGroup.groupName : '--' }}</span>
+
+                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent">
+                        <i-feather name="trash-2"></i-feather>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </rk-table>
+          </rk-table-container>
+        </div>
+
+        <div class="col-12 col-md-6 px-0 pl-md-2 mt-3">
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content justify-content-between">
+                <div>
+                  <div class="rk-table-title">Ungroup Members</div>
+                  <p class="rk-table-description">( üzerinden çıktığı Dns Relay serverin security profili uygulanır )
+                  </p>
+                </div>
+
+                <button class="btn btn-small">Add to Group</button>
+              </div>
+            </div>
+
+            <rk-table [showPagination]="false">
+              <ng-template #header>
+                <tr>
+                  <th>
+                    <rk-checkbox size="sm" (valueChange)="ungroupMemberTableCheckboxChanged($event)"></rk-checkbox>
+                  </th>
+                  <th>Hostname</th>
+                  <th>Mac Address</th>
+                  <th>Group Name</th>
+                </tr>
+              </ng-template>
+
+              <ng-template #body>
+                <tr *ngFor="let device of unregistereds" [ngClass]="{'selected': device?.selected}">
+                  <td style="width: 40px;">
+                    <rk-checkbox size="sm" [(value)]="device.selected"></rk-checkbox>
+                  </td>
+                  <td>{{ device.agentInfo.agentAlias }}</td>
+                  <td>{{ device.agentInfo.mac | MacAddressFormatterPipe }}</td>
+                  <td>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <span>No Group</span>
+
+                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent">
+                        <i-feather name="trash-2"></i-feather>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </rk-table>
+          </rk-table-container>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-
+<!-- 
 
 <div class="main-content">
   <div class="container-fluid col-md-12">
@@ -527,9 +703,9 @@
       <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
         <i class="material-icons">arrow_back</i>
       </button>
-      <!-- <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard" [selectedBox]="selectedBox"
+      <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard" [selectedBox]="selectedBox"
         [saveMode]="saveMode" (saveEmitter)="hideWizardWithoutConfirm();">
-      </app-profile-wizard> -->
+      </app-profile-wizard>
 
     </div>
 
@@ -659,4 +835,4 @@
 
 
   </div>
-</div>
+</div> -->

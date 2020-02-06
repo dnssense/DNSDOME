@@ -7,8 +7,7 @@ import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
-import { CustomReportSearchComponent } from '../search/customreport-search.component';
-import { RkTableConfigModel, RkTableRowModel, RkTableColumnModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 
 declare var moment: any;
 @Component({

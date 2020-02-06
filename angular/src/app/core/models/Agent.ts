@@ -18,6 +18,11 @@ export class Agent {
     logo?: any = null;
 
     agents: any[];
+
+    /**
+     * @description For UI
+     */
+    selected?= false;
 }
 
 export interface IpWithMask {
