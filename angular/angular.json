@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -44,7 +45,6 @@
               "node_modules/bootstrap-material-design/dist/js/bootstrap-material-design.min.js",
               "node_modules/moment/moment.js",
               "node_modules/arrive/src/arrive.js",
-              "node_modules/hammerjs/hammer.min.js",
               "node_modules/web-animations-js/web-animations.min.js",
               "node_modules/apexcharts/dist/apexcharts.min.js",
               "node_modules/chartist/dist/chartist.js",
