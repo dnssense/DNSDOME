@@ -208,8 +208,61 @@
           </rk-modal-header>
 
           <rk-modal-body>
-            <rk-select [options]="securityProfilesForSelect"></rk-select>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12 mt-3 d-flex align-items-center justify-content-between">
+                  <rk-select [options]="groupListForSelect" class="w-100" *ngIf="!showGB"></rk-select>
 
+                  <button class="btn btn-icon bg-primary fill-white p-1 ml-1" *ngIf="!showGB" style="min-width: 36px; height: 36px;" (click)="showGB = true">
+                    <i-feather name="plus" class="mr-0"></i-feather>
+                  </button>
+
+                  <input type="text" class="rk-input w-100" placeholder="Group Name" [(ngModel)]="newGroupName" (keyup)="groupNameKeyup($event)" *ngIf="showGB">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mt-3" *ngFor="let sp of securityProfiles">
+                  <rk-radio name="selectedSecurityProfile" class="rk-radio-m-0">{{ sp.name }}</rk-radio>
+                </div>
+
+                <div class="col-12 mt-3">
+                  <p class="rk-group-title">Select the Devices whose group you want to change</p>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mt-3">
+                  <h6 class="rk-title mb-2">Other Group Members</h6>
+
+                  <table class="table small-table table-borderless">
+                    <thead>
+                      <tr>
+                        <th>Host Name</th>
+                        <th>Mc. Address</th>
+                        <th>G. Name</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let groupMember of selectedGroupMembers">
+                        <td>{{ groupMember.agentAlias }}</td>
+                        <td style="max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                          {{ groupMember.mac | MacAddressFormatterPipe }}
+                        </td>
+                        <td>
+                          {{ groupMember?.agentGroup.groupName }}
+                        </td>
+                        <td class="text-right">
+                          <rk-checkbox size="sm" [(value)]="groupMember.selected"></rk-checkbox>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
 
           </rk-modal-body>
 

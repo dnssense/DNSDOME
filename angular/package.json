@@ -1,6 +1,6 @@
 {
   "name": "ui.dnssense",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -15,6 +15,7 @@
   "private": true,
   "dependencies": {
     "@agm/core": "1.0.0-beta.5",
+    "@angular-devkit/build-angular": "^0.900.1",
     "@angular/animations": "8.2.0",
     "@angular/cdk": "~7.1.0",
     "@angular/common": "8.2.0",
@@ -36,6 +37,7 @@
     "ajv": "6.3.0",
     "amazing-time-picker": "^1.8.0",
     "angular-calendar": "0.26.4",
+    "angular-feather": "6.0.4",
     "angular-feather-icons": "3.0.0",
     "angular2-jwt": "^0.2.3",
     "angular2-recaptcha": "^0.6.0",
@@ -105,12 +107,10 @@
     "web-animations-js": "^2.3.1",
     "webui-popover": "^1.2.18",
     "xlsx": "^0.14.3",
-    "zone.js": "^0.10.2",
-    "angular-feather": "6.0.4"
+    "zone.js": "^0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.11.0",
-    "@angular/cli": "~7.1.4",
+    "@angular/cli": "^9.0.1",
     "@angular/compiler-cli": "8.2.0",
     "@angular/language-service": "8.2.0",
     "@types/jasmine": "~2.8.8",

@@ -69,6 +69,16 @@ export class DevicesComponent implements OnInit {
 
     securityProfilesForSelect: RkSelectModel[] = [];
 
+    groupListForSelect: RkSelectModel[] = [];
+
+    @ViewChild('changeGroupModal', { static: false }) changeGroupModal;
+
+    selectedGroupMembers: Agent[] = [];
+
+    showGB = false;
+
+    newGroupName = '';
+
     loadDevices() {
         this.agentService.getSecurityProfiles().subscribe(res => {
             this.securityProfiles = res;
@@ -80,13 +90,20 @@ export class DevicesComponent implements OnInit {
                 });
             })
         });
+        
         this.boxService.getBoxes().subscribe(res => { this.boxes = res; });
+        
         this.agentService.getRegisteredDevices().subscribe(res => {
             this.groupList = [];
-            res.forEach(r => {
+            res.forEach((r, index) => {
                 if (r.agentGroup && r.agentGroup.id > 0) {
                     if (!this.groupList.find(g => g.id === r.agentGroup.id)) {
                         this.groupList.push(r.agentGroup);
+                        this.groupListForSelect.push({
+                            displayText: r.agentGroup.groupName,
+                            value: r.agentGroup.id,
+                            selected: index === 0
+                        });
                     }
                 }
             });
@@ -102,6 +119,7 @@ export class DevicesComponent implements OnInit {
                 return -1;
             });
         });
+        
         this.agentService.getUnregisteredDevices().subscribe(res => {
             this.unregistereds = [];
             if (res && res instanceof Array) {
@@ -113,10 +131,7 @@ export class DevicesComponent implements OnInit {
                     this.unregistereds.push({ agentGroup: null, agentInfo: a, rootProfile: null });
                 });
             }
-
-            console.log('unregistereds', this.unregistereds);
         });
-
     }
 
     initializeSelectedAgentProfile() {
@@ -176,8 +191,6 @@ export class DevicesComponent implements OnInit {
         } else {
             this.notification.warning('Missing Information! Please provide required fields.');
         }
-
-
     }
 
     saveDeviceGroup() {
@@ -618,6 +631,14 @@ export class DevicesComponent implements OnInit {
     changeTableGroup() {
         const selecteds = this.registereds.filter(x => x.selected);
 
-        
+        this.selectedGroupMembers = selecteds;
+
+        this.changeGroupModal.toggle();
+    }
+
+    groupNameKeyup($event) {
+        if ($event.keyCode === 13) {
+            // group ekleme yapılacak.
+        }
     }
 }
