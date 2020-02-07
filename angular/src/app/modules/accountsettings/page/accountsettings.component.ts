@@ -6,7 +6,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { User } from 'src/app/core/models/User';
 import { Company } from 'src/app/core/models/Company';
 import { SignupBean } from 'src/app/core/models/SignupBean';
-import { ErrorStateMatcher } from '@angular/material';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { AccountService } from 'src/app/core/services/AccountService';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { CompanyService } from 'src/app/core/services/CompanyService';
