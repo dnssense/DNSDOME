@@ -54,9 +54,9 @@ export class PublicipComponent implements AfterViewInit {
   roleName: string;
   tooltipGuideCounter = 0;
 
-  @ViewChild('agentModal', { static: false }) agentModal;
-  @ViewChild('profileModal', { static: false }) profileModal;
-  @ViewChild('profileWizard', { static: false }) profileWizard: ProfileWizardComponent;
+  @ViewChild('agentModal') agentModal;
+  @ViewChild('profileModal') profileModal;
+  @ViewChild('profileWizard') profileWizard: ProfileWizardComponent;
 
   currentStep: number = 1;
 

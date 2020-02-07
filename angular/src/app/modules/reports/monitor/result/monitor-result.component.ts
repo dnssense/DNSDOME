@@ -59,8 +59,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   @Output() public addColumnValueEmitter = new EventEmitter();
   @Output() public tableColumnsChanged = new EventEmitter();
 
-  @ViewChild('tableDivComponent', { static: false }) tableDivComponent: ElementRef;
-  @ViewChild('columnTablePanel', { static: false }) columnTablePanel: any;
+  @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
+  @ViewChild('columnTablePanel') columnTablePanel: any;
 
   constructor(private monitorService: MonitorService, private excelService: ExcelService, private pdfService: PdfService) { }
 

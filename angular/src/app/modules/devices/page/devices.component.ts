@@ -65,13 +65,13 @@ export class DevicesComponent implements OnInit {
     previousGroupId = 0;
     currentCss = '';
 
-    @ViewChild('groupAgentModal', { static: false }) groupAgentModal;
+    @ViewChild('groupAgentModal') groupAgentModal;
 
     securityProfilesForSelect: RkSelectModel[] = [];
 
     groupListForSelect: RkSelectModel[] = [];
 
-    @ViewChild('changeGroupModal', { static: false }) changeGroupModal;
+    @ViewChild('changeGroupModal') changeGroupModal;
 
     selectedGroupMembers: Agent[] = [];
 

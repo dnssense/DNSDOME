@@ -25,8 +25,8 @@ export class AdminLayoutComponent implements OnInit {
     url: string;
     location: Location;
 
-    @ViewChild('sidebar', { static: false }) sidebar: any;
-    @ViewChild(NavbarComponent, { static: false }) navbar: NavbarComponent;
+    @ViewChild('sidebar') sidebar: any;
+    @ViewChild(NavbarComponent) navbar: NavbarComponent;
 
     collapsed: boolean;
 

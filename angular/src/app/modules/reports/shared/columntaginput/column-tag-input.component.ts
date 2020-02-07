@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, Renderer, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, Renderer2 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Category } from 'src/app/core/models/Category';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
@@ -35,10 +35,10 @@ export class ColumnTagInputComponent implements OnInit {
   public inputCollapsed: boolean = true;
   public inputSelected: boolean = false;
 
-  @ViewChild('inputElement', { static : false }) inputElement: ElementRef;
-  @ViewChild('mainInputElement', { static : false }) mainInputElement: ElementRef;
-  @ViewChild('tagInput', { static : false }) tagInput: ElementRef;
-  @ViewChild('select', { static : false }) select: ElementRef;
+  @ViewChild('inputElement') inputElement: ElementRef;
+  @ViewChild('mainInputElement') mainInputElement: ElementRef;
+  @ViewChild('tagInput') tagInput: ElementRef;
+  @ViewChild('select') select: ElementRef;
 
   public select2: any = null;
 
@@ -48,7 +48,7 @@ export class ColumnTagInputComponent implements OnInit {
 
   //deleted constructer parameters
   // public roksitTranslateService: RoksitTranslateService,
-  public constructor(private renderer: Renderer,
+  public constructor(private renderer: Renderer2,
     private fastReportService: FastReportService,
     private notificationService: NotificationService) {
     if (!this.tags) {
@@ -106,7 +106,7 @@ export class ColumnTagInputComponent implements OnInit {
     this.currentInput = this.current.value;
     this.currentinputValue =
       '' + this.currentColumn + this.currentOperator + this.currentInput;
-    this.renderer.invokeElementMethod(this.tagInput.nativeElement, 'focus');
+    this.tagInput.nativeElement.focus();
 
     this.tagInput.nativeElement.focus();
 
@@ -177,7 +177,7 @@ export class ColumnTagInputComponent implements OnInit {
 
     this.inputCollapsed = false;
     this.positionInputElement($event.target);
-    this.renderer.invokeElementMethod(this.tagInput.nativeElement, 'focus');
+    this.tagInput.nativeElement.focus();
     this.tagInput.nativeElement.focus();
   }
 

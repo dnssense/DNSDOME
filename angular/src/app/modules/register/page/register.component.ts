@@ -37,7 +37,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private captcha: string;
   public host: ConfigHost;
   public captcha_key: string = ""
-  @ViewChild(ReCaptchaComponent, { static : false }) captchaComponent: ReCaptchaComponent;
+  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
   emailFormControl = new FormControl('', [
     Validators.required,

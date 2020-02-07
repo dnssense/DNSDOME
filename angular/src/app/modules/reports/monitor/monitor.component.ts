@@ -14,9 +14,9 @@ import { RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.
 export class MonitorComponent implements OnInit, AfterViewInit {
   public searchSetting: SearchSetting = new SearchSetting();
 
-  @ViewChild(RoksitSearchComponent, { static: false })
+  @ViewChild(RoksitSearchComponent)
   private roksitSearchComponent: RoksitSearchComponent;
-  @ViewChild(MonitorResultComponent, { static: false })
+  @ViewChild(MonitorResultComponent)
   private monitorResultComponent: MonitorResultComponent;
 
   constructor(public dateFormatPipe: DateFormatPipe) { }

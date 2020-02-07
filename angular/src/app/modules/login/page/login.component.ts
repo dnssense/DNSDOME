@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     Validators.required,
     Validators.email,
   ]);
-  @ViewChild(ReCaptchaComponent, { static : false }) captchaComponent: ReCaptchaComponent;
+  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   captcha: string;
   captcha_key: string;
   validEmailLogin: true | false;

@@ -25,11 +25,11 @@ export class CustomReportComponent implements OnInit, OnDestroy {
   public columnsTemp: LogColumn[];
   public data: any[];
 
-  @ViewChild("tableDivComponent", { static : false })
+  @ViewChild("tableDivComponent")
   tableDivComponent: ElementRef;
-  @ViewChild(CustomReportResultComponent, { static : false })
+  @ViewChild(CustomReportResultComponent)
   public customReportResultComponent: CustomReportResultComponent;
-  @ViewChild(CustomReportSearchComponent, { static : false })
+  @ViewChild(CustomReportSearchComponent)
   public customReportSearchComponent: CustomReportSearchComponent;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
