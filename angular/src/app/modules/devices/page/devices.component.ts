@@ -87,7 +87,9 @@ export class DevicesComponent implements OnInit {
 
     showGB = false;
 
-    newGroupName = '';
+    groupName = '';
+
+    selectedProfileRadio;
 
     loadDevices() {
         this.agentService.getSecurityProfiles().subscribe(res => {
@@ -98,7 +100,7 @@ export class DevicesComponent implements OnInit {
                     displayText: elem.name,
                     value: elem.id
                 });
-            })
+            });
         });
 
         this.boxService.getBoxes().subscribe(res => { this.boxes = res; });
@@ -107,7 +109,7 @@ export class DevicesComponent implements OnInit {
             this.groupList = [];
             res.forEach((r, index) => {
                 if (r.agentGroup && r.agentGroup.id > 0) {
-                    const finded = this.groupList.find(g => g.agentGroup.id === r.agentGroup.id)
+                    const finded = this.groupList.find(g => g.agentGroup.id === r.agentGroup.id);
                     if (!finded) {
                         this.groupList.push({
                             agentGroup: r.agentGroup,
@@ -125,8 +127,6 @@ export class DevicesComponent implements OnInit {
                     }
                 }
             });
-
-            console.log(this.groupList);
 
             this.registereds = res.sort((x, y) => {
                 if (!x.agentGroup) {
@@ -154,14 +154,20 @@ export class DevicesComponent implements OnInit {
         });
     }
 
+    closeGroupAgentModal($event) {
+        if ($event.closed) {
+            this.selectedGroupAgent = {
+                agentGroup: {}
+            } as GroupAgentModel;
+        }
+    }
+
     editGroupAgentModal(groupAgent: GroupAgentModel) {
         this.selectedGroupAgent = JSON.parse(JSON.stringify(groupAgent));
 
         this.selectedGroupAgent.agents.forEach(elem => {
             elem.selected = true;
-        })
-
-        console.log(this.selectedGroupAgent);
+        });
 
         this.groupAgentModal.toggle();
     }
@@ -307,7 +313,7 @@ export class DevicesComponent implements OnInit {
             return;
         }
 
-        const b = this.boxes.find(b => b.id === boxId);
+        const b = this.boxes.find(bo => bo.id === boxId);
         if (b && b.agent.rootProfile && b.agent.rootProfile.id > 0) {
             this.selectedAgent = b.agent;
             this.saveMode = 'ProfileUpdate';
@@ -546,6 +552,25 @@ export class DevicesComponent implements OnInit {
 
     }
 
+    deleteUngroupDevice(device: UnregisteredAgent) {
+        if (device) {
+            this.alertService.alertWarningAndCancel('Are You Sure?', 'Settings for this device will be deleted!').subscribe(
+                res => {
+                    if (res) {
+                        this.boxService.deleteBox(device.agentInfo.id).subscribe(resu => {
+                            if (resu.status === 200) {
+                                this.notification.success(resu.message);
+                                this.loadDevices();
+                            } else {
+                                this.notification.error(resu.message);
+                            }
+                        });
+                    }
+                }
+            );
+        }
+    }
+
     openModal() {
         this.deviceGroup = new DeviceGroup();
         const agents = [];
@@ -625,6 +650,33 @@ export class DevicesComponent implements OnInit {
     groupNameKeyup($event) {
         if ($event.keyCode === 13) {
             // group ekleme yapılacak.
+        }
+    }
+
+    saveGroupAgent() {
+        const groupName = this.groupName;
+        const selectedProfile = this.securityProfiles.find(x => x.id === Number(this.selectedProfileRadio));
+
+        const selectedGroupAgents = this.unregistereds.filter(x => x.selected);
+
+        if (groupName.trim().length > 0 && selectedProfile.id > 0 && selectedGroupAgents.length > 0) {
+            const deviceGroup = new DeviceGroup();
+
+            deviceGroup.agentGroup = { id: -1, groupName: groupName };
+            deviceGroup.agents = selectedGroupAgents.map(x => x.agentInfo);
+            deviceGroup.rootProfile = selectedProfile;
+
+            this.agentService.saveDevice(deviceGroup).subscribe(result => {
+                if (result.status === 200) {
+                    this.groupAgentModal.toggle();
+
+                    this.notification.success(result.message);
+
+                    this.loadDevices();
+                } else {
+                    this.notification.error(result.message);
+                }
+            });
         }
     }
 }

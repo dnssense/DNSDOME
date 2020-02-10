@@ -63,7 +63,7 @@
           </rk-table-container>
         </div>
 
-        <rk-modal #groupAgentModal>
+        <rk-modal #groupAgentModal (close)="closeGroupAgentModal($event)">
           <rk-modal-header icon="plus">
             <rk-modal-header-title>
               <h5>{{ selectedGroupAgent.agentGroup.id ? 'Edit' : 'Create New' }} Group </h5>
@@ -78,14 +78,18 @@
               <div class="row">
                 <div class="col-12 mt-3">
                   <input type="text" class="rk-input w-100" placeholder="Group Name"
-                    [(ngModel)]="selectedGroupAgent.agentGroup.groupName">
+                    [(ngModel)]="groupName">
                 </div>
               </div>
 
               <div class="row mt-2">
                 <div class="col-12 mt-3" *ngFor="let profile of securityProfiles; let index = index">
-                  <rk-radio name="profile" [checked]="profile.id === selectedGroupAgent?.securityProfile?.id"
-                    class="rk-radio-m-0">{{ profile.name }}</rk-radio>
+                  <div class="rk-radio my-0">
+                    <!-- [checked]="profile.id === selectedGroupAgent?.securityProfile?.id -->
+                    <input type="radio" id="rd-sec-{{ index }}" name="securityProfileRd" [(ngModel)]="selectedProfileRadio"
+                      value="{{ profile.id }}">
+                    <label for="rd-sec-{{ index }}">{{ profile.name }}</label>
+                  </div>
                 </div>
               </div>
 
@@ -94,7 +98,7 @@
                   <h5 class="rk-group-title">Select Devices to Join Group</h5>
                 </div>
 
-                <div class="col-12 mt-2">
+                <div class="col-12 mt-2" *ngIf="selectedGroupAgent?.agents?.length > 0">
                   <h6 class="rk-title mb-2">Other Group Members</h6>
 
                   <table class="table small-table table-borderless">
@@ -153,7 +157,7 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn w-100 btn-small mr-2">Apply</button>
+            <button class="btn w-100 btn-small mr-2" (click)="saveGroupAgent()">Apply</button>
             <button class="btn w-100 btn-default btn-small">Clean</button>
           </rk-modal-footer>
         </rk-modal>
@@ -323,6 +327,12 @@
                     </div>
                   </td>
                 </tr>
+
+                <tr *ngIf="registereds.length == 0">
+                  <td colspan="4">
+                    Herhangi bir veri bulunamadı.
+                  </td>
+                </tr>
               </ng-template>
             </rk-table>
           </rk-table-container>
@@ -365,10 +375,16 @@
                     <div class="d-flex align-items-center justify-content-between">
                       <span>No Group</span>
 
-                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent">
+                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
+                        (click)="deleteUngroupDevice(device)">
                         <i-feather name="trash-2"></i-feather>
                       </button>
                     </div>
+                  </td>
+                </tr>
+                <tr *ngIf="unregistereds.length == 0">
+                  <td colspan="4">
+                    Herhangi bir veri bulunamadı.
                   </td>
                 </tr>
               </ng-template>
