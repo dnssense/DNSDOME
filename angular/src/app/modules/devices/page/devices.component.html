@@ -77,8 +77,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder="Group Name"
-                    [(ngModel)]="groupName">
+                  <input type="text" class="rk-input w-100" placeholder="Group Name" [(ngModel)]="groupName">
                 </div>
               </div>
 
@@ -86,8 +85,8 @@
                 <div class="col-12 mt-3" *ngFor="let profile of securityProfiles; let index = index">
                   <div class="rk-radio my-0">
                     <!-- [checked]="profile.id === selectedGroupAgent?.securityProfile?.id -->
-                    <input type="radio" id="rd-sec-{{ index }}" name="securityProfileRd" [(ngModel)]="selectedProfileRadio"
-                      value="{{ profile.id }}">
+                    <input type="radio" id="rd-sec-{{ index }}" name="securityProfileRd"
+                      [(ngModel)]="selectedProfileRadio" value="{{ profile.id }}">
                     <label for="rd-sec-{{ index }}">{{ profile.name }}</label>
                   </div>
                 </div>
@@ -122,6 +121,12 @@
                           <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
                         </td>
                       </tr>
+
+                      <tr *ngIf="selectedGroupAgent?.length == 0">
+                        <td colspan="4">
+                          Herhangi bir veri bulunamadı.
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -147,6 +152,9 @@
                           <rk-checkbox size="sm" (valueChange)="selectRow($event, item)" [(value)]="item.selected">
                           </rk-checkbox>
                         </td>
+                      </tr>
+                      <tr *ngIf="unregistereds.length == 0">
+                        <td colspan="3">Herhangi bir veri bulunamadı.</td>
                       </tr>
                     </tbody>
                   </table>
@@ -203,6 +211,11 @@
                     <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deleteDevice(device.id)">
                       <i-feather name="trash-2"></i-feather>
                     </button>
+                  </td>
+                </tr>
+                <tr *ngIf="groupList.length == 0">
+                  <td colspan="5">
+                    Herhangi bir veri bulunamadı.
                   </td>
                 </tr>
               </ng-template>
@@ -269,6 +282,11 @@
                         </td>
                         <td class="text-right">
                           <rk-checkbox size="sm" [(value)]="groupMember.selected"></rk-checkbox>
+                        </td>
+                      </tr>
+                      <tr *ngIf="selectedGroupMembers.length == 0">
+                        <td colspan="4">
+                          Herhangi bir veri bulunamadı.
                         </td>
                       </tr>
                     </tbody>
