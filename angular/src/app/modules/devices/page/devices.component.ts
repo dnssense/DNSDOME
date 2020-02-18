@@ -33,10 +33,11 @@ export function validLength(val: string) {
     return val.trim().length > 0;
 }
 
-export interface GroupAgentModel {
+export class GroupAgentModel {
     agentGroup: AgentGroup;
     securityProfile: SecurityProfile;
     agents: Agent[];
+    memberCounts?= 0;
 }
 
 @Component({

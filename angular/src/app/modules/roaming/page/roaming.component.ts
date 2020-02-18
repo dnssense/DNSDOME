@@ -7,8 +7,8 @@ import * as introJs from 'intro.js/intro.js';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { AlertService } from 'src/app/core/services/alert.service';
-import { ValidationService } from 'src/app/core/services/validation.service';
 import { BoxService } from 'src/app/core/services/box.service';
+import { GroupAgentModel } from '../../devices/page/devices.component';
 
 declare let $: any;
 
@@ -18,6 +18,16 @@ declare let $: any;
     styleUrls: ['roaming.component.sass']
 })
 export class RoamingComponent implements OnInit {
+
+    constructor(
+        private formBuilder: FormBuilder,
+        private agentService: AgentService,
+        private alertService: AlertService,
+        private notification: NotificationService,
+        private roamingService: RoamingService,
+        private boxService: BoxService
+    ) { }
+
     clientForm: FormGroup;
     clients: Agent[];
     clientsFiltered: Agent[];
@@ -27,40 +37,68 @@ export class RoamingComponent implements OnInit {
     selectedClient: Agent = new Agent();
     securityProfiles: SecurityProfile[];
     clientType: string;
-    isNewItemUpdated: boolean = false;
+    isNewItemUpdated = false;
     fileLink: string;
     searchKey: string;
     selectedAgent: Agent = new Agent();
     saveMode: string;
-    startWizard: boolean = false;
+    startWizard = false;
     dontDomains: string[] = [];
-    dontDomains2: string[] = []
+    dontDomains2: string[] = [];
     confParameters: string[] = [];
-    constructor(private formBuilder: FormBuilder, private agentService: AgentService, private alertService: AlertService,
-        private notification: NotificationService, private roamingService: RoamingService, private boxService: BoxService) { }
+
+    isDontDomainsValid = true;
+
+    groupedClients = [];
 
     ngOnInit(): void {
 
         this.clients = [];
         this.clientForm = this.formBuilder.group({
-            "name": ["", [Validators.required]],
-            "type": ["", [Validators.required]],
-            "blockMessage": []
+            'name': ['', [Validators.required]],
+            'type': ['', [Validators.required]],
+            'blockMessage': []
         });
 
         this.loadClients();
-        this.getConfParameters()
+        this.getConfParameters();
         this.defineNewAgentForProfile();
     }
 
     loadClients() {
-        this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res });
+        this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res; });
 
         this.roamingService.getClients().subscribe(res => {
             this.clients = res;
+
             this.clientsFiltered = this.clients;
+
+            this.groupedClients = this.getGroupClients(this.clients);
+        });
+    }
+
+    private getGroupClients(clients: Agent[]) {
+        const grouped = [] as GroupAgentModel[];
+
+        clients.forEach(elem => {
+            if (elem.agentGroup && elem.agentGroup.id > 0) {
+                const finded = grouped.find(x => x.agentGroup.groupName === elem.agentGroup.groupName);
+
+                if (finded) {
+                    finded.memberCounts++;
+                    finded.agents.push(elem);
+                } else {
+                    grouped.push({
+                        agentGroup: elem.agentGroup,
+                        securityProfile: elem.rootProfile,
+                        agents: [elem],
+                        memberCounts: 1
+                    });
+                }
+            }
         });
 
+        return grouped;
     }
 
     getConfParameters() {
@@ -92,16 +130,11 @@ export class RoamingComponent implements OnInit {
 
     securityProfileChanged(id: number) {
         this.isNewItemUpdated = true;
-        this.selectedClient.rootProfile = this.securityProfiles.find(p => p.id == id);
+        this.selectedClient.rootProfile = this.securityProfiles.find(p => p.id === id);
     }
 
     openTooltipGuide() {
         introJs().start();
-    }
-
-    hideForm() {
-        $('#newClientRow').slideUp(300);
-        //   $('#pi_card_btn').show();
     }
 
     showNewProfileWizard() {
@@ -111,12 +144,9 @@ export class RoamingComponent implements OnInit {
 
         this.selectedAgent = this.selectedClient;
         this.defineNewAgentForProfile();
-        this.selectedAgent.rootProfile.name = this.selectedClient.agentAlias + "-Profile";
+        this.selectedAgent.rootProfile.name = this.selectedClient.agentAlias + '-Profile';
 
         this.saveMode = 'NewProfileWithRoaming';
-
-        $('#clientsPanel').toggle("slide", { direction: "left" }, 600);
-        $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
         this.startWizard = true;
         document.getElementById('wizardPanel').scrollIntoView();
     }
@@ -133,9 +163,9 @@ export class RoamingComponent implements OnInit {
             }
         });
 
-        var $valid = $('.clientForm').valid();
+        const $valid = $('.clientForm').valid();
         if (!$valid) {
-            this.notification.warning("Client form is not valid. Please enter required fields. ")
+            this.notification.warning('Client form is not valid. Please enter required fields. ');
             $validator.focusInvalid();
             return false;
         }
@@ -143,20 +173,16 @@ export class RoamingComponent implements OnInit {
     }
 
     showEditWizard(id: number) {
-        this.selectedClient = JSON.parse(JSON.stringify(this.clients.find(c => c.id == id)));
+        this.selectedClient = JSON.parse(JSON.stringify(this.clients.find(c => c.id === id)));
         $('#newClientRow').slideDown(300);
     }
 
     showProfileEditWizard(id: number) {
-        let agent = this.clients.find(p => p.id == id);
+        const agent = this.clients.find(p => p.id === id);
         if (agent.rootProfile && agent.rootProfile.id > 0) {
             this.selectedAgent = agent;
             this.saveMode = 'ProfileUpdate';
-            $('#clientsPanel').toggle("slide", { direction: "left" }, 600);
-            $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
             this.startWizard = true;
-            //$('#contentLink').click();
-            document.getElementById('wizardPanel').scrollIntoView();
         } else {
             this.notification.warning('Profile can not find!');
         }
@@ -166,18 +192,12 @@ export class RoamingComponent implements OnInit {
     hideWizard() {
         this.alertService.alertWarningAndCancel('Are You Sure?', 'If you made changes, your Changes will be cancelled!').subscribe(
             () => {
-                $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
-                $('#clientsPanel').toggle("slide", { direction: "left" }, 600);
-                $('#newClientRow').slideUp(300);
                 this.loadClients();
             }
         );
     }
 
     hideWizardWithoutConfirm() {
-        $('#wizardPanel').toggle("slide", { direction: "right" }, 800);
-        $('#clientsPanel').toggle("slide", { direction: "left" }, 800);
-        $('#newClientRow').slideUp(300);
         this.loadClients();
     }
 
@@ -185,9 +205,8 @@ export class RoamingComponent implements OnInit {
         if (this.selectedClient && this.isFormValid()) {
             this.roamingService.saveClient(this.selectedClient).subscribe(
                 res => {
-                    if (res.status == 200) {
+                    if (res.status === 200) {
                         this.notification.success(res.message);
-                        this.hideForm();
                         this.loadClients();
                     } else {
                         this.notification.error(res.message);
@@ -200,11 +219,11 @@ export class RoamingComponent implements OnInit {
         this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Client will be deleted!').subscribe(
             res => {
                 if (res && id && id > 0) {
-                    this.roamingService.deleteClient(id).subscribe(res => {
-                        if (res.status == 200) {
-                            this.notification.success(res.message);
+                    this.roamingService.deleteClient(id).subscribe(result => {
+                        if (result.status === 200) {
+                            this.notification.success(result.message);
                         } else {
-                            this.notification.error(res.message);
+                            this.notification.error(result.message);
                         }
                     });
                 }
@@ -220,22 +239,21 @@ export class RoamingComponent implements OnInit {
     }
 
     copyLink() {
-        let domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',')
+        const domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',');
         this.boxService.getProgramLink(domains).subscribe(res => {
             if (res && res.link) {
-                this.getConfParameters()
-                this.closeModal();
+                this.getConfParameters();
                 this.fileLink = res.link;
-                this.copyToClipBoard(this.fileLink)
-                this.notification.info('File link copied to clipboard')
+                this.copyToClipBoard(this.fileLink);
+                this.notification.info('File link copied to clipboard');
             } else {
-                this.notification.error('Could not create link')
+                this.notification.error('Could not create link');
             }
         });
     }
 
     copyToClipBoard(input: string) {
-        let selBox = document.createElement('textarea');
+        const selBox = document.createElement('textarea');
         selBox.value = input;
         document.body.appendChild(selBox);
         selBox.focus();
@@ -245,14 +263,13 @@ export class RoamingComponent implements OnInit {
     }
 
     saveDomainChanges() {
-        let domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',')
+        const domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',');
         if (this.isDontDomainsValid) {
             this.boxService.getProgramLink(domains).subscribe(res => {
                 if (res && res.link) {
-                    this.getConfParameters()
-                    this.closeModal();
+                    this.getConfParameters();
                 } else {
-                    this.notification.error('Changes could not save!')
+                    this.notification.error('Changes could not save!');
                 }
             });
         }
@@ -260,16 +277,15 @@ export class RoamingComponent implements OnInit {
     }
 
     downloadFile() {
-        let domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',')
+        const domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',');
 
         this.boxService.getProgramLink(domains).subscribe(res => {
             if (res && res.link) {
-                this.getConfParameters()
-                this.closeModal();
-                this.fileLink = res.link
-                window.open('http://' + this.fileLink, "_blank");
+                this.getConfParameters();
+                this.fileLink = res.link;
+                window.open('http://' + this.fileLink, '_blank');
             } else {
-                this.notification.error('Could not create link')
+                this.notification.error('Could not create link');
             }
         });
     }
@@ -284,7 +300,7 @@ export class RoamingComponent implements OnInit {
             this.dontDomains2.push('');
             this.checkDomain();
         } else {
-            this.notification.warning('You can add max. 10 domains')
+            this.notification.warning('You can add max. 10 domains');
         }
     }
 
@@ -293,12 +309,10 @@ export class RoamingComponent implements OnInit {
         this.dontDomains.splice(i, 1);
         this.checkDomain();
     }
-
-    isDontDomainsValid: boolean = true
     checkDomain() {
         this.dontDomains.forEach(d => d = d.toLowerCase());
         this.isDontDomainsValid = true;
-        const d = this.dontDomains// this.dontDomains.split(',');
+        const d = this.dontDomains; // this.dontDomains.split(',');
         if (d.length > 10) {
             this.notification.warning('You can report 10 domains per request');
             this.isDontDomainsValid = false;
@@ -308,7 +322,7 @@ export class RoamingComponent implements OnInit {
                 if (f.toLowerCase().startsWith('http')) {
                     f = f.toLowerCase().replace('http://', '').replace('https://', '');
                 }
-                const res = f.match(/^[a-z0-9.-]+$/i);//alpha or num or - or .
+                const res = f.match(/^[a-z0-9.-]+$/i); // alpha or num or - or .
                 if (!res) {
                     this.isDontDomainsValid = false;
                     break;
@@ -318,36 +332,28 @@ export class RoamingComponent implements OnInit {
     }
 
     moveDeviceInGroup(opType: number, id: number) {
-        if (opType == 1) {
-            this.selectedClients.push(this.clientListForGroup.find(u => u.id == id));
-            this.clientListForGroup.splice(this.clientListForGroup.findIndex(x => x.id == id), 1);
+        if (opType === 1) {
+            this.selectedClients.push(this.clientListForGroup.find(u => u.id === id));
+            this.clientListForGroup.splice(this.clientListForGroup.findIndex(x => x.id === id), 1);
         } else {
-            this.clientListForGroup.push(this.selectedClients.find(u => u.id == id));
-            this.selectedClients.splice(this.selectedClients.findIndex(x => x.id == id), 1);
+            this.clientListForGroup.push(this.selectedClients.find(u => u.id === id));
+            this.selectedClients.splice(this.selectedClients.findIndex(x => x.id === id), 1);
         }
-
     }
 
     openModal() {
-        this.dontDomains = JSON.parse(JSON.stringify(this.confParameters))
-        this.dontDomains2 = []
+        this.dontDomains = JSON.parse(JSON.stringify(this.confParameters));
+        this.dontDomains2 = [];
+
         this.dontDomains.forEach(d => {
             this.dontDomains2.push('');
         });
-        this.checkDomain()
+
+        this.checkDomain();
         this.clientListForGroup = JSON.parse(JSON.stringify(this.clientsFiltered));
-        $(document.body).addClass('modal-open');
-        $('#exampleModal').css('display', 'block');
-        $('#exampleModal').attr('aria-hidden', 'false');
-        $('#exampleModal').addClass('show');
     }
 
-    closeModal() {
-        $(document.body).removeClass('modal-open');
-        $('#exampleModal').css('display', 'none');
-        $('#exampleModal').attr('aria-hidden', 'true');
-        $('#exampleModal').removeClass('show');
+    clientsTableCheckboxChanged($event) {
+        this.clientsFiltered.forEach(elem => elem.selected = $event);
     }
-
-
 }
