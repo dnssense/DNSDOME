@@ -81,7 +81,7 @@
                   </td>
                 </tr>
 
-                <tr *ngIf="clientsFiltered.length === 0">
+                <tr *ngIf="clientsFiltered?.length === 0">
                   <td colspan="5">Herhangi bir veri bulunamadı.</td>
                 </tr>
               </ng-template>
@@ -129,7 +129,7 @@
                   </td>
                 </tr>
 
-                <tr *ngIf="groupedClients.length === 0">
+                <tr *ngIf="groupedClients?.length === 0">
                   <td colspan="5">Herhangi bir veri bulunamadı.</td>
                 </tr>
               </ng-template>

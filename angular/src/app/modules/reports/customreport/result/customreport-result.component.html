@@ -6,7 +6,7 @@
                 <div class="mt-0"></div>
                 <ng-container *ngIf="data; else elseTemplate">
                     <div class="dns-datatable-container container-fluid">
-                        <div class="row">
+                        <!-- <div class="row">
                             <h4 class="dns-datatable-heading col-sm-4">Results</h4>
                             <div class="col-sm-8 text-right">
                                 <div class="dns-dropdown d-inline-block dns-table-select" id="dropdownExport"
@@ -46,12 +46,11 @@
                                         </a></div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="row">
                             <div class="table-responsive col-md-12">
-                                <rk-table-container [config]="tableConfig" >
-                                    <rk-table  (pageChange)="onPageChange($event)"
-                                        [totalCount]="40" [pageViewCount]="10"
+                                <rk-table-container [config]="tableConfig" class="m-0">
+                                    <rk-table (pageChange)="onPageChange($event)" [totalCount]="40" [pageViewCount]="10"
                                         (pageViewCountChange)="onPageViewCountChange($event)" [info]="true">
                                         <ng-template #header>
                                             <tr>
@@ -79,10 +78,16 @@
                                         <ng-template #body>
                                             <tr *ngFor="let dat of data;let i = index">
                                                 <td class="index">{{ i + 1 }}</td>
-                                                <td *ngFor="let col of selectedColumns;let colIndex = index"> {{ dat[colIndex] }} </td>
-                                                <td>  {{dat[selectedColumns.length] | customDecimalPipe}} </td>
-                                                <td> <rk-progressbar [value]="(100 * dat[selectedColumns.length] /  total)" [showType]="'outside'" [sizeType]="'small'">
-                                                </rk-progressbar></td>
+                                                <td *ngFor="let col of selectedColumns;let colIndex = index">
+                                                    {{ dat[colIndex] }}
+                                                </td>
+                                                <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>
+                                                <td>
+                                                    <rk-progressbar
+                                                        [value]="(100 * dat[selectedColumns.length] /  total)"
+                                                        [showType]="'outside'" [sizeType]="'small'">
+                                                    </rk-progressbar>
+                                                </td>
                                             </tr>
                                         </ng-template>
                                     </rk-table>
@@ -94,8 +99,8 @@
                 <ng-template #elseTemplate>
                     <div class="row">
                         <div class="col-md-12">
-                            <p #tableDivComponent style="color: whitesmoke">
-                                <strong>{{ 'Data not found!' }}</strong>
+                            <p #tableDivComponent style="color: whitesmoke" class="m-0">
+                                <strong class="m-0 p-0">{{ 'Data not found!' }}</strong>
                             </p>
                         </div>
                     </div>

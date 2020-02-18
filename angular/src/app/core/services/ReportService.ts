@@ -18,8 +18,8 @@ export class ReportService {
   constructor(private http: HttpClient, private configuration: ConfigService) {
   }
 
-  public getReportList():Observable<any> {
-    return this.http.get(this.reportListURL).map(res => res);
+  public getReportList():Observable<SearchSetting[]> {
+    return this.http.get(this.reportListURL).map(res => res as SearchSetting[]);
   }
 
   public saveReport(report: any): Observable<OperationResult> {

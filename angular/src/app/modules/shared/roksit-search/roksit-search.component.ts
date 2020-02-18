@@ -38,10 +38,10 @@ declare var Waypoint: any;
   styleUrls: ['roksit-search.component.scss']
 })
 export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
-  public columns: LogColumn[];
-  public agents: Location[];
-  public mainCategories: Category[];
-  public mainApplications: WApplication[];
+  public columns: LogColumn[] = [];
+  public agents: Location[] = [];
+  public mainCategories: Category[] = [];
+  public mainApplications: WApplication[] = [];
   public startDateee: Date = null;
   public endDateee: Date = null;
   private ngUnsubscribe: Subject<any> = new Subject<any>(); // ne icin kullaniliyor? gereksizse silelim
@@ -58,8 +58,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     { displayText: 'Last 1 Week', value: 10080, select: true }
   ];
 
-  columnFilterOptions : RkSelectModel[] = [
-  
+  columnFilterOptions: RkSelectModel[] = [
+
   ]
 
 
@@ -100,7 +100,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   filteredIsOneOfs: Observable<string[]>;
   isOneOfList: string[] = [];
   isOneOfListItems: string[] = [];
-  savedReports: SearchSetting[] = []
+  savedReports: SearchSetting[] = [];
+  systemSavedReports: SearchSetting[] = [];
   selectedSavedReportName: string;
   newSavedReportName: string;
   @ViewChild('isOneOfInput') isOneOfInput: ElementRef<HTMLInputElement>;
@@ -111,7 +112,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     private reportService: ReportService, private roamingService: RoamingService) {
 
     this.reportService.getReportList().subscribe(res => {
-      this.savedReports = res;
+      this.savedReports = res.filter(x => !x.system);
+      this.systemSavedReports = res.filter(x => x.system);
     });
 
     this.filteredIsOneOfs = this.isOneOfCtrl.valueChanges.map((f: string | null) => f ? this.filterChips(f) : this.isOneOfListItems.slice());
@@ -127,16 +129,16 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  filters : Array<{ name : string, equal : boolean, values : string[] }> = [];
+  filters: Array<{ name: string, equal: boolean, values: string[] }> = [];
 
-  addFilter(name : string, equal : boolean, value : string) {
+  addFilter(name: string, equal: boolean, value: string) {
     let foundedFilter = this.filters.find(item => item.name == name && item.equal == equal);
 
-    if(foundedFilter) {
-      if(!foundedFilter.values.find(val => val == value))
-      foundedFilter.values.push(value);
+    if (foundedFilter) {
+      if (!foundedFilter.values.find(val => val == value))
+        foundedFilter.values.push(value);
     } else {
-      this.filters.push({ name : name, equal : equal, values : [value] });
+      this.filters.push({ name: name, equal: equal, values: [value] });
     }
   }
 

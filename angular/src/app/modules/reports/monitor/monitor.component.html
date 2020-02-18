@@ -3,8 +3,7 @@
     <div class="card-item rk-col">
       <div class="row" style="margin-top:-15px; width: 100%;">
         <div class="col-md-12">
-          <app-roksit-search [searchSetting]="searchSetting" (searchEmitter)="search($event)">
-          </app-roksit-search>
+          <app-roksit-search [searchSetting]="searchSetting" (searchEmitter)="search($event)"></app-roksit-search>
         </div>
       </div>
       <div class="row mt-3">
@@ -12,9 +11,7 @@
           <!-- <app-roksit-result [searchSetting]="searchSetting" [page]="1"  (addColumnValueEmitter)="addValuesIntoSelected($event)">
           </app-roksit-result> -->
 
-          <app-monitor-result #monitorResult [searchSetting]="searchSetting"  (addColumnValueEmitter)="addValuesIntoSelected($event)">
-            
-          </app-monitor-result>
+          <app-monitor-result #monitorResult [searchSetting]="searchSetting"  (addColumnValueEmitter)="addValuesIntoSelected($event)"></app-monitor-result>
         </div>
       </div>
     </div>
