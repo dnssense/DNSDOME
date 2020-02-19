@@ -196,15 +196,27 @@ export class SidebarComponent implements OnInit {
 
     this.profileMenuItems = ProfileRoutes;
   }
-  ngOnInit() {
 
+  ngOnInit() {
     this.refreshMenus();
     this.authService.currentUserPropertiesChanged.subscribe(data => {
-
       this.refreshMenus();
+    });
 
-    })
-
+    this._menuItems.forEach(elem => {
+      if (!elem.subMenu) {
+        if (elem.path === this.router.url) {
+          elem.selected = true;
+        }
+      } else {
+        elem.subMenu.forEach(subElem => {
+          if (elem.path + subElem.path === this.router.url) {
+            elem.selected = true;
+            subElem.selected = true;
+          }
+        });
+      }
+    });
 
     /*  this.menuItems = new Array();
      //todo burada bir sıkıntı var
