@@ -9,7 +9,6 @@
       <ul class="m-0">
         <li class="modal-item-title">Saved Reports</li>
         <li>
-
           <rk-accordion activeNumber="1">
             <rk-accordion-panel>
               <div class="rk-accordion-title">
@@ -17,11 +16,11 @@
               </div>
 
               <div class="rk-accordion-body">
-        <li *ngFor="let report of savedReports">
-          <rk-radio name="savedReport" class="m-0">{{ report.name }}</rk-radio>
-        </li>
-    </div>
-    </rk-accordion-panel>
+                <li *ngFor="let report of savedReports">
+                  <rk-radio name="savedReport" class="m-0">{{ report.name }}</rk-radio>
+                </li>
+              </div>
+            </rk-accordion-panel>
 
     <rk-accordion-panel>
       <div class="rk-accordion-title">

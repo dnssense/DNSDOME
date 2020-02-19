@@ -40,7 +40,7 @@ export class CustomReportResultComponent implements OnDestroy {
   private ngUnsubscribe: Subject<any> = new Subject<any>();
 
 
-  
+
   tableConfig: RkTableConfigModel = {
     columns: [
       { id: 0, name: 'time', displayText: 'Time' },
@@ -106,10 +106,10 @@ export class CustomReportResultComponent implements OnDestroy {
       if (res['searchSetting'] != null) {
         this.searchSetting = res['searchSetting'];
       }
-      
+
       let total = 0;
       let data: any = res;
-      
+
       this.selectedColumns = <AggregationItem[]>JSON.parse(JSON.stringify(searchSetting.columns.columns));
 
 
@@ -140,14 +140,17 @@ export class CustomReportResultComponent implements OnDestroy {
       });
 
       this.data.forEach(item => {
-        let rowItem: RkTableRowModel = { selected : false };
+        let rowItem: RkTableRowModel = { selected: false };
 
         this.selectedColumns.forEach((selectedCol, index) => {
           rowItem[selectedCol.column.name] = item[index];
-        }); 
+        });
 
         this.tableConfig.rows.push(rowItem);
       });
+
+      console.log(this.selectedColumns);
+      console.log(this.data);
 
     }, () => this.stopRefreshing(),
       () => this.stopRefreshing()
@@ -167,7 +170,7 @@ export class CustomReportResultComponent implements OnDestroy {
   drawChart(settings: SearchSetting) {
 
     this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
-      
+
 
       let data: any[] = res;
       if (data) {
@@ -183,9 +186,9 @@ export class CustomReportResultComponent implements OnDestroy {
           chart: {
             height: 300, type: 'area', foreColor: '#ababab',
             toolbar: {
-              tools:{
-                download:false,
-                pan:false
+              tools: {
+                download: false,
+                pan: false
               }
             },
             events: {
@@ -216,7 +219,7 @@ export class CustomReportResultComponent implements OnDestroy {
 
   firstDate: any;
   updateResultTable(min: any, max: any): void {
-    
+
     if (min && max) {
       let md = new Date(min);
       md.setHours(md.getUTCHours());
@@ -229,7 +232,7 @@ export class CustomReportResultComponent implements OnDestroy {
       let startDate = moment(md).format('DD.MM.YYYY HH:mm:ss');
       let endDate = moment(mxd).format('DD.MM.YYYY HH:mm:ss');
 
-      const dateVal = startDate + ' - ' + endDate; 
+      const dateVal = startDate + ' - ' + endDate;
       this.searchSetting.dateInterval = dateVal;
       this.fillResultTable(this.searchSetting);
     } else {

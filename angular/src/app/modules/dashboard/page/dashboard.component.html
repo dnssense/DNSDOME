@@ -53,9 +53,9 @@
           <div class="rk-panel-item d-flex flex-column">
             <div class="row">
               <div class="col-12 col-md-6 col-lg">
-                <rk-infobox [active]="infoBoxes.total" (change)="infoboxChanged($event, 'total')" [title]="'Total'" [color]="'#4353ff'" className="blue" [type]="1"
-                  [valueOne]="ds.totalAllowedCountForDashboard" [valueTwo]="ds.totalBlockCountForDashboard"
-                  description="Toplam DNS sorgu sayısı">
+                <rk-infobox [active]="infoBoxes.total"  (change)="infoboxChanged($event, 'total')" [title]="'Total'"
+                  [color]="'#4353ff'" className="blue" [type]="1" [valueOne]="ds.totalAllowedCountForDashboard"
+                  [valueTwo]="ds.totalBlockCountForDashboard" description="Toplam DNS sorgu sayısı">
                 </rk-infobox>
               </div>
 
@@ -66,23 +66,25 @@
               </div> -->
 
               <div class="col-12 col-md-6 col-lg">
-                <rk-infobox [active]="infoBoxes.malicious" (change)="infoboxChanged($event, 'malicious')" [type]="2" [title]="'Malicious'" className="red" [color]="'#f95656'"
-                  [valueOne]="ds.totalBlockCountForDashboard" [valueTwo]="ds.totalUniqueBlockedDomainForDashboard"
+                <rk-infobox [active]="infoBoxes.malicious"  (change)="infoboxChanged($event, 'malicious')" [type]="2"
+                  [title]="'Malicious'" className="red" [color]="'#f95656'" [valueOne]="ds.totalBlockCountForDashboard"
+                  [valueTwo]="ds.totalUniqueBlockedDomainForDashboard"
                   description="Malware, Botnet, Phishing gibi güvenlik riski yüksek domainleri kapsar.">
                 </rk-infobox>
               </div>
 
               <div class="col-12 col-md-6 col-lg">
-                <rk-infobox [active]="infoBoxes.variable" (change)="infoboxChanged($event, 'variable')" [type]="2" [title]="'Variable'" className="gray" [color]="'#d8d8d8'"
-                  [valueOne]="ds.grayCountForDashboard" [valueTwo]="ds.uGrayCountForDashboard"
+                <rk-infobox [active]="infoBoxes.variable"  (change)="infoboxChanged($event, 'variable')" [type]="2"
+                  [title]="'Variable'" className="gray" [color]="'#d8d8d8'" [valueOne]="ds.grayCountForDashboard"
+                  [valueTwo]="ds.uGrayCountForDashboard"
                   description="Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.">
                 </rk-infobox>
               </div>
 
               <div class="col-12 col-md-6 col-lg">
-                <rk-infobox [active]="infoBoxes.harmfulContent" (change)="infoboxChanged($event, 'harmfulContent')" [type]="2" [title]="'Harmful Content'" className="yellow"
-                  [color]="'#f9df56'" [valueOne]="ds.securityRiskCountForDashboard"
-                  [valueTwo]="ds.uSecurityRiskCountForDashboard"
+                <rk-infobox [active]="infoBoxes.harmfulContent"  (change)="infoboxChanged($event, 'harmfulContent')"
+                  [type]="2" [title]="'Harmful Content'" className="yellow" [color]="'#f9df56'"
+                  [valueOne]="ds.securityRiskCountForDashboard" [valueTwo]="ds.uSecurityRiskCountForDashboard"
                   description="Pornogrphy, Adult, Gamblig gibi istenmeyen domainleri içerir.">
                 </rk-infobox>
               </div>
@@ -92,11 +94,12 @@
               style="border-top: 1px solid rgba(68, 81, 101, 0.2);">
               <div>
                 <div class="rk-selectable-table categories" style="width: auto !important;">
-                  <div class="rk-item" *ngFor="let cat of categoryListFiltered" [ngClass]="{ 'active' : selectedCategoryForTraffic == cat.id }"  (click)="addCategoryToTraffic(cat)" >
+                  <div class="rk-item" *ngFor="let cat of categoryListFiltered"
+                    [ngClass]="{ 'active' : selectedCategoryForTraffic == cat.id }" (click)="addCategoryToTraffic(cat)">
                     <div class="rk-i-header">
                       <div class="d-flex align-items-center">
                         <span class="rk-selectable-table-item-title"> {{ cat.name }} </span>
-                        <span class="rk-selectable-badge">{{ cat.value }}   </span>
+                        <span class="rk-selectable-badge">{{ cat.value }} </span>
                       </div>
                       <i-feather name="arrow-right"></i-feather>
                     </div>
@@ -137,8 +140,8 @@
             <div class="rk-panel-header rk-title-2">
               Malicious
             </div>
-            <div class="rk-panel-item rk-info-table " style="background-color: white;padding: 0;">
-              <rk-table-container>
+            <div class="rk-panel-item rk-info-table bg-white p-0" style="border-radius: 13px;">
+              <rk-table-container class="overflow-hidden m-0">
                 <rk-table [info]="true" [showPagination]="false">
                   <ng-template #header>
                     <tr>
@@ -177,8 +180,8 @@
             <div class="rk-panel-header rk-title-2">
               New Domains
             </div>
-            <div class="rk-panel-item" style="background-color: white;padding: 0;">
-              <rk-table-container>
+            <div class="rk-panel-item bg-white p-0" style="border-radius: 13px;">
+              <rk-table-container class="overflow-hidden m-0">
                 <rk-table [info]="true" [showPagination]="false">
                   <ng-template #header>
                     <tr>
@@ -217,8 +220,8 @@
             <div class="rk-panel-header rk-title-2">
               Harmful
             </div>
-            <div class="rk-panel-item" style="background-color: white;padding: 0;">
-              <rk-table-container>
+            <div class="rk-panel-item bg-white p-0" style="border-radius: 13px;">
+              <rk-table-container class="overflow-hidden m-0">
                 <rk-table [info]="true" [showPagination]="false">
                   <ng-template #header>
                     <tr>
