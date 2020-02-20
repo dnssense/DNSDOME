@@ -1,44 +1,43 @@
 <rk-modal #modal>
   <rk-modal-header icon="filter">
-    <rk-modal-header-title>Filtrele</rk-modal-header-title>
+    <rk-modal-header-title>
+      <h5>Filtrele</h5>
+    </rk-modal-header-title>
     <rk-modal-header-close (click)="modal.toggle()"></rk-modal-header-close>
   </rk-modal-header>
 
   <rk-modal-body>
+
     <div class="rk-modal-item">
-      <ul class="m-0">
-        <li class="modal-item-title">Saved Reports</li>
-        <li>
-          <rk-accordion activeNumber="1">
-            <rk-accordion-panel>
-              <div class="rk-accordion-title">
-                User Saved Reports
-              </div>
+      <h5>Saved Reports</h5>
 
-              <div class="rk-accordion-body">
-                <li *ngFor="let report of savedReports">
-                  <rk-radio name="savedReport" class="m-0">{{ report.name }}</rk-radio>
-                </li>
-              </div>
-            </rk-accordion-panel>
+      <rk-accordion activeNumber="1">
+        <rk-accordion-panel>
+          <div class="rk-accordion-title">
+            User Saved Reports
+          </div>
 
-    <rk-accordion-panel>
-      <div class="rk-accordion-title">
-        System Default Reports
-      </div>
+          <div class="rk-accordion-body">
+            <div *ngFor="let report of savedReports">
+              <rk-radio name="savedReport" class="m-0">{{ report.name }}</rk-radio>
+            </div>
+          </div>
+        </rk-accordion-panel>
 
-      <div class="rk-accordion-body">
-        <ul>
-          <li *ngFor="let report of systemSavedReports">
-            <rk-radio name="savedReport" class="m-0">{{ report.name }}</rk-radio>
-          </li>
-        </ul>
-      </div>
-    </rk-accordion-panel>
-    </rk-accordion>
-    </li>
-    </ul>
+        <rk-accordion-panel>
+          <div class="rk-accordion-title">
+            System Default Reports
+          </div>
 
+          <div class="rk-accordion-body">
+            <ul>
+              <li *ngFor="let report of systemSavedReports">
+                <rk-radio name="savedReport" class="m-0">{{ report.name }}</rk-radio>
+              </li>
+            </ul>
+          </div>
+        </rk-accordion-panel>
+      </rk-accordion>
     </div>
 
     <div class="rk-modal-item">
@@ -47,7 +46,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12 col-md-6">
-            <rk-radio name="actionType" class="rk-radio-m-0">Allow</rk-radio>
+            <rk-radio name="actionType" class="rk-radio-m-0" selected="true">Allow</rk-radio>
           </div>
           <div class="col-12 col-md-6">
             <rk-radio name="actionType" class="rk-radio-m-0">Deny</rk-radio>
@@ -57,24 +56,44 @@
     </div>
 
     <div class="rk-modal-item">
-      <ul>
-        <li class="modal-item-title">Add Filter</li>
-        <li>
-          <rk-select [(value)]="selectedColumnFilter" [options]="columnFilterOptions"></rk-select>
-        </li>
-        <li class="m-t-8" style="display: flex; justify-content: space-between;">
-          <button style="width: 48%;" class="btn btn-default" (click)="isEqual = true">
-            <icon-equal></icon-equal>
-          </button>
-          <button style="width: 48%;" class="btn btn-default m-l-2" (click)="isEqual = false">
-            <icon-not-equal></icon-not-equal>
-          </button>
-        </li>
-        <li class="m-t-8">
-          <input (keyup.enter)="addFilter(selectedColumnFilter,isEqual,filterText )" [(ngModel)]="filterText"
-            style="width: 100%;" type="text" class="rk-input" placeholder="abc.com">
-        </li>
-      </ul>
+      <h5 class="modal-item title">Add Filter</h5>
+
+      <rk-select [(value)]="selectedColumnFilter" [options]="columnFilterOptions"></rk-select>
+
+      <div class="d-flex mt-2">
+        <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2" [ngClass]="{'btn-outline-active': isEqual}"
+          (click)="isEqual = true">
+          <icon-equal></icon-equal>
+        </button>
+
+        <button class="btn btn-icon btn-small w-100 filter-btn-outline" [ngClass]="{'btn-outline-active': !isEqual}"
+          (click)="isEqual = false">
+          <icon-not-equal></icon-not-equal>
+        </button>
+      </div>
+
+      <input type="text" class="rk-input w-100 mt-3" [(ngModel)]="filterText" placeholder="abc.com">
+    </div>
+
+    <div class="rk-modal-item" style="height: 1px; border-bottom: none;">
+      <h5 class="modal-item title">Category</h5>
+
+      <div class="rk-category-container mt-3" *ngFor="let category of groupedCategories; let index = index" [ngClass]="{'mb-3': groupedCategories.length -1 === index}">
+        <div class="category-header">
+          <rk-checkbox class="checkbox" size="sm" className="m-0" (valueChange)="checkboxValueChange($event, category)">
+          </rk-checkbox>
+
+          <span class="category-color" [style.background]="category.color"></span>
+
+          <h6 class="category-title">{{ category.name }}</h6>
+        </div>
+
+        <div class="category-body">
+          <div class="category-item" *ngFor="let item of category.items">
+            <rk-checkbox size="sm" alignment="right" [(value)]="item.selected">{{ item.name }}</rk-checkbox>
+          </div>
+        </div>
+      </div>
     </div>
   </rk-modal-body>
 
