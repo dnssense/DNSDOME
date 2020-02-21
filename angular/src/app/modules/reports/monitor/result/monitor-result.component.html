@@ -1,11 +1,8 @@
-<div>
+<div>mon
   <rk-table-container [config]="tableConfig" class="m-0">
-    <rk-table [config]="tableConfig" (pageChange)="onPageChange($event)"
-    [maxSize]="5" [totalCount]="100" [pageViewCount]="10"
-      [currentPage]="1"
-      (pageViewCountChange)="onPageViewCountChange($event)" [showPagination]="true"  >
-     
+    <rk-table [config]="tableConfig" (pageChange)="onPageChange($event)" [maxSize]="5" [totalCount]="100"
+      [pageViewCount]="10" [currentPage]="1" (pageViewCountChange)="onPageViewCountChange($event)"
+      [showPagination]="true">
     </rk-table>
   </rk-table-container>
 </div>
- 

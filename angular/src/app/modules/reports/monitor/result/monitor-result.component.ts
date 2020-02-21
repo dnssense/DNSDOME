@@ -17,16 +17,16 @@ import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-t
   providers: [CountryPipe, MacAddressFormatterPipe]
 })
 export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy {
-  public totalItems: number = 0;
-  public currentPage: number = 1;
+  public totalItems = 0;
+  public currentPage = 1;
   public columns: LogColumn[];
   public selectedColumns: LogColumn[];
   public tableData: any;
-  public total: number = 0;
+  public total = 0;
   public multiplier = 1;
-  public maxSize: number = 10;
+  public maxSize = 10;
   private ngUnsubscribe: Subject<any> = new Subject<any>();
-  columnListLength: number = 12;
+  columnListLength = 12;
 
   tableConfig: RkTableConfigModel = {
     columns: [
@@ -54,7 +54,6 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     selectableRows: true
   };
 
-
   @Input() public searchSetting: SearchSetting;
   @Output() public addColumnValueEmitter = new EventEmitter();
   @Output() public tableColumnsChanged = new EventEmitter();
@@ -74,26 +73,25 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   ngAfterViewInit() {
     this.monitorService.initTableColumns().takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
       this.columns = res;
-      
 
       this.tableColumnsChanged.next();
 
-      var tempcolumns = [];
-      for (let data of this.columns) {
-        if (data["checked"]) {
+      const tempcolumns = [];
+
+      for (const data of this.columns) {
+        if (data['checked']) {
           tempcolumns.push(data);
         }
       }
 
       this.selectedColumns = tempcolumns;
 
-      
-
       this.selectedColumns.forEach(item => {
-        let col = this.tableConfig.columns.find(colItem => colItem.name == item.name);
+        const col = this.tableConfig.columns.find(colItem => colItem.name === item.name);
 
-        if (col)
+        if (col) {
           col.selected = true;
+        }
       });
     });
     this.loadGraph(this.searchSetting);
@@ -115,13 +113,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
       });
       const d = new Date();
 
-      if (extention == 'xlsx') {
-        this.excelService.exportAsExcelFile(this.tableData, 'MonitorReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
-      } else if (extention == 'pdf') {
-        this.pdfService.exportAsPdfFile("landscape", this.tableData, 'MonitorReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+      if (extention === 'xlsx') {
+        this.excelService.exportAsExcelFile(this.tableData, 'MonitorReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
+      } else if (extention === 'pdf') {
+        this.pdfService.exportAsPdfFile('landscape', this.tableData, 'MonitorReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
       }
     }
-
   }
 
   public loadGraph(ss: SearchSetting) {
@@ -132,9 +129,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
         this.tableConfig.rows = [];
 
-        
         this.tableData.forEach(item => {
-          let rowItem: RkTableRowModel = item;
+          const rowItem: RkTableRowModel = item;
           rowItem.selected = false;
 
           this.tableConfig.rows.push(rowItem);
@@ -145,14 +141,16 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public checkUncheckColumn(col: LogColumn) {
     let found = false;
-    for (let a of this.columns) {
-      if (a.name == col.name) {
+
+    for (const a of this.columns) {
+      if (a.name === col.name) {
         found = true;
         col.checked = !a.checked;
         a.checked = col.checked;
         break;
       }
     }
+
     this.inputChecked(col);
   }
 
@@ -160,9 +158,9 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     if (column.checked) {
       this.selectedColumns.push(column);
     } else {
-      for (let a of this.selectedColumns) {
-        if (a.name == column.name) {
-          let cindex = this.selectedColumns.indexOf(a);
+      for (const a of this.selectedColumns) {
+        if (a.name === column.name) {
+          const cindex = this.selectedColumns.indexOf(a);
           this.selectedColumns.splice(cindex, 1);
           break;
         }
@@ -176,31 +174,20 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     } else {
       this.columnListLength = 12;
     }
-
   }
-  // public setTopCount(value) {
-  //   this.searchSetting.topNumber = value;
-  // //checkUncheckColumn   this.loadGraph();
-  // }
 
   public pageChanged(event: any): void {
     this.currentPage = event.page;
     this.loadGraph(this.searchSetting);
-  };
+  }
 
   public addColumnValueIntoSelectedValues(column: any, xx: any) {
     this.addColumnValueEmitter.emit({ column: column, data: xx }); // How to pass the params event and ui...?
   }
 
-  // public changeColumns($event) {
-  //   //you may implement here...
-  // }
-
   onPageChange(pageNumber: number) {
     this.pageChanged({ page: pageNumber });
   }
 
-  onPageViewCountChange(event: any) {
-
-  }
+  onPageViewCountChange(event: any) { }
 }
