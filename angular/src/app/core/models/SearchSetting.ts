@@ -24,6 +24,8 @@ export class SearchSetting {
   chartType: string;
   config: Object;
 
+  selected ?= false;
+
   public getMaxTime() {
     let date = 0;
 

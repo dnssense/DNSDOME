@@ -18,8 +18,9 @@
           </div>
 
           <div class="rk-accordion-body">
-            <div *ngFor="let report of savedReports">
-              <rk-radio name="savedReport" class="m-0">{{ report.name }}</rk-radio>
+            <div class="rk-radio my-0" *ngFor="let report of savedReports; let index = index">
+              <input type="radio" id="savedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport" [value]="report.id">
+              <label for="savedReport-{{ index }}">{{ report.name }}</label>
             </div>
           </div>
         </rk-accordion-panel>
@@ -31,8 +32,11 @@
 
           <div class="rk-accordion-body">
             <ul>
-              <li *ngFor="let report of systemSavedReports">
-                <rk-radio name="savedReport" class="m-0">{{ report.name }}</rk-radio>
+              <li *ngFor="let report of systemSavedReports; let index = index" class="mt-3">
+                <div class="rk-radio my-0">
+                  <input type="radio" id="systemSavedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport" [value]="report.id">
+                  <label for="systemSavedReport-{{ index }}">{{ report.name }}</label>
+                </div>
               </li>
             </ul>
           </div>
@@ -78,7 +82,8 @@
     <div class="rk-modal-item" style="height: 1px; border-bottom: none;">
       <h5 class="modal-item title">Category</h5>
 
-      <div class="rk-category-container mt-3" *ngFor="let category of groupedCategories; let index = index" [ngClass]="{'mb-3': groupedCategories.length -1 === index}">
+      <div class="rk-category-container mt-3" *ngFor="let category of groupedCategories; let index = index"
+        [ngClass]="{'mb-3': groupedCategories.length -1 === index}">
         <div class="category-header">
           <rk-checkbox class="checkbox" size="sm" className="m-0" (valueChange)="checkboxValueChange($event, category)">
           </rk-checkbox>

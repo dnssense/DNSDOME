@@ -20,7 +20,7 @@ const adminlayoutRoutes: Routes = [
       },
       {
         path: 'reports',
-        canActivate: [RoleGuard], 
+        canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
@@ -43,7 +43,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../publicip/publicip.module#PublicipModule'
       },
       {
-        path: 'profiles',
+        path: 'settings/profiles',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -56,10 +56,10 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
-        loadChildren:'../../accountsettings/accountsettings.module#AccountSettingsModule'
+        loadChildren: '../../accountsettings/accountsettings.module#AccountSettingsModule'
       },
       {
-        path: 'scheduled-reports',
+        path: 'settings/scheduled-reports',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -68,7 +68,7 @@ const adminlayoutRoutes: Routes = [
           '../../scheduledreports/scheduledreports.module#ScheduledReportsModule'
       },
       {
-        path: 'users',
+        path: 'settings/users',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -76,7 +76,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../users/users.module#UsersModule'
       },
       {
-        path: 'help',
+        path: 'settings/help',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
@@ -92,7 +92,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../roaming/roaming.module#RoamingModule'
       },
       {
-        path: 'tools',
+        path: 'settings/tools',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'

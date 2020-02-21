@@ -17,7 +17,7 @@
         <ul class="dropdown sidebar-list" *ngIf="menuItem.subMenu">
             <li class="sidebar-list-item" [ngClass]="{'active': subMenuItem.selected}"
                 *ngFor="let subMenuItem of menuItem.subMenu">
-                <a (click)="setActive(menuItem,subMenuItem)" [routerLink]="[menuItem.path + subMenuItem.path]"
+                <a (click)="setActive(menuItem, subMenuItem)" [routerLink]="[menuItem.path + subMenuItem.path]"
                     routerLinkActive="active">
                     <icon-for-menu [type]="subMenuItem.icon"></icon-for-menu>
                     <span class="text">{{ subMenuItem.text }}</span>

@@ -8,6 +8,7 @@ import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
 import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 
 
 @Component({
@@ -17,6 +18,13 @@ import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-t
   providers: [CountryPipe, MacAddressFormatterPipe]
 })
 export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  constructor(
+    private monitorService: MonitorService,
+    private excelService: ExcelService,
+    private pdfService: PdfService
+  ) { }
+
   public totalItems = 0;
   public currentPage = 1;
   public columns: LogColumn[];
@@ -61,8 +69,6 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
   @ViewChild('columnTablePanel') columnTablePanel: any;
 
-  constructor(private monitorService: MonitorService, private excelService: ExcelService, private pdfService: PdfService) { }
-
   ngOnInit() { }
 
   ngOnDestroy() {
@@ -105,15 +111,16 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     // this.spinnerService.stop();
   }
 
-  exportAs(extention: string) {
+  exportAs(extention: ExportTypes) {
 
     if (this.tableData && this.tableData.length > 0) {
-      this.tableData.forEach(d => {
-        delete d.id;
+      this.tableData.forEach(data => {
+        delete data.id;
       });
+
       const d = new Date();
 
-      if (extention === 'xlsx') {
+      if (extention === 'excel') {
         this.excelService.exportAsExcelFile(this.tableData, 'MonitorReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
       } else if (extention === 'pdf') {
         this.pdfService.exportAsPdfFile('landscape', this.tableData, 'MonitorReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
@@ -178,6 +185,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public pageChanged(event: any): void {
     this.currentPage = event.page;
+
     this.loadGraph(this.searchSetting);
   }
 

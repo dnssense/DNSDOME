@@ -117,6 +117,8 @@ export class RoksitSearchComponent implements OnInit {
 
   filters: Array<{ name: string, equal: boolean, values: string[] }> = [];
 
+  savedReportValue;
+
   constructor(
     private fastReportService: FastReportService,
     private locationsService: LocationsService,
@@ -327,7 +329,7 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   selectSavedReport(id: number) {
-    const sr = this.savedReports.find(r => r.id == id);
+    const sr = this.savedReports.find(r => r.id === id);
     this.searchSetting = JSON.parse(JSON.stringify(sr));
     this.selectedSavedReportName = sr.name;
     this.newSavedReportName = sr.name;
@@ -336,8 +338,8 @@ export class RoksitSearchComponent implements OnInit {
       this.searchSettingForHtml.should = [];
       const fieldMap = [];
       sr.should.forEach(s => {
-        if (fieldMap && fieldMap.find(f => f.field == s.field)) {
-          const i = fieldMap.findIndex(f => f.field == s.field);
+        if (fieldMap && fieldMap.find(f => f.field === s.field)) {
+          const i = fieldMap.findIndex(f => f.field === s.field);
           fieldMap[i] = { field: s.field, value: fieldMap[i].value + ',' + s.value };
         } else {
           fieldMap.push({ field: s.field, value: s.value });
