@@ -656,8 +656,7 @@ export class DevicesComponent implements OnInit {
 
         const selectedGroupAgentsU = this.unregistereds.filter(x => x.selected);
 
-
-        let selectedGroupAgentsR: Agent[] = [];
+        let selectedGroupAgentsR: AgentInfo[] = [];
 
         if (this.selectedGroupAgent.agents) {
             selectedGroupAgentsR = this.selectedGroupAgent.agents.filter(x => !x.selected).map(x => {
