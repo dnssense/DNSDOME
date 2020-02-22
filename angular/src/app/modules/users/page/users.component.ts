@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ValidationService } from 'src/app/core/services/validation.service';
-import { User, UserExtended } from 'src/app/core/models/User';
-import { AlertService } from 'src/app/core/services/alert.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { User } from 'src/app/core/models/User';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { UserService } from 'src/app/core/services/UserService';
 import { Role } from 'src/app/core/models/Role';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import * as validator from 'validator';
 
 declare var $: any;
 @Component({
@@ -14,191 +13,171 @@ declare var $: any;
     styleUrls: ['users.component.sass']
 })
 export class UsersComponent implements OnInit {
-    modalStatus: string = "create";
-    userForm: FormGroup;
-    userList: User[] = [];
-    selectedUser: User = new User();
-    roleList: Role[] = [];
 
-    constructor(private formBuilder: FormBuilder, private notification: NotificationService,
-        private alert: AlertService, private userService: UserService) {
+    constructor(
+        private notification: NotificationService,
+        private userService: UserService
+    ) {
 
-        this.selectedUser.roles = new Role();
-        this.selectedUser.roles.name = 'ROLE_CUSTOMER';
+        this.user.roles = new Role();
+        this.user.roles.name = 'ROLE_CUSTOMER';
 
         this.userService.getUsers().subscribe(res => {
-            this.userList = res;
+            this.users = res;
         });
 
-        this.roleList = this.userService.getRoles();
+        this.userRoles = this.userService.getRoles();
 
+        this.userRoles.forEach(elem => {
+            this.userRolesForSelect.push({
+                displayText: elem.description,
+                value: elem.id
+            });
+        });
     }
 
-    ngOnInit() {
-        this.userForm =
-            this.formBuilder.group({
-                //  "name": ["", [Validators.required, Validators.minLength(2)]], "surname": ["", []],
-                "email": ["", [Validators.required, ValidationService.emailValidator]],
-                "role": ["", [Validators.required]],
-                "password": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
-                "passwordAgain": ["", []],
-            }
-                //, { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
-            );
-    }
+    @ViewChild('userModal') userModal;
+    userModalType: 'create' | 'edit';
 
-    userFriendlyRoleName(r: string) {
-        if (r == 'ROLE_CUSTOMER') {
-            return 'ADMIN';
-        } else if (r == 'ROLE_USER') {
-            return 'USER';
+    user: User = new User();
+
+    users: User[] = [];
+
+    userRoles: Role[] = [];
+    userRolesForSelect: RkSelectModel[] = [];
+
+    passwordStrength = 0;
+
+    searchKey: string;
+
+    selectedRoleId;
+
+    isActive: boolean;
+
+    ngOnInit() { }
+
+    userFriendlyRoleName(role: string) {
+        if (role === 'ROLE_CUSTOMER') {
+            return 'Admin';
+        } else if (role === 'ROLE_USER') {
+            return 'User';
         } else {
-            return 'Not Defined'
+            return 'Not Defined';
         }
     }
 
-    showNewWizard() {
-        this.selectedUser = new UserExtended();
-        this.selectedUser.roles = new Role();
-        this.selectedUser.roles.id = 2;
-        this.modalStatus = 'create'
-        this.openModal();
-    }
-
-    showEditWizard(id: Number) {
-
-        let u = this.userList.find(r => r.id == id);
-        this.selectedUser = JSON.parse(JSON.stringify(u));
-        this.selectedUser.roles.name = u.roles[0].name;
-        this.modalStatus = 'edit'
-        this.openModal();
-    }
-
-    openModal() {
-        $(document.body).addClass('modal-open');
-        $('#exampleModal').css('display', 'block');
-        $('#exampleModal').attr('aria-hidden', 'false');
-        $('#exampleModal').addClass('show');
-    }
-
-    closeModal() {
-        $(document.body).removeClass('modal-open');
-        $('#exampleModal').css('display', 'none');
-        $('#exampleModal').attr('aria-hidden', 'true');
-        $('#exampleModal').removeClass('show');
-    }
-
-    changeLockStatus() {
-        this.selectedUser.isLocked = this.selectedUser.isLocked === 1 ? 0 : 1;
-    }
-
-    changeActiveStatus() {
-        this.selectedUser.isActive = this.selectedUser.isActive === 1 ? 0 : 1;
-    }
-
-    changeLockedStatusOnRow(id: number) {
-        if (id) {
-            let user = this.userList.find(u => u.id == id);
-            user.locked = user.locked === true ? false : true;
-            user.isLocked = user.isLocked === 1 ? 0 : 1;
-            user.active = user.active === true ? false : true;
-            user.isActive = user.isActive === 1 ? 0 : 1;
-            this.userService.save(user).subscribe(res => {
-                if (res.status == 200) {
-                    this.userService.getUsers().subscribe(res => this.userList = res);
-                    this.notification.success(res.message);
-                } else {
-                    this.notification.error(res.message);
-                }
-            });
-        }
-    }
-
-    changeActiveStatusOnRow(id: number) {
-        if (id) {
-            let user = this.userList.find(u => u.id == id);
-            user.active = user.active === true ? false : true;
-            user.isActive = user.isActive === 1 ? 0 : 1;
-            user.locked = user.locked === true ? false : true;
-            user.isLocked = user.isLocked === 1 ? 0 : 1;
-            this.userService.save(user).subscribe(res => {
-                if (res.status == 200) {
-                    this.userService.getUsers().subscribe(res => this.userList = res);
-                    this.notification.success(res.message);
-                } else {
-                    this.notification.error(res.message);
-                }
-            });
-        }
-    }
-
-    passStrength = 0;
     checkPasswordStrength() {
-        this.passStrength = 0;
-        if (!this.selectedUser.password || this.selectedUser.password.length < 1) {
-            return;
+        this.passwordStrength = 0;
+
+        if (!this.user.password || this.user.password.length < 1) { return; }
+
+        if (/[a-z]/.test(this.user.password)) {
+            this.passwordStrength++;
         }
 
-        if (/[a-z]/.test(this.selectedUser.password)) {
-            this.passStrength++;
-        }
-        if (/[A-Z]/.test(this.selectedUser.password)) {
-            this.passStrength++;
-        }
-        if (/[0-9]/.test(this.selectedUser.password)) {
-            this.passStrength++;
-        }
-        if (this.selectedUser.password && this.selectedUser.password.length > 7) {
-            this.passStrength++;
+        if (/[A-Z]/.test(this.user.password)) {
+            this.passwordStrength++;
         }
 
+        if (/[0-9]/.test(this.user.password)) {
+            this.passwordStrength++;
+        }
+
+        if (this.user.password && this.user.password.length > 7) {
+            this.passwordStrength++;
+        }
     }
 
-    userFormSubmit() {
-        if (this.selectedUser.id && this.selectedUser.username) {
-            if (this.modalStatus == 'create' && this.userForm.dirty && this.userForm.valid) {
-                let user = {
-                    id: this.selectedUser.id,
-                    username: this.selectedUser.username,
-                    name: this.selectedUser.name,
-                    password: this.selectedUser.password,
-                    roles: [this.selectedUser.roles.name]
-                }
-                if (this.userForm.dirty && this.userForm.valid && user) {
-                    this.userService.save(user).subscribe(res => {
+    newUserClick() {
+        this.userModalType = 'create';
+
+        this.userModal.toggle();
+    }
+
+    editUserClick(user: User) {
+        this.user = JSON.parse(JSON.stringify(user));
+
+        this.prepareRoleSelect(user);
+
+        this.passwordStrength = 0;
+
+        this.userModal.toggle();
+    }
+
+    private prepareRoleSelect(user: User) {
+        const role = this.userRoles.find(x => x.name === user.roles[0].name);
+
+        this.selectedRoleId = role.id;
+
+        this.userRolesForSelect = [];
+
+        this.userRoles.forEach(elem => {
+            const obj = {
+                displayText: elem.description,
+                value: elem.id
+            } as RkSelectModel;
+
+            if (elem.id === role.id) {
+                obj.selected = true;
+            }
+
+            this.userRolesForSelect.push(obj);
+        });
+    }
+
+    modalClosed($event) {
+        this.user = new User();
+    }
+
+    roleChange($event) {
+        const role = this.userRoles.find(x => x.id === $event);
+
+        if (role) {
+            this.user.roles[0] = role;
+        }
+    }
+
+    private emailValidator(value: string): boolean {
+        if (!value) {
+            return false;
+        } else if (!value.match(/^((?!yopmail.com|boximail.com|eelmail.com|maildrop.cc|mailnesia.com|mintemail.com|mt2015.com|mt2014.com|thankyou2010.com|trash2009.com|mt2009.com|trashymail.com|mytrashmail.com|dispostable.com|trbvn.com|mailinator.com).)*$/)) {
+            return false;
+        } else {
+            return validator.isEmail(value);
+        }
+    }
+
+    save() {
+        if (this.emailValidator(this.user.username)) {
+            if (this.user.id > 0) {
+                this.userService.update(this.user).subscribe(res => {
+                    if (res.key) {
+                        this.userModal.toggle();
+
+                        this.notification.success('User Created.');
+
+                        this.userService.getUsers().subscribe(result => this.users = result);
+                    } else {
+                        this.notification.error(res.message);
+                    }
+                });
+            } else {
+                if (this.passwordStrength > 3) {
+                    this.userService.save(this.user).subscribe(res => {
                         if (res.key) {
-                            this.closeModal();
+                            this.userModal.toggle();
+
                             this.notification.success('User Created.');
-                            this.userService.getUsers().subscribe(res => this.userList = res);
+
+                            this.userService.getUsers().subscribe(result => this.users = result);
                         } else {
                             this.notification.error(res.message);
                         }
                     });
-                } else {
-                    this.notification.warning('User Form is not valid!');
-                    return;
                 }
-            } else if (this.modalStatus == 'edit') {
-                let user = {
-                    id: this.selectedUser.id,
-                    username: this.selectedUser.username,
-                    password: this.selectedUser.password ? this.selectedUser.password : null,
-                    roles: this.selectedUser.roles ? [this.selectedUser.roles.name] : null,
-                    isActive: this.selectedUser.isActive,
-                    isLocked: this.selectedUser.isLocked
-                }
-
-                this.userService.update(user).subscribe(res => {
-                    this.closeModal();
-                    this.notification.success('User updated.');
-                    this.userService.getUsers().subscribe(res => this.userList = res);
-                });
             }
-
         } else {
-            this.notification.warning('User form is not valid');
+            this.notification.warning('Please fill required fields');
         }
     }
-
-
 }

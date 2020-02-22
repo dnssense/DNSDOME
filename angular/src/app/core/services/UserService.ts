@@ -1,6 +1,5 @@
-import { Injectable } from "@angular/core";
-import "rxjs/Rx";
-import { Observable } from "rxjs/Rx";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OperationResult } from '../models/OperationResult';
 import { ConfigService } from './config.service';
@@ -8,10 +7,10 @@ import { User } from '../models/User';
 import { Role } from '../models/Role';
 
 export class Roles {
-  static ITEMS = [{ id: 1, name: "ROLE_ADMIN" }, { id: 2, name: "ROLE_CUSTOMER" }, { id: 5, name: "ROLE_USER" }];
-  static ADMIN = "ROLE_ADMIN";
-  static CUSTOMER = "ROLE_CUSTOMER";
-  static USER = "ROLE_USER"
+  static ITEMS = [{ id: 1, name: 'ROLE_ADMIN' }, { id: 2, name: 'ROLE_CUSTOMER' }, { id: 5, name: 'ROLE_USER' }];
+  static ADMIN = 'ROLE_ADMIN';
+  static CUSTOMER = 'ROLE_CUSTOMER';
+  static USER = 'ROLE_USER';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -31,9 +30,9 @@ export class UserService {
   }
 
   public getRoles(): Role[] {
-    let roles: Role[] = [
-      { id: 2, name: "ROLE_CUSTOMER", description: "Admin", clearences: null },
-      { id: 5, name: "ROLE_USER", description: "User", clearences: null }];
+    const roles: Role[] = [
+      { id: 2, name: 'ROLE_CUSTOMER', description: 'Admin', clearences: null },
+      { id: 5, name: 'ROLE_USER', description: 'User', clearences: null }];
 
     return roles;
   }
@@ -51,9 +50,9 @@ export class UserService {
   }
 
   private getOptions() {
-    let options = {
+    const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }
+    };
 
     return options;
   }

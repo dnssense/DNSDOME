@@ -656,15 +656,20 @@ export class DevicesComponent implements OnInit {
 
         const selectedGroupAgentsU = this.unregistereds.filter(x => x.selected);
 
-        const selectedGroupAgentsR = this.selectedGroupAgent.agents.filter(x => !x.selected).map(x => {
-            return {
-                id: x.id,
-                agentAlias: x.agentAlias,
-                agentType: x.agentType,
-                blockMessage: x.blockMessage,
-                mac: x.mac
-            } as AgentInfo;
-        });
+
+        let selectedGroupAgentsR: Agent[] = [];
+
+        if (this.selectedGroupAgent.agents) {
+            selectedGroupAgentsR = this.selectedGroupAgent.agents.filter(x => !x.selected).map(x => {
+                return {
+                    id: x.id,
+                    agentAlias: x.agentAlias,
+                    agentType: x.agentType,
+                    blockMessage: x.blockMessage,
+                    mac: x.mac
+                } as AgentInfo;
+            });
+        }
 
         if (groupName.trim().length > 0 && selectedProfile.id > 0 && (selectedGroupAgentsU.length > 0 || selectedGroupAgentsR.length > 0)) {
             const deviceGroup = new DeviceGroup();
