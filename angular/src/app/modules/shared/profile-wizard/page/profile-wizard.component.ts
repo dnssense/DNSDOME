@@ -18,13 +18,25 @@ import { BWListItem } from 'src/app/core/models/BWListItem';
 
 declare var $: any;
 
+// tslint:disable-next-line: class-name
 export class categoryItem {
   constructor(public category: CategoryV2, public isBlocked: boolean) { }
 }
 
+// tslint:disable-next-line: class-name
 export class applicationItem {
   constructor(public application: ApplicationV2, public isBlocked: boolean) { }
 }
+
+export const ApplicationTypes = {
+  REMOTE_ACCESS: 'REMOTE_ACCESS',
+  ONLINE_VIDEO: 'ONLINE_VIDEO',
+  INSTANT_MESSAGING: 'INSTANT_MESSAGING',
+  SOCIAL: 'SOCIAL',
+  CLEAR_ADS: 'CLEAR_ADS',
+  HTTP: 'HTTP'
+};
+
 
 @Component({
   selector: 'app-profile-wizard',
@@ -47,13 +59,15 @@ export class ProfileWizardComponent {
   isSafeSearchEnabled: boolean;
   isYoutubeStrictModeEnabled: boolean;
   profileName: string;
-  isNewBlackListItem: boolean = false;
-  isNewWhiteListItem: boolean = false;
+  isNewBlackListItem = false;
+  isNewWhiteListItem = false;
   blackListItem: ListItem = new ListItem();
   whiteListItem: ListItem = new ListItem();
   categoryList: categoryItem[] = [];
   applicationList: applicationItem[] = [];
   activeNumber = 1;
+
+  securityMode = true;
 
   groupedApplications: { type: string, displayText: string, description: string, applications: applicationItem[] }[] = [];
 
@@ -63,7 +77,7 @@ export class ProfileWizardComponent {
   public _saveMode: string;
 
   @Input() startWizard;
-  
+
   @Input() set saveMode(value: string) {
     this._saveMode = value;
   }
@@ -72,6 +86,8 @@ export class ProfileWizardComponent {
   }
   @Input() set selectedAgent(value: Agent) {
     this._selectedAgent = value;
+
+    this.updateModels();
   }
   get selectedAgent(): Agent {
     return this._selectedAgent;
@@ -96,14 +112,15 @@ export class ProfileWizardComponent {
       res.forEach(r => {
         this.categoryList.push(new categoryItem(r, false));
       });
-      this.categoryList = this.categoryList.sort((x, y) => { return x.category.name > y.category.name ? 1 : -1 })
+
+      this.categoryList = this.categoryList.sort((x, y) => x.category.name > y.category.name ? 1 : -1);
     });
 
     this.staticService.getApplicationList().subscribe(res => {
       res.forEach(r => {
         this.applicationList.push(new applicationItem(r, false));
       });
-      this.applicationList = this.applicationList.sort((x, y) => { return x.application.name > y.application.name ? 1 : -1 })
+      this.applicationList = this.applicationList.sort((x, y) => x.application.name > y.application.name ? 1 : -1);
 
       this.fillGroupedApplications();
     });
@@ -150,7 +167,7 @@ export class ProfileWizardComponent {
         default:
           break;
       }
-    })
+    });
 
     this.groupedApplications = [
       { type: ApplicationTypes.CLEAR_ADS, displayText: 'Advertisement', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: clearAds },
@@ -159,50 +176,42 @@ export class ProfileWizardComponent {
       { type: ApplicationTypes.ONLINE_VIDEO, displayText: 'Online Video', description: 'Pornogrphy, Adult, Gamblig gibi istenmeyen domainleri içerir.', applications: onlineVideo },
       { type: ApplicationTypes.REMOTE_ACCESS, displayText: 'Remote Access Tools', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: remoteAccess },
       { type: ApplicationTypes.SOCIAL, displayText: 'Social Media', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: social },
-    ]
-  }
-
-
-  ngOnChanges(changes: SimpleChanges): void {
-
-    this.updateModels();
+    ];
   }
 
   updateModels() {
-    if (this.saveMode == 'NewProfile') {
-
+    if (this.saveMode === 'NewProfile') {
       this.categoryList.forEach(c => {
         if (c.category.isVisible) {
           c.isBlocked = false;
-          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: false })
+          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: false });
         }
       });
       this.applicationList.forEach(a => {
         if (a.application.isVisible) {
           a.isBlocked = false;
-          this.selectedAgent.rootProfile.applicationProfile.categories.push({ id: a.application.id, isBlocked: false })
+          this.selectedAgent.rootProfile.applicationProfile.categories.push({ id: a.application.id, isBlocked: false });
         }
       });
-    } else if (this.saveMode == 'ProfileUpdate') {
+    } else if (this.saveMode === 'ProfileUpdate') {
       this.selectedAgent.rootProfile.domainProfile.categories.forEach(x => {
-        this.categoryList.find(y => y.category.id == x.id).isBlocked = x.isBlocked;
+        this.categoryList.find(y => y.category.id === x.id).isBlocked = x.isBlocked;
       });
 
       this.selectedAgent.rootProfile.applicationProfile.categories.forEach(x => {
-        this.applicationList.find(y => y.application.id == x.id).isBlocked = x.isBlocked;
+        this.applicationList.find(y => y.application.id === x.id).isBlocked = x.isBlocked;
       });
     } else {
-
       this.categoryList.forEach(c => {
         if (c.category.isVisible) {
           c.isBlocked = false;
-          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: false })
+          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: false });
         }
       });
       this.applicationList.forEach(a => {
         if (a.application.isVisible) {
           a.isBlocked = false;
-          this.selectedAgent.rootProfile.applicationProfile.categories.push({ id: a.application.id, isBlocked: false })
+          this.selectedAgent.rootProfile.applicationProfile.categories.push({ id: a.application.id, isBlocked: false });
         }
       });
     }
@@ -210,23 +219,23 @@ export class ProfileWizardComponent {
 
   categoryChanged(category: categoryItem) {
     if (category.isBlocked) {
-      this.allowCategory(category.category.id)
+      this.allowCategory(category.category.id);
     } else {
-      this.blockCategory(category.category.id)
+      this.blockCategory(category.category.id);
     }
   }
 
   allowCategory(id: number) {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
-      this.categoryList.find(c => c.category.id == id).isBlocked = false;
-      this.selectedAgent.rootProfile.domainProfile.categories.find(c => c.id == id).isBlocked = false;
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
+      this.categoryList.find(c => c.category.id === id).isBlocked = false;
+      this.selectedAgent.rootProfile.domainProfile.categories.find(c => c.id === id).isBlocked = false;
     }
   }
 
   blockCategory(id: number) {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
-      this.categoryList.find(c => c.category.id == id).isBlocked = true;
-      this.selectedAgent.rootProfile.domainProfile.categories.find(c => c.id == id).isBlocked = true;
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
+      this.categoryList.find(c => c.category.id === id).isBlocked = true;
+      this.selectedAgent.rootProfile.domainProfile.categories.find(c => c.id === id).isBlocked = true;
     }
   }
 
@@ -239,17 +248,17 @@ export class ProfileWizardComponent {
   }
 
   allowApplication(id: number) {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
-      this.applicationList.find(a => a.application.id == id).isBlocked = false;
-      this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id == id).isBlocked = false;
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
+      this.applicationList.find(a => a.application.id === id).isBlocked = false;
+      this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id).isBlocked = false;
     }
 
   }
 
   blockApplication(id: number) {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
-      this.applicationList.find(a => a.application.id == id).isBlocked = true;
-      this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id == id).isBlocked = true;
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
+      this.applicationList.find(a => a.application.id === id).isBlocked = true;
+      this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id).isBlocked = true;
     }
   }
 
@@ -269,81 +278,81 @@ export class ProfileWizardComponent {
     this.alertService.alertWarningAndCancel(alertTitle, alertMessage).subscribe(
       res => {
         if (res) {
-          if (this.saveMode == 'NewProfile' || this.saveMode == 'ProfileUpdate') {
-            this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(res => {
-              if (res.status == 200) {
-                this.notification.success(res.message)
+          if (this.saveMode === 'NewProfile' || this.saveMode === 'ProfileUpdate') {
+            this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(result => {
+              if (result.status === 200) {
+                this.notification.success(result.message);
                 this.saveEmitter.emit();
               } else {
-                this.notification.error(res.message)
+                this.notification.error(result.message);
               }
             });
-          } else if (this.saveMode == 'NewProfileWithAgent') {
-            this.agentService.saveAgent(this.selectedAgent).subscribe(res => {
-              if (res.status == 200) {
-                this.notification.success(res.message)
+          } else if (this.saveMode === 'NewProfileWithAgent') {
+            this.agentService.saveAgent(this.selectedAgent).subscribe(result => {
+              if (result.status === 200) {
+                this.notification.success(result.message);
                 this.saveEmitter.emit();
               } else {
-                this.notification.error(res.message)
+                this.notification.error(result.message);
               }
             });
-          } else if (this.saveMode == 'NewProfileWithRoaming') {
-            this.roamingService.saveClient(this.selectedAgent).subscribe(res => {
-              if (res.status == 200) {
-                this.notification.success(res.message)
+          } else if (this.saveMode === 'NewProfileWithRoaming') {
+            this.roamingService.saveClient(this.selectedAgent).subscribe(result => {
+              if (result.status === 200) {
+                this.notification.success(result.message);
                 this.saveEmitter.emit();
               } else {
-                this.notification.error(res.message)
+                this.notification.error(result.message);
               }
             });
-          } else if (this.saveMode == 'NewProfileWithBox') {
+          } else if (this.saveMode === 'NewProfileWithBox') {
             this.selectedBox.agent = this.selectedAgent;
-            this.boxService.saveBox(this.selectedBox).subscribe(res => {
-              if (res.status == 200) {
-                this.notification.success(res.message)
+            this.boxService.saveBox(this.selectedBox).subscribe(result => {
+              if (result.status === 200) {
+                this.notification.success(result.message);
                 this.saveEmitter.emit();
               } else {
-                this.notification.error(res.message)
+                this.notification.error(result.message);
               }
             });
-          } else if (this.saveMode == 'NewProfileWithDevice') {
-            let dg = new DeviceGroup()
-            dg.rootProfile = this.selectedAgent.rootProfile
+          } else if (this.saveMode === 'NewProfileWithDevice') {
+            const dg = new DeviceGroup();
+            dg.rootProfile = this.selectedAgent.rootProfile;
 
-            let ai: AgentInfo = new AgentInfo();
-            ai.mac = this.selectedAgent.mac
-            ai.blockMessage = this.selectedAgent.blockMessage
-            ai.agentType = this.selectedAgent.agentType
-            ai.agentAlias = this.selectedAgent.agentAlias
+            const ai: AgentInfo = new AgentInfo();
+            ai.mac = this.selectedAgent.mac;
+            ai.blockMessage = this.selectedAgent.blockMessage;
+            ai.agentType = this.selectedAgent.agentType;
+            ai.agentAlias = this.selectedAgent.agentAlias;
 
-            dg.agents = [ai]
-            delete dg.agentGroup
+            dg.agents = [ai];
+            delete dg.agentGroup;
 
-            this.agentService.saveDevice(dg).subscribe(res => {
-              if (res.status == 200) {
-                this.notification.success(res.message)
+            this.agentService.saveDevice(dg).subscribe(result => {
+              if (result.status === 200) {
+                this.notification.success(result.message);
                 this.saveEmitter.emit();
               } else {
-                this.notification.error(res.message)
+                this.notification.error(result.message);
               }
             });
-          } else if (this.saveMode == 'NewProfileWithDeviceGroup') {
+          } else if (this.saveMode === 'NewProfileWithDeviceGroup') {
 
             if (localStorage.getItem(DEVICE_GROUP)) {
-              let deviceGroup: DeviceGroup = JSON.parse(localStorage.getItem(DEVICE_GROUP));
+              const deviceGroup: DeviceGroup = JSON.parse(localStorage.getItem(DEVICE_GROUP));
               deviceGroup.rootProfile = this.selectedAgent.rootProfile;
 
               if (deviceGroup.agents.length > 0 && deviceGroup.agentGroup.groupName && deviceGroup.rootProfile) {
-                this.agentService.saveDevice(deviceGroup).subscribe(res => {
-                  if (res.status == 200) {
-                    this.notification.success(res.message)
+                this.agentService.saveDevice(deviceGroup).subscribe(result => {
+                  if (result.status === 200) {
+                    this.notification.success(result.message);
                     this.saveEmitter.emit();
                   } else {
-                    this.notification.error(res.message)
+                    this.notification.error(result.message);
                   }
                 });
               } else {
-                this.notification.warning('Missing Information! Please provide required fields.')
+                this.notification.warning('Missing Information! Please provide required fields.');
               }
             }
           }
@@ -353,11 +362,11 @@ export class ProfileWizardComponent {
   }
 
   blackListItemValidation() {
-    if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.blackListItem.domain)) {
+    if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain === this.blackListItem.domain)) {
       this.isNewBlackListItem = false;
     } else {
-      let result = ValidationService.domainValidation({ value: this.blackListItem.domain });
-      if (result == true) {
+      const result = ValidationService.domainValidation({ value: this.blackListItem.domain });
+      if (result === true) {
         this.isNewBlackListItem = true;
       } else {
         this.isNewBlackListItem = false;
@@ -366,33 +375,33 @@ export class ProfileWizardComponent {
   }
 
   addToBlackList() {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
-      if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.blackListItem.domain)) {
-        this.notification.warning("This domain already in black list.")
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
+      if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain === this.blackListItem.domain)) {
+        this.notification.warning('This domain already in black list.');
       } else
-        if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.blackListItem.domain)) {
-          this.notification.warning("This domain already in white list.")
+        if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain === this.blackListItem.domain)) {
+          this.notification.warning('This domain already in white list.');
         } else {
           this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(JSON.parse(JSON.stringify(this.blackListItem)));
-          this.blackListItem.domain = ""
-          this.blackListItem.comment = ""
+          this.blackListItem.domain = '';
+          this.blackListItem.comment = '';
           this.isNewBlackListItem = false;
         }
     }
   }
 
   removeFromBlackList(item: ListItem) {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.splice(
-        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b.domain == item.domain), 1);
+        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b.domain === item.domain), 1);
     }
   }
 
   whiteListItemValidation() {
-    if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.whiteListItem.domain)) {
+    if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain === this.whiteListItem.domain)) {
       this.isNewWhiteListItem = false;
     } else {
-      let result = ValidationService.domainValidation({ value: this.whiteListItem.domain });
+      const result = ValidationService.domainValidation({ value: this.whiteListItem.domain });
       if (result == true) {
         this.isNewWhiteListItem = true;
       } else {
@@ -402,47 +411,42 @@ export class ProfileWizardComponent {
   }
 
   addToWhiteList() {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
-      if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain == this.whiteListItem.domain)) {
-        this.notification.warning("This domain already in white list.")
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
+      if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain === this.whiteListItem.domain)) {
+        this.notification.warning('This domain already in white list.');
       } else
-        if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain == this.whiteListItem.domain)) {
-          this.notification.warning("This domain already in black list.")
-        }
-        else {
+        if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain === this.whiteListItem.domain)) {
+          this.notification.warning('This domain already in black list.');
+        } else {
           this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.push(JSON.parse(JSON.stringify(this.whiteListItem)));
-          this.whiteListItem.domain = ""
-          this.whiteListItem.comment = ""
+          this.whiteListItem.domain = '';
+          this.whiteListItem.comment = '';
           this.isNewWhiteListItem = false;
         }
     }
   }
 
   removeFromWhiteList(item: string) {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.splice(
-        this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.findIndex(b => b.domain == item), 1);
+        this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.findIndex(b => b.domain === item), 1);
     }
   }
 
   changeSafeSearchMode() {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.isSafeSearchEnabled = this.selectedAgent.rootProfile.isSafeSearchEnabled ? false : true;
     }
   }
 
   changeYoutubeMode() {
-    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem == false) {
+    if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled = this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled ? false : true;
     }
   }
-}
 
-export const ApplicationTypes = {
-  REMOTE_ACCESS: 'REMOTE_ACCESS',
-  ONLINE_VIDEO: 'ONLINE_VIDEO',
-  INSTANT_MESSAGING: 'INSTANT_MESSAGING',
-  SOCIAL: 'SOCIAL',
-  CLEAR_ADS: 'CLEAR_ADS',
-  HTTP: 'HTTP'
-};
+  toggleSecurityMode() {
+    this.securityMode = !this.securityMode;
+  }
+
+}

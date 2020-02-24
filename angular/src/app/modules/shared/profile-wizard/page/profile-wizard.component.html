@@ -1,64 +1,79 @@
 <rk-accordion isWizard="true" [activeNumber]="currentStep">
-  <rk-accordion-panel index="1">
+  <rk-accordion-panel index="1" class="accordion-p-0">
     <div class="rk-accordion-title">Security Settings</div>
 
     <div class="rk-accordion-body py-2">
-      <div class="d-flex align-items-center justify-content-between">
-        <div class="accordion-label">Security mode :</div>
-        <div style="width: 78px;">
-          <rk-toggle-button [toggleTexts]="{ pos: 'POSITIVE', neg: 'NEGATIVE' }"></rk-toggle-button>
+      <div class="d-flex flex-column p-2" [ngStyle]="{'background': securityMode ? '#4fb75d' : '#97a5bb'}">
+        <div class="accordion-label text-white">Security Mode:</div>
+        <div class="d-flex align-items-center justify-content-between mt-1">
+          <button class="rk-toggle-btn w-100 mr-2" [ngClass]="{'active': securityMode}"
+            (click)="toggleSecurityMode()">POSITIVE
+            SECURITY</button>
+          <button class="rk-toggle-btn w-100 passive" [ngClass]="{'active': !securityMode}"
+            (click)="toggleSecurityMode()">NEGATIVE
+            SECURITY</button>
         </div>
-      </div>
-      <div class="accordion-description mt-1">
-        Sadece guvensiz alanın bloklandigı. Bilinmeyen domainlere izin verilir.
-      </div>
 
-      <div class="d-flex align-items-center justify-content-between mt-3 pb-2"
-        style="border-bottom: 1px solid #e4e9f1;">
-        <div class="accordion-label">Safe Search;</div>
-        <div style="width: 78px;">
-          <rk-toggle-button [active]="selectedAgent.rootProfile.isSafeSearchEnabled" (click)="changeSafeSearchMode()"
-            clickClose="true"  [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }"></rk-toggle-button >
-        </div>
-      </div>
-      <div class="d-flex align-items-center justify-content-between my-2 pb-2"
-        style="border-bottom: 1px solid #e4e9f1;">
-        <div class="accordion-label">YouTube Restrict Mode;</div>
-        <div style="width: 78px;">
-          <rk-toggle-button [active]="selectedAgent.rootProfile.isYoutubeStrictModeEnabled"
-            (click)="changeYoutubeMode()" clickClose="true"  [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }">
-          </rk-toggle-button>
-        </div>
-      </div>
-      <div class="d-flex align-items-center justify-content-between my-2 pb-2"
-        style="border-bottom: 1px solid #e4e9f1;">
-        <div class="accordion-label">Clear Ads</div>
-        <div style="width: 78px;">
-          <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }"></rk-toggle-button>
+        <div class="accordion-description mt-2 text-white">
+          Sadece guvenli alanda gezinilmesini saglar. Zararlı ve bilinmeyen domainler engellenir. Bilinmeyen domainler
+          10 dk içinde sınıflandırılır.
         </div>
       </div>
 
-      <rk-collapse color="#d8d8d8" class="d-flex mt-3">
-        <rk-collapse-title>Harmfull Categories</rk-collapse-title>
+      <div style="padding: 0 15px;">
+        <div class="d-flex align-items-center justify-content-between mt-3 pb-2"
+          style="border-bottom: 1px solid #e4e9f1;">
+          <div class="accordion-label">Safe Search;</div>
+          <div style="width: 78px;">
+            <rk-toggle-button [active]="selectedAgent.rootProfile.isSafeSearchEnabled" (click)="changeSafeSearchMode()"
+              clickClose="true"  [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }"></rk-toggle-button >
+          </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between my-2 pb-2"
+          style="border-bottom: 1px solid #e4e9f1;">
+          <div class="accordion-label">YouTube Restrict Mode;</div>
+          <div style="width: 78px;">
+            <rk-toggle-button [active]="selectedAgent.rootProfile.isYoutubeStrictModeEnabled"
+              (click)="changeYoutubeMode()" clickClose="true" [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }">
+            </rk-toggle-button>
+          </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between my-2 pb-2"
+          style="border-bottom: 1px solid #e4e9f1;">
+          <div class="accordion-label">Clear Ads</div>
+          <div style="width: 78px;">
+            <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }"></rk-toggle-button>
+          </div>
+        </div>
 
-        <rk-collapse-description>
-          Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen
-          domainleri içerir.
-        </rk-collapse-description>
+        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+          <rk-collapse-title>Harmfull Categories</rk-collapse-title>
 
-        <rk-collapse-body>
-          <ng-container *ngFor="let cat of categoryList">
-            <ng-container
-              *ngIf="(cat.category.type=='UNSAFE_LIST' || cat.category.type=='HARMFULL_CONTENT') && cat.category.isVisible">
-              <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="categoryChanged(cat)"
-                [active]="cat.isBlocked">
-                {{ cat.category.name }}</rk-toggle-button>
+          <rk-collapse-description>
+            Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen
+            domainleri içerir.
+          </rk-collapse-description>
+
+          <rk-collapse-body>
+            <ng-container *ngFor="let cat of categoryList">
+              <ng-container
+                *ngIf="(cat.category.type=='UNSAFE_LIST' || cat.category.type=='HARMFULL_CONTENT') && cat.category.isVisible">
+                <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+                  style="border-bottom: 1px solid #e4e9f1;">
+                  <div class="accordion-label">{{ cat.category.name }}</div>
+
+                  <div style="width: 78px;">
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="cat.isBlocked"
+                      [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
+                  </div>
+                </div>
+              </ng-container>
             </ng-container>
-          </ng-container>
 
-        </rk-collapse-body>
-      </rk-collapse>
+          </rk-collapse-body>
+        </rk-collapse>
 
+      </div>
     </div>
   </rk-accordion-panel>
   <rk-accordion-panel index="2">
@@ -96,7 +111,7 @@
       </p>
 
       <div class="input-container">
-        <div class="rk-search-container">
+        <div class="rk-search-container w-100">
           <input type="text" placeholder="White List Domain" class="rk-input" [(ngModel)]="whiteListItem.domain"
             (ngModelChange)="whiteListItemValidation()">
           <i-feather name="search"></i-feather>
@@ -135,7 +150,7 @@
       </p>
 
       <div class="input-container">
-        <div class="rk-search-container">
+        <div class="rk-search-container w-100">
           <input type="text" placeholder="Black List Domain" class="rk-input" [(ngModel)]="blackListItem.domain"
             (ngModelChange)="blackListItemValidation()">
           <i-feather name="search"></i-feather>

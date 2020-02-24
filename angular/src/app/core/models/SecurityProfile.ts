@@ -1,40 +1,39 @@
 
-export class SecurityProfile {
+export class BlackWhiteListProfile {
     id: number;
-    name: string;
-    isSafeSearchEnabled: boolean = false;
-    isYoutubeStrictModeEnabled: boolean = false;
-    domainProfile: SecurityProfileItem;
-    applicationProfile: SecurityProfileItem;
-    blackWhiteListProfile: BlackWhiteListProfile;
-    numberOfUsage: number;
-    isSystem: boolean=false;
-
-}
-
-export interface BlackWhiteListProfile {
-    id: number
-    blackList: ListItem[]
-    whiteList: ListItem[]
+    blackList: ListItem[] = [];
+    whiteList: ListItem[] = [];
 }
 
 export class ListItem {
     domain: string;
     comment: string;
-  }
+}
 
-export interface SecurityProfileItem {
-    id: number
-    categories: Category[]
+export class SecurityProfileItem {
+    id: number;
+    categories: Category[] = [];
 }
 
 export interface Category {
     id: number;
     isBlocked: boolean;
-    //timeProfile: TimeProfile;
+    // timeProfile: TimeProfile;
+}
+export class SecurityProfile {
+    id: number;
+    name: string;
+    isSafeSearchEnabled = false;
+    isYoutubeStrictModeEnabled = false;
+    domainProfile: SecurityProfileItem = new SecurityProfileItem();
+    applicationProfile: SecurityProfileItem = new SecurityProfileItem();
+    blackWhiteListProfile: BlackWhiteListProfile = new BlackWhiteListProfile();
+    numberOfUsage: number;
+    isSystem = false;
 }
 
-//TODO: bilahare eklenecek
+
+// TODO: bilahare eklenecek
 // export interface TimeProfile {
 //     id: number
 //     name: string
