@@ -3,11 +3,12 @@ import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { Subject } from 'rxjs';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { CustomReportService } from 'src/app/core/services/CustomReportService';
-import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
+import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
 import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 
 declare var moment: any;
 @Component({
@@ -16,30 +17,37 @@ declare var moment: any;
   styleUrls: ['customreport-result.component.css']
 })
 export class CustomReportResultComponent implements OnDestroy {
+
+  constructor(
+    private customReportService: CustomReportService,
+    private fastReportService: FastReportService,
+    private excelService: ExcelService,
+    private pdfService: PdfService
+  ) { }
+
   elementRef: ElementRef;
   public date = new Date();
-  public loading: boolean = false;
+  public loading = false;
   public selectedColumns: AggregationItem[];
 
-  //@Input() public searchSetting: SearchSetting;
-  public ss: SearchSetting
   @Input() set searchSetting(value: SearchSetting) {
     this.ss = value;
-  };
+  }
   get searchSetting(): SearchSetting {
     return this.ss;
   }
+
+  public ss: SearchSetting;
+
   @Input() public data: any[];
-  @Input() public total: number = 0;
-  @Input() public multiplier: number = 1;
+  @Input() public total = 0;
+  @Input() public multiplier = 1;
   @Output() public addColumnValueEmitter = new EventEmitter();
   @Output() public searchEmitter = new EventEmitter();
 
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
-
-
 
   tableConfig: RkTableConfigModel = {
     columns: [
@@ -61,26 +69,20 @@ export class CustomReportResultComponent implements OnDestroy {
       { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial' },
       { id: 16, name: 'hostName', displayText: 'Host Name' }
     ],
-    rows: [
-
-    ],
+    rows: [],
     selectableRows: true
   };
 
-
-  constructor(private customReportService: CustomReportService, private fastReportService: FastReportService,
-    private excelService: ExcelService, private pdfService: PdfService) { }
+  firstDate: any;
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-
   }
 
   public setTopCount(value) {
     this.searchSetting.topNumber = value;
     this.searchEmitter.emit(this.searchSetting);
-
   }
 
   public addValuesIntoSelected(value) {
@@ -97,7 +99,6 @@ export class CustomReportResultComponent implements OnDestroy {
 
   public search(searchSetting: SearchSetting) {
     this.firstDate = searchSetting.dateInterval;
-    // this.drawChart(searchSetting);
     this.fillResultTable(searchSetting);
   }
 
@@ -107,26 +108,27 @@ export class CustomReportResultComponent implements OnDestroy {
         this.searchSetting = res['searchSetting'];
       }
 
+      this.drawChart(searchSetting);
+
       let total = 0;
-      let data: any = res;
+      const data: any = res;
 
       this.selectedColumns = <AggregationItem[]>JSON.parse(JSON.stringify(searchSetting.columns.columns));
 
-
       if (data && data.length > 0) {
         for (let i = 0; i < data.length; i++) {
-          let val = parseInt(data[i][this.selectedColumns.length]);
+          const val = parseInt(data[i][this.selectedColumns.length], null);
           total += val;
         }
-        var maxPercentage = 0;
+        let maxPercentage = 0;
         for (let i = 0; i < data.length; i++) {
-          let val = parseInt(data[i][this.selectedColumns.length]);
-          let tempPercentage = val * 1.0 / total;
+          const val = parseInt(data[i][this.selectedColumns.length], null);
+          const tempPercentage = val * 1.0 / total;
           if (tempPercentage > maxPercentage) {
             maxPercentage = tempPercentage;
           }
         }
-        let multiplier = Math.floor(100 / (maxPercentage * 100));
+        const multiplier = Math.floor(100 / (maxPercentage * 100));
         this.multiplier = multiplier;
         this.total = total;
       }
@@ -134,13 +136,13 @@ export class CustomReportResultComponent implements OnDestroy {
       this.data = data;
 
       this.tableConfig.columns.forEach(col => {
-        let selectedCol = this.selectedColumns.find(item => item.column.name == col.name);
+        const selectedCol = this.selectedColumns.find(item => item.column.name == col.name);
 
         col.selected = !!selectedCol;
       });
 
       this.data.forEach(item => {
-        let rowItem: RkTableRowModel = { selected: false };
+        const rowItem: RkTableRowModel = { selected: false };
 
         this.selectedColumns.forEach((selectedCol, index) => {
           rowItem[selectedCol.column.name] = item[index];
@@ -149,10 +151,9 @@ export class CustomReportResultComponent implements OnDestroy {
         this.tableConfig.rows.push(rowItem);
       });
 
-      console.log(this.selectedColumns);
-      console.log(this.data);
 
-    }, () => this.stopRefreshing(),
+    },
+      () => this.stopRefreshing(),
       () => this.stopRefreshing()
     );
   }
@@ -168,69 +169,74 @@ export class CustomReportResultComponent implements OnDestroy {
   }
 
   drawChart(settings: SearchSetting) {
-
     this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
 
+      const data: any[] = res;
 
-      let data: any[] = res;
       if (data) {
-        let labelArray = [];
-        let chartSeries = [];
-        for (let i = 0; i < data.length; i++) {
-          const d = new Date(data[i].date);
-          labelArray.push(moment(d).format('YYYY-MM-DDTHH:mm:ss.sssZ'))
-          chartSeries.push(data[i].value)
-        }
+        const labelArray = [];
+        const chartSeries = [];
 
-        var options = {
+        data.forEach(elem => {
+          labelArray.push(moment(elem.date).format('YYYY-MM-DD HH:mm:ss'));
+          chartSeries.push(elem.value);
+        });
+
+        const options = {
           chart: {
-            height: 300, type: 'area', foreColor: '#ababab',
+            height: 300, type: 'area', foreColor: '#898ea4',
             toolbar: {
               tools: {
                 download: false,
                 pan: false
               }
             },
-            events: {
-              zoomed: (chartContext, { xaxis, yaxis }) => {
-                this.updateResultTable(xaxis.min, xaxis.max);
-              }
-            }
+          },
+          colors: ['#2cd9c5'],
+          fill: {
+            colors: ['#2cd9c5'],
+          },
+          title: {
+            text: 'Log Histogram',
+            style: {
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: '#898ea4'
+            },
           },
           dataLabels: { enabled: false },
           stroke: { curve: 'smooth' },
           markers: { size: 0, hover: { sizeOffset: 5 } },
-          series: [{ name: "Hits", data: [[]] }],
-          xaxis: { type: 'datetime', categories: labelArray, tickAmount: 1, style: { color: '#f0f0f0' } },
-          tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
-          grid: { borderColor: '#626262' },
+          series: [{ name: 'Hits', data: [[]] }],
+          xaxis: { type: 'datetime', categories: labelArray, tickAmount: 1, style: { color: '#e9ebf1' } },
+          tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' } },
+          grid: { borderColor: '#e9ebf1' },
           legend: { show: false },
           annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
-          title: { text: 'Log Histogram', style: { fontSize: '20px', color: '#eeeeee' } }
-        }
+          animations: { enabled: true }
+        };
 
-        var logChart = new ApexCharts(document.querySelector("#customReportChart"), options);
+        const logChart = new ApexCharts(document.querySelector('#customReportChart'), options);
+
         logChart.render();
-        logChart.updateSeries([{ name: "Hits", data: chartSeries }])
+        logChart.updateSeries([{ name: 'Hits', data: chartSeries }]);
       }
 
     });
   }
 
-  firstDate: any;
   updateResultTable(min: any, max: any): void {
-
     if (min && max) {
-      let md = new Date(min);
+      const md = new Date(min);
       md.setHours(md.getUTCHours());
       md.setDate(md.getUTCDate());
 
-      let mxd = new Date(max);
+      const mxd = new Date(max);
       mxd.setHours(mxd.getUTCHours());
       mxd.setDate(mxd.getUTCDate());
 
-      let startDate = moment(md).format('DD.MM.YYYY HH:mm:ss');
-      let endDate = moment(mxd).format('DD.MM.YYYY HH:mm:ss');
+      const startDate = moment(md).format('DD.MM.YYYY HH:mm:ss');
+      const endDate = moment(mxd).format('DD.MM.YYYY HH:mm:ss');
 
       const dateVal = startDate + ' - ' + endDate;
       this.searchSetting.dateInterval = dateVal;
@@ -242,31 +248,31 @@ export class CustomReportResultComponent implements OnDestroy {
 
   }
 
-  exportAs(extention: string) {
+  exportAs(extention: ExportTypes) {
     if (this.data && this.data.length > 0) {
-      let jsonString = "[";
+      let jsonString = '[';
       for (let i = 0; i < this.data.length - 1; i++) {
-        const d = this.data[i];
-        jsonString += "{"
-        for (let j = 0; j < d.length - 1; j++) {
-          const e = d[j];
+        const da = this.data[i];
+        jsonString += '{';
+        for (let j = 0; j < da.length - 1; j++) {
+          const e = da[j];
           jsonString += '"' + this.selectedColumns[j].label + '" : "' + e + '",';
         }
-        jsonString += '"Count": "' + d[d.length - 1] + '" },'
+        jsonString += '"Count": "' + da[da.length - 1] + '" },';
       }
       jsonString = jsonString.substr(0, jsonString.length - 1);
-      jsonString += "]"
+      jsonString += ']';
 
       const d = new Date();
-      if (extention == 'xlsx') {
-        this.excelService.exportAsExcelFile(JSON.parse(jsonString), 'CustomReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
-      } else if ('pdf') {
-        this.pdfService.exportAsPdfFile("landscape", JSON.parse(jsonString), 'CustomReport-' + d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear());
+      if (extention === 'excel') {
+        this.excelService.exportAsExcelFile(JSON.parse(jsonString), 'CustomReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
+      } else if (extention === 'pdf') {
+        this.pdfService.exportAsPdfFile('landscape', JSON.parse(jsonString), 'CustomReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
       }
     }
   }
 
   public stopRefreshing() {
-    //this.spinnerService.stop();
+    // this.spinnerService.stop();
   }
 }

@@ -69,8 +69,6 @@ export class RoksitSearchComponent implements OnInit {
 
   columnFilterOptions: RkSelectModel[] = [];
 
-
-
   // Yeni tasarim sonrasi
   searchSettingForHtml: SearchSetting;
   searchStartDate: string;
