@@ -1,4 +1,62 @@
-<div class="main-content">
+<div class="rk-base-card">
+  <div class="card-item">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 p-0">
+          <h5 class="page-title">QUERY CATEGORY</h5>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 col-md-6 p-0 mt-3">
+          <div class="rk-basic-card">
+            <p>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for
+              previewing layouts and visual mockups.</p>
+
+            <form [formGroup]="searchForm">
+              <div class="search">
+                <div class="rk-autocomplete-container">
+                  <input type="text" class="rk-input rk-autocomplete" placeholder="Enter domain" [(ngModel)]="domain"
+                    (ngModelChange)="checkDomain('category')" formControlName="domain"
+                    (keydown.space)="$event.preventDefault()" (keydown.enter)="isDomain ? searchCategory() : null" [ngStyle]="{'border-color': domain?.length > 1 && isDomain ? '#3397c5' : '#f95656'}">
+                  <i-feather name="search" class="search-icon"></i-feather>
+                </div>
+              </div>
+            </form>
+
+            <table class="table mt-3">
+              <tr>
+                <td class="color-898ea4">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <b>Domain</b>
+                    <b>:</b>
+                  </div>
+                </td>
+                <td class="color-898ea4">{{ categoryQuery?.domain }}</td>
+              </tr>
+              <tr>
+                <td class="color-898ea4">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <b>Categories</b>
+                    <b>:</b>
+                  </div>
+                </td>
+                <td class="color-898ea4">
+                  <div class="mt-1" *ngFor="let category of categoryQuery?.categoryList">
+                    {{ category }}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div class="main-content">
 
   <div class="container-fluid col-md-11">
     <div class="row">
@@ -104,4 +162,5 @@
 
   </div>
 
-</div>
+  
+</div> -->

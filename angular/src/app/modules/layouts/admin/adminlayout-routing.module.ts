@@ -92,12 +92,28 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../roaming/roaming.module#RoamingModule'
       },
       {
-        path: 'settings/tools',
+        path: 'settings/query-category',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
         loadChildren: '../../tools/tools.module#ToolsModule'
+      },
+      {
+        path: 'settings/change-domain-category',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
+        loadChildren: '../../category-request/category-request.module#CategoryRequestModule'
+      },
+      {
+        path: 'settings/theme-mode',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
+        loadChildren: '../../theme/theme.module#ThemeModule'
       },
       { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

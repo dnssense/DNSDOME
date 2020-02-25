@@ -5,7 +5,6 @@ import { CategoryQuery } from 'src/app/core/models/CategoryQuery';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NotificationService } from 'src/app/core/services/notification.service';
 
-
 @Component({
     selector: 'app-tools',
     templateUrl: 'tools.component.html',
@@ -13,21 +12,25 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 })
 export class ToolsComponent {
 
+    constructor(
+        private toolsService: ToolsService,
+        private formBuilder: FormBuilder,
+        private notification: NotificationService
+    ) {
+        this.searchForm = this.formBuilder.group({
+            'domain': ['', [Validators.required]]
+        });
+    }
+
     searchForm: FormGroup;
     isDomain: boolean;
     isDomainForReq: boolean;
     domain: string;
     domainForReq: string;
     categoryQuery: CategoryQuery;
-    constructor(private toolsService: ToolsService, private formBuilder: FormBuilder, private notification: NotificationService) {
-
-        this.searchForm = this.formBuilder.group({
-            "domain": ["", [Validators.required]]
-        });
-    }
 
     checkDomain(type: string) {
-        if (type == 'category') {
+        if (type === 'category') {
             if (String(this.domain).toLowerCase().startsWith('http')) {
                 this.domain = String(this.domain).toLowerCase().replace('http://', '').replace('https://', '');
             }
@@ -64,28 +67,27 @@ export class ToolsComponent {
     }
 
     reportDomain() {
-        let body: string[] = [];
+        const body: string[] = [];
 
         this.domainForReq.split(',').forEach(f => body.push(f));
+
         let check = true;
-        for (var i = 0; i < body.length; i++) {
+
+        for (let i = 0; i < body.length; i++) {
             if (body.indexOf(body[i]) !== body.lastIndexOf(body[i])) {
-                this.notification.warning('Entered list contains duplicate domains')
+                this.notification.warning('Entered list contains duplicate domains');
                 check = false;
                 break;
             }
         }
+
         if (check) {
             this.toolsService.sendCategoryRequest(body).subscribe(res => {
                 if (res) {
                     this.domainForReq = '';
-                    this.notification.success('Category request is successfully sent')
+                    this.notification.success('Category request is successfully sent');
                 }
-            })
+            });
         }
-
-
     }
-
-
 }

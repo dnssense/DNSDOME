@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToolsComponent } from './page/tools.component';
-import { ToolsRoutingModule } from './tools-routing.module';
 import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
@@ -9,19 +7,21 @@ import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { AmazingTimePickerModule } from 'amazing-time-picker'; 
-import { IconsModule } from 'roksit-lib';
-
+import { IconsModule, RkSelectModule } from 'roksit-lib';
+import { CategoryRequestComponent } from './category-request.component';
+import { CategoryRequestRoutingModule } from './category-request-routing.module';
 
 @NgModule({
   declarations: [
-    ToolsComponent],
+    CategoryRequestComponent
+],
   imports: [
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
     NouisliderModule,
     MaterialModule,
-    ToolsRoutingModule,
+    CategoryRequestRoutingModule,
     AmazingTimePickerModule,
     TranslateModule.forChild({
       loader: {
@@ -30,8 +30,9 @@ import { IconsModule } from 'roksit-lib';
         deps: [HttpClient]
       }
     }),
-    IconsModule
+    IconsModule,
+    RkSelectModule
   ]
 
 })
-export class ToolsModule { }
+export class CategoryRequestModule { }

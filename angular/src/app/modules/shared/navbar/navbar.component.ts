@@ -62,7 +62,7 @@ export class NavbarComponent implements OnInit {
     }
 
     get getTitle() {
-        let title: string = this.location.prepareExternalUrl(this.location.path()).substring(7);
+        const title: string = this.location.prepareExternalUrl(this.location.path()).substring(7);
 
         return title.split('/');
     }
