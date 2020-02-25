@@ -1,1 +1,22 @@
-theme mode
+<div class="rk-base-card">
+    <div class="card-item">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 p-0">
+                    <h5 class="page-title">Theme Mode</h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mt-3 p-0">
+                    <div class="rk-basic-card d-flex">
+                        <rk-color name="color-select" class="mr-2" [checked]="themeMode === 'white'"
+                            (colorChanged)="colorChanged($event)"></rk-color>
+                        <rk-color name="color-select" color="dark" [checked]="themeMode === 'dark'"
+                            (colorChanged)="colorChanged($event)"></rk-color>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

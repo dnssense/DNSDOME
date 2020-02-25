@@ -7,10 +7,9 @@ import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
-import { IconsModule } from 'roksit-lib';
+import { IconsModule, RkColorModule } from 'roksit-lib';
 import { ThemeComponent } from './theme.component';
 import { ThemeRoutingModule } from './theme-routing.module';
-
 
 @NgModule({
     declarations: [
@@ -31,7 +30,8 @@ import { ThemeRoutingModule } from './theme-routing.module';
                 deps: [HttpClient]
             }
         }),
-        IconsModule
+        IconsModule,
+        RkColorModule
     ]
 
 })

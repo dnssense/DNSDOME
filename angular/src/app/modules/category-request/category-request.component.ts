@@ -13,12 +13,12 @@ export class CategoryRequestComponent implements OnInit {
 
     domain: string;
     category: RkSelectModel = {} as RkSelectModel;
-    commment: string;
+    comment: string;
 
     ngOnInit() { }
 
     get getIsValidForm() {
-        return ValidationService.isDomainValid(this.domain) && this.category.value && this.commment.trim().length > 0;
+        return ValidationService.isDomainValid(this.domain) && this.category.value && this.comment.trim().length > 0;
     }
 
 }
