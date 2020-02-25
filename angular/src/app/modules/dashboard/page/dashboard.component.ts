@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { DashBoardService } from 'src/app/core/services/DashBoardService';
+import { DashBoardService, TopDomainsRequestV4 } from 'src/app/core/services/DashBoardService';
 import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { StaticService } from 'src/app/core/services/StaticService';
@@ -8,16 +8,184 @@ import { DashboardStats } from 'src/app/core/models/DashboardStats';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { Router } from '@angular/router';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { CustomReportService } from 'src/app/core/services/CustomReportService';
-import { AggregationItem } from 'src/app/core/models/AggregationItem';
-import { LogColumn } from 'src/app/core/models/LogColumn';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { DataPanelModel, DateParamModel } from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
 import { RkApexHelper } from 'roksit-lib';
+
+export interface HourlyCompanySummaryV4Request {
+  duration: number; // last hours
+
+}
+
+
+export interface StdDeviationBounds {
+  upper: number;
+  lower: number;
+}
+
+export interface UniqueBlockedDomain {
+  average: number;
+  std_deviation_bounds: StdDeviationBounds;
+  count: number;
+  std_deviation: number;
+}
+
+export interface UniqueDomain {
+  average: number;
+  std_deviation_bounds: StdDeviationBounds;
+  count: number;
+  std_deviation: number;
+}
+
+
+export interface TotalHit {
+  average: number;
+  std_deviation_bounds: StdDeviationBounds;
+  count: number;
+  std_deviation: number;
+}
+
+export interface CategorySummary {
+  name: string;
+  hits: number;
+  average: number;
+  unique_domain: number;
+  std_deviation_bounds: StdDeviationBounds;
+  unique_domain_average: number;
+  std_deviation: number;
+}
+
+
+
+export interface UniqueDestip {
+  average: number;
+  count: number;
+}
+
+
+
+export interface BlockedCount {
+  average: number;
+  std_deviation_bounds: StdDeviationBounds;
+  count: number;
+  std_deviation: number;
+}
+
+export interface UniqueSrcip {
+  average: number;
+  count: number;
+}
+
+export interface TimeRange {
+  hit: number;
+  hour_gte: string;
+  lt: Date;
+  gte: Date;
+}
+
+export interface UniqueMac {
+  average: number;
+  count: number;
+}
+
+export interface UniqueUser {
+  average: number;
+  count: number;
+}
+
+
+
+export interface AllowedCount {
+  average: number;
+  std_deviation_bounds: StdDeviationBounds;
+  count: number;
+  std_deviation: number;
+}
+
+
+
+export interface UniqueSubdomain {
+  average: number;
+  std_deviation_bounds: StdDeviationBounds;
+  count: number;
+  std_deviation: number;
+}
+
+export interface Summary {
+  unique_blocked_domain: UniqueBlockedDomain;
+  date: string;
+  unique_domain: UniqueDomain;
+  total_hit: TotalHit;
+  firstly_seen_status: string;
+  len_firstly_seen_domains: number;
+  insert_date: Date;
+  query_process_time: number;
+  category_hits: CategorySummary[];
+  unique_destip: UniqueDestip;
+  blocked_count: BlockedCount;
+  unique_srcip: UniqueSrcip;
+  time_range: TimeRange;
+  unique_mac: UniqueMac;
+  unique_user: UniqueUser;
+  allowed_count: AllowedCount;
+  unique_subdomain: UniqueSubdomain;
+}
+
+export interface HourlyCompanySummaryV4Response {
+  items: Summary[];
+}
+export interface TrafficTotal {
+  date: Date;
+  hit: number;
+}
+
+export interface TrafficAnomalyCategory {
+  name: string;
+  hitCount: number;
+  ratio: number;
+}
+export interface TrafficAnomalyItem {
+  allowCount: number;
+  blockCount: number;
+  categories: TrafficAnomalyCategory[];
+  averageHit: number;
+  currentHit: number;
+  ratio: number;
+
+}
+export interface TrafficAnomalyItem2 {
+  hitCount: number;
+  uniqueCount: number;
+  categories: TrafficAnomalyCategory[];
+  averageHit: number;
+  currentHit: number;
+  ratio: number;
+}
+
+export interface TrafficAnomaly {
+  total: TrafficAnomalyItem;
+  malicious: TrafficAnomalyItem2;
+  variable: TrafficAnomalyItem2;
+  harmful: TrafficAnomalyItem2;
+
+}
+
+
+export interface Domain {
+  name: string;
+  hit: number;
+}
+
+export interface Domain {
+  name: string;
+  hit: number;
+}
+export interface TopDomainsResponseV4 {
+  items: Domain[];
+}
 
 declare let $: any;
 declare let moment: any;
@@ -26,16 +194,29 @@ declare let moment: any;
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit {
+
+  constructor(
+    private dashboardService: DashBoardService,
+    private authService: AuthenticationService,
+    private staticService: StaticService,
+    private notification: NotificationService,
+    private router: Router,
+    private agentService: AgentService,
+    private config: ConfigService,
+    private boxService: BoxService,
+    private roamingService: RoamingService
+  ) { }
+
   host: ConfigHost;
-  elasticData: ElasticDashboardResponse[];
+  elasticData: HourlyCompanySummaryV4Response;
   dateParameter = 0;
   ds: DashboardStats = new DashboardStats();
   searchKey: string;
   labelArray: string[] = [];
   categoryList = [];
   categoryListFiltered = [];
-  selectedCategoryForTraffic: number = 0;
+  selectedCategoryForTraffic = 0;
   selectedCategoryForUnique = CategoryV2;
   trafficChart: any;
   timeLineChart: any;
@@ -46,61 +227,142 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   dataPanels: DataPanelModel[] = [];
   timeRangeButtons: DateParamModel[] = [];
-  totalCategoryHits: number = 0;
+  totalCategoryHits = 0;
 
   infoBoxes = {
     total: true,
     safe: false,
     malicious: false,
     variable: false,
-    harmfulContent: false
+    harmful: false
   };
 
-  private startDate: Date;
-  private endDate: Date;
+  selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
 
-  constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
-    private staticService: StaticService, private notification: NotificationService, private router: Router,
-    private agentService: AgentService, private customReportService: CustomReportService, private config: ConfigService,
-    private boxService: BoxService, private roamingService: RoamingService) { }
+  trafficAnomaly: TrafficAnomaly = {} as TrafficAnomaly;
+
+  categoryMappings = {
+    'variable': [
+      'Unknown',
+      'Undecided Not Safe',
+      'Undecided Safe',
+      'Domain Parking',
+      'Newly Register',
+      'Newly Up',
+      'Dead Sites',
+      'Firstly Seen'
+    ],
+    'harmful': [
+      'Illegal Drugs',
+      'Adult',
+      'Pornography',
+      'Hate/Violance/illegal',
+      'Gambling',
+      'Games',
+      'Swimsuits and Underwear',
+      'Dating',
+      'Alcohol'
+    ],
+    'safe': [
+      'Cooking',
+      'Online Video',
+      'Sport',
+      'Advertisements',
+      'Shopping',
+      'Software Downloads',
+      'Reference',
+      'Financial Services',
+      'Health',
+      'Society',
+      'Webmail',
+      'Vehicles',
+      'Government and Organization',
+      'Search Engines',
+      'Online Storage',
+      'Business Services',
+      'Entertainment',
+      'Tobacco',
+      'Blogs',
+      'Content Delivery Networks (CDN)',
+      'Social Networks',
+      'Real Estate',
+      'Forums',
+      'Arts and Culture',
+      'Kids',
+      'Job Search',
+      'Clothing and Fashion',
+      'Chats',
+      'Education',
+      'Technology and Computer',
+      'Infrastructure Service',
+      'Music',
+      'Weapon and Military',
+      'News',
+      'Religion',
+      'Vacation and Travel',
+      'Local IP',
+      'WhiteList'
+    ],
+    'malicious': [
+      'Phishing',
+      'Spam Sites',
+      'Proxy',
+      'Warez',
+      'Hacking',
+      'Potentially Dangerous',
+      'Malware/Virus',
+      'Dynamic DNS',
+      'Botnet CC',
+      'DGA Domain',
+      'BlackList',
+      'Malformed Query',
+      'Bad-IP',
+      'NX Domain'
+    ]
+  };
+
+  private today: Date = new Date();
+
+  private startDate: Date = new Date();
+
+  private endDate: Date = new Date();
+
+  maliciousDomains: Domain[] = [];
+  newDomains: Domain[] = [];
+  harmfulDomains: Domain[] = [];
 
   ngOnInit() {
+    this.startDate.setDate(this.today.getDate() - 365);
+
     this.host = this.config.host;
     const roleName: string = this.authService.currentSession.currentUser.roles.name;
 
-    if (roleName != 'ROLE_USER') {
-      this.agentService.getAgents().subscribe(res => {
-        if (res == null || res.length < 1) {
-          this.boxService.getBoxes().subscribe(res2 => {
-            if (res2 == null || res2.length < 1) {
-              this.roamingService.getClients().subscribe(res3 => {
-                if (res3 == null || res3.length < 1) {
-                  // TODO: redericeting temporarily
-                  this.router.navigateByUrl('/admin/publicip');
-                  // this.openModal();
-                } else {
-                  this.startDashboardOperations();
-                }
-              });
-            } else {
-              this.startDashboardOperations();
-            }
-          });
-        } else {
-          this.startDashboardOperations();
-        }
-      });
-    } else {
-      this.startDashboardOperations();
-    }
+    this.startDashboardOperations();
 
+    const request = { duration: 24 } as TopDomainsRequestV4;
+
+    this.dashboardService.getTopDomains({ ...request, type: 'malicious' }).subscribe(result => {
+      this.maliciousDomains = result.items;
+    });
+
+    this.dashboardService.getTopDomains({ ...request, type: 'new' }).subscribe(result => {
+      this.newDomains = result.items;
+    });
+
+    this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
+      this.harmfulDomains = result.items;
+    });
 
     this.dataPanels.push({ name: 'Public IP', activeCount: 8, passiveCount: 3 });
     this.dataPanels.push({ name: 'Roming Client', activeCount: 6, passiveCount: 4 });
     this.dataPanels.push({ name: 'DNS Relay', activeCount: 12, passiveCount: 5 });
   }
 
-  infoboxChanged($event: { active: boolean }, type: string) {
+  infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
+    this.categoryListFiltered = this.trafficAnomaly[type].categories;
+
+    this.selectedBox = type;
+
     Object.keys(this.infoBoxes).forEach(elem => {
       this.infoBoxes[elem] = false;
     });
@@ -108,15 +370,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.infoBoxes[type] = true;
   }
 
-  ngAfterViewInit(): void {
-    // introJs().start();
-  }
-
   dateChanged(ev: { startDate: Date, endDate: Date }) {
     this.startDate = ev.startDate;
     this.endDate = ev.endDate;
-
-    this.getElasticData(moment(ev.startDate).format('YYYY-MM-DDTHH:mm:ss.sssZ'), moment(ev.endDate).format('YYYY-MM-DDTHH:mm:ss.sssZ'));
   }
 
   prepareUniqueChart() {
@@ -159,32 +415,39 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onCategoryClick(cat) {
+  onCategoryClick(cat) { }
+
+  private calculateTotalTrafficTimeLine(summary: any, start: Date, end: Date): any[] {
+    return summary.items.filter(x => {
+      const date = Date.parse(x.date);
+      return date >= start.getTime() && date <= end.getTime();
+    }).map(x => {
+      return { date: new Date(Date.parse(x.date)), hit: x.total_hit.count };
+    });
   }
 
   private prepareTimeline(catId: number = 0) {
+    const chartData = [];
 
+    const timelineData = [];
 
-    const data = [];
+    const timelineChart = this.calculateTotalTrafficTimeLine(this.elasticData, this.startDate, this.endDate);
 
-    const data2 = [];
+    timelineChart.forEach(elem => {
+      timelineData.push([elem.date.toString(), elem.hit]);
+      chartData.push([elem.date.toString(), elem.hit]);
+    });
 
-    for (let i = 0; i < this.elasticData.length; i++) {
-      let elData = this.elasticData[i];
-      let label = moment(elData.date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
-
-      data2.push([label, elData.averages.total_hit]);
-      data.push([label, elData.total_hit]);
-    }
+    console.log(timelineData);
 
     if (this.trafficChart) {
       this.trafficChart.destroy();
     }
 
-    this.trafficChart = new ApexCharts(document.querySelector("#chart"), {
+    this.trafficChart = new ApexCharts(document.querySelector('#chart'), {
       series: [
-        { name: 'Normal Traffic Count', type: 'line', data: data2 },
-        { name: 'Hit Count', type: 'area', data: data }
+        { name: 'Normal Traffic Count', type: 'line', data: timelineData },
+        { name: 'Hit Count', type: 'area', data: chartData }
       ],
       chart: {
         id: 'chart2',
@@ -193,7 +456,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         toolbar: {
           autoSelected: 'pan',
           show: false
-        }
+        },
+
+        events: {
+          updated: (chart) => {
+            this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);
+          }
+        },
       },
       markers: {
         size: [4, 0],
@@ -226,9 +495,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.timeLineChart.destroy();
     }
 
-    this.timeLineChart = new ApexCharts(document.querySelector("#timeline"), {
+    this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
       series: [{
-        data
+        data: timelineData
       }],
       chart: {
         id: 'chart1',
@@ -253,7 +522,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             radius: 50
           },
           xaxis: {},
-        }
+        },
       },
       colors: [function ({ value, seriesIndex, w }) {
         if (value < 55) {
@@ -286,199 +555,26 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
     });
 
-    this.elasticData = [];
+    // this.elasticData.items = [];
     this.ds = new DashboardStats();
     this.changeDateParameter(6);
   }
 
-  prepareWorldMap(time: string) {
-    const values: Map<string, number> = new Map();
-    const searchSetting = new SearchSetting();
-    const col: LogColumn = { name: 'destinationIpCountryCode', beautyName: 'Dst.Country', hrType: 'COUNTRY_FLAG', aggsType: 'TERM', checked: true };
-    const item = new AggregationItem(col, col.beautyName);
-    searchSetting.columns.columns.push(item);
-    searchSetting.topNumber = 250;
-    searchSetting.dateInterval = '5';
-
-    if (time == '0') {
-      const d = new Date();
-      searchSetting.dateInterval = ((d.getHours() * 60) + d.getMinutes()).toString();
-    } else if (time == '-1') {
-      searchSetting.dateInterval = '60';
-    } else if (time == '1' || time == '2' || time == '3' || time == '6' || time == '7') {
-      const d1 = new Date();
-      const d2 = new Date();
-      d1.setDate(d1.getDate() - Number(time));
-      const startDate = moment(new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-      const endDate = moment(new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(), 23, 59, 59), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-      const dateVal = startDate + ' - ' + endDate;
-      searchSetting.dateInterval = dateVal;
-    } else {
-      searchSetting.dateInterval = time;
-    }
-
-    this.customReportService.getData(searchSetting).subscribe(res => {
-      if (res instanceof Array) {
-        for (let i = 0; i < res.length; i++) {
-          values.set(res[i][0].toLowerCase(), Number(res[i][1]));
-        }
-
-        let max = 0, min = Number.MAX_VALUE, startColor = [200, 238, 255], endColor = [0, 100, 145], colors = <any>{}, hex;
-
-        values.forEach((value: number, key: string) => {
-          if (value > max) { max = value; }
-          if (value < min) { min = value; }
-        });
-
-        values.forEach((value: number, key: string) => {
-          if (value > 0) {
-            colors[key] = '#';
-            for (let i = 0; i < 3; i++) {
-              hex = Math.round(startColor[i] + (endColor[i] - startColor[i]) * (value == max ? 1 : (value / (max - min)))).toString(16);
-              if (hex.length == 1) { hex = '0' + hex; }
-              colors[key] += (hex.length == 1 ? '0' : '') + hex;
-            }
-          }
-        });
-
-        $('#worldMap').vectorMap({
-          map: 'world_en',
-          backgroundColor: 'transparent',
-          borderColor: '#818181',
-          borderOpacity: 0.25,
-          borderWidth: 1,
-          color: '#f4f3f0',
-          enableZoom: true,
-          hoverColor: '#c9dfaf',
-          showTooltip: true,
-          colors: colors,
-          series: {
-            regions: [{
-              values: values,
-              scale: ['#C8EEFF', '#0071A4'],
-              normalizeFunction: 'polynomial'
-            }]
-          },
-          onRegionOver: (event, code, region) => {
-            event.preventDefault();
-          },
-          onRegionClick: (element, code, region) => {
-            const elements = $('.jqvmap-label');
-            if (elements && elements.length > 0) {
-              for (let i = 0; i < elements.length; i++) {
-                const e = elements[i];
-                e.style.display = 'none'
-              }
-            }
-            this.showInReport('map' + code);
-          },
-          onLabelShow: (event, label, code) => {
-            label[0].innerText = label[0].innerText + ' : ' + (values.has(code) ? values.get(code) : 0);
-          }
-        });
-      }
-    });
-
-  }
-
-  private getElasticData(d1: string, d2: string) {
-    this.dashboardService.getHourlyCompanySummary(d1, d2).subscribe(res => {
+  private getElasticData() {
+    this.dashboardService.getHourlyCompanySummary({ duration: 365 * 24 }).subscribe(res => {
       this.elasticData = res;
-      this.elasticData.sort((x, y) => new Date(x.date).getTime() - new Date(y.date).getTime());
-      this.createCharts();
+
+      // this.elasticData.sort((x, y) => new Date(x.date).getTime() - new Date(y.date).getTime());
+
       this.prepareTimeline();
+
       this.prepareUniqueChart();
     });
   }
 
-  createCharts() {
-    this.ds = new DashboardStats();
-    let sRCounter = 0, mTotalAverages = 0, uSRCounter = 0, uSRAverages = 0, grayCounter = 0, grayTotalAverages = 0,
-      uGrayCounter = 0, uGrayCounterAverages = 0;
-    this.labelArray = [];
-    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
-
-    for (let i = indexLimit; i < this.elasticData.length; i++) {
-      const data = this.elasticData[i];
-      this.labelArray.push(moment(data.date).format('YYYY-MM-DDTHH:mm:ss.sssZ'));
-      this.ds.totalHitCountForDashboard += data.total_hit;
-      this.ds.totalBlockCountForDashboard += data.blocked_count;
-      this.ds.totalAllowedCountForDashboard += data.allowed_count;
-      this.ds.totalUniqueBlockedDomainForDashboard += data.unique_blocked_domain;
-      this.ds.uniqueBlockedDomain.push(Math.round(data.averages.unique_blocked_domain));
-      this.ds.totalUniqueDomain += data.unique_domain;
-      this.ds.hitAverages.push(Math.round(data.averages.total_hit));
-      this.ds.totalHits.push(data.total_hit);
-      this.ds.blockAverages.push(Math.round(data.averages.blocked_count));
-      this.ds.totalBlocks.push(data.blocked_count);
-      this.ds.uniqueDomain.push(data.unique_domain);
-      this.ds.uniqueDomainAvg.push(Math.round(data.averages.unique_domain));
-      this.ds.uniqueDesIp.push(data.unique_destip);
-      this.ds.uniqueDesIpAvg.push(Math.round(data.averages.unique_destip));
-      this.ds.uniqueSubdomain.push(data.unique_subdomain);
-      this.ds.uniqueSubdomainAvg.push(Math.round(data.averages.unique_subdomain));
-
-      this.categoryListFiltered.forEach(cat => {
-        cat.value = cat.value ? cat.value : 0;
-
-        let catData = data.category_hits[cat.name];
-        if (!!catData) {
-          cat.value += catData.hits;
-          this.totalCategoryHits += catData.hits;
-        }
-      });
-
-      Object.keys(data.category_hits).forEach(function eachKey(key) {
-        if (key.toString() == 'Malware/Virus' || key.toString() == 'Potentially Dangerous' || key.toString() == 'Phishing') {
-          sRCounter += data.category_hits[key].hits;
-          mTotalAverages += data.category_hits[key].average;
-
-          uSRCounter += data.category_hits[key].unique_domain;
-          uSRAverages += data.category_hits[key].unique_domain_average;
-
-        } else if (key.toString() == 'Unknown' || key.toString() == 'Undecided Not Safe' || key.toString() == 'Undecided Safe'
-          || key.toString() == 'Domain Parking' || key.toString() == 'Newly Register' || key.toString() == 'Newly Up'
-          || key.toString() == 'Dead Sites' || key.toString() == 'Firstly Seen') {
-          grayCounter += data.category_hits[key].hits;
-          grayTotalAverages += data.category_hits[key].average;
-
-          uGrayCounter += data.category_hits[key].unique_domain;
-          uGrayCounterAverages += data.category_hits[key].unique_domain_average;
-        }
-      });
-
-      this.ds.securityRiskCountForDashboard = sRCounter;
-      this.ds.uSecurityRiskCountForDashboard = uSRCounter;
-      this.ds.grayCountForDashboard = grayCounter;
-      this.ds.uGrayCountForDashboard = uGrayCounter;
-    }
-
-    this.categoryListFiltered.forEach(cat => {
-      cat.percent = +(100 * cat.value / this.totalCategoryHits).toFixed(0);
-    });
-
-    this.ds.riskScore = 0;
-    if (this.ds.totalHitCountForDashboard && this.ds.totalHitCountForDashboard > 0) {
-      this.ds.riskScore = Math.round(100 * ((2 * this.ds.uSecurityRiskCountForDashboard) + this.ds.uGrayCountForDashboard) / this.ds.totalUniqueDomain);
-    }
-
-    if (this.elasticData && this.elasticData.length > 0) {
-      this.ds.totalHitCountForDashboardDelta = this.calculatePercentage(this.ds.hitAverages.reduce((a, b) => a + b), this.ds.totalHitCountForDashboard);
-      this.ds.totalBlockCountForDashboardDelta = this.calculatePercentage(this.ds.blockAverages.reduce((a, b) => a + b), this.ds.totalBlockCountForDashboard);
-      this.ds.totalUniqueBlockedDomainForDashboardDelta = this.calculatePercentage(this.ds.uniqueBlockedDomain.reduce((a, b) => a + b), this.ds.totalUniqueBlockedDomainForDashboard);
-      this.ds.totalUniqueDomainDelta = this.calculatePercentage(this.ds.uniqueDomainAvg.reduce((a, b) => a + b), this.ds.totalUniqueDomain);
-      this.ds.securityRiskCountForDashboardDelta = this.calculatePercentage(mTotalAverages, this.ds.securityRiskCountForDashboard);
-      this.ds.uSecurityRiskCountForDashboardDelta = this.calculatePercentage(uSRAverages, this.ds.uSecurityRiskCountForDashboard);
-      this.ds.grayCountForDashboardDelta = this.calculatePercentage(grayTotalAverages, this.ds.grayCountForDashboard);
-      this.ds.uGrayCountForDashboardDelta = this.calculatePercentage(uGrayCounterAverages, this.ds.uGrayCountForDashboard);
-    } else {
-      this.notification.warning('There is no dashboard data!', false);
-    }
-  }
-
   changeDateParameter(param: number) {
     this.dateParameter = param;
-    if (param == -1) {
+    if (param === -1) {
       param = 0;
     }
     const today = new Date();
@@ -487,24 +583,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0);
     const d2 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
-    this.getElasticData(d1.toISOString(), d2.toISOString());
-    this.prepareWorldMap(this.dateParameter.toString());
+    this.getElasticData();
   }
 
   updateCharts(min: any, max: any) {
     if (min && max) {
       const mn = new Date(min);
       const mx = new Date(max);
-      this.getElasticData(mn.toISOString(), mx.toISOString());
 
-      const startDate = moment(mn).format('DD.MM.YYYY HH:mm:ss');
-      const endDate = moment(mx).format('DD.MM.YYYY HH:mm:ss');
-      const time = startDate + ' - ' + endDate;
-      this.prepareWorldMap(time);
+      this.getElasticData();
     } else {
       this.changeDateParameter(0);
     }
-
   }
 
   calculatePercentage(num1: number, num2: number) {
@@ -513,32 +603,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   changeTrafficChartData(type: string) {
     this.trafficChartType = type;
-    if (type == 'hit') {
-      $('#hitChartDiv').show();
-      $('#blockChartDiv').hide();
-    } else {
-      $('#hitChartDiv').hide();
-      $('#blockChartDiv').show();
-    }
-
-  }
-
-  changeUniqueChartData(type: string) {
-    this.uniqueChartType = type;
-    if (type == 'domain') {
-      $('#uniqueDomainChartDiv').show();
-      $('#uniqueSubdomainChartDiv').hide();
-      $('#uniqueDestIpChartDiv').hide();
-    } else if (type == 'subdomain') {
-      $('#uniqueDomainChartDiv').hide();
-      $('#uniqueSubdomainChartDiv').show();
-      $('#uniqueDestIpChartDiv').hide();
-    } else {
-      $('#uniqueDomainChartDiv').hide();
-      $('#uniqueSubdomainChartDiv').hide();
-      $('#uniqueDestIpChartDiv').show();
-    }
-
   }
 
   searchCategoryForTraffic(val: any) {
@@ -546,28 +610,29 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   addCategoryToTraffic(cat: CategoryV2) {
-    if (cat.id == this.selectedCategoryForTraffic)
+    if (cat.id === this.selectedCategoryForTraffic) {
       this.selectedCategoryForTraffic = 0;
-    else
+    } else {
       this.selectedCategoryForTraffic = cat.id;
+    }
 
-    let averageData = [];
-    let hitData = [];
+    const averageData = [];
+    const hitData = [];
 
-    for (let i = 0; i < this.elasticData.length; i++) {
-      let elData = this.elasticData[i];
+    for (let i = 0; i < this.elasticData.items.length; i++) {
+      const elData = this.elasticData[i];
 
-      let label = moment(elData.date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
+      const label = moment(elData.date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
 
 
-      if (this.selectedCategoryForTraffic == 0) {
+      if (this.selectedCategoryForTraffic === 0) {
         averageData.push([label, elData.averages.total_hit]);
         hitData.push([label, elData.total_hit]);
       } else {
         this.selectedCategoryForTraffic = this.categoryList.find(c => c.id == cat.id).id;
-        let catName = cat.name;
+        const catName = cat.name;
 
-        let catData = elData.category_hits[catName];
+        const catData = elData.category_hits[catName];
 
         if (catData) {
           averageData.push([label, catData.average]);
@@ -577,8 +642,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     this.trafficChart.updateSeries([
-      { name: cat.name + " Normal Traffic Count", data: averageData, type: "line" },
-      { name: "Hit Count", type: "area", data: hitData }
+      { name: cat.name + ' Normal Traffic Count', data: averageData, type: 'line' },
+      { name: 'Hit Count', type: 'area', data: hitData }
     ]);
 
     this.timeLineChart.updateSeries([
@@ -594,18 +659,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   addCategoryToUnique(id: number) {
-    this.selectedCategoryForUnique = this.categoryList.find(c => c.id == id);
+    this.selectedCategoryForUnique = this.categoryList.find(c => c.id === id);
     const catName = this.selectedCategoryForUnique.name;
     const catHits = [], catAvs = [];
-    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
-    for (let i = indexLimit; i < this.elasticData.length; i++) {
+    const indexLimit = this.dateParameter === -1 ? this.elasticData.items.length - 1 : 0;
+    for (let i = indexLimit; i < this.elasticData.items.length; i++) {
       const data = this.elasticData[i];
 
       Object.keys(data.category_hits).forEach(function eachKey(key) {
-        if (key.toString() == catName) {
+        if (key.toString() === catName) {
           catHits.push(data.category_hits[key].unique_domain);
           catAvs.push(Math.round(data.category_hits[key].unique_domain_average));
-
         }
       });
     }
@@ -620,7 +684,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.selectedCategoryForUnique = null;
       this.uniqueDomainChart.updateSeries([{ name: 'Unique Domain', data: this.ds.uniqueDomain }, { name: 'Unique Domain Avg', data: this.ds.uniqueDomainAvg }]);
     }
-
   }
 
   private resetCategoryListFiltered() {
@@ -633,17 +696,78 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/admin/reports/customreport']);
   }
 
-  openModal() {
-    $(document.body).addClass('modal-open');
-    $('#exampleModal').css('display', 'block');
-    $('#exampleModal').attr('aria-hidden', 'false');
-    $('#exampleModal').addClass('show');
+  calculateCategory(categoryList: CategorySummary[], ): TrafficAnomalyCategory[] {
+    const map: Map<string, TrafficAnomalyCategory> = new Map();
+    categoryList.forEach(x => {
+      if (!map.has(x.name)) {
+        map.set(x.name, { name: x.name, hitCount: 0, ratio: 0 })
+      }
+      const item = map.get(x.name);
+      if (item) {
+        item.name = x.name;
+        item.hitCount += x.hits;
+        item.ratio = 0;
+      }
+    });
+    return Array.from(map.values());
   }
 
-  closeModal() {
-    $(document.body).removeClass('modal-open');
-    $('#exampleModal').css('display', 'none');
-    $('#exampleModal').attr('aria-hidden', 'true');
-    $('#exampleModal').removeClass('show');
+  flatten(list) {
+    return list.reduce(
+      (a, b) => a.concat(Array.isArray(b) ? this.flatten(b) : b), []
+    );
+  }
+
+  calculateTrafficAnomaly(summary: HourlyCompanySummaryV4Response, start: Date, end: Date, selectedCategory?: string): TrafficAnomaly {
+    const filtered = summary.items.filter(x => {
+      const date = Date.parse(x.date);
+      return date >= start.getTime() && date <= end.getTime();
+    });
+    const anomaly: TrafficAnomaly = {} as TrafficAnomaly;
+    anomaly.total = {} as TrafficAnomalyItem;
+    anomaly.total.allowCount = filtered.map(x => x.allowed_count.count).reduce((x, y) => x + y, 0);
+    anomaly.total.blockCount = filtered.map(x => x.blocked_count.count).reduce((x, y) => x + y, 0);
+    anomaly.total.categories = this.calculateCategory(this.flatten(filtered.map(x => x.category_hits)));
+    let selectedCategoryList = selectedCategory ? this.flatten(filtered.map(x => x.category_hits)).filter(x => x.name == selectedCategory) : null;
+    anomaly.total.averageHit = (selectedCategoryList ? selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length : Math.round(filtered.map(x => x.total_hit.average).reduce((x, y) => x + y, 0) / filtered.length)) | 0;
+    anomaly.total.currentHit = (selectedCategoryList ? selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length : Math.round(filtered.map(x => x.total_hit.count).reduce((x, y) => x + y, 0) / filtered.length)) | 0;
+    anomaly.total.ratio = (Math.round((anomaly.total.currentHit - anomaly.total.averageHit) / anomaly.total.averageHit * 100)) | 0;
+
+
+    anomaly.harmful = {} as TrafficAnomalyItem2;
+    let category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.harmful.indexOf(x.name) > -1);
+    anomaly.harmful.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
+    anomaly.harmful.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
+    anomaly.harmful.categories = this.calculateCategory(category_hits);
+    selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
+    anomaly.harmful.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.harmful.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.harmful.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
+
+
+    anomaly.malicious = {} as TrafficAnomalyItem2;
+    category_hits = this.flatten(filtered.map(x => x.category_hits).concat()).filter(x => this.categoryMappings.malicious.indexOf(x.name) > -1);
+    anomaly.malicious.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
+    anomaly.malicious.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
+    anomaly.malicious.categories = this.calculateCategory(category_hits);
+    selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
+    anomaly.malicious.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.malicious.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.malicious.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
+
+
+    anomaly.variable = {} as TrafficAnomalyItem2;
+    category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.variable.indexOf(x.name) > -1);
+    anomaly.variable.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
+    anomaly.variable.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
+    anomaly.variable.categories = this.calculateCategory(category_hits);
+    selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
+    anomaly.variable.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.variable.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.variable.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
+
+
+
+    return anomaly;
   }
 }

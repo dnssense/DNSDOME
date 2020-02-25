@@ -54,8 +54,8 @@
             <div class="row">
               <div class="col-12 col-md-6 col-lg">
                 <rk-infobox [active]="infoBoxes.total"  (change)="infoboxChanged($event, 'total')" [title]="'Total'"
-                  [color]="'#4353ff'" className="blue" [type]="1" [valueOne]="ds.totalAllowedCountForDashboard"
-                  [valueTwo]="ds.totalBlockCountForDashboard" description="Toplam DNS sorgu sayısı">
+                  [color]="'#4353ff'" className="blue" [type]="1" [valueOne]="trafficAnomaly?.total?.allowCount"
+                  [valueTwo]="trafficAnomaly?.total?.blockCount" description="Toplam DNS sorgu sayısı">
                 </rk-infobox>
               </div>
 
@@ -67,24 +67,24 @@
 
               <div class="col-12 col-md-6 col-lg">
                 <rk-infobox [active]="infoBoxes.malicious"  (change)="infoboxChanged($event, 'malicious')" [type]="2"
-                  [title]="'Malicious'" className="red" [color]="'#f95656'" [valueOne]="ds.totalBlockCountForDashboard"
-                  [valueTwo]="ds.totalUniqueBlockedDomainForDashboard"
+                  [title]="'Malicious'" className="red" [color]="'#f95656'"
+                  [valueOne]="trafficAnomaly?.malicious?.hitCount" [valueTwo]="trafficAnomaly?.malicious?.uniqueCount"
                   description="Malware, Botnet, Phishing gibi güvenlik riski yüksek domainleri kapsar.">
                 </rk-infobox>
               </div>
 
               <div class="col-12 col-md-6 col-lg">
                 <rk-infobox [active]="infoBoxes.variable"  (change)="infoboxChanged($event, 'variable')" [type]="2"
-                  [title]="'Variable'" className="gray" [color]="'#d8d8d8'" [valueOne]="ds.grayCountForDashboard"
-                  [valueTwo]="ds.uGrayCountForDashboard"
+                  [title]="'Variable'" className="gray" [color]="'#d8d8d8'"
+                  [valueOne]="trafficAnomaly?.variable?.hitCount" [valueTwo]="trafficAnomaly?.variable?.uniqueCount"
                   description="Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.">
                 </rk-infobox>
               </div>
 
               <div class="col-12 col-md-6 col-lg">
-                <rk-infobox [active]="infoBoxes.harmfulContent"  (change)="infoboxChanged($event, 'harmfulContent')"
-                  [type]="2" [title]="'Harmful Content'" className="yellow" [color]="'#f9df56'"
-                  [valueOne]="ds.securityRiskCountForDashboard" [valueTwo]="ds.uSecurityRiskCountForDashboard"
+                <rk-infobox [active]="infoBoxes.harmfulContent"  (change)="infoboxChanged($event, 'harmful')" [type]="2"
+                  [title]="'Harmful Content'" className="yellow" [color]="'#f9df56'"
+                  [valueOne]="trafficAnomaly?.harmful?.hitCount" [valueTwo]="trafficAnomaly?.harmful?.uniqueCount"
                   description="Pornogrphy, Adult, Gamblig gibi istenmeyen domainleri içerir.">
                 </rk-infobox>
               </div>
@@ -92,19 +92,19 @@
 
             <div class="d-flex justify-content-between align-items-center mt-3 pt-2"
               style="border-top: 1px solid rgba(68, 81, 101, 0.2);">
-              <div>
+              <div style="width: 190px;">
                 <div class="rk-selectable-table categories" style="width: auto !important;">
                   <div class="rk-item" *ngFor="let cat of categoryListFiltered"
                     [ngClass]="{ 'active' : selectedCategoryForTraffic == cat.id }" (click)="addCategoryToTraffic(cat)">
                     <div class="rk-i-header">
                       <div class="d-flex align-items-center">
                         <span class="rk-selectable-table-item-title"> {{ cat.name }} </span>
-                        <span class="rk-selectable-badge">{{ cat.value }} </span>
+                        <span class="rk-selectable-badge">{{ cat.hitCount }} </span>
                       </div>
                       <i-feather name="arrow-right"></i-feather>
                     </div>
 
-                    <rk-progressbar [value]="cat.percent" [showType]="'outside'" [sizeType]="'small'">
+                    <rk-progressbar [value]="cat.ratio" [showType]="'outside'" [sizeType]="'small'">
                     </rk-progressbar>
                   </div>
                 </div>
@@ -118,15 +118,15 @@
                 <div class="chart-info">
                   <div class="section">
                     <span class="section-title">Selected <br /> Time Hit</span>
-                    <span class="value">3100</span>
+                    <span class="value">{{ trafficAnomaly[selectedBox]?.currentHit }}</span>
                   </div>
                   <div class="section active">
                     <i-feather name="arrow-up"></i-feather>
-                    <span class="value">%20</span>
+                    <span class="value">{{ trafficAnomaly[selectedBox]?.ratio }}%</span>
                   </div>
                   <div class="section">
                     <div class="section-title">Avarage Hit</div>
-                    <span class="value">2001</span>
+                    <span class="value">{{ trafficAnomaly[selectedBox]?.averageHit }}</span>
                   </div>
                 </div>
               </div>
@@ -158,14 +158,12 @@
                     </tr>
                   </ng-template>
                   <ng-template #body>
-                    <tr>
-                      <td class="index">1</td>
-                      <td>google.com</td>
+                    <tr *ngFor="let domain of maliciousDomains; let index = index">
+                      <td class="index">{{ index }}</td>
+                      <td>{{ domain.name }}</td>
+                      <td>{{ domain.hit }}</td>
                       <td>
-                        364545
-                      </td>
-                      <td>
-                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'danger'" [sizeType]="'medium'">
+                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'primary'" [sizeType]="'medium'">
                         </rk-progressbar>
                       </td>
                     </tr>
@@ -198,12 +196,10 @@
                     </tr>
                   </ng-template>
                   <ng-template #body>
-                    <tr>
-                      <td class="index">1</td>
-                      <td>google.com</td>
-                      <td>
-                        364545
-                      </td>
+                    <tr *ngFor="let domain of newDomains; let index = index">
+                      <td class="index">{{ index }}</td>
+                      <td>{{ domain.name }}</td>
+                      <td>{{ domain.hit }}</td>
                       <td>
                         <rk-progressbar [value]="75" [showType]="'outside'" [type]="'primary'" [sizeType]="'medium'">
                         </rk-progressbar>
@@ -238,14 +234,12 @@
                     </tr>
                   </ng-template>
                   <ng-template #body>
-                    <tr>
-                      <td class="index">1</td>
-                      <td>google.com</td>
+                    <tr *ngFor="let domain of harmfulDomains; let index = index">
+                      <td class="index">{{ index }}</td>
+                      <td>{{ domain.name }}</td>
+                      <td>{{ domain.hit }}</td>
                       <td>
-                        364545
-                      </td>
-                      <td>
-                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'warning'" [sizeType]="'medium'">
+                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'primary'" [sizeType]="'medium'">
                         </rk-progressbar>
                       </td>
                     </tr>
