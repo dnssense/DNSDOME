@@ -22,17 +22,13 @@ export class DataPanelModel {
   passiveCount: number;
 }
 
-
 export class DateParamModel extends KeyValueModel<string, TimeRangeEnum> {
   dateParam = 0;
 }
 
-
 export interface HourlyCompanySummaryV4Request {
   duration: number; // last hours
-
 }
-
 
 export interface StdDeviationBounds {
   upper: number;
@@ -53,7 +49,6 @@ export interface UniqueDomain {
   std_deviation: number;
 }
 
-
 export interface TotalHit {
   average: number;
   std_deviation_bounds: StdDeviationBounds;
@@ -71,14 +66,10 @@ export interface CategorySummary {
   std_deviation: number;
 }
 
-
-
 export interface UniqueDestip {
   average: number;
   count: number;
 }
-
-
 
 export interface BlockedCount {
   average: number;
@@ -109,16 +100,12 @@ export interface UniqueUser {
   count: number;
 }
 
-
-
 export interface AllowedCount {
   average: number;
   std_deviation_bounds: StdDeviationBounds;
   count: number;
   std_deviation: number;
 }
-
-
 
 export interface UniqueSubdomain {
   average: number;
@@ -150,6 +137,7 @@ export interface Summary {
 export interface HourlyCompanySummaryV4Response {
   items: Summary[];
 }
+
 export interface TrafficTotal {
   date: Date;
   hit: number;
@@ -160,6 +148,7 @@ export interface TrafficAnomalyCategory {
   hitCount: number;
   ratio: number;
 }
+
 export interface TrafficAnomalyItem {
   allowCount: number;
   blockCount: number;
@@ -169,6 +158,7 @@ export interface TrafficAnomalyItem {
   ratio: number;
 
 }
+
 export interface TrafficAnomalyItem2 {
   hitCount: number;
   uniqueCount: number;
@@ -183,19 +173,32 @@ export interface TrafficAnomaly {
   malicious: TrafficAnomalyItem2;
   variable: TrafficAnomalyItem2;
   harmful: TrafficAnomalyItem2;
-
-}
-
-
-export interface Domain {
-  name: string;
-  hit: number;
 }
 
 export interface Domain {
   name: string;
   hit: number;
 }
+
+export interface Domain {
+  name: string;
+  hit: number;
+}
+
 export interface TopDomainsResponseV4 {
   items: Domain[];
+}
+
+export interface TopDomainValuesRequestV4 {
+  duration: number; // last hours
+  domain: string;
+}
+
+export interface Result {
+  date: string;
+  hit: number;
+}
+
+export interface TopDomainValuesResponseV4 {
+  items: Result[];
 }

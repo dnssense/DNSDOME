@@ -13,10 +13,16 @@ import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import {
   DataPanelModel, DateParamModel, TrafficAnomaly, Domain, HourlyCompanySummaryV4Response,
-  TrafficAnomalyItem, CategorySummary, TrafficAnomalyCategory, TrafficAnomalyItem2
+  TrafficAnomalyItem, CategorySummary, TrafficAnomalyCategory, TrafficAnomalyItem2, Result
 } from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
 import { RkApexHelper } from 'roksit-lib';
+import { ValidationService } from 'src/app/core/services/validation.service';
+
+interface TagInputValue {
+  value: string;
+  display: string;
+}
 
 declare let $: any;
 declare let moment: any;
@@ -66,6 +72,8 @@ export class DashboardComponent implements OnInit {
   selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
 
   trafficAnomaly: TrafficAnomaly = {} as TrafficAnomaly;
+
+  items: TagInputValue[] = [];
 
   categoryMappings = {
     'variable': [
@@ -215,10 +223,12 @@ export class DashboardComponent implements OnInit {
     this.getTopDomains(request);
   }
 
-  prepareUniqueChart() {
+  prepareUniqueChart(data: Result[]) {
+    if (!data) { return; }
+
     RkApexHelper.render('#unique-chart', {
       series: [
-        { name: 'Normal Traffic Count', type: 'line', data: [] },
+        { name: 'Normal Traffic Count', type: 'line', data: data.map(x => x.hit) },
       ],
       chart: {
         id: 'unique-chart2',
@@ -231,17 +241,15 @@ export class DashboardComponent implements OnInit {
       },
       markers: {
         size: [4, 0],
-        colors: ['#f95656'],
-        strokeColors: '#f95656',
         strokeWidth: 2,
         hover: {
           size: 7,
         }
       },
-      colors: ['#0084ff', '#b1dcff'],
+      colors: ['#f95656', '#f95656'],
       stroke: {
-        width: 3,
-        curve: ['straight', 'smooth']
+        width: 4,
+        curve: ['smooth']
       },
       dataLabels: {
         enabled: false
@@ -250,7 +258,7 @@ export class DashboardComponent implements OnInit {
         opacity: 1,
       },
       xaxis: {
-        type: 'datetime'
+        categories: data.map(x => moment(x.date).format('DD-MM-YYYY HH:mm'))
       }
     });
   }
@@ -394,7 +402,7 @@ export class DashboardComponent implements OnInit {
       this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
     });
 
-    this.changeDateParameter(6);
+    this.getElasticData();
   }
 
   private getElasticData() {
@@ -402,34 +410,11 @@ export class DashboardComponent implements OnInit {
       this.elasticData = res;
 
       this.prepareTimeline();
-
-      this.prepareUniqueChart();
     });
   }
 
-  changeDateParameter(param: number) {
-    this.dateParameter = param;
-    if (param === -1) {
-      param = 0;
-    }
-    const today = new Date();
-    let d1 = new Date();
-    d1.setDate(d1.getDate() - param);
-    d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0);
-    const d2 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
-
+  updateCharts() {
     this.getElasticData();
-  }
-
-  updateCharts(min: any, max: any) {
-    if (min && max) {
-      const mn = new Date(min);
-      const mx = new Date(max);
-
-      this.getElasticData();
-    } else {
-      this.changeDateParameter(0);
-    }
   }
 
   calculatePercentage(num1: number, num2: number) {
@@ -605,5 +590,36 @@ export class DashboardComponent implements OnInit {
     anomaly.variable.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
 
     return anomaly;
+  }
+
+  addDomain(domain: Domain) {
+    this.items = [{ display: domain.name, value: domain.name }];
+  }
+
+  onItemAdded($event: TagInputValue) {
+    const isDomain = ValidationService.isDomainValid($event.value);
+
+    if (!isDomain) {
+      this.items = [];
+    }
+  }
+
+  search() {
+    let domain = '';
+
+    this.items.forEach(elem => {
+      domain = elem.value;
+    });
+
+    if (domain.trim().length === 0) { return; }
+
+    const startDate = moment([this.startDate.getFullYear(), this.startDate.getMonth(), this.startDate.getDate()]);
+    const endDate = moment([this.endDate.getFullYear(), this.endDate.getMonth(), this.endDate.getDate()]);
+
+    const diff = endDate.diff(startDate, 'days');
+
+    this.dashboardService.getTopDomainValue({ domain: domain, duration: diff * 24 }).subscribe(result => {
+      this.prepareUniqueChart(result.items);
+    });
   }
 }

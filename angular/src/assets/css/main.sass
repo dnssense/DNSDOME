@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin-ext")
 
+$white: #fff
+
 body
   font-family: "Roboto", sans-serif !important
   background: var(--color-primary)
@@ -317,7 +319,7 @@ rk-accordion
 .rk-collapse
   width: 100%
   .rk-collapse-body
-    border: 1px solid  rgba(37, 38, 94, 0.05);
+    border: 1px solid  rgba(37, 38, 94, 0.05)
     padding: 20px
 
 .accordion-p-0
@@ -328,6 +330,39 @@ rk-accordion
   color: #445165
   border-color: #8a95a5
 
-
 .color-898ea4
   color: #898ea4
+
+.tag-input-container
+  background: white
+  min-width: 300px
+  border-radius: 5px
+  border: solid 1px rgba(37, 38, 94, 0.05)
+  overflow: hidden
+  padding: 0 10px
+
+  tag
+    background: #d9f0f8 !important
+    color: #3fb6dc !important
+
+  delete-icon
+    svg
+      path
+        fill: #97a5bb !important
+
+  .ng2-tag-input.ng2-tag-input--focused
+    border-color: white !important
+
+.ng2-tag-input
+  border-color: white !important
+
+.anchor 
+  color: rgba(51, 151, 197, 0.8) !important;
+  
+  &:hover
+    color: #3397c5 !important
+    cursor: pointer !important
+
+.dashboard-domains-table 
+  td
+    padding: 7px 12px !important
