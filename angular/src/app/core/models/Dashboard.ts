@@ -173,6 +173,7 @@ export interface TrafficAnomaly {
   malicious: TrafficAnomalyItem2;
   variable: TrafficAnomalyItem2;
   harmful: TrafficAnomalyItem2;
+  safe: TrafficAnomalyItem2;
 }
 
 export interface Domain {

@@ -59,11 +59,11 @@
                 </rk-infobox>
               </div>
 
-              <!-- <div style="margin-left: 15px;">
-                <rk-infobox [active]="false" [type]="2" [title]="'Safe'" [color]="'#3dd49a'" className="green" [valueOne]="'35.000'"
-                  [valueTwo]="'32.000'" description="Haber, Spor, Arama motoru gibi içerik ve güvenlik anlamında risk içermeyen domainleri kapsar.">
+              <div class="col-12 col-md-6 col-lg">
+                <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe')" [title]="'Safe'" [color]="'#3dd49a'" className="green" [valueOne]="trafficAnomaly?.safe?.hitCount"
+                  [valueTwo]="trafficAnomaly?.safe?.uniqueCount" description="Haber, Spor, Arama motoru gibi içerik ve güvenlik anlamında risk içermeyen domainleri kapsar.">
                 </rk-infobox>
-              </div> -->
+              </div>
 
               <div class="col-12 col-md-6 col-lg">
                 <rk-infobox [active]="infoBoxes.malicious"  (change)="infoboxChanged($event, 'malicious')" [type]="2"

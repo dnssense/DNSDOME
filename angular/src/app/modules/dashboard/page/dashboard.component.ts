@@ -567,6 +567,16 @@ export class DashboardComponent implements OnInit {
     anomaly.harmful.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
     anomaly.harmful.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
 
+    anomaly.safe = {} as TrafficAnomalyItem2;
+    category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.safe.indexOf(x.name) > -1);
+    anomaly.safe.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
+    anomaly.safe.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
+    anomaly.safe.categories = this.calculateCategory(category_hits);
+    selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
+    anomaly.safe.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.safe.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.safe.ratio = (Math.round((anomaly.safe.currentHit - anomaly.safe.averageHit) / anomaly.safe.averageHit * 100)) | 0;
+
 
     anomaly.malicious = {} as TrafficAnomalyItem2;
     category_hits = this.flatten(filtered.map(x => x.category_hits).concat()).filter(x => this.categoryMappings.malicious.indexOf(x.name) > -1);
@@ -576,7 +586,7 @@ export class DashboardComponent implements OnInit {
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
     anomaly.malicious.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
     anomaly.malicious.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.malicious.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
+    anomaly.malicious.ratio = (Math.round((anomaly.malicious.currentHit - anomaly.malicious.averageHit) / anomaly.malicious.averageHit * 100)) | 0;
 
 
     anomaly.variable = {} as TrafficAnomalyItem2;
@@ -587,7 +597,7 @@ export class DashboardComponent implements OnInit {
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
     anomaly.variable.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
     anomaly.variable.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.variable.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
+    anomaly.variable.ratio = (Math.round((anomaly.variable.currentHit - anomaly.variable.averageHit) / anomaly.variable.averageHit * 100)) | 0;
 
     return anomaly;
   }
