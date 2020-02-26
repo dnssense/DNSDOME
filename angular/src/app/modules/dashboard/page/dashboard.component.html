@@ -82,7 +82,7 @@
               </div>
 
               <div class="col-12 col-md-6 col-lg">
-                <rk-infobox [active]="infoBoxes.harmfulContent"  (change)="infoboxChanged($event, 'harmful')" [type]="2"
+                <rk-infobox [active]="infoBoxes.harmful"  (change)="infoboxChanged($event, 'harmful')" [type]="2"
                   [title]="'Harmful Content'" className="yellow" [color]="'#f9df56'"
                   [valueOne]="trafficAnomaly?.harmful?.hitCount" [valueTwo]="trafficAnomaly?.harmful?.uniqueCount"
                   description="Pornogrphy, Adult, Gamblig gibi istenmeyen domainleri içerir.">

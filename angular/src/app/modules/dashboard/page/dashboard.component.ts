@@ -11,181 +11,12 @@ import { AgentService } from 'src/app/core/services/agent.service';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
-import { DataPanelModel, DateParamModel } from 'src/app/core/models/Dashboard';
+import {
+  DataPanelModel, DateParamModel, TrafficAnomaly, Domain, HourlyCompanySummaryV4Response,
+  TrafficAnomalyItem, CategorySummary, TrafficAnomalyCategory, TrafficAnomalyItem2
+} from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
 import { RkApexHelper } from 'roksit-lib';
-
-export interface HourlyCompanySummaryV4Request {
-  duration: number; // last hours
-
-}
-
-
-export interface StdDeviationBounds {
-  upper: number;
-  lower: number;
-}
-
-export interface UniqueBlockedDomain {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface UniqueDomain {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-
-export interface TotalHit {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface CategorySummary {
-  name: string;
-  hits: number;
-  average: number;
-  unique_domain: number;
-  std_deviation_bounds: StdDeviationBounds;
-  unique_domain_average: number;
-  std_deviation: number;
-}
-
-
-
-export interface UniqueDestip {
-  average: number;
-  count: number;
-}
-
-
-
-export interface BlockedCount {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface UniqueSrcip {
-  average: number;
-  count: number;
-}
-
-export interface TimeRange {
-  hit: number;
-  hour_gte: string;
-  lt: Date;
-  gte: Date;
-}
-
-export interface UniqueMac {
-  average: number;
-  count: number;
-}
-
-export interface UniqueUser {
-  average: number;
-  count: number;
-}
-
-
-
-export interface AllowedCount {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-
-
-export interface UniqueSubdomain {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface Summary {
-  unique_blocked_domain: UniqueBlockedDomain;
-  date: string;
-  unique_domain: UniqueDomain;
-  total_hit: TotalHit;
-  firstly_seen_status: string;
-  len_firstly_seen_domains: number;
-  insert_date: Date;
-  query_process_time: number;
-  category_hits: CategorySummary[];
-  unique_destip: UniqueDestip;
-  blocked_count: BlockedCount;
-  unique_srcip: UniqueSrcip;
-  time_range: TimeRange;
-  unique_mac: UniqueMac;
-  unique_user: UniqueUser;
-  allowed_count: AllowedCount;
-  unique_subdomain: UniqueSubdomain;
-}
-
-export interface HourlyCompanySummaryV4Response {
-  items: Summary[];
-}
-export interface TrafficTotal {
-  date: Date;
-  hit: number;
-}
-
-export interface TrafficAnomalyCategory {
-  name: string;
-  hitCount: number;
-  ratio: number;
-}
-export interface TrafficAnomalyItem {
-  allowCount: number;
-  blockCount: number;
-  categories: TrafficAnomalyCategory[];
-  averageHit: number;
-  currentHit: number;
-  ratio: number;
-
-}
-export interface TrafficAnomalyItem2 {
-  hitCount: number;
-  uniqueCount: number;
-  categories: TrafficAnomalyCategory[];
-  averageHit: number;
-  currentHit: number;
-  ratio: number;
-}
-
-export interface TrafficAnomaly {
-  total: TrafficAnomalyItem;
-  malicious: TrafficAnomalyItem2;
-  variable: TrafficAnomalyItem2;
-  harmful: TrafficAnomalyItem2;
-
-}
-
-
-export interface Domain {
-  name: string;
-  hit: number;
-}
-
-export interface Domain {
-  name: string;
-  hit: number;
-}
-export interface TopDomainsResponseV4 {
-  items: Domain[];
-}
 
 declare let $: any;
 declare let moment: any;
@@ -198,14 +29,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dashboardService: DashBoardService,
-    private authService: AuthenticationService,
     private staticService: StaticService,
-    private notification: NotificationService,
     private router: Router,
-    private agentService: AgentService,
     private config: ConfigService,
-    private boxService: BoxService,
-    private roamingService: RoamingService
   ) { }
 
   host: ConfigHost;
@@ -335,12 +161,19 @@ export class DashboardComponent implements OnInit {
     this.startDate.setDate(this.today.getDate() - 365);
 
     this.host = this.config.host;
-    const roleName: string = this.authService.currentSession.currentUser.roles.name;
 
     this.startDashboardOperations();
 
-    const request = { duration: 24 } as TopDomainsRequestV4;
+    const request = { duration: 24 * 365 } as TopDomainsRequestV4;
 
+    this.getTopDomains(request);
+
+    this.dataPanels.push({ name: 'Public IP', activeCount: 8, passiveCount: 3 });
+    this.dataPanels.push({ name: 'Roming Client', activeCount: 6, passiveCount: 4 });
+    this.dataPanels.push({ name: 'DNS Relay', activeCount: 12, passiveCount: 5 });
+  }
+
+  getTopDomains(request: TopDomainsRequestV4) {
     this.dashboardService.getTopDomains({ ...request, type: 'malicious' }).subscribe(result => {
       this.maliciousDomains = result.items;
     });
@@ -352,10 +185,6 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
       this.harmfulDomains = result.items;
     });
-
-    this.dataPanels.push({ name: 'Public IP', activeCount: 8, passiveCount: 3 });
-    this.dataPanels.push({ name: 'Roming Client', activeCount: 6, passiveCount: 4 });
-    this.dataPanels.push({ name: 'DNS Relay', activeCount: 12, passiveCount: 5 });
   }
 
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
@@ -373,6 +202,17 @@ export class DashboardComponent implements OnInit {
   dateChanged(ev: { startDate: Date, endDate: Date }) {
     this.startDate = ev.startDate;
     this.endDate = ev.endDate;
+
+    this.startDashboardOperations();
+
+    const startDate = moment([ev.startDate.getFullYear(), ev.startDate.getMonth(), ev.startDate.getDate()]);
+    const endDate = moment([ev.endDate.getFullYear(), ev.endDate.getMonth(), ev.endDate.getDate()]);
+
+    const diff = endDate.diff(startDate, 'days');
+
+    const request = { duration: diff * 24 } as TopDomainsRequestV4;
+
+    this.getTopDomains(request);
   }
 
   prepareUniqueChart() {
@@ -437,8 +277,6 @@ export class DashboardComponent implements OnInit {
       timelineData.push([elem.date.toString(), elem.hit]);
       chartData.push([elem.date.toString(), elem.hit]);
     });
-
-    console.log(timelineData);
 
     if (this.trafficChart) {
       this.trafficChart.destroy();
@@ -550,21 +388,18 @@ export class DashboardComponent implements OnInit {
   startDashboardOperations() {
     this.selectedCategoryForTraffic = 0;
     this.selectedCategoryForUnique = null;
+
     this.staticService.getCategoryList().subscribe(res => {
       this.categoryList = res;
       this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
     });
 
-    // this.elasticData.items = [];
-    this.ds = new DashboardStats();
     this.changeDateParameter(6);
   }
 
   private getElasticData() {
     this.dashboardService.getHourlyCompanySummary({ duration: 365 * 24 }).subscribe(res => {
       this.elasticData = res;
-
-      // this.elasticData.sort((x, y) => new Date(x.date).getTime() - new Date(y.date).getTime());
 
       this.prepareTimeline();
 
@@ -629,7 +464,7 @@ export class DashboardComponent implements OnInit {
         averageData.push([label, elData.averages.total_hit]);
         hitData.push([label, elData.total_hit]);
       } else {
-        this.selectedCategoryForTraffic = this.categoryList.find(c => c.id == cat.id).id;
+        this.selectedCategoryForTraffic = this.categoryList.find(c => c.id === cat.id).id;
         const catName = cat.name;
 
         const catData = elData.category_hits[catName];
@@ -698,11 +533,14 @@ export class DashboardComponent implements OnInit {
 
   calculateCategory(categoryList: CategorySummary[], ): TrafficAnomalyCategory[] {
     const map: Map<string, TrafficAnomalyCategory> = new Map();
+
     categoryList.forEach(x => {
       if (!map.has(x.name)) {
-        map.set(x.name, { name: x.name, hitCount: 0, ratio: 0 })
+        map.set(x.name, { name: x.name, hitCount: 0, ratio: 0 });
       }
+
       const item = map.get(x.name);
+
       if (item) {
         item.name = x.name;
         item.hitCount += x.hits;
@@ -765,8 +603,6 @@ export class DashboardComponent implements OnInit {
     anomaly.variable.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
     anomaly.variable.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
     anomaly.variable.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
-
-
 
     return anomaly;
   }

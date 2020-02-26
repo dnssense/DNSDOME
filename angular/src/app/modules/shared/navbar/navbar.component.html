@@ -7,10 +7,34 @@
   </a>
 
   <div class="account">
-    <button class="notification-btn ripple">
-      <i-feather name="bell"></i-feather>
-      <div class="btn-badge">23</div>
-    </button>
+    <div class="btn-group" dropdown placement="bottom right">
+      <button class="notification-btn ripple" dropdownToggle type="button">
+        <i-feather name="bell"></i-feather>
+        <div class="btn-badge">{{ unReadedNotificationsCount }}</div>
+      </button>
+
+      <div *dropdownMenu class="dropdown-menu dropdown-menu-right rk-list-dropdown-container" role="menu">
+        <div class="rk-list">
+          <div class="rk-list-header">
+            <div class="rk-list-header-title">Notifications <span class="length">({{ unReadedNotificationsCount }})</span>
+            </div>
+          </div>
+
+          <div class="rk-list-body">
+            <div class="rk-list-item" *ngFor="let notification of notifications" (click)="setAsRead(notification)"
+              [ngStyle]="{'background': notification.status === 1 ? 'rgba(0,0,0,.05)' : 'white'}">
+              <div class="text">
+                notification.message
+              </div>
+
+              <div class="arrow">
+                <i-feather name="chevron-right"></i-feather>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="border"></div>
 
@@ -19,8 +43,8 @@
         <div class="rk-img">
           <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="" />
         </div>
-        <div class="rk-text">
-          Cihan
+        <div class="rk-text" style="text-transform: capitalize;">
+          {{ currentUser?.name }}
         </div>
         <div class="rk-dropdown">
           <div class="rk-dropdown-title">Account</div>

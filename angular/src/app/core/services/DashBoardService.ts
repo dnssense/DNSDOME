@@ -36,7 +36,7 @@ export class DashBoardService {
   }
 
   public getTopDomains(request: TopDomainsRequestV4): Observable<TopDomainsResponseV4> {
-    return this.http.post<TopDomainsRequestV4>(this.configuration.getApiUrl() + '/calculate/topDomain', request).map(res => res);
+    return this.http.post<TopDomainsResponseV4>(this.configuration.getApiUrl() + '/calculate/topDomain', request).map(res => res);
   }
 
   public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {

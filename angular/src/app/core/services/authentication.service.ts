@@ -35,25 +35,24 @@ export class AuthenticationService {
   private refreshTokenTimer: Observable<any>;
   currentUserPropertiesChanged: Subject<any>;
 
-  constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
-    private router: Router, private logger: LoggerService) {
-
+  constructor(
+    private configuration: ConfigService,
+    private http: HttpClient,
+    private cookieService: CookieService,
+    private router: Router,
+  ) {
     this.currentUserPropertiesChanged = new Subject();
     this.refreshTokenTimer = interval(4 * 60 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
-
   }
 
   saveSession() {
-
     localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
     this.currentUserPropertiesChanged.next('changed');
   }
 
   checkSessionIsValid() {
-
     try {
-
       const sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
         const session: Session = JSON.parse(sessionString);
@@ -63,7 +62,6 @@ export class AuthenticationService {
         }
       }
     } catch (err) {
-      //this.logger.console(err);
       this.logout();
     }
 
