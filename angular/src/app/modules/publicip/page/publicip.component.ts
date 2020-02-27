@@ -100,12 +100,12 @@ export class PublicipComponent implements AfterViewInit {
     this.publicIps = [];
     this.agentService.getAgents().subscribe(res => {
 
-      if ((res == null || res.length < 1) && this.roleName != 'ROLE_USER' && this.tooltipGuideCounter < 1) {
+      if ((res == null || res.length < 1) && this.roleName !== 'ROLE_USER' && this.tooltipGuideCounter < 1) {
         this.showNewIpForm();
         this.openTooltipGuide();
       } else {
         res.forEach(r => {
-          if (r.agentType && r.agentType.toString() == AgentType.LOCATION.toString()) {
+          if (r.agentType && r.agentType.toString() === AgentType.LOCATION.toString()) {
             this.publicIps.push(r);
           }
         });
@@ -351,8 +351,6 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   hideWizardWithoutConfirm() {
-    $('#wizardPanel').toggle('slide', { direction: 'right' }, 1000);
-    $('#publicIpPanel').toggle('slide', { direction: 'left' }, 1000);
     this.hideNewWizard();
   }
 
@@ -361,7 +359,7 @@ export class PublicipComponent implements AfterViewInit {
     const inputValue = $event.target;
     const file = inputValue.files[0];
 
-    if (typeof file == 'undefined' || !file.type.toString().startsWith('image/')) {
+    if (typeof file === 'undefined' || !file.type.toString().startsWith('image/')) {
       return;
     }
 
@@ -390,19 +388,19 @@ export class PublicipComponent implements AfterViewInit {
       img.src = url;
     }
 
-  }  
+  }
 
   deletePublicIp(id: number) {
     this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Public IP and its settings will be deleted!').subscribe(
       res => {
         if (res) {
-          this.agentService.deleteAgent(id).subscribe(res => {
-            if (res.status == 200) {
-              this.notification.success(res.message);
-              this.getPublicIpsDataAndProfiles();
+          this.agentService.deleteAgent(id).subscribe(result => {
+            if (result.status === 200) {
+              this.notification.success(result.message);
 
+              this.getPublicIpsDataAndProfiles();
             } else {
-              this.notification.error('Operation Failed! ' + res.message);
+              this.notification.error('Operation Failed! ' + result.message);
             }
           });
         }
@@ -411,23 +409,17 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   onSelectionChangeIPType(type: string) {
-
     if (type === 'dynamicIp') {
       this.ipType = type;
-      // $("#dnsFqnDiv").show();
-      // $('#staticIPBlock').hide();
       this.publicIpForm.controls['ip0'].clearValidators();
       this.publicIpForm.controls['ip0'].updateValueAndValidity();
       this.publicIpForm.controls['dnsFqdn'].setValidators([Validators.required]);
       this.publicIpForm.controls['dnsFqdn'].updateValueAndValidity();
     } else {
       this.ipType = type;
-      // $("#dnsFqnDiv").hide();
-      // $('#staticIPBlock').show();
       this.publicIpForm.controls['dnsFqdn'].clearValidators();
       this.publicIpForm.controls['dnsFqdn'].updateValueAndValidity();
     }
-
   }
 
   addIpRangeToList() {
@@ -459,7 +451,7 @@ export class PublicipComponent implements AfterViewInit {
 
   securityProfileChanged(id: number) {
     this.isNewItemUpdated = true;
-    this.selectedIp.rootProfile = this.securityProfiles.find(p => p.id == id);
+    this.selectedIp.rootProfile = this.securityProfiles.find(p => p.id === id);
   }
 
   savePublicIp() {
@@ -471,7 +463,7 @@ export class PublicipComponent implements AfterViewInit {
     }
 
     this.agentService.saveAgent(this.selectedIp).subscribe(res => {
-      if (res.status == 200) {
+      if (res.status === 200) {
         this.notification.success(res.message);
         this.getPublicIpsDataAndProfiles();
 
@@ -493,11 +485,14 @@ export class PublicipComponent implements AfterViewInit {
       this.notification.warning('Please enter a name');
 
       return false;
-    } else if (!this.isNullOrEmpty(this.selectedIp.blockMessage)) {
-      this.notification.warning('Plesae enter block message');
+    }
+    //  else if (!this.isNullOrEmpty(this.selectedIp.blockMessage)) {
+    //   this.notification.warning('Plesae enter block message');
 
-      return false;
-    } else if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
+    //   return false;
+    // }
+    // tslint:disable-next-line: one-line
+    else if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
       this.notification.warning('Form is not valid! Please enter IP fields with valid values.');
       return false;
     } else if (this.ipType === 'dynamicIp' && !this.selectedIp.dynamicIpDomain && !this.dnsFqdn) {

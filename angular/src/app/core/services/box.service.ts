@@ -9,14 +9,18 @@ import { OperationResult } from '../models/OperationResult';
   providedIn: 'root'
 })
 export class BoxService {
-  private getBoxesURL = this.config.getApiUrl() + "/boxes";
-  private saveBoxURL = this.config.getApiUrl() + "/boxes/save";
-  private deleteBoxURL = this.config.getApiUrl() + "/boxes/delete/"; 
-  private virtualBoxURL = this.config.getApiUrl() + "/boxes/virtual"
-  private getLinkURL = this.config.getApiUrl() + "/box/roamingclientlink";
 
-  constructor(private http: HttpClient, private config: ConfigService) { }
-  
+  constructor(
+    private http: HttpClient,
+    private config: ConfigService
+  ) { }
+
+  private getBoxesURL = this.config.getApiUrl() + '/boxes';
+  private saveBoxURL = this.config.getApiUrl() + '/boxes/save';
+  private deleteBoxURL = this.config.getApiUrl() + '/boxes/delete/';
+  private virtualBoxURL = this.config.getApiUrl() + '/boxes/virtual';
+  private getLinkURL = this.config.getApiUrl() + '/box/roamingclientlink';
+
   getBoxes(): Observable<Box[]> {
     return this.http.get<Box[]>(this.getBoxesURL).map(data => data);
   }
@@ -26,21 +30,21 @@ export class BoxService {
   }
 
   deleteBox(id: number): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.deleteBoxURL, { "id": id }, this.getOptions()).map(res => res);
+    return this.http.post<OperationResult>(this.deleteBoxURL, { 'id': id }, this.getOptions()).map(res => res);
   }
 
   getVirtualBox(): Observable<Box> {
     return this.http.get<Box>(this.virtualBoxURL).map(data => data);
   }
-  
-  getProgramLink(domains: string): Observable<any> {
+
+  getProgramLink(domains: {donttouchdomains: string}): Observable<any> {
     return this.http.post<any>(this.getLinkURL, domains).map(data => data);
   }
-  
+
   private getOptions() {
-    let options = {
+    const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }
+    };
     return options;
   }
 }

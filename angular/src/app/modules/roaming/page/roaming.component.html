@@ -11,12 +11,90 @@
               Download
             </button>
 
-            <button class="btn btn-icon btn-small">
+            <button class="btn btn-icon btn-small" (click)="configureModal.toggle()">
               <i-feather name="settings"></i-feather>
               Settings
             </button>
           </div>
         </div>
+
+        <rk-modal #configureModal>
+          <rk-modal-header>
+            <rk-modal-header-title>
+              <h5>Configure Roaming Clients</h5>
+            </rk-modal-header-title>
+
+            <rk-modal-header-close (click)="configureModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12 mt-3">
+                  <div class="rk-group-title">Dont Touch Domains</div>
+                  <p class="rk-description">
+                    *Enter a dont touch domains. Dont touch domains not encrypt by agent. Local active directory
+                    domainlerinin eklenmesi gerekir.
+                  </p>
+
+                  <div class="input-container">
+                    <input type="text" placeholder="Domain" [(ngModel)]="domain" class="rk-input w-100">
+
+                    <button class="btn btn-small ml-1" style="width: 60px" (click)="addDomainToList()">Add</button>
+                  </div>
+
+                  <div class="cards mt-3">
+                    <div class="card gray-card" *ngFor="let domain of dontDomains; let index = index">
+                      <div class="card-content">
+                        <h6 class="title">{{ domain }}</h6>
+                      </div>
+
+                      <div class="card-close" (click)="removeElementFromDomainList(index)">
+                        <i-feather name="trash-2"></i-feather>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 mt-3">
+                  <div class="rk-group-title">Agent Activity On Local Network</div>
+
+                  <div class="d-flex my-2">
+                    <rk-toggle-button clickClose="true" (click)="alwaysActiveChanged()" [active]="alwaysActive"
+                      [toggleTexts]="{ pos: 'Always Active', neg: 'Always Active' }" class="w-100 mr-2">
+                    </rk-toggle-button>
+
+                    <rk-toggle-button clickClose="true" (click)="disabledNetworkChanged()" [active]="disabledNetwork"
+                      [toggleTexts]="{ pos: 'Disable On Local Network', neg: 'Disable On Local Network' }"
+                      class="w-100">
+                    </rk-toggle-button>
+                  </div>
+
+                  <p class="rk-description">
+                    *Local ağa giren roaming clientlar üzerindeki ajanın pasif duruma geçmesi için “Disable On Local
+                    Network” seçilmeli. Ajan local ağa girdiğini aşağıdaki local dns sunuculara istek göndererek test
+                    eder.
+                  </p>
+
+                  <div class="input-container">
+                    <label class="rk-input-label" for="localdns1">Local DNS 1</label>
+                    <input type="text" class="rk-input w-100" id="localdns1" placeholder="IP Adress" disabled>
+                  </div>
+
+                  <div class="input-container mt-2">
+                    <label class="rk-input-label" for="localdns2">Local DNS 2</label>
+                    <input type="text" class="rk-input w-100" id="localdns2" placeholder="IP Adress" disabled>
+                  </div>
+
+                  <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-small btn-accent" disabled>Apply</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </rk-modal-body>
+        </rk-modal>
 
         <div class="col-12 p-0 mt-3">
           <rk-table-container class="m-0">
@@ -62,7 +140,7 @@
               </ng-template>
 
               <ng-template #body>
-                <tr *ngFor="let c of clientsFiltered | filter: searchKey : 'name'">
+                <tr *ngFor="let c of clientsFiltered | filter: searchKey : 'agentAlias'">
                   <td style="width: 60px">
                     <rk-checkbox [(value)]="c.selected"></rk-checkbox>
                   </td>
@@ -118,12 +196,12 @@
                   <td>{{ item.memberCounts }}</td>
                   <td>{{ item.securityProfile.name }}</td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0">
+                    <button class="btn btn-link btn-icon p-0 hover-gray">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0">
+                    <button class="btn btn-link btn-icon p-0 hover-gray">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>

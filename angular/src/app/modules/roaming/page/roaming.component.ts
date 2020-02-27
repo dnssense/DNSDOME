@@ -44,12 +44,16 @@ export class RoamingComponent implements OnInit {
     saveMode: string;
     startWizard = false;
     dontDomains: string[] = [];
-    dontDomains2: string[] = [];
     confParameters: string[] = [];
 
     isDontDomainsValid = true;
 
     groupedClients = [];
+
+    domain: string;
+
+    alwaysActive = true;
+    disabledNetwork = false;
 
     ngOnInit(): void {
 
@@ -102,13 +106,8 @@ export class RoamingComponent implements OnInit {
     }
 
     getConfParameters() {
-        this.dontDomains2 = [];
         this.boxService.getVirtualBox().subscribe(res => {
-            this.dontDomains = res.conf.split(',').map(d => { d = d.slice(1); return d; });
-            this.confParameters = JSON.parse(JSON.stringify(this.dontDomains));
-            this.dontDomains.forEach(d => {
-                this.dontDomains2.push('');
-            });
+            this.dontDomains = res.conf.split(',').map(x => x[0] === '.' ? x.substring(1) : x);
         });
     }
 
@@ -240,7 +239,7 @@ export class RoamingComponent implements OnInit {
 
     copyLink() {
         const domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',');
-        this.boxService.getProgramLink(domains).subscribe(res => {
+        this.boxService.getProgramLink({ donttouchdomains: domains }).subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters();
                 this.fileLink = res.link;
@@ -263,9 +262,10 @@ export class RoamingComponent implements OnInit {
     }
 
     saveDomainChanges() {
-        const domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',');
+        const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
+
         if (this.isDontDomainsValid) {
-            this.boxService.getProgramLink(domains).subscribe(res => {
+            this.boxService.getProgramLink({ donttouchdomains: domains }).subscribe(res => {
                 if (res && res.link) {
                     this.getConfParameters();
                 } else {
@@ -273,13 +273,12 @@ export class RoamingComponent implements OnInit {
                 }
             });
         }
-
     }
 
     downloadFile() {
         const domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',');
 
-        this.boxService.getProgramLink(domains).subscribe(res => {
+        this.boxService.getProgramLink({ donttouchdomains: domains }).subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters();
                 this.fileLink = res.link;
@@ -296,21 +295,29 @@ export class RoamingComponent implements OnInit {
                 this.notification.warning('Please fill all fields with valid domains, before a new one');
                 return;
             }
-            this.dontDomains.push('');
-            this.dontDomains2.push('');
+
+            this.dontDomains.push(this.domain);
+
             this.checkDomain();
+
+            this.domain = '';
+
+            this.saveDomainChanges();
         } else {
             this.notification.warning('You can add max. 10 domains');
         }
     }
 
-    removeElementFromDomainList(i: number) {
-        this.dontDomains2.splice(i, 1);
-        this.dontDomains.splice(i, 1);
+    removeElementFromDomainList(index: number) {
+        this.dontDomains.splice(index, 1);
+
         this.checkDomain();
+
+        this.saveDomainChanges();
     }
+
     checkDomain() {
-        this.dontDomains.forEach(d => d = d.toLowerCase());
+        this.dontDomains.forEach(domain => domain = domain.toLowerCase());
         this.isDontDomainsValid = true;
         const d = this.dontDomains; // this.dontDomains.split(',');
         if (d.length > 10) {
@@ -341,19 +348,15 @@ export class RoamingComponent implements OnInit {
         }
     }
 
-    openModal() {
-        this.dontDomains = JSON.parse(JSON.stringify(this.confParameters));
-        this.dontDomains2 = [];
-
-        this.dontDomains.forEach(d => {
-            this.dontDomains2.push('');
-        });
-
-        this.checkDomain();
-        this.clientListForGroup = JSON.parse(JSON.stringify(this.clientsFiltered));
-    }
-
     clientsTableCheckboxChanged($event) {
         this.clientsFiltered.forEach(elem => elem.selected = $event);
+    }
+
+    alwaysActiveChanged() {
+        this.alwaysActive = !this.alwaysActive;
+    }
+
+    disabledNetworkChanged() {
+        this.disabledNetwork = !this.disabledNetwork;
     }
 }
