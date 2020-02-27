@@ -462,7 +462,9 @@ export class DashboardComponent implements OnInit {
         const catData = elData.category_hits.find(x => x.name === this.selectedCategoryForTraffic);
 
         if (catData) {
-          averageData.push([label, catData.average.toFixed(2)]);
+          const average = catData.average ? catData.average.toFixed(2) : 0;
+
+          averageData.push([label, average]);
           hitData.push([label, catData.hits.toFixed(2)]);
         }
       }

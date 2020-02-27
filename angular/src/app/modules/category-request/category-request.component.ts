@@ -4,6 +4,7 @@ import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.compon
 import { StaticService } from 'src/app/core/services/StaticService';
 import { ToolsService, Domain2CategorizeRequestV2 } from 'src/app/core/services/ToolsService';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 
 @Component({
     selector: 'app-category-request',
@@ -25,18 +26,26 @@ export class CategoryRequestComponent implements OnInit {
 
     comment = '';
 
+    private categories: CategoryV2[] = [];
+
     ngOnInit() {
         this.getCategories();
     }
 
     private getCategories() {
         this.staticService.getCategoryList().subscribe(result => {
-            this.categoryOptions = result.map(x => {
-                return {
-                    displayText: x.name,
-                    value: x.name
-                } as RkSelectModel;
-            });
+            this.fillCategoryOptions(result);
+        });
+    }
+
+    private fillCategoryOptions(categories: CategoryV2[]) {
+        this.categories = categories;
+
+        this.categoryOptions = categories.map(x => {
+            return {
+                displayText: x.name,
+                value: x.name
+            } as RkSelectModel;
         });
     }
 
@@ -56,6 +65,12 @@ export class CategoryRequestComponent implements OnInit {
 
         this.toolsService.sendCategoryRequestV2(request).subscribe(result => {
             this.notificationService.success('Category request is successfully sent');
+
+            this.domain = '';
+            this.comment = '';
+            this.category = '';
+
+            this.fillCategoryOptions(this.categories);
         });
     }
 
