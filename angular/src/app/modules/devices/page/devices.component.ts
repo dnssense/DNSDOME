@@ -806,11 +806,8 @@ export class DevicesComponent implements OnInit {
 
         if (this.selectedAgentGroupType === 'create') {
             selectedAgents.forEach(elem => {
-<<<<<<< HEAD
 
 
-=======
->>>>>>> a3cf032dc6c765b695e40259fea2ecbf2f975ef0
                 deviceGroup.agents.push({
 
                     agentAlias: elem.agentInfo.agentAlias,
