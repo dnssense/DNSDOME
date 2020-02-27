@@ -8,6 +8,13 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RkProgressBarModule, RkDateModule, RkTableModule, RkInfoBoxModule, IconsModule } from 'roksit-lib';
+import { TagInputModule } from 'ngx-chips';
+
+TagInputModule.withDefaults({
+  tagInput: {
+    placeholder: 'Domain...'
+  }
+});
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -29,7 +36,8 @@ import { RkProgressBarModule, RkDateModule, RkTableModule, RkInfoBoxModule, Icon
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    TagInputModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 

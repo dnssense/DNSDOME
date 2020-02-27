@@ -30,6 +30,7 @@ import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
 import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
 import { NotificationModule } from './modules/shared/notification/notification.module';
 import { RoksitModule, ServicesModule } from 'roksit-lib';
+import { NotificationApiService } from './core/services/notification-api.service';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -74,6 +75,7 @@ import { RoksitModule, ServicesModule } from 'roksit-lib';
     NotificationService,
     TranslateService,
     MonitorService,
+    NotificationApiService,
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     {
       provide: HTTP_INTERCEPTORS,

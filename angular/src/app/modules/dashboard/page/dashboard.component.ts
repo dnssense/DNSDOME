@@ -11,180 +11,17 @@ import { AgentService } from 'src/app/core/services/agent.service';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
-import { DataPanelModel, DateParamModel } from 'src/app/core/models/Dashboard';
+import {
+  DataPanelModel, DateParamModel, TrafficAnomaly, Domain, HourlyCompanySummaryV4Response,
+  TrafficAnomalyItem, CategorySummary, TrafficAnomalyCategory, TrafficAnomalyItem2, Result
+} from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
 import { RkApexHelper } from 'roksit-lib';
+import { ValidationService } from 'src/app/core/services/validation.service';
 
-export interface HourlyCompanySummaryV4Request {
-  duration: number; // last hours
-
-}
-
-
-export interface StdDeviationBounds {
-  upper: number;
-  lower: number;
-}
-
-export interface UniqueBlockedDomain {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface UniqueDomain {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-
-export interface TotalHit {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface CategorySummary {
-  name: string;
-  hits: number;
-  average: number;
-  unique_domain: number;
-  std_deviation_bounds: StdDeviationBounds;
-  unique_domain_average: number;
-  std_deviation: number;
-}
-
-
-
-export interface UniqueDestip {
-  average: number;
-  count: number;
-}
-
-
-
-export interface BlockedCount {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface UniqueSrcip {
-  average: number;
-  count: number;
-}
-
-export interface TimeRange {
-  hit: number;
-  hour_gte: string;
-  lt: Date;
-  gte: Date;
-}
-
-export interface UniqueMac {
-  average: number;
-  count: number;
-}
-
-export interface UniqueUser {
-  average: number;
-  count: number;
-}
-
-
-
-export interface AllowedCount {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-
-
-export interface UniqueSubdomain {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface Summary {
-  unique_blocked_domain: UniqueBlockedDomain;
-  date: string;
-  unique_domain: UniqueDomain;
-  total_hit: TotalHit;
-  firstly_seen_status: string;
-  len_firstly_seen_domains: number;
-  insert_date: Date;
-  query_process_time: number;
-  category_hits: CategorySummary[];
-  unique_destip: UniqueDestip;
-  blocked_count: BlockedCount;
-  unique_srcip: UniqueSrcip;
-  time_range: TimeRange;
-  unique_mac: UniqueMac;
-  unique_user: UniqueUser;
-  allowed_count: AllowedCount;
-  unique_subdomain: UniqueSubdomain;
-}
-
-export interface HourlyCompanySummaryV4Response {
-  items: Summary[];
-}
-export interface TrafficTotal {
-  date: Date;
-  hit: number;
-}
-
-export interface TrafficAnomalyCategory {
-  name: string;
-  hitCount: number;
-  ratio: number;
-}
-export interface TrafficAnomalyItem {
-  allowCount: number;
-  blockCount: number;
-  categories: TrafficAnomalyCategory[];
-  averageHit: number;
-  currentHit: number;
-  ratio: number;
-
-}
-export interface TrafficAnomalyItem2 {
-  hitCount: number;
-  uniqueCount: number;
-  categories: TrafficAnomalyCategory[];
-  averageHit: number;
-  currentHit: number;
-  ratio: number;
-}
-
-export interface TrafficAnomaly {
-  total: TrafficAnomalyItem;
-  malicious: TrafficAnomalyItem2;
-  variable: TrafficAnomalyItem2;
-  harmful: TrafficAnomalyItem2;
-
-}
-
-
-export interface Domain {
-  name: string;
-  hit: number;
-}
-
-export interface Domain {
-  name: string;
-  hit: number;
-}
-export interface TopDomainsResponseV4 {
-  items: Domain[];
+interface TagInputValue {
+  value: string;
+  display: string;
 }
 
 declare let $: any;
@@ -198,14 +35,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dashboardService: DashBoardService,
-    private authService: AuthenticationService,
     private staticService: StaticService,
-    private notification: NotificationService,
     private router: Router,
-    private agentService: AgentService,
     private config: ConfigService,
-    private boxService: BoxService,
-    private roamingService: RoamingService
   ) { }
 
   host: ConfigHost;
@@ -216,7 +48,7 @@ export class DashboardComponent implements OnInit {
   labelArray: string[] = [];
   categoryList = [];
   categoryListFiltered = [];
-  selectedCategoryForTraffic = 0;
+  selectedCategoryForTraffic: string;
   selectedCategoryForUnique = CategoryV2;
   trafficChart: any;
   timeLineChart: any;
@@ -240,6 +72,8 @@ export class DashboardComponent implements OnInit {
   selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
 
   trafficAnomaly: TrafficAnomaly = {} as TrafficAnomaly;
+
+  items: TagInputValue[] = [];
 
   categoryMappings = {
     'variable': [
@@ -335,12 +169,19 @@ export class DashboardComponent implements OnInit {
     this.startDate.setDate(this.today.getDate() - 365);
 
     this.host = this.config.host;
-    const roleName: string = this.authService.currentSession.currentUser.roles.name;
 
     this.startDashboardOperations();
 
-    const request = { duration: 24 } as TopDomainsRequestV4;
+    const request = { duration: 24 * 365 } as TopDomainsRequestV4;
 
+    this.getTopDomains(request);
+
+    this.dataPanels.push({ name: 'Public IP', activeCount: 8, passiveCount: 3 });
+    this.dataPanels.push({ name: 'Roming Client', activeCount: 6, passiveCount: 4 });
+    this.dataPanels.push({ name: 'DNS Relay', activeCount: 12, passiveCount: 5 });
+  }
+
+  getTopDomains(request: TopDomainsRequestV4) {
     this.dashboardService.getTopDomains({ ...request, type: 'malicious' }).subscribe(result => {
       this.maliciousDomains = result.items;
     });
@@ -352,14 +193,14 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
       this.harmfulDomains = result.items;
     });
-
-    this.dataPanels.push({ name: 'Public IP', activeCount: 8, passiveCount: 3 });
-    this.dataPanels.push({ name: 'Roming Client', activeCount: 6, passiveCount: 4 });
-    this.dataPanels.push({ name: 'DNS Relay', activeCount: 12, passiveCount: 5 });
   }
 
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
-    this.categoryListFiltered = this.trafficAnomaly[type].categories;
+    const trafficAnomalyType = this.trafficAnomaly[type];
+
+    if (trafficAnomalyType) {
+      this.categoryListFiltered = trafficAnomalyType.categories;
+    }
 
     this.selectedBox = type;
 
@@ -373,12 +214,25 @@ export class DashboardComponent implements OnInit {
   dateChanged(ev: { startDate: Date, endDate: Date }) {
     this.startDate = ev.startDate;
     this.endDate = ev.endDate;
+
+    this.startDashboardOperations();
+
+    const startDate = moment([ev.startDate.getFullYear(), ev.startDate.getMonth(), ev.startDate.getDate()]);
+    const endDate = moment([ev.endDate.getFullYear(), ev.endDate.getMonth(), ev.endDate.getDate()]);
+
+    const diff = endDate.diff(startDate, 'days');
+
+    const request = { duration: diff * 24 } as TopDomainsRequestV4;
+
+    this.getTopDomains(request);
   }
 
-  prepareUniqueChart() {
+  prepareUniqueChart(data: Result[]) {
+    if (!data) { return; }
+
     RkApexHelper.render('#unique-chart', {
       series: [
-        { name: 'Normal Traffic Count', type: 'line', data: [] },
+        { name: 'Normal Traffic Count', type: 'line', data: data.map(x => x.hit) },
       ],
       chart: {
         id: 'unique-chart2',
@@ -391,17 +245,15 @@ export class DashboardComponent implements OnInit {
       },
       markers: {
         size: [4, 0],
-        colors: ['#f95656'],
-        strokeColors: '#f95656',
         strokeWidth: 2,
         hover: {
           size: 7,
         }
       },
-      colors: ['#0084ff', '#b1dcff'],
+      colors: ['#f95656', '#f95656'],
       stroke: {
-        width: 3,
-        curve: ['straight', 'smooth']
+        width: 4,
+        curve: ['smooth']
       },
       dataLabels: {
         enabled: false
@@ -410,7 +262,7 @@ export class DashboardComponent implements OnInit {
         opacity: 1,
       },
       xaxis: {
-        type: 'datetime'
+        categories: data.map(x => moment(x.date).format('DD-MM-YYYY HH:mm'))
       }
     });
   }
@@ -438,8 +290,6 @@ export class DashboardComponent implements OnInit {
       chartData.push([elem.date.toString(), elem.hit]);
     });
 
-    console.log(timelineData);
-
     if (this.trafficChart) {
       this.trafficChart.destroy();
     }
@@ -459,9 +309,14 @@ export class DashboardComponent implements OnInit {
         },
 
         events: {
+          beforeMount: (chartContext, config) => {
+            this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);
+
+            this.infoboxChanged({ active: true }, 'total');
+          },
           updated: (chart) => {
             this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);
-          }
+          },
         },
       },
       markers: {
@@ -548,53 +403,26 @@ export class DashboardComponent implements OnInit {
   }
 
   startDashboardOperations() {
-    this.selectedCategoryForTraffic = 0;
+    this.selectedCategoryForTraffic = '';
     this.selectedCategoryForUnique = null;
+
     this.staticService.getCategoryList().subscribe(res => {
       this.categoryList = res;
-      this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
     });
 
-    // this.elasticData.items = [];
-    this.ds = new DashboardStats();
-    this.changeDateParameter(6);
+    this.getElasticData();
   }
 
   private getElasticData() {
     this.dashboardService.getHourlyCompanySummary({ duration: 365 * 24 }).subscribe(res => {
       this.elasticData = res;
 
-      // this.elasticData.sort((x, y) => new Date(x.date).getTime() - new Date(y.date).getTime());
-
       this.prepareTimeline();
-
-      this.prepareUniqueChart();
     });
   }
 
-  changeDateParameter(param: number) {
-    this.dateParameter = param;
-    if (param === -1) {
-      param = 0;
-    }
-    const today = new Date();
-    let d1 = new Date();
-    d1.setDate(d1.getDate() - param);
-    d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0);
-    const d2 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
-
+  updateCharts() {
     this.getElasticData();
-  }
-
-  updateCharts(min: any, max: any) {
-    if (min && max) {
-      const mn = new Date(min);
-      const mx = new Date(max);
-
-      this.getElasticData();
-    } else {
-      this.changeDateParameter(0);
-    }
   }
 
   calculatePercentage(num1: number, num2: number) {
@@ -610,33 +438,34 @@ export class DashboardComponent implements OnInit {
   }
 
   addCategoryToTraffic(cat: CategoryV2) {
-    if (cat.id === this.selectedCategoryForTraffic) {
-      this.selectedCategoryForTraffic = 0;
+    if (cat.name === this.selectedCategoryForTraffic) {
+      this.selectedCategoryForTraffic = '';
     } else {
-      this.selectedCategoryForTraffic = cat.id;
+      this.selectedCategoryForTraffic = cat.name;
     }
 
     const averageData = [];
     const hitData = [];
 
     for (let i = 0; i < this.elasticData.items.length; i++) {
-      const elData = this.elasticData[i];
+      const elData = this.elasticData.items[i];
 
-      const label = moment(elData.date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
+      const label = moment(elData.date).format('YYYY-MM-DD HH:mm');
 
 
-      if (this.selectedCategoryForTraffic === 0) {
-        averageData.push([label, elData.averages.total_hit]);
+      if (this.selectedCategoryForTraffic === '') {
+        averageData.push([label, elData.total_hit]);
         hitData.push([label, elData.total_hit]);
       } else {
-        this.selectedCategoryForTraffic = this.categoryList.find(c => c.id == cat.id).id;
-        const catName = cat.name;
+        this.selectedCategoryForTraffic = this.categoryList.find(c => c.name === cat.name).name;
 
-        const catData = elData.category_hits[catName];
+        const catData = elData.category_hits.find(x => x.name === this.selectedCategoryForTraffic);
 
         if (catData) {
-          averageData.push([label, catData.average]);
-          hitData.push([label, catData.hits]);
+          const average = catData.average ? catData.average.toFixed(2) : 0;
+
+          averageData.push([label, average]);
+          hitData.push([label, catData.hits.toFixed(2)]);
         }
       }
     }
@@ -653,7 +482,7 @@ export class DashboardComponent implements OnInit {
 
   deleteCatFromTraffic(id: number) {
     if (id && id > 0) {
-      this.selectedCategoryForTraffic = 0;
+      this.selectedCategoryForTraffic = '';
       this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: 'Average Hits', data: this.ds.hitAverages }]);
     }
   }
@@ -698,11 +527,14 @@ export class DashboardComponent implements OnInit {
 
   calculateCategory(categoryList: CategorySummary[], ): TrafficAnomalyCategory[] {
     const map: Map<string, TrafficAnomalyCategory> = new Map();
+
     categoryList.forEach(x => {
       if (!map.has(x.name)) {
-        map.set(x.name, { name: x.name, hitCount: 0, ratio: 0 })
+        map.set(x.name, { name: x.name, hitCount: 0, ratio: 0 });
       }
+
       const item = map.get(x.name);
+
       if (item) {
         item.name = x.name;
         item.hitCount += x.hits;
@@ -744,6 +576,16 @@ export class DashboardComponent implements OnInit {
     anomaly.harmful.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
     anomaly.harmful.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
 
+    anomaly.safe = {} as TrafficAnomalyItem2;
+    category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.safe.indexOf(x.name) > -1);
+    anomaly.safe.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
+    anomaly.safe.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
+    anomaly.safe.categories = this.calculateCategory(category_hits);
+    selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
+    anomaly.safe.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.safe.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
+    anomaly.safe.ratio = (Math.round((anomaly.safe.currentHit - anomaly.safe.averageHit) / anomaly.safe.averageHit * 100)) | 0;
+
 
     anomaly.malicious = {} as TrafficAnomalyItem2;
     category_hits = this.flatten(filtered.map(x => x.category_hits).concat()).filter(x => this.categoryMappings.malicious.indexOf(x.name) > -1);
@@ -753,7 +595,7 @@ export class DashboardComponent implements OnInit {
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
     anomaly.malicious.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
     anomaly.malicious.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.malicious.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
+    anomaly.malicious.ratio = (Math.round((anomaly.malicious.currentHit - anomaly.malicious.averageHit) / anomaly.malicious.averageHit * 100)) | 0;
 
 
     anomaly.variable = {} as TrafficAnomalyItem2;
@@ -764,10 +606,39 @@ export class DashboardComponent implements OnInit {
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
     anomaly.variable.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
     anomaly.variable.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.variable.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
-
-
+    anomaly.variable.ratio = (Math.round((anomaly.variable.currentHit - anomaly.variable.averageHit) / anomaly.variable.averageHit * 100)) | 0;
 
     return anomaly;
+  }
+
+  addDomain(domain: Domain) {
+    this.items = [{ display: domain.name, value: domain.name }];
+  }
+
+  onItemAdded($event: TagInputValue) {
+    const isDomain = ValidationService.isDomainValid($event.value);
+
+    if (!isDomain) {
+      this.items = [];
+    }
+  }
+
+  search() {
+    let domain = '';
+
+    this.items.forEach(elem => {
+      domain = elem.value;
+    });
+
+    if (domain.trim().length === 0) { return; }
+
+    const startDate = moment([this.startDate.getFullYear(), this.startDate.getMonth(), this.startDate.getDate()]);
+    const endDate = moment([this.endDate.getFullYear(), this.endDate.getMonth(), this.endDate.getDate()]);
+
+    const diff = endDate.diff(startDate, 'days');
+
+    this.dashboardService.getTopDomainValue({ domain: domain, duration: diff * 24 }).subscribe(result => {
+      this.prepareUniqueChart(result.items);
+    });
   }
 }

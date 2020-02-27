@@ -35,25 +35,24 @@ export class AuthenticationService {
   private refreshTokenTimer: Observable<any>;
   currentUserPropertiesChanged: Subject<any>;
 
-  constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
-    private router: Router, private logger: LoggerService) {
-
+  constructor(
+    private configuration: ConfigService,
+    private http: HttpClient,
+    private cookieService: CookieService,
+    private router: Router,
+  ) {
     this.currentUserPropertiesChanged = new Subject();
     this.refreshTokenTimer = interval(4 * 60 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
-
   }
 
   saveSession() {
-
     localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
     this.currentUserPropertiesChanged.next('changed');
   }
 
   checkSessionIsValid() {
-
     try {
-
       const sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
         const session: Session = JSON.parse(sessionString);
@@ -63,8 +62,8 @@ export class AuthenticationService {
         }
       }
     } catch (err) {
-      debugger;
-      //this.logger.console(err);
+
+      // this.logger.console(err);
       this.logout();
     }
 
@@ -88,16 +87,16 @@ export class AuthenticationService {
     if (!this.currentSession || !this.currentSession.refreshToken) {
       return;
     }
-    //this.logger.console('refreshing token');
+    // this.logger.console('refreshing token');
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
       })
     };
-    //const body = encodeURI('grant_type=refresh_token&refresh_token=' + this.currentSession.refreshToken);
+    // const body = encodeURI('grant_type=refresh_token&refresh_token=' + this.currentSession.refreshToken);
 
-    let body = new URLSearchParams();
+    const body = new URLSearchParams();
     body.set('grant_type', 'refresh_token');
     body.set('refresh_token', this.currentSession.refreshToken);
 
@@ -135,7 +134,7 @@ export class AuthenticationService {
         this.currentSession.currentUser.roles = role;
 
       });
-      //localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
+      // localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
       this.saveSession();
       return this.currentSession;
     }));
@@ -205,14 +204,14 @@ export class AuthenticationService {
       })
     };
 
-    let body = new URLSearchParams();
+    const body = new URLSearchParams();
     body.set('grant_type', 'password');
     body.set('username', email);
     body.set('password', pass);
 
     return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
       .pipe(mergeMap((res: any) => {
-        //this.logger.console(res);
+        // this.logger.console(res);
         this.currentSession = new Session();
         this.currentSession.token = res.accessToken;
         this.currentSession.refreshToken = res.refreshToken;
@@ -253,7 +252,7 @@ export class AuthenticationService {
 
   forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {
     return this.http.post<any>(this._forgotPasswordChangeURL,
-      JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions())
+      JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions());
 
   }
 

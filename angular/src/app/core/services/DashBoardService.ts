@@ -4,11 +4,9 @@ import 'rxjs/Rx';
 import { SearchSetting } from '../models/SearchSetting';
 // tslint:disable-next-line: import-blacklist
 import { Observable } from 'rxjs/Rx';
-import { Dashboard } from '../models/Dashboard';
+import { Dashboard, TopDomainsResponseV4, TopDomainValuesRequestV4, TopDomainValuesResponseV4 } from '../models/Dashboard';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
-import { TopDomainsResponseV4 } from 'src/app/modules/dashboard/page/dashboard.component';
-
 
 export interface TopDomainsRequestV4 {
   duration: number;
@@ -37,6 +35,10 @@ export class DashBoardService {
 
   public getTopDomains(request: TopDomainsRequestV4): Observable<TopDomainsResponseV4> {
     return this.http.post<TopDomainsResponseV4>(this.configuration.getApiUrl() + '/calculate/topDomain', request).map(res => res);
+  }
+
+  public getTopDomainValue(request: TopDomainValuesRequestV4): Observable<TopDomainValuesResponseV4> {
+    return this.http.post<TopDomainValuesResponseV4>(this.configuration.getApiUrl() + '/calculate/topDomainValue', request).map(res => res);
   }
 
   public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {

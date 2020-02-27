@@ -9,6 +9,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { ConfigService } from 'src/app/core/services/config.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { Notification, NotificationApiService, NotificationRequest } from 'src/app/core/services/notification-api.service';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -36,6 +37,8 @@ export class NavbarComponent implements OnInit {
     title: string;
     subtitle?: string;
 
+    currentUser: any;
+
     constructor(
         location: Location,
         private element: ElementRef,
@@ -44,14 +47,27 @@ export class NavbarComponent implements OnInit {
         private alert: AlertService,
         private auth: AuthenticationService,
         private config: ConfigService,
-        private translator: TranslatorService
+        private translator: TranslatorService,
+        private notificationApiService: NotificationApiService
     ) {
         this.location = location;
         this.nativeElement = element.nativeElement;
     }
 
+    notifications: Notification[] = [];
+
+    unReadedNotificationsCount = 0;
+
     ngOnInit() {
         this.listTitles = ROUTES.filter(listTitle => listTitle);
+
+        this.getNotifications();
+
+        const user = JSON.parse(localStorage.getItem('currentSession'));
+
+        if (user) {
+            this.currentUser = user.currentUser;
+        }
 
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
             const $layer = document.getElementsByClassName('close-layer')[0];
@@ -59,6 +75,22 @@ export class NavbarComponent implements OnInit {
                 $layer.remove();
             }
         });
+    }
+
+    getNotifications() {
+        this.notificationApiService.getNotifications(new NotificationRequest()).subscribe(result => {
+            this.notifications = result;
+
+            this.unReadedNotificationsCount = this.notifications.filter(x => x.status === 0).length;
+        });
+    }
+
+    setAsRead(notification: Notification) {
+        if (notification.status === 0) {
+            notification.status = 1;
+
+            this.notificationApiService.updateNotification(notification).subscribe(result => { });
+        }
     }
 
     get getTitle() {
