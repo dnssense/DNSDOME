@@ -60,8 +60,10 @@
               </div>
 
               <div class="col-12 col-md-6 col-lg">
-                <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe')" [title]="'Safe'" [color]="'#3dd49a'" className="green" [valueOne]="trafficAnomaly?.safe?.hitCount"
-                  [valueTwo]="trafficAnomaly?.safe?.uniqueCount" description="Haber, Spor, Arama motoru gibi içerik ve güvenlik anlamında risk içermeyen domainleri kapsar.">
+                <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe')"
+                  [title]="'Safe'" [color]="'#3dd49a'" className="green" [valueOne]="trafficAnomaly?.safe?.hitCount"
+                  [valueTwo]="trafficAnomaly?.safe?.uniqueCount"
+                  description="Haber, Spor, Arama motoru gibi içerik ve güvenlik anlamında risk içermeyen domainleri kapsar.">
                 </rk-infobox>
               </div>
 
@@ -95,7 +97,7 @@
               <div style="width: 190px;">
                 <div class="rk-selectable-table categories" style="width: auto !important;">
                   <div class="rk-item" *ngFor="let cat of categoryListFiltered"
-                    [ngClass]="{ 'active' : selectedCategoryForTraffic == cat.id }" (click)="addCategoryToTraffic(cat)">
+                    [ngClass]="{ 'active' : selectedCategoryForTraffic == cat.name }" (click)="addCategoryToTraffic(cat)">
                     <div class="rk-i-header">
                       <div class="d-flex align-items-center">
                         <span class="rk-selectable-table-item-title"> {{ cat.name }} </span>
@@ -120,9 +122,13 @@
                     <span class="section-title">Selected <br /> Time Hit</span>
                     <span class="value">{{ trafficAnomaly[selectedBox]?.currentHit }}</span>
                   </div>
-                  <div class="section active">
-                    <i-feather name="arrow-up"></i-feather>
-                    <span class="value">{{ trafficAnomaly[selectedBox]?.ratio }}%</span>
+                  <div class="section flex-column active" style="border-radius: 0;">
+                    <span style="font-size: 12px;">Selected Time vs Avarege</span>
+                    
+                    <span>
+                      <i-feather name="arrow-up"></i-feather>
+                      <span class="value">{{ trafficAnomaly[selectedBox]?.ratio }}%</span>
+                    </span>
                   </div>
                   <div class="section">
                     <div class="section-title">Avarage Hit</div>

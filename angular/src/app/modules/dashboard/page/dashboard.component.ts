@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit {
   labelArray: string[] = [];
   categoryList = [];
   categoryListFiltered = [];
-  selectedCategoryForTraffic = 0;
+  selectedCategoryForTraffic: string;
   selectedCategoryForUnique = CategoryV2;
   trafficChart: any;
   timeLineChart: any;
@@ -196,7 +196,11 @@ export class DashboardComponent implements OnInit {
   }
 
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
-    this.categoryListFiltered = this.trafficAnomaly[type].categories;
+    const trafficAnomalyType = this.trafficAnomaly[type];
+
+    if (trafficAnomalyType) {
+      this.categoryListFiltered = trafficAnomalyType.categories;
+    }
 
     this.selectedBox = type;
 
@@ -307,6 +311,9 @@ export class DashboardComponent implements OnInit {
         events: {
           updated: (chart) => {
             this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);
+          },
+          beforeMount: (chartContext, config) => {
+            this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);
           }
         },
       },
@@ -394,7 +401,7 @@ export class DashboardComponent implements OnInit {
   }
 
   startDashboardOperations() {
-    this.selectedCategoryForTraffic = 0;
+    this.selectedCategoryForTraffic = '';
     this.selectedCategoryForUnique = null;
 
     this.staticService.getCategoryList().subscribe(res => {
@@ -408,6 +415,8 @@ export class DashboardComponent implements OnInit {
   private getElasticData() {
     this.dashboardService.getHourlyCompanySummary({ duration: 365 * 24 }).subscribe(res => {
       this.elasticData = res;
+
+      console.log(this.elasticData);
 
       this.prepareTimeline();
     });
@@ -430,33 +439,32 @@ export class DashboardComponent implements OnInit {
   }
 
   addCategoryToTraffic(cat: CategoryV2) {
-    if (cat.id === this.selectedCategoryForTraffic) {
-      this.selectedCategoryForTraffic = 0;
+    if (cat.name === this.selectedCategoryForTraffic) {
+      this.selectedCategoryForTraffic = '';
     } else {
-      this.selectedCategoryForTraffic = cat.id;
+      this.selectedCategoryForTraffic = cat.name;
     }
 
     const averageData = [];
     const hitData = [];
 
     for (let i = 0; i < this.elasticData.items.length; i++) {
-      const elData = this.elasticData[i];
+      const elData = this.elasticData.items[i];
 
-      const label = moment(elData.date).format('YYYY-MM-DDTHH:mm:ss.sssZ');
+      const label = moment(elData.date).format('YYYY-MM-DD HH:mm');
 
 
-      if (this.selectedCategoryForTraffic === 0) {
-        averageData.push([label, elData.averages.total_hit]);
+      if (this.selectedCategoryForTraffic === '') {
+        averageData.push([label, elData.total_hit]);
         hitData.push([label, elData.total_hit]);
       } else {
-        this.selectedCategoryForTraffic = this.categoryList.find(c => c.id === cat.id).id;
-        const catName = cat.name;
+        this.selectedCategoryForTraffic = this.categoryList.find(c => c.name === cat.name).name;
 
-        const catData = elData.category_hits[catName];
+        const catData = elData.category_hits.find(x => x.name === this.selectedCategoryForTraffic);
 
         if (catData) {
-          averageData.push([label, catData.average]);
-          hitData.push([label, catData.hits]);
+          averageData.push([label, catData.average.toFixed(2)]);
+          hitData.push([label, catData.hits.toFixed(2)]);
         }
       }
     }
@@ -473,7 +481,7 @@ export class DashboardComponent implements OnInit {
 
   deleteCatFromTraffic(id: number) {
     if (id && id > 0) {
-      this.selectedCategoryForTraffic = 0;
+      this.selectedCategoryForTraffic = '';
       this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: 'Average Hits', data: this.ds.hitAverages }]);
     }
   }
