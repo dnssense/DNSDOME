@@ -10,6 +10,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { log } from 'util';
 import { BoxService } from 'src/app/core/services/box.service';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 declare var $: any;
 
@@ -39,9 +40,9 @@ export class BoxWizardComponent implements OnInit {
   }
 
   @Output() public saveEmitter = new EventEmitter();
-  
+
   constructor(private apService: ApplicationProfilesService, private dpService: DomainProfilesService, private notification: NotificationService,
-    private bwService: BlackWhiteListService, private boxService: BoxService, private formBuilder: FormBuilder) {
+    private bwService: BlackWhiteListService, private boxService: BoxService, private formBuilder: FormBuilder, private staticMessageService: StaticMessageService) {
 
   }
 
@@ -122,7 +123,7 @@ export class BoxWizardComponent implements OnInit {
 
   checkIPNumber(event: KeyboardEvent, inputValue: string) {
 
-    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", ".","Tab"];
+    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", ".", "Tab"];
     let isValid: boolean = false;
 
     for (let i = 0; i < allowedChars.length; i++) {
@@ -158,7 +159,7 @@ export class BoxWizardComponent implements OnInit {
       }
 
       if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
-        
+
         let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
         let secondOclet = Number(secondOcletStr);
         if (secondOclet >= 16 && secondOclet <= 31) {
@@ -200,12 +201,10 @@ export class BoxWizardComponent implements OnInit {
     this.selectedBox.ipAddress = this.etvIp;
 
     this.boxService.saveBox(this.selectedBox).subscribe(res => {
-      if (res.status == 200) {
-        this.notification.success(res.message);
-        this.saveEmitter.emit();
-      } else {
-        this.notification.error(res.message);
-      }
+
+      this.notification.success(this.staticMessageService.savedAgentBoxMessage());
+      this.saveEmitter.emit();
+
     });
 
   }

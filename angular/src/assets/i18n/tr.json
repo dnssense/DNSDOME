@@ -70,7 +70,7 @@
     "ErrOAuthNotAuthorized": "Yetki verilmedi",
     "ErrOAuthNotFound": "Kaynak bulunamadı",
     "ErrOAuthUnknownError": "Bilinmeyen hata",
-    "ErrOAuthInternalError": "İç sistemlerde hata oluştur",
+    "ErrOAuthInternalError": "İç sistemlerde hata oluştu",
     "ErrOAuthUserLockedOrPassiveOrNotVerified": "Kullanıcı kilitli, pasif yada doğrulanmamış",
     "ErrUserNotFound": "Kullanıcı bulunamadı",
     "ErrUserNotAuthorized": "Yetki verilmedi",
@@ -91,6 +91,16 @@
     "ErrUserMaxLimitReached": "Maksimum istek sınırı aşıldı!",
     "ErrUserPasswordPolicy": "Parola güvenlik politikasına uygun değil!",
     "ErrDashboardInternalError":"Kontrol paneli verileri alınamadı",
+    "ErrIpAllreadyExits":"Ip sistemde kayıtlı",
+    "ErrNotAuthorized":"Yetki verilmedi",
+    "ErrApiKeyIsNotValid":"Yetki verılmedi",
+    "ErrBadArgument":"Geçersiz veri girişı",
+    "ErrNotFound":"Kaynak bulunamadı",
+    "ErrInternalError":"İç sistemlerde hata oluştu",
+    "ErrAgentNotFound":"Agent bulunamadı",
+    "ErrRootProfileNotFound":"Güvenlik profili bulunamadı",
+    "ErrSystemProfileCannotUpdate":"Sistem profili değiştirilemez",
+    "ErrMaxBlackListSize":"Maximum blacklist sınırı aşıldı",
     "FORGOTPASSWORD": {
         "Title": "Parola Yenileme"
     }

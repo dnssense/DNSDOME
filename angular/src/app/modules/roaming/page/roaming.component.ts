@@ -9,6 +9,8 @@ import { RoamingService } from 'src/app/core/services/roaming.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { GroupAgentModel } from '../../devices/page/devices.component';
+import { StaticSymbolResolverHost } from '@angular/compiler';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 declare let $: any;
 
@@ -25,7 +27,8 @@ export class RoamingComponent implements OnInit {
         private alertService: AlertService,
         private notification: NotificationService,
         private roamingService: RoamingService,
-        private boxService: BoxService
+        private boxService: BoxService,
+        private staticMessageService: StaticMessageService
     ) { }
 
     clientForm: FormGroup;
@@ -205,12 +208,10 @@ export class RoamingComponent implements OnInit {
         if (this.selectedClient && this.isFormValid()) {
             this.roamingService.saveClient(this.selectedClient).subscribe(
                 res => {
-                    if (res.status === 200) {
-                        this.notification.success(res.message);
-                        this.loadClients();
-                    } else {
-                        this.notification.error(res.message);
-                    }
+
+                    this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage());
+                    this.loadClients();
+
                 });
         }
     }
@@ -220,14 +221,15 @@ export class RoamingComponent implements OnInit {
             res => {
                 if (res && id && id > 0) {
                     this.roamingService.deleteClient(id).subscribe(result => {
-                        if (result.status === 200) {
-                            this.notification.success(result.message);
-                        } else {
-                            this.notification.error(result.message);
-                        }
+
+                        this.notification.success(this.deletedAgentRoamingClientMessage());
+
                     });
                 }
             });
+    }
+    deletedAgentRoamingClientMessage(): string {
+        throw new Error('Method not implemented.');
     }
 
     searchByKeyword() {

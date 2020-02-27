@@ -23,16 +23,16 @@ export class RoamingService {
     return this.http.get<Agent[]>(this.roamingClientUrl).map(data => data);
   }
 
-  saveClient(client: Agent): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.roamingClientUrl, JSON.stringify(client), this.options).map(data => data);
+  saveClient(client: Agent): Observable<Agent> {
+    return this.http.post<Agent>(this.roamingClientUrl, client, this.options).map(data => data);
   }
 
-  updateClient(client: Agent): Observable<OperationResult> {
-    return this.http.put<OperationResult>(this.roamingClientUrl, JSON.stringify(client), this.options).map(data => data);
+  updateClient(client: Agent): Observable<Agent> {
+    return this.http.put<Agent>(this.roamingClientUrl, client, this.options).map(data => data);
   }
 
-  deleteClient(id: number): Observable<OperationResult> {
-    return this.http.delete<OperationResult>(`${this.roamingClientUrl}/${id}`, this.options).map(res => res);
+  deleteClient(id: number): Observable<{}> {
+    return this.http.delete<{}>(`${this.roamingClientUrl}/${id}`, this.options).map(res => res);
   }
 
 }

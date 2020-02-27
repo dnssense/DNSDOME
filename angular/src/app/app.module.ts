@@ -85,10 +85,10 @@ import { RoksitModule, ServicesModule } from 'roksit-lib';
       useClass: HttpErrorInterceptor,
       multi: true
     },
-    // {
-    //   provide: ErrorHandler,
-    //   useClass: ErrorInterceptor
-    // }
+     {
+       provide: ErrorHandler,
+       useClass: ErrorInterceptor
+     }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

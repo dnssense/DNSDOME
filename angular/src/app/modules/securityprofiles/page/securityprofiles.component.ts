@@ -6,6 +6,7 @@ import { Agent } from 'src/app/core/models/Agent';
 import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 @Component({
     selector: 'app-securityprofiles',
@@ -17,7 +18,8 @@ export class SecurityProfilesComponent {
     constructor(
         private agentService: AgentService,
         private notification: NotificationService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private staticMessageService:StaticMessageService
     ) {
         this.getProfiles();
     }
@@ -87,13 +89,11 @@ export class SecurityProfilesComponent {
                 res => {
                     if (res) {
                         this.agentService.deleteSecurityProfile(id).subscribe(delRes => {
-                            if (delRes.status === 200) {
-                                this.notification.success(delRes.message);
+                            
+                                this.notification.success(this.staticMessageService.deletedProfileMessage());
 
                                 this.getProfiles();
-                            } else {
-                                this.notification.error(delRes.message);
-                            }
+                            
                         });
                     }
                 }

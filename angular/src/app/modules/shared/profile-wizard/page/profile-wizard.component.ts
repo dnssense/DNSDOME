@@ -15,6 +15,7 @@ import { BoxService } from 'src/app/core/services/box.service';
 import { DEVICE_GROUP } from 'src/app/core/Constants';
 import { DeviceGroup, AgentInfo } from 'src/app/core/models/DeviceGroup';
 import { BWListItem } from 'src/app/core/models/BWListItem';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 declare var $: any;
 
@@ -51,7 +52,8 @@ export class ProfileWizardComponent {
     private staticService: StaticService,
     private agentService: AgentService,
     private roamingService: RoamingService,
-    private boxService: BoxService
+    private boxService: BoxService,
+    private staticMessageService: StaticMessageService
   ) {
     this.getCategoriesAndApps();
   }
@@ -280,40 +282,32 @@ export class ProfileWizardComponent {
         if (res) {
           if (this.saveMode === 'NewProfile' || this.saveMode === 'ProfileUpdate') {
             this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
-                this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+
+              this.notification.success(this.staticMessageService.savedProfileMessage());
+              this.saveEmitter.emit();
+
             });
           } else if (this.saveMode === 'NewProfileWithAgent') {
-            this.agentService.saveAgent(this.selectedAgent).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
-                this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+            this.agentService.saveAgentLocation(this.selectedAgent).subscribe(result => {
+
+              this.notification.success(this.staticMessageService.savedAgentLocationMessage());
+              this.saveEmitter.emit();
+
             });
           } else if (this.saveMode === 'NewProfileWithRoaming') {
             this.roamingService.saveClient(this.selectedAgent).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
-                this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+
+              this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage());
+              this.saveEmitter.emit();
+
             });
           } else if (this.saveMode === 'NewProfileWithBox') {
             this.selectedBox.agent = this.selectedAgent;
             this.boxService.saveBox(this.selectedBox).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
+
+                this.notification.success(this.staticMessageService.savedAgentBoxMessage());
                 this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+
             });
           } else if (this.saveMode === 'NewProfileWithDevice') {
             const dg = new DeviceGroup();
@@ -328,13 +322,11 @@ export class ProfileWizardComponent {
             dg.agents = [ai];
             delete dg.agentGroup;
 
-            this.agentService.saveDevice(dg).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
-                this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+            this.agentService.saveAgentDevice(dg).subscribe(result => {
+
+              this.notification.success(this.staticMessageService.savedDeviceMessage());
+              this.saveEmitter.emit();
+
             });
           } else if (this.saveMode === 'NewProfileWithDeviceGroup') {
 
@@ -343,13 +335,11 @@ export class ProfileWizardComponent {
               deviceGroup.rootProfile = this.selectedAgent.rootProfile;
 
               if (deviceGroup.agents.length > 0 && deviceGroup.agentGroup.groupName && deviceGroup.rootProfile) {
-                this.agentService.saveDevice(deviceGroup).subscribe(result => {
-                  if (result.status === 200) {
-                    this.notification.success(result.message);
-                    this.saveEmitter.emit();
-                  } else {
-                    this.notification.error(result.message);
-                  }
+                this.agentService.saveAgentDevice(deviceGroup).subscribe(result => {
+
+                  this.notification.success(this.staticMessageService.savedDeviceMessage());
+                  this.saveEmitter.emit();
+
                 });
               } else {
                 this.notification.warning('Missing Information! Please provide required fields.');

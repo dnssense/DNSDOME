@@ -233,7 +233,7 @@
               <div class="top-content justify-content-between">
                 <div class="rk-table-title">Group Agent</div>
 
-                <button class="btn btn-small btn-icon" (click)="groupAgentModal.toggle()">
+                <button class="btn btn-small btn-icon" (click)="createNewGroup()">
                   <i-feather name="plus" class="mr-2"></i-feather>
                   Create New Group
                 </button>
@@ -266,7 +266,7 @@
                   </td>
                   <td style="width: 60px">
                     <button class="btn btn-link btn-icon p-0 hover-gray"
-                      (click)="deleteDeviceGroup(device.agentGroup.id)">
+                      (click)="deleteDeviceGroup(device.agentGroup.groupName)">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>
@@ -307,13 +307,13 @@
               </div>
 
               <div class="row">
-                <div class="col-12 mt-3" *ngFor="let sp of securityProfiles">
+               <!--  <div class="col-12 mt-3"  *ngFor="let sp of securityProfiles">
                   <div class="rk-radio my-0">
                     <input type="radio" id="s-{{ sp.id }}" [(ngModel)]="selectedProfileId"
                       name="selectedSecurityProfile" [value]="sp.id">
                     <label for="s-{{ sp.id }}">{{ sp.name }}</label>
                   </div>
-                </div>
+                </div> -->
 
                 <div class="col-12 mt-3">
                   <p class="rk-group-title">Select the Devices whose group you want to change</p>

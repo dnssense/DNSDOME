@@ -27,7 +27,7 @@ export class PublicIPService {
     return geoLocation.getCurrent(this.http).map(res => res.ip);
   }
 
-  public getAgents() {
+  public getAgentLocation() {
     return this.http.get(this._agentsListURL).map(res => res);
   }
 

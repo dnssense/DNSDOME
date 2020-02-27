@@ -15,6 +15,10 @@ import { DeviceGroup, AgentInfo, AgentGroup } from 'src/app/core/models/DeviceGr
 import { Agent } from 'src/app/core/models/Agent';
 import { RkTableConfigModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { element } from 'protractor';
+import { group } from '@angular/animations';
+import { JsonPipe } from '@angular/common';
 
 declare var $: any;
 
@@ -26,7 +30,7 @@ export class UnregisteredAgent {
     /**
      * @description For UI
      */
-    selected?= false;
+    selected ?= false;
 }
 
 export function validLength(val: string) {
@@ -37,7 +41,7 @@ export class GroupAgentModel {
     agentGroup: AgentGroup;
     securityProfile: SecurityProfile;
     agents: Agent[];
-    memberCounts?= 0;
+    memberCounts ?= 0;
 }
 
 @Component({
@@ -49,7 +53,7 @@ export class GroupAgentModel {
 export class DevicesComponent implements OnInit {
 
     constructor(private agentService: AgentService, private formBuilder: FormBuilder, private alertService: AlertService,
-        private boxService: BoxService, private notification: NotificationService) {
+        private boxService: BoxService, private notification: NotificationService, private staticMessageService: StaticMessageService) {
 
         this.loadDevices();
         this.initializeSelectedAgentProfile();
@@ -91,8 +95,10 @@ export class DevicesComponent implements OnInit {
     showGB = false;
 
     groupName = '';
+    groupNameBeforeEdit = '';
 
     selectedProfileRadio;
+    selectedProfileRadioBeforeEdit;
 
     @ViewChild('selectedBoxModal') selectedBoxModal;
 
@@ -113,10 +119,12 @@ export class DevicesComponent implements OnInit {
             this.securityProfilesForSelect = [];
 
             this.securityProfiles.forEach(elem => {
+
                 this.securityProfilesForSelect.push({
                     displayText: elem.name,
                     value: elem.id
                 });
+
             });
         });
 
@@ -124,6 +132,7 @@ export class DevicesComponent implements OnInit {
 
         this.agentService.getRegisteredDevices().subscribe(res => {
             this.groupList = [];
+            this.groupListForSelect = [];
             res.forEach((r, index) => {
                 if (r.agentGroup && r.agentGroup.id > 0) {
                     const finded = this.groupList.find(g => g.agentGroup.groupName === r.agentGroup.groupName);
@@ -133,11 +142,13 @@ export class DevicesComponent implements OnInit {
                             securityProfile: r.rootProfile,
                             agents: [r]
                         });
-                        this.groupListForSelect.push({
-                            displayText: r.agentGroup.groupName,
-                            value: r.agentGroup.id,
-                            selected: index === 0
-                        });
+
+                            this.groupListForSelect.push({
+                                displayText: r.agentGroup.groupName,
+                                value: r.agentGroup.id,
+                                selected: index === 0
+                            });
+
                     } else {
                         finded['memberCounts']++;
                         finded.agents.push(r);
@@ -178,19 +189,31 @@ export class DevicesComponent implements OnInit {
             } as GroupAgentModel;
         }
     }
+    createNewGroup() {
+
+        this.selectedGroupAgent = new GroupAgentModel();
+        this.selectedProfileRadioBeforeEdit = -1;
+        this.selectedProfileRadio = -1;
+        this.groupName = '';
+        this.groupNameBeforeEdit = '';
+
+        this.groupAgentModal.toggle();
+    }
 
     editGroupAgentModal(groupAgent: GroupAgentModel) {
-        this.selectedGroupAgent = JSON.parse(JSON.stringify(groupAgent));
+        this.selectedGroupAgent = this.deepCopy(groupAgent);
 
         this.groupName = this.selectedGroupAgent.agentGroup.groupName;
+        this.groupNameBeforeEdit = this.selectedGroupAgent.agentGroup.groupName;
 
         this.selectedGroupAgent.agents.forEach(elem => {
             elem.selected = true;
         });
-
+        this.selectedProfileRadioBeforeEdit = undefined;
         this.securityProfilesForSelect.forEach(elem => {
             if (elem.value === this.selectedGroupAgent.securityProfile.id) {
                 this.selectedProfileRadio = elem.value;
+                this.selectedProfileRadioBeforeEdit = elem.value;
             }
         });
 
@@ -220,150 +243,148 @@ export class DevicesComponent implements OnInit {
         // tooltip istenirse eklenecek
     }
 
-    showNewProfileWizardForDevice(mac: string) {
-        const agentInfo = this.unregistereds.find(a => a.agentInfo.mac === mac).agentInfo;
-        this.selectedAgent.id = agentInfo.id;
-        this.selectedAgent.agentType = agentInfo.agentType;
-        this.selectedAgent.agentAlias = agentInfo.agentAlias;
-        this.selectedAgent.blockMessage = agentInfo.blockMessage;
-        this.selectedAgent.mac = agentInfo.mac;
+    /*     showNewProfileWizardForDevice(mac: string) {
+            const agentInfo = this.unregistereds.find(a => a.agentInfo.mac === mac).agentInfo;
+            this.selectedAgent.id = agentInfo.id;
+            this.selectedAgent.agentType = agentInfo.agentType;
+            this.selectedAgent.agentAlias = agentInfo.agentAlias;
+            this.selectedAgent.blockMessage = agentInfo.blockMessage;
+            this.selectedAgent.mac = agentInfo.mac;
+            this.selectedAgent.rootProfile = agentInfo.rootProfile;
+            this.selectedAgent.agentGroup = agentInfo.agentGroup;
 
-        this.initializeSelectedAgentProfile();
-        this.selectedAgent.rootProfile.name = this.selectedAgent.agentAlias + '-Profile';
-        this.saveMode = 'NewProfileWithDevice';
-        this.startWizard = true;
-    }
-
-    showNewProfileWizardForDeviceGroup() {
-        if (this.deviceGroup.agentGroup.groupName && this.deviceGroup.agents.length > 0) {
-            this.closeModal();
-            localStorage.setItem(DEVICE_GROUP, JSON.stringify(this.deviceGroup));
-            this.selectedAgent = new Agent();
             this.initializeSelectedAgentProfile();
-            this.selectedAgent.rootProfile.name = this.deviceGroup.agentGroup.groupName + '-Profile';
-            this.saveMode = 'NewProfileWithDeviceGroup';
+            this.selectedAgent.rootProfile.name = this.selectedAgent.agentAlias + '-Profile';
+            this.saveMode = 'NewProfileWithDevice';
             this.startWizard = true;
-        } else {
-            this.notification.warning('Missing Information! Please provide required fields.');
         }
-    }
+     */
+    /*    showNewProfileWizardForDeviceGroup() {
+           if (this.deviceGroup.agentGroup.groupName && this.deviceGroup.agents.length > 0) {
+               this.closeModal();
+               localStorage.setItem(DEVICE_GROUP, JSON.stringify(this.deviceGroup));
+               this.selectedAgent = new Agent();
+               this.initializeSelectedAgentProfile();
+               this.selectedAgent.rootProfile.name = this.deviceGroup.agentGroup.groupName + '-Profile';
+               this.saveMode = 'NewProfileWithDeviceGroup';
+               this.startWizard = true;
+           } else {
+               this.notification.warning('Missing Information! Please provide required fields.');
+           }
+       }
+    */
+    /*     saveDeviceGroup() {
+            debugger;
+            if (this.deviceGroup.agents.length > 0 && this.deviceGroup.agentGroup.groupName && this.deviceGroup.rootProfile
+                && this.deviceGroup.rootProfile.id > 0) {
 
-    saveDeviceGroup() {
-        if (this.deviceGroup.agents.length > 0 && this.deviceGroup.agentGroup.groupName && this.deviceGroup.rootProfile
-            && this.deviceGroup.rootProfile.id > 0) {
-
-            if (this.deviceCache && this.deviceCache.length > 0) {
-                const ids = [];
-                for (let i = 0; i < this.deviceCache.length; i++) {
-                    const e = this.deviceCache[i];
-                    ids.push(e.id);
-                }
-                this.agentService.deleteDevice(ids).subscribe(res => {
-                    if (res.status === 200) {
-                        this.notification.success(res.message);
-                    } else {
-                        this.notification.error(res.message);
+                if (this.deviceCache && this.deviceCache.length > 0) {
+                    const ids = [];
+                    for (let i = 0; i < this.deviceCache.length; i++) {
+                        const e = this.deviceCache[i];
+                        ids.push(e.id);
                     }
-                });
-            }
+                    this.agentService.deleteAgentDevice(ids).subscribe(res => {
 
-            this.agentService.saveDevice(this.deviceGroup).subscribe(res => {
-                if (res.status === 200) {
+                        this.notification.success(this.staticMessageService.deletedDeviceMessage());
+
+                    });
+                }
+
+                this.agentService.saveAgentDevice(this.deviceGroup).subscribe(res => {
+
                     this.closeModal();
-                    this.notification.success(res.message);
+                    this.notification.success(this.staticMessageService.savedDeviceMessage());
                     this.loadDevices();
-                } else {
-                    this.notification.error(res.message);
-                }
-            });
 
-        } else {
-            this.notification.warning('Missing Information! Please provide required fields.');
-        }
-    }
+                });
 
-    saveDevice(mac: string) {
-        const d = this.unregistereds.find(u => u.agentInfo.mac === mac);
-
-        const dg = new DeviceGroup();
-        dg.agents = [d.agentInfo];
-        if (d.agentGroup && d.agentGroup.id > 0) {
-            dg.agentGroup = d.agentGroup;
-            dg.rootProfile = this.registereds.find(r => (r.agentGroup && r.agentGroup.id === d.agentGroup.id)).rootProfile;
-        } else {
-            dg.rootProfile = d.rootProfile;
-            delete dg.agentGroup;
-        }
-
-        this.agentService.saveDevice(dg).subscribe(res => {
-            if (res.status === 200) {
-                this.notification.success(res.message);
-                this.loadDevices();
             } else {
-                this.notification.error(res.message);
+                this.notification.warning('Missing Information! Please provide required fields.');
             }
-        });
+        } */
 
-    }
+    /*    saveAgentDevice(mac: string) {
+           debugger;
+           const d = this.unregistereds.find(u => u.agentInfo.mac === mac);
 
-    showNewProfileWizardForBox() {
-        if (!this.isBoxFormValid()) {
-            return;
-        }
+           const dg = new DeviceGroup();
+           dg.agents = [d.agentInfo];
+           if (d.agentGroup && d.agentGroup.id > 0) {
+               dg.agentGroup = d.agentGroup;
+               dg.rootProfile = this.registereds.find(r => (r.agentGroup && r.agentGroup.id === d.agentGroup.id)).rootProfile;
+           } else {
+               dg.rootProfile = d.rootProfile;
+               delete dg.agentGroup;
+           }
 
-        this.initializeSelectedAgentProfile();
+           this.agentService.saveAgentDevice(dg).subscribe(res => {
 
-        this.saveMode = 'NewProfileWithBox';
+               this.notification.success(this.staticMessageService.savedDeviceMessage());
+               this.loadDevices();
 
-        this.startWizard = true;
-    }
+           });
 
-    showNewProfileEditWizardForBox(boxId: number) {
-        if (!this.isBoxFormValid()) {
-            return;
-        }
+       } */
 
-        const b = this.boxes.find(bo => bo.id === boxId);
-        if (b && b.agent.rootProfile && b.agent.rootProfile.id > 0) {
-            this.selectedAgent = b.agent;
-            this.saveMode = 'ProfileUpdate';
+    /*     showNewProfileWizardForBox() {
+            if (!this.isBoxFormValid()) {
+                return;
+            }
+
+            this.initializeSelectedAgentProfile();
+
+            this.saveMode = 'NewProfileWithBox';
+
             this.startWizard = true;
-        } else {
-            this.notification.warning('Profile can not find!');
-        }
-    }
+        } */
 
-    hideForm(type: string) {
-        if (type === 'box') {
-            $('#newBoxRow').slideUp(300);
-        }
-    }
+    /*    showNewProfileEditWizardForBox(boxId: number) {
+           if (!this.isBoxFormValid()) {
+               return;
+           }
 
-    hideWizard() {
-        this.alertService.alertWarningAndCancel('Are You Sure?', 'If you made changes, your changes will be cancelled!').subscribe(
-            res => {
-                if (res) {
-                    this.hideWizardWithoutConfirm();
-                }
-            }
-        );
-    }
+           const b = this.boxes.find(bo => bo.id === boxId);
+           if (b && b.agent.rootProfile && b.agent.rootProfile.id > 0) {
+               this.selectedAgent = b.agent;
+               this.saveMode = 'ProfileUpdate';
+               this.startWizard = true;
+           } else {
+               this.notification.warning('Profile can not find!');
+           }
+       } */
 
-    hideWizardWithoutConfirm() {
-        this.loadDevices();
-    }
+    /*    hideForm(type: string) {
+           if (type === 'box') {
+               $('#newBoxRow').slideUp(300);
+           }
+       }
+    */
+    /*  hideWizard() {
+         this.alertService.alertWarningAndCancel('Are You Sure?', 'If you made changes, your changes will be cancelled!').subscribe(
+             res => {
+                 if (res) {
+                     this.hideWizardWithoutConfirm();
+                 }
+             }
+         );
+     } */
+
+    /*   hideWizardWithoutConfirm() {
+          this.loadDevices();
+      } */
 
     saveBox() {
         if (this.isBoxFormValid()) {
             this.boxService.saveBox(this.selectedBox).subscribe(res => {
-                if (res.status === 200) {
-                    this.notification.success(res.message);
+                this.selectedBoxModal.toggle();
+                this.notification.success(this.staticMessageService.savedAgentBoxMessage());
 
-                    this.loadDevices();
-                } else {
-                    this.notification.error(res.message);
-                }
+                this.loadDevices();
+
             });
+        } else {
+            this.notification.warning(this.staticMessageService.needsToFillInRequiredFields());
         }
     }
 
@@ -375,40 +396,37 @@ export class DevicesComponent implements OnInit {
         this.alertService.alertWarningAndCancel('Are You Sure?', 'Settings for this device will be deleted!').subscribe(
             res => {
                 if (res) {
-                    this.agentService.deleteDevice([id]).subscribe(_res => {
-                        if (_res.status === 200) {
-                            this.notification.success(_res.message);
+                    this.agentService.deleteAgentDevice([id]).subscribe(_res => {
 
-                            this.loadDevices();
-                        } else {
-                            this.notification.error(_res.message);
-                        }
+                        this.notification.success(this.staticMessageService.deletedDeviceMessage());
+
+                        this.loadDevices();
+
                     });
                 }
             }
         );
     }
 
-    deleteDeviceGroup(id: number) {
+    deleteDeviceGroup(groupName: string) {
         this.alertService.alertWarningAndCancel('Are You Sure?', 'Settings for this group will be deleted!').subscribe(
             res => {
                 if (res) {
                     const ids = [];
+
                     for (let i = 0; i < this.registereds.length; i++) {
                         const e = this.registereds[i];
-                        if (e.agentGroup && e.agentGroup.id === id) {
+                        if (e.agentGroup && e.agentGroup.groupName === groupName) {
                             ids.push(e.id);
                         }
                     }
 
-                    this.agentService.deleteDevice(ids).subscribe(_res => {
-                        if (_res.status === 200) {
-                            this.closeModal();
-                            this.notification.success(_res.message);
-                            this.loadDevices();
-                        } else {
-                            this.notification.error(_res.message);
-                        }
+                    this.agentService.deleteAgentDevice(ids).subscribe(_res => {
+
+                        this.closeModal();
+                        this.notification.success(this.staticMessageService.deletedDevicesMessage());
+                        this.loadDevices();
+
                     });
                 }
             }
@@ -421,12 +439,10 @@ export class DevicesComponent implements OnInit {
                 res => {
                     if (res) {
                         this.boxService.deleteBox(id).subscribe(resu => {
-                            if (resu.status === 200) {
-                                this.notification.success(resu.message);
-                                this.loadDevices();
-                            } else {
-                                this.notification.error(resu.message);
-                            }
+
+                            this.notification.success(this.staticMessageService.deletedAgentBoxMessage());
+                            this.loadDevices();
+
                         });
                     }
                 }
@@ -434,42 +450,42 @@ export class DevicesComponent implements OnInit {
         }
     }
 
-    changeBoxCPStatus() {
-        // this.selectedBox.agent.isCpEnabled = this.selectedBox.agent.isCpEnabled ? false : true;
-    }
+    /*   changeBoxCPStatus() {
+          // this.selectedBox.agent.isCpEnabled = this.selectedBox.agent.isCpEnabled ? false : true;
+      }
+   */
+    /*    securityProfileChanged(type: string, profileId: number) {
+           if (type && type.toLowerCase() === 'box') {
+               // this.selectedBox.agent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id === profileId)));
+           } else if (type && type.toLowerCase() === 'agent') {
+               this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id === profileId)));
+           }
+       }
+    */
+    /*     deviceProfileChanged(mac: string, profileId: number) {
+            this.unregistereds.find(d => d.agentInfo.mac === mac).agentGroup = null;
+            this.unregistereds.find(d => d.agentInfo.mac === mac).rootProfile =
+                JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id === profileId)));
+        } */
 
-    securityProfileChanged(type: string, profileId: number) {
-        if (type && type.toLowerCase() === 'box') {
-            // this.selectedBox.agent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id === profileId)));
-        } else if (type && type.toLowerCase() === 'agent') {
-            this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id === profileId)));
-        }
-    }
+    /*     deviceGroupChanged(mac: string, groupId: number) {
+            this.unregistereds.find(d => d.agentInfo.mac === mac).agentGroup = {
+                id: groupId,
+                groupName: this.groupList.find(g => g.agentGroup.id === groupId).agentGroup.groupName
+            };
+            this.unregistereds.find(d => d.agentInfo.mac === mac).rootProfile = null;
+        } */
 
-    deviceProfileChanged(mac: string, profileId: number) {
-        this.unregistereds.find(d => d.agentInfo.mac === mac).agentGroup = null;
-        this.unregistereds.find(d => d.agentInfo.mac === mac).rootProfile =
-            JSON.parse(JSON.stringify(this.securityProfiles.find(s => s.id === profileId)));
-    }
-
-    deviceGroupChanged(mac: string, groupId: number) {
-        this.unregistereds.find(d => d.agentInfo.mac === mac).agentGroup = {
-            id: groupId,
-            groupName: this.groupList.find(g => g.agentGroup.id === groupId).agentGroup.groupName
-        };
-        this.unregistereds.find(d => d.agentInfo.mac === mac).rootProfile = null;
-    }
-
-    showProfileEditWizard(id: number) {
-        const device = this.registereds.find(r => r.id === id);
-        if (device.rootProfile && device.rootProfile.id > 0) {
-            this.selectedAgent = device;
-            this.saveMode = 'ProfileUpdate';
-            this.startWizard = true;
-        } else {
-            this.notification.warning('Profile can not find!');
-        }
-    }
+    /*     showProfileEditWizard(id: number) {
+            const device = this.registereds.find(r => r.id === id);
+            if (device.rootProfile && device.rootProfile.id > 0) {
+                this.selectedAgent = device;
+                this.saveMode = 'ProfileUpdate';
+                this.startWizard = true;
+            } else {
+                this.notification.warning('Profile can not find!');
+            }
+        } */
 
     checkKeydown($event: KeyboardEvent) {
         this.checkIPNumber($event, this.selectedBox.agent.captivePortalIp);
@@ -518,104 +534,106 @@ export class DevicesComponent implements OnInit {
         }
     }
 
-    groupProfileChanged(id: number) {
-        this.deviceGroup.rootProfile = this.securityProfiles.find(p => p.id === id);
-    }
-
-    moveDeviceInGroup(opType: number, mac: string) {
-        if (opType === 1) {
-            const d = this.devicesForGroup.find(u => u.mac === mac);
-            this.deviceGroup.agents.push(d);
-            this.devicesForGroup.splice(this.devicesForGroup.findIndex(x => x.mac === mac), 1);
-            if (d.id && d.id > 0 && this.deviceCache.find(c => c.id === d.id)) {
-                this.deviceCache.splice(this.deviceCache.findIndex(c => c.mac === d.mac), 1);
+    /*  groupProfileChanged(id: number) {
+         this.deviceGroup.rootProfile = this.securityProfiles.find(p => p.id === id);
+     } */
+    /*
+        moveDeviceInGroup(opType: number, mac: string) {
+            if (opType === 1) {
+                const d = this.devicesForGroup.find(u => u.mac === mac);
+                this.deviceGroup.agents.push(d);
+                this.devicesForGroup.splice(this.devicesForGroup.findIndex(x => x.mac === mac), 1);
+                if (d.id && d.id > 0 && this.deviceCache.find(c => c.id === d.id)) {
+                    this.deviceCache.splice(this.deviceCache.findIndex(c => c.mac === d.mac), 1);
+                }
+            } else {
+                const d = this.deviceGroup.agents.find(u => u.mac === mac);
+                if (d.id && d.id > 0) {
+                    this.deviceCache.push(d);
+                }
+                this.devicesForGroup.push(d);
+                this.deviceGroup.agents.splice(this.deviceGroup.agents.findIndex(x => x.mac === mac), 1);
             }
-        } else {
-            const d = this.deviceGroup.agents.find(u => u.mac === mac);
-            if (d.id && d.id > 0) {
-                this.deviceCache.push(d);
-            }
-            this.devicesForGroup.push(d);
-            this.deviceGroup.agents.splice(this.deviceGroup.agents.findIndex(x => x.mac === mac), 1);
-        }
 
-    }
+        } */
 
-    deleteUngroupDevice(device: UnregisteredAgent) {
+    /* deleteUngroupDevice(device: UnregisteredAgent) {
         if (device) {
             this.alertService.alertWarningAndCancel('Are You Sure?', 'Settings for this device will be deleted!').subscribe(
                 res => {
                     if (res) {
                         this.boxService.deleteBox(device.agentInfo.id).subscribe(resu => {
-                            if (resu.status === 200) {
-                                this.notification.success(resu.message);
+                                debugger;
+                                //bu nasil silinir
+                                this.notification.success(this.staticMessageService.deletedBoxMessage());
                                 this.loadDevices();
-                            } else {
-                                this.notification.error(resu.message);
-                            }
+
                         });
                     }
                 }
             );
         }
-    }
+    } */
 
-    openModal() {
-        this.deviceGroup = new DeviceGroup();
-        const agents = [];
-        this.unregistereds.forEach(u => agents.push(u.agentInfo));
-        this.devicesForGroup = JSON.parse(JSON.stringify(agents));
-    }
-
-    openAgentModal(id?: number) {
-        if (id) {
-            this.deviceCache = [];
+    /*     openModal() {
             this.deviceGroup = new DeviceGroup();
-            const d = this.registereds.find(r => r.id === id);
-
-            if (d.agentGroup && d.agentGroup.id > 0) {
-                this.deviceGroup.agentGroup = d.agentGroup;
-                this.registereds
-                    .filter(r => (r.agentGroup && r.agentGroup.id === d.agentGroup.id))
-                    .forEach(f => {
-                        this.deviceGroup.agents.push(
-                            {
-                                agentAlias: f.agentAlias,
-                                agentType: AgentType.DEVICE,
-                                mac: f.mac,
-                                blockMessage: f.blockMessage,
-                                id: f.id
-                            }
-                        );
-                    });
-                this.deviceGroup.rootProfile = d.rootProfile;
-            }
-
             const agents = [];
             this.unregistereds.forEach(u => agents.push(u.agentInfo));
             this.devicesForGroup = JSON.parse(JSON.stringify(agents));
-        } else {
+        } */
 
-        }
+    /*  openAgentModal(id?: number) {
+         if (id) {
+             this.deviceCache = [];
+             this.deviceGroup = new DeviceGroup();
+             const d = this.registereds.find(r => r.id === id);
 
-        this.groupAgentModal.toggle();
-    }
+             if (d.agentGroup && d.agentGroup.id > 0) {
+                 this.deviceGroup.agentGroup = d.agentGroup;
+                 this.registereds
+                     .filter(r => (r.agentGroup && r.agentGroup.id === d.agentGroup.id))
+                     .forEach(f => {
+                         debugger;
+                         this.deviceGroup.agents.push(
+                             {
+                                 agentAlias: f.agentAlias,
+                                 agentType: AgentType.DEVICE,
+                                 mac: f.mac,
+                                 blockMessage: f.blockMessage,
+                                 id: f.id,
+                                 rootProfile: f.rootProfile,
+                                 agentGroup: f.agentGroup
+                             }
+                         );
+                     });
+                 this.deviceGroup.rootProfile = d.rootProfile;
+             }
+
+             const agents = [];
+             this.unregistereds.forEach(u => agents.push(u.agentInfo));
+             this.devicesForGroup = JSON.parse(JSON.stringify(agents));
+         } else {
+
+         }
+
+         this.groupAgentModal.toggle();
+     } */
 
     closeModal() { }
 
-    isSameGroup(gId: AgentGroup) {
-        if (gId) {
-            if (gId.id === this.previousGroupId) {
-                return this.currentCss;
-            } else {
-                this.currentCss = this.currentCss === '' ? 'baseTableRow' : '';
+    /*     isSameGroup(gId: AgentGroup) {
+            if (gId) {
+                if (gId.id === this.previousGroupId) {
+                    return this.currentCss;
+                } else {
+                    this.currentCss = this.currentCss === '' ? 'baseTableRow' : '';
+                }
+                this.previousGroupId = gId.id;
             }
-            this.previousGroupId = gId.id;
+
+            return this.currentCss;
         }
-
-        return this.currentCss;
-    }
-
+     */
     groupMembersTableCheckboxChanged($event) {
         this.registereds.forEach(elem => elem.selected = $event);
     }
@@ -625,7 +643,7 @@ export class DevicesComponent implements OnInit {
     }
 
     selectRow(ev: boolean, item) {
-        console.log(ev, item);
+        // console.log(ev, item);
     }
 
     changeTableGroup(type: 'edit' | 'create') {
@@ -633,8 +651,14 @@ export class DevicesComponent implements OnInit {
 
         if (type === 'edit') {
             selecteds = this.registereds.filter(x => x.selected);
+
         } else {
             selecteds = this.unregistereds.filter(x => x.selected);
+        }
+
+        if (!selecteds.length) {
+            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage());
+            return;
         }
 
         this.selectedAgentGroupType = type;
@@ -651,56 +675,96 @@ export class DevicesComponent implements OnInit {
     }
 
     saveGroupAgent() {
+
         const groupName = this.groupName;
         const selectedProfile = this.securityProfiles.find(x => x.id === Number(this.selectedProfileRadio));
 
-        const selectedGroupAgentsU = this.unregistereds.filter(x => x.selected);
+        const selectedGroupAgentsAdded = this.unregistereds.filter(x => x.selected);
 
-        let selectedGroupAgentsR: AgentInfo[] = [];
+        let selectedGroupAgentsRemoved: AgentInfo[] = [];
+        let selectedGroupAgentsExits: AgentInfo[] = [];
 
         if (this.selectedGroupAgent.agents) {
-            selectedGroupAgentsR = this.selectedGroupAgent.agents.filter(x => !x.selected).map(x => {
+            selectedGroupAgentsRemoved = this.selectedGroupAgent.agents.filter(x => !x.selected).map(x => {
                 return {
                     id: x.id,
                     agentAlias: x.agentAlias,
                     agentType: x.agentType,
                     blockMessage: x.blockMessage,
-                    mac: x.mac
+                    mac: x.mac,
+                    rootProfile: x.rootProfile,
+                    agentGroup: x.agentGroup
+                } as AgentInfo;
+            });
+
+            selectedGroupAgentsExits = this.selectedGroupAgent.agents.filter(x => x.selected).map(x => {
+                return {
+                    id: x.id,
+                    agentAlias: x.agentAlias,
+                    agentType: x.agentType,
+                    blockMessage: x.blockMessage,
+                    mac: x.mac,
+                    rootProfile: x.rootProfile,
+                    agentGroup: x.agentGroup
                 } as AgentInfo;
             });
         }
-
-        if (groupName.trim().length > 0 && selectedProfile.id > 0 && (selectedGroupAgentsU.length > 0 || selectedGroupAgentsR.length > 0)) {
-            const deviceGroup = new DeviceGroup();
-
-            deviceGroup.agentGroup = { id: -1, groupName: groupName };
-
-            deviceGroup.agents = selectedGroupAgentsU.map(x => x.agentInfo);
-
-            selectedGroupAgentsR.forEach(async (elem) => {
-                await this.agentService.deleteDevice([elem.id]).toPromise();
-            });
-
-            deviceGroup.rootProfile = selectedProfile;
-
-            this.agentService.saveDevice(deviceGroup).subscribe(result => {
-                if (result.status === 200) {
-                    this.groupAgentModal.toggle();
-
-                    this.notification.success(result.message);
-
-                    this.loadDevices();
-                } else {
-                    this.notification.error(result.message);
-                }
-            });
+        if (this.groupName.trim().length === 0) {
+            this.notification.warning(this.staticMessageService.needsGroupNameMessage());
+            return;
         }
+        if (!selectedProfile || selectedProfile?.id <= 0) {
+            this.notification.warning(this.staticMessageService.needsToSelectSecurityProfileMessage());
+            return;
+        }
+        const groupNameChanged = this.groupName !== this.groupNameBeforeEdit;
+        const securityProfileChanged = this.selectedProfileRadioBeforeEdit !== selectedProfile?.id;
+        const selectionOfGroupMembedsChanged = (selectedGroupAgentsAdded.length > 0 || selectedGroupAgentsRemoved.length > 0);
+        if (!groupNameChanged && !securityProfileChanged && !selectionOfGroupMembedsChanged) {
+            this.notification.warning(this.staticMessageService.needsToFillInRequiredFields());
+            return;
+        }
+
+        if (this.groupNameBeforeEdit === '' && !selectionOfGroupMembedsChanged) {
+            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage());
+            return;
+        }
+
+        const deviceGroup = new DeviceGroup();
+
+        deviceGroup.agentGroup = { id: 0, groupName: groupName };
+
+        deviceGroup.agents = selectedGroupAgentsAdded.map(x => x.agentInfo);
+        selectedGroupAgentsExits.forEach(x => deviceGroup.agents.push(x));
+
+        selectedGroupAgentsRemoved.forEach(async (elem) => {
+            await this.agentService.deleteAgentDevice([elem.id]).toPromise();
+
+        });
+
+        deviceGroup.rootProfile = selectedProfile;
+        if (deviceGroup.agents.length) {
+            this.agentService.saveAgentDevice(deviceGroup).subscribe(result => {
+
+                this.groupAgentModal.toggle();
+
+                this.notification.success(this.staticMessageService.savedDevicesMessage());
+
+                this.loadDevices();
+
+            });
+        } else {
+            this.groupAgentModal.toggle();
+            this.notification.success(this.staticMessageService.savedDevicesMessage());
+            this.loadDevices();
+        }
+
     }
 
     editBox(box: Box) {
         this.selectedBoxModal.toggle();
 
-        this.selectedBox = this.deppCopy(box);
+        this.selectedBox = this.deepCopy(box);
 
         this.securityProfilesForSelect.forEach(elem => {
             if (box.agent.rootProfile.id === elem.value) {
@@ -709,26 +773,30 @@ export class DevicesComponent implements OnInit {
         });
     }
 
-    private deppCopy(obj) {
-        return Object.assign({}, obj);
+    private deepCopy(obj) {
+        return JSON.parse(JSON.stringify(obj));
     }
 
     cleanBoxForm() {
         this.selectedBox.host = '';
         this.selectedBox.agent.blockMessage = '';
-        this.selectedBox.agent.rootProfile = {} as SecurityProfile;
         this.selectedBox.agent.captivePortalIp = '';
     }
 
+
+
     changeGroupModalApplyClick() {
-        const selectedProfile = this.securityProfiles.find(x => x.id === this.selectedProfileId);
+
+        // const selectedProfile =  this.securityProfiles.find(x => x.id === this.selectedProfileId);
+
         const selectedGroup = this.groupList.find(x => x.agentGroup.id === this.selectedGroupId);
-        const selectedAgents = this.selectedGroupMembers.filter(x => x.selected);
+        const selectedProfile = selectedGroup?.securityProfile;
+        const selectedAgents = this.selectedGroupMembers?.filter(x => x.selected);
 
         const deviceGroup = new DeviceGroup();
 
-        if (!selectedProfile || !selectedGroup || selectedAgents.length === 0) {
-            this.notification.warning('Please fill in the required fields');
+        if (!selectedProfile || !selectedGroup || !selectedAgents || selectedAgents.length === 0) {
+            this.notification.warning(this.staticMessageService.needsToFillInRequiredFields());
 
             return;
         }
@@ -738,28 +806,30 @@ export class DevicesComponent implements OnInit {
 
         if (this.selectedAgentGroupType === 'create') {
             selectedAgents.forEach(elem => {
-                console.log(elem);
+
 
                 deviceGroup.agents.push({
+
                     agentAlias: elem.agentInfo.agentAlias,
                     agentType: elem.agentInfo.agentType,
                     mac: elem.agentInfo.mac,
+                    agentGroup: elem.agentInfo.agentGroup,
+                    rootProfile: elem.agentInfo.rootProfile
+
                 });
             });
         } else {
             deviceGroup.agents = selectedAgents;
         }
 
-        this.agentService.saveDevice(deviceGroup).subscribe(result => {
-            if (result.status === 200) {
-                this.changeGroupModal.toggle();
+        this.agentService.saveAgentDevice(deviceGroup).subscribe(result => {
 
-                this.notification.success(result.message);
+            this.changeGroupModal.toggle();
 
-                this.loadDevices();
-            } else {
-                this.notification.danger(result.message);
-            }
+            this.notification.success(this.staticMessageService.savedDevicesMessage());
+
+            this.loadDevices();
+
         });
     }
 }

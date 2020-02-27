@@ -21,19 +21,23 @@ export class ErrorInterceptor implements ErrorHandler {
     if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
       if (!navigator.onLine) {
-        // notificationService.danger('No Internet Connection');
+         notificationService.danger('No Internet Connection');
       } else {
         // Handle Http Error (error.status === 403, 404...)
         const status = error.status;
         if (error.error.code) {
+          
           let message = translatorService.translate(error.error.code);
           console.log(`${status} - ${message}`);
-          if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
+          notificationService.error(message);
+          /* if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
             // notificationService.error(`${message}`);
-          }
+          } */
         } else {
+          
           let message = translatorService.translate(error.statusText);
           // notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
+          notificationService.error(message);
           console.log(`${status} - ${message}`);
         }
       }

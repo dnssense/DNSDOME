@@ -165,7 +165,7 @@ export class CustomReportSearchComponent implements OnInit, OnDestroy {
       }
     });
 
-    // this.locationsService.getAgents().subscribe((res: Location[]) => {
+    // this.locationsService.getAgentLocation().subscribe((res: Location[]) => {
     //   this.agents = res;
     // });
     this.locationsService.getLocations().subscribe((res: Location[]) => {

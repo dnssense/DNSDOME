@@ -10,8 +10,8 @@ import { OperationResult } from '../models/OperationResult';
   providedIn: 'root'
 })
 export class CompanyService {
-  private getCompanyURL = this.config.getApiUrl() + '/companies';
-  private saveCompanyURL = this.config.getApiUrl() + '/companies/save';
+  private getCompanyURL = this.config.getApiUrl() + '/company';
+  private saveCompanyURL = this.config.getApiUrl() + '/company';
 
   constructor(private http: HttpClient, private config: ConfigService) {
   }
@@ -21,7 +21,7 @@ export class CompanyService {
   }
 
   public saveCompany(com: Company): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.saveCompanyURL, com, this.getOptions()).map(res => res);
+    return this.http.put<OperationResult>(this.saveCompanyURL, com, this.getOptions()).map(res => res);
   }
 
   private getOptions() {

@@ -94,6 +94,16 @@
     "ErrUserPasswordPolicy": "Password is not appropriate for security policy!",
     "ErrUserMaxLimitReached": "Max limit of requests exceeded!",
     "ErrDashboardInternalError":"Dashboard data could not get",
+    "ErrIpAllreadyExits":"Ip allready exits",
+    "ErrNotAuthorized":"Not authorized",
+    "ErrApiKeyIsNotValid":"Not authorized",
+    "ErrBadArgument":"Invalid input",
+    "ErrNotFound":"Resource not found",
+    "ErrInternalError":"Internal error",
+    "ErrAgentNotFound":"Agent not found",
+    "ErrRootProfileNotFound":"Security profile not found",
+    "ErrSystemProfileCannotUpdate":"System profile cannot update",
+    "ErrMaxBlackListSize":"Maximum blacklist size reached",
     "FORGOTPASSWORD": {
         "Title": "Change Password"
     }

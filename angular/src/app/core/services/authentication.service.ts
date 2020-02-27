@@ -63,6 +63,7 @@ export class AuthenticationService {
         }
       }
     } catch (err) {
+      debugger;
       //this.logger.console(err);
       this.logout();
     }
