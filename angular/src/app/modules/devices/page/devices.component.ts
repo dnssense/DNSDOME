@@ -624,9 +624,7 @@ export class DevicesComponent implements OnInit {
         this.unregistereds.forEach(elem => elem.selected = $event);
     }
 
-    selectRow(ev: boolean, item) {
-        console.log(ev, item);
-    }
+    selectRow(ev: boolean, item) { }
 
     changeTableGroup(type: 'edit' | 'create') {
         let selecteds;
@@ -738,8 +736,6 @@ export class DevicesComponent implements OnInit {
 
         if (this.selectedAgentGroupType === 'create') {
             selectedAgents.forEach(elem => {
-                console.log(elem);
-
                 deviceGroup.agents.push({
                     agentAlias: elem.agentInfo.agentAlias,
                     agentType: elem.agentInfo.agentType,

@@ -1,22 +1,21 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Rx";
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { OperationResult } from '../models/OperationResult';
-import { Box } from '../models/Box';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { CategoryQuery } from '../models/CategoryQuery';
 import { AuthenticationService } from './authentication.service';
-import { Session } from '../models/Session';
-
 
 @Injectable({ providedIn: 'root' })
 export class ToolsService {
+
   private _reputationURL = this.config.getApiUrl() + '/tools/category/';
   private _categorizationURL = this.config.getApiUrl() + '/categorize/truefalse';
 
-  constructor(private http: HttpClient, private config: ConfigService, private auth: AuthenticationService) {
-
-  }
+  constructor(
+    private http: HttpClient,
+    private config: ConfigService,
+    private auth: AuthenticationService
+  ) { }
 
   searchCategory(d: string): Observable<CategoryQuery> {
     return this.http.get<any>(this._reputationURL + d).map(r => JSON.parse(r));
@@ -32,7 +31,29 @@ export class ToolsService {
     }
   }
 
-
+  sendCategoryRequestV2(request: Domain2CategorizeRequestV2): Observable<Domain2CategoriseResponseV2> {
+    return this.http.post<Domain2CategoriseResponseV2>(this.config.getApiUrl() + '/categorize/truefalseV2', request).map(result => result);
+  }
 }
 
+export interface Domain2CategorizeRequestV2 {
+  domain: string;
+  category: string;
+  comment?: string;
+}
+
+export interface Domain2CategoriseItem {
+  requestId: string;
+  domain: string;
+  category: string;
+  categorySetted?: string;
+  comment?: string;
+  status: number;
+  insertDate: string;
+  doneDate?: string;
+}
+
+export interface Domain2CategoriseResponseV2 {
+  items: Domain2CategoriseItem[];
+}
 

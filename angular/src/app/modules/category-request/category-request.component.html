@@ -8,7 +8,7 @@
             </div>
 
             <div class="row">
-                <div class="col-12 col-md-6 mt-3">
+                <div class="col-12 col-md-6 p-0 mt-3">
                     <div class="rk-basic-card">
                         <p>Tüm alanlar zorunludur.</p>
 
@@ -18,7 +18,7 @@
                                     [(ngModel)]="domain">
                             </div>
                             <div class="col-12 col-md-6 mt-3 mt-md-0">
-                                <rk-select placeholder="Category" [(value)]="category"></rk-select>
+                                <rk-select placeholder="Category" [options]="categoryOptions" [(value)]="category"></rk-select>
                             </div>
                         </div>
 
@@ -29,7 +29,7 @@
 
                             <div class="col-4">
                                 <button class="btn btn-primary btn-small w-100 justify-content-center"
-                                    [disabled]="!getIsValidForm">Send</button>
+                                    [disabled]="!getIsValidForm" (click)="sendCategorize()">Send</button>
                             </div>
                         </div>
                     </div>

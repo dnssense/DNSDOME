@@ -309,12 +309,14 @@ export class DashboardComponent implements OnInit {
         },
 
         events: {
+          beforeMount: (chartContext, config) => {
+            this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);
+
+            this.infoboxChanged({ active: true }, 'total');
+          },
           updated: (chart) => {
             this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);
           },
-          beforeMount: (chartContext, config) => {
-            this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);
-          }
         },
       },
       markers: {
@@ -406,7 +408,6 @@ export class DashboardComponent implements OnInit {
 
     this.staticService.getCategoryList().subscribe(res => {
       this.categoryList = res;
-      this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
     });
 
     this.getElasticData();
@@ -415,8 +416,6 @@ export class DashboardComponent implements OnInit {
   private getElasticData() {
     this.dashboardService.getHourlyCompanySummary({ duration: 365 * 24 }).subscribe(res => {
       this.elasticData = res;
-
-      console.log(this.elasticData);
 
       this.prepareTimeline();
     });
