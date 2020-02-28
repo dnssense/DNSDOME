@@ -137,5 +137,12 @@
     "ProfileConfigurationWillChange":"Security profile configuration will change",
     "CanNotDelete":"Cannot delete",
     "ThisSecurityProfileIsUsingBySomeAgents":"This security profile is using by some agents",
-    "ItWillBeDeleted":"This item will be deleted"
+    "ItWillBeDeleted":"This item will be deleted",
+    "ProfileNotFound":"Security profile not found",
+    "AgentRoamingClientWillBeDeleted":"Roaming client will be deleted",
+    "YouReachedMaxDomainsCount":"You reached maximum domain count",
+    "EnterValidDomain":"Please enter valid domain",
+    "CouldNotCreateDownloadLink":"Could not create download link",
+    "DownloadLinkCopiedToClipboard":"Download link copied",
+    "ChangesCouldNotSaved":"Changes could not saved"
 }

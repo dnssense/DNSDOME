@@ -31,7 +31,7 @@ export class BoxService {
   }
 
   getVirtualBox(): Observable<Box> {
-    debugger;
+
     return this.http.get<Box>(this.virtualBoxURL).map(data => data);
   }
 

@@ -134,6 +134,14 @@
     "ProfileConfigurationWillChange":"Güvenlik profili değiştirilecek",
     "CanNotDelete":"Silinemez",
     "ThisSecurityProfileIsUsingBySomeAgents":"Bu güvenlik profilini kullananlar var",
-    "ItWillBeDeleted":"Bu öğe silinecek"
+    "ItWillBeDeleted":"Bu öğe silinecek",
+    "ProfileNotFound":"Güvenlik profili bulunamadı",
+    "AgentRoamingClientWillBeDeleted":"Roaming client silinecek",
+    "YouReachedMaxDomainsCount":"Maks domain sayisina ulaştınız",
+    "EnterValidDomain":"Lütfen geçerli domaın giriniz",
+    "CouldNotCreateDownloadLink":"Download linki create edilemedi",
+    "DownloadLinkCopiedToClipboard":"Download linki kopyalandı",
+    "ChangesCouldNotSaved":"Değişiklikler kaydedilemedi"
+    
 
 }

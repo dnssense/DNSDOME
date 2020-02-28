@@ -15,7 +15,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {
                 if (event instanceof HttpResponse) {
-                    //console.log('event--->>>', event);
+                    // console.log('event--->>>', event);
                 }
                 return event;
             }),
@@ -25,17 +25,17 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     // auto logout if 401 response returned from api
                     this.authenticationService.logout();
                     if (err.url.indexOf('login') === -1) { // reload if not login page
-                        location.href='/#/login'
+                        location.href = '/#/login';
                     }
 
                 }
 
                 throw err;
-                //const error = err.error.message || err.statusText;
-                //return throwError(error);
+                // const error = err.error.message || err.statusText;
+                // return throwError(error);
             }), finalize(() => {
 
 
-            }))
+            }));
     }
 }

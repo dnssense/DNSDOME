@@ -14,6 +14,7 @@ import { OperationResult } from '../models/OperationResult';
 import { Role, RestRole, RestRight, RestUserRoleRight } from '../models/Role';
 import { Clearance } from '../models/Clearance';
 import { RestPreloginResponse, RestUser } from '../models/RestServiceModels';
+import { SpinnerService } from './spinner.service';
 
 
 @Injectable({
@@ -26,7 +27,7 @@ export class AuthenticationService {
   private _forgotPasswordChangeURL = this.configuration.getApiUrl() + '/user/forgot/password/confirm';
   private loginUrl = this.configuration.getApiUrl() + '/oauth/token';
   private refreshTokenUrl = this.loginUrl; // this.configuration.getApiUrl() + '/oauth/refresh_token';
-  private userInfoUrl = this.configuration.getApiUrl() + '/user/current';
+  private userInfoUrl = this.configuration.getApiUrl() + '/user/current/'; // buranin sonuna bilerek / eklendi,spinner service ekraninda gozukmesin diye
   private userRoleUrl = this.configuration.getApiUrl() + '/user/current/role';
   private preloginUrl = this.configuration.getApiUrl() + '/user/prelogin';
 
@@ -40,9 +41,10 @@ export class AuthenticationService {
     private http: HttpClient,
     private cookieService: CookieService,
     private router: Router,
+    private spinner: SpinnerService
   ) {
     this.currentUserPropertiesChanged = new Subject();
-    this.refreshTokenTimer = interval(4 * 60 * 1000);
+    this.refreshTokenTimer = interval(1 * 60 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
   }
 
@@ -51,7 +53,7 @@ export class AuthenticationService {
     this.currentUserPropertiesChanged.next('changed');
   }
 
-  checkSessionIsValid() {
+   checkSessionIsValid() {
     try {
       const sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
@@ -69,7 +71,7 @@ export class AuthenticationService {
 
   }
 
-  isCurrentSessionValid(): boolean {
+   isCurrentSessionValid(): boolean {
     try {
       const sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
