@@ -91,7 +91,6 @@ export class RoamingComponent implements OnInit {
         });
 
         this.roamingService.getClients().subscribe(res => {
-            debugger;
             this.clients = res;
 
             this.clientsFiltered = this.clients;

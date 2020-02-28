@@ -26,7 +26,6 @@ export class ErrorInterceptor implements ErrorHandler {
         // Handle Http Error (error.status === 403, 404...)
         const status = error.status;
         if (error.error.code) {
-          debugger;
           const message = translatorService.translate(error.error.code);
           console.log(`${status} - ${message}`);
           notificationService.error(message);
@@ -36,7 +35,6 @@ export class ErrorInterceptor implements ErrorHandler {
         } else {
 
           const message = translatorService.translate(error.statusText);
-          debugger;
           // notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
           notificationService.error(message);
           console.log(`${status} - ${message}`);

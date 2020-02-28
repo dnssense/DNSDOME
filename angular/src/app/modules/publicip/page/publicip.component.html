@@ -76,7 +76,8 @@
                           /
                         </span>
 
-                        <rk-select [placeholder]="selectedIp.staticSubnetIp[i].mask" [options]="ipRanges" [(value)]="selectedIp.staticSubnetIp[i].mask">
+                        <rk-select [placeholder]="selectedIp.staticSubnetIp[i].mask" [options]="ipRanges"
+                          [(value)]="selectedIp.staticSubnetIp[i].mask">
                         </rk-select>
                       </div>
 
@@ -133,14 +134,6 @@
           </rk-modal-header>
 
           <rk-modal-body>
-
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col-12 my-3">
-                  <rk-select [options]="securityProfilesForRkSelect" (valueChange)="changeProfile($event)"></rk-select>
-                </div>
-              </div>
-            </div>
 
             <app-profile-wizard #profileWizard [selectedAgent]="selectedAgent" [currentStep]="currentStep"
               [saveMode]="saveMode"></app-profile-wizard>

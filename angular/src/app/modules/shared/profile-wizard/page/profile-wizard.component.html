@@ -1,3 +1,11 @@
+<div class="container-fluid mb-3">
+  <div class="row">
+    <div class="col-12">
+      <input type="text" class="rk-input w-100" placeholder="Name" [(ngModel)]="selectedAgent.rootProfile.name" minlength="1">
+    </div>
+  </div>
+</div>
+
 <rk-accordion isWizard="true" [activeNumber]="currentStep">
   <rk-accordion-panel index="1" class="accordion-p-0">
     <div class="rk-accordion-title">Security Settings</div>

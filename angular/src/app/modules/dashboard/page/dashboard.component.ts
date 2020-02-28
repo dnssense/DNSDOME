@@ -307,7 +307,6 @@ export class DashboardComponent implements OnInit {
           autoSelected: 'pan',
           show: false
         },
-
         events: {
           beforeMount: (chartContext, config) => {
             this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);

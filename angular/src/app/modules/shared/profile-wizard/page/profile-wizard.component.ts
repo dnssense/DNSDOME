@@ -268,9 +268,11 @@ export class ProfileWizardComponent {
 
   saveProfile() {
 
-    if (!this.selectedAgent.rootProfile.name) {
+    if (!this.selectedAgent.rootProfile.name && this.selectedAgent.rootProfile.name.trim().length === 0) {
       this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
-      return; }
+
+      return;
+    }
 
     let alertMessage = '', alertTitle = '';
 
@@ -281,8 +283,6 @@ export class ProfileWizardComponent {
       alertTitle = `${this.staticMessageService.areYouSureMessage}?`;
       alertMessage = this.staticMessageService.profileConfigurationWillChangeMessage;
     }
-
-    debugger;
 
     this.alertService.alertWarningAndCancel(alertTitle, alertMessage).subscribe(
       res => {
@@ -312,8 +312,8 @@ export class ProfileWizardComponent {
             this.selectedBox.agent = this.selectedAgent;
             this.boxService.saveBox(this.selectedBox).subscribe(result => {
 
-                this.notification.success(this.staticMessageService.savedAgentBoxMessage);
-                this.saveEmitter.emit();
+              this.notification.success(this.staticMessageService.savedAgentBoxMessage);
+              this.saveEmitter.emit();
 
             });
           } else if (this.saveMode === 'NewProfileWithDevice') {

@@ -26,17 +26,14 @@ export class BoxService {
   }
 
   deleteBox(id: number): Observable<{}> {
-    debugger;
     return this.http.delete<{}>(this.deleteBoxURL + `/${id}`, this.getOptions()).map(res => res);
   }
 
   getVirtualBox(): Observable<Box> {
-
     return this.http.get<Box>(this.virtualBoxURL).map(data => data);
   }
 
   getProgramLink(request: { donttouchdomains: string }): Observable<any> {
-    debugger;
     return this.http.post<any>(this.getLinkURL, request).map(data => data);
   }
 
