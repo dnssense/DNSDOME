@@ -125,6 +125,23 @@ export class SecurityProfilesComponent {
     }
 
     cloneProfile(profile: SecurityProfile) {
+        const cloneAgent = new Agent();
 
+        const deepCopy = JSON.parse(JSON.stringify(profile)) as SecurityProfile;
+
+        deepCopy.name = deepCopy.name + '-Clone';
+
+        cloneAgent.rootProfile = deepCopy;
+
+        this.selectedAgent = cloneAgent;
+
+        this.selectedAgent.rootProfile.id = null;
+        this.selectedAgent.rootProfile.isSystem = false;
+
+        this.selectedAgent.rootProfile.applicationProfile.id = null;
+        this.selectedAgent.rootProfile.domainProfile.id = null;
+        this.selectedAgent.rootProfile.blackWhiteListProfile.id = null;
+
+        this.profileModal.toggle();
     }
 }
