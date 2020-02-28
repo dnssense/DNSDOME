@@ -56,7 +56,7 @@
                   </div>
                 </div>
 
-                <div class="col-12 mt-3">
+                <!-- <div class="col-12 mt-3">
                   <div class="rk-group-title">Agent Activity On Local Network</div>
 
                   <div class="d-flex my-2">
@@ -90,10 +90,62 @@
                     <button class="btn btn-small btn-accent" disabled>Apply</button>
                   </div>
 
+                </div> -->
+              </div>
+            </div>
+          </rk-modal-body>
+        </rk-modal>
+
+        <rk-modal #roamingClientModal>
+          <rk-modal-header>
+            <rk-modal-header-title>
+              <h5>Romaing Clients Edit</h5>
+            </rk-modal-header-title>
+
+            <rk-modal-header-close (click)="roamingClientModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12">
+                  <input type="text" class="rk-input w-100" placeholder="Name" [(ngModel)]="selectedClient.agentAlias">
+                </div>
+
+                <div class="col-12 mt-3">
+                  <input type="text" class="rk-input w-100" placeholder="Block Message" [(ngModel)]="selectedClient.blockMessage">
+                </div>
+
+                <div class="col-12 mt-3">
+                  <rk-select [options]="securityProfilesForSelect" (valueChange)="profileSelectChange($event)" [(value)]="selectedClient.rootProfile.id"></rk-select>
                 </div>
               </div>
             </div>
           </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn btn-small w-100 mr-2" (click)="saveRoamingClient()">Apply</button>
+            <button class="btn btn-small w-100 btn-default" (click)="clearRoamingClientForm()">Clear</button>
+          </rk-modal-footer>
+        </rk-modal>
+
+        <rk-modal #groupModal>
+          <rk-modal-header>
+            <rk-modal-header-title>
+              <h5>Romaing Clients Edit</h5>
+            </rk-modal-header-title>
+
+            <rk-modal-header-close (click)="groupModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn btn-small w-100 mr-2">Apply</button>
+            <button class="btn btn-small btn-default w-100">Clean</button>
+          </rk-modal-footer>
         </rk-modal>
 
         <div class="col-12 p-0 mt-3">
@@ -148,7 +200,7 @@
                   <td>{{ c.rootProfile.name }}</td>
                   <td>{{ c?.agentGroup.groupName ? c?.agentGroup.groupName : 'No Group' }}</td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editClient(c)">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>

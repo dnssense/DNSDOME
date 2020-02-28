@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Agent } from 'src/app/core/models/Agent';
 import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
@@ -9,6 +9,8 @@ import { RoamingService } from 'src/app/core/services/roaming.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { GroupAgentModel } from '../../devices/page/devices.component';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 
 declare let $: any;
 
@@ -34,8 +36,13 @@ export class RoamingComponent implements OnInit {
     clientGroups: Agent[];
     selectedClients: Agent[] = [];
     clientListForGroup: Agent[] = [];
+
     selectedClient: Agent = new Agent();
+
     securityProfiles: SecurityProfile[];
+    securityProfilesForSelect: RkSelectModel[] = [];
+    selectedProfile: number;
+
     clientType: string;
     isNewItemUpdated = false;
     fileLink: string;
@@ -55,6 +62,10 @@ export class RoamingComponent implements OnInit {
     alwaysActive = true;
     disabledNetwork = false;
 
+    @ViewChild('groupModal') groupModal: RkModalModel;
+
+    @ViewChild('roamingClientModal') roamingClientModal: RkModalModel;
+
     ngOnInit(): void {
 
         this.clients = [];
@@ -70,7 +81,11 @@ export class RoamingComponent implements OnInit {
     }
 
     loadClients() {
-        this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res; });
+        this.agentService.getSecurityProfiles().subscribe(result => {
+            this.securityProfiles = result;
+
+            this.fillSecurityProfilesSelect(result);
+        });
 
         this.roamingService.getClients().subscribe(res => {
             this.clients = res;
@@ -79,6 +94,25 @@ export class RoamingComponent implements OnInit {
 
             this.groupedClients = this.getGroupClients(this.clients);
         });
+    }
+
+    private fillSecurityProfilesSelect(profiles: SecurityProfile[], id?: number) {
+        const _profiles = [];
+
+        profiles.forEach(elem => {
+            const obj = {
+                displayText: elem.name,
+                value: elem.id,
+            } as RkSelectModel;
+
+            if (id) {
+                obj.selected = elem.id === id;
+            }
+
+            _profiles.push(obj);
+        });
+
+        this.securityProfilesForSelect = _profiles;
     }
 
     private getGroupClients(clients: Agent[]) {
@@ -137,7 +171,7 @@ export class RoamingComponent implements OnInit {
     }
 
     showNewProfileWizard() {
-        if (!this.isFormValid()) {
+        if (!this.isFormValid) {
             return;
         }
 
@@ -150,25 +184,8 @@ export class RoamingComponent implements OnInit {
         document.getElementById('wizardPanel').scrollIntoView();
     }
 
-    isFormValid() {
-        const $validator = $('.clientForm').validate({
-            rules: {
-                name: {
-                    required: true
-                },
-                type: {
-                    required: false
-                }
-            }
-        });
-
-        const $valid = $('.clientForm').valid();
-        if (!$valid) {
-            this.notification.warning('Client form is not valid. Please enter required fields. ');
-            $validator.focusInvalid();
-            return false;
-        }
-        return true;
+    get isFormValid() {
+        return this.selectedClient.agentAlias.trim().length > 0 && this.selectedClient.rootProfile.id > 0;
     }
 
     showEditWizard(id: number) {
@@ -200,8 +217,8 @@ export class RoamingComponent implements OnInit {
         this.loadClients();
     }
 
-    saveClient() {
-        if (this.selectedClient && this.isFormValid()) {
+    saveRoamingClient() {
+        if (this.selectedClient && this.isFormValid) {
             this.roamingService.saveClient(this.selectedClient).subscribe(
                 res => {
                     if (res.status === 200) {
@@ -211,6 +228,8 @@ export class RoamingComponent implements OnInit {
                         this.notification.error(res.message);
                     }
                 });
+        } else {
+            this.notification.warning('Client form is not valid. Please enter required fields. ');
         }
     }
 
@@ -358,5 +377,35 @@ export class RoamingComponent implements OnInit {
 
     disabledNetworkChanged() {
         this.disabledNetwork = !this.disabledNetwork;
+    }
+
+    addToGroup() {
+        this.groupModal.toggle();
+    }
+
+    changeGroup() {
+        this.groupModal.toggle();
+    }
+
+    createGroup() {
+        this.groupModal.toggle();
+    }
+
+    editClient(client: Agent) {
+        this.selectedClient = client;
+
+        this.fillSecurityProfilesSelect(this.securityProfiles, client.rootProfile.id);
+
+        this.roamingClientModal.toggle();
+    }
+
+    clearRoamingClientForm() {
+        this.selectedClient = new Agent();
+
+        this.fillSecurityProfilesSelect(this.securityProfiles, -1);
+    }
+
+    profileSelectChange($event: number) {
+        this.selectedClient.rootProfile = this.securityProfiles.find(x => x.id === $event);
     }
 }

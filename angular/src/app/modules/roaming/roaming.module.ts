@@ -8,7 +8,7 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
-import { IconsModule, RkCheckboxModule, RkModalModule, RkTableModule, RkToggleButtonModule } from 'roksit-lib';
+import { IconsModule, RkCheckboxModule, RkModalModule, RkTableModule, RkToggleButtonModule, RkSelectModule } from 'roksit-lib';
 import { PipesModule } from '../shared/pipes/pipes.module';
 
 @NgModule({
@@ -33,7 +33,8 @@ import { PipesModule } from '../shared/pipes/pipes.module';
     RkCheckboxModule,
     RkModalModule,
     PipesModule,
-    RkToggleButtonModule
+    RkToggleButtonModule,
+    RkSelectModule
   ]
 
 })

@@ -10,7 +10,7 @@ import * as introJs from 'intro.js/intro.js';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PublicIPService } from 'src/app/core/services/PublicIPService';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { RkModalComponent } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 
 declare let $: any;
@@ -54,8 +54,8 @@ export class PublicipComponent implements AfterViewInit {
   roleName: string;
   tooltipGuideCounter = 0;
 
-  @ViewChild('agentModal') agentModal;
-  @ViewChild('profileModal') profileModal;
+  @ViewChild('agentModal') agentModal: RkModalModel;
+  @ViewChild('profileModal') profileModal: RkModalModel;
   @ViewChild('profileWizard') profileWizard: ProfileWizardComponent;
 
   currentStep: number = 1;

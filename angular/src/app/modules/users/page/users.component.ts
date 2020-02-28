@@ -5,6 +5,7 @@ import { UserService } from 'src/app/core/services/UserService';
 import { Role } from 'src/app/core/models/Role';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import * as validator from 'validator';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 
 declare var $: any;
 @Component({
@@ -36,7 +37,7 @@ export class UsersComponent implements OnInit {
         });
     }
 
-    @ViewChild('userModal') userModal;
+    @ViewChild('userModal') userModal: RkModalModel;
     userModalType: 'create' | 'edit';
 
     user: User = new User();

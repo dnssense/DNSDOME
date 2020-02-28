@@ -15,6 +15,7 @@ import { DeviceGroup, AgentInfo, AgentGroup } from 'src/app/core/models/DeviceGr
 import { Agent } from 'src/app/core/models/Agent';
 import { RkTableConfigModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 
 declare var $: any;
 
@@ -74,7 +75,7 @@ export class DevicesComponent implements OnInit {
     previousGroupId = 0;
     currentCss = '';
 
-    @ViewChild('groupAgentModal') groupAgentModal;
+    @ViewChild('groupAgentModal') groupAgentModal: RkModalModel;
 
     selectedGroupAgent: GroupAgentModel = {
         agentGroup: {}
@@ -84,7 +85,7 @@ export class DevicesComponent implements OnInit {
 
     groupListForSelect: RkSelectModel[] = [];
 
-    @ViewChild('changeGroupModal') changeGroupModal;
+    @ViewChild('changeGroupModal') changeGroupModal: RkModalModel;
 
     selectedGroupMembers: any[] = [];
 
@@ -94,7 +95,7 @@ export class DevicesComponent implements OnInit {
 
     selectedProfileRadio;
 
-    @ViewChild('selectedBoxModal') selectedBoxModal;
+    @ViewChild('selectedBoxModal') selectedBoxModal: RkModalModel;
 
     selectedBox: Box;
 
