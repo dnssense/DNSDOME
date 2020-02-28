@@ -267,7 +267,10 @@ export class ProfileWizardComponent {
   }
 
   saveProfile() {
-    if (!this.selectedAgent.rootProfile.name) { return; }
+
+    if (!this.selectedAgent.rootProfile.name) {
+      this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
+      return; }
 
     let alertMessage = '', alertTitle = '';
 
@@ -278,6 +281,8 @@ export class ProfileWizardComponent {
       alertTitle = `${this.staticMessageService.areYouSureMessage}?`;
       alertMessage = this.staticMessageService.profileConfigurationWillChangeMessage;
     }
+
+    debugger;
 
     this.alertService.alertWarningAndCancel(alertTitle, alertMessage).subscribe(
       res => {
@@ -320,6 +325,9 @@ export class ProfileWizardComponent {
             ai.blockMessage = this.selectedAgent.blockMessage;
             ai.agentType = this.selectedAgent.agentType;
             ai.agentAlias = this.selectedAgent.agentAlias;
+            ai.agentGroup = this.selectedAgent.agentGroup;
+            ai.rootProfile = this.selectedAgent.rootProfile;
+
 
             dg.agents = [ai];
             delete dg.agentGroup;

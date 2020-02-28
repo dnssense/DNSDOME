@@ -104,27 +104,39 @@ get savedUserMessage(): string {
     return this.translator.translate(`SelectedPublicIpAndItsSettingsWillBeDeleted`);
   }
 
-  get pleaseEnterAValiePublicIpAddressMessage(): string {
-    return this.translator.translate(`pleaseEnterAValiePublicIpAddress`);
+  get pleaseEnterAValidPublicIpAddressMessage(): string {
+    return this.translator.translate(`PleaseEnterAValiePublicIpAddress`);
   }
 
   get thisDomainAllreadyExitsInWhiteListMessage(): string {
-    return this.translator.translate(`thisDomainAllreadyExitsInWhiteList`);
+    return this.translator.translate(`ThisDomainAllreadyExitsInWhiteList`);
   }
 
   get thisDomainAllreadyExitsInBlackListMessage(): string {
-    return this.translator.translate(`thisDomainAllreadyExitsInBlackList`);
+    return this.translator.translate(`ThisDomainAllreadyExitsInBlackList`);
   }
 
   get agentsUsingThisProfileMessage(): string {
-    return this.translator.translate(`agentsUsingThisProfile`);
+    return this.translator.translate(`AgentsUsingThisProfile`);
   }
 
   get profileConfigurationWillChangeForAllOfRelatedAgentsMessage(): string {
-    return this.translator.translate(`profileConfigurationWillChangeForAllOfRelatedAgents`);
+    return this.translator.translate(`ProfileConfigurationWillChangeForAllOfRelatedAgents`);
   }
-  get profileConfigurationWillChangeMessage():string{
-    return this.translator.translate(`profileConfigurationWillChange`)
+  get profileConfigurationWillChangeMessage(): string {
+    return this.translator.translate(`ProfileConfigurationWillChange`);
+  }
+
+  get canNotDeleteMessage(): string {
+    return this.translator.translate(`CanNotDelete`);
+  }
+
+  get thisSecurityProfileIsUsingBySomeAgentsMessage(): string {
+    return this.translator.translate(`ThisSecurityProfileIsUsingBySomeAgents`);
+  }
+
+  get itWillBeDeletedMessage(): string {
+    return this.translator.translate(`ItWillBeDeleted`);
   }
 
 

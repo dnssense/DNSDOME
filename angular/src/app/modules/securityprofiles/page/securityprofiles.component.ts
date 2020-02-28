@@ -83,9 +83,9 @@ export class SecurityProfilesComponent {
         const profile = this.securityProfiles.find(p => p.id === id);
 
         if (profile.numberOfUsage > 0) {
-            this.alertService.alertTitleAndText('Can not delete!', 'This profile using by some agents.');
+            this.alertService.alertTitleAndText(this.staticMessageService.canNotDeleteMessage, this.staticMessageService.thisSecurityProfileIsUsingBySomeAgentsMessage);
         } else {
-            this.alertService.alertWarningAndCancel('Are You Sure?', 'Item will be deleted!').subscribe(
+            this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.itWillBeDeletedMessage).subscribe(
                 res => {
                     if (res) {
                         this.agentService.deleteSecurityProfile(id).subscribe(delRes => {

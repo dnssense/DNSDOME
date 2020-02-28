@@ -79,12 +79,13 @@ export class AgentService {
   }
 
   saveSecurityProfile(p: SecurityProfile): Observable<SecurityProfile> {
-
+    debugger;
     return this.http.post<SecurityProfile>(this.saveSecurityProfileURL, p, this.getOptions()).map(res => res);
 
   }
 
   deleteSecurityProfile(id: number): Observable<{}> {
+    debugger;
     return this.http.delete<{}>(this.deleteSecurityProfileURL + `/${id}`, this.getOptions()).map(res => res);
   }
 

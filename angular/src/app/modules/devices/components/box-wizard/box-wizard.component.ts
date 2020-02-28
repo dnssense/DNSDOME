@@ -155,7 +155,7 @@ export class BoxWizardComponent implements OnInit {
       if (isValid && ((inputValue.length == 2 && inputValue == '10' && event.key == '.') ||
         inputValue == '192.168' || inputValue == '127.0.0.1')) {
         isValid = false;
-        this.notification.warning(this.staticMessageService.pleaseEnterAValiePublicIpAddressMessage, false);
+        this.notification.warning(this.staticMessageService.pleaseEnterAValidPublicIpAddressMessage, false);
       }
 
       if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
@@ -164,7 +164,7 @@ export class BoxWizardComponent implements OnInit {
         const secondOclet = Number(secondOcletStr);
         if (secondOclet >= 16 && secondOclet <= 31) {
           isValid = false;
-          this.notification.warning(this.staticMessageService.pleaseEnterAValiePublicIpAddressMessage, false);
+          this.notification.warning(this.staticMessageService.pleaseEnterAValidPublicIpAddressMessage, false);
         }
       }
 
