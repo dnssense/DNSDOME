@@ -18,31 +18,15 @@
 
         <rk-modal-body>
 
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-12 my-3">
-                <ng-container *ngIf="saveMode === 'ProfileUpdate'; else newProfileTemplate">
-                  <rk-select [options]="securityProfilesForSelect" (valueChange)="changeProfileSelect($event)">
-                  </rk-select>
-                </ng-container>
-
-                <ng-template #newProfileTemplate>
-                  <div class="d-flex align-items-center justify-content-between">
-                    <input type="text" class="rk-input w-100" placeholder="Name" minlength="1" [(ngModel)]="selectedAgent.rootProfile.name">
-                  </div>
-                </ng-template>
-              </div>
-
-              <app-profile-wizard #profileWizard [selectedAgent]="selectedAgent" [currentStep]="1"
-                [saveMode]="saveMode" (saveEmitter)="saveSuccess()"></app-profile-wizard>
-
-            </div>
-          </div>
+          <app-profile-wizard #profileWizard [selectedAgent]="selectedAgent" [currentStep]="1" [saveMode]="saveMode"
+            (saveEmitter)="saveSuccess()"></app-profile-wizard>
 
         </rk-modal-body>
 
         <rk-modal-footer>
-          <button class="btn btn-small w-100 mr-2" [ngClass]="{'disabled': saveMode === 'NewProfile' && selectedAgent.rootProfile?.name?.length < 2}" (click)="saveProfile()">Save</button>
+          <button class="btn btn-small w-100 mr-2"
+            [ngClass]="{'disabled': saveMode === 'NewProfile' && selectedAgent.rootProfile?.name?.length < 2}"
+            (click)="saveProfile()">Save</button>
           <button class="btn btn-small w-100">Clean</button>
         </rk-modal-footer>
       </rk-modal>
@@ -78,7 +62,7 @@
                   <th style="width: 32px;">#</th>
                   <th>Profile Name</th>
                   <th>Member Count</th>
-                  <th colspan="2">Operation</th>
+                  <th colspan="3">Operation</th>
                 </tr>
               </ng-template>
 
@@ -88,7 +72,13 @@
                   <td>{{ profile.name }}</td>
                   <td>{{ profile.numberOfUsage }}</td>
                   <td class="text-center" style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="editProfile(profile)">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="cloneProfile(profile)">
+                      <i-feather name="copy" class="mr-0"></i-feather>
+                    </button>
+                  </td>
+                  <td class="text-center" style="width: 60px;">
+                    <button class="btn btn-link btn-icon p-0" (click)="!profile.system ? editProfile(profile) : null"
+                      [ngStyle]="{'color-disabled': !profile.system}">
                       <i-feather name="edit-3" class="mr-0"></i-feather>
                     </button>
                   </td>

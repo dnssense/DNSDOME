@@ -91,9 +91,9 @@ export class SecurityProfilesComponent {
                     if (res) {
                         this.agentService.deleteSecurityProfile(id).subscribe(delRes => {
 
-                                this.notification.success(this.staticMessageService.deletedProfileMessage);
+                            this.notification.success(this.staticMessageService.deletedProfileMessage);
 
-                                this.getProfiles();
+                            this.getProfiles();
 
                         });
                     }
@@ -122,5 +122,9 @@ export class SecurityProfilesComponent {
         this.profileModal.toggle();
 
         this.getProfiles();
+    }
+
+    cloneProfile(profile: SecurityProfile) {
+
     }
 }
