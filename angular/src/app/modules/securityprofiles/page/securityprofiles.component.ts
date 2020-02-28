@@ -19,7 +19,7 @@ export class SecurityProfilesComponent {
         private agentService: AgentService,
         private notification: NotificationService,
         private alertService: AlertService,
-        private staticMessageService:StaticMessageService
+        private staticMessageService: StaticMessageService
     ) {
         this.getProfiles();
     }
@@ -89,11 +89,11 @@ export class SecurityProfilesComponent {
                 res => {
                     if (res) {
                         this.agentService.deleteSecurityProfile(id).subscribe(delRes => {
-                            
-                                this.notification.success(this.staticMessageService.deletedProfileMessage());
+
+                                this.notification.success(this.staticMessageService.deletedProfileMessage);
 
                                 this.getProfiles();
-                            
+
                         });
                     }
                 }

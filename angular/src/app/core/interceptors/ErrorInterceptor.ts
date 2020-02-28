@@ -26,16 +26,17 @@ export class ErrorInterceptor implements ErrorHandler {
         // Handle Http Error (error.status === 403, 404...)
         const status = error.status;
         if (error.error.code) {
-          
-          let message = translatorService.translate(error.error.code);
+          debugger;
+          const message = translatorService.translate(error.error.code);
           console.log(`${status} - ${message}`);
           notificationService.error(message);
           /* if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
             // notificationService.error(`${message}`);
           } */
         } else {
-          
-          let message = translatorService.translate(error.statusText);
+
+          const message = translatorService.translate(error.statusText);
+          debugger;
           // notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
           notificationService.error(message);
           console.log(`${status} - ${message}`);
@@ -44,12 +45,13 @@ export class ErrorInterceptor implements ErrorHandler {
     } else {
 
       const message = translatorService.translate(error.message);
-      console.log(message); 
-      if (!(message.includes("'push' of undefined") && error.stack.includes("reports-module"))) { // TODO: will remove; after unfound push error fixed 
+      // debugger;
+      // console.log(message);
+      if (!(message.includes('\'push\' of undefined') && error.stack.includes('reports-module'))) { // TODO: will remove; after unfound push error fixed
         // notificationService.error('Error');
       }
     }
     // Log the error anyway
-    //console.error(error.name);
+    // console.error(error.name);
   }
 }

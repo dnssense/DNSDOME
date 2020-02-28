@@ -66,7 +66,7 @@ export class AgentService {
   }
 
   saveAgentLocation(agent: Agent): Observable<Agent> {
-    debugger;
+
     return this.http.post<Agent>(this.saveAgentURL, agent, this.getOptions()).map(data => data);
   }
 

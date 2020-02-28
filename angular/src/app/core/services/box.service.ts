@@ -18,7 +18,7 @@ export class BoxService {
   constructor(private http: HttpClient, private config: ConfigService) { }
 
   getBoxes(): Observable<Box[]> {
-
+    debugger;
     return this.http.get<Box[]>(this.getBoxesURL).map(data => data);
   }
 

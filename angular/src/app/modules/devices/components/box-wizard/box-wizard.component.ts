@@ -48,13 +48,13 @@ export class BoxWizardComponent implements OnInit {
 
   ngOnInit() {
     this.boxForm = this.formBuilder.group({
-      boxName: ["", [Validators.required]],
-      domainProfile: ["", [Validators.required]],
-      appProfile: ["", [Validators.required]],
-      bwListProfile: ["", [Validators.required]],
-      blockMessage: ["", Validators.required],
-      isCaptivePortal: ["",],
-      etvIp: [""]
+      boxName: ['', [Validators.required]],
+      domainProfile: ['', [Validators.required]],
+      appProfile: ['', [Validators.required]],
+      bwListProfile: ['', [Validators.required]],
+      blockMessage: ['', Validators.required],
+      isCaptivePortal: ['', ],
+      etvIp: ['']
     });
 
     this.dpService.getProfileData().subscribe((res: DomainProfile[]) => {
@@ -78,9 +78,9 @@ export class BoxWizardComponent implements OnInit {
   }
 
   updateApplicationProfilelist() {
-    let systemProfiles = new Array();
-    let userProfiles = new Array();
-    for (let a of this.appProfiles) {
+    const systemProfiles = new Array();
+    const userProfiles = new Array();
+    for (const a of this.appProfiles) {
       if (a.system) {
         systemProfiles.push(a);
       } else {
@@ -109,7 +109,7 @@ export class BoxWizardComponent implements OnInit {
   updateDomainProfilelist() {
     const systemProfiles = new Array();
     const userProfiles = new Array();
-    for (let a of this.domainProfiles) {
+    for (const a of this.domainProfiles) {
       if (a.locked) {
         systemProfiles.push(a);
       } else {
@@ -123,8 +123,8 @@ export class BoxWizardComponent implements OnInit {
 
   checkIPNumber(event: KeyboardEvent, inputValue: string) {
 
-    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", ".", "Tab"];
-    let isValid: boolean = false;
+    const allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'Backspace', 'ArrowLeft', 'ArrowRight', '.', 'Tab'];
+    let isValid = false;
 
     for (let i = 0; i < allowedChars.length; i++) {
       if (allowedChars[i] == event.key) {
@@ -136,13 +136,13 @@ export class BoxWizardComponent implements OnInit {
       if (event.key != '.') {
         inputValue += event.key;
       }
-      let lastOcletStr = inputValue.substring(inputValue.lastIndexOf('.') + 1);
-      let lastOclet = Number(lastOcletStr);
+      const lastOcletStr = inputValue.substring(inputValue.lastIndexOf('.') + 1);
+      const lastOclet = Number(lastOcletStr);
       if (isValid && (lastOclet > 255 || lastOclet < 0 || lastOcletStr.length > 3)) {
         isValid = false;
       }
       if (isValid && event.key == '.') {
-        let oclets: string[] = inputValue.split('.');
+        const oclets: string[] = inputValue.split('.');
         for (let i = 0; i < oclets.length; i++) {
           const oclet = oclets[i];
           if (Number(oclet) < 0 || Number(oclet) > 255) {
@@ -155,16 +155,16 @@ export class BoxWizardComponent implements OnInit {
       if (isValid && ((inputValue.length == 2 && inputValue == '10' && event.key == '.') ||
         inputValue == '192.168' || inputValue == '127.0.0.1')) {
         isValid = false;
-        this.notification.warning('Please enter a valid Public IP Adress!', false);
+        this.notification.warning(this.staticMessageService.pleaseEnterAValiePublicIpAddressMessage, false);
       }
 
       if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
 
-        let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
-        let secondOclet = Number(secondOcletStr);
+        const secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
+        const secondOclet = Number(secondOcletStr);
         if (secondOclet >= 16 && secondOclet <= 31) {
           isValid = false;
-          this.notification.warning('Please enter a valid Public IP Adress!', false);
+          this.notification.warning(this.staticMessageService.pleaseEnterAValiePublicIpAddressMessage, false);
         }
       }
 
@@ -183,11 +183,11 @@ export class BoxWizardComponent implements OnInit {
   manageETV() {
     this.selectedBox.isCaptivePortal = this.selectedBox.isCaptivePortal == true ? false : true;
     if (this.selectedBox.isCaptivePortal) {
-      this.boxForm.controls["etvIp"].setValidators([Validators.required]);
-      this.boxForm.controls["etvIp"].updateValueAndValidity();
+      this.boxForm.controls['etvIp'].setValidators([Validators.required]);
+      this.boxForm.controls['etvIp'].updateValueAndValidity();
     } else {
-      this.boxForm.controls["etvIp"].clearValidators();
-      this.boxForm.controls["etvIp"].updateValueAndValidity();
+      this.boxForm.controls['etvIp'].clearValidators();
+      this.boxForm.controls['etvIp'].updateValueAndValidity();
     }
   }
 
@@ -202,7 +202,7 @@ export class BoxWizardComponent implements OnInit {
 
     this.boxService.saveBox(this.selectedBox).subscribe(res => {
 
-      this.notification.success(this.staticMessageService.savedAgentBoxMessage());
+      this.notification.success(this.staticMessageService.savedAgentBoxMessage);
       this.saveEmitter.emit();
 
     });

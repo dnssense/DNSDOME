@@ -16,60 +16,118 @@ export class StaticMessageService {
 
 
 
+
+
   constructor(private translator: TranslatorService) {
 
 
   }
-  savedDeviceMessage(): string {
+  get savedDeviceMessage(): string {
     return this.translator.translate('DeviceSaved');
   }
-  savedDevicesMessage(): string {
+  get savedDevicesMessage(): string {
     return this.translator.translate('DevicesSaved');
   }
-  deletedDeviceMessage(): string {
+  get deletedDeviceMessage(): string {
     return this.translator.translate('DeviceDeleted');
   }
-  deletedDevicesMessage(): string {
+  get deletedDevicesMessage(): string {
     return this.translator.translate('DevicesDeleted');
   }
-  deletedProfileMessage(): string {
+  get deletedProfileMessage(): string {
     return this.translator.translate('ProfileDeleted');
   }
-  savedProfileMessage(): string {
+  get savedProfileMessage(): string {
     return this.translator.translate('ProfileSaved');
   }
 
-  savedAgentLocationMessage(): string {
+  get savedAgentLocationMessage(): string {
     return this.translator.translate('AgentLocationSaved');
   }
-  deletedAgentLocationMessage(): string {
+  get deletedAgentLocationMessage(): string {
     return this.translator.translate('AgentLocationDeleted');
   }
 
-  savedAgentRoaminClientMessage(): string {
+  get savedAgentRoaminClientMessage(): string {
     return this.translator.translate('AgentRoamingClientSaved');
   }
-  savedAgentBoxMessage(): string {
+  get savedAgentBoxMessage(): string {
     return this.translator.translate('AgentBoxSaved');
   }
-  deletedAgentBoxMessage(): string {
+  get deletedAgentBoxMessage(): string {
     return this.translator.translate('AgentBoxDeleted');
   }
 
-  needsToSelectSecurityProfileMessage(): string {
+  get needsToSelectSecurityProfileMessage(): string {
     return this.translator.translate('SelectASecurityProfile');
   }
-  needsGroupNameMessage(): string {
+  get needsGroupNameMessage(): string {
     return this.translator.translate('FillGroupNameWithAValue');
   }
 
-  needsToSelectAGroupMemberMessage(): string {
+  get needsToSelectAGroupMemberMessage(): string {
     return this.translator.translate('SelectAGroupMember');
   }
 
-  needsToFillInRequiredFields(): string {
+  get needsToFillInRequiredFieldsMessage(): string {
     return this.translator.translate(`PleaseFillInRequirementFields`);
 }
+
+get savedUserMessage(): string {
+  return this.translator.translate(`UserSaved`);
+}
+
+  get areYouSureMessage(): string {
+    return this.translator.translate(`AreYouSure`);
+  }
+
+  get settingsForThisGroupWillBeDeletedMessage(): string {
+    return this.translator.translate(`SettingsForThisGroupWillBeDeleted`);
+  }
+
+  get agentOfThisBoxWillBeDeletedMessage(): string {
+    return this.translator.translate(`AgentOfThisBoxWillBeDeleted`);
+  }
+  get deletedAgentRoamingClientMessage(): string {
+    return this.translator.translate(`AgentRoamingClientDeleted`);
+  }
+
+  get settingsForThisDeviceWillBeDeletedMessage(): string {
+    return this.translator.translate(`SettingsForThisDeviceWillBeDeleted`);
+  }
+
+  get yourChangesWillBeCanceledMessage(): string {
+    return this.translator.translate(`YourChangesWillBeCanceled`);
+  }
+
+  get selectedPublicIpAndItsSettingsWillBeDeletedMessage(): string {
+    return this.translator.translate(`SelectedPublicIpAndItsSettingsWillBeDeleted`);
+  }
+
+  get pleaseEnterAValiePublicIpAddressMessage(): string {
+    return this.translator.translate(`pleaseEnterAValiePublicIpAddress`);
+  }
+
+  get thisDomainAllreadyExitsInWhiteListMessage(): string {
+    return this.translator.translate(`thisDomainAllreadyExitsInWhiteList`);
+  }
+
+  get thisDomainAllreadyExitsInBlackListMessage(): string {
+    return this.translator.translate(`thisDomainAllreadyExitsInBlackList`);
+  }
+
+  get agentsUsingThisProfileMessage(): string {
+    return this.translator.translate(`agentsUsingThisProfile`);
+  }
+
+  get profileConfigurationWillChangeForAllOfRelatedAgentsMessage(): string {
+    return this.translator.translate(`profileConfigurationWillChangeForAllOfRelatedAgents`);
+  }
+  get profileConfigurationWillChangeMessage():string{
+    return this.translator.translate(`profileConfigurationWillChange`)
+  }
+
+
 
 
 

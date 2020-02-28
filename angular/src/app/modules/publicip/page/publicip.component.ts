@@ -247,7 +247,7 @@ export class PublicipComponent implements AfterViewInit {
     this.startWizard = true;
   } */
 
-   showProfileEditWizard(id: number, t: boolean = true) {
+  showProfileEditWizard(id: number, t: boolean = true) {
     let agent;
 
     if (t) {
@@ -343,7 +343,7 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   hideWizard() {
-    this.alertService.alertWarningAndCancel('Are You Sure?', 'If you made changes, Your changes will be cancelled!').subscribe(
+    this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.yourChangesWillBeCanceledMessage}!`).subscribe(
       res => {
         if (res) {
           this.hideWizardWithoutConfirm();
@@ -395,13 +395,13 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   deletePublicIp(id: number) {
-    this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Public IP and its settings will be deleted!').subscribe(
+    this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.selectedPublicIpAndItsSettingsWillBeDeletedMessage}!`).subscribe(
       res => {
         if (res) {
           this.agentService.deleteAgent(id).subscribe(res => {
 
-              this.notification.success(this.staticMessageService.deletedAgentLocationMessage());
-              this.getPublicIpsDataAndProfiles();
+            this.notification.success(this.staticMessageService.deletedAgentLocationMessage);
+            this.getPublicIpsDataAndProfiles();
 
 
           });
@@ -472,8 +472,8 @@ export class PublicipComponent implements AfterViewInit {
 
     this.agentService.saveAgentLocation(this.selectedIp).subscribe(res => {
 
-        this.notification.success(this.staticMessageService.savedAgentLocationMessage());
-        this.getPublicIpsDataAndProfiles();
+      this.notification.success(this.staticMessageService.savedAgentLocationMessage);
+      this.getPublicIpsDataAndProfiles();
 
 
     });

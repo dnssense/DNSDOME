@@ -72,6 +72,7 @@ export class RoamingComponent implements OnInit {
         this.agentService.getSecurityProfiles().subscribe(res => { this.securityProfiles = res; });
 
         this.roamingService.getClients().subscribe(res => {
+            debugger;
             this.clients = res;
 
             this.clientsFiltered = this.clients;
@@ -107,11 +108,15 @@ export class RoamingComponent implements OnInit {
     getConfParameters() {
         this.dontDomains2 = [];
         this.boxService.getVirtualBox().subscribe(res => {
-            this.dontDomains = res.conf.split(',').map(d => { d = d.slice(1); return d; });
-            this.confParameters = JSON.parse(JSON.stringify(this.dontDomains));
-            this.dontDomains.forEach(d => {
-                this.dontDomains2.push('');
-            });
+            if (res.conf) {
+                this.dontDomains = res.conf.split(',').map(d => { d = d.slice(1); return d; });
+                this.confParameters = JSON.parse(JSON.stringify(this.dontDomains));
+                this.dontDomains.forEach(d => {
+                    this.dontDomains2.push('');
+                });
+
+            }
+
         });
     }
 
@@ -209,7 +214,7 @@ export class RoamingComponent implements OnInit {
             this.roamingService.saveClient(this.selectedClient).subscribe(
                 res => {
 
-                    this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage());
+                    this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
                     this.loadClients();
 
                 });
@@ -222,7 +227,7 @@ export class RoamingComponent implements OnInit {
                 if (res && id && id > 0) {
                     this.roamingService.deleteClient(id).subscribe(result => {
 
-                        this.notification.success(this.deletedAgentRoamingClientMessage());
+                        this.notification.success(this.staticMessageService. deletedAgentRoamingClientMessage);
 
                     });
                 }

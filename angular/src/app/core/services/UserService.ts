@@ -38,11 +38,12 @@ export class UserService {
   }
 
   public save(user: any): Observable<any> {
-    return this.http.post<any>(this._userSaveURL, JSON.stringify(user, null, ' '), this.getOptions()).map(res => res);
+    user.id = 0;
+    return this.http.post<any>(this._userSaveURL, user, this.getOptions()).map(res => res);
   }
 
   public update(user: any): Observable<any> {
-    return this.http.put<any>(this._userUpdateURL, JSON.stringify(user, null, ' '), this.getOptions()).map(res => res);
+    return this.http.put<any>(this._userUpdateURL, user, this.getOptions()).map(res => res);
   }
 
   public delete(user: User): Observable<OperationResult> {

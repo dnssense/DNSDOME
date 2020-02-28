@@ -378,13 +378,13 @@ export class DevicesComponent implements OnInit {
         if (this.isBoxFormValid()) {
             this.boxService.saveBox(this.selectedBox).subscribe(res => {
                 this.selectedBoxModal.toggle();
-                this.notification.success(this.staticMessageService.savedAgentBoxMessage());
+                this.notification.success(this.staticMessageService.savedAgentBoxMessage);
 
                 this.loadDevices();
 
             });
         } else {
-            this.notification.warning(this.staticMessageService.needsToFillInRequiredFields());
+            this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
         }
     }
 
@@ -393,12 +393,12 @@ export class DevicesComponent implements OnInit {
     }
 
     removeDeviceFromRegistereds(id: number) {
-        this.alertService.alertWarningAndCancel('Are You Sure?', 'Settings for this device will be deleted!').subscribe(
+        this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.settingsForThisDeviceWillBeDeletedMessage}!`).subscribe(
             res => {
                 if (res) {
                     this.agentService.deleteAgentDevice([id]).subscribe(_res => {
 
-                        this.notification.success(this.staticMessageService.deletedDeviceMessage());
+                        this.notification.success(this.staticMessageService.deletedDeviceMessage);
 
                         this.loadDevices();
 
@@ -409,7 +409,7 @@ export class DevicesComponent implements OnInit {
     }
 
     deleteDeviceGroup(groupName: string) {
-        this.alertService.alertWarningAndCancel('Are You Sure?', 'Settings for this group will be deleted!').subscribe(
+        this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.settingsForThisGroupWillBeDeletedMessage}!`).subscribe(
             res => {
                 if (res) {
                     const ids = [];
@@ -424,7 +424,7 @@ export class DevicesComponent implements OnInit {
                     this.agentService.deleteAgentDevice(ids).subscribe(_res => {
 
                         this.closeModal();
-                        this.notification.success(this.staticMessageService.deletedDevicesMessage());
+                        this.notification.success(this.staticMessageService.deletedDevicesMessage);
                         this.loadDevices();
 
                     });
@@ -435,12 +435,12 @@ export class DevicesComponent implements OnInit {
 
     deleteBox(id: number) {
         if (id) {
-            this.alertService.alertWarningAndCancel('Are You Sure?', 'Agent of this box will be deleted!').subscribe(
+            this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.agentOfThisBoxWillBeDeletedMessage}!`).subscribe(
                 res => {
                     if (res) {
                         this.boxService.deleteBox(id).subscribe(resu => {
 
-                            this.notification.success(this.staticMessageService.deletedAgentBoxMessage());
+                            this.notification.success(this.staticMessageService.deletedAgentBoxMessage);
                             this.loadDevices();
 
                         });
@@ -657,7 +657,7 @@ export class DevicesComponent implements OnInit {
         }
 
         if (!selecteds.length) {
-            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage());
+            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
             return;
         }
 
@@ -710,23 +710,23 @@ export class DevicesComponent implements OnInit {
             });
         }
         if (this.groupName.trim().length === 0) {
-            this.notification.warning(this.staticMessageService.needsGroupNameMessage());
+            this.notification.warning(this.staticMessageService.needsGroupNameMessage);
             return;
         }
         if (!selectedProfile || selectedProfile?.id <= 0) {
-            this.notification.warning(this.staticMessageService.needsToSelectSecurityProfileMessage());
+            this.notification.warning(this.staticMessageService.needsToSelectSecurityProfileMessage);
             return;
         }
         const groupNameChanged = this.groupName !== this.groupNameBeforeEdit;
         const securityProfileChanged = this.selectedProfileRadioBeforeEdit !== selectedProfile?.id;
         const selectionOfGroupMembedsChanged = (selectedGroupAgentsAdded.length > 0 || selectedGroupAgentsRemoved.length > 0);
         if (!groupNameChanged && !securityProfileChanged && !selectionOfGroupMembedsChanged) {
-            this.notification.warning(this.staticMessageService.needsToFillInRequiredFields());
+            this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
             return;
         }
 
         if (this.groupNameBeforeEdit === '' && !selectionOfGroupMembedsChanged) {
-            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage());
+            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
             return;
         }
 
@@ -748,14 +748,14 @@ export class DevicesComponent implements OnInit {
 
                 this.groupAgentModal.toggle();
 
-                this.notification.success(this.staticMessageService.savedDevicesMessage());
+                this.notification.success(this.staticMessageService.savedDevicesMessage);
 
                 this.loadDevices();
 
             });
         } else {
             this.groupAgentModal.toggle();
-            this.notification.success(this.staticMessageService.savedDevicesMessage());
+            this.notification.success(this.staticMessageService.savedDevicesMessage);
             this.loadDevices();
         }
 
@@ -796,7 +796,7 @@ export class DevicesComponent implements OnInit {
         const deviceGroup = new DeviceGroup();
 
         if (!selectedProfile || !selectedGroup || !selectedAgents || selectedAgents.length === 0) {
-            this.notification.warning(this.staticMessageService.needsToFillInRequiredFields());
+            this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
 
             return;
         }
@@ -826,7 +826,7 @@ export class DevicesComponent implements OnInit {
 
             this.changeGroupModal.toggle();
 
-            this.notification.success(this.staticMessageService.savedDevicesMessage());
+            this.notification.success(this.staticMessageService.savedDevicesMessage);
 
             this.loadDevices();
 
