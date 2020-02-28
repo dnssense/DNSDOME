@@ -1,0 +1,148 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
+import 'rxjs/add/operator/map';
+import { HttpClient } from '@angular/common/http';
+import { ConfigService } from './config.service';
+import { CategoryV2 } from '../models/CategoryV2';
+import { ApplicationV2 } from '../models/ApplicationV2';
+import { TranslatorService } from './translator.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StaticMessageService {
+
+
+
+
+
+
+
+  constructor(private translator: TranslatorService) {
+
+
+  }
+  get savedDeviceMessage(): string {
+    return this.translator.translate('DeviceSaved');
+  }
+  get savedDevicesMessage(): string {
+    return this.translator.translate('DevicesSaved');
+  }
+  get deletedDeviceMessage(): string {
+    return this.translator.translate('DeviceDeleted');
+  }
+  get deletedDevicesMessage(): string {
+    return this.translator.translate('DevicesDeleted');
+  }
+  get deletedProfileMessage(): string {
+    return this.translator.translate('ProfileDeleted');
+  }
+  get savedProfileMessage(): string {
+    return this.translator.translate('ProfileSaved');
+  }
+
+  get savedAgentLocationMessage(): string {
+    return this.translator.translate('AgentLocationSaved');
+  }
+  get deletedAgentLocationMessage(): string {
+    return this.translator.translate('AgentLocationDeleted');
+  }
+
+  get savedAgentRoaminClientMessage(): string {
+    return this.translator.translate('AgentRoamingClientSaved');
+  }
+  get savedAgentBoxMessage(): string {
+    return this.translator.translate('AgentBoxSaved');
+  }
+  get deletedAgentBoxMessage(): string {
+    return this.translator.translate('AgentBoxDeleted');
+  }
+
+  get needsToSelectSecurityProfileMessage(): string {
+    return this.translator.translate('SelectASecurityProfile');
+  }
+  get needsGroupNameMessage(): string {
+    return this.translator.translate('FillGroupNameWithAValue');
+  }
+
+  get needsToSelectAGroupMemberMessage(): string {
+    return this.translator.translate('SelectAGroupMember');
+  }
+
+  get needsToFillInRequiredFieldsMessage(): string {
+    return this.translator.translate(`PleaseFillInRequirementFields`);
+}
+
+get savedUserMessage(): string {
+  return this.translator.translate(`UserSaved`);
+}
+
+  get areYouSureMessage(): string {
+    return this.translator.translate(`AreYouSure`);
+  }
+
+  get settingsForThisGroupWillBeDeletedMessage(): string {
+    return this.translator.translate(`SettingsForThisGroupWillBeDeleted`);
+  }
+
+  get agentOfThisBoxWillBeDeletedMessage(): string {
+    return this.translator.translate(`AgentOfThisBoxWillBeDeleted`);
+  }
+  get deletedAgentRoamingClientMessage(): string {
+    return this.translator.translate(`AgentRoamingClientDeleted`);
+  }
+
+  get settingsForThisDeviceWillBeDeletedMessage(): string {
+    return this.translator.translate(`SettingsForThisDeviceWillBeDeleted`);
+  }
+
+  get yourChangesWillBeCanceledMessage(): string {
+    return this.translator.translate(`YourChangesWillBeCanceled`);
+  }
+
+  get selectedPublicIpAndItsSettingsWillBeDeletedMessage(): string {
+    return this.translator.translate(`SelectedPublicIpAndItsSettingsWillBeDeleted`);
+  }
+
+  get pleaseEnterAValidPublicIpAddressMessage(): string {
+    return this.translator.translate(`PleaseEnterAValiePublicIpAddress`);
+  }
+
+  get thisDomainAllreadyExitsInWhiteListMessage(): string {
+    return this.translator.translate(`ThisDomainAllreadyExitsInWhiteList`);
+  }
+
+  get thisDomainAllreadyExitsInBlackListMessage(): string {
+    return this.translator.translate(`ThisDomainAllreadyExitsInBlackList`);
+  }
+
+  get agentsUsingThisProfileMessage(): string {
+    return this.translator.translate(`AgentsUsingThisProfile`);
+  }
+
+  get profileConfigurationWillChangeForAllOfRelatedAgentsMessage(): string {
+    return this.translator.translate(`ProfileConfigurationWillChangeForAllOfRelatedAgents`);
+  }
+  get profileConfigurationWillChangeMessage(): string {
+    return this.translator.translate(`ProfileConfigurationWillChange`);
+  }
+
+  get canNotDeleteMessage(): string {
+    return this.translator.translate(`CanNotDelete`);
+  }
+
+  get thisSecurityProfileIsUsingBySomeAgentsMessage(): string {
+    return this.translator.translate(`ThisSecurityProfileIsUsingBySomeAgents`);
+  }
+
+  get itWillBeDeletedMessage(): string {
+    return this.translator.translate(`ItWillBeDeleted`);
+  }
+
+
+
+
+
+
+
+}

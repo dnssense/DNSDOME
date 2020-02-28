@@ -15,6 +15,7 @@ import { BoxService } from 'src/app/core/services/box.service';
 import { DEVICE_GROUP } from 'src/app/core/Constants';
 import { DeviceGroup, AgentInfo } from 'src/app/core/models/DeviceGroup';
 import { BWListItem } from 'src/app/core/models/BWListItem';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 declare var $: any;
 
@@ -51,7 +52,8 @@ export class ProfileWizardComponent {
     private staticService: StaticService,
     private agentService: AgentService,
     private roamingService: RoamingService,
-    private boxService: BoxService
+    private boxService: BoxService,
+    private staticMessageService: StaticMessageService
   ) {
     this.getCategoriesAndApps();
   }
@@ -169,6 +171,8 @@ export class ProfileWizardComponent {
       }
     });
 
+    // TODO burasi multi language yapilmali
+
     this.groupedApplications = [
       { type: ApplicationTypes.CLEAR_ADS, displayText: 'Advertisement', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: clearAds },
       // { type: ApplicationTypes.HTTP, displayText: 'HTTP', description: '',  applications: http },
@@ -263,57 +267,54 @@ export class ProfileWizardComponent {
   }
 
   saveProfile() {
-    if (!this.selectedAgent.rootProfile.name) { return; }
+
+    if (!this.selectedAgent.rootProfile.name) {
+      this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
+      return; }
 
     let alertMessage = '', alertTitle = '';
 
     if (this.selectedAgent.rootProfile.numberOfUsage && this.selectedAgent.rootProfile.numberOfUsage > 0) {
-      alertTitle = this.selectedAgent.rootProfile.numberOfUsage + ' Agent/s using this profile!';
-      alertMessage = 'Profile configuration will change for all of related agents.';
+      alertTitle = this.selectedAgent.rootProfile.numberOfUsage + ` ${this.staticMessageService.agentsUsingThisProfileMessage}`;
+      alertMessage = this.staticMessageService.profileConfigurationWillChangeForAllOfRelatedAgentsMessage;
     } else {
-      alertTitle = 'Are You Sure?';
-      alertMessage = 'Profile configuration will change.';
+      alertTitle = `${this.staticMessageService.areYouSureMessage}?`;
+      alertMessage = this.staticMessageService.profileConfigurationWillChangeMessage;
     }
+
+    debugger;
 
     this.alertService.alertWarningAndCancel(alertTitle, alertMessage).subscribe(
       res => {
         if (res) {
           if (this.saveMode === 'NewProfile' || this.saveMode === 'ProfileUpdate') {
             this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
-                this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+
+              this.notification.success(this.staticMessageService.savedProfileMessage);
+              this.saveEmitter.emit();
+
             });
           } else if (this.saveMode === 'NewProfileWithAgent') {
-            this.agentService.saveAgent(this.selectedAgent).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
-                this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+            this.agentService.saveAgentLocation(this.selectedAgent).subscribe(result => {
+
+              this.notification.success(this.staticMessageService.savedAgentLocationMessage);
+              this.saveEmitter.emit();
+
             });
           } else if (this.saveMode === 'NewProfileWithRoaming') {
             this.roamingService.saveClient(this.selectedAgent).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
-                this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+
+              this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
+              this.saveEmitter.emit();
+
             });
           } else if (this.saveMode === 'NewProfileWithBox') {
             this.selectedBox.agent = this.selectedAgent;
             this.boxService.saveBox(this.selectedBox).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
+
+                this.notification.success(this.staticMessageService.savedAgentBoxMessage);
                 this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+
             });
           } else if (this.saveMode === 'NewProfileWithDevice') {
             const dg = new DeviceGroup();
@@ -324,17 +325,18 @@ export class ProfileWizardComponent {
             ai.blockMessage = this.selectedAgent.blockMessage;
             ai.agentType = this.selectedAgent.agentType;
             ai.agentAlias = this.selectedAgent.agentAlias;
+            ai.agentGroup = this.selectedAgent.agentGroup;
+            ai.rootProfile = this.selectedAgent.rootProfile;
+
 
             dg.agents = [ai];
             delete dg.agentGroup;
 
-            this.agentService.saveDevice(dg).subscribe(result => {
-              if (result.status === 200) {
-                this.notification.success(result.message);
-                this.saveEmitter.emit();
-              } else {
-                this.notification.error(result.message);
-              }
+            this.agentService.saveAgentDevice(dg).subscribe(result => {
+
+              this.notification.success(this.staticMessageService.savedDeviceMessage);
+              this.saveEmitter.emit();
+
             });
           } else if (this.saveMode === 'NewProfileWithDeviceGroup') {
 
@@ -343,16 +345,14 @@ export class ProfileWizardComponent {
               deviceGroup.rootProfile = this.selectedAgent.rootProfile;
 
               if (deviceGroup.agents.length > 0 && deviceGroup.agentGroup.groupName && deviceGroup.rootProfile) {
-                this.agentService.saveDevice(deviceGroup).subscribe(result => {
-                  if (result.status === 200) {
-                    this.notification.success(result.message);
-                    this.saveEmitter.emit();
-                  } else {
-                    this.notification.error(result.message);
-                  }
+                this.agentService.saveAgentDevice(deviceGroup).subscribe(result => {
+
+                  this.notification.success(this.staticMessageService.savedDeviceMessage);
+                  this.saveEmitter.emit();
+
                 });
               } else {
-                this.notification.warning('Missing Information! Please provide required fields.');
+                this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
               }
             }
           }
@@ -377,10 +377,10 @@ export class ProfileWizardComponent {
   addToBlackList() {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain === this.blackListItem.domain)) {
-        this.notification.warning('This domain already in black list.');
+        this.notification.warning(this.staticMessageService.thisDomainAllreadyExitsInBlackListMessage);
       } else
         if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain === this.blackListItem.domain)) {
-          this.notification.warning('This domain already in white list.');
+          this.notification.warning(this.staticMessageService.thisDomainAllreadyExitsInWhiteListMessage);
         } else {
           this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.push(JSON.parse(JSON.stringify(this.blackListItem)));
           this.blackListItem.domain = '';
@@ -413,10 +413,10 @@ export class ProfileWizardComponent {
   addToWhiteList() {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain === this.whiteListItem.domain)) {
-        this.notification.warning('This domain already in white list.');
+        this.notification.warning(this.staticMessageService.thisDomainAllreadyExitsInWhiteListMessage);
       } else
         if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain === this.whiteListItem.domain)) {
-          this.notification.warning('This domain already in black list.');
+          this.notification.warning(this.staticMessageService.thisDomainAllreadyExitsInBlackListMessage);
         } else {
           this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.push(JSON.parse(JSON.stringify(this.whiteListItem)));
           this.whiteListItem.domain = '';

@@ -12,6 +12,7 @@ import { PublicIPService } from 'src/app/core/services/PublicIPService';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 declare let $: any;
 
@@ -58,7 +59,7 @@ export class PublicipComponent implements AfterViewInit {
   @ViewChild('profileModal') profileModal: RkModalModel;
   @ViewChild('profileWizard') profileWizard: ProfileWizardComponent;
 
-  currentStep: number = 1;
+  currentStep = 1;
 
   constructor(
     private alertService: AlertService,
@@ -66,7 +67,8 @@ export class PublicipComponent implements AfterViewInit {
     private authService: AuthenticationService,
     private formBuilder: FormBuilder,
     private agentService: AgentService,
-    private publicIpService: PublicIPService
+    private publicIpService: PublicIPService,
+    private staticMessageService: StaticMessageService
   ) {
     this.roleName = this.authService.currentSession.currentUser.roles.name;
     this.getPublicIpsDataAndProfiles();
@@ -98,7 +100,7 @@ export class PublicipComponent implements AfterViewInit {
   getPublicIpsDataAndProfiles() {
 
     this.publicIps = [];
-    this.agentService.getAgents().subscribe(res => {
+    this.agentService.getAgentLocation().subscribe(res => {
 
       if ((res == null || res.length < 1) && this.roleName !== 'ROLE_USER' && this.tooltipGuideCounter < 1) {
         this.showNewIpForm();
@@ -233,7 +235,7 @@ export class PublicipComponent implements AfterViewInit {
     }
   }
 
-  showNewProfileWizard() {
+  /* showNewProfileWizard() {
     if (!this.validatePublicIpForm()) { return; }
 
     this.selectedAgent = this.selectedIp;
@@ -243,7 +245,7 @@ export class PublicipComponent implements AfterViewInit {
     this.saveMode = 'NewProfileWithAgent';
 
     this.startWizard = true;
-  }
+  } */
 
   showProfileEditWizard(id: number, t: boolean = true) {
     let agent;
@@ -341,7 +343,7 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   hideWizard() {
-    this.alertService.alertWarningAndCancel('Are You Sure?', 'If you made changes, Your Changes will be cancelled!').subscribe(
+    this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.yourChangesWillBeCanceledMessage}!`).subscribe(
       res => {
         if (res) {
           this.hideWizardWithoutConfirm();
@@ -391,17 +393,15 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   deletePublicIp(id: number) {
-    this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Public IP and its settings will be deleted!').subscribe(
+    this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.selectedPublicIpAndItsSettingsWillBeDeletedMessage}!`).subscribe(
       res => {
         if (res) {
-          this.agentService.deleteAgent(id).subscribe(result => {
-            if (result.status === 200) {
-              this.notification.success(result.message);
+          this.agentService.deleteAgent(id).subscribe(res => {
 
-              this.getPublicIpsDataAndProfiles();
-            } else {
-              this.notification.error('Operation Failed! ' + result.message);
-            }
+            this.notification.success(this.staticMessageService.deletedAgentLocationMessage);
+            this.getPublicIpsDataAndProfiles();
+
+
           });
         }
       }
@@ -462,14 +462,12 @@ export class PublicipComponent implements AfterViewInit {
       return;
     }
 
-    this.agentService.saveAgent(this.selectedIp).subscribe(res => {
-      if (res.status === 200) {
-        this.notification.success(res.message);
-        this.getPublicIpsDataAndProfiles();
+    this.agentService.saveAgentLocation(this.selectedIp).subscribe(res => {
 
-      } else {
-        this.notification.error(res.message);
-      }
+      this.notification.success(this.staticMessageService.savedAgentLocationMessage);
+      this.getPublicIpsDataAndProfiles();
+
+
     });
 
     $('#newIpRow').slideUp(300);

@@ -6,6 +6,7 @@ import { Role } from 'src/app/core/models/Role';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import * as validator from 'validator';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 declare var $: any;
 @Component({
@@ -17,7 +18,8 @@ export class UsersComponent implements OnInit {
 
     constructor(
         private notification: NotificationService,
-        private userService: UserService
+        private userService: UserService,
+        private staticMessageService: StaticMessageService
     ) {
 
         this.user.roles = new Role();
@@ -91,8 +93,13 @@ export class UsersComponent implements OnInit {
 
     newUserClick() {
         this.userModalType = 'create';
-
+        this.user = new User();
+        (this.user as any).roles = ['ROLE_USER'];
         this.userModal.toggle();
+    }
+    clean() {
+
+        this.user = new User();
     }
 
     editUserClick(user: User) {
@@ -131,10 +138,11 @@ export class UsersComponent implements OnInit {
     }
 
     roleChange($event) {
+
         const role = this.userRoles.find(x => x.id === $event);
 
         if (role) {
-            this.user.roles[0] = role;
+            this.user.roles[0] = role.name;
         }
     }
 
@@ -149,18 +157,17 @@ export class UsersComponent implements OnInit {
     }
 
     save() {
+
         if (this.emailValidator(this.user.username)) {
             if (this.user.id > 0) {
                 this.userService.update(this.user).subscribe(res => {
-                    if (res.key) {
-                        this.userModal.toggle();
 
-                        this.notification.success('User Created.');
+                    this.userModal.toggle();
 
-                        this.userService.getUsers().subscribe(result => this.users = result);
-                    } else {
-                        this.notification.error(res.message);
-                    }
+                    this.notification.success(this.staticMessageService.savedUserMessage);
+
+                    this.userService.getUsers().subscribe(result => this.users = result);
+
                 });
             } else {
                 if (this.passwordStrength > 3) {
@@ -168,7 +175,7 @@ export class UsersComponent implements OnInit {
                         if (res.key) {
                             this.userModal.toggle();
 
-                            this.notification.success('User Created.');
+                            this.notification.success(this.staticMessageService.savedUserMessage);
 
                             this.userService.getUsers().subscribe(result => this.users = result);
                         } else {
@@ -178,7 +185,7 @@ export class UsersComponent implements OnInit {
                 }
             }
         } else {
-            this.notification.warning('Please fill required fields');
+            this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
         }
     }
 }

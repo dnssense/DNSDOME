@@ -11,6 +11,8 @@ import { BoxService } from 'src/app/core/services/box.service';
 import { GroupAgentModel } from '../../devices/page/devices.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { StaticSymbolResolverHost } from '@angular/compiler';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 declare let $: any;
 
@@ -27,7 +29,8 @@ export class RoamingComponent implements OnInit {
         private alertService: AlertService,
         private notification: NotificationService,
         private roamingService: RoamingService,
-        private boxService: BoxService
+        private boxService: BoxService,
+        private staticMessageService: StaticMessageService
     ) { }
 
     clientForm: FormGroup;
@@ -88,6 +91,7 @@ export class RoamingComponent implements OnInit {
         });
 
         this.roamingService.getClients().subscribe(res => {
+            debugger;
             this.clients = res;
 
             this.clientsFiltered = this.clients;
@@ -141,7 +145,9 @@ export class RoamingComponent implements OnInit {
 
     getConfParameters() {
         this.boxService.getVirtualBox().subscribe(res => {
-            this.dontDomains = res.conf.split(',').map(x => x[0] === '.' ? x.substring(1) : x);
+            if (res.conf) {
+                this.dontDomains = res.conf.split(',').map(x => x[0] === '.' ? x.substring(1) : x);
+            }
         });
     }
 
@@ -221,12 +227,10 @@ export class RoamingComponent implements OnInit {
         if (this.selectedClient && this.isFormValid) {
             this.roamingService.saveClient(this.selectedClient).subscribe(
                 res => {
-                    if (res.status === 200) {
-                        this.notification.success(res.message);
-                        this.loadClients();
-                    } else {
-                        this.notification.error(res.message);
-                    }
+
+                    this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
+                    this.loadClients();
+
                 });
         } else {
             this.notification.warning('Client form is not valid. Please enter required fields. ');
@@ -238,14 +242,15 @@ export class RoamingComponent implements OnInit {
             res => {
                 if (res && id && id > 0) {
                     this.roamingService.deleteClient(id).subscribe(result => {
-                        if (result.status === 200) {
-                            this.notification.success(result.message);
-                        } else {
-                            this.notification.error(result.message);
-                        }
+
+                        this.notification.success(this.staticMessageService.deletedAgentRoamingClientMessage);
+
                     });
                 }
             });
+    }
+    deletedAgentRoamingClientMessage(): string {
+        throw new Error('Method not implemented.');
     }
 
     searchByKeyword() {

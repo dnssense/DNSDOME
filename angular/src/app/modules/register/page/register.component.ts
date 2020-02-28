@@ -11,7 +11,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { AccountService } from 'src/app/core/services/AccountService';
 import { Router } from '@angular/router';
-import * as phoneNumberCodesList from "src/app/core/models/PhoneNumberCodes";
+import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 declare var $: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -27,16 +27,19 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['register.component.sass']
 })
 export class RegisterComponent implements OnInit, OnDestroy {
+
+  constructor(private formBuilder: FormBuilder, private element: ElementRef, private accountService: AccountService,
+    private capthaService: CaptchaService, private configService: ConfigService, private router: Router) { }
   private toggleButton: any;
   private sidebarVisible: boolean;
   matcher = new MyErrorStateMatcher();
   isFailed: boolean;
   registerForm: FormGroup;
   public user: SignupBean;
-  private privacyPolicy: boolean = false;
+  private privacyPolicy = false;
   private captcha: string;
   public host: ConfigHost;
-  public captcha_key: string = ""
+  public captcha_key = ''
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
   emailFormControl = new FormControl('', [
@@ -47,13 +50,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
   validPasswordRegister: true | false;
   campaignCode: string;
   title: string;
-  pageMode: string = 'register'
+  pageMode = 'register';
 
-  constructor(private formBuilder: FormBuilder, private element: ElementRef, private accountService: AccountService,
-    private capthaService: CaptchaService, private configService: ConfigService, private router: Router) { }
+  passStrength = 0;
+  numStrength = false;
+  upStrength = false;
+  lowStrength = false;
+  lengthStrength = false;
 
   ngOnInit() {
-    document.body.style.backgroundColor = "white";
+    document.body.style.backgroundColor = 'white';
 
     this.isFailed = false;
     this.sidebarVisible = false;
@@ -63,7 +69,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     // const navbar: HTMLElement = this.element.nativeElement;
     // this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
-    //const body = document.getElementsByTagName('body')[0];
+    // const body = document.getElementsByTagName('body')[0];
     // body.classList.add('register-page');
     // body.classList.add('off-canvas-sidebar');
     // const card = document.getElementsByClassName('card')[0];
@@ -77,19 +83,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
   createRegisterForm() {
     this.user = new SignupBean();
     this.user.company = new Company();
-    this.user.company.name = "";
+    this.user.company.name = '';
 
     this.registerForm =
       this.formBuilder.group({
-        "username": ["", [Validators.required, ValidationService.emailValidator]],
-        "password": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
-        "passwordAgain": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
-        "company": ["", [Validators.required]],
-        "gsmCode": ["", [Validators.required]],
-        "gsm": ["", [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
-        "name": ["", [Validators.required]],
-        "surname": ["", [Validators.required]]
-      }, { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
+        'username': ['', [Validators.required, ValidationService.emailValidator]],
+        'password': ['', [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
+        'passwordAgain': ['', [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
+        'company': ['', [Validators.required]],
+        'gsmCode': ['', [Validators.required]],
+        'gsm': ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+        'name': ['', [Validators.required]],
+        'surname': ['', [Validators.required]]
+      }, { validator: Validators.compose([ValidationService.matchingPasswords('password', 'passwordAgain')]) }
       );
 
 
@@ -142,17 +148,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (e) {
       this.user.username = e.toLowerCase();
     }
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(String(e).toLowerCase())) {
       this.validEmailRegister = true;
     } else {
       this.validEmailRegister = false;
     }
   }
- 
+
   checkisTelNumber(event: KeyboardEvent) {
-    let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight", "Tab"];
-    let isValid: boolean = false;
+    const allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab'];
+    let isValid = false;
 
     for (let i = 0; i < allowedChars.length; i++) {
       if (allowedChars[i] == event.key) {
@@ -174,13 +180,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.captcha != null) {
       const ca = this.captchaComponent.getResponse();
       if (ca == this.captcha) {
-        return true
+        return true;
       }
       return false;
     }
     return false;
   }
- 
+
   register() {
 
     if (!this.capthaService.validCaptcha(this.captcha)) {
@@ -189,14 +195,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
     } else {
       this.user.c_answer = this.captcha;
       this.captchaComponent.reset();
-      this.isRegisterFormValid()
+      this.isRegisterFormValid();
     }
-    
+
 
     if (this.user != null && this.registerForm.dirty
       && this.registerForm.valid && this.user.password === this.user.passwordAgain) {
 
-      let rUser: RegisterUser = {
+      const rUser: RegisterUser = {
         username: this.user.username,
         password: this.user.password,
         c_answer: this.user.c_answer
@@ -209,7 +215,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       rUser.brand = this.host.brand;
 
       this.accountService.signup(rUser).subscribe(res => {
-        this.pageMode = 'mailSent'
+        this.pageMode = 'mailSent';
       });
     }
 
@@ -218,14 +224,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   userGsmCodeChanged(code) {
     this.registerForm.controls['gsmCode'].setValue(code);
     this.registerForm.controls['gsmCode'].updateValueAndValidity();
-    this.user.gsmCode = code
+    this.user.gsmCode = code;
   }
-
-  passStrength = 0;
-  numStrength = false;
-  upStrength = false;
-  lowStrength = false;
-  lengthStrength = false;
   checkPasswordStrength() {
     this.passStrength = 0;
     this.numStrength = false;

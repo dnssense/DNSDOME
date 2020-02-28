@@ -7,6 +7,7 @@ import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 @Component({
     selector: 'app-securityprofiles',
@@ -18,7 +19,8 @@ export class SecurityProfilesComponent {
     constructor(
         private agentService: AgentService,
         private notification: NotificationService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private staticMessageService: StaticMessageService
     ) {
         this.getProfiles();
     }
@@ -82,19 +84,17 @@ export class SecurityProfilesComponent {
         const profile = this.securityProfiles.find(p => p.id === id);
 
         if (profile.numberOfUsage > 0) {
-            this.alertService.alertTitleAndText('Can not delete!', 'This profile using by some agents.');
+            this.alertService.alertTitleAndText(this.staticMessageService.canNotDeleteMessage, this.staticMessageService.thisSecurityProfileIsUsingBySomeAgentsMessage);
         } else {
-            this.alertService.alertWarningAndCancel('Are You Sure?', 'Item will be deleted!').subscribe(
+            this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.itWillBeDeletedMessage).subscribe(
                 res => {
                     if (res) {
                         this.agentService.deleteSecurityProfile(id).subscribe(delRes => {
-                            if (delRes.status === 200) {
-                                this.notification.success(delRes.message);
+
+                                this.notification.success(this.staticMessageService.deletedProfileMessage);
 
                                 this.getProfiles();
-                            } else {
-                                this.notification.error(delRes.message);
-                            }
+
                         });
                     }
                 }

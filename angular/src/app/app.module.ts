@@ -87,10 +87,10 @@ import { NotificationApiService } from './core/services/notification-api.service
       useClass: HttpErrorInterceptor,
       multi: true
     },
-    // {
-    //   provide: ErrorHandler,
-    //   useClass: ErrorInterceptor
-    // }
+     {
+       provide: ErrorHandler,
+       useClass: ErrorInterceptor
+     }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

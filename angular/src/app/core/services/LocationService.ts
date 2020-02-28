@@ -26,7 +26,7 @@ export class LocationsService {
 
   constructor(private http: HttpClient, private errorService: ErrorService, private configService: ConfigService) { }
 
-  public getAgents() {
+  public getAgentLocation() {
     return this.http
       .post<Location[]>(this._agentsListURL, null)
       .map((res: Location[]) => res)
