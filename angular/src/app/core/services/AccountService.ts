@@ -49,7 +49,7 @@ export class AccountService {
   public signup(user: RegisterUser): Observable<any> {
     user.language = navigator.language;
 
-    //eskiye uyumlu olsun diye böyle yazıldı
+    // eskiye uyumlu olsun diye böyle yazıldı
     if (user.language && user.language.indexOf('-') > 0) {
       user.language = user.language.slice(0, user.language.indexOf('-'));
     }
@@ -65,12 +65,12 @@ export class AccountService {
           user.countryCode = value.country;
           user.timezone = value.timezone;
           user.ip = value.ip;
-          if (user.countryCode && countries[user.countryCode]) {           
+          if (user.countryCode && countries[user.countryCode]) {
             if (countries[user.countryCode].languages && countries[user.countryCode].languages.length > 0) {
               user.language = countries[user.countryCode].languages[0];
             }
           }
-          //eskiye uyumlu olsun diye başına + konuldu
+          // eskiye uyumlu olsun diye başına + konuldu
           if (user.gsmCode && user.gsmCode.indexOf('+') < 0) {
             user.gsmCode = '+' + user.gsmCode;
           }
@@ -86,7 +86,7 @@ export class AccountService {
   activateAccount(accountActivateId: string): Observable<any> {
     return this.http.post<any>(this._accountActiveURL, { key: accountActivateId }, this.getOptions());
   }
-  
+
   private getOptions() {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })

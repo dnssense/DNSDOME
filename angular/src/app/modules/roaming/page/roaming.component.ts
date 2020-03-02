@@ -11,10 +11,14 @@ import { BoxService } from 'src/app/core/services/box.service';
 import { GroupAgentModel } from '../../devices/page/devices.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { StaticSymbolResolverHost } from '@angular/compiler';
+import { StaticSymbolResolverHost, ThrowStmt } from '@angular/compiler';
 import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { AgentGroup } from 'src/app/core/models/DeviceGroup';
+import { stringify } from 'querystring';
 
 declare let $: any;
+
+
 
 @Component({
     selector: 'app-roaming',
@@ -22,6 +26,8 @@ declare let $: any;
     styleUrls: ['roaming.component.sass']
 })
 export class RoamingComponent implements OnInit {
+    grupOperation: string;
+    groupOperation: string;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -36,15 +42,16 @@ export class RoamingComponent implements OnInit {
     clientForm: FormGroup;
     clients: Agent[];
     clientsFiltered: Agent[];
-    clientGroups: Agent[];
-    selectedClients: Agent[] = [];
-    clientListForGroup: Agent[] = [];
+    // clientGroups: Agent[];
+    // selectedClients: Agent[] = [];
+    // clientListForGroup: Agent[] = [];
 
     selectedClient: Agent = new Agent();
 
     securityProfiles: SecurityProfile[];
     securityProfilesForSelect: RkSelectModel[] = [];
     selectedProfile: number;
+    agentGroups;
 
     clientType: string;
     isNewItemUpdated = false;
@@ -58,16 +65,26 @@ export class RoamingComponent implements OnInit {
 
     isDontDomainsValid = true;
 
-    groupedClients = [];
+    groupedClients: GroupAgentModel[] = [];
 
     domain: string;
 
     alwaysActive = true;
     disabledNetwork = false;
 
+    groupName = '';
+    groupNameBeforeEdit = '';
+    noGroupedClients: Agent[] = [];
+    groupMembers: Agent[] = [];
+    groupListForSelect: RkSelectModel[] = [];
+    selectedGroupName;
+    selectedAgentsForChangeAddGroup: Agent[] = [];
+
+
     @ViewChild('groupModal') groupModal: RkModalModel;
 
     @ViewChild('roamingClientModal') roamingClientModal: RkModalModel;
+    @ViewChild('changeGroupModal') changeGroupModel: RkModalModel;
 
     ngOnInit(): void {
 
@@ -78,24 +95,43 @@ export class RoamingComponent implements OnInit {
             'blockMessage': []
         });
 
-        this.loadClients();
+         this.loadClients();
+
         this.getConfParameters();
-        this.defineNewAgentForProfile();
+        // this.defineNewAgentForProfile();
     }
 
     loadClients() {
-        this.agentService.getSecurityProfiles().subscribe(result => {
+         this.agentService.getSecurityProfiles().subscribe(result => {
             this.securityProfiles = result;
 
             this.fillSecurityProfilesSelect(result);
         });
 
-        this.roamingService.getClients().subscribe(res => {
-            this.clients = res;
+         this.roamingService.getClients().subscribe(res => {
+             this.clients = res;
 
             this.clientsFiltered = this.clients;
 
             this.groupedClients = this.getGroupClients(this.clients);
+            this.groupListForSelect = [];
+            this.clients.filter(x => x.agentGroup).forEach(((x, index) => {
+                const item: RkSelectModel = {displayText: x.agentGroup.groupName, value: x.agentGroup.groupName, selected: false};
+                if (!this.groupListForSelect.find(x => x.displayText == item.displayText)) {
+                    this.groupListForSelect.push(item);
+                }
+            }));
+
+            this.groupListForSelect = this.groupListForSelect.sort((x, y) => {
+                return x.displayText.localeCompare(y.displayText);
+            });
+            this.selectedGroupName = '';
+            if (this.groupListForSelect.length) {
+            this.groupListForSelect[0].selected = true;
+            this.selectedGroupName = this.groupListForSelect[0].displayText;
+            }
+
+
         });
     }
 
@@ -118,7 +154,7 @@ export class RoamingComponent implements OnInit {
         this.securityProfilesForSelect = _profiles;
     }
 
-    private getGroupClients(clients: Agent[]) {
+    private getGroupClients(clients: Agent[]): GroupAgentModel[] {
         const grouped = [] as GroupAgentModel[];
 
         clients.forEach(elem => {
@@ -150,44 +186,6 @@ export class RoamingComponent implements OnInit {
         });
     }
 
-    defineNewAgentForProfile() {
-
-        this.selectedAgent.rootProfile = new SecurityProfile();
-        this.selectedAgent.rootProfile.domainProfile = {} as SecurityProfileItem;
-        this.selectedAgent.rootProfile.applicationProfile = {} as SecurityProfileItem;
-        this.selectedAgent.rootProfile.blackWhiteListProfile = {} as BlackWhiteListProfile;
-        this.selectedAgent.rootProfile.domainProfile.categories = [];
-        this.selectedAgent.rootProfile.applicationProfile.categories = [];
-        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList = [];
-        this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList = [];
-    }
-
-    onSelectionChangeType() {
-
-    }
-
-    securityProfileChanged(id: number) {
-        this.isNewItemUpdated = true;
-        this.selectedClient.rootProfile = this.securityProfiles.find(p => p.id === id);
-    }
-
-    openTooltipGuide() {
-        introJs().start();
-    }
-
-    showNewProfileWizard() {
-        if (!this.isFormValid) {
-            return;
-        }
-
-        this.selectedAgent = this.selectedClient;
-        this.defineNewAgentForProfile();
-        this.selectedAgent.rootProfile.name = this.selectedClient.agentAlias + '-Profile';
-
-        this.saveMode = 'NewProfileWithRoaming';
-        this.startWizard = true;
-        document.getElementById('wizardPanel').scrollIntoView();
-    }
 
     get isFormValid() {
         return this.selectedClient.agentAlias.trim().length > 0 && this.selectedClient.rootProfile.id > 0;
@@ -198,59 +196,7 @@ export class RoamingComponent implements OnInit {
         $('#newClientRow').slideDown(300);
     }
 
-    showProfileEditWizard(id: number) {
-        const agent = this.clients.find(p => p.id === id);
-        if (agent.rootProfile && agent.rootProfile.id > 0) {
-            this.selectedAgent = agent;
-            this.saveMode = 'ProfileUpdate';
-            this.startWizard = true;
-        } else {
-            this.notification.warning(this.staticMessageService.profileNotFoundMessage);
-        }
 
-    }
-
-    hideWizard() {
-        this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.yourChangesWillBeCanceledMessage).subscribe(
-            () => {
-                this.loadClients();
-            }
-        );
-    }
-
-    hideWizardWithoutConfirm() {
-        this.loadClients();
-    }
-
-    saveRoamingClient() {
-        if (this.selectedClient && this.isFormValid) {
-            this.roamingService.saveClient(this.selectedClient).subscribe(
-                res => {
-
-                    this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
-                    this.loadClients();
-
-                });
-        } else {
-            this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
-        }
-    }
-
-    deleteClient(id: number) {
-        this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.willDeleteAgentRoamingClientMessage).subscribe(
-            res => {
-                if (res && id && id > 0) {
-                    this.roamingService.deleteClient(id).subscribe(result => {
-
-                        this.notification.success(this.staticMessageService.deletedAgentRoamingClientMessage);
-
-                    });
-                }
-            });
-    }
-    deletedAgentRoamingClientMessage(): void {
-        this.notification.info(this.staticMessageService.deletedAgentRoamingClientMessage);
-    }
 
     searchByKeyword() {
         if (this.searchKey) {
@@ -312,7 +258,7 @@ export class RoamingComponent implements OnInit {
         });
     }
 
-    addDomainToList() {
+     addDomainToList() {
 
         if (this.dontDomains && this.dontDomains.length < 10) {
            const result = this.checkIsValidDomaind(this.domain);
@@ -333,13 +279,7 @@ export class RoamingComponent implements OnInit {
         }
     }
 
-    removeElementFromDomainList(index: number) {
-        this.dontDomains.splice(index, 1);
 
-        // this.checkDomain();
-
-        this.saveDomainChanges();
-    }
 
     checkIsValidDomaind(d: string): string|null {
         d = d.toLocaleLowerCase().replace('https://', '').replace('http://', '');
@@ -356,48 +296,38 @@ export class RoamingComponent implements OnInit {
         return d;
     }
 
-    /* checkDomain() {
-        this.dontDomains.forEach(domain => domain = domain.toLowerCase());
-        this.isDontDomainsValid = true;
-        const d = this.dontDomains; // this.dontDomains.split(',');
-        if (d.length > 10) {
-            this.notification.warning(this.staticMessageService.youReachedMaxDomainsCountMessage);
-            this.isDontDomainsValid = false;
-        } else {
-            for (let i = 0; i < d.length; i++) {
-                let f = d[i];
-                if (f.toLowerCase().startsWith('http')) {
-                    f = f.toLowerCase().replace('http://', '').replace('https://', '');
-                }
-                const res = f.match(/^[a-z0-9.-]+$/i); // alpha or num or - or .
-                if (!res) {
-                    this.isDontDomainsValid = false;
-                    break;
-                }
-            }
-        }
-    } */
-
-    moveDeviceInGroup(opType: number, id: number) {
-        if (opType === 1) {
-            this.selectedClients.push(this.clientListForGroup.find(u => u.id === id));
-            this.clientListForGroup.splice(this.clientListForGroup.findIndex(x => x.id === id), 1);
-        } else {
-            this.clientListForGroup.push(this.selectedClients.find(u => u.id === id));
-            this.selectedClients.splice(this.selectedClients.findIndex(x => x.id === id), 1);
-        }
-    }
 
     clientsTableCheckboxChanged($event) {
         this.clientsFiltered.forEach(elem => elem.selected = $event);
     }
 
-    alwaysActiveChanged() {
-        this.alwaysActive = !this.alwaysActive;
+
+
+
+
+    editClient(client: Agent) {
+        this.selectedClient = JSON.parse(JSON.stringify(client));
+
+        this.fillSecurityProfilesSelect(this.securityProfiles, client.rootProfile.id);
+
+        this.roamingClientModal.toggle();
     }
 
-    disabledNetworkChanged() {
-        this.disabledNetwork = !this.disabledNetwork;
+    clearRoamingClientForm() {
+
+        this.selectedClient.agentAlias = '';
+        this.selectedAgent.blockMessage = '';
+
+        this.fillSecurityProfilesSelect(this.securityProfiles, -1);
+    }
+
+    profileSelectChange($event: number) {
+        this.selectedClient.rootProfile = this.securityProfiles.find(x => x.id === $event);
+    }
+
+    groupSelectChange($event: string) {
+
+        this.selectedGroupName = $event;
     }
 
     addToGroup() {
@@ -408,25 +338,189 @@ export class RoamingComponent implements OnInit {
         this.groupModal.toggle();
     }
 
-    createGroup() {
+    openChangeGroup() {
+        this.selectedAgentsForChangeAddGroup = this.clients.filter(x => x.selected).map(x => JSON.parse(JSON.stringify(x)));
+        if (!this.selectedAgentsForChangeAddGroup.length) {
+            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
+            return;
+        }
+        this.changeGroupModel.toggle();
+    }
+
+    saveChangedGroup() {
+
+        if (!this.selectedAgentsForChangeAddGroup.length) {
+            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
+            return ;
+        }
+
+            this.selectedAgentsForChangeAddGroup.forEach(x => {
+                if (!x.agentGroup) {
+                    x.agentGroup = new AgentGroup();
+                    x.agentGroup.id = 0;
+                }
+                x.agentGroup.groupName = this.selectedGroupName;
+
+            });
+            this.roamingService.saveClients(this.selectedAgentsForChangeAddGroup).subscribe(
+                res => {
+
+                    this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
+                    this.loadClients();
+                    this.changeGroupModel.toggle();
+
+                });
+
+    }
+    cleanChangedGroup() {
+        this.selectedAgentsForChangeAddGroup.forEach(x => x.selected = false);
+    }
+
+    openCreateGroup() {
+        this.groupOperation = 'Create New';
+        this.groupName = '';
+        this.groupNameBeforeEdit = '';
+
+        this.noGroupedClients = this.clients.filter(x => !x.agentGroup).map(x => JSON.parse(JSON.stringify(x)));
+        this.groupMembers = [];
+        this.groupModal.toggle();
+    }
+    saveOrUpdateGroup() {
+        let selectedItems: Agent[] = [];
+        if (!this.groupName) {
+            this.notification.warning(this.staticMessageService.needsGroupNameMessage);
+            return;
+        }
+        if (this.groupOperation == 'Create New') {
+
+        selectedItems = this.noGroupedClients.filter(x => x.selected);
+        if (!selectedItems.length) {
+            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
+            return ;
+        }
+        // set agent groupnames
+        selectedItems.forEach(x => {
+         if (!x.agentGroup) {
+             x.agentGroup = new AgentGroup();
+             x.agentGroup.id = 0;
+         }
+         x.agentGroup.groupName = this.groupName;
+
+        });
+    } else {
+        const addClients = this.noGroupedClients.filter(x => x.selected);
+        addClients.forEach(x => {
+            if (!x.agentGroup) {
+                x.agentGroup = new AgentGroup();
+                x.agentGroup.id = 0;
+            }
+            x.agentGroup.groupName = this.groupName;
+
+        });
+        selectedItems = selectedItems.concat(addClients);
+
+        const removeClients = this.groupMembers.filter(x => !x.selected);
+        removeClients.forEach(x => {
+            x.agentGroup = null;
+
+        });
+
+        selectedItems = selectedItems.concat(removeClients);
+
+        if (this.groupNameBeforeEdit != this.groupName) {// name changed
+            const changedItems = this.groupMembers.filter(x => x.selected).filter(x => x.agentGroup);
+            changedItems.forEach(element => {
+                element.agentGroup.groupName = this.groupName;
+            });
+            selectedItems = selectedItems.concat(changedItems);
+        }
+
+        if (!selectedItems.length) {
+            this.notification.warning(this.staticMessageService.pleaseChangeSomethingMessage);
+            return;
+        }
+
+
+
+
+    }
+
+
+
+        this.roamingService.saveClients(selectedItems).subscribe(
+            res => {
+
+                this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
+                this.loadClients();
+                this.groupModal.toggle();
+
+            });
+    }
+
+
+    cleanNewGroup() {
+        this.groupName = '';
+
+        this.noGroupedClients.forEach(x => x.selected = false);
+        this.groupMembers.forEach(x => x.selected = false);
+    }
+    openUpdateGroup(agents: Agent[]) {
+        this.groupOperation = 'Edit';
+        this.groupName = agents[0].agentGroup.groupName;
+        this.groupNameBeforeEdit = this.groupName;
+        this.noGroupedClients = this.clients.filter(x => !x.agentGroup).map(x => JSON.parse(JSON.stringify(x)));
+        this.groupMembers = this.clients.filter(x => x.agentGroup && x.agentGroup.groupName == this.groupName).map(x => JSON.parse(JSON.stringify(x)));
+        this.groupMembers.forEach(x => x.selected = true);
         this.groupModal.toggle();
     }
 
-    editClient(client: Agent) {
-        this.selectedClient = client;
+    deleteGroup(agents: Agent[]) {
 
-        this.fillSecurityProfilesSelect(this.securityProfiles, client.rootProfile.id);
+        this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.groupWillBeDeletedMessage}`).subscribe(res => {
+            agents.forEach(x => x.agentGroup = null);
 
-        this.roamingClientModal.toggle();
+            this.roamingService.saveClients(agents).subscribe(
+                res => {
+
+                    this.notification.success(this.staticMessageService.groupDeletedMessage);
+                    this.loadClients();
+
+
+                });
+
+        });
     }
 
-    clearRoamingClientForm() {
-        this.selectedClient = new Agent();
+    saveRoamingClient() {
 
-        this.fillSecurityProfilesSelect(this.securityProfiles, -1);
+        if (this.selectedClient && this.isFormValid) {
+            this.roamingService.saveClient(this.selectedClient).subscribe(
+                res => {
+
+                    this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
+                    this.loadClients();
+                    this.roamingClientModal.toggle();
+
+                });
+        } else {
+            this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
+        }
     }
 
-    profileSelectChange($event: number) {
-        this.selectedClient.rootProfile = this.securityProfiles.find(x => x.id === $event);
+    deleteClient(id: number) {
+        this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.willDeleteAgentRoamingClientMessage).subscribe(
+            res => {
+                if (res && id && id > 0) {
+                    this.roamingService.deleteClient(id).subscribe(result => {
+
+                        this.deletedAgentRoamingClientMessage();
+
+                    });
+                }
+            });
     }
+    deletedAgentRoamingClientMessage(): void {
+        this.notification.info(this.staticMessageService.deletedAgentRoamingClientMessage);
+    }
+
 }

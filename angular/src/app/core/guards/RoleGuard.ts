@@ -7,7 +7,7 @@ import { AuthenticationService } from '../services/authentication.service';
 export class RoleGuard implements CanActivate {
     constructor(public auth: AuthenticationService, public router: Router) { }
     canActivate(route: ActivatedRouteSnapshot): boolean {
-        
+
         const expectedRole = route.data.expectedRole;
         const roles: string[] = expectedRole.split(',');
         const ss = this.auth.currentSession;

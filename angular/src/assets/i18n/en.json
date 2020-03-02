@@ -144,5 +144,8 @@
     "EnterValidDomain":"Please enter valid domain",
     "CouldNotCreateDownloadLink":"Could not create download link",
     "DownloadLinkCopiedToClipboard":"Download link copied",
-    "ChangesCouldNotSaved":"Changes could not saved"
+    "ChangesCouldNotSaved":"Changes could not saved",
+    "GroupWillBeDeleted":"Group will be deleted",
+    "GroupDeleted":"Group deleted",
+    "PleaseChangeSomething":"Please change something"
 }

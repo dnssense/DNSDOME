@@ -18,6 +18,7 @@ export class ErrorInterceptor implements ErrorHandler {
     const spinnerService = this.injector.get(SpinnerService);
     spinnerService.hide();
     const translatorService = this.injector.get(TranslatorService);
+
     if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
       if (!navigator.onLine) {
@@ -44,7 +45,7 @@ export class ErrorInterceptor implements ErrorHandler {
 
       const message = translatorService.translate(error.message);
       // debugger;
-      // console.log(message);
+      console.log(message);
       if (!(message.includes('\'push\' of undefined') && error.stack.includes('reports-module'))) { // TODO: will remove; after unfound push error fixed
         // notificationService.error('Error');
       }

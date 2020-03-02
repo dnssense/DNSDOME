@@ -141,7 +141,10 @@
     "EnterValidDomain":"Lütfen geçerli domaın giriniz",
     "CouldNotCreateDownloadLink":"Download linki create edilemedi",
     "DownloadLinkCopiedToClipboard":"Download linki kopyalandı",
-    "ChangesCouldNotSaved":"Değişiklikler kaydedilemedi"
+    "ChangesCouldNotSaved":"Değişiklikler kaydedilemedi",
+    "GroupWillBeDeleted":"Grup silinecek",
+    "GroupDeleted":"Grup silindi",
+    "PleaseChangeSomething":"Hiç değişiklik yapılmadı"
     
 
 }
