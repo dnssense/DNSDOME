@@ -3,8 +3,8 @@
     <rk-table-export (event)="exportAs($event)"></rk-table-export>
     
     <rk-table [config]="tableConfig" (pageChange)="onPageChange($event)" [maxSize]="5" [totalCount]="100"
-      [pageViewCount]="10" [currentPage]="1" (pageViewCountChange)="onPageViewCountChange($event)"
-      [showPagination]="true">
+      [pageViewCount]="pageViewCount" [currentPage]="1" (pageViewCountChange)="onPageViewCountChange($event)"
+      [showPagination]="true" (linkColumnClicked)="linkClicked($event)">
     </rk-table>
   </rk-table-container>
 </div>

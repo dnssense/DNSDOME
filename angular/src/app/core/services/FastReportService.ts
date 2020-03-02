@@ -27,20 +27,18 @@ export class FastReportService {
   public _initTableColumnsURL = this.configService.getApiUrl() + '/quick-reports/tableColumns'; // URL to subcategories api
   public _multiValueHistogramDataURL = this.configService.getApiUrl() + '/quick-reports/multiValueHistogramData'; // URL to graph api
 
-  public _tableColumns: BehaviorSubject<LogColumn[]> = new BehaviorSubject(
-    null
-  );
+  private _tableColumnsSubject: BehaviorSubject<LogColumn[]> = new BehaviorSubject(null);
+  public tableColumns = this._tableColumnsSubject.asObservable();
+
   public _configItems: BehaviorSubject<ConfigItem[]> = new BehaviorSubject(
     null
   );
 
+
+
   constructor(private http: HttpClient, private errorService: ErrorService, private configService: ConfigService) {
     this.initTableColumns();
     this.initFormData();
-  }
-
-  get tableColumns(): BehaviorSubject<LogColumn[]> {
-    return this._tableColumns;
   }
 
   get configItems(): BehaviorSubject<ConfigItem[]> {
@@ -61,7 +59,7 @@ export class FastReportService {
       .get<LogColumn[]>(this._initTableColumnsURL)
       .map((response: LogColumn[]) => response)
       .subscribe((logColumnArray: LogColumn[]) => {
-        this._tableColumns.next(logColumnArray)
+        this._tableColumnsSubject.next(logColumnArray);
       });
   }
 

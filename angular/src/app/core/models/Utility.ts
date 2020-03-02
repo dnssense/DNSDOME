@@ -1,6 +1,6 @@
-export class KeyValueModel<Key,Value> {
-    key : Key;
-    value : Value;
+export class KeyValueModel<Key, Value> {
+    key: Key;
+    value: Value;
 }
 
 export enum TimeRangeEnum {

@@ -18,9 +18,12 @@
           </div>
 
           <div class="rk-accordion-body">
-            <div class="rk-radio my-0" *ngFor="let report of savedReports; let index = index">
-              <input type="radio" id="savedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport" [value]="report.id">
-              <label for="savedReport-{{ index }}">{{ report.name }}</label>
+            <div *ngFor="let report of savedReports; let index = index" class="mt-3">
+              <div class="rk-radio my-0">
+                <input type="radio" id="savedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport"
+                  [value]="report.id">
+                <label for="savedReport-{{ index }}">{{ report.name }}</label>
+              </div>
             </div>
           </div>
         </rk-accordion-panel>
@@ -34,7 +37,8 @@
             <ul>
               <li *ngFor="let report of systemSavedReports; let index = index" class="mt-3">
                 <div class="rk-radio my-0">
-                  <input type="radio" id="systemSavedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport" [value]="report.id">
+                  <input type="radio" id="systemSavedReport-{{ index }}" [(ngModel)]="savedReportValue"
+                    name="savedReport" [value]="report.id">
                   <label for="systemSavedReport-{{ index }}">{{ report.name }}</label>
                 </div>
               </li>
@@ -44,7 +48,7 @@
       </rk-accordion>
     </div>
 
-    <div class="rk-modal-item">
+    <!-- <div class="rk-modal-item">
       <h5 class="modal-item title">Action</h5>
 
       <div class="container-fluid">
@@ -57,26 +61,34 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="rk-modal-item">
       <h5 class="modal-item title">Add Filter</h5>
 
-      <rk-select [(value)]="selectedColumnFilter" [options]="columnFilterOptions"></rk-select>
+      <rk-select [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
 
       <div class="d-flex mt-2">
-        <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2" [ngClass]="{'btn-outline-active': isEqual}"
-          (click)="isEqual = true">
+        <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
+          [ngClass]="{'btn-outline-active': modalIsEqual}" (click)="modalIsEqual = true">
           <icon-equal></icon-equal>
         </button>
 
-        <button class="btn btn-icon btn-small w-100 filter-btn-outline" [ngClass]="{'btn-outline-active': !isEqual}"
-          (click)="isEqual = false">
+        <button class="btn btn-icon btn-small w-100 filter-btn-outline"
+          [ngClass]="{'btn-outline-active': !modalIsEqual}" (click)="modalIsEqual = false">
           <icon-not-equal></icon-not-equal>
         </button>
       </div>
 
-      <input type="text" class="rk-input w-100 mt-3" [(ngModel)]="filterText" placeholder="abc.com">
+      <input type="text" class="rk-input w-100 mt-3" [(ngModel)]="filterText" placeholder="abc.com"
+        (keydown.enter)="addManuelFilter()">
+
+      <div class="domain-label mt-3" *ngFor="let filter of manuelFilters; let index = index"
+        [ngClass]="{'danger': !filter.equal}">
+        {{ filter.values[0] }}
+
+        <i-feather name="x" class="hover-gray" (click)="removeManuelFilter(index)"></i-feather>
+      </div>
     </div>
 
     <div class="rk-modal-item" style="height: 1px; border-bottom: none;">
@@ -95,7 +107,8 @@
 
         <div class="category-body">
           <div class="category-item" *ngFor="let item of category.items">
-            <rk-checkbox size="sm" alignment="right" [(value)]="item.selected">{{ item.name }}</rk-checkbox>
+            <rk-checkbox size="sm" alignment="right" [(value)]="item.selected"
+              (valueChange)="childCheckboxValueChanged($event, item)">{{ item.name }}</rk-checkbox>
           </div>
         </div>
       </div>
@@ -103,14 +116,14 @@
   </rk-modal-body>
 
   <rk-modal-footer>
-    <button class="btn w-100 btn-small mr-2">Apply</button>
-    <button class="btn w-100 btn-default btn-small">Clean</button>
+    <button class="btn w-100 btn-small mr-2" (click)="apply(true)">Apply</button>
+    <button class="btn w-100 btn-default btn-small" (click)="clear()">Clean</button>
   </rk-modal-footer>
 </rk-modal>
 
 <div class="monitor-traffic-search">
   <div class="filter-left">
-    <span class="monitor-title">Monitor Traffic</span>
+    <span class="monitor-title">{{ pageTitle }}</span>
 
     <div class="traffic-types">
       <rk-radio name="trafficType" checked="true" (valueChange)="onValueChange(true)">Total traffic</rk-radio>
@@ -119,22 +132,35 @@
   </div>
 
   <div class="filter-right">
+    <button class="btn btn-small btn-icon mr-2" (click)="search()">
+      <i-feather name="search"></i-feather>
+      Search
+    </button>
+
     <div style="min-width: 200px;">
-      <rk-select [(value)]="searchSetting.dateInterval" (valueChange)="onSelectedDateChange($event)" [options]="options"
-        [placeholder]="'Date selection'"></rk-select>
+      <rk-select [(value)]="searchSettings.dateInterval" (valueChange)="onSelectedDateChange($event)"
+        [options]="dateOptions" [placeholder]="'Date selection'"></rk-select>
     </div>
     <div>
       <button class="btn btn-small btn-icon ml-2" (click)="modal.toggle()">
-        <i-feather name="shopping-cart"></i-feather>
+        <i-feather name="filter"></i-feather>
         Filtreler
       </button>
     </div>
   </div>
 </div>
 
-<div class="filters rk-row" *ngIf="filters.length > 0">
-  <span>Filter;</span>
-  <div *ngFor="let filter of filters" class="m-l-8">
-    <rk-filter-badge [name]="filter.name" [equal]="filter.equal" [values]="filter.values"></rk-filter-badge>
+<div class="d-flex flex-wrap align-items-center">
+  <span class="filter-text mb-2">Filter;</span>
+  <div class="ml-2 mb-2" *ngFor="let filter of this.searchSettings.must; let index = index">
+    <rk-filter-badge [name]="filter.field" [index]="index" [equal]="true" [values]="filter.value.split(',')"
+      (onChange)="onChangeFilterBadge($event, 'must')" (edited)="onEditedFilterBadge($event, 'must')"
+      (deleted)="onDeletedFilterBadge($event, 'must')"></rk-filter-badge>
+  </div>
+
+  <div class="ml-2 mb-2" *ngFor="let filter of this.searchSettings.mustnot; let index = index">
+    <rk-filter-badge [name]="filter.field" [index]="index" [equal]="false" [values]="filter.value.split(',')"
+      (onChange)="onChangeFilterBadge($event, 'mustnot')" (edited)="onEditedFilterBadge($event, 'mustnot')"
+      (deleted)="onDeletedFilterBadge($event, 'mustnot')"></rk-filter-badge>
   </div>
 </div>

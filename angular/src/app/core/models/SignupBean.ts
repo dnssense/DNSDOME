@@ -11,18 +11,18 @@ export class SignupBean {
     public passwordAgain: string;
     public activationCode: string;
     public c_answer: string;
-    public webSite: string = "";
-    public industry: string = " ";
-    public companyCountry: string = " ";
-    public personnelCount: string = "1-50";
-    public usageType: string = "Home Account";
-    public source: string = "Other";
-    public address1: string = " ";
-    public address2: string = " ";
-    public city: string = " ";
-    public postCode: string = " ";
-    public regionState: string = " ";
-    public gsmCode: string = "+44";
+    public webSite = '';
+    public industry = ' ';
+    public companyCountry = ' ';
+    public personnelCount = '1-50';
+    public usageType = 'Home Account';
+    public source = 'Other';
+    public address1 = ' ';
+    public address2 = ' ';
+    public city = ' ';
+    public postCode = ' ';
+    public regionState = ' ';
+    public gsmCode = '+44';
 }
 
 export class RegisterUser {

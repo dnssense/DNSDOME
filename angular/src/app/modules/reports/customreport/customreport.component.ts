@@ -9,85 +9,71 @@ import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 
-
 @Component({
   selector: 'app-customreport',
   templateUrl: 'customreport.component.html',
   styleUrls: ['customreport.component.sass']
 })
-export class CustomReportComponent implements OnInit, OnDestroy {
+export class CustomReportComponent implements OnInit {
 
-  public total: number = 0;
-  public multiplier: number = 1;
+  constructor(
+    private fastReportService: FastReportService,
+    private notificationService: NotificationService
+  ) { }
+
+  public total = 0;
+  public multiplier = 1;
   public searchSetting: SearchSetting = new SearchSetting();
   public selectedColumns: AggregationItem[];
   public columns: LogColumn[];
   public columnsTemp: LogColumn[];
   public data: any[];
 
-  @ViewChild("tableDivComponent")
-  tableDivComponent: ElementRef;
-  @ViewChild(CustomReportResultComponent)
-  public customReportResultComponent: CustomReportResultComponent;
-  @ViewChild(CustomReportSearchComponent)
-  public customReportSearchComponent: CustomReportSearchComponent;
+  @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
 
-  private ngUnsubscribe: Subject<any> = new Subject<any>();
+  @ViewChild(CustomReportResultComponent) customReportResultComponent: CustomReportResultComponent;
 
+  @ViewChild(CustomReportSearchComponent) customReportSearchComponent: CustomReportSearchComponent;
 
-  constructor(private fastReportService: FastReportService, private notificationService: NotificationService) {  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
   ngOnInit(): void {
     this.fastReportService.tableColumns.subscribe((res: LogColumn[]) => {
       this.columns = res;
     });
   }
 
-  public search(setting: any) {
-    
+  public search(setting: SearchSetting) {
     this.searchSetting = setting;
-    // if (!this.searchSetting.columns.columns || this.searchSetting.columns.columns.length == 0) {
-    //   this.notificationService.warning("You must select at least one column for a report.");
-    // } else {
-    //   this.customReportResultComponent.search(this.searchSetting);
-    // }
 
     (this.searchSetting.columns.columns as any) = [JSON.parse('{"column":{"name":"domain","beautyName":"Domain","hrType":"","aggsType":"TERM","checked":true},"label":"Domain"}')];
 
     this.customReportResultComponent.search(this.searchSetting);
-
   }
 
   public addValuesIntoSelected($event) {
 
-    let column: string = $event.column;
-    let value = $event.data;
+    const column: string = $event.column;
+    const value = $event.data;
 
     let exists = false;
-    for (let a of this.searchSetting.must) {
-      if (a.field == column && a.value == value) {
+    for (const a of this.searchSetting.must) {
+      if (a.field === column && a.value === value) {
         exists = true;
         break;
       }
     }
 
     if (exists) {
-      this.notificationService.error(column + "=" + value + " exists in your criteria");
+      this.notificationService.error(column + '=' + value + ' exists in your criteria');
       return;
     }
 
-    let columnInput = new ColumnTagInput(column, "=", value);
+    const columnInput = new ColumnTagInput(column, '=', value);
 
     this.searchSetting.must.push(columnInput);
 
-    this.notificationService.info(columnInput.toString() + " Added into your criteria");
+    this.notificationService.info(columnInput.toString() + ' Added into your criteria');
 
     this.customReportSearchComponent.setSearchSetting(this.searchSetting);
-
   }
 
 }

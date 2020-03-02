@@ -22,6 +22,3 @@ export class User {
 export class UserExtended extends User {
     passwordAgain: string;
 }
-
-
-

@@ -1,22 +1,22 @@
-import {DomainProfile} from './DomainProfile';
-import {User} from './User';
-import {ApplicationProfile} from './ApplicationProfile';
-import {BWList} from './BWList';
+import { DomainProfile } from './DomainProfile';
+import { User } from './User';
+import { ApplicationProfile } from './ApplicationProfile';
+import { BWList } from './BWList';
 import { WAgentIpGroup } from './WAgentIpGroup';
 
 export class PublicIP {
-  public id: number = -1;
-  public agentAlias: string = '';
+  public id = -1;
+  public agentAlias = '';
   public user: User;
   public agentIpGroups: WAgentIpGroup[] = [];
   public profile: DomainProfile;
   public bwList: BWList;
   public appUserProfile: ApplicationProfile;
   public logo: any;
-  public blockMessage: string = '';
+  public blockMessage = '';
   public blockip: number[] = [];
   public ips: Array<string[]> = [];
-  public etvUser: boolean = false;
+  public etvUser = false;
 
   public constructor() {
 

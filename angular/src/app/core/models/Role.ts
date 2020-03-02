@@ -7,8 +7,6 @@ export class Role {
     clearences: Array<Clearance>;
 }
 
-
-
 export interface RestUserRoleRight {
     roles: RestRole[];
 }

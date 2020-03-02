@@ -6,7 +6,6 @@ import { ScheduledReport } from '../models/ScheduledReport';
  */
 
 export class SearchSetting {
-
   id = -1;
   name = '';
   refresh = -1;

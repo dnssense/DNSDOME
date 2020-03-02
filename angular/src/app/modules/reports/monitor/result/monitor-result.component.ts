@@ -7,9 +7,14 @@ import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
 import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
-import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { RkTableConfigModel, RkTableRowModel, RkTableColumnModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
+import * as moment from 'moment';
 
+export interface LinkClick {
+  columnModel: RkTableColumnModel;
+  value: string;
+}
 
 @Component({
   selector: 'app-monitor-result',
@@ -25,7 +30,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     private pdfService: PdfService
   ) { }
 
-  public totalItems = 0;
+  
   public currentPage = 1;
   public columns: LogColumn[];
   public selectedColumns: LogColumn[];
@@ -36,25 +41,29 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
   columnListLength = 12;
 
+  pageViewCount = 10;
+
+  totalCount = 0;
+
   tableConfig: RkTableConfigModel = {
     columns: [
-      { id: 0, name: 'time', displayText: 'Time' },
-      { id: 1, name: 'domain', displayText: 'Domain' },
-      { id: 2, name: 'subdomain', displayText: 'Subdomain' },
-      { id: 3, name: 'sourceIp', displayText: 'Src.Ip' },
+      { id: 0, name: 'time', displayText: 'Time', isLink: true },
+      { id: 1, name: 'domain', displayText: 'Domain', isLink: true },
+      { id: 2, name: 'subdomain', displayText: 'Subdomain', isLink: true },
+      { id: 3, name: 'sourceIp', displayText: 'Src.Ip', isLink: true },
       { id: 4, name: 'sourceIpCountryCode', displayText: 'Src. Country' },
-      { id: 5, name: 'destinationIp', displayText: 'Dst.Ip' },
+      { id: 5, name: 'destinationIp', displayText: 'Dst.Ip', isLink: true },
       { id: 6, name: 'destinationIpCountryCode', displayText: 'Dst.Country' },
-      { id: 7, name: 'agentAlias', displayText: 'Location/Agent' },
-      { id: 8, name: 'userId', displayText: 'User Id' },
+      { id: 7, name: 'agentAlias', displayText: 'Location/Agent', isLink: true },
+      { id: 8, name: 'userId', displayText: 'User Id', isLink: true },
       { id: 9, name: 'action', displayText: 'Action' },
-      { id: 10, name: 'applicationName', displayText: 'Application' },
-      { id: 11, name: 'category', displayText: 'Category' },
+      { id: 10, name: 'applicationName', displayText: 'Application', isLink: true },
+      { id: 11, name: 'category', displayText: 'Category', isLink: true },
       { id: 12, name: 'reason', displayText: 'Reason' },
-      { id: 13, name: 'clientLocalIp', displayText: 'Local Src. Ip' },
-      { id: 14, name: 'clientMacAddress', displayText: 'Mac Address' },
-      { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial' },
-      { id: 16, name: 'hostName', displayText: 'Host Name' }
+      { id: 13, name: 'clientLocalIp', displayText: 'Local Src. Ip', isLink: true },
+      { id: 14, name: 'clientMacAddress', displayText: 'Mac Address', isLink: true },
+      { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial', isLink: true },
+      { id: 16, name: 'hostName', displayText: 'Host Name', isLink: true }
     ],
     rows: [
 
@@ -65,6 +74,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   @Input() public searchSetting: SearchSetting;
   @Output() public addColumnValueEmitter = new EventEmitter();
   @Output() public tableColumnsChanged = new EventEmitter();
+
+  @Output() linkClickedOutput = new EventEmitter<LinkClick>();
 
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
   @ViewChild('columnTablePanel') columnTablePanel: any;
@@ -107,12 +118,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     this.loadGraph(ss);
   }
 
-  public stopRefreshing() {
-    // this.spinnerService.stop();
-  }
-
   exportAs(extention: ExportTypes) {
-
     if (this.tableData && this.tableData.length > 0) {
       this.tableData.forEach(data => {
         delete data.id;
@@ -132,18 +138,20 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     // this.spinnerService.start();
     this.monitorService.getGraphData(ss, this.currentPage).takeUntil(this.ngUnsubscribe)
       .subscribe((res: Response) => {
-        this.tableData = res['result']; this.totalItems = res['total'];
+        this.tableData = res['result'];
+        this.totalCount = res['total'];
 
         this.tableConfig.rows = [];
 
         this.tableData.forEach(item => {
+          item.time = moment(item.time).format('DD.MM.YYYY HH:mm:ss');
+
           const rowItem: RkTableRowModel = item;
           rowItem.selected = false;
 
           this.tableConfig.rows.push(rowItem);
         });
-      },
-        () => this.stopRefreshing(), () => this.stopRefreshing());
+      });
   }
 
   public checkUncheckColumn(col: LogColumn) {
@@ -176,7 +184,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   changeColumnListLength() {
-    if (this.columnListLength == 12) {
+    if (this.columnListLength === 12) {
       this.columnListLength = this.columns.length;
     } else {
       this.columnListLength = 12;
@@ -197,5 +205,11 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     this.pageChanged({ page: pageNumber });
   }
 
-  onPageViewCountChange(event: any) { }
+  onPageViewCountChange(event: number) {
+    this.pageViewCount = event;
+  }
+
+  linkClicked($event: LinkClick) {
+    this.linkClickedOutput.emit($event);
+  }
 }
