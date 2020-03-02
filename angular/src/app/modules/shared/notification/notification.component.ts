@@ -10,18 +10,19 @@ declare const $: any;
 })
 export class NotificationComponent implements OnInit {
 
-  constructor(private notificationService:NotificationService) { 
-    this.notificationService.getMessage().subscribe(x=>{  
-      if(x && x.type && x.text)
-      this.showNotification('top','right',x.type,x.text);
+  constructor(private notificationService: NotificationService) {
+    this.notificationService.getMessage().subscribe(x => {
+      if (x && x.type && x.text) {
+      this.showNotification('top', 'right', x.type, x.text);
+      }
     });
   }
 
   ngOnInit() {
   }
-  showNotification(from: any, align: any,which:string,msg:string) {
+  showNotification(from: any, align: any, which: string, msg: string) {
     const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
-    
+
     const color = Math.floor((Math.random() * 6) + 1);
 
     $.notify({

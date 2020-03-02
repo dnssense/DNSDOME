@@ -32,7 +32,7 @@
             <div class="rk-list-item" *ngFor="let notification of notifications" (click)="setAsRead(notification)"
               [ngStyle]="{'background': notification.status === 1 ? 'rgba(0,0,0,.05)' : 'white'}">
               <div class="text">
-                notification.message
+                {{notification.message}}
               </div>
 
               <div class="arrow">

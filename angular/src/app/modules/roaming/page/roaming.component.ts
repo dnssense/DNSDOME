@@ -205,13 +205,13 @@ export class RoamingComponent implements OnInit {
             this.saveMode = 'ProfileUpdate';
             this.startWizard = true;
         } else {
-            this.notification.warning('Profile can not find!');
+            this.notification.warning(this.staticMessageService.profileNotFoundMessage);
         }
 
     }
 
     hideWizard() {
-        this.alertService.alertWarningAndCancel('Are You Sure?', 'If you made changes, your Changes will be cancelled!').subscribe(
+        this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.yourChangesWillBeCanceledMessage).subscribe(
             () => {
                 this.loadClients();
             }
@@ -232,12 +232,12 @@ export class RoamingComponent implements OnInit {
 
                 });
         } else {
-            this.notification.warning('Client form is not valid. Please enter required fields. ');
+            this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
         }
     }
 
     deleteClient(id: number) {
-        this.alertService.alertWarningAndCancel('Are You Sure?', 'Selected Client will be deleted!').subscribe(
+        this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.willDeleteAgentRoamingClientMessage).subscribe(
             res => {
                 if (res && id && id > 0) {
                     this.roamingService.deleteClient(id).subscribe(result => {
@@ -248,8 +248,8 @@ export class RoamingComponent implements OnInit {
                 }
             });
     }
-    deletedAgentRoamingClientMessage(): string {
-        throw new Error('Method not implemented.');
+    deletedAgentRoamingClientMessage(): void {
+        this.notification.info(this.staticMessageService.deletedAgentRoamingClientMessage);
     }
 
     searchByKeyword() {
@@ -267,9 +267,9 @@ export class RoamingComponent implements OnInit {
                 this.getConfParameters();
                 this.fileLink = res.link;
                 this.copyToClipBoard(this.fileLink);
-                this.notification.info('File link copied to clipboard');
+                this.notification.info(this.staticMessageService.downloadLinkCopiedToClipboardMessage);
             } else {
-                this.notification.error('Could not create link');
+                this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
             }
         });
     }
@@ -292,7 +292,7 @@ export class RoamingComponent implements OnInit {
                 if (res && res.link) {
                     this.getConfParameters();
                 } else {
-                    this.notification.error('Changes could not save!');
+                    this.notification.error(this.staticMessageService.changesCouldNotSavedMessage);
                 }
             });
         }
@@ -307,44 +307,61 @@ export class RoamingComponent implements OnInit {
                 this.fileLink = res.link;
                 window.open('http://' + this.fileLink, '_blank');
             } else {
-                this.notification.error('Could not create link');
+                this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
             }
         });
     }
 
     addDomainToList() {
+
         if (this.dontDomains && this.dontDomains.length < 10) {
-            if (!this.isDontDomainsValid) {
-                this.notification.warning('Please fill all fields with valid domains, before a new one');
-                return;
-            }
+           const result = this.checkIsValidDomaind(this.domain);
+           if (!result) {
+               this.notification.warning(this.staticMessageService.enterValidDomainMessage);
+               return;
+           }
 
-            this.dontDomains.push(this.domain);
+            this.dontDomains.push(result);
 
-            this.checkDomain();
+//            this.checkDomain();
 
             this.domain = '';
 
             this.saveDomainChanges();
         } else {
-            this.notification.warning('You can add max. 10 domains');
+            this.notification.warning(this.staticMessageService.youReachedMaxDomainsCountMessage);
         }
     }
 
     removeElementFromDomainList(index: number) {
         this.dontDomains.splice(index, 1);
 
-        this.checkDomain();
+        // this.checkDomain();
 
         this.saveDomainChanges();
     }
 
-    checkDomain() {
+    checkIsValidDomaind(d: string): string|null {
+        d = d.toLocaleLowerCase().replace('https://', '').replace('http://', '');
+
+        for (let i = 0; i < d.length; i++) {
+            const f = d[i];
+
+            const res = f.match(/^[a-z0-9.-]+$/i); // alpha or num or - or .
+            if (!res) {
+                return null;
+                break;
+            }
+        }
+        return d;
+    }
+
+    /* checkDomain() {
         this.dontDomains.forEach(domain => domain = domain.toLowerCase());
         this.isDontDomainsValid = true;
         const d = this.dontDomains; // this.dontDomains.split(',');
         if (d.length > 10) {
-            this.notification.warning('You can report 10 domains per request');
+            this.notification.warning(this.staticMessageService.youReachedMaxDomainsCountMessage);
             this.isDontDomainsValid = false;
         } else {
             for (let i = 0; i < d.length; i++) {
@@ -359,7 +376,7 @@ export class RoamingComponent implements OnInit {
                 }
             }
         }
-    }
+    } */
 
     moveDeviceInGroup(opType: number, id: number) {
         if (opType === 1) {

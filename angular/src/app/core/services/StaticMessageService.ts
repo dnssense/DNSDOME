@@ -18,6 +18,7 @@ export class StaticMessageService {
 
 
 
+
   constructor(private translator: TranslatorService) {
 
 
@@ -91,6 +92,9 @@ get savedUserMessage(): string {
   get deletedAgentRoamingClientMessage(): string {
     return this.translator.translate(`AgentRoamingClientDeleted`);
   }
+  get willDeleteAgentRoamingClientMessage(): string {
+    return this.translator.translate(`AgentRoamingClientWillBeDeleted`);
+  }
 
   get settingsForThisDeviceWillBeDeletedMessage(): string {
     return this.translator.translate(`SettingsForThisDeviceWillBeDeleted`);
@@ -137,6 +141,30 @@ get savedUserMessage(): string {
 
   get itWillBeDeletedMessage(): string {
     return this.translator.translate(`ItWillBeDeleted`);
+  }
+
+  get profileNotFoundMessage(): string {
+    return this.translator.translate(`ProfileNotFound`);
+  }
+
+  get youReachedMaxDomainsCountMessage(): string {
+    return this.translator.translate(`YouReachedMaxDomainsCount`);
+  }
+
+  get enterValidDomainMessage(): string {
+    return this.translator.translate(`EnterValidDomain`);
+  }
+
+  get couldNotCreateDownloadLinkMessage(): string {
+    return this.translator.translate(`CouldNotCreateDownloadLink`);
+  }
+
+  get downloadLinkCopiedToClipboardMessage(): string {
+    return this.translator.translate(`DownloadLinkCopiedToClipboard`);
+  }
+
+  get changesCouldNotSavedMessage(): string {
+    return this.translator.translate(`ChangesCouldNotSaved`);
   }
 
 
