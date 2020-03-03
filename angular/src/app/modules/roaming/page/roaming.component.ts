@@ -269,7 +269,7 @@ export class RoamingComponent implements OnInit {
 
             this.dontDomains.push(result);
 
-//            this.checkDomain();
+
 
             this.domain = '';
 

@@ -17,20 +17,19 @@
 
         <div class="col-lg-8 col-md-8 col-sm-8 ml-auto mr-auto">
           <div class="card card-signup text-center" style="padding: 50px">
-            <h5 class="card-title text-center" style="font-weight: 600;">Thank You for Registering!</h5>
+            <h5 class="card-title text-center" style="font-weight: 600;">{{'REGISTER.ThankYouForRegistering'}}</h5>
             <div *ngIf="activated==0" class="card-body">
-              <p class="card-text">Please wait, Activation process in progress</p>
+              <p class="card-text">{{ 'REGISTER.ActivationProcessInProgress' | translate}}</p>
               <i class="fa fa-4x fa-hourglass-half"></i>
             </div>
             <div *ngIf="activated==1" class="card-body" style="font-weight: normal;">
-              <p class="card-text">Your activation is now complete. You can now
-                <a [routerLink]="['/login']" style="color: #868e96; font-weight: 500; font-size: 16px;">Log In </a> from
-                this link</p>
+              <p class="card-text">{{'REGISTER.ActivationProcessFinished' | translate}}
+                <a [routerLink]="['/login']" style="color: #868e96; font-weight: 500; font-size: 16px;">{{'LOGIN.Login' | translate}} </a></p>
               <img src="/assets/img/hand-check.svg" style="max-height: 160px;" />
             </div>
             <div *ngIf="activated==-1" class="card-body">
-              <h5 class="card-title" style="font-weight: normal;">Account could not activate.</h5>
-              <p>Something is wrong about link. Please check activation e-mail or connect with support team.</p>
+              <h5 class="card-title" style="font-weight: normal;">{{ 'REGISTER.AccountCouldNotActivate' | translate }}</h5>
+              <p>{{ 'REGISTER.AccountCouldNotActivateDetail' | translate }}</p>
               <i class="fa fa-4x fa-meh-o"></i>
             </div>
           </div>

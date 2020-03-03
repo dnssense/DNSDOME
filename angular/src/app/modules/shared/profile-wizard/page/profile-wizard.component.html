@@ -14,10 +14,10 @@
       <div class="d-flex flex-column p-2" [ngStyle]="{'background': securityMode ? '#4fb75d' : '#97a5bb'}">
         <div class="accordion-label text-white">Security Mode:</div>
         <div class="d-flex align-items-center justify-content-between mt-1">
-          <button class="rk-toggle-btn w-100 mr-2" [ngClass]="{'active': securityMode}"
+          <button class="rk-toggle-btn w-100 mr-2" [ngClass]="{'active': selectedAgent.rootProfile.isPositiveSecurity}"
             (click)="toggleSecurityMode()">POSITIVE
             SECURITY</button>
-          <button class="rk-toggle-btn w-100 passive" [ngClass]="{'active': !securityMode}"
+          <button class="rk-toggle-btn w-100 passive" [ngClass]="{'active': !selectedAgent.rootProfile.isPositiveSecurity}"
             (click)="toggleSecurityMode()">NEGATIVE
             SECURITY</button>
         </div>
@@ -50,25 +50,106 @@
           style="border-bottom: 1px solid #e4e9f1;">
           <div class="accordion-label">Clear Ads</div>
           <div style="width: 78px;">
-            <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }"></rk-toggle-button>
+            <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }" [active]="isClearedAdds()" (click)="changeClearAds()" ></rk-toggle-button>
           </div>
         </div>
 
         <rk-collapse color="#d8d8d8" class="d-flex mt-3">
-          <rk-collapse-title>Harmfull Categories</rk-collapse-title>
+          <rk-collapse-title>Malicious Categories</rk-collapse-title>
 
           <rk-collapse-description>
-            Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen
+            Phishing,Spam Sites,Warez gibi içerik ve güvenlik riski değişiklik gösterebilen
             domainleri içerir.
           </rk-collapse-description>
 
           <rk-collapse-body>
             <ng-container *ngFor="let cat of categoryList">
               <ng-container
-                *ngIf="(cat.category.type=='UNSAFE_LIST' || cat.category.type=='HARMFULL_CONTENT') && cat.category.isVisible">
+                *ngIf="isInCategoryType('malicious', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
                   style="border-bottom: 1px solid #e4e9f1;">
-                  <div class="accordion-label">{{ cat.category.name }}</div>
+                  <div class="accordion-label">{{ cat.name }}</div>
+
+                  <div style="width: 78px;">
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="cat.isBlocked"
+                      [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+          </rk-collapse-body>
+        </rk-collapse>
+
+        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+          <rk-collapse-title>Harmfull Categories</rk-collapse-title>
+
+          <rk-collapse-description>
+            Illegal,Adult,Hate/Violance/illegal gibi içerik ve güvenlik riski değişiklik gösterebilen
+            domainleri içerir.
+          </rk-collapse-description>
+
+          <rk-collapse-body>
+            <ng-container *ngFor="let cat of categoryList">
+              <ng-container
+                *ngIf="isInCategoryType('harmful', cat)">
+                <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+                  style="border-bottom: 1px solid #e4e9f1;">
+                  <div class="accordion-label">{{ cat.name }}</div>
+
+                  <div style="width: 78px;">
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="cat.isBlocked"
+                      [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+          </rk-collapse-body>
+        </rk-collapse>
+
+        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+          <rk-collapse-title>Variable Categories</rk-collapse-title>
+
+          <rk-collapse-description>
+            Newly up, Undecided Safe gibi içerik ve güvenlik riski değişiklik gösterebilen
+            domainleri içerir.
+          </rk-collapse-description>
+
+          <rk-collapse-body>
+            <ng-container *ngFor="let cat of categoryList">
+              <ng-container
+                *ngIf="isInCategoryType('variable', cat)">
+                <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+                  style="border-bottom: 1px solid #e4e9f1;">
+                  <div class="accordion-label">{{ cat.name }}</div>
+
+                  <div style="width: 78px;">
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="cat.isBlocked"
+                      [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+          </rk-collapse-body>
+        </rk-collapse>
+
+        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+          <rk-collapse-title>Safe Categories</rk-collapse-title>
+
+          <rk-collapse-description>
+            Cooking, Sport, Shopping gibi içerik gösterebilen
+            domainleri içerir.
+          </rk-collapse-description>
+
+          <rk-collapse-body>
+            <ng-container *ngFor="let cat of categoryList">
+              <ng-container
+                *ngIf="isInCategoryType('safe', cat)">
+                <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+                  style="border-bottom: 1px solid #e4e9f1;">
+                  <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
                     <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="cat.isBlocked"
@@ -95,7 +176,7 @@
 
         <rk-collapse-body>
           <ng-container *ngFor="let app of groupedApp.applications">
-            <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="applicationChanged(app)"
+            <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="app.isBlocked=!app.isBlocked;applicationChanged(app)"
               [active]="app.isBlocked">
               {{ app.application.name }}</rk-toggle-button>
           </ng-container>

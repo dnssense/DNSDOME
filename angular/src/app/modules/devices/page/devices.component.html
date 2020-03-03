@@ -60,7 +60,7 @@
 
           <rk-modal-footer>
             <button class="btn btn-small w-100 mr-2" (click)="saveBox()">Apply</button>
-            <button class="btn btn-small w-100 btn-default" (click)="cleanBoxForm()">Clean</button>
+            <button class="btn btn-small w-100 btn-default" (click)="selectedBoxModal.toggle()">Close</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -223,7 +223,7 @@
 
           <rk-modal-footer>
             <button class="btn w-100 btn-small mr-2" (click)="saveGroupAgent()">Apply</button>
-            <button class="btn w-100 btn-default btn-small">Clean</button>
+            <button class="btn w-100 btn-default btn-small" (click)="groupAgentModal.toggle()">Close</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -362,7 +362,7 @@
 
           <rk-modal-footer>
             <button class="btn btn-small w-100 mr-2" (click)="changeGroupModalApplyClick()">Apply</button>
-            <button class="btn btn-small btn-default w-100">Clean</button>
+            <button class="btn btn-small btn-default w-100" (click)="changeGroupModal.toggle()">Close</button>
           </rk-modal-footer>
         </rk-modal>
 

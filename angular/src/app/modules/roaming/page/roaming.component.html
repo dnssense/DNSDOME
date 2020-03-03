@@ -130,7 +130,7 @@
 
           <rk-modal-footer>
             <button class="btn btn-small w-100 mr-2" (click)="saveRoamingClient()">Apply</button>
-            <button class="btn btn-small w-100 btn-default" (click)="clearRoamingClientForm()">Clear</button>
+            <button class="btn btn-small w-100 btn-default" (click)="roamingClientModal.toggle()">Clear</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -221,7 +221,7 @@
 
           <rk-modal-footer>
             <button class="btn btn-small w-100 mr-2" (click)="saveOrUpdateGroup()">Apply</button>
-            <button class="btn btn-small btn-default w-100" (click)="cleanNewGroup()" >Clean</button>
+            <button class="btn btn-small btn-default w-100" (click)="cleanNewGroup()" >Close</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -289,7 +289,7 @@
 
           <rk-modal-footer>
             <button class="btn btn-small w-100 mr-2" (click)="saveChangedGroup()">Apply</button>
-            <button class="btn btn-small btn-default w-100" (click)="cleanChangedGroup()" >Clean</button>
+            <button class="btn btn-small btn-default w-100" (click)="changeGroupModal.toggle()" >Close</button>
           </rk-modal-footer>
         </rk-modal>
 

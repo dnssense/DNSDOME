@@ -22,21 +22,20 @@
 
 
                       <div class="">
-                        <a style="color: #868e96;" (click)="openForgotPassword()">Forgot password?</a>
+                        <a style="color: #868e96;" (click)="openForgotPassword()">{{'FORGOTPASSWORD.Title' | translate }}</a>
                       </div>
                       <div class="form-group text-center d-flex align-items-center flex-column">
                         <br />
-                        <p style="color: red;" *ngIf="isFailed">E-mail or password is wrong!</p>
+                        <p style="color: red;" *ngIf="isFailed">{{ 'LOGIN.WrongEmailOrPassword' | translate }} </p>
                         <button class="btns login-btns" (click)="login()">
                           {{'LOGIN.Login'|translate}}
                         </button>
                         <a class="nav-link mt-1" [routerLink]="['/register']" style="color: #4353ff; font-weight: 500;">
-                          Sign Up for a Free Trial
+                          {{'LOGIN.SignupForFreeTrial'|translate}}
                         </a>
                         <div class="row">
                           <div *ngIf="isIEOrEdge" class="col-12 text-center" style="color: gray; font-size: 12px;">
-                            *Use the latest version of Google Chrome, Firefox or Opera for the best
-                            compatibility.
+                            {{'UseChromeFirefoxOpera'|translate}}
                           </div>
                           <div class="col-12 text-center" style="color: white">
                             version:{{environment.version}}
@@ -52,11 +51,10 @@
                       <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
                       </re-captcha>
                     </div>
-                    <div class="mt-2"><a style="color: #868e96;" (click)="openLogin()">Login</a></div>
+                    <div class="mt-2"><a style="color: #868e96;" (click)="openLogin()"> {{'LOGIN.Login'|translate}}</a></div>
                     <div class="text-center">
                       <br />
-                      <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()">Send Activation
-                        Code</button>
+                      <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()"> {{'REGISTER.SendActivationCode'|translate}}</button>
                     </div>
                   </div>
                   <div id="twoFactorDiv" class="text-success text-center" style="display:none;">
@@ -69,7 +67,7 @@
                       <input type="smsCode" matInput placeholder="SMS Code" [(ngModel)]="smsCode">
                     </mat-form-field>
                     <div class="text-center">
-                      <button class="btns login-btns" (click)="confirm2FACode()">Confirm</button>
+                      <button class="btns login-btns" (click)="confirm2FACode()">{{'REGISTER.ConfirmSMS | translate '}}</button>
                     </div>
                   </div>
                 </div>

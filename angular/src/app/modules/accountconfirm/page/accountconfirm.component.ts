@@ -9,6 +9,8 @@ import { AccountService } from 'src/app/core/services/AccountService';
 import { of } from 'rxjs';
 
 
+
+
 @Component({
   selector: 'app-accountconfirm',
   templateUrl: 'accountconfirm.component.html'
@@ -17,7 +19,7 @@ import { of } from 'rxjs';
 export class AccountConfirmComponent implements OnInit, OnDestroy {
   host: ConfigHost;
   toggleButton: any;
-  activated: number = 0;
+  activated = 0;
   accountActivateId: string;
   /**
    *
@@ -50,7 +52,7 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
       // this.notification.success('Account activated');
       of(null).delay(2000).subscribe(() => {
         this.router.navigateByUrl('/login');
-      })
+      });
     }, err => {
       this.activated = -1;
       throw err;

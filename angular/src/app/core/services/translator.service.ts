@@ -12,13 +12,19 @@ export class TranslatorService {
     return this.translationService.instant(data);
   }
 
+  translateCategoryName(data: string) {
+    return this.translationService.instant(`CATEGORY.${data}`);
+  }
+
   initLanguages() {
 
     this.translationService.addLangs(['en']);
+    this.translationService.addLangs(['tr']);
     this.translationService.setDefaultLang('en');
 
     const browserLang = this.translationService.getBrowserLang();
-    this.translationService.use('en'); //browserLang.match(/en|tr/) ? browserLang : 'en');
+
+    this.translationService.use(browserLang.match(/en|tr/) ? browserLang : 'en');
 
   }
 

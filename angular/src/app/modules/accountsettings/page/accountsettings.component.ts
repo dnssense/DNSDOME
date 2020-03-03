@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { ValidationService } from 'src/app/core/services/validation.service';
-import * as phoneNumberCodesList from "src/app/core/models/PhoneNumberCodes";
+import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { User } from 'src/app/core/models/User';
 import { Company } from 'src/app/core/models/Company';
@@ -12,11 +12,11 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { CompanyService } from 'src/app/core/services/CompanyService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { SmsService } from 'src/app/core/services/SmsService';
-//import { SmsInformation } from 'src/app/core/models/SmsInformation';
+// import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { SmsType } from 'src/app/core/models/SmsType';
 import { RestSmsResponse, RestSmsConfirmRequest, RestUserUpdateRequest } from 'src/app/core/models/RestServiceModels';
 import { LoggerService } from 'src/app/core/services/logger.service';
-
+// TODO buda kullanilmiyor
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
@@ -30,6 +30,20 @@ declare var $: any;
     styleUrls: ['accountsettings.component.sass']
 })
 export class AccountSettingsComponent implements OnInit {
+
+    constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private notification: NotificationService,
+        private accountService: AccountService, private alert: AlertService,
+        private companyService: CompanyService, private smsService: SmsService) {
+        this.signupUser = new SignupBean();
+        this.signupUser.company = new Company();
+        this.signupUser.company.name = "";
+
+        this.companyService.getCompany().subscribe(res => {
+            if (res && res.length > 0) {
+                this.signupUser.company = res[0];
+            }
+        });
+    }
     userInfoForm: FormGroup;
     userPhoneForm: FormGroup;
     companyInfoForm: FormGroup;
@@ -52,19 +66,7 @@ export class AccountSettingsComponent implements OnInit {
     isConfirmTimeEnded: boolean = true;
     public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
 
-    constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private notification: NotificationService,
-        private accountService: AccountService, private alert: AlertService,
-        private companyService: CompanyService, private smsService: SmsService) {
-        this.signupUser = new SignupBean();
-        this.signupUser.company = new Company();
-        this.signupUser.company.name = "";
-
-        this.companyService.getCompany().subscribe(res => {
-            if (res && res.length > 0) {
-                this.signupUser.company = res[0];
-            }
-        });
-    }
+    notificationIndex = 0;
 
     emailValidationRegister(e) {
         // tslint:disable-next-line: max-line-length
@@ -294,8 +296,6 @@ export class AccountSettingsComponent implements OnInit {
             }
         }
     }
-
-    notificationIndex = 0;
     timeEnd() {
         if (this.isTimeSetted && this.notificationIndex < 1) {
             this.notification.error('Confirmation time is up!');

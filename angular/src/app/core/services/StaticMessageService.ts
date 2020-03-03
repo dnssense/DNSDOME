@@ -179,6 +179,13 @@ get savedUserMessage(): string {
     return this.translator.translate(`PleaseChangeSomething`);
   }
 
+  get categoryRequestSuccessfullySendedMessage(): string {
+    return this.translator.translate('CategoryRequestSuccessfullySended');
+  }
+
+
+
+
 
 
 

@@ -5,6 +5,7 @@ import { StaticService } from 'src/app/core/services/StaticService';
 import { ToolsService, Domain2CategorizeRequestV2 } from 'src/app/core/services/ToolsService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
 
 @Component({
     selector: 'app-category-request',
@@ -16,7 +17,8 @@ export class CategoryRequestComponent implements OnInit {
     constructor(
         private staticService: StaticService,
         private toolsService: ToolsService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private staticMessageService: StaticMessageService
     ) { }
 
     domain: string;
@@ -64,7 +66,7 @@ export class CategoryRequestComponent implements OnInit {
         }
 
         this.toolsService.sendCategoryRequestV2(request).subscribe(result => {
-            this.notificationService.success('Category request is successfully sent');
+            this.notificationService.success(this.staticMessageService.categoryRequestSuccessfullySendedMessage);
 
             this.domain = '';
             this.comment = '';
