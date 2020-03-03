@@ -1,3 +1,3 @@
-export class Messages {
+/* export class Messages {
     static readonly InvalidEmailOrPassword = 'InvalidEmailOrPassword';
-}
+} */

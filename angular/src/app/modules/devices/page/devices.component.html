@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 p-0">
-          <h5 class="page-title">Device</h5>
+          <h5 class="page-title">{{'Device'|translate}}</h5>
         </div>
 
         <rk-modal #selectedBoxModal>
@@ -20,11 +20,11 @@
             <div class="container-fluid">
               <div class="row" *ngIf="selectedBox">
                 <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder="Box Name" [(ngModel)]="selectedBox.host">
+                  <input type="text" class="rk-input w-100" placeholder="{{'BOX.Name'|translate}}" [(ngModel)]="selectedBox.host">
                 </div>
 
                 <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder="Block Message"
+                  <input type="text" class="rk-input w-100" placeholder="{{'BlockMessage'|translate}}"
                     [(ngModel)]="selectedBox.agent.blockMessage">
                 </div>
 
@@ -37,7 +37,7 @@
                   <div class="rk-radio my-0">
                     <input type="radio" id="rd-enable" [(ngModel)]="selectedBox.agent.isCpEnabled" name="rd-enables"
                       [value]="true">
-                    <label for="rd-enable">Enable</label>
+                    <label for="rd-enable">{{'Enable'|translate}}</label>
                   </div>
                 </div>
 
@@ -45,13 +45,13 @@
                   <div class="rk-radio my-0">
                     <input type="radio" id="rd-disable" [(ngModel)]="selectedBox.agent.isCpEnabled" name="rd-enables"
                       [value]="false">
-                    <label for="rd-disable">Disable</label>
+                    <label for="rd-disable">{{'Disable'|translate}}</label>
                   </div>
                 </div>
 
                 <div class="col-12 mt-3" *ngIf="selectedBox.agent.isCpEnabled">
                   <input type="text" class="rk-input w-100" (keydown)="checkKeydown($event)"
-                    [(ngModel)]="selectedBox.agent.captivePortalIp" placeholder="Captive Portal IP">
+                    [(ngModel)]="selectedBox.agent.captivePortalIp" placeholder="{{'CaptivePortalIP'|translate}}">
                 </div>
               </div>
             </div>
@@ -59,8 +59,8 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2" (click)="saveBox()">Apply</button>
-            <button class="btn btn-small w-100 btn-default" (click)="selectedBoxModal.toggle()">Close</button>
+            <button class="btn btn-small w-100 mr-2" (click)="saveBox()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small w-100 btn-default" (click)="selectedBoxModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -75,11 +75,11 @@
             <rk-table [showPagination]="false">
               <ng-template #header>
                 <tr>
-                  <th>Profile</th>
-                  <th>Security Profile</th>
-                  <th>Is CP Enabled</th>
-                  <th>Captive Portal IP</th>
-                  <th colspan="2">Operation</th>
+                  <th>{{'Profile'|translate}}</th>
+                  <th>{{'SecurityProfile'|translate}}</th>
+                  <th>{{'IsCpEnabled'|translate}}</th>
+                  <th>{{'CaptivePortalIP'|translate}}</th>
+                  <th colspan="2">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -93,9 +93,9 @@
                     <ng-container *ngIf="b.agent; else elseTemplate221">
                       <ng-container *ngIf="b.agent.rootProfile; else elseTemplate123">{{b.agent.rootProfile?.name}}
                       </ng-container>
-                      <ng-template #elseTemplate123>No Profile!</ng-template>
+                      <ng-template #elseTemplate123>{{'NoProfile'|translate}}</ng-template>
                     </ng-container>
-                    <ng-template #elseTemplate221>No Agent!</ng-template>
+                    <ng-template #elseTemplate221>{{'NoAgent'|translate}}</ng-template>
                   </td>
                   <td>
                     <i-feather [name]="b.agent?.isCpEnabled ? 'check' : 'x'"></i-feather>
@@ -135,7 +135,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder="Group Name" [(ngModel)]="groupName">
+                  <input type="text" class="rk-input w-100" placeholder="{{'GroupName'|translate}}" [(ngModel)]="groupName">
                 </div>
               </div>
 
@@ -160,9 +160,9 @@
                   <table class="table small-table table-borderless">
                     <thead>
                       <tr>
-                        <th>Host Name</th>
-                        <th>Mc. Address</th>
-                        <th>G. Name</th>
+                        <th>{{'HostName'|translate}}</th>
+                        <th>{{'MacAddress'|translate}}</th>
+                        <th>{{'GroupName'|translate}}</th>
                         <th></th>
                       </tr>
                     </thead>
@@ -181,20 +181,20 @@
 
                       <tr *ngIf="selectedGroupAgent?.length == 0">
                         <td colspan="4">
-                          Herhangi bir veri bulunamadı.
+                          {{'DataNotFound'|translate}}
                         </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <div class="col-12 mt-2">
-                  <h6 class="rk-title mb-2">No Group Members</h6>
+                  <h6 class="rk-title mb-2">{{'NoGroupMembers'|translate}}</h6>
 
                   <table class="table small-table table-borderless">
                     <thead>
                       <tr>
-                        <th>Host Name</th>
-                        <th>Mc. Address</th>
+                        <th>{{'HostName'|translate}}</th>
+                        <th>{{'MacAddress'|translate}}</th>
                         <th></th>
                       </tr>
                     </thead>
@@ -211,7 +211,7 @@
                         </td>
                       </tr>
                       <tr *ngIf="unregistereds.length == 0">
-                        <td colspan="3">Herhangi bir veri bulunamadı.</td>
+                        <td colspan="3">{{'DataNotFound'|translate}}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -222,8 +222,8 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn w-100 btn-small mr-2" (click)="saveGroupAgent()">Apply</button>
-            <button class="btn w-100 btn-default btn-small" (click)="groupAgentModal.toggle()">Close</button>
+            <button class="btn w-100 btn-small mr-2" (click)="saveGroupAgent()">{{'Apply'|translate}}</button>
+            <button class="btn w-100 btn-default btn-small" (click)="groupAgentModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -231,11 +231,11 @@
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between">
-                <div class="rk-table-title">Group Agent</div>
+                <div class="rk-table-title">{{'GroupAgent'|translate}}</div>
 
                 <button class="btn btn-small btn-icon" (click)="createNewGroup()">
                   <i-feather name="plus" class="mr-2"></i-feather>
-                  Create New Group
+                  {{'CreateNewGroup'|translate}}
                 </button>
               </div>
             </div>
@@ -243,10 +243,10 @@
             <rk-table [showPagination]="false">
               <ng-template #header>
                 <tr>
-                  <th>Group</th>
-                  <th>Member Count</th>
-                  <th>Security Profile</th>
-                  <th colspan="2">Operation</th>
+                  <th>{{'Group'|translate}}</th>
+                  <th>{{'MemberCount'|translate}}</th>
+                  <th>{{'SecurityProfile'|translate}}</th>
+                  <th colspan="2">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -273,7 +273,7 @@
                 </tr>
                 <tr *ngIf="groupList.length == 0">
                   <td colspan="5">
-                    Herhangi bir veri bulunamadı.
+                    {{'DataNotFound'|translate}}
                   </td>
                 </tr>
               </ng-template>
@@ -327,9 +327,9 @@
                   <table class="table small-table table-borderless">
                     <thead>
                       <tr>
-                        <th>Host Name</th>
-                        <th>Mc. Address</th>
-                        <th>G. Name</th>
+                        <th>{{'HostName'|translate}}</th>
+                        <th>{{'MacAddress'|translate}}</th>
+                        <th>{{'GroupName'|translate}}</th>
                         <th></th>
                       </tr>
                     </thead>
@@ -349,7 +349,7 @@
                       </tr>
                       <tr *ngIf="selectedGroupMembers.length == 0">
                         <td colspan="4">
-                          Herhangi bir veri bulunamadı.
+                          {{'DataNotFound'|translate}}
                         </td>
                       </tr>
                     </tbody>
@@ -361,8 +361,8 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2" (click)="changeGroupModalApplyClick()">Apply</button>
-            <button class="btn btn-small btn-default w-100" (click)="changeGroupModal.toggle()">Close</button>
+            <button class="btn btn-small w-100 mr-2" (click)="changeGroupModalApplyClick()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small btn-default w-100" (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -385,9 +385,9 @@
                   <th>
                     <rk-checkbox size="sm" (valueChange)="groupMembersTableCheckboxChanged($event)"></rk-checkbox>
                   </th>
-                  <th>Hostname</th>
-                  <th>Mac Address</th>
-                  <th>Group Name</th>
+                  <th>{{'HostName'|translate}}</th>
+                  <th>{{'MacAddress'|translate}}</th>
+                  <th>{{'GroupName'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -412,7 +412,7 @@
 
                 <tr *ngIf="registereds.length == 0">
                   <td colspan="4">
-                    Herhangi bir veri bulunamadı.
+                    {{'DataNotFound'|translate}}
                   </td>
                 </tr>
               </ng-template>
@@ -440,9 +440,9 @@
                   <th>
                     <rk-checkbox size="sm" (valueChange)="ungroupMemberTableCheckboxChanged($event)"></rk-checkbox>
                   </th>
-                  <th>Hostname</th>
-                  <th>Mac Address</th>
-                  <th>Group Name</th>
+                  <th>{{'HostName'|translate}}</th>
+                  <th>{{'MacAddress'|translate}}</th>
+                  <th>{{'GroupName'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -466,7 +466,7 @@
                 </tr>
                 <tr *ngIf="unregistereds.length == 0">
                   <td colspan="4">
-                    Herhangi bir veri bulunamadı.
+                    {{'DataNotFound'|translate}}
                   </td>
                 </tr>
               </ng-template>

@@ -8,13 +8,13 @@
             <ul class="nav nav-pills nav-pills-success nav-pills-icons justify-content-center" role="tablist">
               <li class="nav-item">
                 <a class="nav-link mb-1 active" style="color: whitesmoke;" data-toggle="tab" href="#link1"
-                  role="tablist"> User Information </a>
+                  role="tablist"> {{'ACCOUNTSETTINGS.UserInformation' | translate}}  </a>
               </li>
               <li class="nav-item mb-1"><a class="nav-link" data-toggle="tab" style="color: whitesmoke;" href="#link2"
-                  role="tablist"> Company Information</a>
+                  role="tablist"> {{'ACCOUNTSETTINGS.CompanyInformation' | translate}} </a>
               </li>
               <li class="nav-item mb-1"><a class="nav-link" data-toggle="tab" style="color: whitesmoke;" href="#link3"
-                  role="tablist">Change Password</a>
+                  role="tablist">{{'ACCOUNTSETTINGS.ChangePassword' | translate}}</a>
               </li>
             </ul>
           </div>
@@ -27,7 +27,7 @@
                     <div class="dns-base-card-header">
                       <div class="row">
                         <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                          <span class="mr-3 flex-2">User Information</span>
+                          <span class="mr-3 flex-2">{{'ACCOUNTSETTINGS.UserInformation' | translate}}</span>
                         </div>
                       </div>
                     </div>
@@ -38,7 +38,7 @@
                             <div class="col-md-6">
                               <div class="form-group">
                                 <div class="form-group">
-                                  <label for="fullName">Full name</label>
+                                  <label for="fullName">{{'ACCOUNTSETTINGS.UserFullName' | translate}}</label>
                                   <input type="text " class="dns-form-control input-reverse" id="fullName"
                                     [(ngModel)]="user.name" formControlName="name" placeholder="Enter full name">
                                 </div>
@@ -46,7 +46,7 @@
                             </div>
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label for="email">Email</label>
+                                <label for="email">{{'ACCOUNTSETTINGS.UserEmail' | translate}}</label>
                                 <input type="email" class="dns-form-control input-reverse" id="email"
                                   value={{user.username}} disabled>
                               </div>
@@ -58,7 +58,7 @@
                             <div class="col-md-12 text-right" style="width:100%;">
                               <button class="btn btn-teritary pull-right">
                                 <i class="fa fa-save"></i>
-                                <span class="ml-3">Save</span>
+                                <span class="ml-3">{{'Save' | translate}}</span>
                               </button>
                             </div>
                           </div>
@@ -69,12 +69,12 @@
                         <div class="form-group-sm has-default">
                           <div class="row">
                             <div class="col-md-6 mt-4 text-danger">
-                              In order to login via two factor authentication and use sms service, enable 2FA feature.
+                              {{'ACCOUNTSETTINGS.TwoFactorAuthMessage' | translate}}
                             </div>
                             <div class="col-md-6 mt-4">
                               <ng-container *ngIf="user.gsmCode && user.gsm; else elseTemplate2FA">
                                 <label for="chk" class="dns-chk-label">
-                                  <span>Enable two factor Authentication</span>
+                                  <span>{{'ACCOUNTSETTINGS.EnableTwoFactorAuth' | translate}}</span>
                                   <div class="dns-form-switch ml-5">
                                     <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
                                       <input type="checkbox" id="chk" checked (change)="change2FASubmit()">
@@ -87,7 +87,7 @@
                                 </label>
                               </ng-container>
                               <ng-template #elseTemplate2FA>
-                                <p>Before using two factor authentication please enter and validate a gsm number. </p>
+                                <p>{{'ACCOUNTSETTINGS.TwoFactorAuthElseMessage' | translate}} </p>
                               </ng-template>
                             </div>
                           </div>
@@ -97,7 +97,7 @@
                           <div class="row">
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label for="gsmCode">GSM Code</label>
+                                <label for="gsmCode">{{'ACCOUNTSETTINGS.GSMCode' | translate}} </label>
                                 <input type="tel" disabled class="dns-form-control input-reverse" value="{{user.gsmCode}}">
                               </div>
                             </div>
@@ -116,7 +116,7 @@
                           <div class="row">
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label for="gsmCode">GSM Code</label>
+                                <label for="gsmCode">{{'ACCOUNTSETTINGS.GSMCode' | translate}}</label>
                                 <select class="dns-form-control reverse-form" [(ngModel)]="gsmCodeTemp"
                                 (change)="gsmCodeChange()" formControlName="gsmCode">
                                   <option value="0" disabled selected>Select</option>
@@ -137,7 +137,7 @@
                           <div class="row">
                             <div class="col-md-12">
                               <button type="button" id="changePhoneBtn" disabled (click)="changePhoneNumber()"
-                                class="btns btn-teritary pull-right">Validate</button>
+                                class="btns btn-teritary pull-right">{{'Validate' | translate}}</button>
                             </div>
                           </div>
                         </div>
@@ -148,14 +148,14 @@
                             </div>
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label for="smsCode">SMS Code</label>
+                                <label for="smsCode">{{'ACCOUNTSETTINGS.SMSCode' | translate}}</label>
                                 <input type="text" class="dns-form-control input-reverse"
                                   placeholder="SMS Validation Code" [(ngModel)]="smsCode" formControlName="smsCode">
                               </div>
                             </div>
                             <div class="col-md-12">
                               <button type="button" (click)="confirmGsm()"
-                                class="btns btn-teritary pull-right">Confirm</button>
+                                class="btns btn-teritary pull-right">{{'Confirm' | translate}}</button>
                             </div>
                           </div>
                         </div>
@@ -168,23 +168,23 @@
                     <div class="dns-base-card-header">
                       <div class="row">
                         <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                          <span class="mr-3 flex-2">Company Information</span>
+                          <span class="mr-3 flex-2">{{'ACCOUNTSETTINGS.CompanyInformation' | translate}}</span>
                         </div>
                       </div>
                     </div>
                     <form [formGroup]="companyInfoForm" (ngSubmit)="companyFormSubmit()">
                       <div class="dns-base-card-content">
                         <div class="form-group dns-full-width">
-                          <label>Company Name</label>
+                          <label>{{'ACCOUNTSETTINGS.CompanyName' | translate}}</label>
                           <input type="text" class="dns-form-control input-reverse" placeholder="Company Name"
                             [(ngModel)]="signupUser.company.name" formControlName="companyName" />
                         </div>
 
                         <div class="form-group light-select dns-full-width">
-                          <label>Industry</label>
+                          <label>{{'ACCOUNTSETTINGS.Industry' | translate}}</label>
                           <select class="dns-form-control reverse-form" [(ngModel)]="signupUser.company.industry"
                             formControlName="industry">
-                            <option selected="selected">PleaseSpecify</option>
+                            <option selected="selected">{{'Select' | translate}}</option>
                             <option value="Cloud Computing/Saas">Cloud Computing/Saas</option>
                             <option value="Computer HW, SW">Computer HW, SW</option>
                             <option value="Consumer Goods/Retail">Consumer Goods/Retail</option>
@@ -211,17 +211,17 @@
                         <div class="row">
                           <div class="col-8">
                             <div class="form-group dns-full-width">
-                              <label>Web Site</label>
+                              <label>{{'ACCOUNTSETTINGS.WebSite' | translate}}</label>
                               <input type="text" class="dns-form-control input-reverse"
                                 [(ngModel)]="signupUser.company.url" formControlName="url" placeholder="Website URL" />
                             </div>
                           </div>
                           <div class="col-4">
                             <div class="form-group dns-full-width">
-                              <label>Personnel</label>
+                              <label>{{'ACCOUNTSETTINGS.Personnel' | translate}}</label>
                               <select class="dns-form-control reverse-form"
                                 [(ngModel)]="signupUser.company.personnelCount" formControlName="personnelCount">
-                                <option selected>Please Specify</option>
+                                <option selected>{{'Select' | translate}}</option>
                                 <option value="1-50">1-50</option>
                                 <option value="50-99">50-99</option>
                                 <option value="100-249">100-249</option>
@@ -236,14 +236,14 @@
                           </div>
                         </div>
                         <div class="form-group dns-full-width">
-                          <label>Block Message</label>
+                          <label>{{'ACCOUNTSETTINGS.BlockMessage' | translate}}</label>
                           <input type="text" class="dns-form-control input-reverse" placeholder="Block Message"
                             [(ngModel)]="signupUser.company.blockMessage" formControlName="blockMessage" />
                         </div>
                         <div class="form-group">
                           <button class="btn btn-teritary pull-right">
                             <i class="fa fa-save"></i>
-                            <span class="ml-3">Save</span>
+                            <span class="ml-3">{{'Save' | translate}}</span>
                           </button>
                         </div>
                       </div>
@@ -253,7 +253,7 @@
                     <div class="dns-base-card-header">
                       <div class="row">
                         <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                          <span class="mr-3 flex-2">Change Password</span>
+                          <span class="mr-3 flex-2">{{'ACCOUNTSETTINGS.ChangePassword' | translate}}</span>
                         </div>
                       </div>
 
@@ -263,7 +263,7 @@
                         <div class="row">
                           <div class="col-md-12">
                             <div class="form-group">
-                              <label for="currentPassword">Current Password</label>
+                              <label for="currentPassword">{{'ACCOUNTSETTINGS.CurrentPassword' | translate}}</label>
                               <input type="password" class="dns-form-control input-reverse" id="currentPassword"
                                 [(ngModel)]="currentPassword" formControlName="currentPassword"
                                 placeholder="Current Password">
@@ -271,14 +271,14 @@
                           </div>
                           <div class="col-md-12">
                             <div class="form-group">
-                              <label for="newPassword">New Password</label>
+                              <label for="newPassword">{{'ACCOUNTSETTINGS.NewPassword' | translate}}</label>
                               <input type="password" class="dns-form-control input-reverse" id="newPassword"
                                 placeholder="New Password" [(ngModel)]="signupUser.password" formControlName="password">
                             </div>
                           </div>
                           <div class="col-md-12">
                             <div class="form-group">
-                              <label for="newPasswordAgain">Confirm New Password</label>
+                              <label for="newPasswordAgain">{{'ACCOUNTSETTINGS.ConfirmNewPassword' | translate}}</label>
                               <input type="password" class="dns-form-control input-reverse"
                                 placeholder="Confirm New Password" [(ngModel)]="signupUser.passwordAgain"
                                 formControlName="passwordAgain">
@@ -287,7 +287,7 @@
                           <div class="col-md-12">
                             <button class="btn btn-teritary pull-right">
                               <i class="fa fa-save"></i>
-                              <span class="ml-3">Save</span>
+                              <span class="ml-3">{{'ACCOUNTSETTINGS.Save' | translate}}</span>
                             </button>
                           </div>
                         </div>

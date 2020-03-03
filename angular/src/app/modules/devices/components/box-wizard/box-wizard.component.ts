@@ -11,6 +11,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { log } from 'util';
 import { BoxService } from 'src/app/core/services/box.service';
 import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var $: any;
 
@@ -42,7 +43,7 @@ export class BoxWizardComponent implements OnInit {
   @Output() public saveEmitter = new EventEmitter();
 
   constructor(private apService: ApplicationProfilesService, private dpService: DomainProfilesService, private notification: NotificationService,
-    private bwService: BlackWhiteListService, private boxService: BoxService, private formBuilder: FormBuilder, private staticMessageService: StaticMessageService) {
+    private bwService: BlackWhiteListService, private boxService: BoxService, private formBuilder: FormBuilder, private staticMessageService: StaticMessageService, private translateService: TranslateService) {
 
   }
 
@@ -75,6 +76,10 @@ export class BoxWizardComponent implements OnInit {
         this.updateBWList();
       }
     });
+  }
+
+  translate(item: string) {
+    return this.translateService.instant(item);
   }
 
   updateApplicationProfilelist() {
