@@ -2,13 +2,14 @@ import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChil
 import { StaticService } from 'src/app/core/services/StaticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { ReportService } from 'src/app/core/services/ReportService';
-import { SearchSetting } from 'src/app/core/models/SearchSetting';
+import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { RkFilterOutput } from 'roksit-lib/lib/modules/rk-filter-badge/rk-filter-badge.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { RkRadioOutput } from 'roksit-lib/lib/modules/rk-radio/rk-radio.component';
 
 export class GroupedCategory {
   type: string;
@@ -81,6 +82,8 @@ export class RoksitSearchComponent implements OnInit {
   manuelFilters: FilterBadgeModel[] = [];
 
   selectedColumnFilter;
+
+  actionType: 'allow' | 'deny';
 
   @ViewChild('modal') filterModal: RkModalModel;
 
@@ -171,12 +174,10 @@ export class RoksitSearchComponent implements OnInit {
     });
   }
 
-  onSelectedDateChange($event) {
+  onSelectedDateChange($event) { }
 
-  }
-
-  onValueChange($event) {
-
+  onTypeValueChange(type: SearchSettingsType) {
+    this.searchSettings.type = type;
   }
 
   setSearchSetting(searchSetting: SearchSetting) {
@@ -221,6 +222,32 @@ export class RoksitSearchComponent implements OnInit {
 
       this.searchSettings.must.push(model);
     });
+
+    if (this.actionType === 'allow') {
+      const index = this.searchSettings.mustnot.findIndex(x => x.field === 'action');
+
+      if (index > -1) {
+        this.searchSettings.mustnot.splice(index, 1);
+      }
+
+      // const actionType = this.searchSettings.must.some(x => x.field === 'action');
+
+      // if (!actionType) {
+      //   this.searchSettings.must.push(new ColumnTagInput('action', '=', 'true'));
+      // }
+    } else if (this.actionType === 'deny') {
+      const index = this.searchSettings.must.findIndex(x => x.field === 'deny');
+
+      if (index > -1) {
+        this.searchSettings.must.splice(index, 1);
+      }
+
+      // const actionType = this.searchSettings.mustnot.some(x => x.field === 'deny');
+
+      // if (!actionType) {
+      //   this.searchSettings.mustnot.push(new ColumnTagInput('action', '=', 'false'));
+      // }
+    }
 
     this.searchSettingEmitter.emit(this.searchSettings);
 
@@ -307,5 +334,9 @@ export class RoksitSearchComponent implements OnInit {
     this.groupedCategories.forEach(elem => elem.items.forEach(item => item.selected = false));
 
     this.manuelFilters = [];
+  }
+
+  actionChanged($event: RkRadioOutput) {
+    this.actionType = $event.value;
   }
 }

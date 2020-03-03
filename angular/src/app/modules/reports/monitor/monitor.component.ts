@@ -32,23 +32,6 @@ export class MonitorComponent implements OnInit {
   }
 
   public addValuesIntoSelected($event) {
-    const column: string = $event.column;
-    const value = $event.data;
-    let exists = false;
-
-    for (const a of this.searchSettings.must) {
-      if (a.field === column && a.value === value) {
-        exists = true;
-        break;
-      }
-    }
-
-    if (exists) {
-      return;
-    }
-
-    this.searchSettings.must.push(new ColumnTagInput(column, '=', value));
-
     this.roksitSearchComponent.setSearchSetting(this.searchSettings);
   }
 

@@ -88,20 +88,20 @@ export class FastReportService {
     searchSettings: SearchSetting,
     maxItems: number
   ): Observable<Object> {
-    let cloneSetting = <SearchSetting>(
+    const cloneSetting = <SearchSetting>(
       JSON.parse(JSON.stringify(searchSettings))
     );
     cloneSetting.columns = configItem;
     cloneSetting.type = configItem.type;
 
-    let body = JSON.stringify({
+    const body = JSON.stringify({
       searchSetting: cloneSetting,
       maxItems: maxItems
     });
-    let headers: HttpHeaders = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-    let options = { headers: headers };
+    const options = { headers: headers };
     return this.http
       .post(this._graphURL, body, options)
       .map((res: Response) => res.json())
@@ -112,8 +112,8 @@ export class FastReportService {
   }
 
   public loadHistogram(searchSettings: SearchSetting): Observable<Object> {
-    let body = JSON.stringify({ searchSetting: searchSettings });
-    let options = {
+    const body = JSON.stringify({ searchSetting: searchSettings });
+    const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
@@ -132,7 +132,7 @@ export class FastReportService {
     searchSettings: SearchSetting,
     dashboard: Dashboard
   ): Observable<Object> {
-    let options = {
+    const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
@@ -156,8 +156,8 @@ export class FastReportService {
   public loadDashbaordHistogram(
     searchSettings: SearchSetting
   ): Observable<Object> {
-    let body = JSON.stringify({ searchSetting: searchSettings });
-    let options = {
+    const body = JSON.stringify({ searchSetting: searchSettings });
+    const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })

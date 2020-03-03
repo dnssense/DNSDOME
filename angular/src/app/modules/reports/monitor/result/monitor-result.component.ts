@@ -30,14 +30,13 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     private pdfService: PdfService
   ) { }
 
-  
-  public currentPage = 1;
-  public columns: LogColumn[];
-  public selectedColumns: LogColumn[];
-  public tableData: any;
-  public total = 0;
-  public multiplier = 1;
-  public maxSize = 10;
+  currentPage = 1;
+  columns: LogColumn[];
+  selectedColumns: LogColumn[];
+  tableData: any;
+  total = 0;
+  multiplier = 1;
+  maxSize = 10;
   private ngUnsubscribe: Subject<any> = new Subject<any>();
   columnListLength = 12;
 
@@ -72,13 +71,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   };
 
   @Input() public searchSetting: SearchSetting;
+
   @Output() public addColumnValueEmitter = new EventEmitter();
+
   @Output() public tableColumnsChanged = new EventEmitter();
 
   @Output() linkClickedOutput = new EventEmitter<LinkClick>();
-
-  @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
-  @ViewChild('columnTablePanel') columnTablePanel: any;
 
   ngOnInit() { }
 
@@ -114,8 +112,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     this.loadGraph(this.searchSetting);
   }
 
-  refresh(ss: SearchSetting) {
-    this.loadGraph(ss);
+  refresh(searchSettings: SearchSetting) {
+    this.loadGraph(searchSettings);
   }
 
   exportAs(extention: ExportTypes) {
@@ -134,9 +132,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  public loadGraph(ss: SearchSetting) {
-    // this.spinnerService.start();
-    this.monitorService.getGraphData(ss, this.currentPage).takeUntil(this.ngUnsubscribe)
+  public loadGraph(searchSettings: SearchSetting) {
+    this.monitorService.getGraphData(searchSettings, this.currentPage).takeUntil(this.ngUnsubscribe)
       .subscribe((res: Response) => {
         this.tableData = res['result'];
         this.totalCount = res['total'];
@@ -206,7 +203,9 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onPageViewCountChange(event: number) {
-    this.pageViewCount = event;
+    this.searchSetting.topNumber = event;
+
+    this.refresh(this.searchSetting);
   }
 
   linkClicked($event: LinkClick) {

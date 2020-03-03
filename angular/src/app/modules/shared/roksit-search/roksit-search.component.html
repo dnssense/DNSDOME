@@ -48,20 +48,22 @@
       </rk-accordion>
     </div>
 
-    <!-- <div class="rk-modal-item">
+    <div class="rk-modal-item">
       <h5 class="modal-item title">Action</h5>
 
       <div class="container-fluid">
         <div class="row">
           <div class="col-12 col-md-6">
-            <rk-radio name="actionType" class="rk-radio-m-0" selected="true">Allow</rk-radio>
+            <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'allow'" value="allow"
+              (valueChange)="actionChanged($event)">Allow</rk-radio>
           </div>
           <div class="col-12 col-md-6">
-            <rk-radio name="actionType" class="rk-radio-m-0">Deny</rk-radio>
+            <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'deny'" value="deny"
+              (valueChange)="actionChanged($event)">Deny</rk-radio>
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
 
     <div class="rk-modal-item">
       <h5 class="modal-item title">Add Filter</h5>
@@ -126,8 +128,8 @@
     <span class="monitor-title">{{ pageTitle }}</span>
 
     <div class="traffic-types">
-      <rk-radio name="trafficType" checked="true" (valueChange)="onValueChange(true)">Total traffic</rk-radio>
-      <rk-radio class="m-l-10" name="trafficType" (valueChange)="onValueChange(false)">Block Page</rk-radio>
+      <rk-radio name="trafficType" checked="true" (valueChange)="onTypeValueChange('roksit')">Total traffic</rk-radio>
+      <rk-radio class="m-l-10" name="trafficType" (valueChange)="onTypeValueChange('roksitblock')">Block Page</rk-radio>
     </div>
   </div>
 
