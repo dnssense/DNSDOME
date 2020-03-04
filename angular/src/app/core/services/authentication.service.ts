@@ -238,7 +238,7 @@ export class AuthenticationService {
 
   clear() {
     this.currentSession = null;
-    localStorage.clear();
+    localStorage.removeItem(this.STORAGENAME);
     this.cookieService.clear();
   }
 

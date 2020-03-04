@@ -127,8 +127,13 @@ export class NavbarComponent implements OnInit {
         );
     }
 
-    language(lang: string) {
-        this.config.setTranslationLanguage(lang);
+    currentLanguage() {
+       return this.config.getTranslationLanguage().toUpperCase();
+    }
+
+    setLanguage(lang: string) {
+
+        this.config.setDefaultLanguage(lang);
         this.notification.success(this.translator.translate('LanguageChanged'));
     }
 }

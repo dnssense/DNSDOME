@@ -3,11 +3,11 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 p-0 d-flex align-items-center justify-content-between">
-          <h5 class="page-title">Users</h5>
+          <h5 class="page-title">{{'Users'|translate}}</h5>
 
           <button class="btn btn-icon btn-small" (click)="newUserClick()">
             <i-feather name="user"></i-feather>
-            Create New User
+            {{'CreateNewUser'|translate}}
           </button>
         </div>
       </div>
@@ -15,7 +15,7 @@
       <rk-modal #userModal (close)="modalClosed($event)">
         <rk-modal-header icon="plus">
           <rk-modal-header-title>
-            <h5>{{ user.id > 0 ? 'Edit' : 'Create New' }} User</h5>
+            <h5>{{ (user.id > 0 ? 'EditUser' : 'CreateNewUser')|translate }} </h5>
           </rk-modal-header-title>
 
           <rk-modal-header-close (click)="userModal.toggle()"></rk-modal-header-close>
@@ -24,39 +24,23 @@
         <rk-modal-body>
           <div class="container-fluid">
             <div class="row">
-              <!-- <div class="col-12 d-flex justify-content-center">
-                  <input type="file" class="input-file" id="fileUpload" (change)="selectFile($event)"
-                    accept="image/*">
-                  <label for="fileUpload" class="mx-auto d-flex flex-column align-items-center">
-                    <figure>
-                      <ng-container *ngIf="selectedUser.image; else elseTemplateLogo">
-                        <img src="{{ selectedUser.image }}" class="w-100" accept="image/png, image/jpeg">
-                      </ng-container>
-                      <ng-template #elseTemplateLogo>
-                        <div class="file-upload mx-auto">
-                          <i-feather name="plus"></i-feather>
-                        </div>
-                      </ng-template>
-                    </figure>
-                    <span class="file-upload-text">Profile images</span>
-                  </label>
-                </div> -->
+             
 
               <div class="col-12 mt-3">
-                <input type="text" class="rk-input w-100" placeholder="User Name" minlength="2" [(ngModel)]="user.name">
+                <input type="text" class="rk-input w-100" placeholder=" {{'UserName'|translate}}" minlength="2" [(ngModel)]="user.name">
               </div>
 
               <div class="col-12 mt-3">
-                <input type="text" class="rk-input w-100" placeholder="Email" [(ngModel)]="user.username">
+                <input type="text" class="rk-input w-100" placeholder=" {{'Email'|translate}}" [(ngModel)]="user.username">
               </div>
 
               <div class="col-12 mt-3">
-                <rk-select [options]="userRolesForSelect" placeholder="Role" [value]="selectedRoleId"
+                <rk-select [options]="userRolesForSelect" placeholder=" {{'Role'|translate}}" [value]="selectedRoleId"
                   (valueChange)="roleChange($event)"></rk-select>
               </div>
 
               <div class="col-12 mt-3">
-                <input type="password" class="rk-input w-100" placeholder="Password" minlength="8"
+                <input type="password" class="rk-input w-100" placeholder=" {{'Password'|translate}}" minlength="8"
                   [(ngModel)]="user.password" (ngModelChange)="checkPasswordStrength()">
 
                 <div class="password-strength justify-content-end mt-3">
@@ -66,13 +50,11 @@
                   <div [ngClass]="{ active: passwordStrength > 3 }"></div>
                 </div>
 
-                <p class="password-text mt-2">* Your password has to be at least 8 characters with at least one upper
-                  case, one lower case, one
-                  number.</p>
+                <p class="password-text mt-2"> {{'YourPasswordHasToBeAtLeast'|translate}}</p>
               </div>
 
               <div class="col-12 mt-3" *ngIf="user.id > 0">
-                <rk-checkbox class="rk-checkbox-font" [(value)]="user.isActive" alignment="right">Is Active
+                <rk-checkbox class="rk-checkbox-font" [(value)]="user.isActive" alignment="right"> {{'IsActive'|translate}}
                 </rk-checkbox>
               </div>
 
@@ -81,8 +63,8 @@
         </rk-modal-body>
 
         <rk-modal-footer>
-          <button class="btn btn-small w-100 mr-2" (click)="save()">Save</button>
-          <button class="btn btn-small btn-default w-100" (click)="userModal.toggle()">Close</button>
+          <button class="btn btn-small w-100 mr-2" (click)="save()"> {{'Save'|translate}}</button>
+          <button class="btn btn-small btn-default w-100" (click)="userModal.toggle()"> {{'Close'|translate}}</button>
         </rk-modal-footer>
       </rk-modal>
 
@@ -92,12 +74,12 @@
             <div class="rk-table-container-header">
               <div class="top-content justify-content-start">
                 <div class="inf mr-4">
-                  <span class="text-primary">{{ users?.length }}</span> queries listed
+                  <span class="text-primary">{{ users?.length }}</span>  {{'QueriesListed'|translate}}
                 </div>
 
                 <div class="search ml-5">
                   <div class="rk-autocomplete-container" style="width: 220px;">
-                    <input type="text" placeholder="Search" [(ngModel)]="searchKey" class="rk-input rk-autocomplete">
+                    <input type="text" placeholder=" {{'Search'|translate}}" [(ngModel)]="searchKey" class="rk-input rk-autocomplete">
                     <i-feather class="search-icon" name="search"></i-feather>
                   </div>
                 </div>
@@ -109,19 +91,19 @@
                 <tr>
                   <th
                     style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    User</th>
+                    {{'User'|translate}}</th>
                   <th
                     style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    Email</th>
+                    {{'Email'|translate}}</th>
                   <th
                     style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    Role</th>
+                    {{'Role'|translate}}</th>
                   <th
                     style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    Is Active</th>
+                    {{'IsActive'|translate}}</th>
                   <th
                     style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    Edit</th>
+                    {{'Edit'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -144,7 +126,7 @@
                 </tr>
 
                 <tr *ngIf="users.length === 0">
-                  <td colspan="5">Herhangi bir veri bulunamadı.</td>
+                  <td colspan="5"> {{'NoData'|translate}}</td>
                 </tr>
               </ng-template>
             </rk-table>

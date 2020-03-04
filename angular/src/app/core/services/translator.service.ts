@@ -16,16 +16,24 @@ export class TranslatorService {
     return this.translationService.instant(`CATEGORY.${data}`);
   }
 
-  initLanguages() {
+  initLanguages(lang?: string) {
+    const languages = ['en', 'tr'];
+    languages.forEach(x => {
+      this.translationService.addLangs([x]);
+    });
 
-    this.translationService.addLangs(['en']);
-    this.translationService.addLangs(['tr']);
-    this.translationService.setDefaultLang('en');
+
+    this.translationService.setDefaultLang(languages[0]);
 
     const browserLang = this.translationService.getBrowserLang();
-
-    this.translationService.use(browserLang.match(/en|tr/) ? browserLang : 'en');
-
+    if (!lang) {
+    this.translationService.use(languages.find(x => x == browserLang) ? browserLang : languages[0]);
+    } else {
+      const language = languages.find(x => x == lang);
+      if (language) {
+      this.translationService.use(language);
+      } else { this.translationService.use(languages[0]); }
+    }
   }
 
   use(lang: string): any {

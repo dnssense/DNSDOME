@@ -110,7 +110,25 @@
     "AddToGroup":"Add to Group",
     "DeviceName":"Device Name",
     "NoGroup":"No Group",
-
+    "SecurityProfiles":"Security Profiles",
+    "CreateNewSecurityProfile":"Create New Profile",
+    "Users":"Users",
+    "CreateNewUser":"Create New User",
+    "EditUser":"Edit User",
+    "UserName":"User Name",
+    "Email":"Email",
+    "Role":"Role",
+    "Password":"Password",
+    "YourPasswordHasToBeAtLeast":"Your password has to be at least 8 characters with at least one upper case, one lower case, one number",    
+    "IsActive":"Is Active",
+    "Edit":"Edit",
+    "QueryCategory":"Query Category",
+    "EnterDomain":"Enter Domain",
+    "Categories":"Categories",
+    "LANGUAGE":{
+        "TR":"Turkish",
+        "EN":"English"
+    },
     "LOGOUT": {
         "Logout": "Logout",
         "LogoutMessage": "Do you want to log out?",
