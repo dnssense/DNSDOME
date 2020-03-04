@@ -3,18 +3,18 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 p-0 d-flex align-items-center justify-content-between">
-          <h5 class="page-title">Public IP</h5>
+          <h5 class="page-title">{{'PublicIp'|translate}}</h5>
 
           <button class="btn btn-icon btn-small ml-2" (click)="showNewIpForm()">
             <i-feather name="plus"></i-feather>
-            Add New Ip
+            {{'AddNewIp'|translate}}
           </button>
         </div>
 
         <rk-modal #agentModal>
           <rk-modal-header icon="plus">
             <rk-modal-header-title>
-              <h5>Create New Agent</h5>
+              <h5>{{'CreateNewAgent'|translate}}</h5>
             </rk-modal-header-title>
             <rk-modal-header-close (click)="agentModal.toggle()"></rk-modal-header-close>
           </rk-modal-header>
@@ -25,11 +25,11 @@
                 <div class="row">
                   <div class="col-6">
                     <rk-radio name="ipType" (valueChange)="onSelectionChangeIPType('staticIp')"
-                      [checked]="ipType == 'staticIp'">Static IP</rk-radio>
+                      [checked]="ipType == 'staticIp'">{{'StaticIp'|translate}}</rk-radio>
                   </div>
                   <div class="col-6">
                     <rk-radio name="ipType" (valueChange)="onSelectionChangeIPType('dynamicIp')"
-                      [checked]="ipType == 'dynamicIp'">Dynamic IP</rk-radio>
+                      [checked]="ipType == 'dynamicIp'">{{'DynamicIp'|translate}}</rk-radio>
                   </div>
                 </div>
 
@@ -48,21 +48,21 @@
                           </div>
                         </ng-template>
                       </figure>
-                      <span class="file-upload-text">Block Page Logo</span>
+                      <span class="file-upload-text">{{'BlockPageLogo'|translate}}</span>
                     </label>
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="col-12">
-                    <input type="text" class="rk-input w-100" placeholder="Name" name="agentName" id="agentName"
+                    <input type="text" class="rk-input w-100" placeholder="{{'Name'|translate}}" name="agentName" id="agentName"
                       [(ngModel)]="selectedIp.agentAlias" formControlName="agentName">
                   </div>
 
                   <ng-container *ngIf="ipType == 'dynamicIp'; else elseTemplateIpType">
                     <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-12 mt-2">
                       <input type="text" id="dnsFqdn" name="dnsFqdn" class="rk-input w-100"
-                        [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn" placeholder="DNS FQDN">
+                        [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn" placeholder="{{'DNSFQDN'|translate}}">
                     </div>
                   </ng-container>
 
@@ -70,7 +70,7 @@
                     <div class="col-12 d-flex mt-2" *ngFor="let row of selectedIp.staticSubnetIp; index as i">
                       <div class="rk-input-container">
                         <span style="flex: 2">
-                          <input type="text" placeholder="IP" maxlength="15" name="'ip'+i"
+                          <input type="text" placeholder="{{'IP'|translate}}" maxlength="15" name="'ip'+i"
                             (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)"
                             [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" [ngModelOptions]="{standalone: true}">
                           /
@@ -96,19 +96,19 @@
                   </ng-template>
 
                   <div class="col-12 mt-2">
-                    <rk-select [options]="securityProfilesForRkSelect" placeholder="Select Profile"
+                    <rk-select [options]="securityProfilesForRkSelect" placeholder="{{'SelectProfile'|translate}}"
                       (valueChange)="securityProfileChanged($event)">
                     </rk-select>
                   </div>
 
                   <div class="col-12 mt-2">
                     <textarea class="rk-input textarea w-100 resize:none" name="blockMessage" id="blockMessage"
-                      [(ngModel)]="selectedIp.blockMessage" placeholder="Block Message" rows="4"
+                      [(ngModel)]="selectedIp.blockMessage" placeholder="{{'BlockMessage'|translate}}" rows="4"
                       [ngModelOptions]="{standalone: true}"></textarea>
                   </div>
 
                   <div class="col-12 mt-2">
-                    <input type="text" class="rk-input w-100" placeholder="Singhole Ip"
+                    <input type="text" class="rk-input w-100" placeholder="{{'SinkHoleIp'|translate}}"
                       (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)" [(ngModel)]="selectedIp.cyberXRayIp"
                       [ngModelOptions]="{standalone: true}">
                   </div>
@@ -120,15 +120,15 @@
 
           <rk-modal-footer>
             <button class="btn w-100 btn-small mr-2" id="defaultSaveBtn" [disabled]="!isNewItemUpdated"
-              (click)="savePublicIp()">Apply</button>
-            <button class="btn w-100 btn-default btn-small" (click)="agentModal.toggle()">Close</button>
+              (click)="savePublicIp()">{{'Apply'|translate}}</button>
+            <button class="btn w-100 btn-default btn-small" (click)="agentModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
         <rk-modal #profileModal>
           <rk-modal-header>
             <rk-modal-header-title>
-              <h5>Security Profile</h5>
+              <h5>{{'SecurityProfile'|translate}}</h5>
             </rk-modal-header-title>
             <rk-modal-header-close (click)="profileModal.toggle()"></rk-modal-header-close>
           </rk-modal-header>
@@ -141,8 +141,8 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn w-100 btn-small mr-2" (click)="saveProfile()">Save</button>
-            <button class="btn w-100 btn-small" (click)="nextStep()">Next</button>
+            <button class="btn w-100 btn-small mr-2" (click)="saveProfile()">{{'Save'|translate}}</button>
+            <button class="btn w-100 btn-small" (click)="nextStep()">{{'Next'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -151,12 +151,12 @@
             <div class="rk-table-container-header">
               <div class="top-content justify-content-start">
                 <div class="inf mr-4">
-                  <span class="text-primary">{{ publicIpsFiltered.length }}</span> queries listed
+                  <span class="text-primary">{{ publicIpsFiltered.length }}</span> {{'QueriesListed'|translate}}
                 </div>
 
                 <div class="search ml-5">
                   <div class="rk-autocomplete-container" style="width: 220px;">
-                    <input type="text" placeholder="Search" [(ngModel)]="searchKey" class="rk-input rk-autocomplete">
+                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="searchKey" class="rk-input rk-autocomplete">
                     <i-feather class="search-icon" name="search"></i-feather>
                   </div>
                 </div>
@@ -167,11 +167,11 @@
               <ng-template #header>
                 <tr>
                   <th class="index">#</th>
-                  <th>Name</th>
-                  <th>Ip Type</th>
-                  <th>Ip Adress/Domain</th>
-                  <th>Ip Profile</th>
-                  <th style="width: 85px;">Operation</th>
+                  <th>{{'Name'|translate}}</th>
+                  <th>{{'IpType'|translate}}</th>
+                  <th>{{'IpAddressDomain'|translate}}</th>
+                  <th>{{'SecurityProfile'|translate}}</th>
+                  <th style="width: 85px;">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -188,10 +188,10 @@
                   </td>
                   <td>
                     <ng-container *ngIf="pi.staticSubnetIp && pi.staticSubnetIp.length > 0; else elseTemplateIpType2">
-                      Static
+                      {{'Static'|translate}}
                     </ng-container>
                     <ng-template #elseTemplateIpType2>
-                      Dynamic
+                      {{'Dynamic'|translate}}
                     </ng-template>
                   </td>
                   <td>
@@ -219,7 +219,7 @@
                 </tr>
                 <tr *ngIf="publicIpsFiltered == null || publicIpsFiltered.length < 1">
                   <td></td>
-                  <td colspan="10">No Data</td>
+                  <td colspan="10">{{'NoData'|translate}}</td>
                 </tr>
               </ng-template>
             </rk-table>

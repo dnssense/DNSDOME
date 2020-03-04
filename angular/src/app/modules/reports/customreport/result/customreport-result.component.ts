@@ -162,9 +162,9 @@ export class CustomReportResultComponent implements OnDestroy {
   }
 
   pageChanged(event: any): void {
-    this.currentPage = event.page;
+    // this.currentPage = event.page;
 
-    this.loadGraph(this.searchSetting);
+    //this.loadGraph(this.searchSetting);
   }
 
   onPageViewCountChange(pageViewCount: number) {

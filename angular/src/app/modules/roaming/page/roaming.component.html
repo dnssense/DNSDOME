@@ -3,22 +3,22 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 p-0 d-flex align-items-center justify-content-between">
-          <h5 class="page-title">Roaming Clients</h5>
+          <h5 class="page-title">{{'RoamingClients'|translate}}</h5>
 
           <div>
             <button class="btn btn-icon btn-small mr-2" (click)="downloadFile()">
               <i-feather name="arrow-down"></i-feather>
-              Download
+              {{'Download'|translate}}
             </button>
 
             <button class="btn btn-icon btn-small mr-2" (click)="copyLink()">
               <i-feather name="arrow-down"></i-feather>
-              Copy Download Link
+              {{'CopyDownloadLink'|translate}}
             </button>
 
             <button class="btn btn-icon btn-small" (click)="configureModal.toggle()">
               <i-feather name="settings"></i-feather>
-              Settings
+              {{'Settings'|translate}}
             </button>
           </div>
         </div>
@@ -26,7 +26,7 @@
         <rk-modal #configureModal>
           <rk-modal-header>
             <rk-modal-header-title>
-              <h5>Configure Roaming Clients</h5>
+              <h5>{{'ConfigureRoamingClients'|translate}}</h5>
             </rk-modal-header-title>
 
             <rk-modal-header-close (click)="configureModal.toggle()"></rk-modal-header-close>
@@ -36,16 +36,15 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-12 mt-3">
-                  <div class="rk-group-title">Dont Touch Domains</div>
+                  <div class="rk-group-title">{{'DontTouchDomains'|translate}}</div>
                   <p class="rk-description">
-                    *Enter a dont touch domains. Dont touch domains not encrypt by agent. Local active directory
-                    domainlerinin eklenmesi gerekir.
+                    {{'DontTouchDomainsDescription'|translate}}
                   </p>
 
                   <div class="input-container">
                     <input type="text" placeholder="Domain" [(ngModel)]="domain" class="rk-input w-100">
 
-                    <button class="btn btn-small ml-1" style="width: 60px" (click)="addDomainToList()">Add</button>
+                    <button class="btn btn-small ml-1" style="width: 60px" (click)="addDomainToList()">{{'Add'|translate}}</button>
                   </div>
 
                   <div class="cards mt-3">
@@ -61,41 +60,7 @@
                   </div>
                 </div>
 
-                <!-- <div class="col-12 mt-3">
-                  <div class="rk-group-title">Agent Activity On Local Network</div>
-
-                  <div class="d-flex my-2">
-                    <rk-toggle-button clickClose="true" (click)="alwaysActiveChanged()" [active]="alwaysActive"
-                      [toggleTexts]="{ pos: 'Always Active', neg: 'Always Active' }" class="w-100 mr-2">
-                    </rk-toggle-button>
-
-                    <rk-toggle-button clickClose="true" (click)="disabledNetworkChanged()" [active]="disabledNetwork"
-                      [toggleTexts]="{ pos: 'Disable On Local Network', neg: 'Disable On Local Network' }"
-                      class="w-100">
-                    </rk-toggle-button>
-                  </div>
-
-                  <p class="rk-description">
-                    *Local ağa giren roaming clientlar üzerindeki ajanın pasif duruma geçmesi için “Disable On Local
-                    Network” seçilmeli. Ajan local ağa girdiğini aşağıdaki local dns sunuculara istek göndererek test
-                    eder.
-                  </p>
-
-                  <div class="input-container">
-                    <label class="rk-input-label" for="localdns1">Local DNS 1</label>
-                    <input type="text" class="rk-input w-100" id="localdns1" placeholder="IP Adress" disabled>
-                  </div>
-
-                  <div class="input-container mt-2">
-                    <label class="rk-input-label" for="localdns2">Local DNS 2</label>
-                    <input type="text" class="rk-input w-100" id="localdns2" placeholder="IP Adress" disabled>
-                  </div>
-
-                  <div class="d-flex justify-content-end mt-3">
-                    <button class="btn btn-small btn-accent" disabled>Apply</button>
-                  </div>
-
-                </div> -->
+              
               </div>
             </div>
           </rk-modal-body>
@@ -104,7 +69,7 @@
         <rk-modal #roamingClientModal>
           <rk-modal-header>
             <rk-modal-header-title>
-              <h5>Roaming Clients Edit</h5>
+              <h5>{{'RoamingClientsEdit'|translate}}</h5>
             </rk-modal-header-title>
 
             <rk-modal-header-close (click)="roamingClientModal.toggle()"></rk-modal-header-close>
@@ -129,15 +94,15 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2" (click)="saveRoamingClient()">Apply</button>
-            <button class="btn btn-small w-100 btn-default" (click)="roamingClientModal.toggle()">Clear</button>
+            <button class="btn btn-small w-100 mr-2" (click)="saveRoamingClient()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small w-100 btn-default" (click)="roamingClientModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
         <rk-modal #groupModal>
           <rk-modal-header>
             <rk-modal-header-title>
-              <h5>{{ groupOperation == 'Edit'?'Edit' : 'Create New'}} Group</h5>
+              <h5>{{ (groupOperation == 'Edit'? 'EditGroup' : 'CreateNewGroup')|translate}}</h5>
             </rk-modal-header-title>
 
             <rk-modal-header-close (click)="groupModal.toggle()"></rk-modal-header-close>
@@ -152,15 +117,15 @@
               </div>
               <div class="row">
                 <div class="col-12 mt-3">
-                  <h5 class="rk-group-title">Select Devices to Join Group</h5>
+                  <h5 class="rk-group-title">{{'SelectDevicesToJoinGroup'|translate}}</h5>
                 </div> 
                 <div class="col-12 mt-2" *ngIf="groupOperation=='Edit'" >
-                  <h6 class="rk-title mb-2">Other Group Members</h6>
+                  <h6 class="rk-title mb-2">{{'OtherGroupMembers'|translate}}</h6>
 
                  <table class="table small-table table-borderless">
                     <thead>
                       <tr>
-                        <th>Host Name</th>
+                        <th>{{'HostName'|translate}}</th>
                         <th></th>
                         <th></th>
                       </tr>
@@ -177,19 +142,19 @@
 
                       <tr *ngIf="groupMembers?.length == 0">
                         <td colspan="4">
-                          Herhangi bir veri bulunamadı.
+                          {{'NoData'|translate}}
                         </td>
                       </tr>
                     </tbody>
                   </table> 
                 </div>
                 <div class="col-12 mt-2" >
-                  <h6 class="rk-title mb-2">No Group Members</h6>
+                  <h6 class="rk-title mb-2">{{'NoGroupMembers'|translate}}</h6>
 
                  <table class="table small-table table-borderless">
                     <thead>
                       <tr>
-                        <th>Host Name</th>
+                        <th>{{'HostName'|translate}}</th>
                         <th></th>
                         <th></th>
                       </tr>
@@ -206,7 +171,7 @@
 
                       <tr *ngIf="noGroupedClients?.length == 0">
                         <td colspan="4">
-                          Herhangi bir veri bulunamadı.
+                          {{'NoData'|translate}}
                         </td>
                       </tr>
                     </tbody>
@@ -220,8 +185,8 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2" (click)="saveOrUpdateGroup()">Apply</button>
-            <button class="btn btn-small btn-default w-100" (click)="cleanNewGroup()" >Close</button>
+            <button class="btn btn-small w-100 mr-2" (click)="saveOrUpdateGroup()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small btn-default w-100" (click)="cleanNewGroup()" >{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -230,7 +195,7 @@
         <rk-modal #changeGroupModal>
           <rk-modal-header icon="plus">
             <rk-modal-header-title>
-              <h5>Change Group</h5>
+              <h5>{{'ChangeGroup'|translate}}</h5>
             </rk-modal-header-title>
             <rk-modal-header-close (click)="changeGroupModal.toggle()"></rk-modal-header-close>
           </rk-modal-header>
@@ -248,15 +213,15 @@
 
               <div class="row">
                 <div class="col-12 mt-3">
-                  <h5 class="rk-group-title">Select Devices to Join Group</h5>
+                  <h5 class="rk-group-title">{{'SelectDevicesToJoinGroup'|translate}}</h5>
                 </div> 
                 <div class="col-12 mt-2"  >
-                  <h6 class="rk-title mb-2">Group Members</h6>
+                  <h6 class="rk-title mb-2">{{'GroupMembers'|translate}}</h6>
 
                  <table class="table small-table table-borderless">
                     <thead>
                       <tr>
-                        <th>Host Name</th>
+                        <th>{{'HostName'|translate}}</th>
                         <th></th>
                         <th></th>
                       </tr>
@@ -273,7 +238,7 @@
 
                       <tr *ngIf="selectedAgentsForChangeAddGroup?.length == 0">
                         <td colspan="4">
-                          Herhangi bir veri bulunamadı.
+                          {{'NoData'|translate}}
                         </td>
                       </tr>
                     </tbody>
@@ -288,8 +253,8 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2" (click)="saveChangedGroup()">Apply</button>
-            <button class="btn btn-small btn-default w-100" (click)="changeGroupModal.toggle()" >Close</button>
+            <button class="btn btn-small w-100 mr-2" (click)="saveChangedGroup()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small btn-default w-100" (click)="changeGroupModal.toggle()" >{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -301,7 +266,7 @@
                 <div class="d-flex align-items-center">
                   <div class="inf mr-4">
                     <span class="text-primary">{{ clientsFiltered?.length }} </span>
-                    queries listed
+                    {{'QueriesListed'|translate}}
                   </div>
 
                   <div class="search ml-5">
@@ -314,11 +279,11 @@
 
                 <div>
                   <button class="btn btn-small mr-2" (click)="openChangeGroup()">
-                    Change Group
+                    {{'ChangeGroup'|translate}}
                   </button>
 
                   <button class="btn btn-small" (click)="openChangeGroup()">
-                    Add to Group
+                    {{'AddToGroup'|translate}}
                   </button>
                 </div>
               </div>
@@ -330,10 +295,10 @@
                   <th>
                     <rk-checkbox (valueChange)="clientsTableCheckboxChanged($event)"></rk-checkbox>
                   </th>
-                  <th>Device Name</th>
-                  <th>Profile</th>
-                  <th>Group Name</th>
-                  <th colspan="2">Operation</th>
+                  <th>{{'DeviceName'|translate}}</th>
+                  <th>{{'SecurityProfile'|translate}}</th>
+                  <th>{{'GroupName'|translate}}</th>
+                  <th colspan="2">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -344,7 +309,7 @@
                   </td>
                   <td>{{ c.agentAlias }}</td>
                   <td>{{ c.rootProfile.name }}</td>
-                  <td>{{ c?.agentGroup?.groupName ? c?.agentGroup?.groupName : 'No Group' }}</td>
+                  <td>{{ c?.agentGroup?.groupName ? c?.agentGroup?.groupName : ('NoGroup'|translate) }}</td>
                   <td style="width: 60px">
                     <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editClient(c)">
                       <i-feather name="edit-3"></i-feather>
@@ -358,7 +323,7 @@
                 </tr>
 
                 <tr *ngIf="clientsFiltered?.length === 0">
-                  <td colspan="5">Herhangi bir veri bulunamadı.</td>
+                  <td colspan="5">{{'NoData'|translate}}</td>
                 </tr>
               </ng-template>
             </rk-table>
@@ -369,11 +334,11 @@
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between">
-                <div class="rk-table-title">Group Agent</div>
+                <div class="rk-table-title">{{'GroupAgent'|translate}}</div>
 
                 <button class="btn btn-small btn-icon" (click)="openCreateGroup()">
                   <i-feather name="plus"></i-feather>
-                  Create New Group
+                  {{'CreateNewGroup'|translate}}
                 </button>
               </div>
             </div>
@@ -381,10 +346,10 @@
             <rk-table [showPagination]="false">
               <ng-template #header>
                 <tr>
-                  <th>Group</th>
-                  <th>Member Count</th>
-                  <th>Security Profile</th>
-                  <th colspan="2">Operation</th>
+                  <th>{{'GroupName'|translate}}</th>
+                  <th>{{'MemberCount'|translate}}</th>
+                  <th>{{'SecurityProfile'|translate}}</th>
+                  <th colspan="2">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -406,7 +371,7 @@
                 </tr>
 
                 <tr *ngIf="groupedClients?.length === 0">
-                  <td colspan="5">Herhangi bir veri bulunamadı.</td>
+                  <td colspan="5">{{'NoData'|translate}}</td>
                 </tr>
               </ng-template>
             </rk-table>
