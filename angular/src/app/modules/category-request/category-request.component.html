@@ -3,14 +3,14 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 p-0">
-                    <h5 class="page-title">Change Domain Category</h5>
+                    <h5 class="page-title">{{'CATEGORYREQUEST.ChangeDomainCategory' | translate}}</h5>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-12 col-md-6 p-0 mt-3">
                     <div class="rk-basic-card">
-                        <p>Tüm alanlar zorunludur.</p>
+                        <p>{{'AllFieldsRequired' | translate}}</p>
 
                         <div class="row">
                             <div class="col-12 col-md-6 mt-3 mt-md-0">
@@ -29,7 +29,7 @@
 
                             <div class="col-4">
                                 <button class="btn btn-primary btn-small w-100 justify-content-center"
-                                    [disabled]="!getIsValidForm" (click)="sendCategorize()">Send</button>
+                                    [disabled]="!getIsValidForm" (click)="sendCategorize()">{{'Send' | translate}}</button>
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { Observable } from 'rxjs';
 import { Agent } from '../models/Agent';
-import { OperationResult } from '../models/OperationResult';
+
 
 @Injectable({ providedIn: 'root' })
 export class RoamingService {
@@ -25,6 +25,15 @@ export class RoamingService {
 
   saveClient(client: Agent): Observable<Agent> {
     return this.http.post<Agent>(this.roamingClientUrl, client, this.options).map(data => data);
+  }
+
+  saveClients(clients: Agent[]): Observable<Agent> {
+
+    return Observable.from(clients).concatMap(x => {
+
+      return this.http.post<Agent>(this.roamingClientUrl, x, this.options).map(data => data);
+    }).map(x => x).last();
+
   }
 
   updateClient(client: Agent): Observable<Agent> {

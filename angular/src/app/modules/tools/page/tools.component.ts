@@ -35,24 +35,6 @@ export class ToolsComponent {
                 this.domain = String(this.domain).toLowerCase().replace('http://', '').replace('https://', '');
             }
             this.isDomain = ValidationService.domainValidationWithoutTLD(this.domain);
-        } else {
-            let res = true;
-            const l = this.domainForReq.split(',').length;
-            if (l > 5) {
-                this.notification.warning('You can report 5 domains per request');
-                this.isDomainForReq = false;
-            } else {
-                for (let i = 0; i < l; i++) {
-                    let f = this.domainForReq.split(',')[i];
-                    if (String(f).toLowerCase().startsWith('http')) {
-                        f = String(f).toLowerCase().replace('http://', '').replace('https://', '');
-                    }
-                    res = ValidationService.domainValidationWithoutTLD(f);
-                    if (!res) {
-                        break;
-                    }
-                } this.isDomainForReq = res;
-            }
         }
     }
 
@@ -66,28 +48,23 @@ export class ToolsComponent {
         }
     }
 
-    reportDomain() {
-        const body: string[] = [];
+  /*   reportDomain() {
 
-        this.domainForReq.split(',').forEach(f => body.push(f));
 
-        let check = true;
+            const request = {
+                domain: this.domain,
+                category: this.sele
+            } as Domain2CategorizeRequestV2;
 
-        for (let i = 0; i < body.length; i++) {
-            if (body.indexOf(body[i]) !== body.lastIndexOf(body[i])) {
-                this.notification.warning('Entered list contains duplicate domains');
-                check = false;
-                break;
+            if (this.comment.trim().length > 0) {
+                request.comment = this.comment;
             }
-        }
-
-        if (check) {
-            this.toolsService.sendCategoryRequest(body).subscribe(res => {
+            this.toolsService.sendCategoryRequestV2(body).subscribe(res => {
                 if (res) {
                     this.domainForReq = '';
                     this.notification.success('Category request is successfully sent');
                 }
             });
         }
-    }
+    } */
 }

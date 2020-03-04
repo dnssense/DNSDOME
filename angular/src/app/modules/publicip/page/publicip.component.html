@@ -121,7 +121,7 @@
           <rk-modal-footer>
             <button class="btn w-100 btn-small mr-2" id="defaultSaveBtn" [disabled]="!isNewItemUpdated"
               (click)="savePublicIp()">Apply</button>
-            <button class="btn w-100 btn-default btn-small" (click)="clearAgentForm()">Clean</button>
+            <button class="btn w-100 btn-default btn-small" (click)="agentModal.toggle()">Close</button>
           </rk-modal-footer>
         </rk-modal>
 

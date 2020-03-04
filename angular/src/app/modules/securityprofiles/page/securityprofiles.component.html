@@ -27,7 +27,7 @@
           <button class="btn btn-small w-100 mr-2"
             [ngClass]="{'disabled': saveMode === 'NewProfile' && selectedAgent.rootProfile?.name?.length < 2}"
             (click)="saveProfile()">Save</button>
-          <button class="btn btn-small w-100">Clean</button>
+          <button class="btn btn-small w-100" (click)="profileModal.toggle()">Close</button>
         </rk-modal-footer>
       </rk-modal>
 

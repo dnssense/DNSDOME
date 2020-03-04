@@ -167,6 +167,25 @@ get savedUserMessage(): string {
     return this.translator.translate(`ChangesCouldNotSaved`);
   }
 
+  get groupWillBeDeletedMessage(): string {
+    return this.translator.translate(`GroupWillBeDeleted`);
+  }
+
+  get groupDeletedMessage(): string {
+    return this.translator.translate(`GroupDeleted`);
+  }
+
+  get pleaseChangeSomethingMessage(): string {
+    return this.translator.translate(`PleaseChangeSomething`);
+  }
+
+  get categoryRequestSuccessfullySendedMessage(): string {
+    return this.translator.translate('CategoryRequestSuccessfullySended');
+  }
+
+
+
+
 
 
 

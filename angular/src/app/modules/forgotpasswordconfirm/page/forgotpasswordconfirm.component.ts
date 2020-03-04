@@ -26,24 +26,13 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
-
+// TODO bunu kullanan yer yok silsek mi acaba
 @Component({
   selector: 'app-forgotpasswordconfirm',
   templateUrl: 'forgotpasswordconfirm.component.html',
   styleUrls: ['forgotpasswordconfirm.component.sass']
 })
 export class ForgotPasswordConfirmComponent implements OnInit {
-  host: ConfigHost;
-  forgotPasswordConfirmForm: any;
-  validPasswordLogin: true | false;
-  model: ForgotPasswordModel = {};
-  validPasswordRegister: true | false;
-  private toggleButton: any;
-  private captcha: string;
-  private forgotId: string;
-  public captcha_key: string;
-  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
-  matcher = new MyErrorStateMatcher(); 
 
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
     private element: ElementRef, private notification: NotificationService,
@@ -62,6 +51,24 @@ export class ForgotPasswordConfirmComponent implements OnInit {
 
 
   } 
+  host: ConfigHost;
+  forgotPasswordConfirmForm: any;
+  validPasswordLogin: true | false;
+  model: ForgotPasswordModel = {};
+  validPasswordRegister: true | false;
+  private toggleButton: any;
+  private captcha: string;
+  private forgotId: string;
+  public captcha_key: string;
+  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
+  matcher = new MyErrorStateMatcher(); 
+
+
+  passStrength = 0;
+  numStrength = false;
+  upStrength = false;
+  lowStrength = false;
+  lengthStrength = false;
   ngOnInit() {
     // const navbar: HTMLElement = this.element.nativeElement;
     // this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
@@ -101,13 +108,6 @@ export class ForgotPasswordConfirmComponent implements OnInit {
       this.router.navigateByUrl("/login");
     });
   }
-
-
-  passStrength = 0;
-  numStrength = false;
-  upStrength = false;
-  lowStrength = false;
-  lengthStrength = false;
   checkPasswordStrength() {
     this.passStrength = 0;
     this.numStrength = false;

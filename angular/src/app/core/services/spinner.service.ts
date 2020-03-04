@@ -10,17 +10,17 @@ export class SpinnerService {
   private subject: Subject<boolean>;
 
   constructor(private spinner: NgxUiLoaderService) {
-    //console.log('constructor spinnerservice');
+    // console.log('constructor spinnerservice');
     this.subject = new Subject<boolean>();
     this.subject.asObservable().subscribe((val) => {
       if (val) {
-        //console.log('spinner start check:' + this.spinner.hasForeground());
+        // console.log('spinner start check:' + this.spinner.hasForeground());
         if (!this.spinner.hasRunningTask(true, 'loader')) {
           this.spinner.start('loader');
         }
-        //console.log('spinner start:' + this.spinner.hasForeground());
+        // console.log('spinner start:' + this.spinner.hasForeground());
       } else {
-        //console.log('spinner stop check:' + this.spinner.hasForeground());
+        // console.log('spinner stop check:' + this.spinner.hasForeground());
         if (this.spinner.hasRunningTask(true, 'loader')) {
           this.spinner.stop('loader');
         }

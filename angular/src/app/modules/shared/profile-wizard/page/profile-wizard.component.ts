@@ -16,12 +16,13 @@ import { DEVICE_GROUP } from 'src/app/core/Constants';
 import { DeviceGroup, AgentInfo } from 'src/app/core/models/DeviceGroup';
 import { BWListItem } from 'src/app/core/models/BWListItem';
 import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { TranslatorService } from 'src/app/core/services/translator.service';
 
 declare var $: any;
 
 // tslint:disable-next-line: class-name
 export class categoryItem {
-  constructor(public category: CategoryV2, public isBlocked: boolean) { }
+  constructor(public category: CategoryV2, public name: string, public isBlocked: boolean) { }
 }
 
 // tslint:disable-next-line: class-name
@@ -39,6 +40,87 @@ export const ApplicationTypes = {
 };
 
 
+export const categoryMappings = {
+  'variable': [
+    'Unknown',
+    'Undecided Not Safe',
+    'Undecided Safe',
+    'Domain Parking',
+    'Newly Register',
+    'Newly Up',
+    'Dead Sites',
+    // 'Firstly Seen' //burasi positive security model kapsaminda yonetiliyor
+  ],
+  'harmful': [
+    'Illegal Drugs',
+    'Adult',
+    'Pornography',
+    'Hate/Violance/illegal',
+    'Gambling',
+    'Games',
+    'Swimsuits and Underwear',
+    'Dating',
+    'Alcohol'
+  ],
+  'safe': [
+    'Cooking',
+    'Online Video',
+    'Sport',
+    'Advertisements',
+    'Shopping',
+    'Software Downloads',
+    'Reference',
+    'Financial Services',
+    'Health',
+    'Society',
+    'Webmail',
+    'Vehicles',
+    'Government and Organization',
+    'Search Engines',
+    'Online Storage',
+    'Business Services',
+    'Entertainment',
+    'Tobacco',
+    'Blogs',
+    'Content Delivery Networks (CDN)',
+    'Social Networks',
+    'Real Estate',
+    'Forums',
+    'Arts and Culture',
+    'Kids',
+    'Job Search',
+    'Clothing and Fashion',
+    'Chats',
+    'Education',
+    'Technology and Computer',
+    'Infrastructure Service',
+    'Music',
+    'Weapon and Military',
+    'News',
+    'Religion',
+    'Vacation and Travel',
+    'Local IP',
+    'WhiteList'
+  ],
+  'malicious': [
+    'Phishing',
+    'Spam Sites',
+    'Proxy',
+    'Warez',
+    'Hacking',
+    'Potentially Dangerous',
+    'Malware/Virus',
+    'Dynamic DNS',
+    'Botnet CC',
+    'DGA Domain',
+    'BlackList',
+    'Malformed Query',
+    'Bad-IP',
+    'NX Domain'
+  ]
+};
+
+
 @Component({
   selector: 'app-profile-wizard',
   templateUrl: './profile-wizard.component.html',
@@ -53,7 +135,8 @@ export class ProfileWizardComponent {
     private agentService: AgentService,
     private roamingService: RoamingService,
     private boxService: BoxService,
-    private staticMessageService: StaticMessageService
+    private staticMessageService: StaticMessageService,
+    private translatorService: TranslatorService
   ) {
     this.getCategoriesAndApps();
   }
@@ -112,7 +195,8 @@ export class ProfileWizardComponent {
 
     this.staticService.getCategoryList().subscribe(res => {
       res.forEach(r => {
-        this.categoryList.push(new categoryItem(r, false));
+
+        this.categoryList.push(new categoryItem(r, this.translatorService.translateCategoryName(r.name), false));
       });
 
       this.categoryList = this.categoryList.sort((x, y) => x.category.name > y.category.name ? 1 : -1);
@@ -130,6 +214,14 @@ export class ProfileWizardComponent {
 
   setActiveNumber(val: number) {
     this.activeNumber = val;
+  }
+
+  isInCategoryType(type: string, cat: categoryItem) {
+
+    if (cat.category.isVisible && categoryMappings[type]) {
+    return categoryMappings[type].find(x => x === cat.category.name);
+    }
+    return false;
   }
 
   fillGroupedApplications() {
@@ -184,6 +276,7 @@ export class ProfileWizardComponent {
   }
 
   updateModels() {
+
     if (this.saveMode === 'NewProfile') {
       this.categoryList.forEach(c => {
         if (c.category.isVisible) {
@@ -245,9 +338,9 @@ export class ProfileWizardComponent {
 
   applicationChanged(application: applicationItem) {
     if (application.isBlocked) {
-      this.allowApplication(application.application.id);
-    } else {
       this.blockApplication(application.application.id);
+    } else {
+      this.allowApplication(application.application.id);
     }
   }
 
@@ -264,6 +357,41 @@ export class ProfileWizardComponent {
       this.applicationList.find(a => a.application.id === id).isBlocked = true;
       this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id).isBlocked = true;
     }
+  }
+  /* clean() {
+    this.selectedAgent.rootProfile.applicationProfile.categories.forEach(x => x.isBlocked = false);
+    this.selectedAgent.rootProfile.domainProfile.categories.forEach(x => x.isBlocked = false);
+    this.selectedAgent.rootProfile.blackWhiteListProfile.blackList = [];
+    this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList = [];
+    this.selectedAgent.rootProfile.isSafeSearchEnabled = false;
+    this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled = false;
+
+  } */
+  isClearedAdds(): boolean {
+    // advertisement apps
+    const adsIds = this.groupedApplications.find(x => x.type == ApplicationTypes.CLEAR_ADS)?.applications.map(x => x.application.id);
+    if (!adsIds) {return false; }
+
+    const adsApplicatons = this.selectedAgent.rootProfile.applicationProfile.categories.filter(x => adsIds.find(y => x.id == y));
+    const filtered = adsApplicatons.filter(x => x.isBlocked);
+
+
+    // tslint:disable-next-line: triple-equals
+    if (filtered.length == adsIds.length) {
+      return true;
+    }
+    return false;
+  }
+  changeClearAds() {
+    const clearedAdds = this.isClearedAdds();
+
+    const adsApps = this.groupedApplications.find(x => x.type == ApplicationTypes.CLEAR_ADS)?.applications;
+   if (!adsApps) {return; }
+   adsApps.forEach(x => {
+     x.isBlocked = !clearedAdds;
+     this.applicationChanged(x);
+   });
+
   }
 
   saveProfile() {
@@ -287,11 +415,13 @@ export class ProfileWizardComponent {
     this.alertService.alertWarningAndCancel(alertTitle, alertMessage).subscribe(
       res => {
         if (res) {
+
           if (this.saveMode === 'NewProfile' || this.saveMode === 'ProfileUpdate') {
             this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(result => {
 
               this.notification.success(this.staticMessageService.savedProfileMessage);
               this.saveEmitter.emit();
+
 
             });
           } else if (this.saveMode === 'NewProfileWithAgent') {
@@ -446,7 +576,7 @@ export class ProfileWizardComponent {
   }
 
   toggleSecurityMode() {
-    this.securityMode = !this.securityMode;
+    this.selectedAgent.rootProfile.isPositiveSecurity = !this.selectedAgent.rootProfile.isPositiveSecurity;
   }
 
 }

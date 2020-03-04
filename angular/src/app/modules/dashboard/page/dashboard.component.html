@@ -9,12 +9,12 @@
             </div>
             <div class="rk-row">
               <div class="rk-data-row active">
-                <span class="name">Active</span>
+                <span class="name">{{'Active' | translate}}</span>
                 <span class="value">{{ data.activeCount }}</span>
               </div>
 
               <div class="rk-data-row   m-l-15">
-                <span class="name">Passive</span>
+                <span class="name">{{'Passive'|translate}}</span>
                 <span class="value">{{ data.passiveCount }}</span>
               </div>
             </div>
@@ -28,12 +28,12 @@
       <div class="card-item rk-col">
         <div class="traffic-timeline rk-row">
           <div class="rk-v-center">
-            <div class="rk-title-2">Total traffic timeline</div>
-            <div class="timeline-sub-title"> 365 total days</div>
+            <div class="rk-title-2">{{'DASHBOARD.TotalTrafficTime'|translate}}</div>
+            <div class="timeline-sub-title"> {{'DASHBOARD.TotalDays365'|translate}}</div>
           </div>
 
           <div class="rk-row m-l-20 rk-grow" style="justify-content: flex-end;">
-            <span class="rk-title-2 rk-v-center">Time Range</span>
+            <span class="rk-title-2 rk-v-center">{{'DASHBOARD.TimeRange'|translate}}</span>
             <div class="rk-row m-l-15 ">
               <rk-date (complete)="dateChanged($event)" [alignment]="'right'"></rk-date>
             </div>
@@ -48,7 +48,7 @@
 
         <div class="rk-panel" style="margin-top: 30px;">
           <div class="rk-panel-header rk-title-2">
-            Traffic Based Anomaly
+            {{'DASHBOARD.TrafficBasedAnomaly'|translate}}
           </div>
           <div class="rk-panel-item d-flex flex-column">
             <div class="row">
@@ -63,7 +63,7 @@
                 <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe')"
                   [title]="'Safe'" [color]="'#3dd49a'" className="green" [valueOne]="trafficAnomaly?.safe?.hitCount"
                   [valueTwo]="trafficAnomaly?.safe?.uniqueCount"
-                  description="Haber, Spor, Arama motoru gibi içerik ve güvenlik anlamında risk içermeyen domainleri kapsar.">
+                  description="{{'SafeDescription'|translate}}">
                 </rk-infobox>
               </div>
 
@@ -71,7 +71,7 @@
                 <rk-infobox [active]="infoBoxes.malicious"  (change)="infoboxChanged($event, 'malicious')" [type]="2"
                   [title]="'Malicious'" className="red" [color]="'#f95656'"
                   [valueOne]="trafficAnomaly?.malicious?.hitCount" [valueTwo]="trafficAnomaly?.malicious?.uniqueCount"
-                  description="Malware, Botnet, Phishing gibi güvenlik riski yüksek domainleri kapsar.">
+                  description="{{'MaliciousDescription'|translate}}">
                 </rk-infobox>
               </div>
 
@@ -79,7 +79,7 @@
                 <rk-infobox [active]="infoBoxes.variable"  (change)="infoboxChanged($event, 'variable')" [type]="2"
                   [title]="'Variable'" className="gray" [color]="'#d8d8d8'"
                   [valueOne]="trafficAnomaly?.variable?.hitCount" [valueTwo]="trafficAnomaly?.variable?.uniqueCount"
-                  description="Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.">
+                  description="{{'VariableDescription'|translate}}">
                 </rk-infobox>
               </div>
 
@@ -87,7 +87,7 @@
                 <rk-infobox [active]="infoBoxes.harmful"  (change)="infoboxChanged($event, 'harmful')" [type]="2"
                   [title]="'Harmful Content'" className="yellow" [color]="'#f9df56'"
                   [valueOne]="trafficAnomaly?.harmful?.hitCount" [valueTwo]="trafficAnomaly?.harmful?.uniqueCount"
-                  description="Pornogrphy, Adult, Gamblig gibi istenmeyen domainleri içerir.">
+                  description="{{'HarmfulDescription'|translate}}">
                 </rk-infobox>
               </div>
             </div>
@@ -119,11 +119,11 @@
               <div>
                 <div class="chart-info">
                   <div class="section">
-                    <span class="section-title">Selected <br /> Time Hit</span>
+                    <span class="section-title">{{'Selected'|translate}} <br />{{'DASHBOARD.TimeHit'|translate}}</span>
                     <span class="value">{{ trafficAnomaly[selectedBox]?.currentHit }}</span>
                   </div>
                   <div class="section flex-column active" style="border-radius: 0;">
-                    <span style="font-size: 12px;">Selected Time vs Avarege</span>
+                    <span style="font-size: 12px;">{{'DASHBOARD.SelectedTimevsAverage'|translate}}</span>
                     
                     <span>
                       <i-feather name="arrow-up"></i-feather>
@@ -144,7 +144,7 @@
           <!-- Malicious -->
           <div class="col-12 col-lg-4 mt-3 mt-lg-0 rk-panel">
             <div class="rk-panel-header rk-title-2">
-              Malicious
+              {{'Malicious'|translate}}
             </div>
             <div class="rk-panel-item rk-info-table bg-white p-0" style="border-radius: 13px;">
               <rk-table-container class="overflow-hidden m-0">
@@ -153,13 +153,13 @@
                     <tr>
                       <th class="index">#</th>
                       <th scope="col">
-                        Domain
+                        {{'Domain'|translate}}
                       </th>
                       <th scope="col">
-                        Count
+                        {{'Count'|translate}}
                       </th>
                       <th scope="col" style="width: 200px">
-                        Percent
+                        {{'Percent'|translate}}
                       </th>
                     </tr>
                   </ng-template>
@@ -184,7 +184,7 @@
           <!-- New Domains -->
           <div class="col-12 col-lg-4 mt-3 mt-lg-0 rk-panel">
             <div class="rk-panel-header rk-title-2">
-              New Domains
+              {{'NewDomains'|translate}}
             </div>
             <div class="rk-panel-item bg-white p-0" style="border-radius: 13px;">
               <rk-table-container class="overflow-hidden m-0">
@@ -193,13 +193,13 @@
                     <tr>
                       <th class="index">#</th>
                       <th scope="col">
-                        Domain
+                        {{'Domain'|translate}}
                       </th>
                       <th scope="col">
-                        Count
+                        {{'Count'|translate}}
                       </th>
                       <th scope="col" style="width: 200px">
-                        Percent
+                        {{'Percent'|translate}}
                       </th>
                     </tr>
                   </ng-template>
@@ -224,7 +224,7 @@
           <!-- Harmful -->
           <div class="col-12 col-lg-4 mt-3 mt-lg-0 rk-panel">
             <div class="rk-panel-header rk-title-2">
-              Harmful
+              {{'Harmful'|translate}}
             </div>
             <div class="rk-panel-item bg-white p-0" style="border-radius: 13px;">
               <rk-table-container class="overflow-hidden m-0">
@@ -233,13 +233,13 @@
                     <tr>
                       <th class="index">#</th>
                       <th scope="col">
-                        Domain
+                        {{'Domain'|translate}}
                       </th>
                       <th scope="col">
-                        Count
+                        {{'Count'|translate}}
                       </th>
                       <th scope="col" style="width: 200px">
-                        Percent
+                        {{'Percent'|translate}}
                       </th>
                     </tr>
                   </ng-template>
@@ -266,14 +266,14 @@
           <div class="col-12 rk-panel" style="margin-top: 30px;">
             <div class="d-flex align-items-center">
               <div class="rk-panel-header rk-title-2 mr-3">
-                Malicious
+                {{'Malicious'|translate}}
               </div>
 
               <div class="tag-input-container">
                 <tag-input [(ngModel)]="items" (onAdd)="onItemAdded($event)" [maxItems]="1"></tag-input>
               </div>
 
-              <button class="btn btn-accent ml-3" (click)="search()">Search</button>
+              <button class="btn btn-accent ml-3" (click)="search()">{{'Search'|translate}}</button>
             </div>
             <div class="rk-panel-item bg-white p-0" style="flex: 1">
               <div class="unique-chart" id="unique-chart"></div>

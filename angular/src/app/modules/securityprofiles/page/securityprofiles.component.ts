@@ -53,7 +53,7 @@ export class SecurityProfilesComponent {
     }
 
     newProfile() {
-        this.profileModal.toggle();
+
 
         this.saveMode = 'NewProfile';
 
@@ -62,6 +62,8 @@ export class SecurityProfilesComponent {
         this.selectedAgent.rootProfile = new SecurityProfile();
 
         this.changeProfileSelect(-1);
+
+        this.profileModal.toggle();
 
         // this.profileWizard.updateModels();
     }
@@ -75,7 +77,7 @@ export class SecurityProfilesComponent {
 
         this.selectedAgent = new Agent();
 
-        this.selectedAgent.rootProfile = profile;
+        this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(profile));
 
         // this.profileWizard.updateModels();
     }
@@ -124,6 +126,10 @@ export class SecurityProfilesComponent {
         this.getProfiles();
     }
 
+   /*  cleanProfile() {
+        this.profileWizard.clean();
+    } */
+
     cloneProfile(profile: SecurityProfile) {
         const cloneAgent = new Agent();
 
@@ -137,11 +143,16 @@ export class SecurityProfilesComponent {
 
         this.selectedAgent.rootProfile.id = null;
         this.selectedAgent.rootProfile.isSystem = false;
+        this.selectedAgent.rootProfile.numberOfUsage = 0;
 
         this.selectedAgent.rootProfile.applicationProfile.id = null;
+        this.selectedAgent.rootProfile.applicationProfile.id = null;
+        this.selectedAgent.rootProfile.domainProfile.id = null;
         this.selectedAgent.rootProfile.domainProfile.id = null;
         this.selectedAgent.rootProfile.blackWhiteListProfile.id = null;
-
+        this.selectedAgent.rootProfile.blackWhiteListProfile.id = null;
+        this.saveMode = 'ProfileUpdate';
+        this.profileWizard.updateModels();
         this.profileModal.toggle();
     }
 }

@@ -20,6 +20,7 @@ export interface Category {
     isBlocked: boolean;
     // timeProfile: TimeProfile;
 }
+const FIRSTLY_SEEN = 62;
 export class SecurityProfile {
     id: number;
     name: string;
@@ -30,6 +31,21 @@ export class SecurityProfile {
     blackWhiteListProfile: BlackWhiteListProfile = new BlackWhiteListProfile();
     numberOfUsage: number;
     isSystem = false;
+    get isPositiveSecurity(): boolean {
+
+        const firstlyseen = this.domainProfile.categories.find(x => x.id == FIRSTLY_SEEN);
+        if (firstlyseen && firstlyseen.isBlocked) {return true; }
+        return false;
+    }
+    set isPositiveSecurity(value: boolean)  {
+        let firstlyseen = this.domainProfile.categories.find(x => x.id == FIRSTLY_SEEN);
+        if (!firstlyseen) {
+        this.domainProfile.categories.push({id: 62, isBlocked: false});
+        }
+        firstlyseen = this.domainProfile.categories.find(x => x.id == FIRSTLY_SEEN);
+        firstlyseen.isBlocked = value;
+
+    }
 }
 
 

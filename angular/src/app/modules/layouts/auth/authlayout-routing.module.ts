@@ -12,7 +12,7 @@ const authlayoutRoutes: Routes = [
     children: [{
       path: 'login',
       loadChildren: '../../login/login.module#LoginModule'
-    },{
+    }, {
       path: 'cytelogin',
       loadChildren: '../../cytelogin/cytelogin.module#CyteLoginModule'
     }, {
@@ -21,10 +21,10 @@ const authlayoutRoutes: Routes = [
     }, {
       path: 'forgot-password-confirm',
       loadChildren: '../../forgotpasswordconfirm/forgotpasswordconfirm.module#ForgotPasswordConfirmModule'
-    },{
+    }, {
       path: 'account-confirm',
       loadChildren: '../../accountconfirm/accountconfirm.module#AccountConfirmModule'
-    },{
+    }, {
       path: 'info',
       loadChildren: '../../publichelp/publichelp.module#PublicHelpModule'
     }, {

@@ -104,7 +104,7 @@
         <rk-modal #roamingClientModal>
           <rk-modal-header>
             <rk-modal-header-title>
-              <h5>Romaing Clients Edit</h5>
+              <h5>Roaming Clients Edit</h5>
             </rk-modal-header-title>
 
             <rk-modal-header-close (click)="roamingClientModal.toggle()"></rk-modal-header-close>
@@ -130,28 +130,169 @@
 
           <rk-modal-footer>
             <button class="btn btn-small w-100 mr-2" (click)="saveRoamingClient()">Apply</button>
-            <button class="btn btn-small w-100 btn-default" (click)="clearRoamingClientForm()">Clear</button>
+            <button class="btn btn-small w-100 btn-default" (click)="roamingClientModal.toggle()">Clear</button>
           </rk-modal-footer>
         </rk-modal>
 
         <rk-modal #groupModal>
           <rk-modal-header>
             <rk-modal-header-title>
-              <h5>Romaing Clients Edit</h5>
+              <h5>{{ groupOperation == 'Edit'?'Edit' : 'Create New'}} Group</h5>
             </rk-modal-header-title>
 
             <rk-modal-header-close (click)="groupModal.toggle()"></rk-modal-header-close>
           </rk-modal-header>
 
           <rk-modal-body>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12 mt-3">
+                  <input type="text" class="rk-input w-100" placeholder="Group Name" [(ngModel)]="groupName">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 mt-3">
+                  <h5 class="rk-group-title">Select Devices to Join Group</h5>
+                </div> 
+                <div class="col-12 mt-2" *ngIf="groupOperation=='Edit'" >
+                  <h6 class="rk-title mb-2">Other Group Members</h6>
+
+                 <table class="table small-table table-borderless">
+                    <thead>
+                      <tr>
+                        <th>Host Name</th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let item of groupMembers">
+                        <td>{{ item.agentAlias }}</td>
+                       
+                        <td class="text-right">
+                          <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
+                        </td>
+                      </tr>
+
+                      <tr *ngIf="groupMembers?.length == 0">
+                        <td colspan="4">
+                          Herhangi bir veri bulunamadı.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table> 
+                </div>
+                <div class="col-12 mt-2" >
+                  <h6 class="rk-title mb-2">No Group Members</h6>
+
+                 <table class="table small-table table-borderless">
+                    <thead>
+                      <tr>
+                        <th>Host Name</th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let item of noGroupedClients">
+                        <td>{{ item.agentAlias }}</td>
+                       
+                        <td class="text-right">
+                          <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
+                        </td>
+                      </tr>
+
+                      <tr *ngIf="noGroupedClients?.length == 0">
+                        <td colspan="4">
+                          Herhangi bir veri bulunamadı.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table> 
+                </div>
+              </div>
+
+            </div>
+            
 
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2">Apply</button>
-            <button class="btn btn-small btn-default w-100">Clean</button>
+            <button class="btn btn-small w-100 mr-2" (click)="saveOrUpdateGroup()">Apply</button>
+            <button class="btn btn-small btn-default w-100" (click)="cleanNewGroup()" >Close</button>
           </rk-modal-footer>
         </rk-modal>
+
+
+
+        <rk-modal #changeGroupModal>
+          <rk-modal-header icon="plus">
+            <rk-modal-header-title>
+              <h5>Change Group</h5>
+            </rk-modal-header-title>
+            <rk-modal-header-close (click)="changeGroupModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12 mt-3 d-flex align-items-center justify-content-between">
+                  <rk-select [options]="groupListForSelect" [(value)]="selectedGroupName"  (valueChange)="groupSelectChange($event)" class="w-100" >
+                  </rk-select>
+
+                 
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12 mt-3">
+                  <h5 class="rk-group-title">Select Devices to Join Group</h5>
+                </div> 
+                <div class="col-12 mt-2"  >
+                  <h6 class="rk-title mb-2">Group Members</h6>
+
+                 <table class="table small-table table-borderless">
+                    <thead>
+                      <tr>
+                        <th>Host Name</th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let item of selectedAgentsForChangeAddGroup">
+                        <td>{{ item.agentAlias }}</td>
+                       
+                        <td class="text-right">
+                          <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
+                        </td>
+                      </tr>
+
+                      <tr *ngIf="selectedAgentsForChangeAddGroup?.length == 0">
+                        <td colspan="4">
+                          Herhangi bir veri bulunamadı.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table> 
+                </div>
+              
+              </div>
+
+            </div>
+            
+
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn btn-small w-100 mr-2" (click)="saveChangedGroup()">Apply</button>
+            <button class="btn btn-small btn-default w-100" (click)="changeGroupModal.toggle()" >Close</button>
+          </rk-modal-footer>
+        </rk-modal>
+
 
         <div class="col-12 p-0 mt-3">
           <rk-table-container class="m-0">
@@ -172,11 +313,11 @@
                 </div>
 
                 <div>
-                  <button class="btn btn-small mr-2">
+                  <button class="btn btn-small mr-2" (click)="openChangeGroup()">
                     Change Group
                   </button>
 
-                  <button class="btn btn-small">
+                  <button class="btn btn-small" (click)="openChangeGroup()">
                     Add to Group
                   </button>
                 </div>
@@ -203,7 +344,7 @@
                   </td>
                   <td>{{ c.agentAlias }}</td>
                   <td>{{ c.rootProfile.name }}</td>
-                  <td>{{ c?.agentGroup.groupName ? c?.agentGroup.groupName : 'No Group' }}</td>
+                  <td>{{ c?.agentGroup?.groupName ? c?.agentGroup?.groupName : 'No Group' }}</td>
                   <td style="width: 60px">
                     <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editClient(c)">
                       <i-feather name="edit-3"></i-feather>
@@ -230,7 +371,7 @@
               <div class="top-content justify-content-between">
                 <div class="rk-table-title">Group Agent</div>
 
-                <button class="btn btn-small btn-icon">
+                <button class="btn btn-small btn-icon" (click)="openCreateGroup()">
                   <i-feather name="plus"></i-feather>
                   Create New Group
                 </button>
@@ -253,12 +394,12 @@
                   <td>{{ item.memberCounts }}</td>
                   <td>{{ item.securityProfile.name }}</td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="openUpdateGroup(item.agents)">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deleteGroup(item.agents)">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>
@@ -276,243 +417,3 @@
     </div>
   </div>
 </div>
-
-
-
-<!-- <div class="main-content">
-  <div class="container-fluid col-md-11">
-
-    <section id="clientsPanel" class="clientsPanel">
-
-      <form [formGroup]="clientForm" id="newClientRow" class="clientForm" style="display: none;" data-step="4"
-        data-intro="Finally, save your client and let's start!" data-position='bottom-middle-aligned'>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-12 pl-0 pr-0 mb-3">
-              <div class="dns-base-card d-none d-block" id="filterCard">
-                <div class="dns-base-card-header">
-                </div>
-                <div class="dns-base-card-content">
-                  <div class="container-fluid">
-                    <div class="row" id="pi_add_filter">
-                      <div class="col-12 d-flex">
-                        <h4 class="mr-3 flex-1">Roamin Client </h4>
-                        <button class="btns btn-clear text-right close-btn" (click)="openTooltipGuide()">
-                          <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
-                        </button>
-                        <button class="btns btn-clear text-right close-btn" (click)="hideForm()">
-                          <img src="./assets/images/icons/close.svg">
-                        </button>
-                      </div>
-                      <div class="col-12 col-sm-3 d-flex align-items-end">
-                        <input type="text" class="dns-form-control reverse-form" name="clientName" id="clientName"
-                          placeholder="Client Name" [(ngModel)]="selectedClient.agentAlias" formControlName="name"
-                          data-step="1" data-position='bottom-middle-aligned'
-                          data-intro="This is new client form. Start with a name for your client">
-                      </div>
-                      <div class="col-12 col-sm-3 d-flex flex-column">
-                        <input type="text" class="dns-form-control reverse-form" placeholder="Block Message"
-                          [(ngModel)]="selectedClient.blockMessage" formControlName="blockMessage">
-                      </div>
-                      <div class="col-12 col-sm-3 d-flex align-items-end">
-                        <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="3"
-                          data-intro="Select a security profile or create a new profile for this client"
-                          data-position='auto'>
-                          <button class="btns dropdown-toggle dns-full-width reverse-form text-left btnOverFlow "
-                            type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
-                            <ng-container
-                              *ngIf="selectedClient.rootProfile && selectedClient.rootProfile.name; else elseTemplateSelectedProfile">
-                              {{selectedClient.rootProfile.name}}
-                            </ng-container>
-                            <ng-template #elseTemplateSelectedProfile>
-                              Select Profile
-                            </ng-template>
-                            <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-                            <div class="table-responsive" style="max-height: 300px;">
-                              <button class="dropdown-item" *ngFor="let p of securityProfiles"
-                                (click)="securityProfileChanged(p.id)">
-                                {{p.name}}
-                              </button>
-                            </div>
-
-                            <div class="dropdown-divider"></div>
-                            <button class="btns btn-teritary dropdown-item-btn border-radius-8 dns-full-width m-2"
-                              (click)="showNewProfileWizard()">
-                              <img src="./assets/images/icons/settings.svg">
-                              <span class="ml-2">New Profile</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-12 col-sm-3 d-flex align-items-end">
-                        <button class="btns reverse-form dns-full-width" id="defaultSaveBtn"
-                          matTooltip="Save with selected profile" [matTooltipShowDelay]="800"
-                          [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
-                          (click)="saveClient()">
-                          <i class="fa fa-save"></i> <span class="ml-2">Save</span>
-                        </button>
-                      </div>
-                    </div>
-
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-
-      <div class="row mt-4">
-        <div class="col-md-12">
-          <div class="dns-base-card">
-            <div class="dns-base-card-header pt-3">
-              <div class="row">
-                <button class="btns btn-teritary border-radius-8 card-create-btn mt-3"
-                  title="Configure and download setup file" (click)="openModal()">
-                  <i class="fa fa-cog fa-lg mr-1"></i>Configure Downloads
-                </button>
-                <div class="col-md-12 d-flex flex-column flex-sm-column flex-md-row">
-
-                  <span class="mr-3 flex-1">Roaming Clients</span>
-                  <div class="search-form flex-1">
-                    <img src="assets/images/icons/search.svg" class="icon">
-                    <input type="text" class="dns-form-control reverse-form" placeholder="Search by name"
-                      [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword()" />
-                  </div>
-                  <div class="dns-datatable-pagination ml-3 flex-1">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="dns-base-card-content">
-              <div class="table-responsive" style="max-height: 600px;">
-                <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
-                  <thead>
-                    <th class="no-border"></th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Device Name</th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Type</th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Block Message</th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Profile</th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);" colspan="2" class="text-center">
-                      Operation</th>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let c of clientsFiltered; let i = index;">
-                      <td class="numeration">{{i+1}}</td>
-                      <td><small>{{c.agentAlias}}</small></td>
-                      <td>Windows</td>
-                      <td><small>{{c.blockMessage?c.blockMessage:'-'}}</small></td>
-                      <td>
-                        <button class="btns btn-clear btnOverFlow profileBtn text-left" [matTooltipShowDelay]="800"
-                          title="{{c.rootProfile?c.rootProfile.name: '-'}}" matTooltip="Edit Profile"
-                          (click)="showProfileEditWizard(c.id)">
-                          <img src="./assets/images/icons/settings-outline.svg">
-                          <small>{{c.rootProfile?c.rootProfile.name: '-'}}</small>
-                        </button>
-                      </td>
-                      <td class="text-center">
-                        <button class="btns btn-clear" matTooltip="Edit item" [matTooltipShowDelay]="800"
-                          (click)="showEditWizard(c.id)">
-                          <img src="./assets/images/icons/edit.svg">
-                        </button>
-                      </td>
-                      <td class="text-center">
-                        <button class="btns btn-clear" matTooltip="Delete item" [matTooltipShowDelay]="800"
-                          (click)="deleteClient(c.id)">
-                          <img src="./assets/images/icons/close-red.svg">
-                        </button>
-                      </td>
-                    </tr>
-                    <tr *ngIf="clientsFiltered == null || clientsFiltered.length<1">
-                      <td class="numeration"></td>
-                      <td colspan="10">No Data</td>
-                    </tr>
-                  </tbody>
-
-                </table>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-    </section>
-    <section id="wizardPanel" class="wizardPanel" style="display: none;">
-      <div class="row">
-        <div class="col-md-12">
-          <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
-            <i class="material-icons">arrow_back</i>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-      style="display: none;" aria-hidden="true">
-      <div class="modal-dialog" style="max-width: 40%;" role="document">
-        <div class="modal-content" style="background: #262626; color: white;">
-          <div class="modal-header" style="border-bottom: none; color:white">
-            <h4 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">Dont Touch Domains</h4>
-            <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close"
-              (click)="closeModal()">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-
-            <div class=" form-ux activated">
-              <div class="row mb-2">
-                <div class="col-md-6 ml-auto mr-auto">
-                  <p style="font-size: 12px; margin-bottom: 0px;">*Enter max. 10 dont touch domains. e.g. dns1.org,
-                    dns2.com</p>
-                  <div class="dns-ip-input-container mt-3" *ngFor="let row of dontDomains2; index as i">
-                    <p style="margin-left: -24px;margin-right: 11px; padding-top: 10px;">{{i+1}}.</p> <input type="text"
-                      placeholder="Enter domain here" [(ngModel)]="dontDomains[i]" (ngModelChange)="checkDomain()"
-                      (keydown.space)="$event.preventDefault();">
-                    <ng-container *ngIf="i>0; else elseTemplate11">
-                      <button mat-raised-button type="button" class="btn btn-danger btn-link btn-just-icon btn-sm"
-                        (click)="removeElementFromDomainList(i)">
-                        <i class="material-icons">close</i>
-                      </button>
-                    </ng-container>
-                    <ng-template #elseTemplate11>
-                      <button type="button" class="btn btn-success btn-just-icon btn-sm" [matTooltipShowDelay]="800"
-                        matTooltip="Add Another Domain" (click)="addDomainToList()">
-                        <i class="material-icons">add_circle_outline</i>
-                      </button>
-                    </ng-template>
-                  </div>
-
-                  <button class="btns btn-teritary pl-3 pr-3 mb-4 mt-3 dns-full-width" (click)="saveDomainChanges()"
-                  [disabled]="!isDontDomainsValid" title="Save Changes">
-                  <i class="fa fa-save mr-3"></i>Save</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <div class="row">
-              <div class="col-md-12">
-                <button class="btn btn-link pl-3 pr-3 mr-2 mt-2 pull-right" (click)="downloadFile()" style="color: white;"
-                  [disabled]="!isDontDomainsValid" title="Download the file created with above parameters">
-                  <i class="fa fa-download mr-3"></i>Download Packet
-                </button>
-                <button class="btn btn-link pl-3 pr-3 mr-2 mt-2 pull-right" (click)="copyLink()" style="color: white;"
-                  [disabled]="!isDontDomainsValid" title="Create a link with above parameters and copy to clipboard">
-                  <i class="fa fa-copy mr-3"></i>Copy Packet Link
-                </button>                
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->

@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 import { Session } from 'src/app/core/models/Session';
 import { SmsService } from 'src/app/core/services/SmsService';
 import { SmsType } from 'src/app/core/models/SmsType';
-//import { SmsInformation } from 'src/app/core/models/SmsInformation';
+// import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { RestPreloginResponse, RestPreloginSmsResponse } from 'src/app/core/models/RestServiceModels';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 
@@ -31,7 +31,16 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['login.component.sass'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-
+  constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
+    private element: ElementRef, private notification: NotificationService,
+    private smsService: SmsService, private capthaService: CaptchaService, private configService: ConfigService) {
+    this.isFailed = false;
+    this.nativeElement = element.nativeElement;
+    this.sidebarVisible = false;
+    this.host = this.configService.host;
+    this.captcha_key = this.host.captcha_key;
+  }
+  environment = environment;
   test: Date = new Date();
   private toggleButton: any;
   private sidebarVisible: boolean;
@@ -59,26 +68,19 @@ export class LoginComponent implements OnInit, OnDestroy {
   twoFactorPhone: string;
   smsCode: string;
   endTime: Date;
-  isConfirmTimeEnded: boolean = true;
-  maxRequest: number = 3;
+  isConfirmTimeEnded = true;
+  maxRequest = 3;
   host: ConfigHost;
-  isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent)
+  isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
 
   private smsInformation: RestPreloginSmsResponse;
-  constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
-    private element: ElementRef, private notification: NotificationService,
-    private smsService: SmsService, private capthaService: CaptchaService, private configService: ConfigService) {
-    this.isFailed = false;
-    this.nativeElement = element.nativeElement;
-    this.sidebarVisible = false;
-    this.host = this.configService.host;
-    this.captcha_key = this.host.captcha_key;
-  }
+
+  notificationIndex = 0;
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      "email": [null, [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')]],
-      "password": ['', [Validators.required, Validators.minLength(5)]]
+      'email': [null, [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')]],
+      'password': ['', [Validators.required, Validators.minLength(5)]]
     });
     // const navbar: HTMLElement = this.element.nativeElement;
     // this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
@@ -126,7 +128,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           } else {
             this.authService.login(this.email, this.password).subscribe(val => {
               this.router.navigateByUrl('/admin/dashboard');
-            })
+            });
           }
         },
         (err) => {
@@ -134,7 +136,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       );
     } else {
-      this.notification.warning('Login form is not valid!')
+      this.notification.warning('Login form is not valid!');
       return;
     }
   }
@@ -143,7 +145,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (e) {
       this.email = String(e).toLowerCase();
     }
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(String(e).toLowerCase())) {
       this.validEmailLogin = true;
     } else {
@@ -185,26 +187,25 @@ export class LoginComponent implements OnInit, OnDestroy {
       if (this.smsInformation !== null) {
 
         this.smsService.confirmSmsForLogin(this.smsInformation, this.smsCode).subscribe(res => {
-          this.notification.info("Sms confirmed")
+          this.notification.info('Sms confirmed');
           this.authService.login(this.email, this.password).subscribe(res2 => {
 
-            this.router.navigateByUrl("/admin/dashboard")
-          })
+            this.router.navigateByUrl('/admin/dashboard');
+          });
 
         }, err => {
           if (this.maxRequest === 0) {
-            this.openLogin()
+            this.openLogin();
             this.notification.error('You have exceeded the number of attempts! Try Again!');
 
-          } else
+          } else {
             this.notification.error(err.statusText);
+          }
 
         });
       }
     }
   }
-
-  notificationIndex = 0;
   timeEnd() {
     if (this.notificationIndex < 1) {
       this.notification.error('SMS Code Expired. Please Try Again.');
@@ -222,7 +223,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   sendPasswordActivationCode() {
     if (this.validEmailLogin) {
-      let forgoter: SignupBean = new SignupBean();
+      const forgoter: SignupBean = new SignupBean();
       forgoter.username = this.forgoterEmail;
 
       if (!this.capthaService.validCaptcha(this.captcha) || !forgoter.username) {
@@ -233,7 +234,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       this.authService.forgotPassword(forgoter).subscribe(res => {
 
-        this.notification.success("Activation code sent your email.");
+        this.notification.success('Activation code sent your email.');
         this.router.navigateByUrl('/login');
 
       });
