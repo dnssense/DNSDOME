@@ -280,9 +280,9 @@ export class CustomReportResultComponent implements OnDestroy {
     }
   }
 
-  linkClicked($event: LinkClick) {
-    this.linkClickedOutput.emit($event);
-  }
+  // linkClicked($event: LinkClick) {
+  //   this.linkClickedOutput.emit($event);
+  // }
 
   columnChanged($event: TableBadgeOutput) {
     const columnIndex = this.selectedColumns.findIndex(x => x.column.name === $event.name);
@@ -308,5 +308,19 @@ export class CustomReportResultComponent implements OnDestroy {
 
   private capitalize(value: string): string {
     return value[0].toLocaleUpperCase() + value.substring(1);
+  }
+
+  isLink(column: string): boolean {
+    return this.tableConfig.columns.find(x => x.name === column).isLink;
+  }
+
+  linkClicked(columnName: string, value) {
+    this.linkClickedOutput.emit({
+      columnModel: {
+        name: columnName,
+        isLink: true,
+      },
+      value: value
+    } as LinkClick);
   }
 }

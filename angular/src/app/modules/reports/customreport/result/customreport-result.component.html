@@ -5,7 +5,8 @@
                 <div id="customReportChart"></div>
 
                 <div class="table-responsive">
-                    <rk-table-container [config]="tableConfig" class="m-0 border-0 pagination-disabled" (columnBadgeChange)="columnChanged($event)">
+                    <rk-table-container [config]="tableConfig" class="m-0 border-0 pagination-disabled"
+                        (columnBadgeChange)="columnChanged($event)">
                         <rk-table-export (event)="exportAs($event)"></rk-table-export>
 
                         <rk-table (pageChange)="onPageChange($event)" [totalCount]="null"
@@ -39,7 +40,16 @@
                                 <tr *ngFor="let dat of data;let i = index">
                                     <td class="index">{{ i + 1 }}</td>
                                     <td *ngFor="let col of selectedColumns;let colIndex = index">
-                                        {{ dat[colIndex] }}
+                                        <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
+                                            <button class="btn btn-link table-link-button"
+                                                (click)="linkClicked(col.column.name, dat[colIndex])">
+                                                {{ dat[colIndex] }}
+                                            </button>
+                                        </ng-container>
+
+                                        <ng-template #elseTemplate>
+                                            {{ dat[colIndex] }}
+                                        </ng-template>
                                     </td>
                                     <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>
                                     <td>

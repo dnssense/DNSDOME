@@ -44,17 +44,19 @@ export class CustomReportComponent implements OnInit {
   public search(setting: SearchSetting) {
     this.searchSetting = setting;
 
-    this.searchSetting.columns.columns = [
-      {
-        column: {
-          name: 'domain',
-          beautyName: 'Domain',
-          hrType: '',
-          aggsType: 'TERM',
-          checked: true
-        }, label: 'Domain'
-      }
-    ] as AggregationItem[];
+    if (this.searchSetting.columns.columns.length === 0) {
+      this.searchSetting.columns.columns = [
+        {
+          column: {
+            name: 'domain',
+            beautyName: 'Domain',
+            hrType: '',
+            aggsType: 'TERM',
+            checked: true
+          }, label: 'Domain'
+        }
+      ] as AggregationItem[];
+    }
 
     if (this.customReportResultComponent) {
       this.customReportResultComponent.search(this.searchSetting);
