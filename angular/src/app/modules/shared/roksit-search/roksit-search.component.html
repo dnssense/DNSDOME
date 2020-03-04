@@ -1,3 +1,30 @@
+<rk-modal #saveModal>
+  <rk-modal-header>
+    <rk-modal-header-title>
+      <h5>Save Filter</h5>
+    </rk-modal-header-title>
+
+    <rk-modal-header-close (click)="saveModal.toggle()"></rk-modal-header-close>
+  </rk-modal-header>
+
+  <rk-modal-body>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+
+        </div>
+      </div>
+    </div>
+    
+  </rk-modal-body>
+
+  <rk-modal-footer>
+    <button class="btn btn-small w-100 mr-2">Apply</button>
+    <button class="btn btn-small btn-default w-100">Clear</button>
+  </rk-modal-footer>
+</rk-modal>
+
 <rk-modal #modal>
   <rk-modal-header icon="filter">
     <rk-modal-header-title>
@@ -21,7 +48,7 @@
             <div *ngFor="let report of savedReports; let index = index" class="mt-3">
               <div class="rk-radio my-0">
                 <input type="radio" id="savedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport"
-                  [value]="report.id">
+                  [value]="report.id" (change)="savedReportValueChange($event)">
                 <label for="savedReport-{{ index }}">{{ report.name }}</label>
               </div>
             </div>
@@ -38,7 +65,7 @@
               <li *ngFor="let report of systemSavedReports; let index = index" class="mt-3">
                 <div class="rk-radio my-0">
                   <input type="radio" id="systemSavedReport-{{ index }}" [(ngModel)]="savedReportValue"
-                    name="savedReport" [value]="report.id">
+                    name="savedReport" [value]="report.id" (change)="savedReportValueChange($event)">
                   <label for="systemSavedReport-{{ index }}">{{ report.name }}</label>
                 </div>
               </li>

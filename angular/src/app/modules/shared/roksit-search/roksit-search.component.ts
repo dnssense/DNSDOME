@@ -44,6 +44,8 @@ export class RoksitSearchComponent implements OnInit {
     private fastReportService: FastReportService
   ) {
     this.reportService.getReportList().subscribe(res => {
+      this.allSavedReports = res;
+
       this.savedReports = res.filter(x => !x.system);
       this.systemSavedReports = res.filter(x => x.system);
     });
@@ -72,6 +74,8 @@ export class RoksitSearchComponent implements OnInit {
   ];
 
   groupedCategories: GroupedCategory[] = [];
+
+  private allSavedReports: SearchSetting[] = [];
 
   savedReports: SearchSetting[] = [];
   systemSavedReports: SearchSetting[] = [];
@@ -315,7 +319,13 @@ export class RoksitSearchComponent implements OnInit {
     this.filters.splice(index, 1);
   }
 
-  search() {
+  search(type?: 'savedreport') {
+    if (type === 'savedreport') {
+      this.searchSettingEmitter.emit(this.searchSettings);
+
+      return;
+    }
+
     this.apply();
 
     this.searchSettings.must = [];
@@ -379,5 +389,107 @@ export class RoksitSearchComponent implements OnInit {
 
   addFilterBadge(filter: FilterBadgeModel) {
     this.filters.push(filter);
+  }
+
+  savedReportValueChange() {
+    const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
+
+    this.searchSettings = report;
+
+    this.groupedCategories.forEach(category => {
+      category.items.forEach(item => item.selected = false);
+    });
+
+    report.must.forEach(elem => {
+      if (elem.field === 'category') {
+        this.groupedCategories.forEach(category => {
+          const findedItem = category.items.find(x => x.name === elem.value);
+
+          if (findedItem) {
+            const findedCategory = this.filters.find(x => x.name === 'Categories');
+
+            if (findedCategory) {
+              const exists = findedCategory.values.some(x => x === category.name);
+
+              if (!exists) {
+                findedCategory.values.push(category.name);
+              }
+            } else {
+              this.addFilterBadge(new FilterBadgeModel('Categories', true, [category.name]));
+            }
+          }
+        });
+      } else {
+        const finded = this.filters.find(x => x.name === elem.field);
+
+        if (finded) {
+          finded.values.push(elem.value);
+        } else {
+          this.addFilterBadge(new FilterBadgeModel(elem.field, true, [elem.value]));
+        }
+      }
+    });
+
+    report.mustnot.forEach(elem => {
+      if (elem.field === 'category') {
+        this.groupedCategories.forEach(category => {
+          const findedItem = category.items.find(x => x.name === elem.value);
+
+          if (findedItem) {
+            const findedCategory = this.filters.find(x => x.name === 'Categories');
+
+            if (findedCategory) {
+              const exists = findedCategory.values.some(x => x === category.name);
+
+              if (!exists) {
+                findedCategory.values.push(category.name);
+              }
+            } else {
+              this.addFilterBadge(new FilterBadgeModel('Categories', false, [category.name]));
+            }
+          }
+        });
+      } else {
+        const finded = this.filters.find(x => x.name === elem.field);
+
+        if (finded) {
+          finded.values.push(elem.value);
+        } else {
+          this.addFilterBadge(new FilterBadgeModel(elem.field, false, [elem.value]));
+        }
+      }
+    });
+
+    report.should.forEach(elem => {
+      if (elem.field === 'category') {
+        this.groupedCategories.forEach(category => {
+          const findedItem = category.items.find(x => x.name === elem.value);
+
+          if (findedItem) {
+            const findedCategory = this.filters.find(x => x.name === 'Categories');
+
+            if (findedCategory) {
+              const exists = findedCategory.values.some(x => x === category.name);
+
+              if (!exists) {
+                findedCategory.values.push(category.name);
+              }
+            } else {
+              this.addFilterBadge(new FilterBadgeModel('Categories', true, [category.name]));
+            }
+          }
+        });
+      } else {
+        const finded = this.filters.find(x => x.name === elem.field);
+
+        if (finded) {
+          finded.values.push(elem.value);
+        } else {
+          this.addFilterBadge(new FilterBadgeModel(elem.field, true, [elem.value]));
+        }
+      }
+    });
+
+    this.search('savedreport');
   }
 }
