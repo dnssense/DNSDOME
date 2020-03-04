@@ -21,7 +21,13 @@ export class GroupedCategory {
 export class FilterBadgeModel {
   name: string;
   equal = false;
-  values: string[];
+  values: string[] = [];
+
+  constructor(name: string, equal: boolean, values: string[]) {
+    this.name = name;
+    this.equal = equal;
+    this.values = values;
+  }
 }
 
 @Component({
@@ -71,7 +77,7 @@ export class RoksitSearchComponent implements OnInit {
   systemSavedReports: SearchSetting[] = [];
   savedReportValue: number;
 
-  filters: FilterBadgeModel[] = [];
+  @Input() filters: FilterBadgeModel[] = [];
 
   columns: LogColumn[] = [];
   columnsOptions: RkSelectModel[] = [];
@@ -193,63 +199,84 @@ export class RoksitSearchComponent implements OnInit {
       } as FilterBadgeModel;
 
       if (this.manuelFilters.length < 2) {
-        this.manuelFilters.push(obj);
+        const findedColumn = this.manuelFilters.find(x => x.name === obj.name && x.equal === obj.equal);
+
+        if (findedColumn) {
+          findedColumn.values.push(this.filterText);
+        } else {
+          this.manuelFilters.push(obj);
+        }
 
         this.filterText = '';
       }
     }
   }
 
-  removeManuelFilter(index: number) {
-    this.manuelFilters.splice(index, 1);
+  removeManuelFilter(filter: FilterBadgeModel, filterIndex: number, valueIndex: number) {
+    filter.values.splice(valueIndex, 1);
+
+    if (filter.values.length === 0) {
+      this.manuelFilters.splice(filterIndex, 1);
+    }
+  }
+
+  private __deepCopy(obj: any) {
+    return JSON.parse(JSON.stringify(obj));
   }
 
   apply(close = false) {
-    this.manuelFilters.forEach(elem => {
-      const exists = this.searchSettings.must.concat(this.searchSettings.mustnot).some(x => x.field === elem.name);
+    /** Elle girilmiş olan alanlar */
+    (this.__deepCopy(this.manuelFilters) as FilterBadgeModel[]).forEach(elem => {
+      const filter = this.filters.find(x => x.name === elem.name && elem.equal === x.equal);
 
-      if (!exists) {
-        if (elem.equal) {
-          this.searchSettings.must.push(new ColumnTagInput(elem.name, '=', elem.values[0]));
-        } else {
-          this.searchSettings.mustnot.push(new ColumnTagInput(elem.name, '=', elem.values[0]));
-        }
+      if (filter) {
+        elem.values.forEach(value => {
+          const findedValue = filter.values.some(x => x === value);
+
+          if (!findedValue) {
+            filter.values.unshift(value);
+          }
+        });
+      } else {
+        this.addFilterBadge(elem);
       }
     });
+
+    /** Seçilen Kategoriler */
+    const selectedCategories = [] as GroupedCategory[];
 
     this.selectedItems.forEach(elem => {
-      const model = new ColumnTagInput(elem.name, '=', elem.items.map(x => x.name).join(','));
+      const exists = elem.items.some(x => x.selected);
 
-      this.searchSettings.must.push(model);
+      if (exists) {
+        selectedCategories.push(elem);
+      }
     });
 
-    if (this.actionType === 'allow') {
-      const index = this.searchSettings.mustnot.findIndex(x => x.field === 'action');
+    if (selectedCategories.length > 0) {
+      const findedCategories = this.filters.find(x => x.name === 'Categories');
 
-      if (index > -1) {
-        this.searchSettings.mustnot.splice(index, 1);
+      if (findedCategories) {
+        findedCategories.values = selectedCategories.map(x => x.name);
+      } else {
+        this.addFilterBadge(new FilterBadgeModel('Categories', true, selectedCategories.map(x => x.name)));
       }
-
-      // const actionType = this.searchSettings.must.some(x => x.field === 'action');
-
-      // if (!actionType) {
-      //   this.searchSettings.must.push(new ColumnTagInput('action', '=', 'true'));
-      // }
-    } else if (this.actionType === 'deny') {
-      const index = this.searchSettings.must.findIndex(x => x.field === 'deny');
-
-      if (index > -1) {
-        this.searchSettings.must.splice(index, 1);
-      }
-
-      // const actionType = this.searchSettings.mustnot.some(x => x.field === 'deny');
-
-      // if (!actionType) {
-      //   this.searchSettings.mustnot.push(new ColumnTagInput('action', '=', 'false'));
-      // }
     }
 
-    this.searchSettingEmitter.emit(this.searchSettings);
+    /** Allow Deny Butonları */
+    if (this.actionType) {
+      const findedActionIndex = this.filters.findIndex(x => x.name === 'action');
+
+      if (findedActionIndex > -1) {
+        this.filters.splice(findedActionIndex, 1);
+      }
+
+      if (this.actionType === 'allow') {
+        this.addFilterBadge(new FilterBadgeModel('action', true, ['Allow']));
+      } else {
+        this.addFilterBadge(new FilterBadgeModel('action', false, ['Deny']));
+      }
+    }
 
     if (close) {
       this.filterModal.toggle();
@@ -259,7 +286,7 @@ export class RoksitSearchComponent implements OnInit {
   private get selectedItems() {
     const newList = [] as GroupedCategory[];
 
-    this.groupedCategories.forEach(elem => {
+    this.__deepCopy(this.groupedCategories).forEach(elem => {
       const selectedItems = elem.items.filter(x => x.selected);
 
       if (selectedItems.length > 0) {
@@ -272,58 +299,68 @@ export class RoksitSearchComponent implements OnInit {
     return newList;
   }
 
-  onChangeFilterBadge($event: RkFilterOutput, type: 'must' | 'mustnot') {
-    if (type === 'must') {
-      const column = this.searchSettings.must[$event.index];
-
-      if (column) {
-        this.searchSettings.must.splice($event.index, 1);
-
-        this.searchSettings.mustnot.push(column);
-
-        const filter = this.manuelFilters.find(x => x.name === column.field);
-
-        if (filter) {
-          filter.equal = true;
-        }
-      }
-    } else {
-      const column = this.searchSettings.mustnot[$event.index];
-
-      if (column) {
-        this.searchSettings.mustnot.splice($event.index, 1);
-
-        this.searchSettings.must.push(column);
-
-        const filter = this.manuelFilters.find(x => x.name === column.field);
-
-        if (filter) {
-          filter.equal = false;
-        }
-      }
-    }
-  }
-
-  onEditedFilterBadge($event: RkFilterOutput, type: 'must' | 'mustnot') {
+  onEditedFilterBadge() {
     this.filterModal.toggle();
   }
 
-  onDeletedFilterBadge($event: RkFilterOutput, type: 'must' | 'mustnot') {
-    if (type === 'must') {
-      this.searchSettings.must.splice($event.index, 1);
-    } else {
-      this.searchSettings.mustnot.splice($event.index, 1);
+  onDeletedFilterBadge($event: RkFilterOutput, index: number) {
+    if ($event.name === 'Categories') {
+      $event.values.forEach(value => {
+        const category = this.groupedCategories.find(x => x.name === value);
+
+        category.items.forEach(x => x.selected = false);
+      });
     }
 
-    const filterIndex = this.manuelFilters.findIndex(x => x.name === $event.name);
-
-    if (filterIndex > -1) {
-      this.manuelFilters.splice(filterIndex, 1);
-    }
+    this.filters.splice(index, 1);
   }
 
   search() {
     this.apply();
+
+    this.searchSettings.must = [];
+    this.searchSettings.mustnot = [];
+    this.searchSettings.should = [];
+
+    this.filters.forEach(filter => {
+      if (filter.equal) {
+        if (filter.name === 'Categories') {
+          filter.values.forEach(value => {
+            const selectedItems = this.getItemsByCategoryName(value);
+
+            selectedItems.forEach(item => {
+              this.searchSettings.must.push(new ColumnTagInput('category', '=', item.name));
+            });
+          });
+        } else {
+          filter.values.forEach(value => {
+            this.searchSettings.must.push(new ColumnTagInput(filter.name, '=', value));
+          });
+        }
+      } else {
+        if (filter.name === 'Categories') {
+          filter.values.forEach(value => {
+            const selectedItems = this.getItemsByCategoryName(value);
+
+            selectedItems.forEach(item => {
+              this.searchSettings.mustnot.push(new ColumnTagInput('category', '=', item.name));
+            });
+          });
+        } else {
+          filter.values.forEach(value => {
+            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
+          });
+        }
+      }
+    });
+
+    this.searchSettingEmitter.emit(this.searchSettings);
+  }
+
+  getItemsByCategoryName(name: string) {
+    const items = this.groupedCategories.find(x => x.name === name).items;
+
+    return items.filter(x => x.selected);
   }
 
   clear() {
@@ -338,5 +375,9 @@ export class RoksitSearchComponent implements OnInit {
 
   actionChanged($event: RkRadioOutput) {
     this.actionType = $event.value;
+  }
+
+  addFilterBadge(filter: FilterBadgeModel) {
+    this.filters.push(filter);
   }
 }

@@ -3,7 +3,7 @@ import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { MonitorResultComponent, LinkClick } from './result/monitor-result.component';
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
-import { RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
+import { RoksitSearchComponent, FilterBadgeModel } from '../../shared/roksit-search/roksit-search.component';
 
 @Component({
   selector: 'app-monitor',
@@ -16,6 +16,8 @@ export class MonitorComponent implements OnInit {
   constructor() { }
 
   public searchSettings: SearchSetting = new SearchSetting();
+
+  filters: FilterBadgeModel[] = [];
 
   @ViewChild(RoksitSearchComponent)
   private roksitSearchComponent: RoksitSearchComponent;
@@ -36,10 +38,16 @@ export class MonitorComponent implements OnInit {
   }
 
   linkClicked($event: LinkClick) {
-    const existsFilter = this.searchSettings.must.concat(this.searchSettings.mustnot).some(x => x.field === $event.columnModel.name);
+    const filter = this.filters.find(x => x.name === $event.columnModel.name);
 
-    if (!existsFilter) {
-      this.searchSettings.must.push(new ColumnTagInput($event.columnModel.name, '=', $event.value));
+    if (filter) {
+      const exists = filter.values.some(x => x === $event.value);
+
+      if (!exists) {
+        filter.values.unshift($event.value);
+      }
+    } else {
+      this.filters.push(new FilterBadgeModel($event.columnModel.name, true, [$event.value]));
     }
   }
 }

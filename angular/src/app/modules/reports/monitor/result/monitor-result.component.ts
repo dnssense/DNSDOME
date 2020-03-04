@@ -64,9 +64,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
       { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial', isLink: true },
       { id: 16, name: 'hostName', displayText: 'Host Name', isLink: true }
     ],
-    rows: [
-
-    ],
+    rows: [],
     selectableRows: true
   };
 

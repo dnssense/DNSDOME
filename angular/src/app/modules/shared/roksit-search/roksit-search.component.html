@@ -85,11 +85,13 @@
       <input type="text" class="rk-input w-100 mt-3" [(ngModel)]="filterText" placeholder="abc.com"
         (keydown.enter)="addManuelFilter()">
 
-      <div class="domain-label mt-3" *ngFor="let filter of manuelFilters; let index = index"
-        [ngClass]="{'danger': !filter.equal}">
-        {{ filter.values[0] }}
+      <div class="mt-3" *ngFor="let filter of manuelFilters; let index = index">
+        <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
+          *ngFor="let value of filter.values; let valueIndex = index">
+          {{ value }}
 
-        <i-feather name="x" class="hover-gray" (click)="removeManuelFilter(index)"></i-feather>
+          <i-feather name="x" class="hover-gray" (click)="removeManuelFilter(filter, index, valueIndex)"></i-feather>
+        </div>
       </div>
     </div>
 
@@ -109,8 +111,7 @@
 
         <div class="category-body">
           <div class="category-item" *ngFor="let item of category.items">
-            <rk-checkbox size="sm" alignment="right" [(value)]="item.selected"
-              (valueChange)="childCheckboxValueChanged($event, item)">{{ item.name }}</rk-checkbox>
+            <rk-checkbox size="sm" alignment="right" [(value)]="item.selected">{{ item.name }}</rk-checkbox>
           </div>
         </div>
       </div>
@@ -154,15 +155,10 @@
 
 <div class="d-flex flex-wrap align-items-center">
   <span class="filter-text mb-2">Filter;</span>
-  <div class="ml-2 mb-2" *ngFor="let filter of this.searchSettings.must; let index = index">
-    <rk-filter-badge [name]="filter.field" [index]="index" [equal]="true" [values]="filter.value.split(',')"
-      (onChange)="onChangeFilterBadge($event, 'must')" (edited)="onEditedFilterBadge($event, 'must')"
-      (deleted)="onDeletedFilterBadge($event, 'must')"></rk-filter-badge>
+
+  <div class="ml-2 mb-2" *ngFor="let filter of filters; let index = index">
+    <rk-filter-badge [name]="filter.name" [equal]="filter.equal" [values]="filter.values"
+      (deleted)="onDeletedFilterBadge($event, index)" (edited)="onEditedFilterBadge()" (onChange)="filter.equal = !filter.equal"></rk-filter-badge>
   </div>
 
-  <div class="ml-2 mb-2" *ngFor="let filter of this.searchSettings.mustnot; let index = index">
-    <rk-filter-badge [name]="filter.field" [index]="index" [equal]="false" [values]="filter.value.split(',')"
-      (onChange)="onChangeFilterBadge($event, 'mustnot')" (edited)="onEditedFilterBadge($event, 'mustnot')"
-      (deleted)="onDeletedFilterBadge($event, 'mustnot')"></rk-filter-badge>
-  </div>
 </div>

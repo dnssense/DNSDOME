@@ -44,7 +44,7 @@ export class ErrorInterceptor implements ErrorHandler {
 
       const message = translatorService.translate(error.message);
       // debugger;
-      // console.log(message);
+      console.log(message);
       if (!(message.includes('\'push\' of undefined') && error.stack.includes('reports-module'))) { // TODO: will remove; after unfound push error fixed
         // notificationService.error('Error');
       }
