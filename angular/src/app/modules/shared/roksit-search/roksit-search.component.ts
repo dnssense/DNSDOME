@@ -10,6 +10,10 @@ import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { RkFilterOutput } from 'roksit-lib/lib/modules/rk-filter-badge/rk-filter-badge.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { RkRadioOutput } from 'roksit-lib/lib/modules/rk-radio/rk-radio.component';
+import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
+import { NotificationService } from 'src/app/core/services/notification.service';
+import { UserService } from 'src/app/core/services/UserService';
+import { User } from 'src/app/core/models/User';
 
 export class GroupedCategory {
   type: string;
@@ -41,7 +45,9 @@ export class RoksitSearchComponent implements OnInit {
   constructor(
     private staticService: StaticService,
     private reportService: ReportService,
-    private fastReportService: FastReportService
+    private fastReportService: FastReportService,
+    private notification: NotificationService,
+    private userService: UserService
   ) {
     this.reportService.getReportList().subscribe(res => {
       this.allSavedReports = res;
@@ -53,6 +59,10 @@ export class RoksitSearchComponent implements OnInit {
     this.staticService.getCategoryList().subscribe(result => {
       this.groupedCategories = this.groupCategories(result);
     });
+
+    this.userService.getUsers().subscribe(result => {
+      this.users = result.filter(x => x.isActive);
+    });
   }
 
   @Input() searchSettings: SearchSetting;
@@ -60,6 +70,8 @@ export class RoksitSearchComponent implements OnInit {
   @Input() pageTitle: string;
 
   @Output() searchSettingEmitter = new EventEmitter();
+
+  users: User[] = [];
 
   dateOptions: RkSelectModel[] = [
     { displayText: 'Last 5 Minutes', value: 5 },
@@ -96,6 +108,10 @@ export class RoksitSearchComponent implements OnInit {
   actionType: 'allow' | 'deny';
 
   @ViewChild('modal') filterModal: RkModalModel;
+
+  @ViewChild('saveModal') saveModal: RkModalModel;
+
+  newSavedReport: SearchSetting = new SearchSetting();
 
   ngOnInit() {
     this.fastReportService.tableColumns.subscribe(columns => {
@@ -314,6 +330,8 @@ export class RoksitSearchComponent implements OnInit {
 
         category.items.forEach(x => x.selected = false);
       });
+    } else if ($event.name === 'action') {
+      this.actionType = null;
     }
 
     this.filters.splice(index, 1);
@@ -344,7 +362,11 @@ export class RoksitSearchComponent implements OnInit {
           });
         } else {
           filter.values.forEach(value => {
-            this.searchSettings.must.push(new ColumnTagInput(filter.name, '=', value));
+            if (filter.name === 'action') {
+              this.searchSettings.must.push(new ColumnTagInput(filter.name, '=', 'true'));
+            } else {
+              this.searchSettings.must.push(new ColumnTagInput(filter.name, '=', value));
+            }
           });
         }
       } else {
@@ -358,7 +380,11 @@ export class RoksitSearchComponent implements OnInit {
           });
         } else {
           filter.values.forEach(value => {
-            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
+            if (filter.name === 'action') {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
+            } else {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
+            }
           });
         }
       }
@@ -381,6 +407,12 @@ export class RoksitSearchComponent implements OnInit {
     this.groupedCategories.forEach(elem => elem.items.forEach(item => item.selected = false));
 
     this.manuelFilters = [];
+  }
+
+  filtersClear() {
+    this.clear();
+
+    this.filters = [];
   }
 
   actionChanged($event: RkRadioOutput) {
@@ -491,5 +523,31 @@ export class RoksitSearchComponent implements OnInit {
     });
 
     this.search('savedreport');
+  }
+
+  changeSavedReportType($event: RkRadioOutput) {
+    this.newSavedReport.scheduledReport = { period: $event.value } as ScheduledReport;
+  }
+
+  saveFilterClick() {
+    this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
+
+    this.saveModal.toggle();
+  }
+
+  saveReport() {
+    if (this.newSavedReport.name.trim().length > 0 && this.newSavedReport.scheduledReport) {
+      this.reportService.saveReport(this.newSavedReport).subscribe(res => {
+        if (res.status === 200) {
+          this.notification.success(res.message);
+        } else {
+          this.notification.error(res.message);
+        }
+      });
+    }
+  }
+
+  toggleAllUsers($event) {
+    this.users.forEach(user => user.selected = $event);
   }
 }

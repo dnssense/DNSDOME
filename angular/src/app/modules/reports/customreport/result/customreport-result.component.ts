@@ -9,6 +9,7 @@ import { ExcelService } from 'src/app/core/services/ExcelService';
 import { PdfService } from 'src/app/core/services/PdfService';
 import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
+import { LinkClick } from '../../monitor/result/monitor-result.component';
 
 declare var moment: any;
 @Component({
@@ -37,6 +38,9 @@ export class CustomReportResultComponent implements OnDestroy {
     return this.ss;
   }
 
+
+  @Output() linkClickedOutput = new EventEmitter<LinkClick>();
+
   public ss: SearchSetting;
 
   @Input() public data: any[];
@@ -51,20 +55,20 @@ export class CustomReportResultComponent implements OnDestroy {
 
   tableConfig: RkTableConfigModel = {
     columns: [
-      { id: 0, name: 'time', displayText: 'Time' },
-      { id: 1, name: 'domain', displayText: 'Domain' },
-      { id: 2, name: 'subdomain', displayText: 'Subdomain' },
-      { id: 3, name: 'sourceIp', displayText: 'Src.Ip' },
+      { id: 0, name: 'time', displayText: 'Time', isLink: true },
+      { id: 1, name: 'domain', displayText: 'Domain', isLink: true },
+      { id: 2, name: 'subdomain', displayText: 'Subdomain', isLink: true },
+      { id: 3, name: 'sourceIp', displayText: 'Src.Ip', isLink: true },
       { id: 4, name: 'sourceIpCountryCode', displayText: 'Src. Country' },
-      { id: 5, name: 'destinationIp', displayText: 'Dst.Ip' },
-      { id: 6, name: 'destinationIpCountryCode', displayText: 'Dst.Country' },
+      { id: 5, name: 'destinationIp', displayText: 'Dst.Ip', isLink: true },
+      { id: 6, name: 'destinationIpCountryCode', displayText: 'Dst.Country', isLink: true },
       { id: 7, name: 'agentAlias', displayText: 'Location/Agent' },
       { id: 8, name: 'userId', displayText: 'User Id' },
       { id: 9, name: 'action', displayText: 'Action' },
-      { id: 10, name: 'applicationName', displayText: 'Application' },
-      { id: 11, name: 'category', displayText: 'Category' },
+      { id: 10, name: 'applicationName', displayText: 'Application', isLink: true },
+      { id: 11, name: 'category', displayText: 'Category', isLink: true },
       { id: 12, name: 'reason', displayText: 'Reason' },
-      { id: 13, name: 'clientLocalIp', displayText: 'Local Src. Ip' },
+      { id: 13, name: 'clientLocalIp', displayText: 'Local Src. Ip', isLink: true },
       { id: 14, name: 'clientMacAddress', displayText: 'Mac Address' },
       { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial' },
       { id: 16, name: 'hostName', displayText: 'Host Name' }
@@ -136,7 +140,7 @@ export class CustomReportResultComponent implements OnDestroy {
       this.data = data;
 
       this.tableConfig.columns.forEach(col => {
-        const selectedCol = this.selectedColumns.find(item => item.column.name == col.name);
+        const selectedCol = this.selectedColumns.find(item => item.column.name === col.name);
 
         col.selected = !!selectedCol;
       });
@@ -150,16 +154,17 @@ export class CustomReportResultComponent implements OnDestroy {
 
         this.tableConfig.rows.push(rowItem);
       });
-
-
-    },
-      () => this.stopRefreshing(),
-      () => this.stopRefreshing()
-    );
+    });
   }
 
   onPageChange(pageNumber: number) {
-    // this.pageChanged({ page: pageNumber });
+    this.pageChanged({ page: pageNumber });
+  }
+
+  pageChanged(event: any): void {
+    this.currentPage = event.page;
+
+    this.loadGraph(this.searchSetting);
   }
 
   onPageViewCountChange(pageViewCount: number) {
@@ -245,7 +250,6 @@ export class CustomReportResultComponent implements OnDestroy {
       this.searchSetting.dateInterval = this.firstDate;
       this.fillResultTable(this.searchSetting);
     }
-
   }
 
   exportAs(extention: ExportTypes) {
@@ -272,7 +276,7 @@ export class CustomReportResultComponent implements OnDestroy {
     }
   }
 
-  public stopRefreshing() {
-    // this.spinnerService.stop();
+  linkClicked($event: LinkClick) {
+    this.linkClickedOutput.emit($event);
   }
 }

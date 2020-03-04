@@ -1,16 +1,14 @@
 <div class="row">
     <div class="col-12 mt-3">
-        <div class="rk-basic-card p-2">
+        <div class="rk-basic-card p-2 overflow-fix">
             <ng-container *ngIf="data?.length > 0">
                 <div id="customReportChart"></div>
 
                 <div class="table-responsive">
-                    <rk-table-container [config]="tableConfig" class="m-0 border-0">
+                    <rk-table-container [config]="tableConfig" class="m-0 border-0 pagination-disabled">
                         <rk-table-export (event)="exportAs($event)"></rk-table-export>
 
-
-
-                        <!-- <rk-table (pageChange)="onPageChange($event)" [totalCount]="40" [pageViewCount]="10"
+                        <rk-table (pageChange)="onPageChange($event)" [totalCount]="null" [pageViewCount]="searchSetting.topNumber"
                             (pageViewCountChange)="onPageViewCountChange($event)" [info]="true">
                             <ng-template #header>
                                 <tr>
@@ -45,7 +43,7 @@
                                     <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>
                                 </tr>
                             </ng-template>
-                        </rk-table> -->
+                        </rk-table>
                     </rk-table-container>
                 </div>
             </ng-container>

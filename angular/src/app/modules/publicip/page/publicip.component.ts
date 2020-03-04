@@ -266,9 +266,9 @@ export class PublicipComponent implements AfterViewInit {
 
         this.startWizard = true;
 
-        if (t) {
+        // if (t) {
           this.profileModal.toggle();
-        }
+        // }
       } else {
         this.notification.warning('Profile can not find!');
       }

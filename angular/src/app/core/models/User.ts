@@ -17,6 +17,11 @@ export class User {
     public companyId: number;
     public twoFactorAuthentication = false;
     public usageType: number;
+
+    /**
+     * @description For UI
+     */
+    selected ?= false;
 }
 
 export class UserExtended extends User {

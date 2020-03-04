@@ -8,6 +8,8 @@ import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
+import { LinkClick } from '../monitor/result/monitor-result.component';
+import { FilterBadgeModel } from '../../shared/roksit-search/roksit-search.component';
 
 @Component({
   selector: 'app-customreport',
@@ -35,45 +37,52 @@ export class CustomReportComponent implements OnInit {
 
   @ViewChild(CustomReportSearchComponent) customReportSearchComponent: CustomReportSearchComponent;
 
+  filters: FilterBadgeModel[] = [];
+
   ngOnInit(): void {
     this.fastReportService.tableColumns.subscribe((res: LogColumn[]) => {
       this.columns = res;
     });
+
+    this.search(this.searchSetting);
   }
 
   public search(setting: SearchSetting) {
     this.searchSetting = setting;
 
-    (this.searchSetting.columns.columns as any) = [JSON.parse('{"column":{"name":"domain","beautyName":"Domain","hrType":"","aggsType":"TERM","checked":true},"label":"Domain"}')];
+    this.searchSetting.columns.columns = [
+      {
+        column: {
+          name: 'domain',
+          beautyName: 'Domain',
+          hrType: '',
+          aggsType: 'TERM',
+          checked: true
+        }, label: 'Domain'
+      }
+    ] as AggregationItem[];
 
-    this.customReportResultComponent.search(this.searchSetting);
+    if (this.customReportResultComponent) {
+      this.customReportResultComponent.search(this.searchSetting);
+    }
   }
 
   public addValuesIntoSelected($event) {
-
-    const column: string = $event.column;
-    const value = $event.data;
-
-    let exists = false;
-    for (const a of this.searchSetting.must) {
-      if (a.field === column && a.value === value) {
-        exists = true;
-        break;
-      }
-    }
-
-    if (exists) {
-      this.notificationService.error(column + '=' + value + ' exists in your criteria');
-      return;
-    }
-
-    const columnInput = new ColumnTagInput(column, '=', value);
-
-    this.searchSetting.must.push(columnInput);
-
-    this.notificationService.info(columnInput.toString() + ' Added into your criteria');
-
     this.customReportSearchComponent.setSearchSetting(this.searchSetting);
+  }
+
+  linkClicked($event: LinkClick) {
+    const filter = this.filters.find(x => x.name === $event.columnModel.name);
+
+    if (filter) {
+      const exists = filter.values.some(x => x === $event.value);
+
+      if (!exists) {
+        filter.values.unshift($event.value);
+      }
+    } else {
+      this.filters.push(new FilterBadgeModel($event.columnModel.name, true, [$event.value]));
+    }
   }
 
 }

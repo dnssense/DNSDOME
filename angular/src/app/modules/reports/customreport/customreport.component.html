@@ -3,15 +3,15 @@
     <div class="card-item rk-col">
       <div class="row" style="margin-top:-15px; width: 100%;">
         <div class="col-md-12">
-          <app-roksit-search pageTitle="Custom Report" [searchSettings]="searchSetting" (searchSettingsEmitter)="search($event)">
+          <app-roksit-search [filters]="filters" pageTitle="Custom Report" [searchSettings]="searchSetting" (searchSettingEmitter)="search($event)">
           </app-roksit-search>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12">
           <app-customreport-result [data]="data" [searchSetting]="searchSetting" #tableComponent
-            (addColumnValueEmitter)="addValuesIntoSelected($event)" [multiplier]="multiplier" [total]="total"
-            (searchEmitter)="search($event)">
+            (addColumnValueEmitter)="addValuesIntoSelected($event)" [multiplier]="multiplier"
+            (searchEmitter)="search($event)" (linkClickedOutput)="linkClicked($event)">
           </app-customreport-result>
         </div>
       </div>
