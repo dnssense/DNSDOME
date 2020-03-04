@@ -5,10 +5,11 @@
                 <div id="customReportChart"></div>
 
                 <div class="table-responsive">
-                    <rk-table-container [config]="tableConfig" class="m-0 border-0 pagination-disabled">
+                    <rk-table-container [config]="tableConfig" class="m-0 border-0 pagination-disabled" (columnBadgeChange)="columnChanged($event)">
                         <rk-table-export (event)="exportAs($event)"></rk-table-export>
 
-                        <rk-table (pageChange)="onPageChange($event)" [totalCount]="null" [pageViewCount]="searchSetting.topNumber"
+                        <rk-table (pageChange)="onPageChange($event)" [totalCount]="null"
+                            [pageViewCount]="searchSetting.topNumber"
                             (pageViewCountChange)="onPageViewCountChange($event)" [info]="true">
                             <ng-template #header>
                                 <tr>
@@ -41,6 +42,10 @@
                                         {{ dat[colIndex] }}
                                     </td>
                                     <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>
+                                    <td>
+                                        <rk-progressbar [value]="100 * dat[selectedColumns.length] / total"
+                                            [showType]="'outside'" [sizeType]="'small'"></rk-progressbar>
+                                    </td>
                                 </tr>
                             </ng-template>
                         </rk-table>

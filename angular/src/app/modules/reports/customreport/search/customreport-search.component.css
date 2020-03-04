@@ -1,7 +1,0 @@
-::ng-deep .mat-option:hover{
-    background-color: #77f !important;
- }
- 
- ::ng-deep .mat-option.mat-selected:not(.mat-option-multiple) {
-   background-color: #77f !important;
- }

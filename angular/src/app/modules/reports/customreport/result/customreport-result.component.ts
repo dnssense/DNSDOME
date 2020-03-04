@@ -12,6 +12,12 @@ import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-
 import { LinkClick } from '../../monitor/result/monitor-result.component';
 
 declare var moment: any;
+
+export interface TableBadgeOutput {
+  name: string;
+  value: boolean;
+}
+
 @Component({
   selector: 'app-customreport-result',
   templateUrl: 'customreport-result.component.html',
@@ -162,9 +168,7 @@ export class CustomReportResultComponent implements OnDestroy {
   }
 
   pageChanged(event: any): void {
-    this.currentPage = event.page;
-
-    this.loadGraph(this.searchSetting);
+    this.refresh();
   }
 
   onPageViewCountChange(pageViewCount: number) {
@@ -278,5 +282,31 @@ export class CustomReportResultComponent implements OnDestroy {
 
   linkClicked($event: LinkClick) {
     this.linkClickedOutput.emit($event);
+  }
+
+  columnChanged($event: TableBadgeOutput) {
+    const columnIndex = this.selectedColumns.findIndex(x => x.column.name === $event.name);
+
+    if ($event.value) {
+      this.selectedColumns.push({
+        column: {
+          name: $event.name,
+          beautyName: this.capitalize($event.name),
+          hrType: '',
+          aggsType: 'TERM',
+          checked: true
+        }, label: this.capitalize($event.name)
+      } as AggregationItem);
+    } else {
+      if (columnIndex > -1) {
+        this.selectedColumns.splice(columnIndex, 1);
+      }
+    }
+
+    this.searchSetting.columns.columns = this.selectedColumns;
+  }
+
+  private capitalize(value: string): string {
+    return value[0].toLocaleUpperCase() + value.substring(1);
   }
 }

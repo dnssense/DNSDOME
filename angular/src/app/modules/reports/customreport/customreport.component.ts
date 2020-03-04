@@ -1,15 +1,11 @@
-import { OnInit, ElementRef, OnDestroy, Component, ViewChild } from '@angular/core';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { Subject } from 'rxjs';
-import { CustomReportSearchComponent } from './search/customreport-search.component';
+import { OnInit, ElementRef, Component, ViewChild } from '@angular/core';
 import { CustomReportResultComponent } from './result/customreport-result.component';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { FastReportService } from 'src/app/core/services/FastReportService';
-import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { LinkClick } from '../monitor/result/monitor-result.component';
-import { FilterBadgeModel } from '../../shared/roksit-search/roksit-search.component';
+import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
 
 @Component({
   selector: 'app-customreport',
@@ -19,9 +15,7 @@ import { FilterBadgeModel } from '../../shared/roksit-search/roksit-search.compo
 export class CustomReportComponent implements OnInit {
 
   constructor(
-    private fastReportService: FastReportService,
-    private notificationService: NotificationService
-  ) { }
+    private fastReportService: FastReportService) { }
 
   public total = 0;
   public multiplier = 1;
@@ -35,7 +29,7 @@ export class CustomReportComponent implements OnInit {
 
   @ViewChild(CustomReportResultComponent) customReportResultComponent: CustomReportResultComponent;
 
-  @ViewChild(CustomReportSearchComponent) customReportSearchComponent: CustomReportSearchComponent;
+  @ViewChild(RoksitSearchComponent) customReportSearchComponent: RoksitSearchComponent;
 
   filters: FilterBadgeModel[] = [];
 
@@ -67,7 +61,7 @@ export class CustomReportComponent implements OnInit {
     }
   }
 
-  public addValuesIntoSelected($event) {
+  public addValuesIntoSelected() {
     this.customReportSearchComponent.setSearchSetting(this.searchSetting);
   }
 
@@ -84,5 +78,4 @@ export class CustomReportComponent implements OnInit {
       this.filters.push(new FilterBadgeModel($event.columnModel.name, true, [$event.value]));
     }
   }
-
 }

@@ -15,7 +15,6 @@ import { MonitorResultComponent } from './monitor/result/monitor-result.componen
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ColumnTagInputComponent } from './shared/columntaginput/column-tag-input.component';
 import { TextLimitComponent } from './shared/textlimit/text-limit.component';
-import { CustomReportSearchComponent } from './customreport/search/customreport-search.component';
 import { CustomReportResultComponent } from './customreport/result/customreport-result.component';
 import { CustomReportResultColumnComponent } from './customreport/result/column/customreport-result-column.component';
 import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
@@ -26,7 +25,6 @@ import { SharedModule } from '../shared/shared.module';
 @NgModule({
   declarations: [
     CustomReportComponent,
-    CustomReportSearchComponent,
     CustomReportResultComponent,
     CustomReportResultColumnComponent,
     MonitorComponent,
