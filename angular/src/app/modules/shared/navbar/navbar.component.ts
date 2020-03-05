@@ -96,7 +96,7 @@ export class NavbarComponent implements OnInit {
     get getTitle() {
         const title: string = this.location.prepareExternalUrl(this.location.path()).substring(7);
 
-        return title.split('/');
+        return title.split('/').map(x => this.getCleanText(x));
     }
 
     getCleanText(t: string) {

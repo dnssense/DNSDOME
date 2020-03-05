@@ -76,14 +76,6 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../users/users.module#UsersModule'
       },
       {
-        path: 'settings/help',
-        canActivate: [RoleGuard],
-        data: {
-          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
-        },
-        loadChildren: '../../help/help.module#HelpModule'
-      },
-      {
         path: 'deployment/roaming-clients',
         canActivate: [RoleGuard],
         data: {

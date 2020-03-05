@@ -2,9 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthLayoutComponent } from './page/authlayout.component';
 
-
-
-
 const authlayoutRoutes: Routes = [
   {
     path: '',
@@ -25,17 +22,10 @@ const authlayoutRoutes: Routes = [
       path: 'account-confirm',
       loadChildren: '../../accountconfirm/accountconfirm.module#AccountConfirmModule'
     }, {
-      path: 'info',
-      loadChildren: '../../publichelp/publichelp.module#PublicHelpModule'
-    }, {
       path: '',
       loadChildren: '../../login/login.module#LoginModule'
-    }
-
-    ]
+    }]
   }
-
-
 ];
 
 @NgModule({

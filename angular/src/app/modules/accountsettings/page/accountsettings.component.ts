@@ -16,6 +16,9 @@ import { SmsService } from 'src/app/core/services/SmsService';
 import { SmsType } from 'src/app/core/models/SmsType';
 import { RestSmsResponse, RestSmsConfirmRequest, RestUserUpdateRequest } from 'src/app/core/models/RestServiceModels';
 import { LoggerService } from 'src/app/core/services/logger.service';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { countries } from 'src/app/core/models/Countries';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 // TODO buda kullanilmiyor
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -31,16 +34,36 @@ declare var $: any;
 })
 export class AccountSettingsComponent implements OnInit {
 
-    constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private notification: NotificationService,
-        private accountService: AccountService, private alert: AlertService,
-        private companyService: CompanyService, private smsService: SmsService) {
+    constructor(
+        private formBuilder: FormBuilder,
+        private authService: AuthenticationService,
+        private notification: NotificationService,
+        private accountService: AccountService,
+        private alert: AlertService,
+        private companyService: CompanyService,
+        private smsService: SmsService
+    ) {
         this.signupUser = new SignupBean();
         this.signupUser.company = new Company();
-        this.signupUser.company.name = "";
+        this.signupUser.company.name = '';
 
         this.companyService.getCompany().subscribe(res => {
             if (res && res.length > 0) {
                 this.signupUser.company = res[0];
+
+                this.industuryOptions = this.industuryOptions.map(x => {
+                    return {
+                        ...x,
+                        selected: x.value === this.signupUser.company.industry
+                    };
+                });
+
+                this.personCountsOptions = this.personCountsOptions.map(x => {
+                    return {
+                        ...x,
+                        selected: x.value === this.signupUser.company.personnelCount
+                    };
+                });
             }
         });
     }
@@ -61,58 +84,49 @@ export class AccountSettingsComponent implements OnInit {
     current2FAPreference: boolean;
     endTime: Date;
     isTimeSetted = false;
-    maxRequest: number = 3;
+    maxRequest = 3;
     private smsInformation: RestSmsResponse;
-    isConfirmTimeEnded: boolean = true;
+    isConfirmTimeEnded = true;
     public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
 
     notificationIndex = 0;
 
-    emailValidationRegister(e) {
-        // tslint:disable-next-line: max-line-length
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (re.test(String(e).toLowerCase())) {
-            this.validEmailRegister = true;
-        } else {
-            this.validEmailRegister = false;
-        }
-    }
+    activeTabNumber = 0;
 
-    checkisTelNumber(event: KeyboardEvent) {
-        let allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "Backspace", "ArrowLeft", "ArrowRight"];
-        let isValid: boolean = false;
+    countryOptions: RkSelectModel[] = [];
 
-        for (let i = 0; i < allowedChars.length; i++) {
-            if (allowedChars[i] == event.key) {
-                isValid = true;
-                break;
-            }
-        }
+    industuryOptions: RkSelectModel[] = [
+        { displayText: 'Cloud Computing/Saas', value: 'Cloud Computing/Saas' },
+        { displayText: 'Computer HW, SW', value: 'Computer HW, SW' },
+        { displayText: 'Consumer Goods/Retail', value: 'Consumer Goods/Retail' },
+        { displayText: 'Ecommerce/Online Advertising', value: 'Ecommerce/Online Advertising' },
+        { displayText: 'Energy/Utility', value: 'Energy/Utility' },
+        { displayText: 'Financial Services/Insurance', value: 'Financial Services/Insurance' },
+        { displayText: 'Healthcare/Lifesciences/Pharmaceuticals', value: 'Healthcare/Lifesciences/Pharmaceuticals' },
+        { displayText: 'ISP / Hosting', value: 'ISP / Hosting' },
+        { displayText: 'IT Services', value: 'IT Services' },
+        { displayText: 'Manufacturing', value: 'Manufacturing' },
+        { displayText: 'Media/Entertainment', value: 'Media/Entertainment' },
+        { displayText: 'Professional Services (Legal, Accounting, etc.)', value: 'Professional Services (Legal, Accounting, etc.)' },
+        { displayText: 'Telecommunications', value: 'Telecommunications' },
+        { displayText: 'University', value: 'University' },
+        { displayText: 'K-12', value: 'K-12 Education' },
+        { displayText: 'non-profits', value: 'Non-profits' },
+        { displayText: 'Other', value: 'Other' },
+    ];
 
-        if (!isValid) {
-            event.preventDefault();
-        }
-    }
-
-    gsmChange() {
-        if (this.phoneNumberTemp == this.user.gsm || this.phoneNumberTemp.length < 10 || !this.gsmCodeTemp) {
-            $('#changePhoneBtn').attr('disabled', 'disabled');
-        } else {
-            $('#changePhoneBtn').removeAttr("disabled");
-        }
-    }
-
-    gsmCodeChange() {
-
-        if (this.phoneNumberTemp == this.user.gsm || this.phoneNumberTemp.length < 10 || !this.gsmCodeTemp) {
-            $('#changePhoneBtn').attr('disabled', 'disabled');
-        } else {
-            $('#changePhoneBtn').removeAttr("disabled");
-        }
-    }
+    personCountsOptions: RkSelectModel[] = [
+        { displayText: '1-50', value: '1-50' },
+        { displayText: '50-99', value: '50-99' },
+        { displayText: '100-249', value: '100-249' },
+        { displayText: '250-499', value: '250-499' },
+        { displayText: '500-999', value: '500-999' },
+        { displayText: '1000-2499', value: '1000-2499' },
+        { displayText: '5000-9999', value: '5000-9999' },
+        { displayText: '10000-19999', value: '10000-19999' },
+    ];
 
     ngOnInit() {
-
         if (this.authService.currentSession) {
 
             this.user = this.authService.currentSession.currentUser;
@@ -120,20 +134,27 @@ export class AccountSettingsComponent implements OnInit {
             this.gsmCodeTemp = this.user.gsmCode;
             this.phoneNumberTemp = this.user.gsm;
             this.currentGsm = this.user.gsm;
+
+            this.countryOptions = phoneNumberCodesList.phoneNumberCodes.map(x => {
+                return {
+                    value: x.dial_code,
+                    displayText: x.name,
+                    selected: this.user.gsmCode === x.dial_code
+                } as RkSelectModel;
+            });
         }
 
         const number = `[0-9]+`;
         this.userInfoForm =
             this.formBuilder.group({
-                "name": ["", [Validators.required, Validators.minLength(2)]],
-
+                'name': ['', [Validators.required, Validators.minLength(2)]],
             });
 
         this.userPhoneForm =
             this.formBuilder.group({
-                "gsmCode": ["", [Validators.required]],
-                "gsm": ["", [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(number)]],
-                "smsCode": [""]
+                'gsmCode': ['', [Validators.required]],
+                'gsm': ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(number)]],
+                'smsCode': ['']
             });
 
         this.companyInfoForm =
@@ -141,37 +162,70 @@ export class AccountSettingsComponent implements OnInit {
                 'companyName': ['', [Validators.required, Validators.minLength(3)]],
                 'url': ['', [Validators.required, Validators.minLength(3), ValidationService.domainValidation]],
                 'blockMessage': ['', [Validators.required, Validators.minLength(3)]],
-                'industry': ['', [Validators.required, Validators.minLength(2)]],
-                'personnelCount': ['', [Validators.required, Validators.minLength(2)]],
                 'logo': ['', []]
             });
 
         this.changePasswordForm =
             this.formBuilder.group({
-                "currentPassword": ["", [Validators.required, Validators.minLength(6)]],
-                "password": ["", [Validators.required, Validators.minLength(6)]],
-                "passwordAgain": ["", [Validators.required, Validators.minLength(6)]]
+                'currentPassword': ['', [Validators.required, Validators.minLength(6)]],
+                'password': ['', [Validators.required, Validators.minLength(6)]],
+                'passwordAgain': ['', [Validators.required, Validators.minLength(6)]]
             }
-                , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
+                , { validator: Validators.compose([ValidationService.matchingPasswords('password', 'passwordAgain')]) }
             );
 
-        if (this.phoneNumberTemp == this.user.gsm) {
+        if (this.phoneNumberTemp === this.user.gsm) {
             $('#changePhoneBtn').attr('disabled', 'disabled');
         } else {
-            $('#changePhoneBtn').removeAttr("disabled");
+            $('#changePhoneBtn').removeAttr('disabled');
+        }
+    }
+
+    emailValidationRegister(e) {
+        const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (regex.test(String(e).toLowerCase())) {
+            this.validEmailRegister = true;
+        } else {
+            this.validEmailRegister = false;
+        }
+    }
+
+    checkisTelNumber(event: KeyboardEvent) {
+        const allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'Backspace', 'ArrowLeft', 'ArrowRight'];
+
+        const isValid = allowedChars.some(x => x == event.key);
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    }
+
+    gsmChange() {
+        if (this.phoneNumberTemp === this.user.gsm || this.phoneNumberTemp.length < 10 || !this.gsmCodeTemp) {
+            $('#changePhoneBtn').attr('disabled', 'disabled');
+        } else {
+            $('#changePhoneBtn').removeAttr('disabled');
+        }
+    }
+
+    gsmCodeChange() {
+        if (this.phoneNumberTemp === this.user.gsm || this.phoneNumberTemp.length < 10 || !this.gsmCodeTemp) {
+            $('#changePhoneBtn').attr('disabled', 'disabled');
+        } else {
+            $('#changePhoneBtn').removeAttr('disabled');
         }
     }
 
     selectFile($event) {
-        var inputValue = $event.target;
-        let file = inputValue.files[0];
-        let reader = new FileReader();
-        let ag = this.signupUser.company;
+        const inputValue = $event.target;
+        const file = inputValue.files[0];
+        const reader = new FileReader();
+        const ag = this.signupUser.company;
         if (typeof file !== 'undefined') {
 
         }
 
-        reader.addEventListener("load", function () {
+        reader.addEventListener('load', function () {
             ag.logo = reader.result;
         }, false);
 
@@ -181,26 +235,24 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     userFormSubmit() {
-
         if (this.user && this.userInfoForm.dirty && this.userInfoForm.valid) {
-            let request: RestUserUpdateRequest = {};
+            const request: RestUserUpdateRequest = {};
             request.name = this.user.name || ' ';
 
             this.accountService.update(request).subscribe(res => {
-                this.notification.success("Updated name");
+                this.notification.success('Updated name');
                 this.authService.saveSession();
             });
         }
     }
 
     companyFormSubmit() {
-
-        if (this.companyInfoForm.valid && this.companyInfoForm.dirty) {
+        if (this.companyInfoForm.valid && this.signupUser.company.industry.length > 0 && this.signupUser.company.personnelCount.length > 0) {
             this.companyService.saveCompany(this.signupUser.company).subscribe(res => {
-                this.alert.alertSuccessMessage("Operation Successful", "Company information updated.");
+                this.alert.alertSuccessMessage('Operation Successful', 'Company information updated.');
             });
         } else {
-            this.notification.warning("Company form is not valid! Please enter required fields with valid values.");
+            this.notification.warning('Company form is not valid! Please enter required fields with valid values.');
             return;
         }
     }
@@ -209,36 +261,39 @@ export class AccountSettingsComponent implements OnInit {
         if (this.changePasswordForm.valid && this.changePasswordForm.dirty && this.signupUser.password === this.signupUser.passwordAgain) {
             this.accountService.changePassword(this.currentPassword, this.signupUser.password)
                 .subscribe(res => {
-                    this.alert.alertSuccessMessage("Operation Successful", "Password changed.");
+                    this.alert.alertSuccessMessage('Operation Successful', 'Password changed.');
                     this.authService.saveSession();
+
+                    this.currentPassword = '';
+                    this.signupUser.password = '';
+                    this.signupUser.passwordAgain = '';
+
+                    this.activeTabNumber = 0;
                 });
         } else {
-            this.notification.warning("Password change form is not valid! Please enter required fields with valid values.");
+            this.notification.warning('Password change form is not valid! Please enter required fields with valid values.');
             return;
         }
     }
 
     change2FASubmit() {
         if (this.user.gsm && this.user.gsmCode) {
-            let request: RestUserUpdateRequest = {};
+            const request: RestUserUpdateRequest = {};
             request.isTwoFactorAuthentication = this.user.twoFactorAuthentication ? 0 : 1;
 
             this.accountService.update(request).subscribe(res => {
                 this.user.twoFactorAuthentication = !this.user.twoFactorAuthentication;
-                this.notification.success("Operation Successful Two factor authentication updated.");
+                this.notification.success('Operation Successful Two factor authentication updated.');
                 this.authService.saveSession();
             });
         } else {
-            this.notification.warning("User GSM is missing!");
+            this.notification.warning('User GSM is missing!');
             this.user.twoFactorAuthentication = false;
         }
-
     }
 
     changePhoneNumber() {
-
-        if (this.userPhoneForm.get('gsmCode').valid && this.userPhoneForm.get('gsm').valid && this.phoneNumberTemp && this.phoneNumberTemp.length == 10) {
-
+        if (this.phoneNumberTemp && this.phoneNumberTemp.length === 10) {
             this.user.gsm = this.phoneNumberTemp;
             this.user.gsmCode = this.gsmCodeTemp;
 
@@ -258,25 +313,24 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     confirmGsm() {
-
         if (!this.smsCode || this.smsCode.length < 4) {
             this.notification.warning('Please enter sms code');
             return;
         }
 
-        if (this.maxRequest != 0 && !this.isConfirmTimeEnded) {
+        if (this.maxRequest !== 0 && !this.isConfirmTimeEnded) {
             this.maxRequest -= 1;
             if (this.smsInformation) {
-                let request: RestSmsConfirmRequest = { id: this.smsInformation.id, code: this.smsCode };
+                const request: RestSmsConfirmRequest = { id: this.smsInformation.id, code: this.smsCode };
                 this.smsService.confirmCommonSms(request).subscribe(res1 => {
 
                     this.user.gsm = this.phoneNumberTemp;
-                    let updateRequest: RestUserUpdateRequest = {};
+                    const updateRequest: RestUserUpdateRequest = {};
                     updateRequest.gsm = this.phoneNumberTemp;
                     updateRequest.gsmCode = this.gsmCodeTemp;
 
                     this.accountService.update(updateRequest).subscribe(res2 => {
-                        this.notification.success("Phone number is updated");
+                        this.notification.success('Phone number is updated');
                         $('#changePhoneBtn').attr('disabled', 'disabled');
                         this.notificationIndex++;
                         this.user.gsm = this.phoneNumberTemp;
@@ -289,8 +343,7 @@ export class AccountSettingsComponent implements OnInit {
                 }, err => {
                     if (this.maxRequest === 0) {
                         this.notification.error('You have exceeded the number of attempts! Try Again!');
-                    }
-                    else throw err;
+                    } else { throw err; }
                 });
 
             }
@@ -303,7 +356,5 @@ export class AccountSettingsComponent implements OnInit {
             this.notificationIndex++;
         }
     }
-
-
 
 }
