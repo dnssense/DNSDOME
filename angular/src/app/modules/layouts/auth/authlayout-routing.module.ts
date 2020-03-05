@@ -2,9 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthLayoutComponent } from './page/authlayout.component';
 
-
-
-
 const authlayoutRoutes: Routes = [
   {
     path: '',
@@ -27,12 +24,8 @@ const authlayoutRoutes: Routes = [
     }, {
       path: '',
       loadChildren: '../../login/login.module#LoginModule'
-    }
-
-    ]
+    }]
   }
-
-
 ];
 
 @NgModule({

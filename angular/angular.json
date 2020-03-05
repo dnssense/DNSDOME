@@ -33,8 +33,7 @@
               "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/intro.js/introjs.css",
               "node_modules/roksit-lib/assets/scss/roksit.core.scss",
-              "src/styles.sass",
-              "src/styles.scss"
+              "src/styles.sass"
             ],
             "scripts": [
               "node_modules/intro.js/intro.js",
