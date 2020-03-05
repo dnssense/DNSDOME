@@ -21,12 +21,12 @@
     "Send":"Gönder",
     "Active":"Aktif",
     "Passive":"Pasif",
-    "Malicious":"Malicious",
+    "Malicious":"Tehlikeli",
     "Count":"Adet",
     "Domain":"Domain",
     "Percent":"Yüzde",
     "NewDomains":"Yeni Domainler",
-    "Harmful":"Harmfull",
+    "Harmful":"Zararli",
     "Search":"Ara",
     "AllFieldsRequired":"Bütün alanlar zorunludur",
     "Selected":"Seçilmiş",
@@ -92,7 +92,10 @@
     "Dynamic":"Dinamik",
     "NoData":"Data bulunamadı",
     "Next":"Sıradaki",
-    "RoamingClients":"Hareketli Cihazlar",
+    "RoamingClients":"Mobil Cihazlar",
+    "RoamingClient":"Mobil Cihaz",
+    "DnsRelay":"Dns Relay",
+    "DnsRelays":"Dns Relays",
     "Download":"İndirme",
     "CopyDownloadLink":"İndirme Linki Kopyala",
     "Settings":"Ayarlar",
@@ -100,7 +103,7 @@
     "DontTouchDomains":"Dont Touch Domains",
     "DontTouchDomainsDescription":"Dont touch domains, şifrelenmeyecek domain listesidir, lütfen Local Active Directory domainlerini buraya giriniz",
     "Add":"Ekle",
-    "RoamingClientsEdit":"Hareketli Cihazları Düzenle",
+    "RoamingClientsEdit":"Mobil Cihazları Düzenle",
     "EditGroup":"Grup Düzenle",
     "SelectDevicesToJoinGroup":"Gruba katılacak cihazları seçiniz",
     "OtherGroupMembers":"Diğer group üyeleri",
@@ -126,6 +129,10 @@
     "QueryCategory":"Kategori Sorgula",
     "EnterDomain":"Domain Giriniz",
     "Categories":"Kategoriler",
+    "Total":"Toplam",
+    "Safe":"Güvenilir",
+    "Variable":"Değişken",
+    "HarmfullContent":"Zararlı",
     "LANGUAGE":{
         "TR":"Türkçe",
         "EN":"İngilizce"
@@ -204,7 +211,9 @@
         "TimeRange":"Zaman Aralığı",
         "TrafficBasedAnomaly":"Trafiğe Dayalı Anomali",
         "SelectedTimevsAverage":"Seçilen Zaman ve Ortalama",
-        "TimeHit":"En Yüksek Zaman"
+        "TimeHit":"En Yüksek Zaman",
+        "AverageHit":"Ortalama Hit"
+       
         
     },
     "ACCOUNTSETTINGS":{

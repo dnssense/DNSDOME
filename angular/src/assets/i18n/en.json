@@ -93,6 +93,9 @@
     "NoData":"No Data",
     "Next":"Next",
     "RoamingClients":"Roaming Clients",
+    "RoamingClient":"Roaming Client",
+    "DnsRelay":"Dns Relay",
+    "DnsRelays":"Dns Relays",
     "Download":"Download",
     "CopyDownloadLink":"Copy Download Link",
     "Settings":"Settings",
@@ -125,6 +128,10 @@
     "QueryCategory":"Query Category",
     "EnterDomain":"Enter Domain",
     "Categories":"Categories",
+    "Total":"Total",
+    "Safe":"Safe",
+    "Variable":"Variable",
+    "HarmfullContent":"Harmfull Content",
     "LANGUAGE":{
         "TR":"Turkish",
         "EN":"English"
@@ -219,16 +226,18 @@
         "ChangeDomainCategory":"Change Domain Category"
     },
     "DASHBOARD": {
-        "SETTING_EXISTS": "Your current dashboard contains this report. Please Select another one.",
-        "SELECT_SETTING": "You must select a setting to add. Please Select a saved report from options.",
-        "DELETEMESSAGE": "Are you sure to delete dashboard ",
-        "DELETEDASHBOARD": "Delete Dashboard",
+        "SettingExits": "Your current dashboard contains this report. Please Select another one.",
+        "SelectSetting": "You must select a setting to add. Please Select a saved report from options.",
+        "DeleteMessage": "Are you sure to delete dashboard ",
+        "DeleteDashboard": "Delete Dashboard",
         "TotalTrafficTime":"Total traffic timeline",
         "TotalDays365":"365 total days",
         "TimeRange":"Time Range",
         "TrafficBasedAnomaly":"Traffic Based Anomaly",
         "SelectedTimevsAverage":"Selected Time vs Average",
-        "TimeHit":"Time Hit"
+        "TimeHit":"Time Hit",
+        "AverageHit":"Average Hit"
+        
 
     },
     "BOX":{

@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { DashBoardService, TopDomainsRequestV4 } from 'src/app/core/services/DashBoardService';
+import { DashBoardService, TopDomainsRequestV4, DistinctAgentResponse } from 'src/app/core/services/DashBoardService';
 import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { StaticService } from 'src/app/core/services/StaticService';
@@ -12,12 +12,16 @@ import { ConfigHost, ConfigService } from 'src/app/core/services/config.service'
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import {
-  DataPanelModel, DateParamModel, TrafficAnomaly, Domain, HourlyCompanySummaryV4Response,
+  AgentCountModel, DateParamModel, TrafficAnomaly, Domain, HourlyCompanySummaryV4Response,
   TrafficAnomalyItem, CategorySummary, TrafficAnomalyCategory, TrafficAnomalyItem2, Result
 } from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
 import { RkApexHelper } from 'roksit-lib';
 import { ValidationService } from 'src/app/core/services/validation.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Agent } from 'src/app/core/models/Agent';
+import { Observable, forkJoin } from 'rxjs';
+import { fork } from 'cluster';
 
 interface TagInputValue {
   value: string;
@@ -36,8 +40,12 @@ export class DashboardComponent implements OnInit {
   constructor(
     private dashboardService: DashBoardService,
     private staticService: StaticService,
+    private agentService: AgentService,
+    private boxService: BoxService,
+    private roamingService: RoamingService,
     private router: Router,
     private config: ConfigService,
+    private translateService: TranslateService
   ) { }
 
   host: ConfigHost;
@@ -57,7 +65,7 @@ export class DashboardComponent implements OnInit {
   trafficChartType = 'hit';
   uniqueChartType = 'domain';
 
-  dataPanels: DataPanelModel[] = [];
+  agentCounts: AgentCountModel[] = [];
   timeRangeButtons: DateParamModel[] = [];
   totalCategoryHits = 0;
 
@@ -175,10 +183,72 @@ export class DashboardComponent implements OnInit {
     const request = { duration: 24 * 365 } as TopDomainsRequestV4;
 
     this.getTopDomains(request);
+    this.getAgents();
+    this.agentCounts.push({ name: 'PublicIp', activeCount: 0, passiveCount: 0 });
+    this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0 });
+    this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0 });
+  }
 
-    this.dataPanels.push({ name: 'Public IP', activeCount: 8, passiveCount: 3 });
-    this.dataPanels.push({ name: 'Roming Client', activeCount: 6, passiveCount: 4 });
-    this.dataPanels.push({ name: 'DNS Relay', activeCount: 12, passiveCount: 5 });
+  getAgents() {
+    const agentsLocation: Agent[] = [];
+    const agentsBox: Agent[] = [];
+    const agentsRoamingClient: Agent[] = [];
+    const distinctAgents: DistinctAgentResponse = {items: []};
+    // wait all requests to finish
+    forkJoin(
+
+     this.agentService.getAgentLocation().map(x => {
+      x.forEach(y => agentsLocation.push(y));
+    }),
+    this.roamingService.getClients().map(x => {
+      x.forEach(y => agentsRoamingClient.push(y));
+    }),
+
+    this.boxService.getBoxes().map(x => {
+      x.forEach(y => agentsBox.push(y.agent));
+    }),
+
+    this.dashboardService.getDistinctAgent({duration: 24}).map(x => {
+      x.items.forEach(y => distinctAgents.items.push(y));
+    })
+    ).subscribe(val => {
+
+      const publicip: AgentCountModel = { name: 'PublicIp', activeCount: 0 , passiveCount: 0 };
+      const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0 };
+
+      const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0 };
+
+      // calcuate location agents
+      distinctAgents.items.forEach(x => {
+        if (agentsLocation.find(y => y.id == x.id)) {
+        publicip.activeCount++;
+        }
+      });
+      publicip.passiveCount = agentsLocation.length - publicip.activeCount;
+
+      // calculate roaming clients
+      distinctAgents.items.forEach(x => {
+        if (agentsRoamingClient.find(y => y.id == x.id)) {
+        roamingclient.activeCount++;
+        }
+      });
+      roamingclient.passiveCount = agentsRoamingClient.length - roamingclient.activeCount;
+
+      // calculate box
+      distinctAgents.items.forEach(x => {
+        if (agentsBox.find(y => y.id == x.id)) {
+        dnsrelay.activeCount++;
+        }
+      });
+      dnsrelay.passiveCount = agentsBox.length - dnsrelay.activeCount;
+      ///
+      this.agentCounts = [publicip, roamingclient, dnsrelay];
+
+    });
+  }
+
+  translate(data: string): string {
+    return this.translateService.instant(data);
   }
 
   getTopDomains(request: TopDomainsRequestV4) {
@@ -196,6 +266,7 @@ export class DashboardComponent implements OnInit {
   }
 
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
+    
     const trafficAnomalyType = this.trafficAnomaly[type];
 
     if (trafficAnomalyType) {
@@ -215,7 +286,7 @@ export class DashboardComponent implements OnInit {
     this.startDate = ev.startDate;
     this.endDate = ev.endDate;
 
-    this.startDashboardOperations();
+    // this.startDashboardOperations();
 
     const startDate = moment([ev.startDate.getFullYear(), ev.startDate.getMonth(), ev.startDate.getDate()]);
     const endDate = moment([ev.endDate.getFullYear(), ev.endDate.getMonth(), ev.endDate.getDate()]);
@@ -223,7 +294,7 @@ export class DashboardComponent implements OnInit {
     const diff = endDate.diff(startDate, 'days');
 
     const request = { duration: diff * 24 } as TopDomainsRequestV4;
-
+    this.prepareTimeline();
     this.getTopDomains(request);
   }
 
@@ -267,7 +338,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  onCategoryClick(cat) { }
+  // onCategoryClick(cat) { }
 
   private calculateTotalTrafficTimeLine(summary: any, start: Date, end: Date): any[] {
     return summary.items.filter(x => {
@@ -420,21 +491,21 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  updateCharts() {
+ /*  updateCharts() {
     this.getElasticData();
-  }
+  } */
 
-  calculatePercentage(num1: number, num2: number) {
+  /* calculatePercentage(num1: number, num2: number) {
     return Math.round((num2 - num1) / num1 * 100);
-  }
+  } */
 
-  changeTrafficChartData(type: string) {
+  /* changeTrafficChartData(type: string) {
     this.trafficChartType = type;
-  }
+  } */
 
-  searchCategoryForTraffic(val: any) {
+  /* searchCategoryForTraffic(val: any) {
     this.categoryListFiltered = this.categoryList.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
-  }
+  } */
 
   addCategoryToTraffic(cat: CategoryV2) {
     if (cat.name === this.selectedCategoryForTraffic) {
@@ -442,7 +513,7 @@ export class DashboardComponent implements OnInit {
     } else {
       this.selectedCategoryForTraffic = cat.name;
     }
-
+debugger;
     const averageData = [];
     const hitData = [];
 
@@ -479,14 +550,14 @@ export class DashboardComponent implements OnInit {
     ]);
   }
 
-  deleteCatFromTraffic(id: number) {
+ /*  deleteCatFromTraffic(id: number) {
     if (id && id > 0) {
       this.selectedCategoryForTraffic = '';
       this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: 'Average Hits', data: this.ds.hitAverages }]);
     }
-  }
+  } */
 
-  addCategoryToUnique(id: number) {
+/*   addCategoryToUnique(id: number) {
     this.selectedCategoryForUnique = this.categoryList.find(c => c.id === id);
     const catName = this.selectedCategoryForUnique.name;
     const catHits = [], catAvs = [];
@@ -505,26 +576,26 @@ export class DashboardComponent implements OnInit {
     this.uniqueDomainChart.updateSeries([{ name: catName + 'Unique Domain', data: catHits }, { name: 'Unique Domain Avg', data: catAvs }]);
 
     this.resetCategoryListFiltered();
-  }
-
+  } */
+/*
   deleteCatFromUnique(id: number) {
     if (id && id > 0) {
       this.selectedCategoryForUnique = null;
       this.uniqueDomainChart.updateSeries([{ name: 'Unique Domain', data: this.ds.uniqueDomain }, { name: 'Unique Domain Avg', data: this.ds.uniqueDomainAvg }]);
     }
   }
-
-  private resetCategoryListFiltered() {
+ */
+ /*  private resetCategoryListFiltered() {
     this.searchKey = null;
     this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
-  }
+  } */
 
-  showInReport(param: string) {
+  /* showInReport(param: string) {
     localStorage.setItem('dashboardParam', param + '&' + this.dateParameter);
     this.router.navigate(['/admin/reports/customreport']);
   }
-
-  calculateCategory(categoryList: CategorySummary[], ): TrafficAnomalyCategory[] {
+ */
+  calculateCategory(categoryList: CategorySummary[], total: number ): TrafficAnomalyCategory[] {
     const map: Map<string, TrafficAnomalyCategory> = new Map();
 
     categoryList.forEach(x => {
@@ -540,6 +611,7 @@ export class DashboardComponent implements OnInit {
         item.ratio = 0;
       }
     });
+    map.forEach(x => x.ratio = (x.hitCount / total) || 0);
     return Array.from(map.values());
   }
 
@@ -558,54 +630,54 @@ export class DashboardComponent implements OnInit {
     anomaly.total = {} as TrafficAnomalyItem;
     anomaly.total.allowCount = filtered.map(x => x.allowed_count.count).reduce((x, y) => x + y, 0);
     anomaly.total.blockCount = filtered.map(x => x.blocked_count.count).reduce((x, y) => x + y, 0);
-    anomaly.total.categories = this.calculateCategory(this.flatten(filtered.map(x => x.category_hits)));
+    anomaly.total.categories = this.calculateCategory(this.flatten(filtered.map(x => x.category_hits)), anomaly.total.allowCount + anomaly.total.blockCount);
     let selectedCategoryList = selectedCategory ? this.flatten(filtered.map(x => x.category_hits)).filter(x => x.name == selectedCategory) : null;
-    anomaly.total.averageHit = (selectedCategoryList ? selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length : Math.round(filtered.map(x => x.total_hit.average).reduce((x, y) => x + y, 0) / filtered.length)) | 0;
-    anomaly.total.currentHit = (selectedCategoryList ? selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length : Math.round(filtered.map(x => x.total_hit.count).reduce((x, y) => x + y, 0) / filtered.length)) | 0;
-    anomaly.total.ratio = (Math.round((anomaly.total.currentHit - anomaly.total.averageHit) / anomaly.total.averageHit * 100)) | 0;
+    anomaly.total.averageHit = (selectedCategoryList ? selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length : Math.round(filtered.map(x => x.total_hit.average).reduce((x, y) => x + y, 0) / filtered.length)) || 0;
+    anomaly.total.currentHit = (selectedCategoryList ? selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length : Math.round(filtered.map(x => x.total_hit.count).reduce((x, y) => x + y, 0) / filtered.length)) || 0;
+    anomaly.total.ratio = (Math.round((anomaly.total.currentHit - anomaly.total.averageHit) / anomaly.total.averageHit * 100)) || 0;
 
 
     anomaly.harmful = {} as TrafficAnomalyItem2;
     let category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.harmful.indexOf(x.name) > -1);
     anomaly.harmful.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
     anomaly.harmful.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.harmful.categories = this.calculateCategory(category_hits);
+    anomaly.harmful.categories = this.calculateCategory(category_hits, anomaly.total.allowCount + anomaly.total.blockCount);
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
-    anomaly.harmful.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.harmful.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.harmful.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) | 0;
+    anomaly.harmful.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
+    anomaly.harmful.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
+    anomaly.harmful.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) || 0;
 
     anomaly.safe = {} as TrafficAnomalyItem2;
     category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.safe.indexOf(x.name) > -1);
     anomaly.safe.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
     anomaly.safe.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.safe.categories = this.calculateCategory(category_hits);
+    anomaly.safe.categories = this.calculateCategory(category_hits,  anomaly.total.allowCount + anomaly.total.blockCount);
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
-    anomaly.safe.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.safe.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.safe.ratio = (Math.round((anomaly.safe.currentHit - anomaly.safe.averageHit) / anomaly.safe.averageHit * 100)) | 0;
+    anomaly.safe.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
+    anomaly.safe.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
+    anomaly.safe.ratio = (Math.round((anomaly.safe.currentHit - anomaly.safe.averageHit) / anomaly.safe.averageHit * 100)) || 0;
 
 
     anomaly.malicious = {} as TrafficAnomalyItem2;
     category_hits = this.flatten(filtered.map(x => x.category_hits).concat()).filter(x => this.categoryMappings.malicious.indexOf(x.name) > -1);
     anomaly.malicious.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
     anomaly.malicious.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.malicious.categories = this.calculateCategory(category_hits);
+    anomaly.malicious.categories = this.calculateCategory(category_hits,  anomaly.total.allowCount + anomaly.total.blockCount);
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
-    anomaly.malicious.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.malicious.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.malicious.ratio = (Math.round((anomaly.malicious.currentHit - anomaly.malicious.averageHit) / anomaly.malicious.averageHit * 100)) | 0;
+    anomaly.malicious.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
+    anomaly.malicious.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
+    anomaly.malicious.ratio = (Math.round((anomaly.malicious.currentHit - anomaly.malicious.averageHit) / anomaly.malicious.averageHit * 100)) || 0;
 
 
     anomaly.variable = {} as TrafficAnomalyItem2;
     category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.variable.indexOf(x.name) > -1);
     anomaly.variable.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
     anomaly.variable.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.variable.categories = this.calculateCategory(category_hits);
+    anomaly.variable.categories = this.calculateCategory(category_hits,  anomaly.total.allowCount + anomaly.total.blockCount);
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
-    anomaly.variable.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.variable.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) | 0;
-    anomaly.variable.ratio = (Math.round((anomaly.variable.currentHit - anomaly.variable.averageHit) / anomaly.variable.averageHit * 100)) | 0;
+    anomaly.variable.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
+    anomaly.variable.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
+    anomaly.variable.ratio = (Math.round((anomaly.variable.currentHit - anomaly.variable.averageHit) / anomaly.variable.averageHit * 100)) || 0;
 
     return anomaly;
   }

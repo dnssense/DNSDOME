@@ -16,7 +16,7 @@ export class Dashboard {
   public system = false;
 }
 
-export class DataPanelModel {
+export class AgentCountModel {
   name: string;
   activeCount: number;
   passiveCount: number;
