@@ -56,7 +56,7 @@
                 <div class="row">
                   <div class="col-12">
                     <input type="text" class="rk-input w-100" placeholder="{{'Name'|translate}}" name="agentName" id="agentName"
-                      [(ngModel)]="selectedIp.agentAlias" formControlName="agentName">
+                      [(ngModel)]="selectedIp.agentAlias" formControlName="agentName" maxlength="64">
                   </div>
 
                   <ng-container *ngIf="ipType == 'dynamicIp'; else elseTemplateIpType">

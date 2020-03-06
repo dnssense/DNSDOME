@@ -188,4 +188,12 @@ export class UsersComponent implements OnInit {
             this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
         }
     }
+
+    isActiveChanged($event: boolean) {
+        this.user.isLocked = $event ? 0 : 1;
+    }
+
+    isLockedChanged($event: boolean) {
+        this.user.isActive = $event ? 0 : 1;
+    }
 }

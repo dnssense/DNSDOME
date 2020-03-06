@@ -413,5 +413,7 @@
     "GroupWillBeDeleted":"Group will be deleted",
     "GroupDeleted":"Group deleted",
     "PleaseChangeSomething":"Please change something",
-    "CategoryRequestSuccessfullySended":"Categorization request sended succesfully"
+    "CategoryRequestSuccessfullySended":"Categorization request sended succesfully",
+    "IsVerified" : "Is Verified",
+    "IsLocked": "Is Locked"
 }
