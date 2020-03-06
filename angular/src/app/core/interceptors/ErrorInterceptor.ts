@@ -19,39 +19,39 @@ export class ErrorInterceptor implements ErrorHandler {
     spinnerService.hide();
     const translatorService = this.injector.get(TranslatorService);
 
-    throw error;
+    // throw error;
 
-    // if (error instanceof HttpErrorResponse) {
+     if (error instanceof HttpErrorResponse) {
     //   // Server or connection error happened
-    //   if (!navigator.onLine) {
-    //     notificationService.danger('No Internet Connection');
-    //   } else {
-    //     // Handle Http Error (error.status === 403, 404...)
-    //     const status = error.status;
-    //     if (error.error.code) {
-    //       const message = translatorService.translate(error.error.code);
-    //       console.log(`${status} - ${message}`);
-    //       notificationService.error(message);
-    //       /* if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
-    //         // notificationService.error(`${message}`);
-    //       } */
-    //     } else {
+       if (!navigator.onLine) {
+         notificationService.danger('No Internet Connection');
+       } else {
+         // Handle Http Error (error.status === 403, 404...)
+         const status = error.status;
+         if (error.error.code) {
+           const message = translatorService.translate(error.error.code);
+           console.log(`${status} - ${message}`);
+           notificationService.error(message);
+           /* if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
+             // notificationService.error(`${message}`);
+           } */
+         } else {
 
-    //       const message = translatorService.translate(error.statusText);
-    //       // notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
-    //       notificationService.error(message);
-    //       console.log(`${status} - ${message}`);
-    //     }
-    //   }
-    // } else {
+           const message = translatorService.translate(error.statusText);
+           // notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
+           notificationService.error(message);
+          console.log(`${status} - ${message}`);
+         }
+       }
+     } else {
 
-    //   const message = translatorService.translate(error.message);
-    //   // debugger;
-    //   console.log(message);
-    //   if (!(message.includes('\'push\' of undefined') && error.stack.includes('reports-module'))) { // TODO: will remove; after unfound push error fixed
-    //     // notificationService.error('Error');
-    //   }
-    // }
+       const message = translatorService.translate(error.message);
+       // debugger;
+       console.log(message);
+       if (!(message.includes('\'push\' of undefined') && error.stack.includes('reports-module'))) { // TODO: will remove; after unfound push error fixed
+         // notificationService.error('Error');
+       }
+     }
     // Log the error anyway
     // console.error(error.name);
   }

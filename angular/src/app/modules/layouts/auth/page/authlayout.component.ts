@@ -9,19 +9,19 @@ import { ConfigService } from 'src/app/core/services/config.service';
 export class AuthLayoutComponent implements OnInit {
   private sidebarVisible: boolean;
   private toggleButton: any;
-  hostName:string;
+  hostName: string;
 
-  constructor(private config: ConfigService ) { 
+  constructor(private config: ConfigService ) {
     this.hostName = this.config.host.brand;
 
   }
 
   ngOnInit() {
-    document.body.style.backgroundColor = "white"
+    document.body.style.backgroundColor = 'white';
   }
 
   language(lang: string) {
-    this.config.setTranslationLanguage(lang);
+    this.config.setDefaultLanguage(lang);
   }
 
   sidebarToggle() {

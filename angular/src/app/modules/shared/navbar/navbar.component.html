@@ -10,16 +10,16 @@
     <div class="btn-group mr-2" dropdown placement="bottom right">
       <button class="notification-btn ripple" dropdownToggle type="button">
         <i-feather name="globe"></i-feather>
-        <div class="btn-badge" style="background: #3397c5;">TR</div>
+        <div class="btn-badge" style="background: #3397c5;">{{currentLanguage()}}</div>
       </button>
 
       <div *dropdownMenu class="dropdown-menu dropdown-menu-right rk-list-dropdown-container" role="menu">
         <div class="rk-dropdown">
           <li>
-            <a>Türkçe</a>
+            <a style="cursor: pointer;" (click)="setLanguage('tr')">{{'LANGUAGE.TR'|translate}}</a>
           </li>
           <li>
-            <a>English</a>
+            <a style="cursor: pointer;" (click)="setLanguage('en')">{{'LANGUAGE.EN'|translate}}</a>
           </li>
         </div>
       </div>

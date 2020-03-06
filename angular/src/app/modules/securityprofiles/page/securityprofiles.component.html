@@ -3,14 +3,14 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 p-0">
-          <h5 class="page-title">Security Profiles</h5>
+          <h5 class="page-title">{{'SecurityProfiles'|translate}}</h5>
         </div>
       </div>
 
       <rk-modal #profileModal>
         <rk-modal-header>
           <rk-modal-header-title>
-            <h5>Security Profile</h5>
+            <h5>{{'SecurityProfile'|translate}}</h5>
           </rk-modal-header-title>
 
           <rk-modal-header-close (click)="profileModal.toggle()"></rk-modal-header-close>
@@ -26,8 +26,8 @@
         <rk-modal-footer>
           <button class="btn btn-small w-100 mr-2"
             [ngClass]="{'disabled': saveMode === 'NewProfile' && selectedAgent.rootProfile?.name?.length < 2}"
-            (click)="saveProfile()">Save</button>
-          <button class="btn btn-small w-100" (click)="profileModal.toggle()">Close</button>
+            (click)="saveProfile()">{{'Save'|translate}}</button>
+          <button class="btn btn-small w-100" (click)="profileModal.toggle()">{{'Close'|translate}}</button>
         </rk-modal-footer>
       </rk-modal>
 
@@ -38,7 +38,7 @@
               <div class="top-content justify-content-between">
                 <div class="d-flex align-items-center">
                   <div class="inf mr-4">
-                    <span class="text-primary">{{ securityProfiles?.length }}</span> queries listed
+                    <span class="text-primary">{{ securityProfiles?.length }}</span> {{'QueriesListed'|translate}}
                   </div>
 
                   <div class="search ml-5">
@@ -51,7 +51,7 @@
 
                 <button class="btn btn-small btn-icon" (click)="newProfile()">
                   <i-feather name="plus"></i-feather>
-                  Create New Profile
+                  {{'CreateNewProfile'|translate}}
                 </button>
               </div>
             </div>
@@ -60,9 +60,9 @@
               <ng-template #header>
                 <tr>
                   <th style="width: 32px;">#</th>
-                  <th>Profile Name</th>
-                  <th>Member Count</th>
-                  <th colspan="3">Operation</th>
+                  <th>{{'ProfileName'|translate}}</th>
+                  <th>{{'MemberCount'|translate}}</th>
+                  <th colspan="3">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
 

@@ -6,6 +6,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { IconsModule, RkAvatarModule } from 'roksit-lib';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BsDropdownModule } from 'ngx-bootstrap';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
+import { HttpClient } from '@angular/common/http';
 
 @NgModule({
     imports: [
@@ -16,6 +19,13 @@ import { BsDropdownModule } from 'ngx-bootstrap';
         RkAvatarModule,
         NgbModule,
         BsDropdownModule.forRoot(),
+        TranslateModule.forChild({
+            loader: {
+              provide: TranslateLoader,
+              useFactory: translateHttpLoaderFactory,
+              deps: [HttpClient]
+            }
+          }),
     ],
     declarations: [NavbarComponent],
     exports: [NavbarComponent]
