@@ -33,7 +33,7 @@
                   </div>
                 </div>
 
-                <div class="row mt-2 mb-1">
+                <div class="row mt-3 mb-1">
                   <div class="col-12 d-flex justify-content-center">
                     <input type="file" class="input-file" id="fileUpload" (change)="selectFile($event)"
                       accept="image/*">
@@ -55,19 +55,28 @@
 
                 <div class="row">
                   <div class="col-12">
-                    <input type="text" class="rk-input w-100" placeholder="{{'Name'|translate}}" name="agentName" id="agentName"
-                      [(ngModel)]="selectedIp.agentAlias" formControlName="agentName" maxlength="64">
+                    <input type="text" class="rk-input w-100" placeholder="{{'Name'|translate}}" name="agentName"
+                      id="agentName" [(ngModel)]="selectedIp.agentAlias" formControlName="agentName" maxlength="64">
+
+                    <p class="rk-description m-0">Lokasyonun işi için tanımlayıcı bir ismini girmelisiniz. Konfigurasyon
+                      ve trafik raporlarında bu isimle yer alır.</p>
                   </div>
 
                   <ng-container *ngIf="ipType == 'dynamicIp'; else elseTemplateIpType">
                     <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-12 mt-2">
                       <input type="text" id="dnsFqdn" name="dnsFqdn" class="rk-input w-100"
-                        [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn" placeholder="{{'DNSFQDN'|translate}}">
+                        [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn"
+                        placeholder="{{'DNSFQDN'|translate}}">
+                    </div>
+
+                    <div class="col-12">
+                      <p class="rk-description m-0">Modeminizin desteklediği dinamik dns servislerinden birini kullanarak ip
+                        adresiniz değişmesi durumunda da filtreleme tercihleriniz aktif kalmasını sağlayabilirsiniz.</p>
                     </div>
                   </ng-container>
 
                   <ng-template #elseTemplateIpType>
-                    <div class="col-12 d-flex mt-2" *ngFor="let row of selectedIp.staticSubnetIp; index as i">
+                    <div class="col-12 d-flex mt-3" *ngFor="let row of selectedIp.staticSubnetIp; index as i">
                       <div class="rk-input-container">
                         <span style="flex: 2">
                           <input type="text" placeholder="{{'IP'|translate}}" maxlength="15" name="'ip'+i"
@@ -95,22 +104,26 @@
                     </div>
                   </ng-template>
 
-                  <div class="col-12 mt-2">
+                  <div class="col-12 mt-3">
                     <rk-select [options]="securityProfilesForRkSelect" placeholder="{{'SelectProfile'|translate}}"
                       (valueChange)="securityProfileChanged($event)">
                     </rk-select>
+                    <p class="rk-description m-0">Hangi profili kullanıcığınızı seçersiniz.</p>
                   </div>
 
-                  <div class="col-12 mt-2">
+                  <div class="col-12 mt-3">
                     <textarea class="rk-input textarea w-100 resize:none" name="blockMessage" id="blockMessage"
                       [(ngModel)]="selectedIp.blockMessage" placeholder="{{'BlockMessage'|translate}}" rows="4"
                       [ngModelOptions]="{standalone: true}"></textarea>
+                    <p class="rk-description m-0">Kullanıcıların erişim izni olmayan bir web sayfasına erişmek istediklerinde çıkan bilgilendirme sayfasında yazacak mesajdır.</p>
                   </div>
 
-                  <div class="col-12 mt-2">
+                  <div class="col-12 mt-3">
                     <input type="text" class="rk-input w-100" placeholder="{{'SinkHoleIp'|translate}}"
                       (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)" [(ngModel)]="selectedIp.cyberXRayIp"
                       [ngModelOptions]="{standalone: true}">
+                      <p class="rk-description m-0">Bloklanan trafiğin standart blok sayfası dışında yönlendirilmesini istediğiniz özel bir ip adresi varsa bu bölüme girmelisiniz.</p>
+                      <p class="rk-description m-0">Local DNS Visibility ürünü kullanmanız durumunda DNS Visibility ürününün ip adresini girmelisiniz.</p>
                   </div>
                 </div>
               </div>
@@ -156,7 +169,8 @@
 
                 <div class="search ml-5">
                   <div class="rk-autocomplete-container" style="width: 220px;">
-                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="searchKey" class="rk-input rk-autocomplete">
+                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="searchKey"
+                      class="rk-input rk-autocomplete">
                     <i-feather class="search-icon" name="search"></i-feather>
                   </div>
                 </div>

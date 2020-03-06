@@ -197,12 +197,14 @@
         Eklenen domainlerin tüm subdomainleri ile izin verilir.
         <br />
         Ör: google.com —> *.google.com
+        <br>
+        Bir domain'in uzunluğu en fazla 64 karakter olabilir.
       </p>
 
       <div class="input-container">
         <div class="rk-search-container w-100">
           <input type="text" placeholder="White List Domain" class="rk-input" [(ngModel)]="whiteListItem.domain"
-            (ngModelChange)="whiteListItemValidation()">
+            (ngModelChange)="whiteListItemValidation()" maxlength="64">
           <i-feather name="search"></i-feather>
         </div>
 
@@ -236,12 +238,14 @@
         Eklenen domainlerin tüm subdomainleri engellenir.
         <br />
         Ör: google.com —> *.google.com
+        <br>
+        Bir domain'in uzunluğu en fazla 64 karakter olabilir.
       </p>
 
       <div class="input-container">
         <div class="rk-search-container w-100">
           <input type="text" placeholder="Black List Domain" class="rk-input" [(ngModel)]="blackListItem.domain"
-            (ngModelChange)="blackListItemValidation()">
+            (ngModelChange)="blackListItemValidation()" maxlength="64">
           <i-feather name="search"></i-feather>
         </div>
 

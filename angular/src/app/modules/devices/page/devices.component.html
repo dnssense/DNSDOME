@@ -33,7 +33,11 @@
                   </rk-select>
                 </div>
 
-                <div class="col-6 mt-3">
+                <div class="col-12 mt-3">
+                  <label class="rk-label">{{'IsCpEnabled'|translate}}</label>
+                </div>
+
+                <div class="col-6">
                   <div class="rk-radio my-0">
                     <input type="radio" id="rd-enable" [(ngModel)]="selectedBox.agent.isCpEnabled" name="rd-enables"
                       [value]="true">
@@ -41,7 +45,7 @@
                   </div>
                 </div>
 
-                <div class="col-6 mt-3">
+                <div class="col-6">
                   <div class="rk-radio my-0">
                     <input type="radio" id="rd-disable" [(ngModel)]="selectedBox.agent.isCpEnabled" name="rd-enables"
                       [value]="false">
