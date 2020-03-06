@@ -13,6 +13,7 @@ import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.compon
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { ValidationService } from 'src/app/core/services/validation.service';
 
 declare let $: any;
 
@@ -87,6 +88,8 @@ export class PublicipComponent implements AfterViewInit {
 
   saveProfile() {
     this.profileWizard.saveProfile();
+
+    this.profileModal.toggle();
   }
 
   nextStep() {
@@ -267,7 +270,7 @@ export class PublicipComponent implements AfterViewInit {
         this.startWizard = true;
 
         // if (t) {
-          this.profileModal.toggle();
+        this.profileModal.toggle();
         // }
       } else {
         this.notification.warning('Profile can not find!');
@@ -455,9 +458,6 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   savePublicIp() {
-
-    introJs().exit();
-
     if (!this.validatePublicIpForm()) {
       return;
     }
@@ -467,11 +467,8 @@ export class PublicipComponent implements AfterViewInit {
       this.notification.success(this.staticMessageService.savedAgentLocationMessage);
       this.getPublicIpsDataAndProfiles();
 
-
+      this.agentModal.toggle();
     });
-
-    $('#newIpRow').slideUp(300);
-    $('#pi_card_btn').show();
   }
 
   isNullOrEmpty(val: string) {
@@ -479,21 +476,16 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   validatePublicIpForm(): boolean {
+    const isDomain = ValidationService.isDomainValid(this.selectedIp.dynamicIpDomain);
+
     if (!this.isNullOrEmpty(this.selectedIp.agentAlias)) {
       this.notification.warning('Please enter a name');
 
       return false;
-    }
-    //  else if (!this.isNullOrEmpty(this.selectedIp.blockMessage)) {
-    //   this.notification.warning('Plesae enter block message');
-
-    //   return false;
-    // }
-    // tslint:disable-next-line: one-line
-    else if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
+    } else if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
       this.notification.warning('Form is not valid! Please enter IP fields with valid values.');
       return false;
-    } else if (this.ipType === 'dynamicIp' && !this.selectedIp.dynamicIpDomain && !this.dnsFqdn) {
+    } else if (this.ipType === 'dynamicIp' && (!this.selectedIp.dynamicIpDomain || !isDomain)) {
       this.notification.warning('Form is not valid! Please enter IP fields with valid values.');
       return false;
     } else if (!this.ipType) {

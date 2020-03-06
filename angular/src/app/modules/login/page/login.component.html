@@ -21,8 +21,8 @@
                         [ngClass]="{'formInputHasError': isFailed}" [(ngModel)]="password" formControlName="password">
 
 
-                      <div class="">
-                        <a style="color: #868e96;" (click)="openForgotPassword()">{{'FORGOTPASSWORD.Title' | translate }}</a>
+                      <div class="mt-1">
+                        <a class="login-link" (click)="openForgotPassword()">{{'FORGOTPASSWORD.Title' | translate }}</a>
                       </div>
                       <div class="form-group text-center d-flex align-items-center flex-column">
                         <br />
@@ -51,7 +51,7 @@
                       <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
                       </re-captcha>
                     </div>
-                    <div class="mt-2"><a style="color: #868e96;" (click)="openLogin()"> {{'LOGIN.Login'|translate}}</a></div>
+                    <div class="mt-2"><a class="login-link" (click)="openLogin()"> {{'LOGIN.Login'|translate}}</a></div>
                     <div class="text-center">
                       <br />
                       <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()"> {{'REGISTER.SendActivationCode'|translate}}</button>

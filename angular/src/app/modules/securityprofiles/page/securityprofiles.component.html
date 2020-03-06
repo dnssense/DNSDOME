@@ -78,7 +78,7 @@
                   </td>
                   <td class="text-center" style="width: 60px;">
                     <button class="btn btn-link btn-icon p-0 {{ profile.isSystem ? 'color-disabled' : 'hover-gray' }}"
-                      (click)="!profile.isSystem ? editProfile(profile) : null">
+                      (click)="!profile.isSystem ? editProfile(profile) : null" [attr.data-tooltip-enabled]="profile.isSystem ? 'true' : 'false'" data-tooltip="System profile not editable." data-tooltip-location="left">
                       <i-feather name="edit-3" class="mr-0"></i-feather>
                     </button>
                   </td>

@@ -124,7 +124,7 @@
         <rk-modal #groupAgentModal (close)="closeGroupAgentModal($event)">
           <rk-modal-header icon="plus">
             <rk-modal-header-title>
-              <h5>{{ selectedGroupAgent.agentGroup.id ? 'Edit' : 'Create New' }} Group </h5>
+              <h5>{{ selectedGroupAgent?.agentGroup?.id ? 'Edit' : 'Create New' }} Group </h5>
             </rk-modal-header-title>
 
             <rk-modal-header-close (click)="groupAgentModal.toggle()"></rk-modal-header-close>
