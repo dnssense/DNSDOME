@@ -1,93 +1,114 @@
-<div class="toolbar">
-  <a href="{{ getPath() }}" class="page text-capitalize" routerLinkActive="router-link-active">
-    {{ getTitle[1] }}
-    <ng-container *ngIf="getTitle?.length > 2">
-      <span class="sub-page-title" *ngFor="let t of getTitle?.splice(2)">/ {{ getCleanText(t) }}</span>
-    </ng-container>
-  </a>
-
-  <div class="account">
-    <div class="btn-group mr-2" dropdown placement="bottom right">
-      <button class="notification-btn ripple" dropdownToggle type="button">
-        <i-feather name="globe"></i-feather>
-        <div class="btn-badge" style="background: #3397c5;">{{currentLanguage()}}</div>
-      </button>
-
-      <div *dropdownMenu class="dropdown-menu dropdown-menu-right rk-list-dropdown-container" role="menu">
-        <div class="rk-dropdown">
-          <li>
-            <a style="cursor: pointer;" (click)="setLanguage('tr')">{{'LANGUAGE.TR'|translate}}</a>
-          </li>
-          <li>
-            <a style="cursor: pointer;" (click)="setLanguage('en')">{{'LANGUAGE.EN'|translate}}</a>
-          </li>
-        </div>
-      </div>
-    </div>
-
-    <a href="http://docs.roksit.com" target="_blank" class="btn btn-small btn-icon btn-link notification-btn p-0 mr-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24">
-        <path fill="#97A5BB" fill-rule="evenodd"
-          d="M6.76 21.97c-.178 0-.357-.034-.528-.105-.516-.214-.85-.713-.85-1.271v-1.461c0-.522-.423-.945-.944-.945C2.542 18.188 1 16.645 1 14.75V4.437C1 2.542 2.542 1 4.438 1h15.125C21.457 1 23 2.542 23 4.438v6.015c0 .475-.385.86-.86.86-.474 0-.859-.385-.859-.86V4.438c0-.948-.77-1.72-1.718-1.72H4.438c-.948 0-1.72.772-1.72 1.72V14.75c0 .948.772 1.719 1.72 1.719 1.468 0 2.664 1.195 2.664 2.664v.632l1.87-1.871c.92-.92 2.142-1.425 3.441-1.425h7.15c.947 0 1.718-.771 1.718-1.719 0-.475.385-.86.86-.86.474 0 .859.385.859.86 0 1.895-1.542 3.438-3.438 3.438h-7.149c-.84 0-1.63.327-2.225.921l-2.457 2.457c-.264.264-.614.404-.971.404zm6.1-8.036c0-.475-.385-.86-.86-.86s-.86.385-.86.86c0 .474.385.859.86.859s.86-.385.86-.86zm0-3.008v-.601c0-.049.027-.095.064-.107 1.224-.408 2.045-1.595 1.996-2.886-.058-1.516-1.29-2.749-2.807-2.806-.802-.03-1.562.258-2.14.814-.577.556-.895 1.304-.895 2.105 0 .475.385.86.86.86.474 0 .859-.385.859-.86 0-.33.131-.638.369-.867.237-.228.55-.348.882-.335.623.024 1.13.53 1.154 1.155.02.532-.317 1.021-.821 1.19-.742.246-1.24.945-1.24 1.737v.6c0 .475.384.86.859.86s.86-.385.86-.86z" />
-      </svg>
-    </a>
-
-    <div class="btn-group" dropdown placement="bottom right">
-      <button class="notification-btn ripple" dropdownToggle type="button">
-        <i-feather name="bell"></i-feather>
-        <div class="btn-badge">{{ unReadedNotificationsCount }}</div>
-      </button>
-
-      <div *dropdownMenu class="dropdown-menu dropdown-menu-right rk-list-dropdown-container" role="menu">
-        <div class="rk-list">
-          <div class="rk-list-header">
-            <div class="rk-list-header-title">Notifications <span
-                class="length">({{ unReadedNotificationsCount }})</span>
-            </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="toolbar">
+        <div class="d-flex align-items-center justify-content-between w-100">
+          <div style="width: 145px; overflow: hidden;">
+            <img src="/assets/img/logo-roksit.png" alt="logo" height="40px" style="position: relative; left: -16px">
           </div>
 
-          <div class="rk-list-body">
-            <div class="rk-list-item" *ngFor="let notification of notifications" (click)="setAsRead(notification)"
-              [ngStyle]="{'background': notification.status === 1 ? 'rgba(0,0,0,.05)' : 'white'}">
-              <div class="text">
-                {{notification.message}}
-              </div>
+          <div class="account">
+            <div class="btn-group mr-2" dropdown placement="bottom right">
+              <button class="notification-btn ripple" dropdownToggle type="button">
+                <i-feather name="globe"></i-feather>
+                <div class="btn-badge" style="background: #3397c5;">{{currentLanguage()}}</div>
+              </button>
 
-              <div class="arrow">
-                <i-feather name="chevron-right"></i-feather>
+              <div *dropdownMenu class="dropdown-menu dropdown-menu-right rk-list-dropdown-container" role="menu">
+                <div class="rk-dropdown">
+                  <li>
+                    <a style="cursor: pointer;" (click)="setLanguage('tr')">{{'LANGUAGE.TR'|translate}}</a>
+                  </li>
+                  <li>
+                    <a style="cursor: pointer;" (click)="setLanguage('en')">{{'LANGUAGE.EN'|translate}}</a>
+                  </li>
+                </div>
               </div>
+            </div>
+
+            <a href="http://docs.roksit.com" target="_blank"
+              class="btn btn-small btn-icon btn-link notification-btn p-0 mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24">
+                <path fill="#97A5BB" fill-rule="evenodd"
+                  d="M6.76 21.97c-.178 0-.357-.034-.528-.105-.516-.214-.85-.713-.85-1.271v-1.461c0-.522-.423-.945-.944-.945C2.542 18.188 1 16.645 1 14.75V4.437C1 2.542 2.542 1 4.438 1h15.125C21.457 1 23 2.542 23 4.438v6.015c0 .475-.385.86-.86.86-.474 0-.859-.385-.859-.86V4.438c0-.948-.77-1.72-1.718-1.72H4.438c-.948 0-1.72.772-1.72 1.72V14.75c0 .948.772 1.719 1.72 1.719 1.468 0 2.664 1.195 2.664 2.664v.632l1.87-1.871c.92-.92 2.142-1.425 3.441-1.425h7.15c.947 0 1.718-.771 1.718-1.719 0-.475.385-.86.86-.86.474 0 .859.385.859.86 0 1.895-1.542 3.438-3.438 3.438h-7.149c-.84 0-1.63.327-2.225.921l-2.457 2.457c-.264.264-.614.404-.971.404zm6.1-8.036c0-.475-.385-.86-.86-.86s-.86.385-.86.86c0 .474.385.859.86.859s.86-.385.86-.86zm0-3.008v-.601c0-.049.027-.095.064-.107 1.224-.408 2.045-1.595 1.996-2.886-.058-1.516-1.29-2.749-2.807-2.806-.802-.03-1.562.258-2.14.814-.577.556-.895 1.304-.895 2.105 0 .475.385.86.86.86.474 0 .859-.385.859-.86 0-.33.131-.638.369-.867.237-.228.55-.348.882-.335.623.024 1.13.53 1.154 1.155.02.532-.317 1.021-.821 1.19-.742.246-1.24.945-1.24 1.737v.6c0 .475.384.86.859.86s.86-.385.86-.86z" />
+              </svg>
+            </a>
+
+            <div class="btn-group" dropdown placement="bottom right">
+              <button class="notification-btn ripple" dropdownToggle type="button">
+                <i-feather name="bell"></i-feather>
+                <div class="btn-badge">{{ unReadedNotificationsCount }}</div>
+              </button>
+
+              <div *dropdownMenu class="dropdown-menu dropdown-menu-right rk-list-dropdown-container" role="menu">
+                <div class="rk-list">
+                  <div class="rk-list-header">
+                    <div class="rk-list-header-title">Notifications <span
+                        class="length">({{ unReadedNotificationsCount }})</span>
+                    </div>
+                  </div>
+
+                  <div class="rk-list-body">
+                    <div class="rk-list-item" *ngFor="let notification of notifications"
+                      (click)="setAsRead(notification)"
+                      [ngStyle]="{'background': notification.status === 1 ? 'rgba(0,0,0,.05)' : 'white'}">
+                      <div class="text">
+                        {{notification.message}}
+                      </div>
+
+                      <div class="arrow">
+                        <i-feather name="chevron-right"></i-feather>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="border"></div>
+
+            <div class="account-dropdown">
+              <rk-avatar>
+                <div class="rk-img">
+                  <img src="/assets/img/default-avatar.png" alt="" />
+                </div>
+                <div class="rk-text" style="text-transform: capitalize;">
+                  {{ currentUser?.name }}
+                </div>
+                <div class="rk-dropdown">
+                  <div class="rk-dropdown-title">Account</div>
+                  <li>
+                    <a [routerLink]="['/admin/account-settings']" routerLinkActive="router-link-active"
+                      class="dropdown-item">
+                      <i-feather name="settings"></i-feather>
+                      Account Settings
+                    </a>
+                  </li>
+                  <li>
+                    <a (click)="logout()" class="dropdown-item">
+                      <i-feather name="log-out"></i-feather>
+                      Exit
+                    </a>
+                  </li>
+                </div>
+              </rk-avatar>
             </div>
           </div>
         </div>
+
+        <div class="d-flex align-items-center justify-content-between w-100">
+          <a href="{{ getPath() }}" class="page text-capitalize" routerLinkActive="router-link-active" style="font-weight: 400;">
+            {{ getTitle[getTitle?.length - 1] }}
+            <!-- <ng-container *ngIf="getTitle?.length > 2">
+              <span class="sub-page-title" *ngFor="let t of getTitle?.splice(2)">/ {{ getCleanText(t) }}</span>
+            </ng-container> -->
+          </a>
+
+          <a class="text-capitalize text-primary rk-link" *ngFor="let item of breadcrumb; let index = index">
+            {{ breadcrumb.length > 1 && index > 0 ? ' >' : '' }} {{ item }}
+          </a>
+        </div>
       </div>
-    </div>
-
-    <div class="border"></div>
-
-    <div class="account-dropdown">
-      <rk-avatar>
-        <div class="rk-img">
-          <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="" />
-        </div>
-        <div class="rk-text" style="text-transform: capitalize;">
-          {{ currentUser?.name }}
-        </div>
-        <div class="rk-dropdown">
-          <div class="rk-dropdown-title">Account</div>
-          <li>
-            <a [routerLink]="['/admin/account-settings']" routerLinkActive="router-link-active" class="dropdown-item">
-              <i-feather name="settings"></i-feather>
-              Account Settings
-            </a>
-          </li>
-          <li>
-            <a (click)="logout()" class="dropdown-item">
-              <i-feather name="log-out"></i-feather>
-              Exit
-            </a>
-          </li>
-        </div>
-      </rk-avatar>
     </div>
   </div>
 </div>
