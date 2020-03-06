@@ -74,7 +74,11 @@ export class CustomReportComponent implements OnInit {
       const exists = filter.values.some(x => x === $event.value);
 
       if (!exists) {
-        filter.values.unshift($event.value);
+        const _filterValues = JSON.parse(JSON.stringify(filter.values)) as string[];
+
+        _filterValues.unshift($event.value);
+
+        filter.values = _filterValues;
       }
     } else {
       this.filters.push(new FilterBadgeModel($event.columnModel.name, true, [$event.value]));

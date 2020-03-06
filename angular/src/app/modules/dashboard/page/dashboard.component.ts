@@ -201,9 +201,9 @@ export class DashboardComponent implements OnInit {
 
   private today: Date = new Date();
 
-  private startDate: Date = new Date();
+  startDate: Date = new Date();
 
-  private endDate: Date = new Date();
+  endDate: Date = new Date();
 
   diffrence: string;
 
