@@ -32,10 +32,16 @@
             <div class="timeline-sub-title"> {{'DASHBOARD.TotalDays365'|translate}}</div>
           </div>
 
-          <div class="rk-row m-l-20 rk-grow" style="justify-content: flex-end;">
-            <span class="rk-title-2 rk-v-center">{{'DASHBOARD.TimeRange'|translate}}</span>
-            <div class="rk-row m-l-15 ">
-              <rk-date (complete)="dateChanged($event)" [alignment]="'right'"></rk-date>
+          <div class="rk-row m-l-20 rk-grow align-items-start" style="justify-content: flex-end">
+            <!-- <span class="rk-title-2 rk-v-center">{{'DASHBOARD.TimeRange'|translate}}</span> -->
+
+            <button class="btn btn-default ml-2" *ngFor="let dateButton of dateButtons" (click)="setDateByDateButton(dateButton)">{{ dateButton.displayText }}</button>
+            
+            <icon-equal style="margin: 11px 10px 0"></icon-equal>
+            
+            <div class="d-flex flex-column text-center">
+              <rk-date [startDate]="startDate" [endDate]="endDate" (complete)="dateChanged($event)" [alignment]="'right'"></rk-date>
+              <span class="date-text mt-1" *ngIf="diffrence">{{ diffrence }} gün</span>
             </div>
           </div>
         </div>

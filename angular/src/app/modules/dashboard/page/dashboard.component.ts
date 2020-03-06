@@ -28,6 +28,12 @@ interface TagInputValue {
   display: string;
 }
 
+export interface RkDateButton {
+  startDate: Date;
+  endDate: Date;
+  displayText: string;
+}
+
 declare let $: any;
 declare let moment: any;
 @Component({
@@ -78,6 +84,36 @@ export class DashboardComponent implements OnInit {
   };
 
   selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
+
+  private now: Date = new Date();
+
+  dateButtons: RkDateButton[] = [
+    {
+      startDate: new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last year'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 3, this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last 3 month'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last month'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last week'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 0),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 10),
+      displayText: 'Today (00:00-10:00)'
+    },
+  ];
 
   trafficAnomaly: TrafficAnomaly = {} as TrafficAnomaly;
 
@@ -169,6 +205,8 @@ export class DashboardComponent implements OnInit {
 
   private endDate: Date = new Date();
 
+  diffrence: string;
+
   maliciousDomains: Domain[] = [];
   newDomains: Domain[] = [];
   harmfulDomains: Domain[] = [];
@@ -193,27 +231,27 @@ export class DashboardComponent implements OnInit {
     const agentsLocation: Agent[] = [];
     const agentsBox: Agent[] = [];
     const agentsRoamingClient: Agent[] = [];
-    const distinctAgents: DistinctAgentResponse = {items: []};
+    const distinctAgents: DistinctAgentResponse = { items: [] };
     // wait all requests to finish
     forkJoin(
 
-     this.agentService.getAgentLocation().map(x => {
-      x.forEach(y => agentsLocation.push(y));
-    }),
-    this.roamingService.getClients().map(x => {
-      x.forEach(y => agentsRoamingClient.push(y));
-    }),
+      this.agentService.getAgentLocation().map(x => {
+        x.forEach(y => agentsLocation.push(y));
+      }),
+      this.roamingService.getClients().map(x => {
+        x.forEach(y => agentsRoamingClient.push(y));
+      }),
 
-    this.boxService.getBoxes().map(x => {
-      x.forEach(y => agentsBox.push(y.agent));
-    }),
+      this.boxService.getBoxes().map(x => {
+        x.forEach(y => agentsBox.push(y.agent));
+      }),
 
-    this.dashboardService.getDistinctAgent({duration: 24}).map(x => {
-      x.items.forEach(y => distinctAgents.items.push(y));
-    })
+      this.dashboardService.getDistinctAgent({ duration: 24 }).map(x => {
+        x.items.forEach(y => distinctAgents.items.push(y));
+      })
     ).subscribe(val => {
 
-      const publicip: AgentCountModel = { name: 'PublicIp', activeCount: 0 , passiveCount: 0 };
+      const publicip: AgentCountModel = { name: 'PublicIp', activeCount: 0, passiveCount: 0 };
       const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0 };
 
       const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0 };
@@ -221,7 +259,7 @@ export class DashboardComponent implements OnInit {
       // calcuate location agents
       distinctAgents.items.forEach(x => {
         if (agentsLocation.find(y => y.id == x.id)) {
-        publicip.activeCount++;
+          publicip.activeCount++;
         }
       });
       publicip.passiveCount = agentsLocation.length - publicip.activeCount;
@@ -229,7 +267,7 @@ export class DashboardComponent implements OnInit {
       // calculate roaming clients
       distinctAgents.items.forEach(x => {
         if (agentsRoamingClient.find(y => y.id == x.id)) {
-        roamingclient.activeCount++;
+          roamingclient.activeCount++;
         }
       });
       roamingclient.passiveCount = agentsRoamingClient.length - roamingclient.activeCount;
@@ -237,7 +275,7 @@ export class DashboardComponent implements OnInit {
       // calculate box
       distinctAgents.items.forEach(x => {
         if (agentsBox.find(y => y.id == x.id)) {
-        dnsrelay.activeCount++;
+          dnsrelay.activeCount++;
         }
       });
       dnsrelay.passiveCount = agentsBox.length - dnsrelay.activeCount;
@@ -245,6 +283,13 @@ export class DashboardComponent implements OnInit {
       this.agentCounts = [publicip, roamingclient, dnsrelay];
 
     });
+  }
+
+  setDateByDateButton(dateButtonItem: RkDateButton) {
+    this.startDate = dateButtonItem.startDate;
+    this.endDate = dateButtonItem.endDate;
+
+    this.dateChanged({ startDate: this.startDate, endDate: this.endDate });
   }
 
   translate(data: string): string {
@@ -266,7 +311,7 @@ export class DashboardComponent implements OnInit {
   }
 
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
-    
+
     const trafficAnomalyType = this.trafficAnomaly[type];
 
     if (trafficAnomalyType) {
@@ -292,6 +337,8 @@ export class DashboardComponent implements OnInit {
     const endDate = moment([ev.endDate.getFullYear(), ev.endDate.getMonth(), ev.endDate.getDate()]);
 
     const diff = endDate.diff(startDate, 'days');
+
+    this.diffrence = diff;
 
     const request = { duration: diff * 24 } as TopDomainsRequestV4;
     this.prepareTimeline();
@@ -491,9 +538,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
- /*  updateCharts() {
-    this.getElasticData();
-  } */
+  /*  updateCharts() {
+     this.getElasticData();
+   } */
 
   /* calculatePercentage(num1: number, num2: number) {
     return Math.round((num2 - num1) / num1 * 100);
@@ -513,7 +560,7 @@ export class DashboardComponent implements OnInit {
     } else {
       this.selectedCategoryForTraffic = cat.name;
     }
-debugger;
+    debugger;
     const averageData = [];
     const hitData = [];
 
@@ -550,52 +597,52 @@ debugger;
     ]);
   }
 
- /*  deleteCatFromTraffic(id: number) {
-    if (id && id > 0) {
-      this.selectedCategoryForTraffic = '';
-      this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: 'Average Hits', data: this.ds.hitAverages }]);
+  /*  deleteCatFromTraffic(id: number) {
+     if (id && id > 0) {
+       this.selectedCategoryForTraffic = '';
+       this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: 'Average Hits', data: this.ds.hitAverages }]);
+     }
+   } */
+
+  /*   addCategoryToUnique(id: number) {
+      this.selectedCategoryForUnique = this.categoryList.find(c => c.id === id);
+      const catName = this.selectedCategoryForUnique.name;
+      const catHits = [], catAvs = [];
+      const indexLimit = this.dateParameter === -1 ? this.elasticData.items.length - 1 : 0;
+      for (let i = indexLimit; i < this.elasticData.items.length; i++) {
+        const data = this.elasticData[i];
+  
+        Object.keys(data.category_hits).forEach(function eachKey(key) {
+          if (key.toString() === catName) {
+            catHits.push(data.category_hits[key].unique_domain);
+            catAvs.push(Math.round(data.category_hits[key].unique_domain_average));
+          }
+        });
+      }
+  
+      this.uniqueDomainChart.updateSeries([{ name: catName + 'Unique Domain', data: catHits }, { name: 'Unique Domain Avg', data: catAvs }]);
+  
+      this.resetCategoryListFiltered();
+    } */
+  /*
+    deleteCatFromUnique(id: number) {
+      if (id && id > 0) {
+        this.selectedCategoryForUnique = null;
+        this.uniqueDomainChart.updateSeries([{ name: 'Unique Domain', data: this.ds.uniqueDomain }, { name: 'Unique Domain Avg', data: this.ds.uniqueDomainAvg }]);
+      }
     }
-  } */
-
-/*   addCategoryToUnique(id: number) {
-    this.selectedCategoryForUnique = this.categoryList.find(c => c.id === id);
-    const catName = this.selectedCategoryForUnique.name;
-    const catHits = [], catAvs = [];
-    const indexLimit = this.dateParameter === -1 ? this.elasticData.items.length - 1 : 0;
-    for (let i = indexLimit; i < this.elasticData.items.length; i++) {
-      const data = this.elasticData[i];
-
-      Object.keys(data.category_hits).forEach(function eachKey(key) {
-        if (key.toString() === catName) {
-          catHits.push(data.category_hits[key].unique_domain);
-          catAvs.push(Math.round(data.category_hits[key].unique_domain_average));
-        }
-      });
-    }
-
-    this.uniqueDomainChart.updateSeries([{ name: catName + 'Unique Domain', data: catHits }, { name: 'Unique Domain Avg', data: catAvs }]);
-
-    this.resetCategoryListFiltered();
-  } */
-/*
-  deleteCatFromUnique(id: number) {
-    if (id && id > 0) {
-      this.selectedCategoryForUnique = null;
-      this.uniqueDomainChart.updateSeries([{ name: 'Unique Domain', data: this.ds.uniqueDomain }, { name: 'Unique Domain Avg', data: this.ds.uniqueDomainAvg }]);
-    }
-  }
- */
- /*  private resetCategoryListFiltered() {
-    this.searchKey = null;
-    this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
-  } */
+   */
+  /*  private resetCategoryListFiltered() {
+     this.searchKey = null;
+     this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
+   } */
 
   /* showInReport(param: string) {
     localStorage.setItem('dashboardParam', param + '&' + this.dateParameter);
     this.router.navigate(['/admin/reports/customreport']);
   }
  */
-  calculateCategory(categoryList: CategorySummary[], total: number ): TrafficAnomalyCategory[] {
+  calculateCategory(categoryList: CategorySummary[], total: number): TrafficAnomalyCategory[] {
     const map: Map<string, TrafficAnomalyCategory> = new Map();
 
     categoryList.forEach(x => {
@@ -651,7 +698,7 @@ debugger;
     category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.safe.indexOf(x.name) > -1);
     anomaly.safe.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
     anomaly.safe.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.safe.categories = this.calculateCategory(category_hits,  anomaly.total.allowCount + anomaly.total.blockCount);
+    anomaly.safe.categories = this.calculateCategory(category_hits, anomaly.total.allowCount + anomaly.total.blockCount);
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
     anomaly.safe.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
     anomaly.safe.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
@@ -662,7 +709,7 @@ debugger;
     category_hits = this.flatten(filtered.map(x => x.category_hits).concat()).filter(x => this.categoryMappings.malicious.indexOf(x.name) > -1);
     anomaly.malicious.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
     anomaly.malicious.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.malicious.categories = this.calculateCategory(category_hits,  anomaly.total.allowCount + anomaly.total.blockCount);
+    anomaly.malicious.categories = this.calculateCategory(category_hits, anomaly.total.allowCount + anomaly.total.blockCount);
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
     anomaly.malicious.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
     anomaly.malicious.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
@@ -673,7 +720,7 @@ debugger;
     category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.variable.indexOf(x.name) > -1);
     anomaly.variable.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
     anomaly.variable.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.variable.categories = this.calculateCategory(category_hits,  anomaly.total.allowCount + anomaly.total.blockCount);
+    anomaly.variable.categories = this.calculateCategory(category_hits, anomaly.total.allowCount + anomaly.total.blockCount);
     selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
     anomaly.variable.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
     anomaly.variable.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
