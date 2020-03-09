@@ -401,7 +401,7 @@
     "ProfileConfigurationWillChangeForAllOfRelatedAgents":"Security Profile configuration will change for all related agents",
     "ProfileConfigurationWillChange":"Security profile configuration will change",
     "CanNotDelete":"Cannot delete",
-    "ThisSecurityProfileIsUsingBySomeAgents":"This security profile is using by some agents",
+    "ThisSecurityProfileIsUsingBySomeAgents":"This security profile is using by some assets",
     "ItWillBeDeleted":"This item will be deleted",
     "ProfileNotFound":"Security profile not found",
     "AgentRoamingClientWillBeDeleted":"Roaming client will be deleted",
@@ -413,5 +413,7 @@
     "GroupWillBeDeleted":"Group will be deleted",
     "GroupDeleted":"Group deleted",
     "PleaseChangeSomething":"Please change something",
-    "CategoryRequestSuccessfullySended":"Categorization request sended succesfully"
+    "CategoryRequestSuccessfullySended":"Categorization request sended succesfully",
+    "IsVerified" : "Is Verified",
+    "IsLocked": "Is Locked"
 }

@@ -54,8 +54,12 @@
               </div>
 
               <div class="col-12 mt-3" *ngIf="user.id > 0">
-                <rk-checkbox class="rk-checkbox-font" [(value)]="user.isActive" alignment="right"> {{'IsActive'|translate}}
+                <rk-checkbox class="rk-checkbox-font" [(value)]="user.isActive" (valueChange)="isActiveChanged($event)" alignment="right"> {{'IsActive'|translate}}
                 </rk-checkbox>
+              </div>
+
+              <div class="col-12 mt-3" *ngIf="user.id > 0">
+                <rk-checkbox class="rk-checkbox-font" [(value)]="user.isLocked" (valueChange)="isLockedChanged($event)" alignment="right">{{ 'IsLocked' | translate }}</rk-checkbox>
               </div>
 
             </div>
@@ -98,9 +102,15 @@
                   <th
                     style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
                     {{'Role'|translate}}</th>
-                  <th
+                  <th class="text-center"
                     style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
                     {{'IsActive'|translate}}</th>
+                  <th class="text-center"
+                    style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
+                    {{'IsVerified'|translate}}</th>
+                  <th class="text-center"
+                    style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
+                    {{'IsLocked'|translate}}</th>
                   <th
                     style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
                     {{'Edit'|translate}}</th>
@@ -112,9 +122,21 @@
                   <td>{{ user?.name }}</td>
                   <td>{{ user.username }}</td>
                   <td>{{ userFriendlyRoleName(user.roles[0].name) }}</td>
-                  <td>
+                  <td class="text-center" style="width: 70px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                       <path [attr.fill]="user.isActive ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
+                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                    </svg>
+                  </td>
+                  <td class="text-center" style="width: 100px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <path [attr.fill]="user.isVerified === 1 ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
+                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                    </svg>
+                  </td>
+                  <td class="text-center" style="width: 100px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <path [attr.fill]="user.isLocked === 1 ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
                         d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
                     </svg>
                   </td>

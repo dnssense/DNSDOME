@@ -21,8 +21,8 @@
                         [ngClass]="{'formInputHasError': isFailed}" [(ngModel)]="password" formControlName="password">
 
 
-                      <div class="">
-                        <a style="color: #868e96;cursor: pointer;" (click)="openForgotPassword()">{{'FORGOTPASSWORD.Title' | translate }}</a>
+                      <div class="mt-1">
+                        <a class="login-link" (click)="openForgotPassword()">{{'FORGOTPASSWORD.Title' | translate }}</a>
                       </div>
                       <div class="form-group text-center d-flex align-items-center flex-column">
                         <br />
@@ -44,6 +44,7 @@
                       </div>
                     </form>
                   </div>
+                  
                   <div id="forgotPasswordDiv" style="display:none">
                     <input type="email" class="formInput mb-3" placeholder="{{'LOGIN.Email' | translate}} *"
                       [(ngModel)]="forgoterEmail" (ngModelChange)="emailValidationLogin($event)">
@@ -51,23 +52,22 @@
                       <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
                       </re-captcha>
                     </div>
-                    <div class="mt-2"><a style="color: #868e96;" (click)="openLogin()"> {{'LOGIN.Login'|translate}}</a></div>
+                    <div class="mt-2"><a class="login-link" (click)="openLogin()"> {{'LOGIN.Login'|translate}}</a></div>
                     <div class="text-center">
                       <br />
                       <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()"> {{'REGISTER.SendActivationCode'|translate}}</button>
                     </div>
                   </div>
+                  
                   <div id="twoFactorDiv" class="text-success text-center" style="display:none;">
                     <countdown-timer style="font-size: 25px; font-weight: 500;" (zeroTrigger)="timeEnd()"
                       [end]="endTime"></countdown-timer>
-                    <mat-form-field class="example-full-width">
-                      <input type="text" disabled matInput [(value)]="twoFactorPhone">
-                    </mat-form-field>
-                    <mat-form-field class="example-full-width">
-                      <input type="smsCode" matInput placeholder="SMS Code" [(ngModel)]="smsCode">
-                    </mat-form-field>
+                      <input class="formInput w-100 mb-2" [(ngModel)]="twoFactorPhone" readonly>
+                    
+                      <input type="text" class="formInput w-100 mb-2"  placeholder="SMS Code" [(ngModel)]="smsCode">
+                      
                     <div class="text-center">
-                      <button class="btns login-btns" (click)="confirm2FACode()">{{'REGISTER.ConfirmSMS | translate '}}</button>
+                      <button class="btns login-btns" (click)="confirm2FACode()">{{'REGISTER.ConfirmSMS' | translate}}</button>
                     </div>
                   </div>
                 </div>

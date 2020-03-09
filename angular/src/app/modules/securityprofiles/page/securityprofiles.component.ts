@@ -32,7 +32,7 @@ export class SecurityProfilesComponent {
 
     selectedAgent: Agent = new Agent();
 
-    saveMode: 'NewProfile' | 'ProfileUpdate';
+    saveMode: 'NewProfile' | 'ProfileUpdate' | 'NotEditable';
 
     @ViewChild('profileModal') profileModal: RkModalModel;
 
@@ -126,10 +126,6 @@ export class SecurityProfilesComponent {
         this.getProfiles();
     }
 
-   /*  cleanProfile() {
-        this.profileWizard.clean();
-    } */
-
     cloneProfile(profile: SecurityProfile) {
         const cloneAgent = new Agent();
 
@@ -153,6 +149,16 @@ export class SecurityProfilesComponent {
         this.selectedAgent.rootProfile.blackWhiteListProfile.id = null;
         this.saveMode = 'ProfileUpdate';
         this.profileWizard.updateModels();
+        this.profileModal.toggle();
+    }
+
+    viewProfile(profile: SecurityProfile) {
+        this.selectedAgent = new Agent();
+
+        this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(profile));
+
+        this.saveMode = 'NotEditable';
+
         this.profileModal.toggle();
     }
 }

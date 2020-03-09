@@ -39,6 +39,8 @@ export class NavbarComponent implements OnInit {
 
     currentUser: any;
 
+    breadcrumb: string[] = [];
+
     constructor(
         location: Location,
         private element: ElementRef,
@@ -96,6 +98,8 @@ export class NavbarComponent implements OnInit {
     get getTitle() {
         const title: string = this.location.prepareExternalUrl(this.location.path()).substring(7);
 
+        this.breadcrumb = title.substring(1).trim().split('/').map(x => this.getCleanText(x));
+
         return title.split('/').map(x => this.getCleanText(x));
     }
 
@@ -128,7 +132,7 @@ export class NavbarComponent implements OnInit {
     }
 
     currentLanguage() {
-       return this.config.getTranslationLanguage().toUpperCase();
+        return this.config.getTranslationLanguage().toUpperCase();
     }
 
     setLanguage(lang: string) {

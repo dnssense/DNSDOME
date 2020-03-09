@@ -11,7 +11,7 @@
     <div class="rk-accordion-title">Security Settings</div>
 
     <div class="rk-accordion-body py-2">
-      <div class="d-flex flex-column p-2" [ngStyle]="{'background': securityMode ? '#4fb75d' : '#97a5bb'}">
+      <div class="d-flex flex-column p-2" [ngStyle]="{'background': selectedAgent.rootProfile.isPositiveSecurity ? '#4fb75d' : '#97a5bb'}">
         <div class="accordion-label text-white">Security Mode:</div>
         <div class="d-flex align-items-center justify-content-between mt-1">
           <button class="rk-toggle-btn w-100 mr-2" [ngClass]="{'active': selectedAgent.rootProfile.isPositiveSecurity}"
@@ -176,7 +176,7 @@
 
         <rk-collapse-body>
           <ng-container *ngFor="let app of groupedApp.applications">
-            <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="app.isBlocked=!app.isBlocked;applicationChanged(app)"
+            <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="app.isSystem ? app.isBlocked = !app.isBlocked : null; applicationChanged(app)"
               [active]="app.isBlocked">
               {{ app.application.name }}</rk-toggle-button>
           </ng-container>
@@ -197,12 +197,14 @@
         Eklenen domainlerin tüm subdomainleri ile izin verilir.
         <br />
         Ör: google.com —> *.google.com
+        <br>
+        Bir domain'in uzunluğu en fazla 64 karakter olabilir.
       </p>
 
       <div class="input-container">
         <div class="rk-search-container w-100">
           <input type="text" placeholder="White List Domain" class="rk-input" [(ngModel)]="whiteListItem.domain"
-            (ngModelChange)="whiteListItemValidation()">
+            (ngModelChange)="whiteListItemValidation()" maxlength="64">
           <i-feather name="search"></i-feather>
         </div>
 
@@ -236,12 +238,14 @@
         Eklenen domainlerin tüm subdomainleri engellenir.
         <br />
         Ör: google.com —> *.google.com
+        <br>
+        Bir domain'in uzunluğu en fazla 64 karakter olabilir.
       </p>
 
       <div class="input-container">
         <div class="rk-search-container w-100">
           <input type="text" placeholder="Black List Domain" class="rk-input" [(ngModel)]="blackListItem.domain"
-            (ngModelChange)="blackListItemValidation()">
+            (ngModelChange)="blackListItemValidation()" maxlength="64">
           <i-feather name="search"></i-feather>
         </div>
 

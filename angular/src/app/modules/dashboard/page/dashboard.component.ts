@@ -29,6 +29,12 @@ interface TagInputValue {
   display: string;
 }
 
+export interface RkDateButton {
+  startDate: Date;
+  endDate: Date;
+  displayText: string;
+}
+
 declare let $: any;
 declare let moment: any;
 @Component({
@@ -79,6 +85,36 @@ export class DashboardComponent implements OnInit {
   };
 
   selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
+
+  private now: Date = new Date();
+
+  dateButtons: RkDateButton[] = [
+    {
+      startDate: new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last year'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 3, this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last 3 month'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last month'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last week'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 0),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 10),
+      displayText: 'Today (00:00-10:00)'
+    },
+  ];
 
   trafficAnomaly: TrafficAnomaly = {} as TrafficAnomaly;
 
@@ -166,9 +202,11 @@ export class DashboardComponent implements OnInit {
 
   private today: Date = new Date();
 
-  private startDate: Date = new Date();
+  startDate: Date = new Date();
 
-  private endDate: Date = new Date();
+  endDate: Date = new Date();
+
+  diffrence: string;
 
   maliciousDomains: Domain[] = [];
   newDomains: Domain[] = [];
@@ -273,6 +311,13 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  setDateByDateButton(dateButtonItem: RkDateButton) {
+    this.startDate = dateButtonItem.startDate;
+    this.endDate = dateButtonItem.endDate;
+
+    this.dateChanged({ startDate: this.startDate, endDate: this.endDate });
+  }
+
   translate(data: string): string {
     return this.translateService.instant(data);
   }
@@ -320,6 +365,8 @@ export class DashboardComponent implements OnInit {
     const endDate = moment([ev.endDate.getFullYear(), ev.endDate.getMonth(), ev.endDate.getDate()]);
 
     const diff = endDate.diff(startDate, 'days');
+
+    this.diffrence = diff;
 
     const request = { duration: diff * 24 } as TopDomainsRequestV4;
     this.drawChartAnomaly();
@@ -581,7 +628,7 @@ export class DashboardComponent implements OnInit {
     } else {
       this.selectedCategoryForTraffic = cat.name;
     }
-    /* debugger;
+
     const averageData = [];
     const hitData = [];
 
@@ -615,7 +662,7 @@ export class DashboardComponent implements OnInit {
 
     this.timeLineChart.updateSeries([
       { data: hitData },
-    ]); */
+    ]);
 
     this.drawChartAnomaly();
   }
@@ -634,7 +681,6 @@ export class DashboardComponent implements OnInit {
       const indexLimit = this.dateParameter === -1 ? this.elasticData.items.length - 1 : 0;
       for (let i = indexLimit; i < this.elasticData.items.length; i++) {
         const data = this.elasticData[i];
-
         Object.keys(data.category_hits).forEach(function eachKey(key) {
           if (key.toString() === catName) {
             catHits.push(data.category_hits[key].unique_domain);

@@ -411,7 +411,7 @@
     "GroupWillBeDeleted":"Grup silinecek",
     "GroupDeleted":"Grup silindi",
     "PleaseChangeSomething":"Hiç değişiklik yapılmadı",
-    "CategoryRequestSuccessfullySended":"Kategorizasyon isteği başarılı bir şekilde gönderildi"
-    
-
+    "CategoryRequestSuccessfullySended":"Kategorizasyon isteği başarılı bir şekilde gönderildi",
+    "IsVerified" : "Doğrulandı mı",
+    "IsLocked": "Kilitli mi"
 }

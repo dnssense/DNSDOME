@@ -1,4 +1,4 @@
-import { OnInit, ElementRef, Component, ViewChild } from '@angular/core';
+import { OnInit, ElementRef, Component, ViewChild, AfterViewInit } from '@angular/core';
 import { CustomReportResultComponent } from './result/customreport-result.component';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
@@ -12,7 +12,7 @@ import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-sea
   templateUrl: 'customreport.component.html',
   styleUrls: ['customreport.component.sass']
 })
-export class CustomReportComponent implements OnInit {
+export class CustomReportComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fastReportService: FastReportService) { }
@@ -37,7 +37,9 @@ export class CustomReportComponent implements OnInit {
     this.fastReportService.tableColumns.subscribe((res: LogColumn[]) => {
       this.columns = res;
     });
+  }
 
+  ngAfterViewInit() {
     this.search(this.searchSetting);
   }
 
@@ -74,7 +76,11 @@ export class CustomReportComponent implements OnInit {
       const exists = filter.values.some(x => x === $event.value);
 
       if (!exists) {
-        filter.values.unshift($event.value);
+        const _filterValues = JSON.parse(JSON.stringify(filter.values)) as string[];
+
+        _filterValues.unshift($event.value);
+
+        filter.values = _filterValues;
       }
     } else {
       this.filters.push(new FilterBadgeModel($event.columnModel.name, true, [$event.value]));

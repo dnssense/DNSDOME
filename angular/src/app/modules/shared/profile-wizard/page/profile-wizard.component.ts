@@ -185,7 +185,11 @@ export class ProfileWizardComponent {
     return this._selectedBox;
   }
 
-  @Input() currentStep: number;
+  private _currentStep: number;
+
+  @Input()
+  get currentStep(): number { return this._currentStep; }
+  set currentStep(value: number) { this._currentStep = value; }
 
   @Input() updateCount: number;
 
@@ -219,13 +223,12 @@ export class ProfileWizardComponent {
   isInCategoryType(type: string, cat: categoryItem) {
 
     if (cat.category.isVisible && categoryMappings[type]) {
-    return categoryMappings[type].find(x => x === cat.category.name);
+      return categoryMappings[type].find(x => x === cat.category.name);
     }
     return false;
   }
 
   fillGroupedApplications() {
-    const clearAds = [];
     const http = [];
     const onlineVideo = [];
     const instantMessaging = [];
@@ -234,10 +237,6 @@ export class ProfileWizardComponent {
 
     this.applicationList.forEach(el => {
       switch (el.application.type) {
-        case ApplicationTypes.CLEAR_ADS:
-          clearAds.push(el);
-          break;
-
         case ApplicationTypes.HTTP:
           http.push(el);
           break;
@@ -266,7 +265,7 @@ export class ProfileWizardComponent {
     // TODO burasi multi language yapilmali
 
     this.groupedApplications = [
-      { type: ApplicationTypes.CLEAR_ADS, displayText: 'Advertisement', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: clearAds },
+      // { type: ApplicationTypes.CLEAR_ADS, displayText: 'Advertisement', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: clearAds },
       // { type: ApplicationTypes.HTTP, displayText: 'HTTP', description: '',  applications: http },
       { type: ApplicationTypes.INSTANT_MESSAGING, displayText: 'Instant Messaging', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: instantMessaging },
       { type: ApplicationTypes.ONLINE_VIDEO, displayText: 'Online Video', description: 'Pornogrphy, Adult, Gamblig gibi istenmeyen domainleri içerir.', applications: onlineVideo },
@@ -276,7 +275,6 @@ export class ProfileWizardComponent {
   }
 
   updateModels() {
-
     if (this.saveMode === 'NewProfile') {
       this.categoryList.forEach(c => {
         if (c.category.isVisible) {
@@ -358,19 +356,11 @@ export class ProfileWizardComponent {
       this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id).isBlocked = true;
     }
   }
-  /* clean() {
-    this.selectedAgent.rootProfile.applicationProfile.categories.forEach(x => x.isBlocked = false);
-    this.selectedAgent.rootProfile.domainProfile.categories.forEach(x => x.isBlocked = false);
-    this.selectedAgent.rootProfile.blackWhiteListProfile.blackList = [];
-    this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList = [];
-    this.selectedAgent.rootProfile.isSafeSearchEnabled = false;
-    this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled = false;
 
-  } */
   isClearedAdds(): boolean {
     // advertisement apps
     const adsIds = this.groupedApplications.find(x => x.type == ApplicationTypes.CLEAR_ADS)?.applications.map(x => x.application.id);
-    if (!adsIds) {return false; }
+    if (!adsIds) { return false; }
 
     const adsApplicatons = this.selectedAgent.rootProfile.applicationProfile.categories.filter(x => adsIds.find(y => x.id == y));
     const filtered = adsApplicatons.filter(x => x.isBlocked);
@@ -386,11 +376,11 @@ export class ProfileWizardComponent {
     const clearedAdds = this.isClearedAdds();
 
     const adsApps = this.groupedApplications.find(x => x.type == ApplicationTypes.CLEAR_ADS)?.applications;
-   if (!adsApps) {return; }
-   adsApps.forEach(x => {
-     x.isBlocked = !clearedAdds;
-     this.applicationChanged(x);
-   });
+    if (!adsApps) { return; }
+    adsApps.forEach(x => {
+      x.isBlocked = !clearedAdds;
+      this.applicationChanged(x);
+    });
 
   }
 
