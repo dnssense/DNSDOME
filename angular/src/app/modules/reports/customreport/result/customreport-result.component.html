@@ -1,10 +1,10 @@
 <div class="row">
     <div class="col-12 mt-3">
-        <div class="rk-basic-card p-2 overflow-fix">
+        <div class="rk-basic-card p-2">
             <ng-container *ngIf="data?.length > 0">
                 <div id="customReportChart"></div>
 
-                <div class="table-responsive">
+                <div>
                     <rk-table-container [config]="tableConfig" class="m-0 border-0 pagination-disabled"
                         (columnBadgeChange)="columnChanged($event)">
                         <rk-table-export (event)="exportAs($event)"></rk-table-export>

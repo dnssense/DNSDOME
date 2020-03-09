@@ -104,7 +104,7 @@
             </ng-container> -->
           </a>
 
-          <a class="text-capitalize text-primary rk-link" *ngFor="let item of breadcrumb; let index = index">
+          <a class="text-capitalize text-primary rk-link" *ngFor="let item of breadcrumb; let index = index" style="font-size: 14px;">
             {{ breadcrumb.length > 1 && index > 0 ? ' >' : '' }} {{ item }}
           </a>
         </div>

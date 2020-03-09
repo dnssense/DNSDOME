@@ -23,7 +23,7 @@
 
         </rk-modal-body>
 
-        <rk-modal-footer>
+        <rk-modal-footer *ngIf="saveMode !== 'NotEditable'">
           <button class="btn btn-small w-100 mr-2"
             [ngClass]="{'disabled': saveMode === 'NewProfile' && selectedAgent.rootProfile?.name?.length < 2}"
             (click)="saveProfile()">{{'Save'|translate}}</button>
@@ -77,8 +77,13 @@
                     </button>
                   </td>
                   <td class="text-center" style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 {{ profile.isSystem ? 'color-disabled' : 'hover-gray' }}"
-                      (click)="!profile.isSystem ? editProfile(profile) : null" [attr.data-tooltip-enabled]="profile.isSystem ? 'true' : 'false'" data-tooltip="System profile not editable." data-tooltip-location="left">
+                    <button class="btn btn-link btn-icon p-0 hover-gray"
+                      *ngIf="profile.isSystem" (click)="viewProfile(profile)">
+                      <i-feather name="eye" class="mr-0"></i-feather>
+                    </button>
+
+                    <button class="btn btn-link btn-icon p-0 hover-gray"
+                      *ngIf="!profile.isSystem" (click)="editProfile(profile)">
                       <i-feather name="edit-3" class="mr-0"></i-feather>
                     </button>
                   </td>

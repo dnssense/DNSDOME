@@ -176,7 +176,7 @@
 
         <rk-collapse-body>
           <ng-container *ngFor="let app of groupedApp.applications">
-            <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="app.isBlocked=!app.isBlocked;applicationChanged(app)"
+            <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="app.isSystem ? app.isBlocked = !app.isBlocked : null; applicationChanged(app)"
               [active]="app.isBlocked">
               {{ app.application.name }}</rk-toggle-button>
           </ng-container>
