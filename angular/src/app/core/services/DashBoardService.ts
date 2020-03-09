@@ -26,6 +26,14 @@ export interface DistinctAgentResponse {
   items: AgentValue[];
 }
 
+export interface BoxValue {
+  serial: string;
+  count: number;
+}
+export interface DistinctBoxResponse {
+  items: BoxValue[];
+}
+
 @Injectable()
 export class DashBoardService {
 
@@ -39,6 +47,7 @@ export class DashBoardService {
   private _topDomainURL = this.configuration.getApiUrl() + '/calculate/topDomain';
   private _topDomainValueURL = this.configuration.getApiUrl() + '/calculate/topDomain';
   private _distinctAgentURL = this.configuration.getApiUrl() + '/calculate/distinctAgent';
+  private _distinctBoxURL = this.configuration.getApiUrl() + '/calculate/distinctBox';
 
   constructor(
     private http: HttpClient,
@@ -59,6 +68,9 @@ export class DashBoardService {
 
   public getDistinctAgent(request: DurationRequest): Observable<DistinctAgentResponse> {
     return this.http.post<DistinctAgentResponse>(this._distinctAgentURL, request).map(res => res);
+  }
+  public getDistinctBox(request: DurationRequest): Observable<DistinctBoxResponse> {
+    return this.http.post<DistinctBoxResponse>(this._distinctBoxURL, request).map(res => res);
   }
 
   /* public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {

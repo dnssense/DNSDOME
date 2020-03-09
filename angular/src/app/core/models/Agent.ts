@@ -16,7 +16,6 @@ export class Agent {
     rootProfile: SecurityProfile = new SecurityProfile();
     agentGroup: AgentGroup;
     logo?: any = null;
-
     agents: any[];
 
     /**

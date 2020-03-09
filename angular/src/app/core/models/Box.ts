@@ -15,4 +15,5 @@ export class Box {
   ipAddress = ''; //
   ips: number[] = []; //
   isCaptivePortal: boolean;
+  serial: string;
 }
