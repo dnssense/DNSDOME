@@ -235,7 +235,18 @@
         "CurrentPassword":"Şimdiki Şifre",
         "NewPassword":"Yeni Şifre",
         "ConfirmNewPassword":"Yeni Şifreyi Doğrula",
-        "Personnel":"Personel"
+        "Personnel":"Personel",
+        "NameUpdated":"İsim güncellendi",
+        "CompanyInformationUpdated":"Şirket bilgisi güncellendi",
+        "EnterRequiredFields":"Lütfen gerekli yerleri, geçerli değerlerle doldurunuz",
+        "TwoFactorAuthentication":"2FA güncellendi",
+        "UserGSMIsMissing":"GSM bilgisi eksik",
+        "PleaseEnterSmsCode":"Lütfen SMS kodunu giriniz",
+        "PhoneNumberUpdated":"Telefon numarası güncellendi",
+        "ExceededTheNumberOfAttempts":"Çok fazla deneme yaptınız, lütfen daha sonra tekrar deneyiniz",
+        "ConfirmationTimeIsUp":"Onaylama süresi doldu",
+        "PasswordChanged":"Şifre güncellendi"
+        
     },
     "CATEGORYREQUEST":{
         "ChangeDomainCategory":"Domain Kategorisini Değiştir"

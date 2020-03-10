@@ -19,7 +19,9 @@ import { LoggerService } from 'src/app/core/services/logger.service';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { countries } from 'src/app/core/models/Countries';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-// TODO buda kullanilmiyor
+import { TranslateService } from '@ngx-translate/core';
+import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
@@ -41,7 +43,8 @@ export class AccountSettingsComponent implements OnInit {
         private accountService: AccountService,
         private alert: AlertService,
         private companyService: CompanyService,
-        private smsService: SmsService
+        private smsService: SmsService,
+        private staticMessageService: StaticMessageService
     ) {
         this.signupUser = new SignupBean();
         this.signupUser.company = new Company();
@@ -240,7 +243,7 @@ export class AccountSettingsComponent implements OnInit {
             request.name = this.user.name || ' ';
 
             this.accountService.update(request).subscribe(res => {
-                this.notification.success('Updated name');
+                this.notification.success(this.staticMessageService.nameUpdatedMessage);
                 this.authService.saveSession();
             });
         }
@@ -249,10 +252,10 @@ export class AccountSettingsComponent implements OnInit {
     companyFormSubmit() {
         if (this.companyInfoForm.valid && this.signupUser.company.industry.length > 0 && this.signupUser.company.personnelCount.length > 0) {
             this.companyService.saveCompany(this.signupUser.company).subscribe(res => {
-                this.alert.alertSuccessMessage('Operation Successful', 'Company information updated.');
+                this.notification.success(this.staticMessageService.companyInformationUpdatedMessage);
             });
         } else {
-            this.notification.warning('Company form is not valid! Please enter required fields with valid values.');
+            this.notification.warning(this.staticMessageService.enterRequiredFieldsMessage);
             return;
         }
     }
@@ -261,7 +264,7 @@ export class AccountSettingsComponent implements OnInit {
         if (this.changePasswordForm.valid && this.changePasswordForm.dirty && this.signupUser.password === this.signupUser.passwordAgain) {
             this.accountService.changePassword(this.currentPassword, this.signupUser.password)
                 .subscribe(res => {
-                    this.alert.alertSuccessMessage('Operation Successful', 'Password changed.');
+                    this.notification.success(this.staticMessageService.passwordChangedMessage);
                     this.authService.saveSession();
 
                     this.currentPassword = '';
@@ -271,7 +274,7 @@ export class AccountSettingsComponent implements OnInit {
                     this.activeTabNumber = 0;
                 });
         } else {
-            this.notification.warning('Password change form is not valid! Please enter required fields with valid values.');
+            this.notification.warning(this.staticMessageService.enterRequiredFieldsMessage);
             return;
         }
     }
@@ -283,7 +286,7 @@ export class AccountSettingsComponent implements OnInit {
 
             this.accountService.update(request).subscribe(res => {
                 this.user.twoFactorAuthentication = !this.user.twoFactorAuthentication;
-                this.notification.success('Operation Successful Two factor authentication updated.');
+                this.notification.success(this.staticMessageService.twoFactorAuthenticationMessage);
                 this.authService.saveSession();
             });
         } else {
@@ -314,7 +317,7 @@ export class AccountSettingsComponent implements OnInit {
 
     confirmGsm() {
         if (!this.smsCode || this.smsCode.length < 4) {
-            this.notification.warning('Please enter sms code');
+            this.notification.warning(this.staticMessageService.pleaseEnterSmsCodeMessage);
             return;
         }
 
@@ -330,7 +333,7 @@ export class AccountSettingsComponent implements OnInit {
                     updateRequest.gsmCode = this.gsmCodeTemp;
 
                     this.accountService.update(updateRequest).subscribe(res2 => {
-                        this.notification.success('Phone number is updated');
+                        this.notification.success(this.staticMessageService.phoneNumberUpdatedMessage);
                         $('#changePhoneBtn').attr('disabled', 'disabled');
                         this.notificationIndex++;
                         this.user.gsm = this.phoneNumberTemp;
@@ -342,7 +345,7 @@ export class AccountSettingsComponent implements OnInit {
 
                 }, err => {
                     if (this.maxRequest === 0) {
-                        this.notification.error('You have exceeded the number of attempts! Try Again!');
+                        this.notification.error(this.staticMessageService.exceededTheNumberOfAttemptsMessage);
                     } else { throw err; }
                 });
 
@@ -351,7 +354,7 @@ export class AccountSettingsComponent implements OnInit {
     }
     timeEnd() {
         if (this.isTimeSetted && this.notificationIndex < 1) {
-            this.notification.error('Confirmation time is up!');
+            this.notification.error(this.staticMessageService.confirmationTimeIsUpMessage);
             location.reload();
             this.notificationIndex++;
         }

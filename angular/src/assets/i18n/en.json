@@ -207,6 +207,7 @@
         "ChangePassword":"Change Password",
         "UserFullName":"Full name",
         "UserEmail":"Email",
+        "Save":"Save",
         "TwoFactorAuthMessage":"In order to login via two factor authentication and use sms service, enable 2FA feature",
         "EnableTwoFactorAuth":"Enable two factor Authentication",
         "TwoFactorAuthElseMessage":"Before using two factor authentication please enter and validate a gsm number",
@@ -218,7 +219,18 @@
         "CurrentPassword":"Current Password",
         "NewPassword":"New Password",
         "ConfirmNewPassword":"Confirm New Password",
-        "Personnel":"Personnel" 
+        "Personnel":"Personnel",
+        "NameUpdated":"Name updated",
+        "CompanyInformationUpdated":"Company information updated",
+        "EnterRequiredFields":"Please enter required fields with valid values",
+        "TwoFactorAuthentication":"Two factor authentication updated",
+        "UserGSMIsMissing":"User GSM is missing",
+        "PleaseEnterSmsCode":"Please enter sms code",
+        "PhoneNumberUpdated":"Phone number updated",
+        "ExceededTheNumberOfAttempts":"You have exceeded the number of attempts! Try Again!",
+        "ConfirmationTimeIsUp":"Confirmation time is up",
+        "PasswordChanged":"Password changed"
+
 
 
     },
@@ -298,7 +310,7 @@
     "ErrSystemProfileCannotUpdate":"System profile cannot update",
     "ErrMaxBlackListSize":"Maximum blacklist size reached",
     "FORGOTPASSWORD": {
-        "Title": "Change Password"
+        "Title": "Reset Password"
     },
     "CATEGORY":{
         "Unknown":"Unknown",
