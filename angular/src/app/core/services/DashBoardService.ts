@@ -45,7 +45,7 @@ export class DashBoardService {
   // ES urls
   private _hourlyCompanySummaryURL = this.configuration.getApiUrl() + '/calculate/hourlyCompanySummaryV4';
   private _topDomainURL = this.configuration.getApiUrl() + '/calculate/topDomain';
-  private _topDomainValueURL = this.configuration.getApiUrl() + '/calculate/topDomain';
+  private _topDomainValueURL = this.configuration.getApiUrl() + '/calculate/topDomainValue';
   private _distinctAgentURL = this.configuration.getApiUrl() + '/calculate/distinctAgent';
   private _distinctBoxURL = this.configuration.getApiUrl() + '/calculate/distinctBox';
 

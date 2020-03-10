@@ -23,6 +23,8 @@ import { Agent } from 'src/app/core/models/Agent';
 import { Observable, forkJoin } from 'rxjs';
 import { fork } from 'cluster';
 import { Box } from 'src/app/core/models/Box';
+import { AstPath } from '@angular/compiler';
+import { debug } from 'util';
 
 interface TagInputValue {
   value: string;
@@ -83,6 +85,7 @@ export class DashboardComponent implements OnInit {
     variable: false,
     harmful: false
   };
+
 
   selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
 
@@ -324,6 +327,7 @@ export class DashboardComponent implements OnInit {
 
   getTopDomains(request: TopDomainsRequestV4) {
     this.dashboardService.getTopDomains({ ...request, type: 'malicious' }).subscribe(result => {
+
       this.maliciousDomains = result.items;
     });
 
@@ -334,6 +338,10 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
       this.harmfulDomains = result.items;
     });
+  }
+
+  calculateDomainHitPercentage(value: number): number {
+    return (value / (this.trafficAnomaly.total.allowCount + this.trafficAnomaly.total.blockCount)) || 0;
   }
 
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
@@ -369,28 +377,52 @@ export class DashboardComponent implements OnInit {
     this.diffrence = diff;
 
     const request = { duration: diff * 24 } as TopDomainsRequestV4;
+     this.drawChartTimeLine();
     this.drawChartAnomaly();
     this.getTopDomains(request);
+
   }
 
-  prepareUniqueChart(data: Result[]) {
+  drawUniqueDomainChart(data: Result[]) {
     if (!data) { return; }
 
-    RkApexHelper.render('#unique-chart', {
-      series: [
-        { name: 'Normal Traffic Count', type: 'line', data: data.map(x => x.hit) },
-      ],
+    const series = [{
+      name: 'Hits',
+      type: 'line',
+      data: data.map(x => [Date.parse(x.date), x.hit])
+    }];
+
+    if (this.uniqueDomainChart) {
+      this.uniqueDomainChart.updateSeries(series);
+      return;
+    }
+
+
+    this.uniqueDomainChart = new ApexCharts(document.querySelector('#unique-chart'), {
+      series: series,
       chart: {
         id: 'unique-chart2',
         type: 'line',
         height: 350,
         toolbar: {
-          autoSelected: 'pan',
-          show: false
+          show: true,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true ,
+            customIcons: []
+          },
+          autoSelected: 'zoom'
         }
       },
       markers: {
-        size: [4, 0],
+        size: [2, 0],
         strokeWidth: 2,
         hover: {
           size: 7,
@@ -408,14 +440,30 @@ export class DashboardComponent implements OnInit {
         opacity: 1,
       },
       xaxis: {
-        categories: data.map(x => moment(x.date).format('DD-MM-YYYY HH:mm'))
-      }
+
+          type: 'datetime',
+
+          labels: {
+            show: true,
+            trim: true,
+            showDuplicates: false,
+            datetimeFormatter: {
+              year: 'yyyy',
+              month: 'MMM \'yy',
+              day: 'dd MMM',
+              hour: 'HH:mm'
+            }
+          },
+          tickAmount: 12
+        }
     });
+    this.uniqueDomainChart.render();
   }
 
   // onCategoryClick(cat) { }
 
   private calculateTotalTrafficTimeLine(summary: any, start: Date, end: Date): any[] {
+    if (!summary || !summary.items) {return []; }
     return summary.items.filter(x => {
       const date = Date.parse(x.date);
       return date >= start.getTime() && date <= end.getTime();
@@ -436,20 +484,42 @@ export class DashboardComponent implements OnInit {
 
       this.categoryListFiltered = istatistic.categories;
 
+      const series = [{
+        name: 'Hits',
+        data: timelineChart.map(x => [x.date.getTime(), x.hit])
+      }];
+
       if (this.timeLineChart) {
-        this.timeLineChart.destroy();
+        this.timeLineChart.updateSeries(series);
+        return;
       }
 
      this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
-       series: [{
-         name: 'Hits',
-         data: timelineChart.map(x => x.hit)
-       }],
+       series: series,
        chart: {
          id: 'chart1',
          height: 200,
-         type: 'area',
-         group: 'deneme'
+         type: 'bar',
+         group: 'deneme',
+         zoom: {
+          enabled: true
+        },
+         toolbar: {
+          show: true,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true ,
+            customIcons: []
+          },
+          autoSelected: 'zoom'
+        },
         /*  brush: {
            target: 'chart2',
            enabled: true
@@ -457,20 +527,24 @@ export class DashboardComponent implements OnInit {
 
        },
        dataLabels: {
-        enabled: false
+        enabled: false,
+
        },
-       stroke: {
-        curve: 'smooth'
-       },
-       colors: [function ({ value, seriesIndex, w }) {
-         if (value < 55) {
-           return '#f95656';
-         } else if (value >= 55 && value < 80) {
-           return '#3dd49a';
-         } else {
-           return '#f99256';
-         }
-       }],
+       markers: {
+
+        size: [2, 2, 2],
+        colors: ['#f95656'],
+        strokeColors: '#f95656',
+        strokeWidth: 2,
+        hover: {
+          size: 7,
+        }
+      },
+      colors: ['#ff7b00', '#b1dcff', '#eedcff'],
+      stroke: {
+        width: 3,
+        curve: ['smooth', 'smooth', 'smooth']
+      },
        events: {
          beforeMount: (chartContext, config) => {
 
@@ -486,13 +560,26 @@ export class DashboardComponent implements OnInit {
         }
        },
        xaxis: {
-        type: 'timestamp',
-        categories:  timelineChart.map(x => moment(x.date).format('YY-MM-DD HH:mm')),
+        type: 'datetime',
+
+        labels: {
+          show: true,
+          trim: true,
+          showDuplicates: false,
+          datetimeFormatter: {
+            year: 'yyyy',
+            month: 'MMM \'yy',
+            day: 'dd MMM',
+            hour: 'HH:mm'
+          }
+        },
+        tickAmount: 12
+
 
 
        },
        yaxis: {
-         tickAmount: 2
+         tickAmount: undefined
        }
      });
 
@@ -515,28 +602,45 @@ export class DashboardComponent implements OnInit {
     const istatistic: TrafficAnomalyItem|TrafficAnomalyItem2 = this.trafficAnomaly[this.selectedBox];
 
       this.categoryListFiltered = istatistic.categories;
+      const times =  timelineChart.map(x => x.date.getTime());
+      const series = [
+        { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [ times[index], Math.round(x)]) },
+        { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
+        { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
 
+      ];
 
     if (this.trafficChart) {
-      this.trafficChart.destroy();
+      this.trafficChart.updateSeries(series);
+      return;
     }
 
     this.trafficChart = new ApexCharts(document.querySelector('#chart'), {
-      series: [
-        { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map(x => Math.round(x)) },
-         { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map(x => Math.round(x)) },
-         { name: 'Hit', type: 'line', data: istatistic.hits.map(x => Math.round(x)) },
-
-      ],
+      series: series,
       chart: {
         id: 'chart2',
         type: 'line',
         stacked: true,
-        group: 'deneme2',
+        group: 'deneme',
         height: 350,
-        toolbar: {
-          autoSelected: 'pan',
-          show: false
+        zoom: {
+          enabled: true
+        },
+         toolbar: {
+          show: true,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: false ,
+            customIcons: []
+          },
+          autoSelected: 'zoom'
         },
         events: {
           beforeMount: (chartContext, config) => {
@@ -571,8 +675,20 @@ export class DashboardComponent implements OnInit {
         opacity: 1,
       },
       xaxis: {
-        type: 'timestamp',
-        categories:  timelineChart.map(x => moment(x.date).format('YY-MM-DD HH:mm'))
+        type: 'datetime',
+
+        labels: {
+          show: true,
+          trim: true,
+          showDuplicates: false,
+          datetimeFormatter: {
+            year: 'yyyy',
+            month: 'MMM \'yy',
+            day: 'dd MMM',
+            hour: 'HH:mm'
+          }
+        },
+        tickAmount: 24
       }
     });
 
@@ -629,7 +745,7 @@ export class DashboardComponent implements OnInit {
       this.selectedCategoryForTraffic = cat.name;
     }
 
-    const averageData = [];
+   /*  const averageData = [];
     const hitData = [];
 
     for (let i = 0; i < this.elasticData.items.length; i++) {
@@ -662,7 +778,7 @@ export class DashboardComponent implements OnInit {
 
     this.timeLineChart.updateSeries([
       { data: hitData },
-    ]);
+    ]); */
 
     this.drawChartAnomaly();
   }
@@ -898,7 +1014,13 @@ export class DashboardComponent implements OnInit {
     const diff = endDate.diff(startDate, 'days');
 
     this.dashboardService.getTopDomainValue({ domain: domain, duration: diff * 24 }).subscribe(result => {
-      this.prepareUniqueChart(result.items);
+      result.items = result.items.sort((x, y) => {
+        const x1 = Date.parse(x.date);
+        const y1 = Date.parse(y.date);
+        return x1 - y1;
+      });
+      console.log(result); 
+      this.drawUniqueDomainChart(result.items);
     });
   }
 }
