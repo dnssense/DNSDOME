@@ -2,7 +2,7 @@
   <div class="container-fluid ">
     <div class="row" style="margin-top: -10px">
       <div class="col-md-12">
-        <div class="rk-base-card">
+        <div class="rk-base-card responsive-card">
           <div class="card-item" *ngFor="let data of agentCounts">
             <div class="rk-grow rk-v-center rk-title-1">
               {{ data.name | translate }}
@@ -26,18 +26,18 @@
 
     <div class="rk-base-card">
       <div class="card-item rk-col">
-        <div class="traffic-timeline rk-row">
-          <div class="rk-v-center">
+        <div class="traffic-timeline row justify-content-between">
+          <div class="rk-v-center col-12 col-md">
             <div class="rk-title-2">{{'DASHBOARD.TotalTrafficTime'|translate}}</div>
             <div class="timeline-sub-title"> {{'DASHBOARD.TotalDays365'|translate}}</div>
           </div>
 
-          <div class="rk-row m-l-20 rk-grow align-items-start" style="justify-content: flex-end">
+          <div class="d-flex align-items-start justify-content-end col-12 col-md-auto mt-md-3">
             <!-- <span class="rk-title-2 rk-v-center">{{'DASHBOARD.TimeRange'|translate}}</span> -->
 
-            <button class="btn btn-default ml-2" *ngFor="let dateButton of dateButtons" (click)="setDateByDateButton(dateButton)">{{ dateButton.displayText }}</button>
+            <button class="btn btn-default ml-2 d-none d-xl-flex" *ngFor="let dateButton of dateButtons" (click)="setDateByDateButton(dateButton)">{{ dateButton.displayText }}</button>
             
-            <icon-equal style="margin: 11px 10px 0"></icon-equal>
+            <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal>
             
             <div class="d-flex flex-column text-center">
               <rk-date [startDate]="startDate" [endDate]="endDate" (complete)="dateChanged($event)" [alignment]="'right'"></rk-date>
@@ -46,11 +46,11 @@
           </div>
         </div>
 
-        <div class="rk-panel mt-4">
+        <!-- <div class="rk-panel mt-4">
           <div class="rk-panel-item">
             <div class="timeline" id="timeline"></div>
           </div>
-        </div>
+        </div> -->
 
         <div class="rk-panel" style="margin-top: 30px;">
           <div class="rk-panel-header rk-title-2">
@@ -58,14 +58,14 @@
           </div>
           <div class="rk-panel-item d-flex flex-column">
             <div class="row">
-              <div class="col-12 col-md-6 col-lg">
+              <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.total"  (change)="infoboxChanged($event, 'total')" [title]="translate('Total')"
                   [color]="'#4353ff'" className="blue" [type]="1" [valueOne]="trafficAnomaly?.total?.allowCount"
                   [valueTwo]="trafficAnomaly?.total?.blockCount" description="Toplam DNS sorgu sayısı">
                 </rk-infobox>
               </div>
 
-              <div class="col-12 col-md-6 col-lg">
+              <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe')"
                   [title]="translate('Safe')" [color]="'#3dd49a'" className="green" [valueOne]="trafficAnomaly?.safe?.hitCount"
                   [valueTwo]="trafficAnomaly?.safe?.uniqueCount"
@@ -73,7 +73,7 @@
                 </rk-infobox>
               </div>
 
-              <div class="col-12 col-md-6 col-lg">
+              <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.malicious"  (change)="infoboxChanged($event, 'malicious')" [type]="2"
                   [title]="translate('Malicious')" className="red" [color]="'#f95656'"
                   [valueOne]="trafficAnomaly?.malicious?.hitCount" [valueTwo]="trafficAnomaly?.malicious?.uniqueCount"
@@ -81,7 +81,7 @@
                 </rk-infobox>
               </div>
 
-              <div class="col-12 col-md-6 col-lg">
+              <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.variable"  (change)="infoboxChanged($event, 'variable')" [type]="2"
                   [title]="translate('Variable')" className="gray" [color]="'#d8d8d8'"
                   [valueOne]="trafficAnomaly?.variable?.hitCount" [valueTwo]="trafficAnomaly?.variable?.uniqueCount"
@@ -89,7 +89,7 @@
                 </rk-infobox>
               </div>
 
-              <div class="col-12 col-md-6 col-lg">
+              <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.harmful"  (change)="infoboxChanged($event, 'harmful')" [type]="2"
                   [title]="translate('HarmfullContent')" className="yellow" [color]="'#f9df56'"
                   [valueOne]="trafficAnomaly?.harmful?.hitCount" [valueTwo]="trafficAnomaly?.harmful?.uniqueCount"

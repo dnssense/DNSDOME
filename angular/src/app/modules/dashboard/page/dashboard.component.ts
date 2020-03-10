@@ -463,60 +463,60 @@ export class DashboardComponent implements OnInit {
 
     this.trafficChart.render();
 
-    if (this.timeLineChart) {
-      this.timeLineChart.destroy();
-    }
+    // if (this.timeLineChart) {
+    //   this.timeLineChart.destroy();
+    // }
 
-    this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
-      series: [{
-        data: timelineData
-      }],
-      chart: {
-        id: 'chart1',
-        height: 120,
-        type: 'bar',
-        brush: {
-          target: 'chart2',
-          enabled: true
-        },
-        selection: {
-          enabled: true,
-          type: 'x',
-          fill: {
-            color: 'transparent',
-            opacity: 0.1
-          },
-          stroke: {
-            width: 4,
-            color: '#3397c5',
-            opacity: 1,
-            dashArray: 0,
-            radius: 50
-          },
-          xaxis: {},
-        },
-      },
-      colors: [function ({ value, seriesIndex, w }) {
-        if (value < 55) {
-          return '#f95656';
-        } else if (value >= 55 && value < 80) {
-          return '#3dd49a';
-        } else {
-          return '#f99256';
-        }
-      }],
-      xaxis: {
-        type: 'datetime',
-        tooltip: {
-          enabled: false
-        }
-      },
-      yaxis: {
-        tickAmount: 2
-      }
-    });
+    // this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
+    //   series: [{
+    //     data: timelineData
+    //   }],
+    //   chart: {
+    //     id: 'chart1',
+    //     height: 120,
+    //     type: 'bar',
+    //     brush: {
+    //       target: 'chart2',
+    //       enabled: true
+    //     },
+    //     selection: {
+    //       enabled: true,
+    //       type: 'x',
+    //       fill: {
+    //         color: 'transparent',
+    //         opacity: 0.1
+    //       },
+    //       stroke: {
+    //         width: 4,
+    //         color: '#3397c5',
+    //         opacity: 1,
+    //         dashArray: 0,
+    //         radius: 50
+    //       },
+    //       xaxis: {},
+    //     },
+    //   },
+    //   colors: [function ({ value, seriesIndex, w }) {
+    //     if (value < 55) {
+    //       return '#f95656';
+    //     } else if (value >= 55 && value < 80) {
+    //       return '#3dd49a';
+    //     } else {
+    //       return '#f99256';
+    //     }
+    //   }],
+    //   xaxis: {
+    //     type: 'datetime',
+    //     tooltip: {
+    //       enabled: false
+    //     }
+    //   },
+    //   yaxis: {
+    //     tickAmount: 2
+    //   }
+    // });
 
-    this.timeLineChart.render();
+    // this.timeLineChart.render();
   }
 
   startDashboardOperations() {
