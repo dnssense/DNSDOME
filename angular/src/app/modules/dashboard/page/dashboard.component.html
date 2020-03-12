@@ -177,7 +177,7 @@
                       </td>
                       <td>{{ domain.hit }}</td>
                       <td>
-                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'security'" [sizeType]="'small'">
+                        <rk-progressbar [value]="calculateDomainHitPercentage(domain.hit)" [showType]="'outside'" [type]="'security'" [sizeType]="'small'">
                         </rk-progressbar>
                       </td>
                     </tr>
@@ -217,7 +217,7 @@
                       </td>
                       <td>{{ domain.hit }}</td>
                       <td>
-                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'primary'" [sizeType]="'small'">
+                        <rk-progressbar [value]="calculateDomainHitPercentage(domain.hit)" [showType]="'outside'" [type]="'primary'" [sizeType]="'small'">
                         </rk-progressbar>
                       </td>
                     </tr>
@@ -257,7 +257,7 @@
                       </td>
                       <td>{{ domain.hit }}</td>
                       <td>
-                        <rk-progressbar [value]="75" [showType]="'outside'" [type]="'harmfull'" [sizeType]="'small'">
+                        <rk-progressbar [value]="calculateDomainHitPercentage(domain.hit)" [showType]="'outside'" [type]="'harmfull'" [sizeType]="'small'">
                         </rk-progressbar>
                       </td>
                     </tr>

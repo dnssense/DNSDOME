@@ -183,6 +183,37 @@ get savedUserMessage(): string {
     return this.translator.translate('CategoryRequestSuccessfullySended');
   }
 
+  get nameUpdatedMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.NameUpdated');
+  }
+  get companyInformationUpdatedMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.CompanyInformationUpdated');
+  }
+  get enterRequiredFieldsMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.EnterRequiredFields');
+  }
+  get twoFactorAuthenticationMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.TwoFactorAuthentication');
+  }
+  get userGSMIsMissingMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.UserGSMIsMissing');
+  }
+  get pleaseEnterSmsCodeMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.PleaseEnterSmsCode');
+  }
+  get phoneNumberUpdatedMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.PhoneNumberUpdated');
+  }
+  get exceededTheNumberOfAttemptsMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.ExceededTheNumberOfAttempts');
+  }
+  get confirmationTimeIsUpMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.ConfirmationTimeIsUp');
+  }
+
+  get passwordChangedMessage(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.PasswordChanged');
+  }
 
 
 

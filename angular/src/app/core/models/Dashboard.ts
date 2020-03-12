@@ -141,12 +141,16 @@ export interface HourlyCompanySummaryV4Response {
 export interface TrafficTotal {
   date: Date;
   hit: number;
+  std_deviation: number;
+  average: number;
 }
 
 export interface TrafficAnomalyCategory {
   name: string;
   hitCount: number;
   ratio: number;
+  std_deviation: number;
+  average: number;
 }
 
 export interface TrafficAnomalyItem {
@@ -156,6 +160,9 @@ export interface TrafficAnomalyItem {
   averageHit: number;
   currentHit: number;
   ratio: number;
+  std_deviations: number[];
+  averages: number[];
+  hits: number[];
 
 }
 
@@ -166,6 +173,9 @@ export interface TrafficAnomalyItem2 {
   averageHit: number;
   currentHit: number;
   ratio: number;
+  std_deviations: number[];
+  averages: number[];
+  hits: number[];
 }
 
 export interface TrafficAnomaly {
