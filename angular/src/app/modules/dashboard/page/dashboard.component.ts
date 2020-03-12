@@ -249,7 +249,10 @@ export class DashboardComponent implements OnInit {
       }),
 
       this.boxService.getBoxes().map(x => {
-        x.forEach(y => agentsBox.push(y.agent));
+        x.forEach(y => {
+          if(y.agent)
+            agentsBox.push(y.agent);
+        });
         x.forEach(y => boxes.push(y));
       }),
 
@@ -341,6 +344,8 @@ export class DashboardComponent implements OnInit {
   }
 
   calculateDomainHitPercentage(value: number): number {
+    if(!this.trafficAnomaly.total)
+      return 0;
     return (value / (this.trafficAnomaly.total.allowCount + this.trafficAnomaly.total.blockCount)) || 0;
   }
 
@@ -377,7 +382,7 @@ export class DashboardComponent implements OnInit {
     this.diffrence = diff;
 
     const request = { duration: diff * 24 } as TopDomainsRequestV4;
-     this.drawChartTimeLine();
+     //this.drawChartTimeLine();
     this.drawChartAnomaly();
     this.getTopDomains(request);
 
@@ -440,9 +445,7 @@ export class DashboardComponent implements OnInit {
         opacity: 1,
       },
       xaxis: {
-
           type: 'datetime',
-
           labels: {
             show: true,
             trim: true,
@@ -604,11 +607,13 @@ export class DashboardComponent implements OnInit {
       this.categoryListFiltered = istatistic.categories;
       const times =  timelineChart.map(x => x.date.getTime());
       const series = [
-        { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [ times[index], Math.round(x)]) },
-        { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
+        //{ name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [ times[index], Math.round(x)]) },
+        //{ name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
         { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
 
       ];
+
+      console.log(series);
 
     if (this.trafficChart) {
       this.trafficChart.updateSeries(series);
@@ -676,19 +681,17 @@ export class DashboardComponent implements OnInit {
       },
       xaxis: {
         type: 'datetime',
-
         labels: {
           show: true,
           trim: true,
-          showDuplicates: false,
           datetimeFormatter: {
             year: 'yyyy',
             month: 'MMM \'yy',
             day: 'dd MMM',
             hour: 'HH:mm'
-          }
-        },
-        tickAmount: 24
+          },
+          tickAmount: 24
+      }
       }
     });
 
@@ -714,7 +717,7 @@ export class DashboardComponent implements OnInit {
         const y1 = Date.parse(y.date);
         return x1 - y1;
       });
-      this.drawChartTimeLine();
+      //this.drawChartTimeLine();
       this.drawChartAnomaly();
     });
   }
