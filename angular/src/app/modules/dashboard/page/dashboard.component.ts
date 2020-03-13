@@ -629,16 +629,7 @@ export class DashboardComponent implements OnInit {
       // { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
       { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
 
-<<<<<<< HEAD
     ];
-=======
-      this.categoryListFiltered = istatistic.categories;
-      const times =  timelineChart.map(x => x.date.getTime());
-      const series = [
-        //{ name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [ times[index], Math.round(x)]) },
-        //{ name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
-        { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
->>>>>>> 7058a851d4f8dcbf51dc1726ee6f7f6b602888ad
 
     console.log(series);
 
@@ -720,11 +711,7 @@ export class DashboardComponent implements OnInit {
             hour: 'HH:mm'
           },
           tickAmount: 24
-<<<<<<< HEAD
         }
-=======
-      }
->>>>>>> 7058a851d4f8dcbf51dc1726ee6f7f6b602888ad
       }
     });
 
@@ -750,11 +737,7 @@ export class DashboardComponent implements OnInit {
         const y1 = Date.parse(y.date);
         return x1 - y1;
       });
-<<<<<<< HEAD
       // this.drawChartTimeLine();
-=======
-      //this.drawChartTimeLine();
->>>>>>> 7058a851d4f8dcbf51dc1726ee6f7f6b602888ad
       this.drawChartAnomaly();
     });
   }
