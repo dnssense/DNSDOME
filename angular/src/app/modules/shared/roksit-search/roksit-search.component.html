@@ -197,7 +197,7 @@
   </rk-modal-body>
 
   <rk-modal-footer>
-    <button class="btn w-100 btn-small mr-2" (click)="apply(true);">Apply</button>
+    <button class="btn w-100 btn-small mr-2" (click)="apply(true); search();">Apply</button>
     <button class="btn w-100 btn-default btn-small" (click)="clear()">Clean</button>
   </rk-modal-footer>
 </rk-modal>
@@ -249,3 +249,14 @@
     Filter</button>
 </div>
 
+<div class="run-bar justify-content-between" [hidden]="!isShowRunBar">
+  <p class="run-bar-text">Hazırladığınız filtreyle sorgu yapmak için butona tıklayın.</p>
+
+  <div class="run-bar-buttons">
+    <button (click)="search('', true)">Çalıştır</button>
+  </div>
+
+  <button class="btn-close" (click)="setShowRunBar(false)">
+    <i-feather name="x"></i-feather>
+  </button>
+</div>

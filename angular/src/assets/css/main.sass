@@ -626,3 +626,65 @@ rk-collapse-description
         border-bottom-left-radius: 13px
         border-bottom-right-radius: 13px
         border-bottom: none
+
+
+/* Run Bar Styling */
+
+.run-bar
+  display: flex
+  align-items: center
+  height: 80px
+  width: 100%
+  position: fixed
+  bottom: 0
+  left: 0
+  right: 0
+  z-index: 999999
+  padding: 20px
+  box-sizing: border-box
+  background: #507df3
+
+  .run-bar-text
+    margin: 0
+    color: $white
+    font-size: 16px
+    font-weight: 500
+
+  .run-bar-buttons
+    button
+      width: 140px
+      height: 40px
+      box-sizing: border-box
+      display: flex
+      align-items: center
+      justify-content: center
+      background: $white
+      color: #507df3
+      font-weight: 500
+      font-size: 16px
+      border-radius: 5px
+      outline: none
+      border: none
+  
+  .btn-close
+    border: 0
+    outline: 0
+    width: 50px
+    height: 50px
+    background: transparent
+    opacity: .9
+    display: flex
+    align-items: center
+    justify-content: center
+  
+    i-feather
+      svg
+        color: $white
+        
+    &:hover
+      i-feather
+        svg
+          opacity: 1
+  
+  
+/* #Run Bar Styling */

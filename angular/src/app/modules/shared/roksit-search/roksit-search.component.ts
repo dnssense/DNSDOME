@@ -71,6 +71,8 @@ export class RoksitSearchComponent implements OnInit {
 
   @Output() searchSettingEmitter = new EventEmitter();
 
+  @Output() filtersClearEmitter = new EventEmitter();
+
   users: User[] = [];
 
   dateOptions: RkSelectModel[] = [
@@ -112,6 +114,14 @@ export class RoksitSearchComponent implements OnInit {
   @ViewChild('saveModal') saveModal: RkModalModel;
 
   newSavedReport: SearchSetting = new SearchSetting();
+
+  private _isShowRunBar = false;
+
+  @Input()
+  get isShowRunBar() { return this._isShowRunBar; }
+  set isShowRunBar(val) { this._isShowRunBar = val; }
+
+  @Output() isShowRunBarOutput = new EventEmitter();
 
   ngOnInit() {
     this.fastReportService.tableColumns.subscribe(columns => {
@@ -204,6 +214,8 @@ export class RoksitSearchComponent implements OnInit {
 
   onTypeValueChange(type: SearchSettingsType) {
     this.searchSettings.type = type;
+
+    this.searchSettingEmitter.emit(this.searchSettings);
   }
 
   setSearchSetting(searchSetting: SearchSetting) {
@@ -298,6 +310,8 @@ export class RoksitSearchComponent implements OnInit {
       }
     }
 
+    this.setShowRunBar(false);
+
     if (close) {
       this.filterModal.toggle();
     }
@@ -335,16 +349,20 @@ export class RoksitSearchComponent implements OnInit {
     }
 
     this.filters.splice(index, 1);
+
+    this.setShowRunBar(true);
   }
 
-  search(type?: 'savedreport') {
+  search(type?: 'savedreport', showFilterModal = false) {
     if (type === 'savedreport') {
       this.searchSettingEmitter.emit(this.searchSettings);
+
+      this.filterModal.toggle();
 
       return;
     }
 
-    this.apply();
+    this.apply(showFilterModal);
 
     this.searchSettings.must = [];
     this.searchSettings.mustnot = [];
@@ -391,6 +409,8 @@ export class RoksitSearchComponent implements OnInit {
     });
 
     this.searchSettingEmitter.emit(this.searchSettings);
+
+    this.filterModal.toggle();
   }
 
   getItemsByCategoryName(name: string) {
@@ -407,6 +427,8 @@ export class RoksitSearchComponent implements OnInit {
     this.groupedCategories.forEach(elem => elem.items.forEach(item => item.selected = false));
 
     this.manuelFilters = [];
+
+    this.filtersClearEmitter.emit();
   }
 
   filtersClear() {
@@ -549,5 +571,11 @@ export class RoksitSearchComponent implements OnInit {
 
   toggleAllUsers($event) {
     this.users.forEach(user => user.selected = $event);
+  }
+
+  setShowRunBar(status: boolean) {
+    this.isShowRunBar = status;
+
+    this.isShowRunBarOutput.emit(status);
   }
 }
