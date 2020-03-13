@@ -353,7 +353,7 @@ export class RoksitSearchComponent implements OnInit {
     this.setShowRunBar(true);
   }
 
-  search(type?: 'savedreport', showFilterModal = false) {
+  search(type?: 'savedreport' | string, showFilterModal = false) {
     if (type === 'savedreport') {
       this.searchSettingEmitter.emit(this.searchSettings);
 
