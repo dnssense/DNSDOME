@@ -213,10 +213,10 @@
   </div>
 
   <div class="filter-right">
-    <button class="btn btn-small btn-icon mr-2" (click)="search()">
+    <!-- <button class="btn btn-small btn-icon mr-2" (click)="search()">
       <i-feather name="search"></i-feather>
       Search
-    </button>
+    </button> -->
 
     <div style="min-width: 200px;">
       <rk-select [(value)]="searchSettings.dateInterval" (valueChange)="onSelectedDateChange($event)"
@@ -248,3 +248,4 @@
   <button class="btn btn-small bg-transparent btn-link p-0" *ngIf="filters?.length > 0" (click)="saveFilterClick()">Save
     Filter</button>
 </div>
+

@@ -46,11 +46,11 @@
           </div>
         </div>
 
-        <!-- <div class="rk-panel mt-4">
+        <div class="rk-panel mt-4">
           <div class="rk-panel-item">
             <div class="timeline" id="timeline"></div>
           </div>
-        </div> -->
+        </div>
 
         <div class="rk-panel" style="margin-top: 30px;">
           <div class="rk-panel-header rk-title-2">
@@ -118,7 +118,12 @@
                 </div>
               </div>
 
-              <div class="px-4" style="flex: 1;">
+              <div class="px-4 d-flex flex-column" style="flex: 1;">
+                <div class="d-flex justify-content-end align-items-center" *ngIf="trafficChart">
+                    <button class="btn btn-link btn-accent py-0" (click)="showSummary()">Show Summary</button>
+                    <button class="btn btn-link btn-accent py-0 pr-0">Show Detail</button>
+                </div>
+                
                 <div class="chart" id="chart"></div>
               </div>
 

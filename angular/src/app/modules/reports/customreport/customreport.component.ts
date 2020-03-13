@@ -6,6 +6,13 @@ import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { LinkClick } from '../monitor/result/monitor-result.component';
 import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
+import { ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
+
+export interface CustomReportRouteParams {
+  startDate?: string;
+  endDate?: string;
+}
 
 @Component({
   selector: 'app-customreport',
@@ -15,7 +22,25 @@ import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-sea
 export class CustomReportComponent implements OnInit, AfterViewInit {
 
   constructor(
-    private fastReportService: FastReportService) { }
+    private fastReportService: FastReportService,
+    private activatedRoute: ActivatedRoute
+  ) {
+    activatedRoute.queryParams.subscribe((params: CustomReportRouteParams) => {
+      if (params.startDate && params.endDate) {
+        const startDate = new Date(params.startDate);
+        const endDate = new Date(params.endDate);
+
+        const _startDate = moment([startDate.getFullYear(), startDate.getMonth(), startDate.getDate()]);
+        const _endDate = moment([endDate.getFullYear(), endDate.getMonth(), endDate.getDate()]);
+
+        const difference = _endDate.diff(_startDate, 'days');
+
+        this.searchSetting.dateInterval = difference  * 60 * 24;
+
+        this.search(this.searchSetting);
+      }
+    });
+  }
 
   public total = 0;
   public multiplier = 1;

@@ -96,9 +96,15 @@ export class NavbarComponent implements OnInit {
     }
 
     get getTitle() {
-        const title: string = this.location.prepareExternalUrl(this.location.path()).substring(7);
+        let title: string = this.location.prepareExternalUrl(this.location.path()).substring(7);
 
-        this.breadcrumb = title.substring(1).trim().split('/').map(x => this.getCleanText(x));
+        const questionIndex = title.indexOf('?');
+
+        if (questionIndex > -1) {
+            title = title.substring(0, questionIndex);
+        }
+
+        this.breadcrumb = title.substring(1).trim().split('/').map(x => this.getCleanText(x));
 
         return title.split('/').map(x => this.getCleanText(x));
     }
