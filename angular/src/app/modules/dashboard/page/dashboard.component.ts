@@ -622,19 +622,32 @@ export class DashboardComponent implements OnInit {
     this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate, this.selectedCategoryForTraffic);
     const istatistic: TrafficAnomalyItem | TrafficAnomalyItem2 = this.trafficAnomaly[this.selectedBox];
 
+
+
     this.categoryListFiltered = istatistic.categories;
     const times = timelineChart.map(x => x.date.getTime());
     const series = [
-      // { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [ times[index], Math.round(x)]) },
-      // { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
-      { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
+       { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [ times[index], Math.round(x)]) },
+       { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
+       { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
 
     ];
 
-    console.log(series);
+    const anomalies = series[2].data.filter((x, index) => {
+      const min = series[0].data[index][1];
+      const max = series[1].data[index][1];
+      const hit = x[1];
 
-    console.log(series);
+      if(hit > max || hit < min){
+        return true;
+      }
+      return false;
+    });
 
+    console.log(anomalies);
+
+    const points = this.getAnnotations(anomalies);
+    
     if (this.trafficChart) {
       this.trafficChart.updateSeries(series);
       return;
@@ -678,23 +691,23 @@ export class DashboardComponent implements OnInit {
           },
         },
       },
-      markers: {
-
-        size: [0, 0, 2],
-        colors: ['#f95656'],
-        strokeColors: '#f95656',
-        strokeWidth: 2,
-        hover: {
-          size: 7,
-        }
-      },
-      colors: ['#0084ff', '#b1dcff', '#eedcff'],
+      colors: ['#b1dcff', '#b1dcff', '#0084ff'],
       stroke: {
-        width: 3,
+        width: 2,
         curve: ['smooth', 'smooth', 'smooth']
+      },
+      annotations: {
+        points: points
       },
       dataLabels: {
         enabled: false
+      },
+      tooltip: {
+        enabled: true,
+        shared: true,
+        x: {
+          format: 'MMM dd yyyy'
+        }
       },
       fill: {
         opacity: 1,
@@ -710,12 +723,33 @@ export class DashboardComponent implements OnInit {
             day: 'dd MMM',
             hour: 'HH:mm'
           },
-          tickAmount: 24
+          tickAmount: 6
         }
       }
     });
 
     this.trafficChart.render();
+  }
+
+  getAnnotations(data: any[][]) {
+    const points = [];
+    data.forEach(e => {
+      const elm = {
+        x: e[0],
+        y: e[1],
+        marker: {
+          size: 3,
+          fillColor: "#f95656",
+          strokeColor: "#f95656",
+          strokeSize: 3,
+          radius: 2
+        }
+      };
+
+      points.push(elm);
+    });
+
+    return points;
   }
 
   startDashboardOperations() {
@@ -730,7 +764,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private getElasticData() {
-    this.dashboardService.getHourlyCompanySummary({ duration: 365 * 24 }).subscribe(res => {
+    this.dashboardService.getHourlyCompanySummary({ duration: 3 * 24 }).subscribe(res => {
       this.elasticData = res;
       this.elasticData.items = this.elasticData.items.sort((x, y) => {
         const x1 = Date.parse(x.date);
