@@ -16,6 +16,7 @@ export class RoleGuard implements CanActivate {
             && ss.currentUser.roles && roles.includes(ss.currentUser.roles.name)) {
             return true;
         } else {
+           // console.log(`roleguard failed ${expectedRole} ${this.auth.isCurrentSessionValid()} ${JSON.stringify(ss)} `);
             this.router.navigate(['login']);
             return false;
         }

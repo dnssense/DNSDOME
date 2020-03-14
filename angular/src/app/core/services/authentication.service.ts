@@ -173,7 +173,10 @@ export class AuthenticationService {
           user.gsmCode = res.gsmCode;
           user.gsm = res.gsm;
           user.usageType = 1;
+          const previousRoles = this.currentSession?.currentUser?.roles;
           this.currentSession.currentUser = user;
+          // burasi onemli once roles save edilmeli yoksa senkron sorunu olusur ve login ekrani calisir
+          this.currentSession.currentUser.roles = previousRoles;
 
           return this.getCurrentUserRoles();
         }));
