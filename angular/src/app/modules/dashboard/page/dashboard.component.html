@@ -28,33 +28,33 @@
       <div class="card-item rk-col">
         <div class="traffic-timeline row justify-content-between">
           <div class="rk-v-center col-12 col-md">
-            <div class="rk-title-2">{{'DASHBOARD.TotalTrafficTime'|translate}}</div>
-            <div class="timeline-sub-title"> {{'DASHBOARD.TotalDays365'|translate}}</div>
+           <!--  <div class="rk-title-2">{{'DASHBOARD.TotalTrafficTime'|translate}}</div> -->
+          <!--   <div class="timeline-sub-title"> {{'DASHBOARD.TotalDays365'|translate}}</div> -->
           </div>
 
-          <div class="d-flex align-items-start justify-content-end col-12 col-md-auto mt-md-3">
+         <!--  <div class="d-flex align-items-start justify-content-end col-12 col-md-auto mt-md-3"> -->
             <!-- <span class="rk-title-2 rk-v-center">{{'DASHBOARD.TimeRange'|translate}}</span> -->
 
-            <button class="btn btn-default ml-2 d-none d-xl-flex" *ngFor="let dateButton of dateButtons" (click)="setDateByDateButton(dateButton)">{{ dateButton.displayText }}</button>
+          <!--   <button class="btn btn-default ml-2 d-none d-xl-flex" *ngFor="let dateButton of dateButtons" (click)="setDateByDateButton(dateButton)">{{ dateButton.displayText }}</button> -->
             
-            <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal>
+           <!--  <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal> -->
             
-            <div class="d-flex flex-column text-center">
+           <!--  <div class="d-flex flex-column text-center">
               <rk-date [startDate]="startDate" [endDate]="endDate" (complete)="dateChanged($event)" [alignment]="'right'"></rk-date>
               <span class="date-text mt-1" *ngIf="diffrence">{{ diffrence }} gün</span>
-            </div>
-          </div>
+            </div> -->
+         <!--  </div> -->
         </div>
 
-        <div class="rk-panel mt-4">
+        <!-- <div class="rk-panel mt-4">
           <div class="rk-panel-item">
             <div class="timeline" id="timeline"></div>
           </div>
         </div>
-
+ -->
         <div class="rk-panel" style="margin-top: 30px;">
           <div class="rk-panel-header rk-title-2">
-            {{'DASHBOARD.TrafficBasedAnomaly'|translate}}
+            {{'DASHBOARD.TrafficBasedAnomaly'|translate}}({{'TotalDays'|translate}} 7)
           </div>
           <div class="rk-panel-item d-flex flex-column">
             <div class="row">
@@ -170,7 +170,7 @@
                         {{'Count'|translate}}
                       </th>
                       <th scope="col" style="width: 200px">
-                        {{'Percent'|translate}}
+                        {{'Categories'|translate}}
                       </th>
                     </tr>
                   </ng-template>
@@ -182,8 +182,7 @@
                       </td>
                       <td>{{ domain.hit }}</td>
                       <td>
-                        <rk-progressbar [value]="calculateDomainHitPercentage(domain.hit)" [showType]="'outside'" [type]="'security'" [sizeType]="'small'">
-                        </rk-progressbar>
+                       {{domain.category}}
                       </td>
                     </tr>
                   </ng-template>
@@ -210,7 +209,7 @@
                         {{'Count'|translate}}
                       </th>
                       <th scope="col" style="width: 200px">
-                        {{'Percent'|translate}}
+                        {{'Categories'|translate}}
                       </th>
                     </tr>
                   </ng-template>
@@ -222,8 +221,7 @@
                       </td>
                       <td>{{ domain.hit }}</td>
                       <td>
-                        <rk-progressbar [value]="calculateDomainHitPercentage(domain.hit)" [showType]="'outside'" [type]="'primary'" [sizeType]="'small'">
-                        </rk-progressbar>
+                       {{domain.category}}
                       </td>
                     </tr>
                   </ng-template>
@@ -250,7 +248,7 @@
                         {{'Count'|translate}}
                       </th>
                       <th scope="col" style="width: 200px">
-                        {{'Percent'|translate}}
+                        {{'Categories'|translate}}
                       </th>
                     </tr>
                   </ng-template>
@@ -262,8 +260,7 @@
                       </td>
                       <td>{{ domain.hit }}</td>
                       <td>
-                        <rk-progressbar [value]="calculateDomainHitPercentage(domain.hit)" [showType]="'outside'" [type]="'harmfull'" [sizeType]="'small'">
-                        </rk-progressbar>
+                      {{domain.category}}
                       </td>
                     </tr>
                   </ng-template>

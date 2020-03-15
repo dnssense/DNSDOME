@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { CategoryQuery } from '../models/CategoryQuery';
 import { AuthenticationService } from './authentication.service';
@@ -18,7 +18,30 @@ export class ToolsService {
   ) { }
 
   searchCategory(d: string): Observable<CategoryQuery> {
-    return this.http.get<any>(this._reputationURL + d).map(r => JSON.parse(r));
+
+
+
+    return this.http.get<any>(this._reputationURL  + d).map(r => r);
+  }
+  searchCategories(domains: string[]): Observable<CategoryQuery[]> {
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
+    };
+
+
+    const body = new URLSearchParams();
+    body.set('domains', domains.join(','));
+
+
+    return this.http.post<any>(this._reputationURL , body.toString(), httpOptions).map(x => {
+
+      return x.results;
+    });
+
+
   }
 
   /* sendCategoryRequest(domains: string[]): Observable<any> {

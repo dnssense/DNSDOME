@@ -26,6 +26,7 @@ import { Box } from 'src/app/core/models/Box';
 import { AstPath } from '@angular/compiler';
 import { debug } from 'util';
 import * as moment from 'moment';
+import { ToolsService } from 'src/app/core/services/ToolsService';
 
 interface TagInputValue {
   value: string;
@@ -54,7 +55,8 @@ export class DashboardComponent implements OnInit {
     private roamingService: RoamingService,
     private router: Router,
     private config: ConfigService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private toolService: ToolsService
   ) { }
 
   host: ConfigHost;
@@ -93,24 +95,29 @@ export class DashboardComponent implements OnInit {
 
   dateButtons: RkDateButton[] = [
     {
-      startDate: new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()),
+      startDate: new Date(this.now.getFullYear() , this.now.getMonth(), this.now.getDate() - 14),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
-      displayText: 'Last year'
-    },
-    {
-      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 3, this.now.getDate()),
-      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
-      displayText: 'Last 3 month'
-    },
-    {
-      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()),
-      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
-      displayText: 'Last month'
+      displayText: 'Last 2 week'
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
-      displayText: 'Last week'
+      displayText: 'Last 1 week'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 3),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last 3  day'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth() , this.now.getDate() - 2),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last 2 day'
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 1),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last 1 day'
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 0),
@@ -216,13 +223,13 @@ export class DashboardComponent implements OnInit {
   harmfulDomains: Domain[] = [];
 
   ngOnInit() {
-    this.startDate.setDate(this.today.getDate() - 365);
+    this.startDate.setDate(this.today.getDate() - 7);
     this.endDate = new Date();
     this.host = this.config.host;
 
     this.startDashboardOperations();
 
-    const request = { duration: 24 } as TopDomainsRequestV4;
+    const request = { duration: 7 * 24 } as TopDomainsRequestV4;
 
     this.getTopDomains(request);
     this.getAgents();
@@ -332,15 +339,50 @@ export class DashboardComponent implements OnInit {
   getTopDomains(request: TopDomainsRequestV4) {
     this.dashboardService.getTopDomains({ ...request, type: 'malicious' }).subscribe(result => {
 
-      this.maliciousDomains = result.items;
+      this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+        cats.forEach(cat => {
+          const finded = result.items.find(abc => abc.name == cat.domain);
+          if (finded) {
+          finded.category = cat.categoryList.join(',');
+          }
+        });
+        this.maliciousDomains = result.items;
+
+      });
+
+
+
     });
 
     this.dashboardService.getTopDomains({ ...request, type: 'new' }).subscribe(result => {
-      this.newDomains = result.items;
+
+      this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+        cats.forEach(cat => {
+          const finded = result.items.find(abc => abc.name == cat.domain);
+          if (finded) {
+          finded.category = cat.categoryList.join(',');
+          }
+        });
+        this.newDomains = result.items;
+
+      });
+
     });
 
     this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
-      this.harmfulDomains = result.items;
+
+      this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+        cats.forEach(cat => {
+          const finded = result.items.find(abc => abc.name == cat.domain);
+          if (finded) {
+          finded.category = cat.categoryList.join(',');
+          }
+        });
+        this.harmfulDomains = result.items;
+
+      });
+
+
     });
   }
 
@@ -354,7 +396,7 @@ export class DashboardComponent implements OnInit {
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
 
     const trafficAnomalyType = this.trafficAnomaly[type];
-
+    this.selectedCategoryForTraffic = null;
     if (trafficAnomalyType) {
       this.categoryListFiltered = trafficAnomalyType.categories;
     }
@@ -410,7 +452,7 @@ export class DashboardComponent implements OnInit {
         type: 'line',
         height: 350,
         toolbar: {
-          show: true,
+          show: false,
           offsetX: 0,
           offsetY: 0,
           tools: {
@@ -425,17 +467,17 @@ export class DashboardComponent implements OnInit {
           },
           autoSelected: 'zoom'
         }
-      },
+      }/* ,
       markers: {
         size: [2, 0],
         strokeWidth: 2,
         hover: {
           size: 7,
         }
-      },
-      colors: ['#f95656', '#f95656'],
+      } */,
+      colors: ['#0084ff', '#0084ff'],
       stroke: {
-        width: 4,
+        width: 2,
         curve: ['smooth']
       },
       dataLabels: {
@@ -443,6 +485,13 @@ export class DashboardComponent implements OnInit {
       },
       fill: {
         opacity: 1,
+      },
+      tooltip: {
+        enabled: true,
+        shared: true,
+        x: {
+          format: 'MMM dd yyyy HH:mm'
+        }
       },
       xaxis: {
         type: 'datetime',
@@ -457,7 +506,7 @@ export class DashboardComponent implements OnInit {
             hour: 'HH:mm'
           }
         },
-        tickAmount: 12
+        tickAmount: 8
       }
     });
     this.uniqueDomainChart.render();
@@ -607,6 +656,8 @@ export class DashboardComponent implements OnInit {
     this.timeLineChart.render();
   }
 
+
+
   private drawChartAnomaly(catId: number = 0) {
     //  const chartData = [];
 
@@ -627,7 +678,7 @@ export class DashboardComponent implements OnInit {
     this.categoryListFiltered = istatistic.categories;
     const times = timelineChart.map(x => x.date.getTime());
     const series = [
-       { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [ times[index], Math.round(x)]) },
+       { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [ times[index], Math.round(x) >= 0 ? Math.round(x) : 0]) },
        { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
        { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
 
@@ -638,19 +689,35 @@ export class DashboardComponent implements OnInit {
       const max = series[1].data[index][1];
       const hit = x[1];
 
-      if(hit > max || hit < min){
+      if (hit > max || hit < min) {
         return true;
       }
       return false;
     });
 
-    console.log(anomalies);
+
+    let yMax = 0;
+    series.forEach(x => {
+      x.data.forEach(element => {
+          if (element[1] > yMax) {
+          yMax = element[1];
+          }
+      });
+    });
+
+
+
+/*     let xaxismax=0;
+    xaxismax=series[1].data.filter(x=>x) */
+
+    // console.log(anomalies);
 
     const points = this.getAnnotations(anomalies);
-    
+
     if (this.trafficChart) {
-      this.trafficChart.updateSeries(series);
-      return;
+      this.trafficChart.destroy();
+    //  this.trafficChart.
+    //  return;
     }
 
     this.trafficChart = new ApexCharts(document.querySelector('#chart'), {
@@ -658,7 +725,7 @@ export class DashboardComponent implements OnInit {
       chart: {
         id: 'chart2',
         type: 'line',
-        stacked: true,
+        stacked: false,
         group: 'deneme',
         height: 350,
         zoom: {
@@ -691,7 +758,7 @@ export class DashboardComponent implements OnInit {
           },
         },
       },
-      colors: ['#b1dcff', '#b1dcff', '#0084ff'],
+      colors: ['#ffffff', '#b1dcff', '#0084ff'],
       stroke: {
         width: 2,
         curve: ['smooth', 'smooth', 'smooth']
@@ -706,7 +773,7 @@ export class DashboardComponent implements OnInit {
         enabled: true,
         shared: true,
         x: {
-          format: 'MMM dd yyyy'
+          format: 'MMM dd yyyy HH:mm'
         }
       },
       fill: {
@@ -723,8 +790,12 @@ export class DashboardComponent implements OnInit {
             day: 'dd MMM',
             hour: 'HH:mm'
           },
-          tickAmount: 6
+          tickAmount: 7
         }
+      },
+      yaxis: {
+        min: 0,
+        max: yMax + 10
       }
     });
 
@@ -739,8 +810,8 @@ export class DashboardComponent implements OnInit {
         y: e[1],
         marker: {
           size: 3,
-          fillColor: "#f95656",
-          strokeColor: "#f95656",
+          fillColor: '#f95656',
+          strokeColor: '#f95656',
           strokeSize: 3,
           radius: 2
         }
@@ -764,7 +835,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private getElasticData() {
-    this.dashboardService.getHourlyCompanySummary({ duration: 3 * 24 }).subscribe(res => {
+    this.dashboardService.getHourlyCompanySummary({ duration: 7 * 24 }).subscribe(res => {
       this.elasticData = res;
       this.elasticData.items = this.elasticData.items.sort((x, y) => {
         const x1 = Date.parse(x.date);
@@ -899,7 +970,7 @@ export class DashboardComponent implements OnInit {
         item.average = x.average;
       }
     });
-    map.forEach(x => x.ratio = (x.hitCount / total) || 0);
+    map.forEach(x => x.ratio = (x.hitCount * 100 / total) || 0);
     return Array.from(map.values());
   }
 
@@ -915,7 +986,7 @@ export class DashboardComponent implements OnInit {
       const filtered = categoryList?.filter(a => filterList.findIndex(b => a?.name == b) > -1);
       let std = 0;
       if (filtered && filtered.length) {
-        std = filtered.map(x => x.std_deviation).reduce((x, y) => x + y, 0) / filtered.length;
+        std = filtered.map(x => x.std_deviation ).reduce((x, y) => x + y, 0) ;
       }
       return Math.round(std);
     });
@@ -926,7 +997,7 @@ export class DashboardComponent implements OnInit {
       const filtered = categoryList?.filter(a => filterList.findIndex(b => a?.name == b) > -1);
       let std = 0;
       if (filtered && filtered.length) {
-        std = filtered.map(x => x.average).reduce((x, y) => x + y, 0) / filtered.length;
+        std = filtered.map(x => x.average).reduce((x, y) => x + y, 0)  ;
       }
       return Math.round(std);
     });
@@ -938,7 +1009,7 @@ export class DashboardComponent implements OnInit {
       const filtered = categoryList?.filter(a => filterList.findIndex(b => a?.name == b) > -1);
       let std = 0;
       if (filtered && filtered.length) {
-        std = filtered.map(x => x.hits).reduce((x, y) => x + y, 0);
+        std = filtered.map(x => x.hits).reduce((x, y) => x + y, 0) ;
       }
       return Math.round(std);
     });
@@ -951,13 +1022,19 @@ export class DashboardComponent implements OnInit {
       return date >= start.getTime() && date <= end.getTime();
     });
 
-    const selectedCategoryItems = filtered.map(x => x.category_hits).filter(x => x.find(y => y.name == selectedCategory)).reduce((x, y) => {
-      const item = y.length ? y[0] : null;
-      x.push(item);
-      return x;
-    }, []);
+    let selectedCategoryItems = null;
+    if (selectedCategory) {
 
-    const selectedCategoryItems2 = [selectedCategoryItems] as CategorySummary[][];
+       selectedCategoryItems = filtered.map(x => x.category_hits).reduce((x, y) => {
+        const item = y.find(z => z.name == selectedCategory);
+        x.push(item);
+        return x;
+      }, []);
+    }
+
+
+
+    const selectedCategoryItems2 = selectedCategoryItems ? selectedCategoryItems.map(x => [x]).reduce((x, y) => {x.push(y); return x; }, []) as CategorySummary[][] : null;
 
     const anomaly: TrafficAnomaly = {} as TrafficAnomaly;
     anomaly.total = {} as TrafficAnomalyItem;
@@ -970,9 +1047,10 @@ export class DashboardComponent implements OnInit {
     anomaly.total.ratio = (Math.round((anomaly.total.currentHit - anomaly.total.averageHit) / anomaly.total.averageHit * 100)) || 0;
 
 
-    anomaly.total.std_deviations = selectedCategory ? selectedCategoryItems.map(x => x ? x.std_deviation : 0) : filtered.map(x => x.total_hit.std_deviation);
+    anomaly.total.std_deviations = selectedCategory ? selectedCategoryItems.map(x => x ? x.std_deviation  : 0) : filtered.map(x => x.total_hit.std_deviation );
     anomaly.total.averages = selectedCategory ? selectedCategoryItems.map(x => x ? x.average : 0) : filtered.map(x => x.total_hit.average);
     anomaly.total.hits = selectedCategory ? selectedCategoryItems.map(x => x ? x.hits : 0) : filtered.map(x => x.total_hit.count);
+
 
 
     anomaly.harmful = {} as TrafficAnomalyItem2;
@@ -985,6 +1063,7 @@ export class DashboardComponent implements OnInit {
     anomaly.harmful.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
     anomaly.harmful.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
     anomaly.harmful.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) || 0;
+
 
     anomaly.harmful.std_deviations = selectedCategory ? this.stdDeviation(selectedCategoryItems2, this.categoryMappings.harmful) : this.stdDeviation(filtered.map(x => x.category_hits), this.categoryMappings.harmful);
     anomaly.harmful.averages = selectedCategory ? this.average(selectedCategoryItems2, this.categoryMappings.harmful) : this.average(filtered.map(x => x.category_hits), this.categoryMappings.harmful);
@@ -1068,18 +1147,22 @@ export class DashboardComponent implements OnInit {
     const diff = endDate.diff(startDate, 'days');
 
     this.dashboardService.getTopDomainValue({ domain: domain, duration: diff * 24 }).subscribe(result => {
+
+
       result.items = result.items.sort((x, y) => {
         const x1 = Date.parse(x.date);
         const y1 = Date.parse(y.date);
         return x1 - y1;
       });
 
+
+
       this.drawUniqueDomainChart(result.items);
     });
   }
 
   showSummary() {
-    this.router.navigateByUrl(`/admin/reports/custom-reports?startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
+    this.router.navigateByUrl(`/admin/reports/custom-reports?category=${this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
   }
 
 }

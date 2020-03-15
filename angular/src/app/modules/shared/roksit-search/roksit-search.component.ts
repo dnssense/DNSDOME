@@ -224,7 +224,9 @@ export class RoksitSearchComponent implements OnInit {
     });
   }
 
-  onSelectedDateChange($event) { }
+  onSelectedDateChange($event) { 
+    this.searchSettingEmitter.emit(this.searchSettings);
+  }
 
   onTypeValueChange(type: SearchSettingsType) {
     this.searchSettings.type = type;
