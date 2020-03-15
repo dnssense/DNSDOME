@@ -3,7 +3,8 @@
     <div class="card-item rk-col">
       <div class="row" style="margin-top:-15px; width: 100%;">
         <div class="col-md-12">
-          <app-roksit-search [filters]="filters" pageTitle="Custom Report" [searchSettings]="searchSetting"
+          <app-roksit-search (isShowRunBarOutput)="isShowRunBar = $event" (filtersClearEmitter)="clearFilters()"
+              [isShowRunBar]="isShowRunBar" [filters]="filters" pageTitle="Custom Report" [searchSettings]="searchSetting"
             (searchSettingEmitter)="search($event)">
           </app-roksit-search>
         </div>
@@ -11,7 +12,7 @@
       <div class="row">
         <div class="col-md-12">
           <app-customreport-result [data]="data" [searchSetting]="searchSetting" #tableComponent
-            [multiplier]="multiplier" (searchEmitter)="search($event)" (linkClickedOutput)="linkClicked($event)">
+            [multiplier]="multiplier" (searchEmitter)="search($event)" (linkClickedOutput)="linkClicked($event)" (changeColumnBadge)="isShowRunBar = $event">
           </app-customreport-result>
         </div>
       </div>

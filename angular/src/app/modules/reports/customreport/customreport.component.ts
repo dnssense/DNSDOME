@@ -50,6 +50,8 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   public columnsTemp: LogColumn[];
   public data: any[];
 
+  isShowRunBar = false;
+
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
 
   @ViewChild(CustomReportResultComponent) customReportResultComponent: CustomReportResultComponent;
@@ -110,5 +112,15 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
     } else {
       this.filters.push(new FilterBadgeModel($event.columnModel.name, true, [$event.value]));
     }
+
+    this.isShowRunBar = true;
+  }
+
+  clearFilters() {
+    this.filters = [];
+
+    this.isShowRunBar = false;
+
+    this.search(this.searchSetting);
   }
 }
