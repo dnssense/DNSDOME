@@ -63,7 +63,7 @@ export class AuthenticationService {
         }
       }
     } catch (err) {
-      //this.logger.console(err);
+      // this.logger.console(err);
       this.logout();
     }
 
@@ -87,16 +87,16 @@ export class AuthenticationService {
     if (!this.currentSession || !this.currentSession.refreshToken) {
       return;
     }
-    //this.logger.console('refreshing token');
+    // this.logger.console('refreshing token');
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
       })
     };
-    //const body = encodeURI('grant_type=refresh_token&refresh_token=' + this.currentSession.refreshToken);
+    // const body = encodeURI('grant_type=refresh_token&refresh_token=' + this.currentSession.refreshToken);
 
-    let body = new URLSearchParams();
+    const body = new URLSearchParams();
     body.set('grant_type', 'refresh_token');
     body.set('refresh_token', this.currentSession.refreshToken);
 
@@ -134,7 +134,7 @@ export class AuthenticationService {
         this.currentSession.currentUser.roles = role;
 
       });
-      //localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
+      // localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
       this.saveSession();
       return this.currentSession;
     }));
@@ -171,7 +171,13 @@ export class AuthenticationService {
           user.gsmCode = res.gsmCode;
           user.gsm = res.gsm;
           user.usageType = 1;
+          let previousRoles: Role = null;
+          if (this.currentSession && this.currentSession.currentUser) {
+           previousRoles = this.currentSession.currentUser.roles;
+          }
           this.currentSession.currentUser = user;
+          // burasi onemli once roles save edilmeli yoksa senkron sorunu olusur ve login ekrani calisir
+          this.currentSession.currentUser.roles = previousRoles;
 
           return this.getCurrentUserRoles();
         }));
@@ -204,14 +210,14 @@ export class AuthenticationService {
       })
     };
 
-    let body = new URLSearchParams();
+    const body = new URLSearchParams();
     body.set('grant_type', 'password');
     body.set('username', email);
     body.set('password', pass);
 
     return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
       .pipe(mergeMap((res: any) => {
-        //this.logger.console(res);
+        // this.logger.console(res);
         this.currentSession = new Session();
         this.currentSession.token = res.accessToken;
         this.currentSession.refreshToken = res.refreshToken;
@@ -252,7 +258,7 @@ export class AuthenticationService {
 
   forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {
     return this.http.post<any>(this._forgotPasswordChangeURL,
-      JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions())
+      JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions());
 
   }
 

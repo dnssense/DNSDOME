@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Rx";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OperationResult } from '../models/OperationResult';
 import { Box } from '../models/Box';
@@ -19,7 +19,7 @@ export class ToolsService {
   }
 
   searchCategory(d: string): Observable<CategoryQuery> {
-    return this.http.get<any>(this._reputationURL + d).map(r => JSON.parse(r));
+    return this.http.get<any>(this._reputationURL + d).map(r => r);
   }
 
   sendCategoryRequest(domains: string[]): Observable<any> {
