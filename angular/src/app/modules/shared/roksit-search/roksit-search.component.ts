@@ -353,7 +353,7 @@ export class RoksitSearchComponent implements OnInit {
     this.setShowRunBar(true);
   }
 
-  search(type?: 'savedreport' | string, showFilterModal = false) {
+  search(type?: 'savedreport' | string, showFilterModal = false) {
     if (type === 'savedreport') {
       this.searchSettingEmitter.emit(this.searchSettings);
 
@@ -375,15 +375,15 @@ export class RoksitSearchComponent implements OnInit {
             const selectedItems = this.getItemsByCategoryName(value);
 
             selectedItems.forEach(item => {
-              this.searchSettings.must.push(new ColumnTagInput('category', '=', item.name));
+              this.searchSettings.should.push(new ColumnTagInput('category', '=', item.name));
             });
           });
         } else {
           filter.values.forEach(value => {
             if (filter.name === 'action') {
-              this.searchSettings.must.push(new ColumnTagInput(filter.name, '=', 'true'));
+              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
             } else {
-              this.searchSettings.must.push(new ColumnTagInput(filter.name, '=', value));
+              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', value));
             }
           });
         }
@@ -454,7 +454,7 @@ export class RoksitSearchComponent implements OnInit {
       category.items.forEach(item => item.selected = false);
     });
 
-    report.must.forEach(elem => {
+    report.should.forEach(elem => {
       if (elem.field === 'category') {
         this.groupedCategories.forEach(category => {
           const findedItem = category.items.find(x => x.name === elem.value);
@@ -577,5 +577,11 @@ export class RoksitSearchComponent implements OnInit {
     this.isShowRunBar = status;
 
     this.isShowRunBarOutput.emit(status);
+  }
+
+  filterBadgeChange(filter: FilterBadgeModel) {
+    filter.equal = !filter.equal;
+
+    this.setShowRunBar(true);
   }
 }
