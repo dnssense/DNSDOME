@@ -194,6 +194,7 @@ export interface Domain {
 export interface Domain {
   name: string;
   hit: number;
+category?: string;
 }
 
 export interface TopDomainsResponseV4 {

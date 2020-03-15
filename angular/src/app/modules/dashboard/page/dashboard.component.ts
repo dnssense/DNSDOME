@@ -26,6 +26,7 @@ import { Box } from 'src/app/core/models/Box';
 import { AstPath } from '@angular/compiler';
 import { debug } from 'util';
 import * as moment from 'moment';
+import { ToolsService } from 'src/app/core/services/ToolsService';
 
 interface TagInputValue {
   value: string;
@@ -54,7 +55,8 @@ export class DashboardComponent implements OnInit {
     private roamingService: RoamingService,
     private router: Router,
     private config: ConfigService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private toolService: ToolsService
   ) { }
 
   host: ConfigHost;
@@ -337,16 +339,50 @@ export class DashboardComponent implements OnInit {
   getTopDomains(request: TopDomainsRequestV4) {
     this.dashboardService.getTopDomains({ ...request, type: 'malicious' }).subscribe(result => {
 
-      this.maliciousDomains = result.items;
+      this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+        cats.forEach(cat => {
+          const finded = result.items.find(abc => abc.name == cat.domain);
+          if (finded) {
+          finded.category = cat.categoryList.join(',');
+          }
+        });
+        this.maliciousDomains = result.items;
+
+      });
+
+
 
     });
 
     this.dashboardService.getTopDomains({ ...request, type: 'new' }).subscribe(result => {
-      this.newDomains = result.items;
+
+      this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+        cats.forEach(cat => {
+          const finded = result.items.find(abc => abc.name == cat.domain);
+          if (finded) {
+          finded.category = cat.categoryList.join(',');
+          }
+        });
+        this.newDomains = result.items;
+
+      });
+
     });
 
     this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
-      this.harmfulDomains = result.items;
+
+      this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+        cats.forEach(cat => {
+          const finded = result.items.find(abc => abc.name == cat.domain);
+          if (finded) {
+          finded.category = cat.categoryList.join(',');
+          }
+        });
+        this.harmfulDomains = result.items;
+
+      });
+
+
     });
   }
 
@@ -934,7 +970,7 @@ export class DashboardComponent implements OnInit {
         item.average = x.average;
       }
     });
-    map.forEach(x => x.ratio = (x.hitCount / total) || 0);
+    map.forEach(x => x.ratio = (x.hitCount * 100 / total) || 0);
     return Array.from(map.values());
   }
 
@@ -1111,18 +1147,22 @@ export class DashboardComponent implements OnInit {
     const diff = endDate.diff(startDate, 'days');
 
     this.dashboardService.getTopDomainValue({ domain: domain, duration: diff * 24 }).subscribe(result => {
+
+
       result.items = result.items.sort((x, y) => {
         const x1 = Date.parse(x.date);
         const y1 = Date.parse(y.date);
         return x1 - y1;
       });
 
+
+
       this.drawUniqueDomainChart(result.items);
     });
   }
 
   showSummary() {
-    this.router.navigateByUrl(`/admin/reports/custom-reports?startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
+    this.router.navigateByUrl(`/admin/reports/custom-reports?category=${this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
   }
 
 }
