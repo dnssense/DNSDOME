@@ -176,7 +176,33 @@
     <div class="rk-modal-item" style="height: 1px; border-bottom: none;">
       <h5 class="modal-item title">Category</h5>
 
-      <div class="rk-category-container mt-3" *ngFor="let category of groupedCategories; let index = index"
+      <div class="d-flex mt-2">
+        <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
+          [ngClass]="{'btn-outline-active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
+          <icon-equal></icon-equal>
+        </button>
+
+        <button class="btn btn-icon btn-small w-100 filter-btn-outline"
+          [ngClass]="{'btn-outline-active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
+          <icon-not-equal></icon-not-equal>
+        </button>
+      </div>
+
+      <div class="mt-3">
+        <rk-autocomplete [(value)]="categoryAutoComplate" [items]="autocompleteItems"
+          (enterPress)="categoryEnterPress($event)" (onSelect)="categoryEnterPress($event)"></rk-autocomplete>
+      </div>
+
+      <div class="mt-3" *ngFor="let filter of categoryFilters; let index = index">
+        <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
+          *ngFor="let value of filter.values; let valueIndex = index">
+          {{ value }}
+
+          <i-feather name="x" class="hover-gray" (click)="removeCategoryFilter(filter, index, valueIndex)"></i-feather>
+        </div>
+      </div>
+
+      <!-- <div class="rk-category-container mt-3" *ngFor="let category of groupedCategories; let index = index"
         [ngClass]="{'mb-3': groupedCategories.length -1 === index}">
         <div class="category-header">
           <rk-checkbox class="checkbox" size="sm" className="m-0" (valueChange)="checkboxValueChange($event, category)">
@@ -192,12 +218,12 @@
             <rk-checkbox size="sm" alignment="right" [(value)]="item.selected">{{ item.name }}</rk-checkbox>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </rk-modal-body>
 
   <rk-modal-footer>
-    <button class="btn w-100 btn-small mr-2" (click)="apply(true); search();">Apply</button>
+    <button class="btn w-100 btn-small mr-2" (click)="apply(true); search('', true);">Apply</button>
     <button class="btn w-100 btn-default btn-small" (click)="clear()">Clean</button>
   </rk-modal-footer>
 </rk-modal>

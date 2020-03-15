@@ -1,6 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RoksitSearchComponent } from './roksit-search/roksit-search.component';
-import { RkRadioModule, RkSelectModule, RkTableModule, RkModalModule, RkLayoutModule, RkFilterBadgeModule, IconsModule, RkCheckboxModule } from 'roksit-lib';
+import { RkRadioModule, RkSelectModule, RkTableModule, RkModalModule, RkLayoutModule, RkFilterBadgeModule, IconsModule, RkCheckboxModule, RkAutoCompleteModule } from 'roksit-lib';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -15,7 +15,8 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     FormsModule,
     RkFilterBadgeModule,
-    RkCheckboxModule
+    RkCheckboxModule,
+    RkAutoCompleteModule
   ],
   declarations: [RoksitSearchComponent],
   exports: [RoksitSearchComponent],

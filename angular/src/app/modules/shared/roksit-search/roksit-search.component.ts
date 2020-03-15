@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild } from '@angular/core';
 import { StaticService } from 'src/app/core/services/StaticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { ReportService } from 'src/app/core/services/ReportService';
+import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild } from '@angular/core';
 import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { LogColumn } from 'src/app/core/models/LogColumn';
@@ -14,6 +14,7 @@ import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { UserService } from 'src/app/core/services/UserService';
 import { User } from 'src/app/core/models/User';
+import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
 
 export class GroupedCategory {
   type: string;
@@ -57,7 +58,12 @@ export class RoksitSearchComponent implements OnInit {
     });
 
     this.staticService.getCategoryList().subscribe(result => {
-      this.groupedCategories = this.groupCategories(result);
+      this.autocompleteItems = result.map(x => {
+        return {
+          text: x.name,
+          value: x.name
+        } as RkAutoCompleteModel;
+      });
     });
 
     this.userService.getUsers().subscribe(result => {
@@ -122,6 +128,14 @@ export class RoksitSearchComponent implements OnInit {
   set isShowRunBar(val) { this._isShowRunBar = val; }
 
   @Output() isShowRunBarOutput = new EventEmitter();
+
+  modalCategoryIsEqual = true;
+
+  categoryAutoComplate;
+
+  autocompleteItems: RkAutoCompleteModel[] = [];
+
+  categoryFilters: FilterBadgeModel[] = [];
 
   ngOnInit() {
     this.fastReportService.tableColumns.subscribe(columns => {
@@ -275,25 +289,41 @@ export class RoksitSearchComponent implements OnInit {
     });
 
     /** Seçilen Kategoriler */
-    const selectedCategories = [] as GroupedCategory[];
+    (this.__deepCopy(this.categoryFilters) as FilterBadgeModel[]).forEach(elem => {
+      const filter = this.filters.find(x => x.name === elem.name && elem.equal === x.equal);
 
-    this.selectedItems.forEach(elem => {
-      const exists = elem.items.some(x => x.selected);
+      if (filter) {
+        elem.values.forEach(value => {
+          const findedValue = filter.values.some(x => x === value);
 
-      if (exists) {
-        selectedCategories.push(elem);
+          if (!findedValue) {
+            filter.values.unshift(value);
+          }
+        });
+      } else {
+        this.addFilterBadge(elem);
       }
     });
 
-    if (selectedCategories.length > 0) {
-      const findedCategories = this.filters.find(x => x.name === 'Categories');
+    // const selectedCategories = [] as GroupedCategory[];
 
-      if (findedCategories) {
-        findedCategories.values = selectedCategories.map(x => x.name);
-      } else {
-        this.addFilterBadge(new FilterBadgeModel('Categories', true, selectedCategories.map(x => x.name)));
-      }
-    }
+    // this.selectedItems.forEach(elem => {
+    //   const exists = elem.items.some(x => x.selected);
+
+    //   if (exists) {
+    //     selectedCategories.push(elem);
+    //   }
+    // });
+
+    // if (selectedCategories.length > 0) {
+    //   const findedCategories = this.filters.find(x => x.name === 'Categories');
+
+    //   if (findedCategories) {
+    //     findedCategories.values = selectedCategories.map(x => x.name);
+    //   } else {
+    //     this.addFilterBadge(new FilterBadgeModel('Categories', true, selectedCategories.map(x => x.name)));
+    //   }
+    // }
 
     /** Allow Deny Butonları */
     if (this.actionType) {
@@ -338,14 +368,16 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   onDeletedFilterBadge($event: RkFilterOutput, index: number) {
-    if ($event.name === 'Categories') {
-      $event.values.forEach(value => {
-        const category = this.groupedCategories.find(x => x.name === value);
-
-        category.items.forEach(x => x.selected = false);
-      });
+    if ($event.name === 'category') {
+      this.categoryFilters = [];
     } else if ($event.name === 'action') {
       this.actionType = null;
+    }
+
+    const findedIndex = this.manuelFilters.findIndex(x => x.name === $event.name);
+
+    if (findedIndex > -1) {
+      this.manuelFilters.splice(findedIndex, 1);
     }
 
     this.filters.splice(index, 1);
@@ -446,13 +478,11 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   savedReportValueChange() {
+    this.filters = [];
+
     const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
 
     this.searchSettings = report;
-
-    this.groupedCategories.forEach(category => {
-      category.items.forEach(item => item.selected = false);
-    });
 
     report.should.forEach(elem => {
       if (elem.field === 'category') {
@@ -583,5 +613,33 @@ export class RoksitSearchComponent implements OnInit {
     filter.equal = !filter.equal;
 
     this.setShowRunBar(true);
+  }
+
+  categoryEnterPress($event: { value: string }) {
+    if ($event.value.trim().length === 0) { return; }
+
+    const findedCategory = this.categoryFilters.find(x => x.name.toLocaleLowerCase() === 'category' && x.equal === this.modalCategoryIsEqual);
+
+    if (findedCategory) {
+      findedCategory.values.unshift($event.value);
+    } else {
+      this.categoryFilters.push(new FilterBadgeModel('category', this.modalCategoryIsEqual, [$event.value]));
+    }
+
+    this.categoryAutoComplate = '';
+  }
+
+  removeCategoryFilter(filter: FilterBadgeModel, filterIndex: number, valueIndex: number) {
+    filter.values.splice(valueIndex, 1);
+
+    if (filter.values.length === 0) {
+      this.categoryFilters.splice(filterIndex, 1);
+    }
+
+    const categoryFilterIndex = this.filters.findIndex(x => x.name === 'category');
+
+    if (categoryFilterIndex > -1) {
+      this.filters[categoryFilterIndex] = filter;
+    }
   }
 }

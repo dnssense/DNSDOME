@@ -25,7 +25,7 @@ export class MonitorComponent implements OnInit {
   @ViewChild(MonitorResultComponent)
   private monitorResultComponent: MonitorResultComponent;
 
-  isShowRunBarz = false;
+  isShowRunBar = false;
 
   ngOnInit() { }
 
@@ -56,10 +56,14 @@ export class MonitorComponent implements OnInit {
       this.filters.push(new FilterBadgeModel($event.columnModel.name, true, [$event.value]));
     }
 
-    this.isShowRunBarz = true;
+    this.isShowRunBar = true;
   }
 
   clearFilters() {
     this.filters = [];
+
+    this.isShowRunBar = false;
+
+    this.search(this.searchSettings);
   }
 }
