@@ -338,7 +338,7 @@ export class DashboardComponent implements OnInit {
 
   getTopDomains(request: TopDomainsRequestV4) {
     this.dashboardService.getTopDomains({ ...request, type: 'malicious' }).subscribe(result => {
-
+      if (result.items.length) {
       this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
         cats.forEach(cat => {
           const finded = result.items.find(abc => abc.name == cat.domain);
@@ -349,13 +349,14 @@ export class DashboardComponent implements OnInit {
         this.maliciousDomains = result.items;
 
       });
+      }
 
 
 
     });
 
     this.dashboardService.getTopDomains({ ...request, type: 'new' }).subscribe(result => {
-
+      if (this.items.length) {
       this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
         cats.forEach(cat => {
           const finded = result.items.find(abc => abc.name == cat.domain);
@@ -366,6 +367,7 @@ export class DashboardComponent implements OnInit {
         this.newDomains = result.items;
 
       });
+      }
 
     });
 
