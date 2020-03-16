@@ -224,7 +224,7 @@ export class RoksitSearchComponent implements OnInit {
     });
   }
 
-  onSelectedDateChange($event) { 
+  onSelectedDateChange($event) {
     this.searchSettingEmitter.emit(this.searchSettings);
   }
 
@@ -623,12 +623,14 @@ export class RoksitSearchComponent implements OnInit {
     const findedCategory = this.categoryFilters.find(x => x.name.toLocaleLowerCase() === 'category' && x.equal === this.modalCategoryIsEqual);
 
     if (findedCategory) {
-      findedCategory.values.unshift($event.value);
+      const findedValue = findedCategory.values.some(x => x === $event.value);
+
+      if (!findedValue) {
+        findedCategory.values.unshift($event.value);
+      }
     } else {
       this.categoryFilters.push(new FilterBadgeModel('category', this.modalCategoryIsEqual, [$event.value]));
     }
-
-    this.categoryAutoComplate = '';
   }
 
   removeCategoryFilter(filter: FilterBadgeModel, filterIndex: number, valueIndex: number) {

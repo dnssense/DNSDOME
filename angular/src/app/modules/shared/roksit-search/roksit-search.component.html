@@ -189,8 +189,9 @@
       </div>
 
       <div class="mt-3">
-        <rk-autocomplete [(value)]="categoryAutoComplate" [items]="autocompleteItems"
-          (enterPress)="categoryEnterPress($event)" (onSelect)="categoryEnterPress($event)"></rk-autocomplete>
+        <!-- (enterPress)="categoryEnterPress($event)"  -->
+        <rk-autocomplete [onSelectClear]="true" [items]="autocompleteItems" (onSelect)="categoryEnterPress($event)">
+        </rk-autocomplete>
       </div>
 
       <div class="mt-3" *ngFor="let filter of categoryFilters; let index = index">
