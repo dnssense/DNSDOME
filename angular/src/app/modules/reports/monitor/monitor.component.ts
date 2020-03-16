@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { MonitorResultComponent, LinkClick } from './result/monitor-result.component';
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
 import { RoksitSearchComponent, FilterBadgeModel } from '../../shared/roksit-search/roksit-search.component';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-monitor',
@@ -11,9 +11,11 @@ import { RoksitSearchComponent, FilterBadgeModel } from '../../shared/roksit-sea
   styleUrls: ['monitor.component.sass'],
   providers: [DateFormatPipe]
 })
-export class MonitorComponent implements OnInit {
+export class MonitorComponent implements OnInit, AfterViewInit {
 
-  constructor() { }
+  constructor(
+    private location: Location
+  ) { }
 
   public searchSettings: SearchSetting = new SearchSetting();
 
@@ -28,6 +30,18 @@ export class MonitorComponent implements OnInit {
   isShowRunBar = false;
 
   ngOnInit() { }
+
+  ngAfterViewInit() {
+    const state = this.location.getState();
+
+    if (state['filters']) {
+      this.filters = state['filters'];
+
+      this.roksitSearchComponent.filters = this.filters;
+
+      this.roksitSearchComponent.search('', false);
+    }
+  }
 
   public search(_searchSettings: SearchSetting) {
     this.searchSettings = _searchSettings;

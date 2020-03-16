@@ -15,6 +15,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { UserService } from 'src/app/core/services/UserService';
 import { User } from 'src/app/core/models/User';
 import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
+import { Router } from '@angular/router';
 
 export class GroupedCategory {
   type: string;
@@ -48,7 +49,8 @@ export class RoksitSearchComponent implements OnInit {
     private reportService: ReportService,
     private fastReportService: FastReportService,
     private notification: NotificationService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
     this.reportService.getReportList().subscribe(res => {
       this.allSavedReports = res;
@@ -444,7 +446,9 @@ export class RoksitSearchComponent implements OnInit {
 
     this.searchSettingEmitter.emit(this.searchSettings);
 
-    this.filterModal.toggle();
+    if (showFilterModal) {
+      this.filterModal.toggle();
+    }
   }
 
   getItemsByCategoryName(name: string) {
@@ -645,5 +649,13 @@ export class RoksitSearchComponent implements OnInit {
     if (categoryFilterIndex > -1) {
       this.filters[categoryFilterIndex] = filter;
     }
+  }
+
+  routeReportPage(pageName: 'monitor' | 'custom-reports') {
+    this.router.navigateByUrl(`/admin/reports/${pageName}`, {
+      state: {
+        filters: this.filters
+      }
+    });
   }
 }

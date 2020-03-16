@@ -6,8 +6,9 @@ import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { FastReportService } from 'src/app/core/services/FastReportService';
 import { LinkClick } from '../monitor/result/monitor-result.component';
 import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
+import { Location } from '@angular/common';
 
 export interface CustomReportRouteParams {
   startDate?: string;
@@ -23,7 +24,8 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fastReportService: FastReportService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private location: Location
   ) {
     activatedRoute.queryParams.subscribe((params: CustomReportRouteParams) => {
       if (params.startDate && params.endDate) {
@@ -35,7 +37,7 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
         const difference = _endDate.diff(_startDate, 'days');
 
-        this.searchSetting.dateInterval = difference  * 60 * 24;
+        this.searchSetting.dateInterval = difference * 60 * 24;
 
         this.search(this.searchSetting);
       }
@@ -67,7 +69,17 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.search(this.searchSetting);
+    const state = this.location.getState();
+
+    if (state['filters']) {
+      this.filters = state['filters'];
+
+      this.customReportSearchComponent.filters = this.filters;
+
+      this.customReportSearchComponent.search('', false);
+    } else {
+      this.search(this.searchSetting);
+    }
   }
 
   public search(setting: SearchSetting) {

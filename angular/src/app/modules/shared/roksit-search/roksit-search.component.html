@@ -258,7 +258,7 @@
   </div>
 </div>
 
-<div class="d-flex">
+<div class="d-flex align-items-center">
   <div class="d-flex flex-wrap align-items-center" style="flex: 1">
     <span class="filter-text mb-2">Filter;</span>
 
@@ -270,9 +270,12 @@
 
   </div>
 
-  <button class="btn btn-small bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
+  <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0" (click)="routeReportPage(pageTitle === 'Monitor Traffic' ? 'custom-reports' : 'monitor')">
+    <i-feather name="external-link"></i-feather> {{ pageTitle === 'Monitor Traffic' ? 'Custom Reports View' : 'Monitor Traffics View' }} 
+  </button>
+  <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
     (click)="filtersClear()">Clean Filters</button>
-  <button class="btn btn-small bg-transparent btn-link p-0" *ngIf="filters?.length > 0" (click)="saveFilterClick()">Save
+  <button class="btn btn-small report-lb bg-transparent btn-link p-0" *ngIf="filters?.length > 0" (click)="saveFilterClick()">Save
     Filter</button>
 </div>
 

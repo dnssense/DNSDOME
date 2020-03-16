@@ -133,8 +133,10 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   public loadGraph(searchSettings: SearchSetting) {
     this.monitorService.getGraphData(searchSettings, this.currentPage).takeUntil(this.ngUnsubscribe)
       .subscribe((res: Response) => {
-        this.tableData = res['result'];
-        this.totalCount = res['total'];
+        if (res['result'] || res['total']) {
+          this.tableData = res['result'];
+          this.totalCount = res['total'];
+        }
 
         this.tableConfig.rows = [];
 
