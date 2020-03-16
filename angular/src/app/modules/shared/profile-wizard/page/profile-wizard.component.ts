@@ -344,8 +344,15 @@ export class ProfileWizardComponent {
 
   allowApplication(id: number) {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
-      this.applicationList.find(a => a.application.id === id).isBlocked = false;
-      this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id).isBlocked = false;
+      const findedApp = this.applicationList.find(a => a.application.id === id);
+      if (findedApp) {
+        findedApp.isBlocked = true;
+      }
+
+      const finded = this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id);
+      if (finded) {
+        finded.isBlocked = false;
+      }
     }
 
   }
@@ -353,7 +360,11 @@ export class ProfileWizardComponent {
   blockApplication(id: number) {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.applicationList.find(a => a.application.id === id).isBlocked = true;
-      this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id).isBlocked = true;
+      const finded = this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id);
+
+      if (finded) {
+        finded.isBlocked = true;
+      }
     }
   }
 

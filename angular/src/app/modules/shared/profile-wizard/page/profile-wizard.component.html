@@ -175,11 +175,24 @@
         <rk-collapse-description>{{ groupedApp.description }}</rk-collapse-description>
 
         <rk-collapse-body>
+
           <ng-container *ngFor="let app of groupedApp.applications">
+              <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+                style="border-bottom: 1px solid #e4e9f1;">
+                <div class="accordion-label">{{ app.application.name }}</div>
+
+                <div style="width: 78px;">
+                  <rk-toggle-button clickClose="true" (click)="applicationChanged(app)" [active]="app.isBlocked"
+                    [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
+                </div>
+              </div>
+            </ng-container>
+          
+          <!-- <ng-container *ngFor="let app of groupedApp.applications">
             <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="app.isSystem ? app.isBlocked = !app.isBlocked : null; applicationChanged(app)"
               [active]="app.isBlocked">
               {{ app.application.name }}</rk-toggle-button>
-          </ng-container>
+          </ng-container> -->
 
         </rk-collapse-body>
       </rk-collapse>
