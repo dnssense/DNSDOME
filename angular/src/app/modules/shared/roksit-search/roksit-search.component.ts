@@ -280,6 +280,14 @@ export class RoksitSearchComponent implements OnInit {
   onEditedFilterBadge(filter: FilterBadgeModel) {
     this.selectedColumnFilter = filter.name;
 
+    this.columnsOptions = this.columnsOptions.map(x => {
+      if (x.value === filter.name) {
+        x.selected = true;
+      }
+
+      return x;
+    });
+
     this.filterModal.toggle();
   }
 
