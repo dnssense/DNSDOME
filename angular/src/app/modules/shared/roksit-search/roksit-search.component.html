@@ -1,7 +1,7 @@
 <rk-modal #saveModal>
   <rk-modal-header>
     <rk-modal-header-title>
-      <h5>Save Filter</h5>
+      <h5>Save Report</h5>
     </rk-modal-header-title>
 
     <rk-modal-header-close (click)="saveModal.toggle()"></rk-modal-header-close>
@@ -12,7 +12,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
-          <div class="rk-title">Filter name</div>
+          <div class="rk-title">Report name</div>
 
           <input type="text" class="rk-input w-100 mt-1" placeholder="Filter Name" [(ngModel)]="newSavedReport.name">
         </div>
@@ -72,7 +72,7 @@
 
   <rk-modal-footer>
     <button class="btn btn-small w-100 mr-2" (click)="saveReport()">Apply</button>
-    <button class="btn btn-small btn-default w-100">Clear</button>
+    <button class="btn btn-small btn-default w-100" (click)="saveModal.toggle()">Cancel</button>
   </rk-modal-footer>
 </rk-modal>
 
@@ -160,8 +160,15 @@
         </button>
       </div>
 
-      <input type="text" class="rk-input w-100 mt-3" [(ngModel)]="filterText" placeholder="abc.com"
-        (keydown.enter)="addManuelFilter()">
+      <div class="d-flex align-items-center justify-content-between mt-2">
+        <input type="text" class="rk-input w-100 mr-2" [(ngModel)]="filterText" placeholder="abc.com"
+          (keydown.enter)="addManuelFilter()">
+
+        <button class="btn btn-icon bg-primary fill-white p-0 px-2" style="height: 35px;" (click)="addManuelFilter()"
+          [disabled]="filterText?.trim().length === 0">
+          <i-feather name="plus" class="mr-0"></i-feather>
+        </button>
+      </div>
 
       <div class="mt-3" *ngFor="let filter of manuelFilters; let index = index">
         <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
@@ -225,7 +232,7 @@
 
   <rk-modal-footer>
     <button class="btn w-100 btn-small mr-2" (click)="apply(true); search('', true);">Apply</button>
-    <button class="btn w-100 btn-default btn-small" (click)="clear()">Clean</button>
+    <button class="btn w-100 btn-default btn-small" (click)="modal.toggle()">Cancel</button>
   </rk-modal-footer>
 </rk-modal>
 
@@ -270,12 +277,15 @@
 
   </div>
 
-  <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0" (click)="routeReportPage(pageTitle === 'Monitor Traffic' ? 'custom-reports' : 'monitor')">
-    <i-feather name="external-link"></i-feather> {{ pageTitle === 'Monitor Traffic' ? 'Custom Reports View' : 'Monitor Traffics View' }} 
+  <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
+    (click)="routeReportPage(pageTitle === 'Monitor Traffic' ? 'custom-reports' : 'monitor')">
+    <i-feather name="external-link"></i-feather>
+    {{ pageTitle === 'Monitor Traffic' ? 'Custom Reports View' : 'Monitor Traffics View' }}
   </button>
   <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
     (click)="filtersClear()">Clean Filters</button>
-  <button class="btn btn-small report-lb bg-transparent btn-link p-0" *ngIf="filters?.length > 0" (click)="saveFilterClick()">Save
+  <button class="btn btn-small report-lb bg-transparent btn-link p-0" *ngIf="filters?.length > 0"
+    (click)="saveFilterClick()">Save
     Filter</button>
 </div>
 

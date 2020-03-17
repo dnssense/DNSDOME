@@ -598,6 +598,8 @@ export class RoksitSearchComponent implements OnInit {
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
         if (res.status === 200) {
           this.notification.success(res.message);
+
+          this.saveModal.toggle();
         } else {
           this.notification.error(res.message);
         }
