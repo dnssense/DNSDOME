@@ -111,8 +111,6 @@ export class RoksitSearchComponent implements OnInit {
   modalIsEqual = true;
   filterText = '';
 
-  manuelFilters: FilterBadgeModel[] = [];
-
   selectedColumnFilter;
 
   actionType: 'allow' | 'deny';
@@ -152,60 +150,9 @@ export class RoksitSearchComponent implements OnInit {
         });
       }
     });
-  }
 
-  private groupCategories(categories: CategoryV2[]) {
-    const groupCategories = [] as GroupedCategory[];
-
-    categories.forEach(elem => {
-      if (elem.isVisible) {
-        const finded = groupCategories.find(x => x.type === elem.type);
-
-        if (finded) {
-          finded.items.push(elem);
-        } else {
-          groupCategories.push({
-            type: elem.type,
-            items: [elem],
-            name: name,
-          });
-        }
-      }
-    });
-
-    groupCategories.forEach(elem => {
-      switch (elem.type) {
-        case 'UNSAFE_LIST':
-          elem.color = '#f95656';
-          elem.name = 'Malicious';
-          break;
-
-        case 'SAFE_LIST':
-          elem.color = '#3dd49a';
-          elem.name = 'Safe';
-          break;
-
-        case 'SECURITY':
-          elem.color = this.getRandomColor;
-          elem.name = 'Security';
-          break;
-
-        case 'GRAY_LIST':
-          elem.color = '#d8d8d8';
-          elem.name = 'Variable';
-          break;
-
-        case 'HARMFULL_CONTENT':
-          elem.color = '#d8d8d8';
-          elem.name = 'Harmful Content';
-          break;
-
-        default:
-          break;
-      }
-    });
-
-    return groupCategories;
+    this.filters.concat(this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value])));
+    this.filters.concat(this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value])));
   }
 
   private get getRandomColor() {
@@ -248,17 +195,15 @@ export class RoksitSearchComponent implements OnInit {
         values: [this.filterText]
       } as FilterBadgeModel;
 
-      if (this.manuelFilters.length < 2) {
-        const findedColumn = this.manuelFilters.find(x => x.name === obj.name && x.equal === obj.equal);
+      const findedColumn = this.filters.find(x => x.name === obj.name && x.equal === obj.equal);
 
-        if (findedColumn) {
-          findedColumn.values.push(this.filterText);
-        } else {
-          this.manuelFilters.push(obj);
-        }
-
-        this.filterText = '';
+      if (findedColumn) {
+        findedColumn.values.push(this.filterText);
+      } else {
+        this.filters.push(obj);
       }
+
+      this.filterText = '';
     }
   }
 
@@ -266,7 +211,7 @@ export class RoksitSearchComponent implements OnInit {
     filter.values.splice(valueIndex, 1);
 
     if (filter.values.length === 0) {
-      this.manuelFilters.splice(filterIndex, 1);
+      this.filters.splice(filterIndex, 1);
     }
   }
 
@@ -275,23 +220,6 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   apply(close = false) {
-    /** Elle girilmiş olan alanlar */
-    (this.__deepCopy(this.manuelFilters) as FilterBadgeModel[]).forEach(elem => {
-      const filter = this.filters.find(x => x.name === elem.name && elem.equal === x.equal);
-
-      if (filter) {
-        elem.values.forEach(value => {
-          const findedValue = filter.values.some(x => x === value);
-
-          if (!findedValue) {
-            filter.values.unshift(value);
-          }
-        });
-      } else {
-        this.addFilterBadge(elem);
-      }
-    });
-
     /** Seçilen Kategoriler */
     (this.__deepCopy(this.categoryFilters) as FilterBadgeModel[]).forEach(elem => {
       const filter = this.filters.find(x => x.name === elem.name && elem.equal === x.equal);
@@ -308,26 +236,6 @@ export class RoksitSearchComponent implements OnInit {
         this.addFilterBadge(elem);
       }
     });
-
-    // const selectedCategories = [] as GroupedCategory[];
-
-    // this.selectedItems.forEach(elem => {
-    //   const exists = elem.items.some(x => x.selected);
-
-    //   if (exists) {
-    //     selectedCategories.push(elem);
-    //   }
-    // });
-
-    // if (selectedCategories.length > 0) {
-    //   const findedCategories = this.filters.find(x => x.name === 'Categories');
-
-    //   if (findedCategories) {
-    //     findedCategories.values = selectedCategories.map(x => x.name);
-    //   } else {
-    //     this.addFilterBadge(new FilterBadgeModel('Categories', true, selectedCategories.map(x => x.name)));
-    //   }
-    // }
 
     /** Allow Deny Butonları */
     if (this.actionType) {
@@ -378,10 +286,10 @@ export class RoksitSearchComponent implements OnInit {
       this.actionType = null;
     }
 
-    const findedIndex = this.manuelFilters.findIndex(x => x.name === $event.name);
+    const findedIndex = this.filters.findIndex(x => x.name === $event.name);
 
     if (findedIndex > -1) {
-      this.manuelFilters.splice(findedIndex, 1);
+      this.filters.splice(findedIndex, 1);
     }
 
     this.filters.splice(index, 1);
@@ -463,8 +371,6 @@ export class RoksitSearchComponent implements OnInit {
     this.searchSettings.should = [];
 
     this.groupedCategories.forEach(elem => elem.items.forEach(item => item.selected = false));
-
-    this.manuelFilters = [];
 
     this.filtersClearEmitter.emit();
   }
@@ -626,7 +532,7 @@ export class RoksitSearchComponent implements OnInit {
   categoryEnterPress($event: { value: string }) {
     if ($event.value.trim().length === 0) { return; }
 
-    const findedCategory = this.categoryFilters.find(x => x.name.toLocaleLowerCase() === 'category' && x.equal === this.modalCategoryIsEqual);
+    const findedCategory = this.filters.find(x => x.name.toLocaleLowerCase() === 'category' && x.equal === this.modalCategoryIsEqual);
 
     if (findedCategory) {
       const findedValue = findedCategory.values.some(x => x === $event.value);
@@ -635,7 +541,7 @@ export class RoksitSearchComponent implements OnInit {
         findedCategory.values.unshift($event.value);
       }
     } else {
-      this.categoryFilters.push(new FilterBadgeModel('category', this.modalCategoryIsEqual, [$event.value]));
+      this.filters.push(new FilterBadgeModel('category', this.modalCategoryIsEqual, [$event.value]));
     }
   }
 
@@ -643,7 +549,7 @@ export class RoksitSearchComponent implements OnInit {
     filter.values.splice(valueIndex, 1);
 
     if (filter.values.length === 0) {
-      this.categoryFilters.splice(filterIndex, 1);
+      this.filters.splice(filterIndex, 1);
     }
 
     const categoryFilterIndex = this.filters.findIndex(x => x.name === 'category');
@@ -659,5 +565,17 @@ export class RoksitSearchComponent implements OnInit {
         filters: this.filters
       }
     });
+  }
+
+  getFiltersByColumn(columnName: string) {
+    return columnName ? this.filters.filter(x => x.name === columnName) : [];
+  }
+
+  private distinct(value: string, index: number, self: string[]) {
+    return self.indexOf(value) === index;
+  }
+
+  get getCategoryFilters() {
+    return this.filters.filter(x => x.name === 'category');
   }
 }

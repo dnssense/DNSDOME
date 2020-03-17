@@ -50,15 +50,15 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
       { id: 1, name: 'domain', displayText: 'Domain', isLink: true },
       { id: 2, name: 'subdomain', displayText: 'Subdomain', isLink: true },
       { id: 3, name: 'sourceIp', displayText: 'Src.Ip', isLink: true },
-      { id: 4, name: 'sourceIpCountryCode', displayText: 'Src. Country' },
+      { id: 4, name: 'sourceIpCountryCode', displayText: 'Src. Country', isLink: true },
       { id: 5, name: 'destinationIp', displayText: 'Dst.Ip', isLink: true },
-      { id: 6, name: 'destinationIpCountryCode', displayText: 'Dst.Country' },
+      { id: 6, name: 'destinationIpCountryCode', displayText: 'Dst.Country', isLink: true },
       { id: 7, name: 'agentAlias', displayText: 'Location/Agent', isLink: true },
       { id: 8, name: 'userId', displayText: 'User Id', isLink: true },
-      { id: 9, name: 'action', displayText: 'Action' },
+      { id: 9, name: 'action', displayText: 'Action', isLink: true },
       { id: 10, name: 'applicationName', displayText: 'Application', isLink: true },
       { id: 11, name: 'category', displayText: 'Category', isLink: true },
-      { id: 12, name: 'reason', displayText: 'Reason' },
+      { id: 12, name: 'reason', displayText: 'Reason', isLink: true },
       { id: 13, name: 'clientLocalIp', displayText: 'Local Src. Ip', isLink: true },
       { id: 14, name: 'clientMacAddress', displayText: 'Mac Address', isLink: true },
       { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial', isLink: true },
@@ -145,6 +145,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
           const rowItem: RkTableRowModel = item;
           rowItem.selected = false;
+
+          rowItem['action'] = rowItem['action'] === true ? 'Allow' : 'Deny';
 
           this.tableConfig.rows.push(rowItem);
         });
