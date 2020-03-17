@@ -172,10 +172,10 @@
 
       <div class="mt-3" *ngFor="let filter of getFiltersByColumn(selectedColumnFilter); let filterIndex = index">
         <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
-          *ngFor="let value of filter.values; let valueIndex = filterIndex">
+          *ngFor="let value of filter.values; let valueIndex = index">
           {{ value }}
 
-          <i-feather name="x" class="hover-gray" (click)="removeManuelFilter(filter, filterIndex, valueIndex)"></i-feather>
+          <i-feather name="x" class="hover-gray" (click)="removeManuelFilter(filter, filterIndex, valueIndex, selectedColumnFilter)"></i-feather>
         </div>
       </div>
     </div>
@@ -253,7 +253,7 @@
 
     <div class="ml-2 mb-2" *ngFor="let filter of filters; let index = index">
       <rk-filter-badge [name]="filter.name" [equal]="filter.equal" [values]="filter.values"
-        (deleted)="onDeletedFilterBadge($event, index)" (edited)="onEditedFilterBadge()"
+        (deleted)="onDeletedFilterBadge($event, index)" (edited)="onEditedFilterBadge(filter)"
         (onChange)="filterBadgeChange(filter)"></rk-filter-badge>
     </div>
 

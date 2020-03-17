@@ -207,11 +207,13 @@ export class RoksitSearchComponent implements OnInit {
     }
   }
 
-  removeManuelFilter(filter: FilterBadgeModel, filterIndex: number, valueIndex: number) {
+  removeManuelFilter(filter: FilterBadgeModel, filterIndex: number, valueIndex: number, selectedColumn: string) {
     filter.values.splice(valueIndex, 1);
 
     if (filter.values.length === 0) {
-      this.filters.splice(filterIndex, 1);
+      const findIndex = this.filters.findIndex(x => x.name === selectedColumn);
+
+      this.filters.splice(findIndex, 1);
     }
   }
 
@@ -275,7 +277,9 @@ export class RoksitSearchComponent implements OnInit {
     return newList;
   }
 
-  onEditedFilterBadge() {
+  onEditedFilterBadge(filter: FilterBadgeModel) {
+    this.selectedColumnFilter = filter.name;
+
     this.filterModal.toggle();
   }
 
@@ -396,95 +400,22 @@ export class RoksitSearchComponent implements OnInit {
 
     this.searchSettings = report;
 
-    report.should.forEach(elem => {
-      if (elem.field === 'category') {
-        this.groupedCategories.forEach(category => {
-          const findedItem = category.items.find(x => x.name === elem.value);
+    const should = this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
+    const mustnot = this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value]));
 
-          if (findedItem) {
-            const findedCategory = this.filters.find(x => x.name === 'Categories');
+    const newArr = [] as FilterBadgeModel[];
 
-            if (findedCategory) {
-              const exists = findedCategory.values.some(x => x === category.name);
+    should.concat(mustnot).forEach(filter => {
+      const finded = newArr.find(x => x.name === filter.name);
 
-              if (!exists) {
-                findedCategory.values.push(category.name);
-              }
-            } else {
-              this.addFilterBadge(new FilterBadgeModel('Categories', true, [category.name]));
-            }
-          }
-        });
+      if (finded) {
+        finded.values.push(filter.values[0]);
       } else {
-        const finded = this.filters.find(x => x.name === elem.field);
-
-        if (finded) {
-          finded.values.push(elem.value);
-        } else {
-          this.addFilterBadge(new FilterBadgeModel(elem.field, true, [elem.value]));
-        }
+        newArr.push(filter);
       }
     });
 
-    report.mustnot.forEach(elem => {
-      if (elem.field === 'category') {
-        this.groupedCategories.forEach(category => {
-          const findedItem = category.items.find(x => x.name === elem.value);
-
-          if (findedItem) {
-            const findedCategory = this.filters.find(x => x.name === 'Categories');
-
-            if (findedCategory) {
-              const exists = findedCategory.values.some(x => x === category.name);
-
-              if (!exists) {
-                findedCategory.values.push(category.name);
-              }
-            } else {
-              this.addFilterBadge(new FilterBadgeModel('Categories', false, [category.name]));
-            }
-          }
-        });
-      } else {
-        const finded = this.filters.find(x => x.name === elem.field);
-
-        if (finded) {
-          finded.values.push(elem.value);
-        } else {
-          this.addFilterBadge(new FilterBadgeModel(elem.field, false, [elem.value]));
-        }
-      }
-    });
-
-    report.should.forEach(elem => {
-      if (elem.field === 'category') {
-        this.groupedCategories.forEach(category => {
-          const findedItem = category.items.find(x => x.name === elem.value);
-
-          if (findedItem) {
-            const findedCategory = this.filters.find(x => x.name === 'Categories');
-
-            if (findedCategory) {
-              const exists = findedCategory.values.some(x => x === category.name);
-
-              if (!exists) {
-                findedCategory.values.push(category.name);
-              }
-            } else {
-              this.addFilterBadge(new FilterBadgeModel('Categories', true, [category.name]));
-            }
-          }
-        });
-      } else {
-        const finded = this.filters.find(x => x.name === elem.field);
-
-        if (finded) {
-          finded.values.push(elem.value);
-        } else {
-          this.addFilterBadge(new FilterBadgeModel(elem.field, true, [elem.value]));
-        }
-      }
-    });
+    this.filters = newArr;
 
     this.search('savedreport');
   }
