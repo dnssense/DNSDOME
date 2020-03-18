@@ -1,11 +1,9 @@
-import { Injectable } from "@angular/core";
-import "rxjs/Rx";
-import { SearchSetting } from "../models/SearchSetting";
-import { Observable } from "rxjs/Rx";
-import { Dashboard } from "../models/Dashboard";
+import { Injectable } from '@angular/core';
+import 'rxjs/Rx';
+import { SearchSetting } from '../models/SearchSetting';
+import { Observable } from 'rxjs/Rx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
-import { ElasticDashboardResponse } from '../models/ElasticDashboardResponse';
 import { OperationResult } from '../models/OperationResult';
 
 @Injectable({ providedIn: 'root' })
@@ -15,10 +13,12 @@ export class ReportService {
   public reportSaveURL = this.configuration.getApiUrl() + '/report/saved/save';
   public reportDeleteURL = this.configuration.getApiUrl() + '/report/saved/delete';
 
-  constructor(private http: HttpClient, private configuration: ConfigService) {
-  }
+  constructor(
+    private http: HttpClient,
+    private configuration: ConfigService
+  ) { }
 
-  public getReportList():Observable<SearchSetting[]> {
+  public getReportList(): Observable<SearchSetting[]> {
     return this.http.get(this.reportListURL).map(res => res as SearchSetting[]);
   }
 
@@ -31,9 +31,9 @@ export class ReportService {
   }
 
   private getOptions() {
-    let options = {
+    const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }
+    };
     return options;
   }
 

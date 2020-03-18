@@ -128,13 +128,7 @@ export class SidebarComponent implements OnInit {
   _menuItems: RkMenuItem[] = [
     { id: 0, path: '/admin/dashboard', text: 'Dashboard', icon: 'dashboard', selected: false },
     { id: 1, path: '/admin/reports/monitor', text: 'Monitor', icon: 'monitor', selected: false },
-    {
-      id: 2, path: '/admin/', text: 'Reports', icon: 'custom-reports', selected: false,
-      subMenu: [
-        { id: 2.1, path: 'reports/custom-reports', text: 'Custom Reports', icon: 'custom-reports', selected: false },
-        { id: 2.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
-      ]
-    },
+    { id: 2, path: '/admin/reports/custom-reports', text: 'Custom Reports', icon: 'custom-reports', selected: false, },
     {
       id: 3, path: '/admin/', text: 'Deployment', icon: 'dashboard', selected: false,
       subMenu: [
@@ -147,6 +141,7 @@ export class SidebarComponent implements OnInit {
       id: 4, path: '/admin/', text: 'Settings', icon: 'settings', selected: false,
       subMenu: [
         { id: 4.1, path: 'settings/users', text: 'User', icon: 'user', selected: false },
+        { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
         { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false },
         { id: 4.4, path: 'settings/query-category', text: 'Query Category', icon: 'tools', selected: false },
         { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-category', selected: false },

@@ -9,7 +9,20 @@
 
   <rk-modal-body>
 
-    <div class="container-fluid">
+    <div class="container-fluid mb-2">
+      <div class="row">
+        <div class="col-12">
+          <div class="rk-tabs">
+            <div class="rk-tab" (click)="setReportActiveTabNumber(0); prepareNewSaveFilter()"
+              [ngClass]="{'active': reportActiveTabNumber === 0}">New Report</div>
+            <div class="rk-tab" (click)="setReportActiveTabNumber(1)"
+              [ngClass]="{'active': reportActiveTabNumber === 1}">Update Report</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid" *ngIf="reportActiveTabNumber === 0">
       <div class="row">
         <div class="col-12">
           <div class="rk-title">Report name</div>
@@ -68,10 +81,18 @@
       </div>
     </div>
 
+    <div class="container-fluid" *ngIf="reportActiveTabNumber === 1">
+      <div class="row">
+        <div class="col-12">
+          <rk-select [options]="savedReportOptions" (valueChange)="savedReportSelectChanged($event)"></rk-select>
+        </div>
+      </div>
+    </div>
+
   </rk-modal-body>
 
   <rk-modal-footer>
-    <button class="btn btn-small w-100 mr-2" (click)="saveReport()">Apply</button>
+    <button class="btn btn-small w-100 mr-2" (click)="saveReport()">Save</button>
     <button class="btn btn-small btn-default w-100" (click)="saveModal.toggle()">Cancel</button>
   </rk-modal-footer>
 </rk-modal>

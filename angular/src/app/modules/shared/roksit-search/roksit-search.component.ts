@@ -52,12 +52,7 @@ export class RoksitSearchComponent implements OnInit {
     private userService: UserService,
     private router: Router
   ) {
-    this.reportService.getReportList().subscribe(res => {
-      this.allSavedReports = res;
-
-      this.savedReports = res.filter(x => !x.system);
-      this.systemSavedReports = res.filter(x => x.system);
-    });
+    this.getSavedReports();
 
     this.staticService.getCategoryList().subscribe(result => {
       this.autocompleteItems = result.map(x => {
@@ -141,6 +136,10 @@ export class RoksitSearchComponent implements OnInit {
 
   activeTabNumber = 0;
 
+  reportActiveTabNumber = 0;
+
+  savedReportOptions: RkSelectModel[] = [];
+
   ngOnInit() {
     this.fastReportService.tableColumns.subscribe(columns => {
       if (!!columns) {
@@ -159,8 +158,25 @@ export class RoksitSearchComponent implements OnInit {
     this.filters.concat(this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value])));
   }
 
+  private getSavedReports() {
+    this.reportService.getReportList().subscribe(res => {
+      this.allSavedReports = res;
+
+      this.savedReportOptions = res.map(x => {
+        return { displayText: x.name, value: x.id } as RkSelectModel;
+      });
+
+      this.savedReports = res.filter(x => !x.system);
+      this.systemSavedReports = res.filter(x => x.system);
+    });
+  }
+
   setActiveTabNumber(val: number) {
     this.activeTabNumber = val;
+  }
+
+  setReportActiveTabNumber(val: number) {
+    this.reportActiveTabNumber = val;
   }
 
   private get getRandomColor() {
@@ -337,54 +353,14 @@ export class RoksitSearchComponent implements OnInit {
 
       this.filterModal.toggle();
 
+      this.setShowRunBar(false);
+
       return;
     }
 
     this.apply(showFilterModal);
 
-    this.searchSettings.must = [];
-    this.searchSettings.mustnot = [];
-    this.searchSettings.should = [];
-
-    this.filters.forEach(filter => {
-      if (filter.equal) {
-        if (filter.name === 'Categories') {
-          filter.values.forEach(value => {
-            const selectedItems = this.getItemsByCategoryName(value);
-
-            selectedItems.forEach(item => {
-              this.searchSettings.should.push(new ColumnTagInput('category', '=', item.name));
-            });
-          });
-        } else {
-          filter.values.forEach(value => {
-            if (filter.name === 'action') {
-              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
-            } else {
-              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', value));
-            }
-          });
-        }
-      } else {
-        if (filter.name === 'Categories') {
-          filter.values.forEach(value => {
-            const selectedItems = this.getItemsByCategoryName(value);
-
-            selectedItems.forEach(item => {
-              this.searchSettings.mustnot.push(new ColumnTagInput('category', '=', item.name));
-            });
-          });
-        } else {
-          filter.values.forEach(value => {
-            if (filter.name === 'action') {
-              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
-            } else {
-              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
-            }
-          });
-        }
-      }
-    });
+    this.fillSearchSettingsByFilters();
 
     this.searchSettingEmitter.emit(this.searchSettings);
 
@@ -393,6 +369,32 @@ export class RoksitSearchComponent implements OnInit {
     if (showFilterModal) {
       this.filterModal.toggle();
     }
+  }
+
+  private fillSearchSettingsByFilters() {
+    this.searchSettings.must = [];
+    this.searchSettings.mustnot = [];
+    this.searchSettings.should = [];
+
+    this.filters.forEach(filter => {
+      if (filter.equal) {
+        filter.values.forEach(value => {
+          if (filter.name === 'action') {
+            this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
+          } else {
+            this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', value));
+          }
+        });
+      } else {
+        filter.values.forEach(value => {
+          if (filter.name === 'action') {
+            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
+          } else {
+            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
+          }
+        });
+      }
+    });
   }
 
   getItemsByCategoryName(name: string) {
@@ -428,11 +430,11 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   savedReportValueChange() {
-    this.filters = [];
+    this.filters.splice(0);
 
     const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
 
-    this.searchSettings = report;
+    this.searchSettings = JSON.parse(JSON.stringify(report));
 
     const should = this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
     const mustnot = this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value]));
@@ -449,7 +451,9 @@ export class RoksitSearchComponent implements OnInit {
       }
     });
 
-    this.filters = newArr;
+    newArr.forEach(elem => {
+      this.filters.push(elem);
+    });
 
     this.setShowRunBar(true);
 
@@ -463,7 +467,29 @@ export class RoksitSearchComponent implements OnInit {
   saveFilterClick() {
     this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
 
+    this.prepareNewSaveFilter();
+
     this.saveModal.toggle();
+  }
+
+  prepareNewSaveFilter() {
+    this.newSavedReport.name = '';
+
+    this.newSavedReport.id = -1;
+  }
+
+  savedReportSelectChanged($event: number) {
+    const savedReport = this.allSavedReports.find(x => x.id === $event);
+
+    if (savedReport) {
+      this.fillSearchSettingsByFilters();
+
+      this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
+
+      this.newSavedReport.name = savedReport.name;
+
+      this.newSavedReport.id = savedReport.id;
+    }
   }
 
   saveReport() {
@@ -471,6 +497,8 @@ export class RoksitSearchComponent implements OnInit {
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
         if (res.status === 200) {
           this.notification.success(res.message);
+
+          this.getSavedReports();
 
           this.saveModal.toggle();
         } else {
