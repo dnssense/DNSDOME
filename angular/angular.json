@@ -33,6 +33,7 @@
               "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/intro.js/introjs.css",
               "node_modules/roksit-lib/assets/scss/roksit.core.scss",
+              "src/assets/css/animate.css",
               "src/styles.sass"
             ],
             "scripts": [

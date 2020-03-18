@@ -1,19 +1,20 @@
 <div class="main-content" #component>
-  <div class="container-fluid rk-base-card">
-    <div class="card-item rk-col">
-      <div class="row" style="margin-top:-15px; width: 100%;">
-        <div class="col-md-12">
-          <app-roksit-search (isShowRunBarOutput)="isShowRunBar = $event" (filtersClearEmitter)="clearFilters()"
-              [isShowRunBar]="isShowRunBar" [filters]="filters" pageTitle="Custom Report" [searchSettings]="searchSetting"
-            (searchSettingEmitter)="search($event)">
-          </app-roksit-search>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <app-customreport-result [data]="data" [searchSetting]="searchSetting" #tableComponent
-            [multiplier]="multiplier" (searchEmitter)="search($event)" (linkClickedOutput)="linkClicked($event)" (changeColumnBadge)="isShowRunBar = $event">
-          </app-customreport-result>
+  <div class="rk-base-card">
+    <div class="card-item rk-col p-0">
+
+      <app-roksit-search (isShowRunBarOutput)="isShowRunBar = $event" (filtersClearEmitter)="clearFilters()"
+        [isShowRunBar]="isShowRunBar" [filters]="filters" pageTitle="Custom Report" [searchSettings]="searchSetting"
+        (searchSettingEmitter)="search($event)">
+      </app-roksit-search>
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <app-customreport-result [data]="data" [searchSetting]="searchSetting" #tableComponent
+              [multiplier]="multiplier" (searchEmitter)="search($event)" (linkClickedOutput)="linkClicked($event)"
+              (changeColumnBadge)="isShowRunBar = $event">
+            </app-customreport-result>
+          </div>
         </div>
       </div>
     </div>

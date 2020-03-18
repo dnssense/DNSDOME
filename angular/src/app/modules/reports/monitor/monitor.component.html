@@ -1,14 +1,12 @@
 <div class="main-content" #component>
   <div class="rk-base-card">
-    <div class="card-item rk-col">
-      <div class="container-fluid px-0">
-        <div class="row">
-          <div class="col-md-12">
-            <app-roksit-search (isShowRunBarOutput)="isShowRunBar = $event" (filtersClearEmitter)="clearFilters()"
-              [isShowRunBar]="isShowRunBar" [filters]="filters" [searchSettings]="searchSettings"
-              pageTitle="Monitor Traffic" (searchSettingEmitter)="search($event)"></app-roksit-search>
-          </div>
-        </div>
+    <div class="card-item rk-col p-0">
+
+      <app-roksit-search (isShowRunBarOutput)="isShowRunBar = $event" (filtersClearEmitter)="clearFilters()"
+        [isShowRunBar]="isShowRunBar" [filters]="filters" [searchSettings]="searchSettings" pageTitle="Monitor Traffic"
+        (searchSettingEmitter)="search($event)"></app-roksit-search>
+
+      <div class="container-fluid">
         <div class="row mt-1">
           <div class="col-md-12">
             <app-monitor-result #monitorResult [searchSetting]="searchSettings"

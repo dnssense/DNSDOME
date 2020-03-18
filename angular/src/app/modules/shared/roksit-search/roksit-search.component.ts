@@ -304,7 +304,7 @@ export class RoksitSearchComponent implements OnInit {
       this.filters.splice(findedIndex, 1);
     }
 
-    this.filters.splice(index, 1);
+    // this.filters.splice(index, 1);
 
     this.setShowRunBar(true);
   }

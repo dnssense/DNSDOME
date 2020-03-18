@@ -175,7 +175,8 @@
           *ngFor="let value of filter.values; let valueIndex = index">
           {{ value }}
 
-          <i-feather name="x" class="hover-gray" (click)="removeManuelFilter(filter, filterIndex, valueIndex, selectedColumnFilter)"></i-feather>
+          <i-feather name="x" class="hover-gray"
+            (click)="removeManuelFilter(filter, filterIndex, valueIndex, selectedColumnFilter)"></i-feather>
         </div>
       </div>
     </div>
@@ -218,67 +219,71 @@
   </rk-modal-footer>
 </rk-modal>
 
-<div class="monitor-traffic-search">
-  <div class="filter-left">
-    <span class="monitor-title">{{ pageTitle }}</span>
 
-    <div class="traffic-types">
-      <rk-radio name="trafficType" checked="true" (valueChange)="onTypeValueChange('roksit')">Total traffic</rk-radio>
-      <rk-radio class="m-l-10" name="trafficType" (valueChange)="onTypeValueChange('roksitblock')">Block Page</rk-radio>
-    </div>
-  </div>
-
-  <div class="filter-right">
-    <!-- <button class="btn btn-small btn-icon mr-2" (click)="search()">
-      <i-feather name="search"></i-feather>
-      Search
-    </button> -->
-
-    <div style="min-width: 200px;">
-      <rk-select [(value)]="searchSettings.dateInterval" (valueChange)="onSelectedDateChange($event)"
-        [options]="dateOptions" [placeholder]="'Date selection'"></rk-select>
-    </div>
-    <div>
-      <button class="btn btn-small btn-icon ml-2" (click)="modal.toggle()">
-        <i-feather name="filter"></i-feather>
-        Filtreler
-      </button>
-    </div>
-  </div>
-</div>
-
-<div class="d-flex align-items-center">
-  <div class="d-flex flex-wrap align-items-center" style="flex: 1">
-    <span class="filter-text mb-2">Filter;</span>
-
-    <div class="ml-2 mb-2" *ngFor="let filter of filters; let index = index">
-      <rk-filter-badge [name]="filter.name" [equal]="filter.equal" [values]="filter.values"
-        (deleted)="onDeletedFilterBadge($event, index)" (edited)="onEditedFilterBadge(filter)"
-        (onChange)="filterBadgeChange(filter)"></rk-filter-badge>
-    </div>
-
-  </div>
-
-  <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
-    (click)="routeReportPage(pageTitle === 'Monitor Traffic' ? 'custom-reports' : 'monitor')">
-    <i-feather name="external-link"></i-feather>
-    {{ pageTitle === 'Monitor Traffic' ? 'Custom Reports View' : 'Monitor Traffics View' }}
-  </button>
-  <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
-    (click)="filtersClear()">Clean Filters</button>
-  <button class="btn btn-small report-lb bg-transparent btn-link p-0" *ngIf="filters?.length > 0"
-    (click)="saveFilterClick()">Save
-    Filter</button>
-</div>
-
-<div class="run-bar justify-content-between" [hidden]="!isShowRunBar">
+<div class="run-bar animated fadeIn" [hidden]="!isShowRunBar">
   <p class="run-bar-text">Hazırladığınız filtreyle sorgu yapmak için butona tıklayın.</p>
 
   <div class="run-bar-buttons">
     <button (click)="search('', true)">Çalıştır</button>
   </div>
+</div>
 
-  <button class="btn-close" (click)="setShowRunBar(false)">
-    <i-feather name="x"></i-feather>
-  </button>
+<div class="container-fluid mt-2">
+  <div class="row">
+    <div class="col-12">
+      <div class="monitor-traffic-search">
+        <div class="filter-left">
+          <span class="monitor-title">{{ pageTitle }}</span>
+
+          <div class="traffic-types">
+            <rk-radio name="trafficType" checked="true" (valueChange)="onTypeValueChange('roksit')">Total traffic
+            </rk-radio>
+            <rk-radio class="m-l-10" name="trafficType" (valueChange)="onTypeValueChange('roksitblock')">Block Page
+            </rk-radio>
+          </div>
+        </div>
+
+        <div class="filter-right">
+          <!-- <button class="btn btn-small btn-icon mr-2" (click)="search()">
+            <i-feather name="search"></i-feather>
+            Search
+          </button> -->
+
+          <div style="min-width: 200px;">
+            <rk-select [(value)]="searchSettings.dateInterval" (valueChange)="onSelectedDateChange($event)"
+              [options]="dateOptions" [placeholder]="'Date selection'"></rk-select>
+          </div>
+          <div>
+            <button class="btn btn-small btn-icon ml-2" (click)="modal.toggle()">
+              <i-feather name="filter"></i-feather>
+              Filtreler
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center flex-wrap">
+        <div class="d-flex flex-wrap align-items-center" style="width: calc(100% - 335px); padding-right: 25px;">
+          <span class="filter-text mb-2">Filter;</span>
+
+          <rk-filter-badge class="ml-2 mb-2" *ngFor="let filter of filters; let index = index" [name]="filter.name"
+            [equal]="filter.equal" [values]="filter.values" (deleted)="onDeletedFilterBadge($event, index)"
+            (edited)="onEditedFilterBadge(filter)" (onChange)="filterBadgeChange(filter)"></rk-filter-badge>
+        </div>
+
+        <div style="width: 335px; min-width: 335px;">
+          <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
+            (click)="routeReportPage(pageTitle === 'Monitor Traffic' ? 'custom-reports' : 'monitor')">
+            <i-feather name="external-link"></i-feather>
+            {{ pageTitle === 'Monitor Traffic' ? 'Custom Reports View' : 'Monitor Traffics View' }}
+          </button>
+          <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
+            (click)="filtersClear()">Clean Filters</button>
+          <button class="btn btn-small report-lb bg-transparent btn-link p-0" *ngIf="filters?.length > 0"
+            (click)="saveFilterClick()">Save
+            Filter</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

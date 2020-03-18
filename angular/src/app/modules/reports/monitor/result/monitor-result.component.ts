@@ -148,6 +148,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
           rowItem['action'] = rowItem['action'] === true ? 'Allow' : 'Deny';
 
+          rowItem['category'] = typeof rowItem['category'] === 'object' ? rowItem['category'].join(',') : rowItem['category'];
+
           this.tableConfig.rows.push(rowItem);
         });
       });
