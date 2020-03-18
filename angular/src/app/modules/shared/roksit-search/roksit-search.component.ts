@@ -88,11 +88,13 @@ export class RoksitSearchComponent implements OnInit {
     { displayText: 'Last 15 Minutes', value: 15 },
     { displayText: 'Last 30 Minutes', value: 30 },
     { displayText: 'Last 1 Hour', value: 60 },
-    { displayText: 'Last 3 Hour', value: 180 },
-    { displayText: 'Last 12 Hour', value: 720 },
-    { displayText: 'Last 1 Day', value: 1440 },
-    { displayText: 'Last 2 Day', value: 2880 },
-    { displayText: 'Last 1 Week', value: 10080, selected: true }
+    { displayText: 'Last 3 Hour', value: 60 * 3 },
+    { displayText: 'Last 12 Hour', value: 60 * 12 },
+    { displayText: 'Last 1 Day', value: 60 * 24 },
+    { displayText: 'Last 2 Day', value: 60 * 24 * 2 },
+    { displayText: 'Last 1 Week', value: 60 * 24 * 7, selected: true },
+    { displayText: 'Last 2 Week', value: 60 * 24 * 14 },
+    { displayText: 'Last 1 Month', value: 60 * 24 * 30 },
   ];
 
   groupedCategories: GroupedCategory[] = [];
@@ -137,6 +139,8 @@ export class RoksitSearchComponent implements OnInit {
 
   categoryFilters: FilterBadgeModel[] = [];
 
+  activeTabNumber = 0;
+
   ngOnInit() {
     this.fastReportService.tableColumns.subscribe(columns => {
       if (!!columns) {
@@ -153,6 +157,10 @@ export class RoksitSearchComponent implements OnInit {
 
     this.filters.concat(this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value])));
     this.filters.concat(this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value])));
+  }
+
+  setActiveTabNumber(val: number) {
+    this.activeTabNumber = val;
   }
 
   private get getRandomColor() {
@@ -309,7 +317,21 @@ export class RoksitSearchComponent implements OnInit {
     this.setShowRunBar(true);
   }
 
+  setDateOptionBySearchSettings() {
+    this.dateOptions = this.dateOptions.map(x => {
+      x.selected = false;
+
+      if (x.value === this.searchSettings.dateInterval) {
+        x.selected = true;
+      }
+
+      return x;
+    });
+  }
+
   search(type?: 'savedreport' | string, showFilterModal = false) {
+    this.setDateOptionBySearchSettings();
+
     if (type === 'savedreport') {
       this.searchSettingEmitter.emit(this.searchSettings);
 
@@ -366,6 +388,8 @@ export class RoksitSearchComponent implements OnInit {
 
     this.searchSettingEmitter.emit(this.searchSettings);
 
+    this.setShowRunBar(false);
+
     if (showFilterModal) {
       this.filterModal.toggle();
     }
@@ -381,6 +405,8 @@ export class RoksitSearchComponent implements OnInit {
     this.searchSettings.must = [];
     this.searchSettings.mustnot = [];
     this.searchSettings.should = [];
+
+    this.searchSettings.dateInterval = this.dateOptions[this.dateOptions.length - 1].value;
 
     this.groupedCategories.forEach(elem => elem.items.forEach(item => item.selected = false));
 
@@ -425,7 +451,9 @@ export class RoksitSearchComponent implements OnInit {
 
     this.filters = newArr;
 
-    this.search('savedreport');
+    this.setShowRunBar(true);
+
+    // this.search('savedreport');
   }
 
   changeSavedReportType($event: RkRadioOutput) {

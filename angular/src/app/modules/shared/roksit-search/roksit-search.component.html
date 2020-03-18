@@ -79,23 +79,121 @@
 <rk-modal #modal>
   <rk-modal-header icon="filter">
     <rk-modal-header-title>
-      <h5>Filtrele</h5>
+      <h5>Filtreler</h5>
     </rk-modal-header-title>
     <rk-modal-header-close (click)="modal.toggle()"></rk-modal-header-close>
   </rk-modal-header>
 
   <rk-modal-body>
 
-    <div class="rk-modal-item">
-      <h5>Saved Reports</h5>
-
-      <rk-accordion activeNumber="1">
-        <rk-accordion-panel>
-          <div class="rk-accordion-title">
-            User Saved Reports
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="rk-tabs">
+            <div class="rk-tab" (click)="setActiveTabNumber(0)" [ngClass]="{'active': activeTabNumber === 0}">New
+              Reports</div>
+            <div class="rk-tab" (click)="setActiveTabNumber(1)" [ngClass]="{'active': activeTabNumber === 1}">Saved
+              Reports</div>
           </div>
+        </div>
+      </div>
+    </div>
 
-          <div class="rk-accordion-body">
+    <div *ngIf="activeTabNumber === 0">
+      <div class="rk-modal-item">
+        <h5 class="modal-item title">Action</h5>
+
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'allow'" value="allow"
+                (valueChange)="actionChanged($event)">Allow</rk-radio>
+            </div>
+            <div class="col-12 col-md-6">
+              <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'deny'" value="deny"
+                (valueChange)="actionChanged($event)">Deny</rk-radio>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rk-modal-item">
+        <h5 class="modal-item title">Add Filter</h5>
+
+        <rk-select [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
+
+        <div class="d-flex mt-2">
+          <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
+            [ngClass]="{'btn-outline-active': modalIsEqual}" (click)="modalIsEqual = true">
+            <icon-equal></icon-equal>
+          </button>
+
+          <button class="btn btn-icon btn-small w-100 filter-btn-outline"
+            [ngClass]="{'btn-outline-active': !modalIsEqual}" (click)="modalIsEqual = false">
+            <icon-not-equal></icon-not-equal>
+          </button>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between mt-2">
+          <input type="text" class="rk-input w-100 mr-2" [(ngModel)]="filterText" placeholder="abc.com"
+            (keydown.enter)="addManuelFilter()">
+
+          <button class="btn btn-icon bg-primary fill-white p-0 px-2" style="height: 35px;" (click)="addManuelFilter()"
+            [disabled]="filterText?.trim().length === 0">
+            <i-feather name="plus" class="mr-0"></i-feather>
+          </button>
+        </div>
+
+        <div class="mt-3" *ngFor="let filter of getFiltersByColumn(selectedColumnFilter); let filterIndex = index">
+          <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
+            *ngFor="let value of filter.values; let valueIndex = index">
+            {{ value }}
+
+            <i-feather name="x" class="hover-gray"
+              (click)="removeManuelFilter(filter, filterIndex, valueIndex, selectedColumnFilter)"></i-feather>
+          </div>
+        </div>
+      </div>
+
+      <div class="rk-modal-item" style="height: 1px; border-bottom: none;">
+        <h5 class="modal-item title">Category</h5>
+
+        <div class="d-flex mt-2">
+          <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
+            [ngClass]="{'btn-outline-active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
+            <icon-equal></icon-equal>
+          </button>
+
+          <button class="btn btn-icon btn-small w-100 filter-btn-outline"
+            [ngClass]="{'btn-outline-active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
+            <icon-not-equal></icon-not-equal>
+          </button>
+        </div>
+
+        <div class="mt-3">
+          <!-- (enterPress)="categoryEnterPress($event)"  -->
+          <rk-autocomplete [onSelectClear]="true" [items]="autocompleteItems" (onSelect)="categoryEnterPress($event)">
+          </rk-autocomplete>
+        </div>
+
+        <div class="mt-3" *ngFor="let filter of getCategoryFilters; let index = index">
+          <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
+            *ngFor="let value of filter.values; let valueIndex = index">
+            {{ value }}
+
+            <i-feather name="x" class="hover-gray" (click)="removeCategoryFilter(filter, index, valueIndex)">
+            </i-feather>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTabNumber === 1">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 py-2" style="border-bottom: 1px solid #eeeef2;">
+            <h6 class="rk-title">User Reports</h6>
+
             <div *ngFor="let report of savedReports; let index = index" class="mt-3">
               <div class="rk-radio my-0">
                 <input type="radio" id="savedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport"
@@ -104,116 +202,28 @@
               </div>
             </div>
           </div>
-        </rk-accordion-panel>
 
-        <rk-accordion-panel>
-          <div class="rk-accordion-title">
-            System Default Reports
+          <div class="col-12 py-2" style="border-bottom: 1px solid #eeeef2;">
+            <h6 class="rk-title">System Reports</h6>
+
+            <div *ngFor="let report of systemSavedReports; let index = index" class="mt-3">
+              <div class="rk-radio my-0">
+                <input type="radio" id="savedReportSystem-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport"
+                  [value]="report.id" (change)="savedReportValueChange($event)">
+                <label for="savedReportSystem-{{ index }}">{{ report.name }}</label>
+              </div>
+            </div>
           </div>
 
-          <div class="rk-accordion-body">
-            <ul>
-              <li *ngFor="let report of systemSavedReports; let index = index" class="mt-3">
-                <div class="rk-radio my-0">
-                  <input type="radio" id="systemSavedReport-{{ index }}" [(ngModel)]="savedReportValue"
-                    name="savedReport" [value]="report.id" (change)="savedReportValueChange($event)">
-                  <label for="systemSavedReport-{{ index }}">{{ report.name }}</label>
-                </div>
-              </li>
-            </ul>
+          <div class="col-12">
+            <button class="btn-fill w-100 mt-3" (click)="search('savedreport')">Apply</button>
           </div>
-        </rk-accordion-panel>
-      </rk-accordion>
-    </div>
-
-    <div class="rk-modal-item">
-      <h5 class="modal-item title">Action</h5>
-
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12 col-md-6">
-            <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'allow'" value="allow"
-              (valueChange)="actionChanged($event)">Allow</rk-radio>
-          </div>
-          <div class="col-12 col-md-6">
-            <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'deny'" value="deny"
-              (valueChange)="actionChanged($event)">Deny</rk-radio>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="rk-modal-item">
-      <h5 class="modal-item title">Add Filter</h5>
-
-      <rk-select [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
-
-      <div class="d-flex mt-2">
-        <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
-          [ngClass]="{'btn-outline-active': modalIsEqual}" (click)="modalIsEqual = true">
-          <icon-equal></icon-equal>
-        </button>
-
-        <button class="btn btn-icon btn-small w-100 filter-btn-outline"
-          [ngClass]="{'btn-outline-active': !modalIsEqual}" (click)="modalIsEqual = false">
-          <icon-not-equal></icon-not-equal>
-        </button>
-      </div>
-
-      <div class="d-flex align-items-center justify-content-between mt-2">
-        <input type="text" class="rk-input w-100 mr-2" [(ngModel)]="filterText" placeholder="abc.com"
-          (keydown.enter)="addManuelFilter()">
-
-        <button class="btn btn-icon bg-primary fill-white p-0 px-2" style="height: 35px;" (click)="addManuelFilter()"
-          [disabled]="filterText?.trim().length === 0">
-          <i-feather name="plus" class="mr-0"></i-feather>
-        </button>
-      </div>
-
-      <div class="mt-3" *ngFor="let filter of getFiltersByColumn(selectedColumnFilter); let filterIndex = index">
-        <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
-          *ngFor="let value of filter.values; let valueIndex = index">
-          {{ value }}
-
-          <i-feather name="x" class="hover-gray"
-            (click)="removeManuelFilter(filter, filterIndex, valueIndex, selectedColumnFilter)"></i-feather>
-        </div>
-      </div>
-    </div>
-
-    <div class="rk-modal-item" style="height: 1px; border-bottom: none;">
-      <h5 class="modal-item title">Category</h5>
-
-      <div class="d-flex mt-2">
-        <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
-          [ngClass]="{'btn-outline-active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
-          <icon-equal></icon-equal>
-        </button>
-
-        <button class="btn btn-icon btn-small w-100 filter-btn-outline"
-          [ngClass]="{'btn-outline-active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
-          <icon-not-equal></icon-not-equal>
-        </button>
-      </div>
-
-      <div class="mt-3">
-        <!-- (enterPress)="categoryEnterPress($event)"  -->
-        <rk-autocomplete [onSelectClear]="true" [items]="autocompleteItems" (onSelect)="categoryEnterPress($event)">
-        </rk-autocomplete>
-      </div>
-
-      <div class="mt-3" *ngFor="let filter of getCategoryFilters; let index = index">
-        <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
-          *ngFor="let value of filter.values; let valueIndex = index">
-          {{ value }}
-
-          <i-feather name="x" class="hover-gray" (click)="removeCategoryFilter(filter, index, valueIndex)"></i-feather>
         </div>
       </div>
     </div>
   </rk-modal-body>
 
-  <rk-modal-footer>
+  <rk-modal-footer *ngIf="activeTabNumber === 0">
     <button class="btn w-100 btn-small mr-2" (click)="apply(true); search('', true);">Apply</button>
     <button class="btn w-100 btn-default btn-small" (click)="modal.toggle()">Cancel</button>
   </rk-modal-footer>
@@ -221,10 +231,10 @@
 
 
 <div class="run-bar animated fadeIn" [hidden]="!isShowRunBar">
-  <p class="run-bar-text">Hazırladığınız filtreyle sorgu yapmak için butona tıklayın.</p>
+  <p class="run-bar-text">Yaptığınız değişiklikleri uygulayın</p>
 
   <div class="run-bar-buttons">
-    <button (click)="search('', true)">Çalıştır</button>
+    <button (click)="search('', true)">Run</button>
   </div>
 </div>
 
