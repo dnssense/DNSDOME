@@ -15,10 +15,10 @@
         <div class="accordion-label text-white">Security Mode:</div>
         <div class="d-flex align-items-center justify-content-between mt-1">
           <button class="rk-toggle-btn w-100 mr-2" [ngClass]="{'active': selectedAgent.rootProfile.isPositiveSecurity}"
-            (click)="toggleSecurityMode()">POSITIVE
+            (click)="setSecurityMode(true)">POSITIVE
             SECURITY</button>
           <button class="rk-toggle-btn w-100 passive" [ngClass]="{'active': !selectedAgent.rootProfile.isPositiveSecurity}"
-            (click)="toggleSecurityMode()">NEGATIVE
+            (click)="setSecurityMode(false)">NEGATIVE
             SECURITY</button>
         </div>
 

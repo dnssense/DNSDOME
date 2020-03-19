@@ -576,8 +576,8 @@ export class ProfileWizardComponent {
     }
   }
 
-  toggleSecurityMode() {
-    this.selectedAgent.rootProfile.isPositiveSecurity = !this.selectedAgent.rootProfile.isPositiveSecurity;
+  setSecurityMode(val: boolean) {
+    this.selectedAgent.rootProfile.isPositiveSecurity = val;
   }
 
 }
