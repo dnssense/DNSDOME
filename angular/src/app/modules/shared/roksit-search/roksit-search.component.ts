@@ -147,10 +147,10 @@ export class RoksitSearchComponent implements OnInit {
 
         this.columnsOptions = columns.map(x => {
           return {
-            displayText: x.name,
+            displayText: x.beautyName,
             value: x.name
           } as RkSelectModel;
-        });
+        }).filter(x => x.value !== 'action' && x.value !== 'category');
       }
     });
 
