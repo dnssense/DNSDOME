@@ -15,7 +15,7 @@ export class SecurityProfileItem {
     categories: Category[] = [];
 }
 
-export interface Category {
+export class Category {
     id: number;
     isBlocked: boolean;
     // timeProfile: TimeProfile;

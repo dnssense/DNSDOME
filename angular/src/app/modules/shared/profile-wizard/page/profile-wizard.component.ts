@@ -351,19 +351,21 @@ export class ProfileWizardComponent {
 
       const finded = this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id);
       if (finded) {
-        finded.isBlocked = false;
+        finded.isBlocked = true;
       }
     }
-
   }
 
   blockApplication(id: number) {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
-      this.applicationList.find(a => a.application.id === id).isBlocked = true;
-      const finded = this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id);
+      const findedApp = this.applicationList.find(a => a.application.id === id);
+      if (findedApp) {
+        findedApp.isBlocked = false;
+      }
 
+      const finded = this.selectedAgent.rootProfile.applicationProfile.categories.find(c => c.id === id);
       if (finded) {
-        finded.isBlocked = true;
+        finded.isBlocked = false;
       }
     }
   }
@@ -396,11 +398,12 @@ export class ProfileWizardComponent {
   }
 
   saveProfile() {
+    let status = false;
 
     if (!this.selectedAgent.rootProfile.name && this.selectedAgent.rootProfile.name.trim().length === 0) {
       this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
 
-      return;
+      return status;
     }
 
     let alertMessage = '', alertTitle = '';
@@ -416,14 +419,13 @@ export class ProfileWizardComponent {
     this.alertService.alertWarningAndCancel(alertTitle, alertMessage).subscribe(
       res => {
         if (res) {
-
           if (this.saveMode === 'NewProfile' || this.saveMode === 'ProfileUpdate') {
             this.agentService.saveSecurityProfile(this.selectedAgent.rootProfile).subscribe(result => {
 
               this.notification.success(this.staticMessageService.savedProfileMessage);
               this.saveEmitter.emit();
 
-
+              status = true;
             });
           } else if (this.saveMode === 'NewProfileWithAgent') {
             this.agentService.saveAgentLocation(this.selectedAgent).subscribe(result => {
@@ -431,6 +433,7 @@ export class ProfileWizardComponent {
               this.notification.success(this.staticMessageService.savedAgentLocationMessage);
               this.saveEmitter.emit();
 
+              status = true;
             });
           } else if (this.saveMode === 'NewProfileWithRoaming') {
             this.roamingService.saveClient(this.selectedAgent).subscribe(result => {
@@ -438,6 +441,7 @@ export class ProfileWizardComponent {
               this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
               this.saveEmitter.emit();
 
+              status = true;
             });
           } else if (this.saveMode === 'NewProfileWithBox') {
             this.selectedBox.agent = this.selectedAgent;
@@ -446,6 +450,7 @@ export class ProfileWizardComponent {
               this.notification.success(this.staticMessageService.savedAgentBoxMessage);
               this.saveEmitter.emit();
 
+              status = true;
             });
           } else if (this.saveMode === 'NewProfileWithDevice') {
             const dg = new DeviceGroup();
@@ -459,7 +464,6 @@ export class ProfileWizardComponent {
             ai.agentGroup = this.selectedAgent.agentGroup;
             ai.rootProfile = this.selectedAgent.rootProfile;
 
-
             dg.agents = [ai];
             delete dg.agentGroup;
 
@@ -468,9 +472,9 @@ export class ProfileWizardComponent {
               this.notification.success(this.staticMessageService.savedDeviceMessage);
               this.saveEmitter.emit();
 
+              status = true;
             });
           } else if (this.saveMode === 'NewProfileWithDeviceGroup') {
-
             if (localStorage.getItem(DEVICE_GROUP)) {
               const deviceGroup: DeviceGroup = JSON.parse(localStorage.getItem(DEVICE_GROUP));
               deviceGroup.rootProfile = this.selectedAgent.rootProfile;
@@ -481,6 +485,7 @@ export class ProfileWizardComponent {
                   this.notification.success(this.staticMessageService.savedDeviceMessage);
                   this.saveEmitter.emit();
 
+                  status = true;
                 });
               } else {
                 this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);
@@ -490,6 +495,8 @@ export class ProfileWizardComponent {
         }
       }
     );
+
+    return status;
   }
 
   blackListItemValidation() {

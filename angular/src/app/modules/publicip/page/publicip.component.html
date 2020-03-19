@@ -149,7 +149,7 @@
           <rk-modal-body>
 
             <app-profile-wizard #profileWizard [selectedAgent]="selectedAgent" [currentStep]="currentStep"
-              [saveMode]="saveMode"></app-profile-wizard>
+              [saveMode]="saveMode" (saveEmitter)="saveProfileEmit()"></app-profile-wizard>
 
           </rk-modal-body>
 

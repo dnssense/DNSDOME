@@ -51,7 +51,9 @@ export class PublicipComponent implements AfterViewInit {
   saveMode: string;
   securityProfiles: SecurityProfile[];
 
-  securityProfilesForRkSelect: RkSelectModel[] = [];
+  securityProfilesForRkSelect: RkSelectModel[] = [
+    { value: -1, displayText: 'Yeni Profile Ekle' }
+  ];
 
   roleName: string;
   tooltipGuideCounter = 0;
@@ -88,8 +90,12 @@ export class PublicipComponent implements AfterViewInit {
 
   saveProfile() {
     this.profileWizard.saveProfile();
+  }
 
+  saveProfileEmit() {
     this.profileModal.toggle();
+
+    this.getPublicIpsDataAndProfiles();
   }
 
   nextStep() {
@@ -140,7 +146,7 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   fillSecurityProfilesArray(agent?: Agent) {
-    this.securityProfilesForRkSelect = [];
+    this.securityProfilesForRkSelect = [{ value: -1, displayText: 'Yeni Profile Ekle' }];
 
     this.securityProfiles.forEach(elem => {
       const obj = {
@@ -261,7 +267,7 @@ export class PublicipComponent implements AfterViewInit {
 
     if (agent) {
       if (agent.rootProfile && agent.rootProfile.id > 0) {
-        this.selectedAgent = agent;
+        this.selectedAgent = JSON.parse(JSON.stringify(agent));
 
         this.fillSecurityProfilesArray(agent);
 
@@ -453,6 +459,12 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   securityProfileChanged(id: number) {
+    if (id === -1) {
+      this.profileModal.toggle();
+
+      return;
+    }
+
     this.isNewItemUpdated = true;
     this.selectedIp.rootProfile = this.securityProfiles.find(p => p.id === id);
   }
