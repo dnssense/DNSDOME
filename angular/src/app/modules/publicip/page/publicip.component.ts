@@ -8,11 +8,11 @@ import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src
 import { AgentType } from 'src/app/core/models/AgentType';
 import * as introJs from 'intro.js/intro.js';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { PublicIPService } from 'src/app/core/services/PublicIPService';
+import { PublicIPService } from 'src/app/core/services/publicIPService';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
-import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 
 declare let $: any;

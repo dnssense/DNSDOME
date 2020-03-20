@@ -8,7 +8,7 @@ import { AuthenticationService } from './authentication.service';
 @Injectable({ providedIn: 'root' })
 export class ToolsService {
 
-  private _reputationURL = this.config.getApiUrl() + '/tools/category/';
+  private _reputationURL = this.config.getApiUrl() + '/tools/category';
   private _categorizationURL = this.config.getApiUrl() + '/categorize/truefalseV2';
 
   constructor(
@@ -21,7 +21,7 @@ export class ToolsService {
 
 
 
-    return this.http.get<any>(this._reputationURL  + d).map(r => r);
+    return this.http.get<any>(this._reputationURL  + '/' + d).map(r => r);
   }
   searchCategories(domains: string[]): Observable<CategoryQuery[]> {
 

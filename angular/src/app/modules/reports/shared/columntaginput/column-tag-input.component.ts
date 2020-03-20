@@ -6,7 +6,7 @@ import * as countryList from 'src/app/core/models/Countries';
 import { Location } from 'src/app/core/models/Location';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { WApplication } from 'src/app/core/models/WApplication';
-import { FastReportService } from 'src/app/core/services/FastReportService';
+import { FastReportService } from 'src/app/core/services/fastReportService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ValidationService } from 'src/app/core/services/validation.service';
 
@@ -32,8 +32,8 @@ export class ColumnTagInputComponent implements OnInit {
   @Input() public mainCategories: Category[];
   @Input() public agents: Location[];
 
-  public inputCollapsed: boolean = true;
-  public inputSelected: boolean = false;
+  public inputCollapsed = true;
+  public inputSelected = false;
 
   @ViewChild('inputElement') inputElement: ElementRef;
   @ViewChild('mainInputElement') mainInputElement: ElementRef;
@@ -46,7 +46,7 @@ export class ColumnTagInputComponent implements OnInit {
 
   private tableColumnsubscription: Subscription;
 
-  //deleted constructer parameters
+  // deleted constructer parameters
   // public roksitTranslateService: RoksitTranslateService,
   public constructor(private renderer: Renderer2,
     private fastReportService: FastReportService,
@@ -200,8 +200,8 @@ export class ColumnTagInputComponent implements OnInit {
       return;
     }
 
-    var addStatus = true;
-    for (let op of this.tags) {
+    let addStatus = true;
+    for (const op of this.tags) {
       if (
         op.field == this.current.field &&
         op.operator == this.current.operator &&
@@ -238,7 +238,7 @@ export class ColumnTagInputComponent implements OnInit {
 
   public removeTag(tag) {
     for (let t = 0; t < this.tags.length; t++) {
-      let ta = this.tags[t];
+      const ta = this.tags[t];
       if (
         ta.value == tag.value &&
         ta.field == tag.field &&
@@ -261,7 +261,7 @@ export class ColumnTagInputComponent implements OnInit {
 
   public positionInputElement(sourcePosition) {
     setTimeout(() => {
-      let position = jQuery(sourcePosition).position();
+      const position = jQuery(sourcePosition).position();
       jQuery(this.inputElement.nativeElement).css({
         top: position.top + 21,
         left: position.left - 1,
@@ -275,7 +275,7 @@ export class ColumnTagInputComponent implements OnInit {
   }
 
   public dragSuccess(event: any) {
-    let index = this.zoneName.tags.indexOf(event.dragData);
+    const index = this.zoneName.tags.indexOf(event.dragData);
     this.zoneName.tags.splice(index, 1);
   }
 
@@ -293,7 +293,7 @@ export class ColumnTagInputComponent implements OnInit {
   public checkIp(ipForCheck: string) {
     const res = ValidationService.isValidIpWithLocals(ipForCheck);
     if (!res) {
-      this.notificationService.warning("Invalid IP");
+      this.notificationService.warning('Invalid IP');
     }
     return res;
   }

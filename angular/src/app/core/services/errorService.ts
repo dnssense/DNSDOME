@@ -15,10 +15,10 @@ export class ErrorService {
   ) {}
 
   public handleAuthenticatedError(error: HttpErrorResponse) {
-    let status = error.status;
+    const status = error.status;
 
     let message = 'Problem';
-    let statusText = error.statusText ? ':' + error.statusText : '';
+    const statusText = error.statusText ? ':' + error.statusText : '';
     if (error instanceof SyntaxError) {
       console.log(error.message);
     } else if (error instanceof Error) {
@@ -26,7 +26,7 @@ export class ErrorService {
       message = error.message;
       if (message.indexOf('No JWT present') > -1) {
         message =
-          "You'are not logged in or  your session has expired.Please login again";
+          'You\'are not logged in or  your session has expired.Please login again';
         this.componentService.openLoginScreen();
       } else {
         console.log('An error occurred:', error.message);
@@ -65,10 +65,10 @@ export class ErrorService {
   }
 
   public handleError(error: HttpErrorResponse) {
-    let status = error.status;
+    const status = error.status;
 
     let message = 'Problem';
-    let statusText = error.statusText ? ':' + error.statusText : '';
+    const statusText = error.statusText ? ':' + error.statusText : '';
     if (error.error instanceof Error) {
       // A client-side or network error occurred. Handle it accordingly.
       console.log('An error occurred:', error.error.message);

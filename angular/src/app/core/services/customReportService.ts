@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ErrorService } from './ErrorService';
+import { ErrorService } from './errorService';
 import { Category } from '../models/Category';
 import { WApplication } from '../models/WApplication';
 import { SearchSetting } from '../models/SearchSetting';
@@ -56,7 +56,7 @@ export class CustomReportService {
   }
 
   public getData(searchSettings: SearchSetting): Observable<Object> {
-    let body = JSON.stringify({ searchSetting: searchSettings });
+    const body = JSON.stringify({ searchSetting: searchSettings });
     return this.http
       .post(this._dataURL, body, this.getOptions())
       .map((res: Response) => res)
@@ -67,7 +67,7 @@ export class CustomReportService {
   }
 
   public getTableData(searchSettings: SearchSetting): Observable<Object> {
-    let body = JSON.stringify({ searchSetting: searchSettings });
+    const body = JSON.stringify({ searchSetting: searchSettings });
     return this.http
       .post(this._tableDataURL, body)
       .catch((response: any, caught: any) => {
@@ -77,7 +77,7 @@ export class CustomReportService {
   }
 
   public singleValue(searchSettings: SearchSetting): Observable<Object> {
-    let body = JSON.stringify({ searchSetting: searchSettings });
+    const body = JSON.stringify({ searchSetting: searchSettings });
     return this.http
       .post(this._singleValueDataURL, body)
       .catch((response: any, caught: any) => {
@@ -105,7 +105,7 @@ export class CustomReportService {
   }
 
   save(content: SearchSetting): Observable<Object> {
-    let body = JSON.stringify(content);
+    const body = JSON.stringify(content);
 
     return this.http
       .post(this._initContentURL, body)
@@ -117,7 +117,7 @@ export class CustomReportService {
   }
 
   getDashboardHeaderSetting(setting: SearchSetting) {
-    let body = JSON.stringify({ searchSetting: setting });
+    const body = JSON.stringify({ searchSetting: setting });
     return this.http
       .post(this._dashboardHeaderURL, body)
       .catch((response: any, caught: any) => {
@@ -127,9 +127,9 @@ export class CustomReportService {
   }
 
   private getOptions() {
-    let options = {
+    const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }
+    };
     return options;
   }
 }

@@ -7,7 +7,7 @@ import { ConfigItem } from '../models/ConfigItem';
 import { Dashboard } from '../models/Dashboard';
 import { LogColumn } from '../models/LogColumn';
 import { SearchSetting } from '../models/SearchSetting';
-import { ErrorService } from './ErrorService';
+import { ErrorService } from './errorService';
 import { ConfigService } from './config.service';
 import { Config } from 'protractor';
 
@@ -45,7 +45,7 @@ export class FastReportService {
     return this._configItems;
   }
 
-  public initFormData() {
+   public initFormData() {
     return this.http
       .get<Object>(this._initContentURL)
       .map((response: Object) => response)
@@ -54,7 +54,7 @@ export class FastReportService {
       });
   }
 
-  public initTableColumns() {
+   public initTableColumns() {
     return this.http
       .get<LogColumn[]>(this._initTableColumnsURL)
       .map((response: LogColumn[]) => response)
@@ -63,7 +63,7 @@ export class FastReportService {
       });
   }
 
-  public openSavedSearch(value: number): Observable<Object> {
+/*   public openSavedSearch(value: number): Observable<Object> {
     return this.http
       .post(this._savedSearchURL + 'id=' + value, null)
       .map((res: Response) => res.json())
@@ -71,9 +71,9 @@ export class FastReportService {
         this.errorService.handleAuthenticatedError(response);
         return Observable.throw(response);
       });
-  }
+  } */
 
-  public listSavedSearchSettings(): Observable<Object> {
+ /*  public listSavedSearchSettings(): Observable<Object> {
     return this.http
       .post(this._savedSearchListURL, null)
       .map((res: Response) => res.json())
@@ -81,9 +81,9 @@ export class FastReportService {
         this.errorService.handleAuthenticatedError(response);
         return Observable.throw(response);
       });
-  }
+  } */
 
-  public getGraphData(
+  /* public getGraphData(
     configItem: ConfigItem,
     searchSettings: SearchSetting,
     maxItems: number
@@ -110,6 +110,9 @@ export class FastReportService {
         return Observable.throw(response);
       });
   }
+ */
+
+
 
   public loadHistogram(searchSettings: SearchSetting): Observable<Object> {
     const body = JSON.stringify({ searchSetting: searchSettings });
@@ -128,7 +131,7 @@ export class FastReportService {
       });
   }
 
-  public getMultiValueHistogramData(
+  /* public getMultiValueHistogramData(
     searchSettings: SearchSetting,
     dashboard: Dashboard
   ): Observable<Object> {
@@ -152,8 +155,8 @@ export class FastReportService {
         return Observable.throw(response);
       });
   }
-
-  public loadDashbaordHistogram(
+ */
+ /*  public loadDashbaordHistogram(
     searchSettings: SearchSetting
   ): Observable<Object> {
     const body = JSON.stringify({ searchSetting: searchSettings });
@@ -170,5 +173,5 @@ export class FastReportService {
         this.errorService.handleAuthenticatedError(response);
         return Observable.throw(response);
       });
-  }
+  } */
 }

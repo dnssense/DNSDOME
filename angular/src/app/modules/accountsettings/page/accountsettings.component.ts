@@ -7,11 +7,11 @@ import { User } from 'src/app/core/models/User';
 import { Company } from 'src/app/core/models/Company';
 import { SignupBean } from 'src/app/core/models/SignupBean';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { AccountService } from 'src/app/core/services/AccountService';
+import { AccountService } from 'src/app/core/services/accountService';
 import { AlertService } from 'src/app/core/services/alert.service';
-import { CompanyService } from 'src/app/core/services/CompanyService';
+import { CompanyService } from 'src/app/core/services/companyService';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { SmsService } from 'src/app/core/services/SmsService';
+import { SmsService } from 'src/app/core/services/smsService';
 // import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { SmsType } from 'src/app/core/models/SmsType';
 import { RestSmsResponse, RestSmsConfirmRequest, RestUserUpdateRequest } from 'src/app/core/models/RestServiceModels';
@@ -20,7 +20,7 @@ import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component
 import { countries } from 'src/app/core/models/Countries';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { TranslateService } from '@ngx-translate/core';
-import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

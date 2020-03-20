@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/Rx';
 import { Observable } from 'rxjs/Rx';
 import { SearchSetting } from '../models/SearchSetting';
-import { ErrorService } from './ErrorService';
+import { ErrorService } from './errorService';
 import { ConfigService } from './config.service';
 import { LogColumn } from '../models/LogColumn';
 
@@ -52,7 +52,7 @@ export class MonitorService {
   // }
 
   public getGraphData(searchSettings: SearchSetting, page: number): Observable<Object> {
-    let body = JSON.stringify({ searchSetting: searchSettings, page: page });
+    const body = JSON.stringify({ searchSetting: searchSettings, page: page });
     return this.http
       .post(this._graphURL, body, this.getOptions())
       .map((res: Response) => res)
@@ -63,11 +63,11 @@ export class MonitorService {
   }
 
   save(content: SearchSetting): Observable<Object> {
-    let body = JSON.stringify(content);
-    let headers: HttpHeaders = new HttpHeaders({
+    const body = JSON.stringify(content);
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-    let options = { headers: headers };
+    const options = { headers: headers };
 
     return this.http
       .post(this._initContentURL, body, options)
@@ -79,9 +79,9 @@ export class MonitorService {
   }
 
   private getOptions() {
-    let options = {
+    const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }
+    };
     return options;
   }
 }

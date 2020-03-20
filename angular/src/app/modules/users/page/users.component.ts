@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { User } from 'src/app/core/models/User';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { UserService } from 'src/app/core/services/UserService';
+import { UserService } from 'src/app/core/services/userService';
 import { Role } from 'src/app/core/models/Role';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import * as validator from 'validator';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 
 declare var $: any;
 @Component({

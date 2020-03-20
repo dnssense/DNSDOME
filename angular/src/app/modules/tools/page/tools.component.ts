@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ToolsService } from 'src/app/core/services/ToolsService';
+import { ToolsService } from 'src/app/core/services/toolsService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { CategoryQuery } from 'src/app/core/models/CategoryQuery';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';

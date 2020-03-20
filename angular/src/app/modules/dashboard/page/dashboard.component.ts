@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { DashBoardService, TopDomainsRequestV4, DistinctAgentResponse, DistinctBoxResponse } from 'src/app/core/services/DashBoardService';
+import { DashBoardService, TopDomainsRequestV4, DistinctAgentResponse, DistinctBoxResponse } from 'src/app/core/services/dashBoardService';
 import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { StaticService } from 'src/app/core/services/StaticService';
+import { StaticService } from 'src/app/core/services/staticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { DashboardStats } from 'src/app/core/models/DashboardStats';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -26,7 +26,7 @@ import { Box } from 'src/app/core/models/Box';
 import { AstPath } from '@angular/compiler';
 import { debug } from 'util';
 import * as moment from 'moment';
-import { ToolsService } from 'src/app/core/services/ToolsService';
+import { ToolsService } from 'src/app/core/services/toolsService';
 
 interface TagInputValue {
   value: string;
@@ -373,6 +373,7 @@ export class DashboardComponent implements OnInit {
 
     this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
 
+      if (this.items.length) {
       this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
         cats.forEach(cat => {
           const finded = result.items.find(abc => abc.name == cat.domain);
@@ -383,6 +384,7 @@ export class DashboardComponent implements OnInit {
         this.harmfulDomains = result.items;
 
       });
+      }
 
 
     });

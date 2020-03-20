@@ -3,16 +3,19 @@ import { CustomReportResultComponent } from './result/customreport-result.compon
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { FastReportService } from 'src/app/core/services/FastReportService';
+import { FastReportService } from 'src/app/core/services/fastReportService';
 import { LinkClick } from '../monitor/result/monitor-result.component';
 import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { Location } from '@angular/common';
+import { categoryMappings } from '../../shared/profile-wizard/page/profile-wizard.component';
+import { ColumnTagInput } from '../../../core/models/ColumnTagInput';
 
 export interface CustomReportRouteParams {
   startDate?: string;
   endDate?: string;
+  category?: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful'|undefined;
 }
 
 @Component({
@@ -39,6 +42,11 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
         this.searchSetting.dateInterval = difference * 60 * 24;
 
+        if (params.category && params.category != 'total') {
+          categoryMappings[params.category].forEach(x => {
+            this.searchSetting.should.push(new ColumnTagInput('category', '=', x));
+          });
+        }
         this.search(this.searchSetting);
       }
     });

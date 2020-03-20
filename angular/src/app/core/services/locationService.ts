@@ -4,7 +4,7 @@ import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { OperationResult } from '../models/OperationResult';
 import { ConfigService } from './config.service';
-import { ErrorService } from './ErrorService';
+import { ErrorService } from './errorService';
 import { Location } from '../models/Location';
 
 /**
@@ -74,9 +74,9 @@ export class LocationsService {
          //todo . burda valuyu düzenlemen gerkeebilir..Burda agentip groups u basacaz...
          }
          */
-    let body = JSON.stringify(agent);
-    let headers = this.getHeaders();
-    let options = { headers: headers };
+    const body = JSON.stringify(agent);
+    const headers = this.getHeaders();
+    const options = { headers: headers };
 
     return this.http
       .post(this._agentSaveURL, body, options)
@@ -88,9 +88,9 @@ export class LocationsService {
   }
 
   public delete(agent: Location): Observable<OperationResult> {
-    let body = JSON.stringify(agent);
-    let headers = this.getHeaders();
-    let options = { headers: headers };
+    const body = JSON.stringify(agent);
+    const headers = this.getHeaders();
+    const options = { headers: headers };
 
     return this.http
       .post(this._agentDeleteURL, body, options)

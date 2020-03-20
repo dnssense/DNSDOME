@@ -3,7 +3,7 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
-import { ReportService } from 'src/app/core/services/ReportService';
+import { ReportService } from 'src/app/core/services/reportService';
 
 @Component({
     selector: 'app-scheduledreports',

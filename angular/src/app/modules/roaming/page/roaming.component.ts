@@ -12,7 +12,7 @@ import { GroupAgentModel } from '../../devices/page/devices.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { StaticSymbolResolverHost, ThrowStmt } from '@angular/compiler';
-import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
 import { stringify } from 'querystring';
 

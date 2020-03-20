@@ -10,13 +10,13 @@ import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src
 import { BoxService } from 'src/app/core/services/box.service';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
-import { DEVICE_GROUP } from 'src/app/core/Constants';
+import { DEVICE_GROUP } from 'src/app/core/constants';
 import { DeviceGroup, AgentInfo, AgentGroup } from 'src/app/core/models/DeviceGroup';
 import { Agent } from 'src/app/core/models/Agent';
 import { RkTableConfigModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { element } from 'protractor';
 import { group } from '@angular/animations';
 import { JsonPipe } from '@angular/common';

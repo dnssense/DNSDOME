@@ -2,11 +2,11 @@ import { ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Outpu
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { Subject } from 'rxjs';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { CustomReportService } from 'src/app/core/services/CustomReportService';
+import { CustomReportService } from 'src/app/core/services/customReportService';
 import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js';
-import { FastReportService } from 'src/app/core/services/FastReportService';
-import { ExcelService } from 'src/app/core/services/ExcelService';
-import { PdfService } from 'src/app/core/services/PdfService';
+import { FastReportService } from 'src/app/core/services/fastReportService';
+import { ExcelService } from 'src/app/core/services/excelService';
+import { PdfService } from 'src/app/core/services/pdfService';
 import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 import { LinkClick } from '../../monitor/result/monitor-result.component';

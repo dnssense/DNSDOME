@@ -1,18 +1,18 @@
-import { StaticService } from 'src/app/core/services/StaticService';
+import { StaticService } from 'src/app/core/services/staticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
-import { ReportService } from 'src/app/core/services/ReportService';
+import { ReportService } from 'src/app/core/services/reportService';
 import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild } from '@angular/core';
 import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { LogColumn } from 'src/app/core/models/LogColumn';
-import { FastReportService } from 'src/app/core/services/FastReportService';
+import { FastReportService } from 'src/app/core/services/fastReportService';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { RkFilterOutput } from 'roksit-lib/lib/modules/rk-filter-badge/rk-filter-badge.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { RkRadioOutput } from 'roksit-lib/lib/modules/rk-radio/rk-radio.component';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { UserService } from 'src/app/core/services/UserService';
+import { UserService } from 'src/app/core/services/userService';
 import { User } from 'src/app/core/models/User';
 import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
 import { Router } from '@angular/router';
@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
 export class GroupedCategory {
   type: string;
   name: string;
-  color?= '#3397c5';
+  color ?= '#3397c5';
   items: CategoryV2[];
 }
 

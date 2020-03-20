@@ -9,7 +9,7 @@ import { Company } from 'src/app/core/models/Company';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import { AccountService } from 'src/app/core/services/AccountService';
+import { AccountService } from 'src/app/core/services/accountService';
 import { Router } from '@angular/router';
 import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 declare var $: any;

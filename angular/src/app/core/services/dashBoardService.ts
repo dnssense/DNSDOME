@@ -37,11 +37,7 @@ export interface DistinctBoxResponse {
 @Injectable()
 export class DashBoardService {
 
-  /* public _saveDashboardURL = this.configuration.getApiUrl() + '/services/dashboard/save';  // URL to graph api
-  public _ListURL = this.configuration.getApiUrl() + '/services/dashboard/list';  // URL to graph api
-  public _deleteDashboardURL = this.configuration.getApiUrl() + '/services/dashboard/delete';  // URL to graph api
-  public _setDefaultDashboardURL = this.configuration.getApiUrl() + '/services/dashboard/default';  // URL to graph api
-  public _dashboardSettingsURL = this.configuration.getApiUrl() + '/services/dashboard/get?';  // URL to graph api */
+
   // ES urls
   private _hourlyCompanySummaryURL = this.configuration.getApiUrl() + '/calculate/hourlyCompanySummaryV4';
   private _topDomainURL = this.configuration.getApiUrl() + '/calculate/topDomain';

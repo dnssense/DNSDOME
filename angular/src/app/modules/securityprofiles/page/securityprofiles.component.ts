@@ -7,7 +7,7 @@ import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 
 @Component({
     selector: 'app-securityprofiles',

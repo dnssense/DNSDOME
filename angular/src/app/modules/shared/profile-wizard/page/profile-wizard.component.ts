@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { StaticService } from 'src/app/core/services/StaticService';
+import { StaticService } from 'src/app/core/services/staticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { Agent } from 'src/app/core/models/Agent';
 import { ApplicationV2 } from 'src/app/core/models/ApplicationV2';
@@ -12,10 +12,10 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { Box } from 'src/app/core/models/Box';
 import { BoxService } from 'src/app/core/services/box.service';
-import { DEVICE_GROUP } from 'src/app/core/Constants';
+import { DEVICE_GROUP } from 'src/app/core/constants';
 import { DeviceGroup, AgentInfo } from 'src/app/core/models/DeviceGroup';
 import { BWListItem } from 'src/app/core/models/BWListItem';
-import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 
 declare var $: any;

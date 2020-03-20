@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { StaticService } from 'src/app/core/services/StaticService';
-import { ToolsService, Domain2CategorizeRequestV2 } from 'src/app/core/services/ToolsService';
+import { StaticService } from 'src/app/core/services/staticService';
+import { ToolsService, Domain2CategorizeRequestV2 } from 'src/app/core/services/toolsService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
-import { StaticMessageService } from 'src/app/core/services/StaticMessageService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 
 @Component({
     selector: 'app-category-request',

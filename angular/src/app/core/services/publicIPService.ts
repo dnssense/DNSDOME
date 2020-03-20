@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Rx";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { PublicIP } from '../models/PublicIP';
@@ -10,14 +10,14 @@ import { geoLocation } from 'src/app/core/services/geoLocation';
 @Injectable({ providedIn: 'root' })
 export class PublicIPService {
 
-  public _agentsListURL = this.config.getApiUrl() + '/services/mylocations/agent-list';
+  /* public _agentsListURL = this.config.getApiUrl() + '/services/mylocations/agent-list';
   public _locationsListURL = this.config.getApiUrl() + '/services/mylocations/location-list';
   public _appUserProfilesListURL = this.config.getApiUrl() + '/services/application-profiles/profile-list';
   public _domainProfilesListURL = this.config.getApiUrl() + '/services/domain-profiles/profile-list';
   public _agentDeleteURL = this.config.getApiUrl() + '/services/mylocations/delete';
   public _agentUpdateURL = this.config.getApiUrl() + '/services/mylocations/update';
   public _agentSaveURL = this.config.getApiUrl() + '/services/mylocations/save';
-
+ */
 
   constructor(private http: HttpClient, private config: ConfigService) {
 
@@ -27,7 +27,7 @@ export class PublicIPService {
     return geoLocation.getCurrent(this.http).map(res => res.ip);
   }
 
-  public getAgentLocation() {
+ /*  public getAgentLocation() {
     return this.http.get(this._agentsListURL).map(res => res);
   }
 
@@ -76,7 +76,7 @@ export class PublicIPService {
   }
 
   public getRangeOrSubnetMask(type: number, mask: number) {
-    //type==1: mask to range 
+    //type==1: mask to range
     //type==2: range to mask
     if (type == 1) {
       if (mask == 255) {
@@ -115,7 +115,7 @@ export class PublicIPService {
         return 0;
       }
     }
-  }
+  } */
 
 }
 

@@ -4,8 +4,8 @@ import { ConfigService, ConfigHost } from 'src/app/core/services/config.service'
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
-import { SmsService } from 'src/app/core/services/SmsService';
-import { AccountService } from 'src/app/core/services/AccountService';
+import { SmsService } from 'src/app/core/services/smsService';
+import { AccountService } from 'src/app/core/services/accountService';
 import { of } from 'rxjs';
 
 

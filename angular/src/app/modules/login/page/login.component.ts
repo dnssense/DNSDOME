@@ -10,7 +10,7 @@ import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { environment } from 'src/environments/environment';
 import { Session } from 'src/app/core/models/Session';
-import { SmsService } from 'src/app/core/services/SmsService';
+import { SmsService } from 'src/app/core/services/smsService';
 import { SmsType } from 'src/app/core/models/SmsType';
 // import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { RestPreloginResponse, RestPreloginSmsResponse } from 'src/app/core/models/RestServiceModels';
@@ -122,7 +122,7 @@ export class LoginComponent implements OnInit {
     if (e) {
       this.email = String(e).toLowerCase();
     }
-    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(String(e).toLowerCase())) {
       this.validEmailLogin = true;
     } else {

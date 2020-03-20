@@ -9,7 +9,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
 import { TimeProfileComponent } from './components/time-profile/time-profile.component';
-import { BoxWizardComponent } from './components/box-wizard/box-wizard.component';
+
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 import { PipesModule } from '../shared/pipes/pipes.module';
 import { RkTableModule, IconsModule, RkModalModule, RkRadioModule, RkCheckboxModule, RkSelectModule } from 'roksit-lib';
@@ -20,7 +20,7 @@ import { RkTableModule, IconsModule, RkModalModule, RkRadioModule, RkCheckboxMod
   declarations: [
     DevicesComponent,
     TimeProfileComponent,
-    BoxWizardComponent],
+    ],
   imports: [
     FormsModule,
     ReactiveFormsModule,

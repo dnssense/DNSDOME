@@ -20,10 +20,10 @@ import { JwtInterceptor } from './core/interceptors/JwtInterceptor';
 import { AuthenticationService } from './core/services/authentication.service';
 import { ConfigService } from './core/services/config.service';
 import { CookieService } from './core/services/cookie.service';
-import { DashBoardService } from './core/services/DashBoardService';
-import { MonitorService } from './core/services/MonitorService';
+import { DashBoardService } from './core/services/dashBoardService';
+import { MonitorService } from './core/services/monitorService';
 import { NotificationService } from './core/services/notification.service';
-import { SearchSettingService } from './core/services/SearchSettingService';
+
 import { translateHttpLoaderFactory } from './core/translationhelper';
 import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
 import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
@@ -67,8 +67,7 @@ import { NotificationApiService } from './core/services/notification-api.service
   providers: [
     AuthGuard,
     AuthenticationService,
-    SearchSettingService,
-    ConfigService,
+ConfigService,
     CookieService,
     BsModalService,
     DashBoardService,
