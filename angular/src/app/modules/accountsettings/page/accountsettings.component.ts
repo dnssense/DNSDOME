@@ -35,6 +35,7 @@ declare var $: any;
     styleUrls: ['accountsettings.component.sass']
 })
 export class AccountSettingsComponent implements OnInit {
+    passwordStrength: any;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -255,13 +256,13 @@ export class AccountSettingsComponent implements OnInit {
                 this.notification.success(this.staticMessageService.companyInformationUpdatedMessage);
             });
         } else {
-            this.notification.warning(this.staticMessageService.enterRequiredFieldsMessage);
+            this.notification.error(this.staticMessageService.enterRequiredFieldsMessage);
             return;
         }
     }
 
     changePasswordFormSubmit() {
-        if (this.changePasswordForm.valid && this.changePasswordForm.dirty && this.signupUser.password === this.signupUser.passwordAgain) {
+        if (this.changePasswordForm.valid && this.changePasswordForm.dirty && this.signupUser.password === this.signupUser.passwordAgain && this.passwordStrength === 4) {
             this.accountService.changePassword(this.currentPassword, this.signupUser.password)
                 .subscribe(res => {
                     this.notification.success(this.staticMessageService.passwordChangedMessage);
@@ -272,9 +273,15 @@ export class AccountSettingsComponent implements OnInit {
                     this.signupUser.passwordAgain = '';
 
                     this.activeTabNumber = 0;
+                }, (err) => {
+                    if (err.error.code === 'ErrUserBadOldPassword') {
+                        this.notification.error('Your old password is incorrect.');
+                    } else {
+                        this.notification.error(err.error.message);
+                    }
                 });
         } else {
-            this.notification.warning(this.staticMessageService.enterRequiredFieldsMessage);
+            this.notification.error(this.staticMessageService.enterRequiredFieldsMessage);
             return;
         }
     }
@@ -352,6 +359,7 @@ export class AccountSettingsComponent implements OnInit {
             }
         }
     }
+
     timeEnd() {
         if (this.isTimeSetted && this.notificationIndex < 1) {
             this.notification.error(this.staticMessageService.confirmationTimeIsUpMessage);
@@ -360,4 +368,22 @@ export class AccountSettingsComponent implements OnInit {
         }
     }
 
+    checkPasswordStrength() {
+        this.passwordStrength = 0;
+
+        if (!this.signupUser.password || this.signupUser.password.length < 1) { return; }
+
+        if (/[a-z]/.test(this.signupUser.password)) {
+            this.passwordStrength++;
+        }
+        if (/[A-Z]/.test(this.signupUser.password)) {
+            this.passwordStrength++;
+        }
+        if (/[0-9]/.test(this.signupUser.password)) {
+            this.passwordStrength++;
+        }
+        if (this.signupUser.password && this.signupUser.password.length > 7) {
+            this.passwordStrength++;
+        }
+    }
 }

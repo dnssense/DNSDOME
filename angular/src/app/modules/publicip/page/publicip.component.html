@@ -58,8 +58,7 @@
                     <input type="text" class="rk-input w-100" placeholder="{{'Name'|translate}}" name="agentName"
                       id="agentName" [(ngModel)]="selectedIp.agentAlias" formControlName="agentName" maxlength="64">
 
-                    <p class="rk-description m-0">Lokasyonun işi için tanımlayıcı bir ismini girmelisiniz. Konfigurasyon
-                      ve trafik raporlarında bu isimle yer alır.</p>
+                    <p class="rk-description m-0">*Konfigürasyon ve trafik raporlarında lokasyon bu isimle yer alacaktır.</p>
                   </div>
 
                   <ng-container *ngIf="ipType == 'dynamicIp'; else elseTemplateIpType">
@@ -70,7 +69,7 @@
                     </div>
 
                     <div class="col-12">
-                      <p class="rk-description m-0">Modeminizin desteklediği dinamik dns servislerinden birini kullanarak ip
+                      <p class="rk-description m-0">*Modeminizin desteklediği dinamik dns servislerinden birini kullanarak ip
                         adresiniz değişmesi durumunda da filtreleme tercihleriniz aktif kalmasını sağlayabilirsiniz.</p>
                     </div>
                   </ng-container>
@@ -108,7 +107,7 @@
                     <rk-select [options]="securityProfilesForRkSelect" placeholder="{{'SelectProfile'|translate}}"
                       (valueChange)="securityProfileChanged($event)">
                     </rk-select>
-                    <p class="rk-description m-0">Hangi profili kullanıcığınızı seçersiniz.</p>
+                    <p class="rk-description m-0">*Hangi profili kullanıcığınızı seçersiniz.</p>
                   </div>
 
                   <div class="col-12 mt-3">

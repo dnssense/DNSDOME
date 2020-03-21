@@ -58,6 +58,8 @@ export class PublicipComponent implements AfterViewInit {
   roleName: string;
   tooltipGuideCounter = 0;
 
+  agentProfile: any;
+
   @ViewChild('agentModal') agentModal: RkModalModel;
   @ViewChild('profileModal') profileModal: RkModalModel;
   @ViewChild('profileWizard') profileWizard: ProfileWizardComponent;
@@ -148,11 +150,17 @@ export class PublicipComponent implements AfterViewInit {
   fillSecurityProfilesArray(agent?: Agent) {
     this.securityProfilesForRkSelect = [{ value: -1, displayText: 'Yeni Profile Ekle' }];
 
-    this.securityProfiles.forEach(elem => {
+    this.securityProfiles.forEach((elem, index) => {
       const obj = {
         displayText: elem.name,
         value: elem.id,
       } as RkSelectModel;
+
+      if (this.saveMode === 'NewProfile') {
+        if (index === this.securityProfiles.length - 1) {
+          obj.selected = true;
+        }
+      }
 
       if (agent) {
         if (elem.id == agent.rootProfile.id) {
@@ -292,6 +300,10 @@ export class PublicipComponent implements AfterViewInit {
     const ip0 = {} as IpWithMask;
     ip0.mask = 32;
     this.selectedIp.staticSubnetIp.push(ip0);
+
+    this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
+      return { ...x, selected: false };
+    });
 
     if (this.publicIps == null || this.publicIps.length < 1) {
       this.publicIpService.getMyIp().subscribe(res => {
@@ -460,6 +472,8 @@ export class PublicipComponent implements AfterViewInit {
 
   securityProfileChanged(id: number) {
     if (id === -1) {
+      this.saveMode = 'NewProfile';
+
       this.profileModal.toggle();
 
       return;
