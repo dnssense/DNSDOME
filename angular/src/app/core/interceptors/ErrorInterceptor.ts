@@ -34,8 +34,13 @@ export class ErrorInterceptor implements ErrorHandler {
           if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
             notificationService.error(`${message}`);
           }
+        } else
+        if (error.statusText == 'Service Temporarily Unavailable') {
+          const message = translatorService.translate(error.statusText);
+          notificationService.error(translatorService.translate(message));
+          console.log(`${status} - ${message}`);
         } else {
-          debugger;
+
           const message = translatorService.translate(error.statusText);
           notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
           console.log(`${status} - ${message}`);

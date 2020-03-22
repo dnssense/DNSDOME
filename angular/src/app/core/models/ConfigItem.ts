@@ -1,8 +1,6 @@
-import {CriteriaItem} from "./CriteriaItem";
-import {AggregationItem} from "./AggregationItem";
-/**
- * Created by fatih on 03.08.2016.
- */
+import {CriteriaItem} from './CriteriaItem';
+import {AggregationItem} from './AggregationItem';
+
 
 export class ConfigItem {
 

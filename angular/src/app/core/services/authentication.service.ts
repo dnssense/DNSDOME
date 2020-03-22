@@ -123,7 +123,7 @@ export class AuthenticationService {
   getCurrentUserRoles(): Observable<Session> {
 
     return this.http.get<RestUserRoleRight>(this.userRoleUrl).pipe(map((x: RestUserRoleRight) => {
-      // TODO: buranın ciddi sorunları var.
+
       x.roles.forEach((y: RestRole) => {
         const role = new Role();
         role.name = y.name;
