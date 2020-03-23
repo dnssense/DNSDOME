@@ -236,6 +236,9 @@ export class ProfileWizardComponent {
     const social = [];
 
     this.applicationList.forEach(el => {
+      if (el.application.isVisible) {
+
+
       switch (el.application.type) {
         case ApplicationTypes.HTTP:
           http.push(el);
@@ -260,7 +263,7 @@ export class ProfileWizardComponent {
         default:
           break;
       }
-    });
+    }});
 
     // TODO burasi multi language yapilmali
 

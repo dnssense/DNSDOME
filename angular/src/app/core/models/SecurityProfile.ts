@@ -49,15 +49,4 @@ export class SecurityProfile {
 }
 
 
-// TODO: bilahare eklenecek
-// export interface TimeProfile {
-//     id: number
-//     name: string
-//     dayTimeRanges: DayTimeRange[];
-// }
 
-// export interface DayTimeRange {
-//     dayNo: number;
-//     startDate: number;
-//     endDate: number;
-// }

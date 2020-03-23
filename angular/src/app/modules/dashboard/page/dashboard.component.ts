@@ -356,8 +356,10 @@ export class DashboardComponent implements OnInit {
     });
 
     this.dashboardService.getTopDomains({ ...request, type: 'new' }).subscribe(result => {
-      if (this.items.length) {
+
+      if (result.items.length) {
       this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+
         cats.forEach(cat => {
           const finded = result.items.find(abc => abc.name == cat.domain);
           if (finded) {
@@ -373,7 +375,7 @@ export class DashboardComponent implements OnInit {
 
     this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
 
-      if (this.items.length) {
+      if (result.items.length) {
       this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
         cats.forEach(cat => {
           const finded = result.items.find(abc => abc.name == cat.domain);
