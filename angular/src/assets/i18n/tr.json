@@ -135,6 +135,34 @@
     "HarmfullContent":"Zararlı",
     "TotalDays":"Toplam gün",
     "Service Temporarily Unavailable":"Servislere erişim problemi var",
+    "All":"Hepsi",
+    "Category":"Kategori",
+    "Run":"Çalıştır",
+    "REPORT":{
+        "SaveReport":"Rapor Kaydet",
+        "NewReport":"Yeni Rapor",
+        "UpdateReport":"Rapor Düzenle",
+        "ReportName":"Rapor ismi",
+        "ScheduleReportSendToEmail":"Schedule report send to email",    
+        "ScheduleDailyReportEmail":"Schedule Daily report email",
+        "ScheduleWeeklyReportEmail":"Schedule Weekly report email",
+        "ScheduleMontlyReportEmail":"Schedule Montly report email",
+        "Filters":"Filtreler",
+        "Filter":"Filtre",
+        "NewReports":"Yeni Raporlar",
+        "SavedReports":"Kaydedilmiş Raporlar",
+        "Action":"Aksiyon",
+        "Allow":"İzin verilmiş",
+        "Deny":"İzin verilmemiş",
+        "AddFilter":"Filtre Ekle",
+        "UserReports":"Kullanıcı Raporları",
+        "SystemReports":"Sistem Raporları",
+        "ApplyChangedSettings":"Değişiklikleri uygula",
+        "TotalTraffic":"Toplam trafic",
+        "BlockPage":"Block sayfası",
+        "CleanFilters":"Filtreleri Temizle",
+        "SaveFilter":"Filtreyi Kaydet"
+    },
     "LANGUAGE":{
         "TR":"Türkçe",
         "EN":"İngilizce"
@@ -214,7 +242,10 @@
         "TrafficBasedAnomaly":"Trafiğe Dayalı Anomali",
         "SelectedTimevsAverage":"Seçilen Zaman ve Ortalama",
         "TimeHit":"En Yüksek Zaman",
-        "AverageHit":"Ortalama Hit"
+        "AverageHit":"Ortalama Hit",
+        "DataNotFound":"Dashboard datası bulunamadı",
+        "ShowDetail":"Detayı Göster",
+        "ShowSummary":"Özeti Göster"
        
         
     },

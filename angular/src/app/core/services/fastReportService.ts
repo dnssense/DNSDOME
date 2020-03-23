@@ -23,14 +23,14 @@ export class FastReportService {
 
   // public _initTableColumnsURL = this.configService.getApiUrl() + '/quick-reports/tableColumns'; // URL to subcategories api
 
-
+/* 
   private _tableColumnsSubject: BehaviorSubject<LogColumn[]> = new BehaviorSubject(null);
   public tableColumns = this._tableColumnsSubject.asObservable();
 
   public _configItems: BehaviorSubject<ConfigItem[]> = new BehaviorSubject(
     null
   );
-
+ */
 
 
   constructor(private http: HttpClient, private errorService: ErrorService, private configService: ConfigService) {
@@ -38,9 +38,9 @@ export class FastReportService {
   //  this.initFormData();
   }
 
-  get configItems(): BehaviorSubject<ConfigItem[]> {
+  /* get configItems(): BehaviorSubject<ConfigItem[]> {
     return this._configItems;
-  }
+  } */
 
    /* public initFormData() {
     return this.http
@@ -65,7 +65,7 @@ export class FastReportService {
 
 
   public loadHistogram(searchSettings: SearchSetting): Observable<Object> {
-    const body = JSON.stringify({ searchSetting: searchSettings });
+    const body = { searchSetting: searchSettings };
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -74,11 +74,8 @@ export class FastReportService {
 
     return this.http
       .post(this._histogramURL, body, options)
-      .map((res: Response) => res)
-      .catch((response: any, caught: any) => {
-        this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });
+      .map((res: Response) => res);
+
   }
 
 

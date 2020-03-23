@@ -59,12 +59,12 @@ export class CustomReportService {
     const body = JSON.stringify({ searchSetting: searchSettings });
     return this.http
       .post(this._dataURL, body, this.getOptions())
-      .map((res: Response) => res)
-      .catch((response: any, caught: any) => {
+      .map((res: Response) => res);
+     /*  .catch((response: any, caught: any) => {
         // TODO buradaki kodun amaci ne
         this.errorService.handleAuthenticatedError(response);
         return Observable.throw(response);
-      });
+      }); */
   }
 
 /*   public getTableData(searchSettings: SearchSetting): Observable<Object> {

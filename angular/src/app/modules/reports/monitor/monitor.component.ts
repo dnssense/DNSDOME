@@ -4,6 +4,17 @@ import { MonitorResultComponent, LinkClick } from './result/monitor-result.compo
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
 import { RoksitSearchComponent, FilterBadgeModel } from '../../shared/roksit-search/roksit-search.component';
 import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
+import { categoryMappings } from '../../shared/profile-wizard/page/profile-wizard.component';
+import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
+import { ReportService } from 'src/app/core/services/reportService';
+
+export interface MonitorReportRouteParams {
+  startDate?: string;
+  endDate?: string;
+  category?: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful'|null|string;
+}
 
 @Component({
   selector: 'app-monitor',
@@ -12,10 +23,20 @@ import { Location } from '@angular/common';
   providers: [DateFormatPipe]
 })
 export class MonitorComponent implements OnInit, AfterViewInit {
-
+  private queryParams: MonitorReportRouteParams;
   constructor(
-    private location: Location
-  ) { }
+    private location: Location,
+    private activatedRoute: ActivatedRoute,
+    private reportService: ReportService
+  ) {
+
+
+    activatedRoute.queryParams.subscribe((params: MonitorReportRouteParams) => {
+      this.queryParams = params;
+    });
+
+
+  }
 
   public searchSettings: SearchSetting = new SearchSetting();
 
@@ -32,7 +53,38 @@ export class MonitorComponent implements OnInit, AfterViewInit {
   ngOnInit() { }
 
   ngAfterViewInit() {
-    const state = this.location.getState();
+    if (this.queryParams) {
+      if (this.queryParams.startDate && this.queryParams.endDate) {
+        const startDate = new Date(this.queryParams.startDate);
+        const endDate = new Date(this.queryParams.endDate);
+
+        const _startDate = moment([startDate.getFullYear(), startDate.getMonth(), startDate.getDate()]);
+        const _endDate = moment([endDate.getFullYear(), endDate.getMonth(), endDate.getDate()]);
+
+        const difference = _endDate.diff(_startDate, 'minutes');
+
+        this.roksitSearchComponent.searchSettings.type = 'roksit';
+        this.roksitSearchComponent.searchSettings.dateInterval = difference;
+        this.roksitSearchComponent.searchSettings.should = [];
+        this.roksitSearchComponent.searchSettings.must = [];
+        this.roksitSearchComponent.searchSettings.mustnot = [];
+        if (this.queryParams.category && this.queryParams.category != 'total') {
+          if (categoryMappings[this.queryParams.category]) {
+          categoryMappings[this.queryParams.category]?.forEach(x => {
+            this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', x));
+          });
+          } else if (this.queryParams.category != 'total') {
+            this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', this.queryParams.category));
+          }
+
+        }
+        this.roksitSearchComponent.filters = this.filters;
+
+        this.roksitSearchComponent.search('', false);
+
+      }
+    } else {
+      const state = this.location.getState();
 
     if (state['filters']) {
       this.filters = state['filters'];
@@ -41,6 +93,9 @@ export class MonitorComponent implements OnInit, AfterViewInit {
 
       this.roksitSearchComponent.search('', false);
     }
+
+    }
+
   }
 
   public search(_searchSettings: SearchSetting) {

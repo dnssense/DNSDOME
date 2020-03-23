@@ -37,4 +37,11 @@ export class ReportService {
     return options;
   }
 
+  public initTableColumns() {
+    return Observable.of( [{'name': 'time', 'beautyName': 'Time', 'hrType': 'DNS_DATETIME', 'aggsType': '', 'checked': true}, {'name': 'domain', 'beautyName': 'Domain', 'hrType': '', 'aggsType': 'TERM', 'checked': false}, {'name': 'subdomain', 'beautyName': 'Subdomain', 'hrType': '', 'aggsType': 'TERM', 'checked': true}, {'name': 'sourceIp', 'beautyName': 'Src.Ip', 'hrType': '', 'aggsType': 'TERM', 'checked': true}, {'name': 'sourceIpCountryCode', 'beautyName': 'Src. Country', 'hrType': 'COUNTRY_FLAG', 'aggsType': 'TERM', 'checked': false}, {'name': 'destinationIp', 'beautyName': 'Dst.Ip', 'hrType': '', 'aggsType': 'TERM', 'checked': true}, {'name': 'destinationIpCountryCode', 'beautyName': 'Dst.Country', 'hrType': 'COUNTRY_FLAG', 'aggsType': 'TERM', 'checked': false}, {'name': 'agentAlias', 'beautyName': 'Location/Agent', 'hrType': '', 'aggsType': 'TERM', 'checked': false}, {'name': 'userId', 'beautyName': 'User Id', 'hrType': '', 'aggsType': 'TERM', 'checked': false}, {'name': 'action', 'beautyName': 'Action', 'hrType': 'DNS_ACTION', 'aggsType': 'TERM', 'checked': true}, {'name': 'applicationName', 'beautyName': 'Application', 'hrType': '', 'aggsType': 'TERM', 'checked': false}, {'name': 'category', 'beautyName': 'Category', 'hrType': '', 'aggsType': 'TERM', 'checked': false}, {'name': 'reasonType', 'beautyName': 'Reason', 'hrType': '', 'aggsType': 'TERM', 'checked': false}, {'name': 'clientLocalIp', 'beautyName': 'Local Src. Ip', 'hrType': '', 'aggsType': 'TERM', 'checked': false}, {'name': 'clientMacAddress', 'beautyName': 'Mac Address', 'hrType': '', 'aggsType': 'TERM', 'checked': false}, {'name': 'clientBoxSerial', 'beautyName': 'Box Serial', 'hrType': '', 'aggsType': 'TERM', 'checked': false}, {'name': 'hostName', 'beautyName': 'Host Name', 'hrType': '', 'aggsType': 'TERM', 'checked': false}]
+    );
+  }
+
+
+
 }

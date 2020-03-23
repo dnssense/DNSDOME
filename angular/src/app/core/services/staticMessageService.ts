@@ -19,6 +19,7 @@ export class StaticMessageService {
 
 
 
+
   constructor(private translator: TranslatorService) {
 
 
@@ -213,6 +214,10 @@ get savedUserMessage(): string {
 
   get passwordChangedMessage(): string {
     return this.translator.translate('ACCOUNTSETTINGS.PasswordChanged');
+  }
+  get getDashboardNoDataFoundMessage(): string {
+    return this.translator.translate('DASHBOARD.DataNotFound');
+
   }
 
 

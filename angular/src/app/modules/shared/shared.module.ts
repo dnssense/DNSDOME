@@ -3,6 +3,9 @@ import { RoksitSearchComponent } from './roksit-search/roksit-search.component';
 import { RkRadioModule, RkSelectModule, RkTableModule, RkModalModule, RkLayoutModule, RkFilterBadgeModule, IconsModule, RkCheckboxModule, RkAutoCompleteModule } from 'roksit-lib';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
+import { HttpClient } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -16,7 +19,14 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     RkFilterBadgeModule,
     RkCheckboxModule,
-    RkAutoCompleteModule
+    RkAutoCompleteModule,
+    TranslateModule.forChild({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: translateHttpLoaderFactory,
+          deps: [HttpClient]
+      }
+  })
   ],
   declarations: [RoksitSearchComponent],
   exports: [RoksitSearchComponent],

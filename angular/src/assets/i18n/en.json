@@ -134,6 +134,34 @@
     "HarmfullContent":"Harmfull Content",
     "TotalDays":"Total days",
     "Service Temporarily Unavailable":"Service Temporarily Unavailable",
+    "All":"All",
+    "Category":"Category",
+    "Run":"Run",
+    "REPORT":{
+        "SaveReport":"Save Report",
+        "NewReport":"New Report",
+        "UpdateReport":"Update Report",
+        "ReportName":"Report name",
+        "ScheduleReportSendToEmail":"Schedule report send to email",    
+        "ScheduleDailyReportEmail":"Schedule Daily report email",
+        "ScheduleWeeklyReportEmail":"Schedule Weekly report email",
+        "ScheduleMontlyReportEmail":"Schedule Montly report email",
+        "Filters":"Filters",
+        "Filter":"Filter",
+        "NewReports":"New Reports",
+        "SavedReports":"Saved Reports",
+        "Action":"Action",
+        "Allow":"Allow",
+        "Deny":"Deny",
+        "AddFilter":"Add Filter",
+        "UserReports":"User Reports",
+        "SystemReports":"System Reports",
+        "ApplyChangedSettings":"Apply changed settings",
+        "TotalTraffic":"Total Traffic",
+        "BlockPage":"Block Page",
+        "CleanFilters":"Clean Filters",
+        "SaveFilter":"Save Filter"
+    },
     "LANGUAGE":{
         "TR":"Turkish",
         "EN":"English"
@@ -250,7 +278,10 @@
         "TrafficBasedAnomaly":"Traffic Based Anomaly",
         "SelectedTimevsAverage":"Selected Time vs Average",
         "TimeHit":"Time Hit",
-        "AverageHit":"Average Hit"
+        "AverageHit":"Average Hit",
+        "DataNotFound":"Dashboard data not found",
+        "ShowDetail":"Show Detail",
+        "ShowSummary":"Show Summary"
         
 
     },

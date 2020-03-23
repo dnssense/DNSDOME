@@ -27,6 +27,7 @@ import { AstPath } from '@angular/compiler';
 import { debug } from 'util';
 import * as moment from 'moment';
 import { ToolsService } from 'src/app/core/services/toolsService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 
 interface TagInputValue {
   value: string;
@@ -56,7 +57,9 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private config: ConfigService,
     private translateService: TranslateService,
-    private toolService: ToolsService
+    private toolService: ToolsService,
+    private notificationService: NotificationService,
+    private staticMesssageService: StaticMessageService
   ) { }
 
   host: ConfigHost;
@@ -68,7 +71,7 @@ export class DashboardComponent implements OnInit {
   categoryList = [];
   categoryListFiltered = [];
   selectedCategoryForTraffic: string;
-  selectedCategoryForUnique = CategoryV2;
+  selectedCategory: CategoryV2|null = null;
   trafficChart: any;
   timeLineChart: any;
 
@@ -403,6 +406,7 @@ export class DashboardComponent implements OnInit {
 
     const trafficAnomalyType = this.trafficAnomaly[type];
     this.selectedCategoryForTraffic = null;
+    this.selectedCategory = null;
     if (trafficAnomalyType) {
       this.categoryListFiltered = trafficAnomalyType.categories;
     }
@@ -802,7 +806,17 @@ export class DashboardComponent implements OnInit {
       yaxis: {
         min: 0,
         max: yMax + 10
-      }
+      },
+      noData: {
+        text: 'No data',
+        align: 'center',
+        verticalAlign: 'middle',
+        offsetX: 0,
+        offsetY: 0,
+        style: {
+          color: '#000000'
+        }
+        },
     });
 
     this.trafficChart.render();
@@ -831,7 +845,7 @@ export class DashboardComponent implements OnInit {
 
   startDashboardOperations() {
     this.selectedCategoryForTraffic = '';
-    this.selectedCategoryForUnique = null;
+    this.selectedCategory = null;
 
     this.staticService.getCategoryList().subscribe(res => {
       this.categoryList = res;
@@ -848,7 +862,9 @@ export class DashboardComponent implements OnInit {
         const y1 = Date.parse(y.date);
         return x1 - y1;
       });
-      // this.drawChartTimeLine();
+      if (!this.elasticData.items.length) {
+        this.notificationService.warning(this.staticMesssageService.getDashboardNoDataFoundMessage);
+      }
       this.drawChartAnomaly();
     });
   }
@@ -872,8 +888,10 @@ export class DashboardComponent implements OnInit {
   addCategoryToTraffic(cat: CategoryV2) {
     if (cat.name === this.selectedCategoryForTraffic) {
       this.selectedCategoryForTraffic = '';
+      this.selectedCategory = null;
     } else {
       this.selectedCategoryForTraffic = cat.name;
+      this.selectedCategory = cat;
     }
 
     /*  const averageData = [];
@@ -1168,7 +1186,12 @@ export class DashboardComponent implements OnInit {
   }
 
   showSummary() {
-    this.router.navigateByUrl(`/admin/reports/custom-reports?category=${this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
+    this.router.navigateByUrl(`/admin/reports/custom-reports?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
+  }
+
+  showDetail() {
+    const url = (`/admin/reports/monitor?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
+    this.router.navigateByUrl(url);
   }
 
 }

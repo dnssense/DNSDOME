@@ -11,6 +11,7 @@ import * as moment from 'moment';
 import { Location } from '@angular/common';
 import { categoryMappings } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { ColumnTagInput } from '../../../core/models/ColumnTagInput';
+import { ReportService } from 'src/app/core/services/reportService';
 
 export interface CustomReportRouteParams {
   startDate?: string;
@@ -28,7 +29,8 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   constructor(
     private fastReportService: FastReportService,
     private activatedRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private reportService: ReportService
   ) {
     activatedRoute.queryParams.subscribe((params: CustomReportRouteParams) => {
       if (params.startDate && params.endDate) {
@@ -71,7 +73,7 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   filters: FilterBadgeModel[] = [];
 
   ngOnInit(): void {
-    this.fastReportService.tableColumns.subscribe((res: LogColumn[]) => {
+    this.reportService.initTableColumns().subscribe((res: LogColumn[]) => {
       this.columns = res;
     });
   }

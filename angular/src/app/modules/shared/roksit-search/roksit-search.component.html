@@ -1,7 +1,7 @@
 <rk-modal #saveModal>
   <rk-modal-header>
     <rk-modal-header-title>
-      <h5>Save Report</h5>
+      <h5>{{ 'REPORT.SaveReport' | translate }}</h5>
     </rk-modal-header-title>
 
     <rk-modal-header-close (click)="saveModal.toggle()"></rk-modal-header-close>
@@ -14,9 +14,9 @@
         <div class="col-12">
           <div class="rk-tabs">
             <div class="rk-tab" (click)="setReportActiveTabNumber(0); prepareNewSaveFilter()"
-              [ngClass]="{'active': reportActiveTabNumber === 0}">New Report</div>
+              [ngClass]="{'active': reportActiveTabNumber === 0}">{{ 'REPORT.NewReport' | translate }}</div>
             <div class="rk-tab" (click)="setReportActiveTabNumber(1)"
-              [ngClass]="{'active': reportActiveTabNumber === 1}">Update Report</div>
+              [ngClass]="{'active': reportActiveTabNumber === 1}">{{ 'REPORT.UpdateReport' | translate }}</div>
           </div>
         </div>
       </div>
@@ -25,35 +25,35 @@
     <div class="container-fluid" *ngIf="reportActiveTabNumber === 0">
       <div class="row">
         <div class="col-12">
-          <div class="rk-title">Report name</div>
+          <div class="rk-title">{{ 'REPORT.ReportName' | translate }}</div>
 
           <input type="text" class="rk-input w-100 mt-1" placeholder="Filter Name" [(ngModel)]="newSavedReport.name">
         </div>
 
         <div class="col-12 mt-3">
-          <div class="rk-title">Schedule report send to email</div>
+          <div class="rk-title">{{ 'REPORT.ScheduleReportSendToEmail' | translate }}</div>
           <div class="mt-2">
             <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
               value="all">
-              All
+              {{ 'All' | translate }}
             </rk-radio>
           </div>
           <div class="mt-2">
             <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
               value="d">
-              Schedule Daily report email
+              {{ 'REPORT.ScheduleDailyReportEmail' | translate }}
             </rk-radio>
           </div>
           <div class="mt-2">
             <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
               value="w">
-              Schedule Weekly report email
+              {{ 'REPORT.ScheduleWeeklyReportEmail' | translate }}
             </rk-radio>
           </div>
           <div class="mt-2">
             <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
               value="m">
-              Schedule Montly report email
+              {{ 'REPORT.ScheduleMontlyReportEmail' | translate }}
             </rk-radio>
           </div>
         </div>
@@ -92,15 +92,15 @@
   </rk-modal-body>
 
   <rk-modal-footer>
-    <button class="btn btn-small w-100 mr-2" (click)="saveReport()">Save</button>
-    <button class="btn btn-small btn-default w-100" (click)="saveModal.toggle()">Cancel</button>
+    <button class="btn btn-small w-100 mr-2" (click)="saveReport()"> {{ 'Save' | translate }}</button>
+    <button class="btn btn-small btn-default w-100" (click)="saveModal.toggle()"> {{ 'Cancel' | translate }}</button>
   </rk-modal-footer>
 </rk-modal>
 
 <rk-modal #modal>
   <rk-modal-header icon="filter">
     <rk-modal-header-title>
-      <h5>Filtreler</h5>
+      <h5> {{ 'REPORT.Filters' | translate }}</h5>
     </rk-modal-header-title>
     <rk-modal-header-close (click)="modal.toggle()"></rk-modal-header-close>
   </rk-modal-header>
@@ -111,10 +111,8 @@
       <div class="row">
         <div class="col-12">
           <div class="rk-tabs">
-            <div class="rk-tab" (click)="setActiveTabNumber(0)" [ngClass]="{'active': activeTabNumber === 0}">New
-              Reports</div>
-            <div class="rk-tab" (click)="setActiveTabNumber(1)" [ngClass]="{'active': activeTabNumber === 1}">Saved
-              Reports</div>
+            <div class="rk-tab" (click)="setActiveTabNumber(0)" [ngClass]="{'active': activeTabNumber === 0}"> {{ 'REPORT.NewReports' | translate }}</div>
+            <div class="rk-tab" (click)="setActiveTabNumber(1)" [ngClass]="{'active': activeTabNumber === 1}"> {{ 'REPORT.SavedReports' | translate }}</div>
           </div>
         </div>
       </div>
@@ -122,24 +120,24 @@
 
     <div *ngIf="activeTabNumber === 0">
       <div class="rk-modal-item">
-        <h5 class="modal-item title">Action</h5>
+        <h5 class="modal-item title"> {{ 'REPORT.Action' | translate }}</h5>
 
         <div class="container-fluid">
           <div class="row">
             <div class="col-12 col-md-6">
               <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'allow'" value="allow"
-                (valueChange)="actionChanged($event)">Allow</rk-radio>
+                (valueChange)="actionChanged($event)"> {{ 'REPORT.Allow' | translate }}</rk-radio>
             </div>
             <div class="col-12 col-md-6">
               <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'deny'" value="deny"
-                (valueChange)="actionChanged($event)">Deny</rk-radio>
+                (valueChange)="actionChanged($event)"> {{ 'REPORT.Deny' | translate }}</rk-radio>
             </div>
           </div>
         </div>
       </div>
 
       <div class="rk-modal-item">
-        <h5 class="modal-item title">Add Filter</h5>
+        <h5 class="modal-item title"> {{ 'REPORT.AddFilter' | translate }}</h5>
 
         <rk-select [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
 
@@ -177,7 +175,7 @@
       </div>
 
       <div class="rk-modal-item" style="height: 1px; border-bottom: none;">
-        <h5 class="modal-item title">Category</h5>
+        <h5 class="modal-item title"> {{ 'Category' | translate }}</h5>
 
         <div class="d-flex mt-2">
           <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
@@ -213,7 +211,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12 py-2" style="border-bottom: 1px solid #eeeef2;">
-            <h6 class="rk-title">User Reports</h6>
+            <h6 class="rk-title">{{ 'REPORT.UserReports' | translate }}</h6>
 
             <div *ngFor="let report of savedReports; let index = index" class="mt-3">
               <div class="rk-radio my-0">
@@ -225,7 +223,7 @@
           </div>
 
           <div class="col-12 py-2" style="border-bottom: 1px solid #eeeef2;">
-            <h6 class="rk-title">System Reports</h6>
+            <h6 class="rk-title">{{ 'REPORT.SystemReports' | translate }}</h6>
 
             <div *ngFor="let report of systemSavedReports; let index = index" class="mt-3">
               <div class="rk-radio my-0">
@@ -245,17 +243,17 @@
   </rk-modal-body>
 
   <rk-modal-footer *ngIf="activeTabNumber === 0">
-    <button class="btn w-100 btn-small mr-2" (click)="apply(true); search('', true);">Apply</button>
-    <button class="btn w-100 btn-default btn-small" (click)="modal.toggle()">Cancel</button>
+    <button class="btn w-100 btn-small mr-2" (click)="apply(true); search('', true);">{{ 'Apply' | translate }}</button>
+    <button class="btn w-100 btn-default btn-small" (click)="modal.toggle()">{{ 'Close' | translate }}</button>
   </rk-modal-footer>
 </rk-modal>
 
 
 <div class="run-bar animated fadeIn" [hidden]="!isShowRunBar">
-  <p class="run-bar-text">Yaptığınız değişiklikleri uygulayın</p>
+  <p class="run-bar-text">{{ 'REPORT.ApplyChangedSettings' | translate }}</p>
 
   <div class="run-bar-buttons">
-    <button (click)="search('', true)">Run</button>
+    <button (click)="search('', true)">{{ 'Run' | translate }}</button>
   </div>
 </div>
 
@@ -267,9 +265,9 @@
           <span class="monitor-title">{{ pageTitle }}</span>
 
           <div class="traffic-types">
-            <rk-radio name="trafficType" checked="true" (valueChange)="onTypeValueChange('roksit')">Total traffic
+            <rk-radio name="trafficType" checked="true" (valueChange)="onTypeValueChange('roksit')">{{ 'REPORT.TotalTraffic' | translate }}
             </rk-radio>
-            <rk-radio class="m-l-10" name="trafficType" (valueChange)="onTypeValueChange('roksitblock')">Block Page
+            <rk-radio class="m-l-10" name="trafficType" (valueChange)="onTypeValueChange('roksitblock')">{{ 'REPORT.BlockPage' | translate }}
             </rk-radio>
           </div>
         </div>
@@ -287,7 +285,7 @@
           <div>
             <button class="btn btn-small btn-icon ml-2" (click)="modal.toggle()">
               <i-feather name="filter"></i-feather>
-              Filtreler
+              {{ 'REPORT.Filters' | translate }}
             </button>
           </div>
         </div>
@@ -295,7 +293,7 @@
 
       <div class="d-flex align-items-center flex-wrap">
         <div class="d-flex flex-wrap align-items-center" style="width: calc(100% - 335px); padding-right: 25px;">
-          <span class="filter-text mb-2">Filter;</span>
+          <span class="filter-text mb-2">{{ 'REPORT.Filter' | translate }};</span>
 
           <rk-filter-badge class="ml-2 mb-2" *ngFor="let filter of filters; let index = index" [name]="filter.name"
             [equal]="filter.equal" [values]="filter.values" (deleted)="onDeletedFilterBadge($event, index)"
@@ -309,10 +307,9 @@
             {{ pageTitle === 'Monitor Traffic' ? 'Custom Reports View' : 'Monitor Traffics View' }}
           </button>
           <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
-            (click)="filtersClear()">Clean Filters</button>
+            (click)="filtersClear()">{{ 'REPORT.CleanFilters' | translate }}</button>
           <button class="btn btn-small report-lb bg-transparent btn-link p-0" *ngIf="filters?.length > 0"
-            (click)="saveFilterClick()">Save
-            Filter</button>
+            (click)="saveFilterClick()">{{ 'REPORT.SaveFilter' | translate }}</button>
         </div>
       </div>
     </div>

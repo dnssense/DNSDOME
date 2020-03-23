@@ -31,38 +31,6 @@ sample proxy.config.json
     }
 
 
+Pozitif Security : Alan adlarını güvenlik seviyesine göre zararlı, zararsız ve bilinmeyen ( henüz sınıflandırılmamış) olarak 3 ana sınıfa ayrılır. Pozitif security modeli seçerek zero hour ataklarının kaynağı olan "bilinmeyen domainlere" karşı koruma sağlamış olursunuz. %99.9 sınıflandırma oranı ve 10 dk içerisinde sorgulanan bilinmeyen domainin sınıflandırması garantisi ile ağınızı en üst seviye korumaya alırken internet kullanım konforundan minimum taviz verirsiniz.
 
-
-    if (error instanceof HttpErrorResponse) {
-    //   // Server or connection error happened
-       if (!navigator.onLine) {
-         notificationService.danger('No Internet Connection');
-       } else {
-         // Handle Http Error (error.status === 403, 404...)
-         const status = error.status;
-         if (error.error.code) {
-           const message = translatorService.translate(error.error.code);
-           console.log(`${status} - ${message}`);
-           notificationService.error(message);
-           /* if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
-             // notificationService.error(`${message}`);
-           } */
-         } else {
-
-           const message = translatorService.translate(error.statusText);
-           // notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
-           notificationService.error(message);
-          console.log(`${status} - ${message}`);
-         }
-       }
-     } else {
-
-       const message = translatorService.translate(error.message);
-       // debugger;
-       console.log(message);
-       if (!(message.includes('\'push\' of undefined') && error.stack.includes('reports-module'))) { // TODO: will remove; after unfound push error fixed
-         // notificationService.error('Error');
-       }
-
-
-
+Negatif Security :Alan adlarını güvenlik seviyesine göre zararlı, zararsız ve bilinmeyen ( henüz sınıflandırılmamış) olarak 3 ana sınıfa ayrılır. Negatif security modeli seçerek zero hour ataklarının kaynağı olan "bilinmeyen domainlere" karşı korumasız kalırsınız.

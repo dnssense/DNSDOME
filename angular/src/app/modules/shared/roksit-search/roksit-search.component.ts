@@ -141,7 +141,8 @@ export class RoksitSearchComponent implements OnInit {
   savedReportOptions: RkSelectModel[] = [];
 
   ngOnInit() {
-    this.fastReportService.tableColumns.subscribe(columns => {
+    this.reportService.initTableColumns().subscribe(columns => {
+
       if (!!columns) {
         this.columns = columns;
 
@@ -302,6 +303,7 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   onEditedFilterBadge(filter: FilterBadgeModel) {
+    debugger;
     this.selectedColumnFilter = filter.name;
 
     this.columnsOptions = this.columnsOptions.map(x => {
@@ -377,10 +379,16 @@ export class RoksitSearchComponent implements OnInit {
     this.searchSettings.should = [];
 
     this.filters.forEach(filter => {
+
       if (filter.equal) {
         filter.values.forEach(value => {
           if (filter.name === 'action') {
             this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
+          } else
+          if (filter.name === 'time') {
+
+            const date = new Date(Date.parse(value));
+            this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
           } else {
             this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', value));
           }
@@ -389,6 +397,12 @@ export class RoksitSearchComponent implements OnInit {
         filter.values.forEach(value => {
           if (filter.name === 'action') {
             this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
+          } else
+          if (filter.name === 'time') {
+
+            const date = new Date(Date.parse(value));
+            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
+
           } else {
             this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
           }
@@ -426,6 +440,7 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   addFilterBadge(filter: FilterBadgeModel) {
+
     this.filters.push(filter);
   }
 

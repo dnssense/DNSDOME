@@ -10,6 +10,7 @@ import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddress
 import { RkTableConfigModel, RkTableRowModel, RkTableColumnModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 import * as moment from 'moment';
+import { ReportService } from 'src/app/core/services/reportService';
 
 export interface LinkClick {
   columnModel: RkTableColumnModel;
@@ -27,7 +28,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   constructor(
     private monitorService: MonitorService,
     private excelService: ExcelService,
-    private pdfService: PdfService
+    private pdfService: PdfService,
+    private reportService: ReportService
   ) { }
 
   currentPage = 1;
@@ -84,7 +86,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngAfterViewInit() {
-    this.monitorService.initTableColumns().takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
+    this.reportService.initTableColumns().takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
       this.columns = res;
 
       this.tableColumnsChanged.next();
@@ -131,7 +133,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   public loadGraph(searchSettings: SearchSetting) {
-    this.monitorService.getGraphData(searchSettings, this.currentPage).takeUntil(this.ngUnsubscribe)
+    this.monitorService.getData(searchSettings, this.currentPage).takeUntil(this.ngUnsubscribe)
       .subscribe((res: Response) => {
         if (res['result'] || res['total']) {
           this.tableData = res['result'];
@@ -141,7 +143,9 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
         this.tableConfig.rows = [];
 
         this.tableData.forEach(item => {
-          item.time = moment(item.time).format('DD.MM.YYYY HH:mm:ss');
+          // burasi degisirse fillSearchSettingsByFilters bu fonksiyon icindeki yere bak
+
+          item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss');
 
           const rowItem: RkTableRowModel = item;
           rowItem.selected = false;
