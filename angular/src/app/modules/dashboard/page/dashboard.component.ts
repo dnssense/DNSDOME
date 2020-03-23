@@ -805,18 +805,13 @@ export class DashboardComponent implements OnInit {
       },
       yaxis: {
         min: 0,
-        max: yMax + 10
-      },
-      noData: {
-        text: 'No data',
-        align: 'center',
-        verticalAlign: 'middle',
-        offsetX: 0,
-        offsetY: 0,
-        style: {
-          color: '#000000'
+        max: yMax + 10,
+        labels: {
+          formatter: (value) => {
+            return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : Math.sign(value) * Math.abs(value);
+          }
         }
-        },
+      }
     });
 
     this.trafficChart.render();

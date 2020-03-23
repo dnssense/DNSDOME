@@ -52,7 +52,7 @@ export class PublicipComponent implements AfterViewInit {
   securityProfiles: SecurityProfile[];
 
   securityProfilesForRkSelect: RkSelectModel[] = [
-    { value: -1, displayText: 'Yeni Profile Ekle' }
+    { value: -1, displayText: 'Yeni Profile Ekle', icon: 'plus' }
   ];
 
   roleName: string;
@@ -108,7 +108,9 @@ export class PublicipComponent implements AfterViewInit {
 
   ngAfterViewInit(): void { }
 
-  getPublicIpsDataAndProfiles() {
+  getPublicIpsDataAndProfiles(type?: string) {
+
+    this.selectedAgent = new Agent();
 
     this.publicIps = [];
     this.agentService.getAgentLocation().subscribe(res => {
@@ -124,7 +126,6 @@ export class PublicipComponent implements AfterViewInit {
         });
         this.publicIpsFiltered = this.publicIps;
       }
-
     });
 
     this.agentService.getSecurityProfiles().subscribe(res => {
@@ -148,7 +149,7 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   fillSecurityProfilesArray(agent?: Agent) {
-    this.securityProfilesForRkSelect = [{ value: -1, displayText: 'Yeni Profile Ekle' }];
+    const securityProfilesForSelect = [{ value: -1, displayText: 'Yeni Profile Ekle', icon: 'plus' }] as RkSelectModel[];
 
     this.securityProfiles.forEach((elem, index) => {
       const obj = {
@@ -159,10 +160,13 @@ export class PublicipComponent implements AfterViewInit {
       if (this.saveMode === 'NewProfile') {
         if (index === this.securityProfiles.length - 1) {
           obj.selected = true;
+
+          return;
         }
       }
 
       if (agent) {
+        // tslint:disable-next-line: triple-equals
         if (elem.id == agent.rootProfile.id) {
           obj.selected = true;
         }
@@ -172,8 +176,10 @@ export class PublicipComponent implements AfterViewInit {
         }
       }
 
-      this.securityProfilesForRkSelect.push(obj);
+      securityProfilesForSelect.push(obj);
     });
+
+    this.securityProfilesForRkSelect = securityProfilesForSelect;
   }
 
   openTooltipGuide() {
