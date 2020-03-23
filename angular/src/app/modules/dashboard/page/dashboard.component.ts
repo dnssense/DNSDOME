@@ -801,7 +801,12 @@ export class DashboardComponent implements OnInit {
       },
       yaxis: {
         min: 0,
-        max: yMax + 10
+        max: yMax + 10,
+        labels: {
+          formatter: (value) => {
+            return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : Math.sign(value) * Math.abs(value);
+          }
+        }
       }
     });
 

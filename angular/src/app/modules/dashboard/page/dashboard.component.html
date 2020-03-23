@@ -176,7 +176,7 @@
                   </ng-template>
                   <ng-template #body>
                     <tr *ngFor="let domain of maliciousDomains; let index = index">
-                      <td class="index">{{ index }}</td>
+                      <td class="index">{{ index + 1 }}</td>
                       <td>
                         <a (click)="addDomain(domain)" class="anchor">{{ domain.name }}</a>
                       </td>
@@ -215,7 +215,7 @@
                   </ng-template>
                   <ng-template #body>
                     <tr *ngFor="let domain of newDomains; let index = index">
-                      <td class="index">{{ index }}</td>
+                      <td class="index">{{ index + 1 }}</td>
                       <td>
                         <a (click)="addDomain(domain)" class="anchor">{{ domain.name }}</a>
                       </td>
@@ -254,7 +254,7 @@
                   </ng-template>
                   <ng-template #body>
                     <tr *ngFor="let domain of harmfulDomains; let index = index">
-                      <td class="index">{{ index }}</td>
+                      <td class="index">{{ index + 1 }}</td>
                       <td>
                         <a (click)="addDomain(domain)" class="anchor">{{ domain.name }}</a>
                       </td>
