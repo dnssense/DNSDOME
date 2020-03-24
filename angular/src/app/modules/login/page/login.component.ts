@@ -43,7 +43,11 @@ export class LoginComponent implements OnInit {
     private configService: ConfigService
   ) {
     this.isFailed = false;
-    this.nativeElement = element.nativeElement;
+
+    if (element) {
+      this.nativeElement = element.nativeElement;
+    }
+
     this.sidebarVisible = false;
     this.host = this.configService.host;
     this.captcha_key = this.host.captcha_key;

@@ -28,8 +28,15 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class RegisterComponent implements OnInit, OnDestroy {
 
-  constructor(private formBuilder: FormBuilder, private element: ElementRef, private accountService: AccountService,
-    private capthaService: CaptchaService, private configService: ConfigService, private router: Router) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private element: ElementRef,
+    private accountService: AccountService,
+    private capthaService: CaptchaService,
+    private configService: ConfigService,
+    private router: Router
+  ) { }
+
   private toggleButton: any;
   private sidebarVisible: boolean;
   matcher = new MyErrorStateMatcher();
@@ -39,7 +46,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private privacyPolicy = false;
   private captcha: string;
   public host: ConfigHost;
-  public captcha_key = ''
+  public captcha_key = '';
   @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
   phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
   emailFormControl = new FormControl('', [
@@ -188,7 +195,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   register() {
-
     if (!this.capthaService.validCaptcha(this.captcha)) {
       this.captchaComponent.reset();
       return;

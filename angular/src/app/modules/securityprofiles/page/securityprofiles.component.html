@@ -72,23 +72,23 @@
                   <td>{{ profile.name }}</td>
                   <td>{{ profile.numberOfUsage }}</td>
                   <td class="text-center" style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="cloneProfile(profile)" data-tooltip="Existing profile clones">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="cloneProfile(profile)" data-tooltip="Existing profile clones" data-tooltip-location="left">
                       <i-feather name="copy" class="mr-0"></i-feather>
                     </button>
                   </td>
                   <td class="text-center" style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" data-tooltip="You can view the profile."
+                    <button class="btn btn-link btn-icon p-0 hover-gray" data-tooltip="You can view the profile." data-tooltip-location="left"
                       *ngIf="profile.isSystem" (click)="viewProfile(profile)">
                       <i-feather name="eye" class="mr-0"></i-feather>
                     </button>
 
-                    <button class="btn btn-link btn-icon p-0 hover-gray" data-tooltip="You can edit the profile."
+                    <button class="btn btn-link btn-icon p-0 hover-gray" data-tooltip="You can edit the profile." data-tooltip-location="left"
                       *ngIf="!profile.isSystem" (click)="editProfile(profile)">
                       <i-feather name="edit-3" class="mr-0"></i-feather>
                     </button>
                   </td>
                   <td class="text-center" style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deleteProfile(profile.id)" data-tooltip="You can remove profile.">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deleteProfile(profile.id)" data-tooltip="You can remove the profile." data-tooltip-location="left">
                       <i-feather name="trash-2" class="mr-0"></i-feather>
                     </button>
                   </td>

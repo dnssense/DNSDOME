@@ -51,9 +51,7 @@ export class PublicipComponent implements AfterViewInit {
   saveMode: string;
   securityProfiles: SecurityProfile[];
 
-  securityProfilesForRkSelect: RkSelectModel[] = [
-    { value: -1, displayText: 'Yeni Profile Ekle', icon: 'plus' }
-  ];
+  securityProfilesForRkSelect: RkSelectModel[] = [];
 
   roleName: string;
   tooltipGuideCounter = 0;
@@ -149,9 +147,7 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   fillSecurityProfilesArray(agent?: Agent) {
-    const securityProfilesForSelect = [{ value: -1, displayText: 'Yeni Profile Ekle', icon: 'plus' }] as RkSelectModel[];
-
-    this.securityProfiles.forEach((elem, index) => {
+    this.securityProfilesForRkSelect = this.securityProfiles.map((elem, index) => {
       const obj = {
         displayText: elem.name,
         value: elem.id,
@@ -160,12 +156,8 @@ export class PublicipComponent implements AfterViewInit {
       if (this.saveMode === 'NewProfile') {
         if (index === this.securityProfiles.length - 1) {
           obj.selected = true;
-
-          return;
         }
-      }
-
-      if (agent) {
+      } else if (agent) {
         // tslint:disable-next-line: triple-equals
         if (elem.id == agent.rootProfile.id) {
           obj.selected = true;
@@ -176,10 +168,8 @@ export class PublicipComponent implements AfterViewInit {
         }
       }
 
-      securityProfilesForSelect.push(obj);
+      return obj;
     });
-
-    this.securityProfilesForRkSelect = securityProfilesForSelect;
   }
 
   openTooltipGuide() {
@@ -230,22 +220,6 @@ export class PublicipComponent implements AfterViewInit {
         }
       }
 
-      // if (isValid && ((inputValue.length == 2 && inputValue == '10' && event.key == '.') ||
-      //   inputValue == '192.168' || inputValue == '127.0.0.1')) {
-      //   isValid = false;
-      //   this.notification.warning('Please enter a valid Public IP Adress!', false);
-      // }
-
-      // if (isValid && inputValue.length >= 4 && (inputValue.substring(0, 4) == '172.')) {
-
-      //   let secondOcletStr = inputValue.substring(inputValue.indexOf('.') + 1);
-      //   let secondOclet = Number(secondOcletStr);
-      //   if (secondOclet >= 16 && secondOclet <= 31) {
-      //     isValid = false;
-      //     this.notification.warning('Please enter a valid Public IP Adress!', false);
-      //   }
-      // }
-
       if (isValid && event.key === '.' && (inputValue.endsWith('.') || inputValue.split('.').length >= 4)) {
         isValid = false;
       }
@@ -257,18 +231,6 @@ export class PublicipComponent implements AfterViewInit {
       event.preventDefault();
     }
   }
-
-  /* showNewProfileWizard() {
-    if (!this.validatePublicIpForm()) { return; }
-
-    this.selectedAgent = this.selectedIp;
-    this.defineNewAgentForProfile();
-    this.selectedAgent.rootProfile.name = this.selectedIp.agentAlias + '-Profile';
-
-    this.saveMode = 'NewProfileWithAgent';
-
-    this.startWizard = true;
-  } */
 
   showProfileEditWizard(id: number, t: boolean = true) {
     let agent;
@@ -289,9 +251,7 @@ export class PublicipComponent implements AfterViewInit {
 
         this.startWizard = true;
 
-        // if (t) {
         this.profileModal.toggle();
-        // }
       } else {
         this.notification.warning('Profile can not find!');
       }
@@ -477,14 +437,6 @@ export class PublicipComponent implements AfterViewInit {
   }
 
   securityProfileChanged(id: number) {
-    if (id === -1) {
-      this.saveMode = 'NewProfile';
-
-      this.profileModal.toggle();
-
-      return;
-    }
-
     this.isNewItemUpdated = true;
     this.selectedIp.rootProfile = this.securityProfiles.find(p => p.id === id);
   }
@@ -492,6 +444,12 @@ export class PublicipComponent implements AfterViewInit {
   savePublicIp() {
     if (!this.validatePublicIpForm()) {
       return;
+    }
+
+    const selectedProfile = this.securityProfilesForRkSelect.find(x => x.selected);
+
+    if (selectedProfile) {
+      this.selectedIp.rootProfile = this.securityProfiles.find(x => x.id === selectedProfile.value);
     }
 
     this.agentService.saveAgentLocation(this.selectedIp).subscribe(res => {
@@ -512,7 +470,6 @@ export class PublicipComponent implements AfterViewInit {
 
     if (!this.isNullOrEmpty(this.selectedIp.agentAlias)) {
       this.notification.warning('Please enter a name');
-
       return false;
     } else if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
       this.notification.warning('Form is not valid! Please enter IP fields with valid values.');
@@ -539,5 +496,9 @@ export class PublicipComponent implements AfterViewInit {
     return true;
   }
 
+  rkSelectButtonClicked($event: { clicked: boolean }) {
+    this.saveMode = 'NewProfile';
 
+    this.profileModal.toggle();
+  }
 }
