@@ -11,6 +11,7 @@ import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-t
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 import { LinkClick } from '../../monitor/result/monitor-result.component';
 
+
 declare var moment: any;
 
 export interface TableBadgeOutput {
@@ -58,6 +59,7 @@ export class CustomReportResultComponent implements OnDestroy {
   @Output() changeColumnBadge = new EventEmitter();
 
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
+  logCountHistogram: any;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
 
@@ -184,16 +186,28 @@ export class CustomReportResultComponent implements OnDestroy {
 
       const data: any[] = res;
 
-      if (data) {
-        const labelArray = [];
-        const chartSeries = [];
 
-        data.forEach(elem => {
-          labelArray.push(moment(elem.date).format('YYYY-MM-DD HH:mm:ss'));
-          chartSeries.push(elem.value);
-        });
+
+      if (data) {
+        if (this.logCountHistogram) {
+        this.logCountHistogram.resetSeries();
+        }
+
+
+        const series = [
+          { name: 'Hit', type: 'area', data: data.filter ? data.filter(x => x.length >= 2).map(x => {
+
+            return [x[0], x[1]];
+
+          }) : [] }
+
+       ];
+
+
 
         const options = {
+          id: 'reportchart',
+          series: series,
           chart: {
             height: 300, type: 'area', foreColor: '#898ea4',
             toolbar: {
@@ -218,19 +232,39 @@ export class CustomReportResultComponent implements OnDestroy {
           dataLabels: { enabled: false },
           stroke: { curve: 'smooth' },
           markers: { size: 0, hover: { sizeOffset: 5 } },
-          series: [{ name: 'Hits', data: [[]] }],
-          xaxis: { type: 'datetime', categories: labelArray, tickAmount: 1, style: { color: '#e9ebf1' } },
+          xaxis: { type: 'datetime', tickAmount: 1, style: { color: '#e9ebf1' } },
           tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' } },
           grid: { borderColor: '#e9ebf1' },
           legend: { show: false },
           annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
-          animations: { enabled: true }
+          animations: { enabled: true },
+          noData: {
+            text: 'No Data',
+            align: 'center',
+            verticalAlign: 'middle',
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+              color: undefined,
+              fontSize: '14px',
+              fontFamily: undefined
+            }
+          }
         };
 
-        const logChart = new ApexCharts(document.querySelector('#customReportChart'), options);
+         if (!this.logCountHistogram) {
+          this.logCountHistogram = new ApexCharts(document.querySelector('#customReportChart'), options);
 
-        logChart.render();
-        logChart.updateSeries([{ name: 'Hits', data: chartSeries }]);
+          this.logCountHistogram.render();
+
+        } else {
+
+          this.logCountHistogram.updateSeries(series);
+        }
+
+
+
+
       }
 
     });

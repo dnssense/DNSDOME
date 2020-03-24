@@ -16,14 +16,14 @@ import { Config } from 'protractor';
 export class FastReportService {
   // public _initContentURL = this.configService.getApiUrl() + '/quick-reports/init'; // URL to subcategories api
 
-  public _histogramURL = this.configService.getApiUrl() + '/quick-reports/logCountHistogram'; // URL to graph api
+  public _histogramURL = this.configService.getApiUrl() + '/calculate/customreport/logcounthistogram'; // URL to graph api
 
 
 
 
   // public _initTableColumnsURL = this.configService.getApiUrl() + '/quick-reports/tableColumns'; // URL to subcategories api
 
-/* 
+/*
   private _tableColumnsSubject: BehaviorSubject<LogColumn[]> = new BehaviorSubject(null);
   public tableColumns = this._tableColumnsSubject.asObservable();
 

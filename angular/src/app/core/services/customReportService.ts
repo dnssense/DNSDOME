@@ -16,7 +16,7 @@ import { LogColumn } from '../models/LogColumn';
 @Injectable({ providedIn: 'root' })
 export class CustomReportService {
  /*  public _initContentURL = this.configService.getApiUrl() + '/custom-reports/init'; // URL to subcategories api */
-  public _dataURL = this.configService.getApiUrl() + '/custom-reports/data'; // URL to graph api
+  public _dataURL = this.configService.getApiUrl() + '/calculate/customreport/topdomain'; // URL to graph api
  /*  public _tableDataURL =
     this.configService.getApiUrl() + '/custom-reports/tableData'; // URL to graph api */
  /*  public _multiValueHistogramDataURL =

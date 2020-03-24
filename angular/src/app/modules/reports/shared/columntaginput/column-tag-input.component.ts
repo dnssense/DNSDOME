@@ -9,6 +9,7 @@ import { WApplication } from 'src/app/core/models/WApplication';
 import { FastReportService } from 'src/app/core/services/fastReportService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ValidationService } from 'src/app/core/services/validation.service';
+import { ReportService } from 'src/app/core/services/reportService';
 
 declare var jQuery: any;
 
@@ -50,6 +51,7 @@ export class ColumnTagInputComponent implements OnInit {
   // public roksitTranslateService: RoksitTranslateService,
   public constructor(private renderer: Renderer2,
     private fastReportService: FastReportService,
+    private reportService: ReportService,
     private notificationService: NotificationService) {
     if (!this.tags) {
       this.tags = [];
@@ -58,7 +60,7 @@ export class ColumnTagInputComponent implements OnInit {
       this.currentColumn = 'domain';
     }
 
-    this.tableColumnsubscription = this.fastReportService.tableColumns.subscribe(
+    this.tableColumnsubscription = this.reportService.initTableColumns().subscribe(
       (res: LogColumn[]) => {
         this.columns = res;
       }

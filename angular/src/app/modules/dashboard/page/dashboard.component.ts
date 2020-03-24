@@ -811,6 +811,18 @@ export class DashboardComponent implements OnInit {
             return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : Math.sign(value) * Math.abs(value);
           }
         }
+      },
+      noData: {
+        text: 'No Data',
+        align: 'center',
+        verticalAlign: 'middle',
+        offsetX: 0,
+        offsetY: 0,
+        style: {
+          color: undefined,
+          fontSize: '14px',
+          fontFamily: undefined
+        }
       }
     });
 
