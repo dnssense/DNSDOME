@@ -9,7 +9,7 @@
                         (columnBadgeChange)="columnChanged($event)">
                         <rk-table-export (event)="exportAs($event)"></rk-table-export>
 
-                        <rk-table (pageChange)="onPageChange($event)" [totalCount]="null"
+                        <rk-table (pageChange)="onPageChange($event)" [totalCount]="100"
                             [pageViewCount]="searchSetting.topNumber"
                             (pageViewCountChange)="onPageViewCountChange($event)" [info]="true">
                             <ng-template #header>

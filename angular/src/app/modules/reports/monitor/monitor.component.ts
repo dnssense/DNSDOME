@@ -13,7 +13,7 @@ import { ReportService } from 'src/app/core/services/reportService';
 export interface MonitorReportRouteParams {
   startDate?: string;
   endDate?: string;
-  category?: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful'|null|string;
+  category?: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' | null | string;
 }
 
 @Component({
@@ -23,19 +23,17 @@ export interface MonitorReportRouteParams {
   providers: [DateFormatPipe]
 })
 export class MonitorComponent implements OnInit, AfterViewInit {
+
   private queryParams: MonitorReportRouteParams;
+
   constructor(
     private location: Location,
     private activatedRoute: ActivatedRoute,
     private reportService: ReportService
   ) {
-
-
     activatedRoute.queryParams.subscribe((params: MonitorReportRouteParams) => {
       this.queryParams = params;
     });
-
-
   }
 
   public searchSettings: SearchSetting = new SearchSetting();
@@ -70,9 +68,9 @@ export class MonitorComponent implements OnInit, AfterViewInit {
         this.roksitSearchComponent.searchSettings.mustnot = [];
         if (this.queryParams.category && this.queryParams.category != 'total') {
           if (categoryMappings[this.queryParams.category]) {
-          categoryMappings[this.queryParams.category]?.forEach(x => {
-            this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', x));
-          });
+            categoryMappings[this.queryParams.category]?.forEach(x => {
+              this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', x));
+            });
           } else if (this.queryParams.category != 'total') {
             this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', this.queryParams.category));
           }
@@ -86,13 +84,13 @@ export class MonitorComponent implements OnInit, AfterViewInit {
     } else {
       const state = this.location.getState();
 
-    if (state['filters']) {
-      this.filters = state['filters'];
+      if (state['filters']) {
+        this.filters = state['filters'];
 
-      this.roksitSearchComponent.filters = this.filters;
+        this.roksitSearchComponent.filters = this.filters;
 
-      this.roksitSearchComponent.search('', false);
-    }
+        this.roksitSearchComponent.search('', false);
+      }
 
     }
 

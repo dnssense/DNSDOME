@@ -32,7 +32,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     private reportService: ReportService
   ) { }
 
-  currentPage = 1;
+
   columns: LogColumn[];
   selectedColumns: LogColumn[];
   tableData: any;
@@ -71,6 +71,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   };
 
   @Input() public searchSetting: SearchSetting;
+
+  currentPage = 1;
 
   @Output() public addColumnValueEmitter = new EventEmitter();
 

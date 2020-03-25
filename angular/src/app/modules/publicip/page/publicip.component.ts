@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -22,7 +22,7 @@ declare let $: any;
   templateUrl: './publicip.component.html',
   styleUrls: ['./publicip.component.sass']
 })
-export class PublicipComponent implements AfterViewInit {
+export class PublicipComponent implements OnInit, AfterViewInit {
 
   ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
   publicIps: Agent[] = [];
@@ -64,6 +64,8 @@ export class PublicipComponent implements AfterViewInit {
 
   currentStep = 1;
 
+  ip = '';
+
   constructor(
     private alertService: AlertService,
     private notification: NotificationService,
@@ -86,6 +88,12 @@ export class PublicipComponent implements AfterViewInit {
     });
 
     this.defineNewAgentForProfile();
+  }
+
+  ngOnInit() {
+    this.publicIpService.getMyIp().subscribe(result => {
+      this.ip = result;
+    });
   }
 
   saveProfile() {
@@ -258,25 +266,30 @@ export class PublicipComponent implements AfterViewInit {
     }
   }
 
-  showNewIpForm() {
+  async showNewIpForm() {
     this.isNewItemUpdated = false;
     this.selectedIp = new Agent();
     this.selectedIp.logo = null;
     this.selectedIp.staticSubnetIp = [];
+
     const ip0 = {} as IpWithMask;
+
+    const findedMyPublicIp = this.publicIps.some(x => {
+      if (x.staticSubnetIp) {
+        return x.staticSubnetIp.some(y => y.baseIp === this.ip);
+      }
+    });
+
+    if (!findedMyPublicIp) {
+      ip0.baseIp = this.ip;
+    }
+
     ip0.mask = 32;
     this.selectedIp.staticSubnetIp.push(ip0);
 
     this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
       return { ...x, selected: false };
     });
-
-    if (this.publicIps == null || this.publicIps.length < 1) {
-      this.publicIpService.getMyIp().subscribe(res => {
-        ip0.baseIp = res;
-        ip0.mask = 32;
-      });
-    }
 
     this.ipType = 'staticIp';
 

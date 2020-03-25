@@ -368,6 +368,8 @@ export class RoksitSearchComponent implements OnInit {
 
     this.setShowRunBar(false);
 
+    
+
     if (showFilterModal) {
       this.filterModal.toggle();
     }
