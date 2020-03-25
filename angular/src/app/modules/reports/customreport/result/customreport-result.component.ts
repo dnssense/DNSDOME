@@ -69,7 +69,7 @@ export class CustomReportResultComponent implements OnDestroy {
       { id: 1, name: 'domain', displayText: 'Domain', isLink: true },
       { id: 2, name: 'subdomain', displayText: 'Subdomain', isLink: true },
       { id: 3, name: 'sourceIp', displayText: 'Src.Ip', isLink: true },
-      { id: 4, name: 'sourceIpCountryCode', displayText: 'Src. Country', isLink: true  },
+      { id: 4, name: 'sourceIpCountryCode', displayText: 'Src. Country', isLink: true },
       { id: 5, name: 'destinationIp', displayText: 'Dst.Ip', isLink: true },
       { id: 6, name: 'destinationIpCountryCode', displayText: 'Dst.Country', isLink: true },
       { id: 7, name: 'agentAlias', displayText: 'Location/Agent', isLink: true },
@@ -155,6 +155,8 @@ export class CustomReportResultComponent implements OnDestroy {
         col.selected = !!selectedCol;
       });
 
+      this.tableConfig.rows = [];
+
       this.data.forEach(item => {
         const rowItem: RkTableRowModel = { selected: false };
 
@@ -190,18 +192,20 @@ export class CustomReportResultComponent implements OnDestroy {
 
       if (data) {
         if (this.logCountHistogram) {
-        this.logCountHistogram.resetSeries();
+          this.logCountHistogram.resetSeries();
         }
 
 
         const series = [
-          { name: 'Hit', type: 'area', data: data.filter ? data.filter(x => x.length >= 2).map(x => {
+          {
+            name: 'Hit', type: 'area', data: data.filter ? data.filter(x => x.length >= 2).map(x => {
 
-            return [x[0], x[1]];
+              return [x[0], x[1]];
 
-          }) : [] }
+            }) : []
+          }
 
-       ];
+        ];
 
 
 
@@ -252,7 +256,7 @@ export class CustomReportResultComponent implements OnDestroy {
           }
         };
 
-         if (!this.logCountHistogram) {
+        if (!this.logCountHistogram) {
           this.logCountHistogram = new ApexCharts(document.querySelector('#customReportChart'), options);
 
           this.logCountHistogram.render();
