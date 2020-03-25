@@ -91,7 +91,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.publicIpService.getMyIp().subscribe(result => {
+    this.publicIpService.getMyIp().subscribe(result => {
       this.ip = result;
     });
   }
@@ -264,6 +264,19 @@ export class PublicipComponent implements OnInit, AfterViewInit {
         this.notification.warning('Profile can not find!');
       }
     }
+  }
+
+  searchChanged() {
+    this.publicIpsFiltered = this.publicIps.filter(x => {
+      const searchKey = this.searchKey.trim().toLocaleLowerCase();
+
+      const agentAlias = x.agentAlias.toLocaleLowerCase().includes(searchKey);
+      const ipType = x.staticSubnetIp ? 'static'.includes(searchKey) : 'dynamic'.includes(searchKey);
+      const ipAdresses = x.staticSubnetIp ? x.staticSubnetIp.some(y => y.baseIp.toLocaleLowerCase().includes(searchKey)) : x.dynamicIpDomain.toLocaleLowerCase().includes(searchKey);
+      const profile = x.rootProfile.name.toLocaleLowerCase().includes(searchKey);
+
+      return agentAlias || ipType || ipAdresses || profile;
+    });
   }
 
   async showNewIpForm() {

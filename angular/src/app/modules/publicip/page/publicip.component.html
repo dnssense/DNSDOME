@@ -169,7 +169,7 @@
                 <div class="search ml-5">
                   <div class="rk-autocomplete-container" style="width: 220px;">
                     <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="searchKey"
-                      class="rk-input rk-autocomplete">
+                      class="rk-input rk-autocomplete" (ngModelChange)="searchChanged()">
                     <i-feather class="search-icon" name="search"></i-feather>
                   </div>
                 </div>
@@ -189,7 +189,7 @@
               </ng-template>
 
               <ng-template #body>
-                <tr *ngFor="let pi of publicIpsFiltered | filter: searchKey : 'agentAlias'; let i = index ">
+                <tr *ngFor="let pi of publicIpsFiltered; let i = index">
                   <td class=" index">{{ i+1 }}</td>
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
