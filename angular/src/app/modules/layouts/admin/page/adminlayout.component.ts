@@ -9,6 +9,7 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import { NavbarComponent } from 'src/app/modules/shared/navbar/navbar.component';
 import { NavItem } from 'src/app/modules/shared/md/md.module';
 import { RkLayoutService } from 'roksit-lib';
+import { SidebarComponent } from 'src/app/modules/shared/sidebar/sidebar.component';
 
 @Component({
     selector: 'app-adminlayout',
@@ -23,7 +24,7 @@ export class AdminLayoutComponent implements OnInit {
     url: string;
     location: Location;
 
-    @ViewChild('sidebar') sidebar: any;
+    @ViewChild(SidebarComponent) sidebar: SidebarComponent;
     @ViewChild(NavbarComponent) navbar: NavbarComponent;
 
     collapsed: boolean;
@@ -47,6 +48,8 @@ export class AdminLayoutComponent implements OnInit {
             this.lastPoppedUrl = ev.url;
         });
         this.router.events.subscribe((event: any) => {
+            this.sidebar.setActiveMenuItemByRoute();
+
             if (event instanceof NavigationStart) {
                 if (event.url !== this.lastPoppedUrl) {
                     this.yScrollStack.push(window.scrollY);
