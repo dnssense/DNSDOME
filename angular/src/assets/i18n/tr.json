@@ -338,6 +338,7 @@
     "ErrRootProfileNotFound":"Güvenlik profili bulunamadı",
     "ErrSystemProfileCannotUpdate":"Sistem profili değiştirilemez",
     "ErrMaxBlackListSize":"Maximum blacklist sınırı aşıldı",
+    "ErrReportSystemDataCannotUpdateOrDelete":"Sistem raporları silinemez ve değiştirilemez",
     "FORGOTPASSWORD": {
         "Title": "Parola Yenileme"
     },

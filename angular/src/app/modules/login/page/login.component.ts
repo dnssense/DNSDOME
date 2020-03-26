@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormBuilder } from '@angular/forms';
@@ -30,7 +30,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: 'login.component.html',
   styleUrls: ['login.component.sass'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   twoFactorPhoneClone: any;
 
   constructor(
@@ -97,6 +97,13 @@ export class LoginComponent implements OnInit {
       'password': ['', [Validators.required, Validators.minLength(5)]]
     });
   }
+
+
+  ngAfterViewInit(): void {
+
+    this.captchaComponent.ngOnInit();
+  }
+
 
 
   login() {

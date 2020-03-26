@@ -33,6 +33,7 @@ export class MonitorComponent implements OnInit, AfterViewInit {
   ) {
     activatedRoute.queryParams.subscribe((params: MonitorReportRouteParams) => {
       this.queryParams = params;
+
     });
   }
 
@@ -49,9 +50,13 @@ export class MonitorComponent implements OnInit, AfterViewInit {
   isShowRunBar = false;
 
   ngOnInit() { }
-
   ngAfterViewInit() {
-    if (this.queryParams) {
+    this.init();
+  }
+// bu kod customreport.component.ts icindede var
+  init() {
+
+
       if (this.queryParams.startDate && this.queryParams.endDate) {
         const startDate = new Date(this.queryParams.startDate);
         const endDate = new Date(this.queryParams.endDate);
@@ -66,6 +71,7 @@ export class MonitorComponent implements OnInit, AfterViewInit {
         this.roksitSearchComponent.searchSettings.should = [];
         this.roksitSearchComponent.searchSettings.must = [];
         this.roksitSearchComponent.searchSettings.mustnot = [];
+
         if (this.queryParams.category && this.queryParams.category != 'total') {
           if (categoryMappings[this.queryParams.category]) {
             categoryMappings[this.queryParams.category]?.forEach(x => {
@@ -76,12 +82,15 @@ export class MonitorComponent implements OnInit, AfterViewInit {
           }
 
         }
+
         this.roksitSearchComponent.filters = this.filters;
+        this.roksitSearchComponent.categoryFilters = this.roksitSearchComponent.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
 
         this.roksitSearchComponent.search('', false);
 
-      }
+
     } else {
+
       const state = this.location.getState();
 
       if (state['filters']) {
@@ -97,12 +106,14 @@ export class MonitorComponent implements OnInit, AfterViewInit {
   }
 
   public search(_searchSettings: SearchSetting) {
+
     this.searchSettings = _searchSettings;
     this.monitorResultComponent.currentPage = 1;
     this.monitorResultComponent.refresh(_searchSettings);
   }
 
   public addValuesIntoSelected($event) {
+
     this.roksitSearchComponent.setSearchSetting(this.searchSettings);
   }
 
@@ -124,6 +135,7 @@ export class MonitorComponent implements OnInit, AfterViewInit {
     }
 
     this.isShowRunBar = true;
+
   }
 
   clearFilters() {
@@ -131,6 +143,6 @@ export class MonitorComponent implements OnInit, AfterViewInit {
 
     this.isShowRunBar = false;
 
-    this.search(this.searchSettings);
+    // this.search(this.searchSettings);
   }
 }

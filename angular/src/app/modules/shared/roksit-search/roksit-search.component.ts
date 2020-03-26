@@ -16,6 +16,7 @@ import { UserService } from 'src/app/core/services/userService';
 import { User } from 'src/app/core/models/User';
 import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
 import { Router } from '@angular/router';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 
 export class GroupedCategory {
   type: string;
@@ -50,7 +51,8 @@ export class RoksitSearchComponent implements OnInit {
     private fastReportService: FastReportService,
     private notification: NotificationService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private staticmessageService: StaticMessageService
   ) {
     this.getSavedReports();
 
@@ -163,12 +165,13 @@ export class RoksitSearchComponent implements OnInit {
     this.reportService.getReportList().subscribe(res => {
       this.allSavedReports = res;
 
-      this.savedReportOptions = res.map(x => {
-        return { displayText: x.name, value: x.id } as RkSelectModel;
-      });
+
 
       this.savedReports = res.filter(x => !x.system);
       this.systemSavedReports = res.filter(x => x.system);
+      this.savedReportOptions = this.savedReports.map(x => {
+        return { displayText: x.name, value: x.id } as RkSelectModel;
+      });
     });
   }
 
@@ -303,7 +306,7 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   onEditedFilterBadge(filter: FilterBadgeModel) {
-    debugger;
+
     this.selectedColumnFilter = filter.name;
 
     this.columnsOptions = this.columnsOptions.map(x => {
@@ -339,7 +342,8 @@ export class RoksitSearchComponent implements OnInit {
     this.dateOptions = this.dateOptions.map(x => {
       x.selected = false;
 
-      if (x.value === this.searchSettings.dateInterval) {
+      if (x.value == this.searchSettings.dateInterval) {
+
         x.selected = true;
       }
 
@@ -368,7 +372,7 @@ export class RoksitSearchComponent implements OnInit {
 
     this.setShowRunBar(false);
 
-    
+
 
     if (showFilterModal) {
       this.filterModal.toggle();
@@ -411,6 +415,7 @@ export class RoksitSearchComponent implements OnInit {
         });
       }
     });
+
   }
 
   getItemsByCategoryName(name: string) {
@@ -473,6 +478,7 @@ export class RoksitSearchComponent implements OnInit {
     });
 
     this.setShowRunBar(true);
+    this.setDateOptionBySearchSettings();
 
     // this.search('savedreport');
   }
@@ -482,8 +488,10 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   saveFilterClick() {
-    this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
 
+    this.fillSearchSettingsByFilters();
+    this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
+    this.searchSettings.system = false;
     this.prepareNewSaveFilter();
 
     this.saveModal.toggle();
@@ -492,36 +500,38 @@ export class RoksitSearchComponent implements OnInit {
   prepareNewSaveFilter() {
     this.newSavedReport.name = '';
 
-    this.newSavedReport.id = -1;
+    this.newSavedReport.id = 0;
   }
 
   savedReportSelectChanged($event: number) {
     const savedReport = this.allSavedReports.find(x => x.id === $event);
 
     if (savedReport) {
-      this.fillSearchSettingsByFilters();
+     // this.fillSearchSettingsByFilters();
 
       this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
 
       this.newSavedReport.name = savedReport.name;
 
       this.newSavedReport.id = savedReport.id;
+
     }
   }
 
   saveReport() {
-    if (this.newSavedReport.name.trim().length > 0 && this.newSavedReport.scheduledReport) {
+
+    if (this.newSavedReport.name.trim().length > 0) {
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
-        if (res.status === 200) {
+
           this.notification.success(res.message);
 
           this.getSavedReports();
 
           this.saveModal.toggle();
-        } else {
-          this.notification.error(res.message);
-        }
+
       });
+    } else {
+      this.notification.warning(this.staticmessageService.needsToFillInRequiredFieldsMessage);
     }
   }
 
@@ -539,6 +549,7 @@ export class RoksitSearchComponent implements OnInit {
     filter.equal = !filter.equal;
 
     this.setShowRunBar(true);
+    this.fillSearchSettingsByFilters();
   }
 
   categoryEnterPress($event: { value: string }) {

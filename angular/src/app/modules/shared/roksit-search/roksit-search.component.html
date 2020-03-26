@@ -32,12 +32,12 @@
 
         <div class="col-12 mt-3">
           <div class="rk-title">{{ 'REPORT.ScheduleReportSendToEmail' | translate }}</div>
-          <div class="mt-2">
+          <!-- <div class="mt-2">
             <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
               value="all">
               {{ 'All' | translate }}
             </rk-radio>
-          </div>
+          </div> -->
           <div class="mt-2">
             <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
               value="d">
@@ -93,7 +93,7 @@
 
   <rk-modal-footer>
     <button class="btn btn-small w-100 mr-2" (click)="saveReport()"> {{ 'Save' | translate }}</button>
-    <button class="btn btn-small btn-default w-100" (click)="saveModal.toggle()"> {{ 'Cancel' | translate }}</button>
+    <button class="btn btn-small btn-default w-100" (click)="saveModal.toggle()"> {{ 'Close' | translate }}</button>
   </rk-modal-footer>
 </rk-modal>
 
