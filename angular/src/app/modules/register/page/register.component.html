@@ -53,8 +53,8 @@
                 Simple deployment with no overhead.</div>
               <div class="ml-4">
                 <div class="container">
-                  <img src="/assets/img/dashboardImage.png" alt="Dashboard" />
-                  <img src="/assets/img/play.svg" style="transform: translate(-240%, 0%);" />
+                  <img src="/assets/img/dashboardImage2.png" alt="Dashboard" />
+                  <!-- <img src="/assets/img/play.svg" style="transform: translate(-240%, 0%);" /> -->
                 </div>
               </div>
             </div>
@@ -159,7 +159,7 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group-sm has-default text-center ml-auto">
-                      <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
+                      <re-captcha [site_key]="captcha_key" language='en' (captchaResponse)="handleCaptcha($event)">
                       </re-captcha>
                     </div>
                     <div class="row">

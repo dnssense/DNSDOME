@@ -16,7 +16,7 @@ import { ReportService } from 'src/app/core/services/reportService';
 export interface CustomReportRouteParams {
   startDate?: string;
   endDate?: string;
-  category?: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful'|undefined;
+  category?: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful'|null|string;
 }
 
 @Component({
@@ -26,6 +26,7 @@ export interface CustomReportRouteParams {
 })
 export class CustomReportComponent implements OnInit, AfterViewInit {
 
+  private queryParams: CustomReportRouteParams;
   constructor(
     private fastReportService: FastReportService,
     private activatedRoute: ActivatedRoute,
@@ -33,24 +34,7 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
     private reportService: ReportService
   ) {
     activatedRoute.queryParams.subscribe((params: CustomReportRouteParams) => {
-      if (params.startDate && params.endDate) {
-        const startDate = new Date(params.startDate);
-        const endDate = new Date(params.endDate);
-
-        const _startDate = moment([startDate.getFullYear(), startDate.getMonth(), startDate.getDate()]);
-        const _endDate = moment([endDate.getFullYear(), endDate.getMonth(), endDate.getDate()]);
-
-        const difference = _endDate.diff(_startDate, 'days');
-
-        this.searchSetting.dateInterval = difference * 60 * 24;
-
-        if (params.category && params.category != 'total') {
-          categoryMappings[params.category].forEach(x => {
-            this.searchSetting.should.push(new ColumnTagInput('category', '=', x));
-          });
-        }
-        this.search(this.searchSetting);
-      }
+      this.queryParams = params;
     });
   }
 
@@ -79,6 +63,47 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.init();
+  }
+
+  // bu kod monitor component .ts  icindede aynen var
+  init() {
+
+
+    if (this.queryParams.startDate && this.queryParams.endDate) {
+      const startDate = new Date(this.queryParams.startDate);
+      const endDate = new Date(this.queryParams.endDate);
+
+      const _startDate = moment([startDate.getFullYear(), startDate.getMonth(), startDate.getDate()]);
+      const _endDate = moment([endDate.getFullYear(), endDate.getMonth(), endDate.getDate()]);
+
+      const difference = _endDate.diff(_startDate, 'minutes');
+
+      this.customReportSearchComponent.searchSettings.type = 'roksit';
+      this.customReportSearchComponent.searchSettings.dateInterval = difference;
+      this.customReportSearchComponent.searchSettings.should = [];
+      this.customReportSearchComponent.searchSettings.must = [];
+      this.customReportSearchComponent.searchSettings.mustnot = [];
+
+      if (this.queryParams.category && this.queryParams.category != 'total') {
+        if (categoryMappings[this.queryParams.category]) {
+          categoryMappings[this.queryParams.category]?.forEach(x => {
+            this.customReportSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', x));
+          });
+        } else if (this.queryParams.category != 'total') {
+          this.customReportSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', this.queryParams.category));
+        }
+
+      }
+
+      this.customReportSearchComponent.filters = this.filters;
+      this.customReportSearchComponent.categoryFilters = this.customReportSearchComponent.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
+
+      this.customReportSearchComponent.search('', false);
+
+
+  } else {
+
     const state = this.location.getState();
 
     if (state['filters']) {
@@ -87,10 +112,11 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
       this.customReportSearchComponent.filters = this.filters;
 
       this.customReportSearchComponent.search('', false);
-    } else {
-      this.search(this.searchSetting);
     }
+
   }
+
+}
 
   public search(setting: SearchSetting) {
     this.searchSetting = setting;
@@ -143,6 +169,6 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
     this.isShowRunBar = false;
 
-    this.search(this.searchSetting);
+    // this.search(this.searchSetting);
   }
 }

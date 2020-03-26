@@ -342,6 +342,7 @@
     "ErrRootProfileNotFound":"Security profile not found",
     "ErrSystemProfileCannotUpdate":"System profile cannot update",
     "ErrMaxBlackListSize":"Maximum blacklist size reached",
+    "ErrReportSystemDataCannotUpdateOrDelete":"System report cannot update or delete",
     "FORGOTPASSWORD": {
         "Title": "Reset Password"
     },

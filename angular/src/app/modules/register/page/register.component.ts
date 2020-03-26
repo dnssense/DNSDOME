@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormBuilder } from '@angular/forms';
@@ -26,7 +26,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: 'register.component.html',
   styleUrls: ['register.component.sass']
 })
-export class RegisterComponent implements OnInit, OnDestroy {
+export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, AfterContentInit {
 
   constructor(
     private formBuilder: FormBuilder,
@@ -87,6 +87,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   }
 
+  ngAfterViewInit(): void {
+
+    this.captchaComponent.ngOnInit();
+  }
+
+  ngAfterContentInit() {
+    // this.captchaComponent.reset();
+  }
+
   createRegisterForm() {
     this.user = new SignupBean();
     this.user.company = new Company();
@@ -115,6 +124,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.registerForm.controls['gsmCode'].setValue('+90');
       this.registerForm.controls['gsmCode'].updateValueAndValidity();
     }
+
 
   }
 
@@ -155,7 +165,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (e) {
       this.user.username = e.toLowerCase();
     }
-    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(String(e).toLowerCase())) {
       this.validEmailRegister = true;
     } else {

@@ -514,6 +514,7 @@ export class RoamingComponent implements OnInit {
                     this.roamingService.deleteClient(id).subscribe(result => {
 
                         this.deletedAgentRoamingClientMessage();
+                        this.loadClients();
 
                     });
                 }

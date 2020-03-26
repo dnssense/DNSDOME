@@ -53,13 +53,10 @@ export class ScheduledReportsComponent {
 
     saveReport(report: SearchSetting) {
         this.reportService.saveReport(report).subscribe(res => {
-            if (res.status === 200) {
-                this.notification.success(res.message);
+
 
                 this.loadReports();
-            } else {
-                this.notification.error(res.message);
-            }
+
         });
     }
 
@@ -70,12 +67,10 @@ export class ScheduledReportsComponent {
             res => {
                 if (res) {
                     this.reportService.deleteReport(report).subscribe(result => {
-                        if (result.status === 200) {
+
                             this.notification.success(result.message);
                             this.loadReports();
-                        } else {
-                            this.notification.error(result.message);
-                        }
+
                     });
                 }
             }

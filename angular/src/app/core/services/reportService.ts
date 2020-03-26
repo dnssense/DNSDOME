@@ -9,9 +9,9 @@ import { OperationResult } from '../models/OperationResult';
 @Injectable({ providedIn: 'root' })
 export class ReportService {
 
-  public reportListURL = this.configuration.getApiUrl() + '/report/saved/list';
-  public reportSaveURL = this.configuration.getApiUrl() + '/report/saved/save';
-  public reportDeleteURL = this.configuration.getApiUrl() + '/report/saved/delete';
+  public reportListURL = this.configuration.getApiUrl() + '/report2';
+  public reportSaveURL = this.configuration.getApiUrl() + '/report2';
+  public reportDeleteURL = this.configuration.getApiUrl() + '/report2';
 
   constructor(
     private http: HttpClient,
@@ -23,11 +23,11 @@ export class ReportService {
   }
 
   public saveReport(report: any): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.reportSaveURL, JSON.stringify(report), this.getOptions()).map(res => res);
+    return this.http.post<OperationResult>(this.reportSaveURL, report, this.getOptions()).map(res => res);
   }
 
   public deleteReport(report: any): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.reportDeleteURL, JSON.stringify(report), this.getOptions()).map(res => res);
+    return this.http.delete<OperationResult>(`${this.reportDeleteURL}/${report.id}`, this.getOptions()).map(res => res);
   }
 
   private getOptions() {
