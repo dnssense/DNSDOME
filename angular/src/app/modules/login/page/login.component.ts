@@ -31,6 +31,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['login.component.sass'],
 })
 export class LoginComponent implements OnInit {
+  twoFactorPhoneClone: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -152,6 +153,7 @@ export class LoginComponent implements OnInit {
     this.smsService.sendSmsForLogin(val).subscribe(res => {
       this.notificationIndex = 0;
       this.twoFactorPhone = val.user.gsm;
+      this.twoFactorPhoneClone = val.user.gsm.substring(0, 5) + this.replaceStar(val.user.gsm.substring(5, 11)) + val.user.gsm.substring(11);
       this.smsInformation = res;
       this.maxRequest = 3;
       this.isConfirmTimeEnded = false;
@@ -160,6 +162,15 @@ export class LoginComponent implements OnInit {
 
     });
 
+  }
+
+  private replaceStar(val: string): string {
+    let letter = '';
+    for (let i = 0; i < val.length; i++) {
+      letter += '*';
+    }
+
+    return letter;
   }
 
   confirm2FACode() {
