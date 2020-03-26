@@ -60,7 +60,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
       { id: 9, name: 'action', displayText: 'Action', isLink: true },
       { id: 10, name: 'applicationName', displayText: 'Application', isLink: true },
       { id: 11, name: 'category', displayText: 'Category', isLink: true },
-      { id: 12, name: 'reason', displayText: 'Reason', isLink: true },
+      { id: 12, name: 'reasonType', displayText: 'Reason Block', isLink: true },
       { id: 13, name: 'clientLocalIp', displayText: 'Local Src. Ip', isLink: true },
       { id: 14, name: 'clientMacAddress', displayText: 'Mac Address', isLink: true },
       { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial', isLink: true },
