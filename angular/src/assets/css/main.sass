@@ -4,7 +4,7 @@ $white: #fff
 
 body
   font-family: "Roboto", sans-serif !important
-  background: var(--color-primary)
+  // background: var(--color-primary)
   overflow-x: hidden
 
 *
@@ -58,7 +58,7 @@ ul
   font-weight: bold
 
 .page-title
-  color: #303759
+  color: var(--text-dark)
   font-size: 16px
   font-weight: 500
   margin-bottom: 0
@@ -75,12 +75,9 @@ ul
   input
     font-size: 12px
 
-$gray: #445165
-$blue-grey: #97a5bb
-
 .hover-gray:hover
   svg
-    color: $gray !important
+    color: var(--gray) !important
 
 .fill-red
   svg
@@ -110,7 +107,7 @@ $blue-grey: #97a5bb
       color: #696d7e
 
   svg
-    color: $blue-grey
+    color: var(--blue-grey)
 
 .file-upload-text
   color: #898ea4 !important
@@ -180,7 +177,7 @@ figure
 
 .rk-title
   font-size: 12px
-  color: #303759
+  color: var(--text-dark)
   margin: 0
 
 .rk-description
@@ -269,7 +266,7 @@ figure
   background: transparent
 
 .btn-outline-active
-  border: 1px solid #3397c5 !important
+  border: 1px solid var(--primary) !important
   background: white !important
 
   svg
@@ -279,7 +276,7 @@ figure
 .filter-btn-outline
   &:focus,&:hover
     background: white !important
-    border-color: #3397c5 !important
+    border-color: var(--primary) !important
 
 app-profile-wizard
     display: block
@@ -308,7 +305,7 @@ rk-accordion
       margin-left: 0
 
     &.active
-      background: #4fb75d
+      background: var(--safe)
   
   
 .password-strength
@@ -322,7 +319,7 @@ rk-accordion
     border-radius: 2px
 
     &.active
-      background: #3397c5
+      background: var(--primary)
 
 .password-text
   font-size: 10px
@@ -344,7 +341,7 @@ rk-accordion
     padding: 0 !important
 
 .passive.active
-  color: #445165
+  color: var(--gray)
   border-color: #8a95a5
 
 .color-898ea4
@@ -360,7 +357,7 @@ rk-accordion
 
   tag
     background: #d9f0f8 !important
-    color: #3fb6dc !important
+    color: var(--primary) !important
 
   delete-icon
     svg
@@ -374,10 +371,10 @@ rk-accordion
   border-color: white !important
 
 .anchor
-  color: rgba(51, 151, 197, 0.8) !important
+  color: var(--primary-8) !important
 
   &:hover
-    color: #3397c5 !important
+    color: var(--primary) !important
     cursor: pointer !important
 
 .dashboard-domains-table
@@ -410,7 +407,7 @@ rk-modal-body
   height: 26px
   border-radius: 18px
   background: #d9f0f8
-  color: #3fb6dc
+  color: var(--primary)
   align-items: center
   justify-content: space-between
   font-size: 12px
@@ -444,7 +441,7 @@ rk-modal-body
 
 .rk-head-title
   font-size: 16px
-  color: $gray
+  color: var(--gray)
   font-weight: 500
 
 .rk-tab
