@@ -439,6 +439,8 @@ export class RoksitSearchComponent implements OnInit {
   filtersClear() {
     this.clear();
 
+    this.actionType = null;
+ 
     this.filters = [];
   }
 
