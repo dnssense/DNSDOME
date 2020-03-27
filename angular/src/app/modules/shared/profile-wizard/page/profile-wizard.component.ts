@@ -292,7 +292,7 @@ export class ProfileWizardComponent {
         }
       });
       this.selectedAgent.rootProfile.isPositiveSecurity = false;
-    } else if (this.saveMode === 'ProfileUpdate') {
+    } else if (this.saveMode === 'ProfileUpdate' || this.saveMode === 'NotEditable') {
       this.selectedAgent.rootProfile.domainProfile.categories.forEach(x => {
         this.categoryList.find(y => y.category.id === x.id).isBlocked = x.isBlocked;
       });
