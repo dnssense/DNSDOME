@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-12 mt-3">
         <div class="rk-basic-card p-2">
-            <ng-container >
+            <ng-container>
                 <div id="customReportChart"></div>
 
                 <div>
@@ -43,12 +43,20 @@
                                         <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
                                             <button class="btn btn-link table-link-button"
                                                 (click)="linkClicked(col.column.name, dat[colIndex])">
-                                                {{ dat[colIndex] }}
+                                                <ng-container *ngIf="col.column.name === 'time'; else elseTimeTemplate">
+                                                    {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
+                                                </ng-container>
+
+                                                <ng-template #elseTimeTemplate>{{ dat[colIndex] }}</ng-template>
                                             </button>
                                         </ng-container>
 
                                         <ng-template #elseTemplate>
-                                            {{ dat[colIndex] }}
+                                            <ng-container *ngIf="col === 'time'; else elseTimeTemplate2">
+                                                {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
+                                            </ng-container>
+
+                                            <ng-template #elseTimeTemplate2>{{ dat[colIndex] }}</ng-template>
                                         </ng-template>
                                     </td>
                                     <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>
