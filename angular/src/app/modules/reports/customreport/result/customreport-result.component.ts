@@ -327,8 +327,10 @@ export class CustomReportResultComponent implements OnDestroy {
   columnChanged($event: TableBadgeOutput) {
     const columnIndex = this.selectedColumns.findIndex(x => x.column.name === $event.name);
 
+    const selectedColumns = <AggregationItem[]>JSON.parse(JSON.stringify(this.searchSetting.columns.columns));
+
     if ($event.value) {
-      this.selectedColumns.push({
+      selectedColumns.push({
         column: {
           name: $event.name,
           beautyName: this.capitalize($event.name),
@@ -339,11 +341,11 @@ export class CustomReportResultComponent implements OnDestroy {
       } as AggregationItem);
     } else {
       if (columnIndex > -1) {
-        this.selectedColumns.splice(columnIndex, 1);
+        selectedColumns.splice(columnIndex, 1);
       }
     }
 
-    this.searchSetting.columns.columns = this.selectedColumns;
+    this.searchSetting.columns.columns = selectedColumns;
 
     this.changeColumnBadge.emit(true);
   }

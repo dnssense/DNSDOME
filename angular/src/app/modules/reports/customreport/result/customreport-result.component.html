@@ -39,7 +39,7 @@
                             <ng-template #body>
                                 <tr *ngFor="let dat of data;let i = index">
                                     <td class="index">{{ i + 1 }}</td>
-                                    <td *ngFor="let col of selectedColumns;let colIndex = index">
+                                    <td *ngFor="let col of selectedColumns; let colIndex = index">
                                         <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
                                             <button class="btn btn-link table-link-button"
                                                 (click)="linkClicked(col.column.name, dat[colIndex])">
