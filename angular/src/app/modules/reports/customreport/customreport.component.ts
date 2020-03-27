@@ -16,7 +16,7 @@ import { ReportService } from 'src/app/core/services/reportService';
 export interface CustomReportRouteParams {
   startDate?: string;
   endDate?: string;
-  category?: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful'|null|string;
+  category?: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' | null | string;
 }
 
 @Component({
@@ -102,21 +102,23 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
       this.customReportSearchComponent.search('', false);
 
 
-  } else {
+    } else {
 
-    const state = this.location.getState();
+      const state = this.location.getState();
 
-    if (state['filters']) {
-      this.filters = state['filters'];
+      if (state['filters']) {
+        this.filters = state['filters'];
 
-      this.customReportSearchComponent.filters = this.filters;
+        this.customReportSearchComponent.filters = this.filters;
 
-      this.customReportSearchComponent.search('', false);
+        this.customReportSearchComponent.search('', false);
+      } else {
+        this.search(this.searchSetting);
+      }
+
     }
 
   }
-
-}
 
   public search(setting: SearchSetting) {
     this.searchSetting = setting;
