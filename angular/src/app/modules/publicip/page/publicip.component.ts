@@ -93,6 +93,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.publicIpService.getMyIp().subscribe(result => {
       this.ip = result;
+    }, (err) => {
+      return err;
     });
   }
 
@@ -465,6 +467,10 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   securityProfileChanged(id: number) {
     this.isNewItemUpdated = true;
     this.selectedIp.rootProfile = this.securityProfiles.find(p => p.id === id);
+
+    this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
+      return { ...x, selected: x.value === id };
+    });
   }
 
   savePublicIp() {
