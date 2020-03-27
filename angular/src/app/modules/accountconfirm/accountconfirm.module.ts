@@ -7,10 +7,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { TagInputModule } from 'ngx-chips';
 import { MaterialModule } from 'src/app/material.module';
-import { ReCaptchaModule } from 'angular2-recaptcha';
+
 import { FooterModule } from '../shared/footer/footer.module';
 import { AccountConfirmComponent } from './page/accountconfirm.component';
 import { AccountConfirmComponentRoutingModule } from './accountconfirm-routing.module';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 
 @NgModule({
@@ -22,7 +23,7 @@ import { AccountConfirmComponentRoutingModule } from './accountconfirm-routing.m
     NouisliderModule,
     TagInputModule,
     MaterialModule,
-    ReCaptchaModule,
+    RecaptchaModule,
     FooterModule,
     AccountConfirmComponentRoutingModule,
     TranslateModule.forChild({

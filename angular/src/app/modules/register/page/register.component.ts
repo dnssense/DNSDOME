@@ -8,10 +8,11 @@ import { ValidationService } from 'src/app/core/services/validation.service';
 import { Company } from 'src/app/core/models/Company';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { ReCaptchaComponent } from 'angular2-recaptcha';
+
 import { AccountService } from 'src/app/core/services/accountService';
 import { Router } from '@angular/router';
 import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
+import { RecaptchaComponent } from 'ng-recaptcha';
 declare var $: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -47,7 +48,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   private captcha: string;
   public host: ConfigHost;
   public captcha_key = '';
-  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
+  @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
   phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
   emailFormControl = new FormControl('', [
     Validators.required,
@@ -89,7 +90,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
 
   ngAfterViewInit(): void {
 
-    this.captchaComponent.ngOnInit();
+   // this.captchaComponent.ngOnInit();
   }
 
   ngAfterContentInit() {
@@ -190,16 +191,18 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   handleCaptcha($event: string) {
+    
     this.captcha = $event;
   }
 
   isRegisterFormValid() {
-    if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.captcha != null) {
-      const ca = this.captchaComponent.getResponse();
+    if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.captcha != null && this.capthaService.validCaptcha(this.captcha)) {
+     /*  const ca = '';// this.captchaComponent.getResponse();
       if (ca == this.captcha) {
         return true;
       }
-      return false;
+      return false; */
+      return true;
     }
     return false;
   }

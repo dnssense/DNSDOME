@@ -49,7 +49,7 @@
                     <input type="email" class="formInput mb-3" placeholder="{{'LOGIN.Email' | translate}} *"
                       [(ngModel)]="forgoterEmail" (ngModelChange)="emailValidationLogin($event)">
                     <div>
-                      <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
+                      <re-captcha [siteKey]="captcha_key" (resolved)="handleCaptcha($event)">
                       </re-captcha>
                     </div>
                     <div class="mt-2"><a class="login-link" (click)="openLogin()"> {{'LOGIN.Login'|translate}}</a></div>

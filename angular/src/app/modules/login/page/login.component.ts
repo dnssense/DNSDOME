@@ -5,7 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { Router } from '@angular/router';
 import { SignupBean } from 'src/app/core/models/SignupBean';
-import { ReCaptchaComponent } from 'angular2-recaptcha';
+
 import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { environment } from 'src/environments/environment';
@@ -15,6 +15,7 @@ import { SmsType } from 'src/app/core/models/SmsType';
 // import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { RestPreloginResponse, RestPreloginSmsResponse } from 'src/app/core/models/RestServiceModels';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
+import { RecaptchaComponent } from 'ng-recaptcha';
 
 declare var $: any;
 
@@ -68,7 +69,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     Validators.required,
     Validators.email,
   ]);
-  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
+  @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
   captcha: string;
   captcha_key: string;
   validEmailLogin: true | false;
@@ -100,8 +101,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
 
   ngAfterViewInit(): void {
-
-    this.captchaComponent.ngOnInit();
+   // this.captchaComponent.reset()
+   // this.captchaComponent.ngOnInit();
   }
 
 
@@ -216,6 +217,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   handleCaptcha($event) {
+
     this.captcha = $event;
   }
 

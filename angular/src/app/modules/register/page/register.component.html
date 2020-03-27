@@ -159,7 +159,7 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group-sm has-default text-center ml-auto">
-                      <re-captcha [site_key]="captcha_key" language='en' (captchaResponse)="handleCaptcha($event)">
+                      <re-captcha [siteKey]="captcha_key" language='en' (resolved)="handleCaptcha($event)">
                       </re-captcha>
                     </div>
                     <div class="row">

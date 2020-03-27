@@ -17,7 +17,8 @@ export class TranslatorService {
   }
 
   initLanguages(lang?: string) {
-    const languages = ['en', 'tr'];
+    // const languages = ['en', 'tr'];
+    const languages = ['en'];
     languages.forEach(x => {
       this.translationService.addLangs([x]);
     });

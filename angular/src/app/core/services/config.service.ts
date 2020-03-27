@@ -72,11 +72,7 @@ export class ConfigService {
         this.host.supportUrl = 'https:roksit.com';
         this.host.onlineHelpUrl = 'https:roksit.com';
       } else {
-        /*  this.host.www = 'https://www.roksit.com';
-         this.host.brand = 'Roksit';
-         this.host.aboutus='https://www.roksit.com/about-us';
-         this.host.logoImage='logo-roksit.png';
-         this.host.logofullUrl=window.location.protocol+'://'+window.location.host+(window.location.port||'')+'/assets/img/logo-roksit.png'; */
+
         this.host.www = 'https://www.dnssense.com';
         this.host.brand = 'DNSSense';
         this.host.aboutus = 'https://www.dnssense.com/about-us';

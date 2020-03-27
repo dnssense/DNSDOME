@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ReCaptchaModule } from 'angular2-recaptcha';
+
 import {
   BsDropdownModule, BsModalService, CollapseModule, ModalModule, PaginationModule,
   PopoverModule, TabsModule, TooltipModule
@@ -31,6 +31,7 @@ import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
 import { NotificationModule } from './modules/shared/notification/notification.module';
 import { RoksitModule, ServicesModule } from 'roksit-lib';
 import { NotificationApiService } from './core/services/notification-api.service';
+import { RecaptchaModule } from 'ng-recaptcha';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -53,7 +54,7 @@ import { NotificationApiService } from './core/services/notification-api.service
     PopoverModule.forRoot(),
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
-    ReCaptchaModule,
+    RecaptchaModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

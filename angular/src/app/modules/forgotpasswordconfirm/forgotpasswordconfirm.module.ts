@@ -13,9 +13,10 @@ import { TagInputModule } from 'ngx-chips';
 import { MaterialModule } from 'src/app/material.module';
 import { ForgotPasswordConfirmComponent } from './page/forgotpasswordconfirm.component';
 import { ForgotPasswordConfirmComponentRoutingModule } from './forgotpasswordconfirm-routing.module';
-import { ReCaptchaModule } from 'angular2-recaptcha';
+
 
 import { FooterModule } from '../shared/footer/footer.module';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 
 @NgModule({
@@ -27,7 +28,7 @@ import { FooterModule } from '../shared/footer/footer.module';
     NouisliderModule,
     TagInputModule,
     MaterialModule,
-    ReCaptchaModule,
+    RecaptchaModule,
     FooterModule,
     ForgotPasswordConfirmComponentRoutingModule,
     TranslateModule.forChild({

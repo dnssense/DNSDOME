@@ -6,10 +6,11 @@ import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ReCaptchaComponent } from 'angular2-recaptcha';
+
 import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { SmsService } from 'src/app/core/services/smsService';
 import { ValidationService } from 'src/app/core/services/validation.service';
+import { RecaptchaComponent } from 'ng-recaptcha';
 
 
 declare var $: any;
@@ -60,7 +61,7 @@ export class ForgotPasswordConfirmComponent implements OnInit {
   private captcha: string;
   private forgotId: string;
   public captcha_key: string;
-  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
+  @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
   matcher = new MyErrorStateMatcher();
 
 
