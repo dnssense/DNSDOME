@@ -215,14 +215,90 @@ get savedUserMessage(): string {
   get passwordChangedMessage(): string {
     return this.translator.translate('ACCOUNTSETTINGS.PasswordChanged');
   }
-  get getDashboardNoDataFoundMessage(): string {
+  get dashboardNoDataFoundMessage(): string {
     return this.translator.translate('DASHBOARD.DataNotFound');
 
   }
 
-  get getNotEditableSystemProfile(): string {
+  get notEditableSystemProfile(): string {
     return this.translator.translate('SystemSecurityProfileCannotUpdate');
   }
+
+  get pleaseFillTheFullName(): string {
+    return this.translator.translate('PleaseFillTheFullName');
+  }
+  get pleaseFillRequirementFields(): string {
+    return this.translator.translate('PleaseFillRequirementFields');
+  }
+
+  get pleaseFillThePhoneNumber(): string {
+    return this.translator.translate('PleaseFillThePhoneNumber');
+  }
+
+  get pleaseFillTheGsmCode(): string {
+    return this.translator.translate('PleaseFillTheGsmCode');
+  }
+  get pleaseFillTheCompanyName(): string {
+    return this.translator.translate('PleaseFillTheCompanyName');
+  }
+  get pleaseFillTheCompanyIndustry(): string {
+    return this.translator.translate('PleaseFillTheCompanyIndustry');
+  }
+  get pleaseFillTheCompanyWebSite(): string {
+    return this.translator.translate('PleaseFillTheCompanyWebSite');
+  }
+  get pleaseFillTheCompanyPersonnelCount(): string {
+    return this.translator.translate('PleaseFillTheCompanyPersonnelCount');
+  }
+
+  get pleaseFillTheCurrentPassword(): string {
+    return this.translator.translate('PleaseFillTheCurrentPassword');
+  }
+
+  get pleaseFillTheNewPassword(): string {
+    return this.translator.translate('PleaseFillTheNewPassword');
+  }
+
+  get pleaseFillTheNewPasswordAgain(): string {
+    return this.translator.translate('PleaseFillTheNewPasswordAgain');
+  }
+
+  get newPasswordAndConfirmedPasswordAreNotSame(): string {
+    return this.translator.translate('NewPasswordAndConfirmedPasswordAreNotSame');
+  }
+
+  get passwordComplexityMustBe(): string {
+    return this.translator.translate('PasswordComplexityMustBe');
+  }
+
+  get pleaseFillFirstName(): string {
+    return this.translator.translate('PleaseFillFirstName');
+  }
+
+  get pleaseFillLastName(): string {
+    return this.translator.translate('PleaseFillLastName');
+  }
+
+  get pleaseEnterAValidEmail(): string {
+    return this.translator.translate('PleaseEnterAValidEmail');
+  }
+
+  get pleaseFillThePassword(): string {
+    return this.translator.translate('PleaseFillThePassword');
+  }
+
+  get pleaseFillThePasswordAgain(): string {
+    return this.translator.translate('PleaseFillThePasswordAgain');
+  }
+  get passwordAndConfirmedPasswordAreNotSame(): string {
+    return this.translator.translate('PasswordAndConfirmedPasswordAreNotSame');
+  }
+
+  get captchaIsNotValid(): string {
+    return this.translator.translate('CaptchaIsNotValid');
+  }
+
+
 
 
 

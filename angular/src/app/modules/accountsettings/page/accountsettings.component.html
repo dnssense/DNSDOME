@@ -21,7 +21,7 @@
             <div>
               <label for="fullname" class="rk-label">{{'ACCOUNTSETTINGS.UserFullName' | translate}}</label>
               <input type="text" class="rk-input w-100" id="fullname" placeholder="Full Name" [(ngModel)]="user.name"
-                formControlName="name">
+                formControlName="name" required>
             </div>
 
             <div class="mt-3">
@@ -45,12 +45,11 @@
             <h5 class="rk-head-title">{{'ACCOUNTSETTINGS.TwoFactorAuthMessage' | translate}}</h5>
 
             <p class="rk-description">
-              Before using two factor authentication please enter and validate a gsm number.
+              {{'ACCOUNTSETTINGS.TwoFactorAuthElseMessage' | translate}}
             </p>
 
             <p class="rk-description">
-              <span class="text-accent">*</span> In order to login via two factor authentication and use sms service,
-              enable 2FA feature.
+              <span class="text-accent">*</span> {{'ACCOUNTSETTINGS.TwoFactorAuthMessage' | translate}}
             </p>
 
             <ng-container *ngIf="user.gsmCode && user.gsm?.length > 0; else elseTemplate2FA">

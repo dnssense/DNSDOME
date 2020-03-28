@@ -16,6 +16,7 @@ import { SmsType } from 'src/app/core/models/SmsType';
 import { RestPreloginResponse, RestPreloginSmsResponse } from 'src/app/core/models/RestServiceModels';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { RecaptchaComponent } from 'ng-recaptcha';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 
 declare var $: any;
 
@@ -42,7 +43,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private notification: NotificationService,
     private smsService: SmsService,
     private capthaService: CaptchaService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private staticMessageService: StaticMessageService
   ) {
     this.isFailed = false;
 
@@ -222,15 +224,22 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   sendPasswordActivationCode() {
+    if (!this.capthaService.validCaptcha(this.captcha)) {
+      this.notification.warning(this.staticMessageService.captchaIsNotValid);
+      return;
+    }
+
+    if (!this.validEmailLogin || !this.forgoterEmail) {
+      this.notification.warning(this.staticMessageService.pleaseEnterAValidEmail);
+      return;
+    }
     if (this.validEmailLogin) {
       const forgoter: SignupBean = new SignupBean();
       forgoter.username = this.forgoterEmail;
 
-      if (!this.capthaService.validCaptcha(this.captcha) || !forgoter.username) {
-        return;
-      } else {
+
         forgoter.c_answer = this.captcha;
-      }
+
 
       this.authService.forgotPassword(forgoter).subscribe(res => {
 

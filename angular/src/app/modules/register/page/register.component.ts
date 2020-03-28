@@ -13,6 +13,8 @@ import { AccountService } from 'src/app/core/services/accountService';
 import { Router } from '@angular/router';
 import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 import { RecaptchaComponent } from 'ng-recaptcha';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { retryWhen } from 'rxjs/operators';
 declare var $: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -35,7 +37,9 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     private accountService: AccountService,
     private capthaService: CaptchaService,
     private configService: ConfigService,
-    private router: Router
+    private router: Router,
+    private staticMessageService: StaticMessageService,
+    private notification: NotificationService
   ) { }
 
   private toggleButton: any;
@@ -191,7 +195,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   handleCaptcha($event: string) {
-    
+
     this.captcha = $event;
   }
 
@@ -217,7 +221,59 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       this.isRegisterFormValid();
     }
 
+    // burasi
+    if (!this.user.company.name) {
+      this.notification.warning(this.staticMessageService.pleaseFillTheCompanyName);
+      return;
+    }
+    if (!this.user.name) {
+      this.notification.warning(this.staticMessageService.pleaseFillFirstName);
+      return;
+    }
 
+    if (!this.user.surname) {
+      this.notification.warning(this.staticMessageService.pleaseFillLastName);
+      return;
+    }
+
+
+    if (!this.validEmailRegister) {
+      this.notification.warning(this.staticMessageService.pleaseEnterAValidEmail);
+      return;
+    }
+
+    if (!this.user.gsmCode) {
+      this.notification.warning(this.staticMessageService.pleaseFillTheGsmCode);
+      return;
+    }
+    if (!this.user.gsm) {
+      this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
+      return;
+    }
+
+    if (!this.user.username) {
+      this.notification.warning(this.staticMessageService.pleaseEnterAValidEmail);
+      return;
+    }
+
+    if (!this.user.password) {
+      this.notification.warning(this.staticMessageService.pleaseFillThePassword);
+      return;
+    }
+    if (!this.user.passwordAgain) {
+      this.notification.warning(this.staticMessageService.pleaseFillThePasswordAgain);
+      return;
+    }
+
+    if (this.user.password != this.user.passwordAgain) {
+      this.notification.warning(this.staticMessageService.passwordAndConfirmedPasswordAreNotSame);
+      return;
+    }
+
+    if (this.passStrength != 4) {
+      this.notification.warning(this.staticMessageService.passwordComplexityMustBe);
+      return;
+    }
     if (this.user != null && this.registerForm.dirty
       && this.registerForm.valid && this.user.password === this.user.passwordAgain) {
 

@@ -239,6 +239,10 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     userFormSubmit() {
+        if (!this.user.name) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheFullName);
+            return;
+        }
         if (this.user && this.userInfoForm.dirty && this.userInfoForm.valid) {
             const request: RestUserUpdateRequest = {};
             request.name = this.user.name || ' ';
@@ -247,10 +251,36 @@ export class AccountSettingsComponent implements OnInit {
                 this.notification.success(this.staticMessageService.nameUpdatedMessage);
                 this.authService.saveSession();
             });
+        } else {
+            this.notification.warning(this.staticMessageService.pleaseFillRequirementFields);
         }
     }
 
     companyFormSubmit() {
+
+
+        if (!this.signupUser.company?.name) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheCompanyName);
+            return;
+        }
+
+        if (!this.signupUser.company?.industry) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheCompanyIndustry);
+            return;
+        }
+
+        if (!this.signupUser.company?.url) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheCompanyWebSite);
+            return;
+        }
+
+        if (!this.signupUser.company?.personnelCount) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheCompanyPersonnelCount);
+            return;
+        }
+
+
+
         if (this.companyInfoForm.valid && this.signupUser.company.industry.length > 0 && this.signupUser.company.personnelCount.length > 0) {
             this.companyService.saveCompany(this.signupUser.company).subscribe(res => {
                 this.notification.success(this.staticMessageService.companyInformationUpdatedMessage);
@@ -262,6 +292,31 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     changePasswordFormSubmit() {
+        if (!this.currentPassword) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheCurrentPassword);
+            return;
+        }
+        if (!this.signupUser.password) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheNewPassword);
+            return;
+        }
+        if (!this.signupUser.passwordAgain) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheNewPasswordAgain);
+            return;
+        }
+
+        if (this.signupUser.password != this.signupUser.passwordAgain) {
+            this.notification.warning(this.staticMessageService.newPasswordAndConfirmedPasswordAreNotSame);
+            return;
+        }
+
+        if (this.passwordStrength != 4) {
+            this.notification.warning(this.staticMessageService.passwordComplexityMustBe);
+            return;
+        }
+
+
+
         if (this.changePasswordForm.valid && this.changePasswordForm.dirty && this.signupUser.password === this.signupUser.passwordAgain && this.passwordStrength === 4) {
             this.accountService.changePassword(this.currentPassword, this.signupUser.password)
                 .subscribe(res => {
@@ -273,20 +328,22 @@ export class AccountSettingsComponent implements OnInit {
                     this.signupUser.passwordAgain = '';
 
                     this.activeTabNumber = 0;
-                }, (err) => {
-                    if (err.error.code === 'ErrUserBadOldPassword') {
-                        this.notification.error('Your old password is incorrect.');
-                    } else {
-                        this.notification.error(err.error.message);
-                    }
                 });
         } else {
-            this.notification.error(this.staticMessageService.enterRequiredFieldsMessage);
+            this.notification.warning(this.staticMessageService.enterRequiredFieldsMessage);
             return;
         }
     }
 
     change2FASubmit() {
+        if (!this.user.gsmCode) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheGsmCode);
+            return;
+        }
+        if (!this.user.gsm) {
+            this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
+        }
+
         if (this.user.gsm && this.user.gsmCode) {
             const request: RestUserUpdateRequest = {};
             request.isTwoFactorAuthentication = this.user.twoFactorAuthentication ? 0 : 1;
@@ -297,12 +354,21 @@ export class AccountSettingsComponent implements OnInit {
                 this.authService.saveSession();
             });
         } else {
-            this.notification.warning('User GSM is missing!');
+            this.notification.warning(this.staticMessageService.pleaseFillRequirementFields);
             this.user.twoFactorAuthentication = false;
         }
     }
 
     changePhoneNumber() {
+
+        if (!this.gsmCodeTemp) {
+            this.notification.warning(this.staticMessageService.pleaseFillTheGsmCode);
+            return;
+        }
+        if (!this.phoneNumberTemp) {
+            this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
+            return;
+        }
         if (this.phoneNumberTemp && this.phoneNumberTemp.length === 10) {
             this.user.gsm = this.phoneNumberTemp;
             this.user.gsmCode = this.gsmCodeTemp;

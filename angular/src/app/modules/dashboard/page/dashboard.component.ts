@@ -870,7 +870,7 @@ export class DashboardComponent implements OnInit {
         return x1 - y1;
       });
       if (!this.elasticData.items.length) {
-        this.notificationService.warning(this.staticMesssageService.getDashboardNoDataFoundMessage);
+        this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
       }
       this.drawChartAnomaly();
     });

@@ -331,7 +331,7 @@ export class ProfileWizardComponent {
 
   categoryChanged(category: categoryItem) {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
     return ;
     }
     if (category.isBlocked) {
@@ -359,7 +359,7 @@ export class ProfileWizardComponent {
 
   applicationChanged(application: applicationItem) {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
     return ;
     }
 
@@ -422,7 +422,7 @@ export class ProfileWizardComponent {
   }
   changeClearAds() {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
     return ;
     }
     const advertisementCategory = {id: 6, name: 'Advertisements'};
@@ -442,7 +442,7 @@ export class ProfileWizardComponent {
 
   saveProfile() {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
       return ;
       }
     let status = false;
@@ -561,7 +561,7 @@ export class ProfileWizardComponent {
 
   addToBlackList() {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
       return ;
       }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
@@ -581,7 +581,7 @@ export class ProfileWizardComponent {
 
   removeFromBlackList(item: ListItem) {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
       return ;
       }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
@@ -605,7 +605,7 @@ export class ProfileWizardComponent {
 
   addToWhiteList() {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
       return ;
       }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
@@ -625,7 +625,7 @@ export class ProfileWizardComponent {
 
   removeFromWhiteList(item: string) {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
       return ;
       }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
@@ -636,7 +636,7 @@ export class ProfileWizardComponent {
 
   changeSafeSearchMode() {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
       return ;
       }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
@@ -646,7 +646,7 @@ export class ProfileWizardComponent {
 
   changeYoutubeMode() {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
       return ;
       }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
@@ -656,7 +656,7 @@ export class ProfileWizardComponent {
 
   setSecurityMode(val: boolean) {
     if (this.saveMode == 'NotEditable') {
-      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
       return ;
       }
    // const firstseenCategory = {id: 62, name: 'Firstly Seen'};
