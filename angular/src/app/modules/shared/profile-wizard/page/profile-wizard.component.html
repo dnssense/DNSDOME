@@ -71,7 +71,7 @@
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
-                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="cat.isBlocked"
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
                       [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
                   </div>
                 </div>
@@ -98,7 +98,7 @@
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
-                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="cat.isBlocked"
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
                       [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
                   </div>
                 </div>
@@ -125,7 +125,7 @@
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
-                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="cat.isBlocked"
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
                       [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
                   </div>
                 </div>
@@ -152,7 +152,7 @@
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
-                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="cat.isBlocked"
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
                       [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
                   </div>
                 </div>
@@ -182,7 +182,7 @@
                 <div class="accordion-label">{{ app.application.name }}</div>
 
                 <div style="width: 78px;">
-                  <rk-toggle-button clickClose="true" (click)="applicationChanged(app)" [active]="app.isBlocked"
+                  <rk-toggle-button clickClose="true" (click)="applicationChanged(app)" [active]="!app.isBlocked"
                     [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
                 </div>
               </div>

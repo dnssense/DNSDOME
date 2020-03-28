@@ -65,7 +65,7 @@ export class CustomReportResultComponent implements OnDestroy {
 
   tableConfig: RkTableConfigModel = {
     columns: [
-      { id: 0, name: 'time', displayText: 'Time', isLink: true },
+      /* { id: 0, name: 'time', displayText: 'Time', isLink: true }, */
       { id: 1, name: 'domain', displayText: 'Domain', isLink: true },
       { id: 2, name: 'subdomain', displayText: 'Subdomain', isLink: true },
       { id: 3, name: 'sourceIp', displayText: 'Src.Ip', isLink: true },

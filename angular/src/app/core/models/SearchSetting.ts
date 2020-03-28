@@ -12,7 +12,7 @@ export class SearchSetting {
   id = -1;
   name = '';
   refresh = -1;
-  dateInterval: string | number = 10080;
+  dateInterval: string | number = 5;
   type: SearchSettingsType = 'roksit';
   topNumber = 10;
   query: string;

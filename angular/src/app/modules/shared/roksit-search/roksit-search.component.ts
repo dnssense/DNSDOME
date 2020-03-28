@@ -81,7 +81,7 @@ export class RoksitSearchComponent implements OnInit {
   users: User[] = [];
 
   dateOptions: RkSelectModel[] = [
-    { displayText: 'Last 5 Minutes', value: 5 },
+    { displayText: 'Last 5 Minutes', value: 5 , selected: true},
     { displayText: 'Last 15 Minutes', value: 15 },
     { displayText: 'Last 30 Minutes', value: 30 },
     { displayText: 'Last 1 Hour', value: 60 },
@@ -89,7 +89,7 @@ export class RoksitSearchComponent implements OnInit {
     { displayText: 'Last 12 Hour', value: 60 * 12 },
     { displayText: 'Last 1 Day', value: 60 * 24 },
     { displayText: 'Last 2 Day', value: 60 * 24 * 2 },
-    { displayText: 'Last 1 Week', value: 60 * 24 * 7, selected: true },
+    { displayText: 'Last 1 Week', value: 60 * 24 * 7,  },
     { displayText: 'Last 2 Week', value: 60 * 24 * 14 },
     { displayText: 'Last 1 Month', value: 60 * 24 * 30 },
   ];
@@ -202,6 +202,7 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   onSelectedDateChange($event) {
+
     this.searchSettingEmitter.emit(this.searchSettings);
   }
 
@@ -339,19 +340,30 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   setDateOptionBySearchSettings() {
-    this.dateOptions = this.dateOptions.map(x => {
+
+    let selectedAnyOne = false;
+    const dateOptions = this.dateOptions.map(x => {
       x.selected = false;
 
       if (x.value == this.searchSettings.dateInterval) {
-
+        selectedAnyOne = true;
         x.selected = true;
       }
 
       return x;
     });
+    if (!selectedAnyOne && dateOptions.length) {
+
+    dateOptions[0].selected = true;
+    this.searchSettings.dateInterval = this.dateOptions[0].value;
+    }
+
+    this.dateOptions = dateOptions;
+
   }
 
   search(type?: 'savedreport' | string, showFilterModal = false) {
+
     this.setDateOptionBySearchSettings();
 
     if (type === 'savedreport') {
@@ -429,7 +441,7 @@ export class RoksitSearchComponent implements OnInit {
     this.searchSettings.mustnot = [];
     this.searchSettings.should = [];
 
-    this.searchSettings.dateInterval = this.dateOptions[this.dateOptions.length - 1].value;
+    this.searchSettings.dateInterval = this.dateOptions[0].value;
 
     this.groupedCategories.forEach(elem => elem.items.forEach(item => item.selected = false));
 
@@ -440,7 +452,7 @@ export class RoksitSearchComponent implements OnInit {
     this.clear();
 
     this.actionType = null;
- 
+
     this.filters = [];
   }
 

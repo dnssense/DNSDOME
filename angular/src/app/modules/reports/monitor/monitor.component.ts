@@ -49,7 +49,9 @@ export class MonitorComponent implements OnInit, AfterViewInit {
 
   isShowRunBar = false;
 
-  ngOnInit() { }
+  ngOnInit() {
+    
+  }
   ngAfterViewInit() {
     this.init();
   }
