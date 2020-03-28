@@ -137,6 +137,7 @@
     "All":"All",
     "Category":"Category",
     "Run":"Run",
+    "SystemSecurityProfileCannotUpdate":"System profile cannot update",
     "REPORT":{
         "SaveReport":"Save Report",
         "NewReport":"New Report",

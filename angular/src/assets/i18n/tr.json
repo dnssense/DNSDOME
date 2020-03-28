@@ -138,6 +138,7 @@
     "All":"Hepsi",
     "Category":"Kategori",
     "Run":"Çalıştır",
+    "SystemSecurityProfileCannotUpdate":"Sistem profili değistirilemez",
     "REPORT":{
         "SaveReport":"Rapor Kaydet",
         "NewReport":"Yeni Rapor",

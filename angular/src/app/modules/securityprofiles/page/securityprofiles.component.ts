@@ -40,6 +40,7 @@ export class SecurityProfilesComponent {
 
     getProfiles() {
         this.agentService.getSecurityProfiles().subscribe(res => {
+
             this.securityProfiles = res;
 
             this.fillProfilesOnSelect();
@@ -56,30 +57,44 @@ export class SecurityProfilesComponent {
 
 
         this.saveMode = 'NewProfile';
-
+        this.profileWizard.saveMode = this.saveMode;
         this.selectedAgent = new Agent();
 
         this.selectedAgent.rootProfile = new SecurityProfile();
-
+        this.profileWizard.selectedAgent = this.selectedAgent;
         this.changeProfileSelect(-1);
 
-        this.profileModal.toggle();
 
-        // this.profileWizard.updateModels();
+
+       // this.profileWizard.updateModels();
+        this.profileModal.toggle();
     }
 
     editProfile(profile: SecurityProfile) {
-        this.profileModal.toggle();
+
 
         this.saveMode = 'ProfileUpdate';
-
+        this.profileWizard.saveMode = this.saveMode;
         this.fillProfilesOnSelect(profile.id);
 
         this.selectedAgent = new Agent();
 
         this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(profile));
+        this.profileWizard.selectedAgent = this.selectedAgent;
+
+         // this.profileWizard.updateModels();
+         this.profileModal.toggle();
+    }
+    viewProfile(profile: SecurityProfile) {
+        this.selectedAgent = new Agent();
+        this.saveMode = 'NotEditable';
+        this.profileWizard.saveMode = this.saveMode;
+        this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(profile));
+        this.profileWizard.selectedAgent = this.selectedAgent;
 
         // this.profileWizard.updateModels();
+
+        this.profileModal.toggle();
     }
 
     deleteProfile(id: number) {
@@ -148,17 +163,11 @@ export class SecurityProfilesComponent {
         this.selectedAgent.rootProfile.blackWhiteListProfile.id = null;
         this.selectedAgent.rootProfile.blackWhiteListProfile.id = null;
         this.saveMode = 'ProfileUpdate';
-        this.profileWizard.updateModels();
+        this.profileWizard.saveMode = this.saveMode;
+        this.profileWizard.selectedAgent = this.selectedAgent;
+        // this.profileWizard.updateModels();
         this.profileModal.toggle();
     }
 
-    viewProfile(profile: SecurityProfile) {
-        this.selectedAgent = new Agent();
 
-        this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(profile));
-
-        this.saveMode = 'NotEditable';
-
-        this.profileModal.toggle();
-    }
 }

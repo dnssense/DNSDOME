@@ -88,7 +88,7 @@
                     </button>
                   </td>
                   <td class="text-center" style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deleteProfile(profile.id)" data-tooltip="You can remove the profile." data-tooltip-location="left">
+                    <button class="btn btn-link btn-icon p-0 hover-gray"  *ngIf="!profile.isSystem" (click)="deleteProfile(profile.id)" data-tooltip="You can remove the profile." data-tooltip-location="left">
                       <i-feather name="trash-2" class="mr-0"></i-feather>
                     </button>
                   </td>

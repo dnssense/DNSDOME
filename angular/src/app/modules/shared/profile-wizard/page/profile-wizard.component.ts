@@ -5,7 +5,7 @@ import { StaticService } from 'src/app/core/services/staticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { Agent } from 'src/app/core/models/Agent';
 import { ApplicationV2 } from 'src/app/core/models/ApplicationV2';
-import { SecurityProfile, BlackWhiteListProfile, SecurityProfileItem, ListItem } from 'src/app/core/models/SecurityProfile';
+import { SecurityProfile, BlackWhiteListProfile, SecurityProfileItem, ListItem, FIRSTLY_SEEN } from 'src/app/core/models/SecurityProfile';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AlertService } from 'src/app/core/services/alert.service';
@@ -152,7 +152,7 @@ export class ProfileWizardComponent {
   applicationList: applicationItem[] = [];
   activeNumber = 1;
 
-  securityMode = true;
+  // securityMode = true;
 
   groupedApplications: { type: string, displayText: string, description: string, applications: applicationItem[] }[] = [];
 
@@ -277,7 +277,14 @@ export class ProfileWizardComponent {
     ];
   }
 
+  reCalculateisPositiveSecurity() {
+    if (this.selectedAgent?.rootProfile?.domainProfile?.categories) {
+    this.selectedAgent.rootProfile.isPositiveSecurity = Boolean(this.selectedAgent.rootProfile.domainProfile.categories.find(x => x.id == FIRSTLY_SEEN)?.isBlocked);
+    }
+  }
+
   updateModels() {
+
     if (this.saveMode === 'NewProfile') {
       this.categoryList.forEach(c => {
         if (c.category.isVisible) {
@@ -291,8 +298,10 @@ export class ProfileWizardComponent {
           this.selectedAgent.rootProfile.applicationProfile.categories.push({ id: a.application.id, isBlocked: false });
         }
       });
-      this.selectedAgent.rootProfile.isPositiveSecurity = false;
+      this.reCalculateisPositiveSecurity();
+
     } else if (this.saveMode === 'ProfileUpdate' || this.saveMode === 'NotEditable') {
+
       this.selectedAgent.rootProfile.domainProfile.categories.forEach(x => {
         this.categoryList.find(y => y.category.id === x.id).isBlocked = x.isBlocked;
       });
@@ -300,7 +309,10 @@ export class ProfileWizardComponent {
       this.selectedAgent.rootProfile.applicationProfile.categories.forEach(x => {
         this.applicationList.find(y => y.application.id === x.id).isBlocked = x.isBlocked;
       });
+
+      this.reCalculateisPositiveSecurity();
     } else {
+
       this.categoryList.forEach(c => {
         if (c.category.isVisible) {
           c.isBlocked = false;
@@ -313,16 +325,23 @@ export class ProfileWizardComponent {
           this.selectedAgent.rootProfile.applicationProfile.categories.push({ id: a.application.id, isBlocked: false });
         }
       });
+      this.reCalculateisPositiveSecurity();
     }
   }
 
   categoryChanged(category: categoryItem) {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+    return ;
+    }
     if (category.isBlocked) {
       this.allowCategory(category.category.id);
     } else {
       this.blockCategory(category.category.id);
     }
+    this.reCalculateisPositiveSecurity();
   }
+
 
   allowCategory(id: number) {
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
@@ -339,11 +358,17 @@ export class ProfileWizardComponent {
   }
 
   applicationChanged(application: applicationItem) {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+    return ;
+    }
+
     if (application.isBlocked) {
       this.blockApplication(application.application.id);
     } else {
       this.allowApplication(application.application.id);
     }
+    this.reCalculateisPositiveSecurity();
   }
 
   allowApplication(id: number) {
@@ -375,6 +400,12 @@ export class ProfileWizardComponent {
   }
 
   isClearedAdds(): boolean {
+    const advertisementCategory = {id: 6, name: 'Advertisements'};
+    const founded = this.categoryList.find(x => x.category?.id == advertisementCategory.id);
+    if (!founded) {return false; }
+    return founded.isBlocked;
+
+   /*  debugger;
     // advertisement apps
     const adsIds = this.groupedApplications.find(x => x.type == ApplicationTypes.CLEAR_ADS)?.applications.map(x => x.application.id);
     if (!adsIds) { return false; }
@@ -387,9 +418,17 @@ export class ProfileWizardComponent {
     if (filtered.length == adsIds.length) {
       return true;
     }
-    return false;
+    return false; */
   }
   changeClearAds() {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+    return ;
+    }
+    const advertisementCategory = {id: 6, name: 'Advertisements'};
+    const founded = this.categoryList.find(x => x.category?.id == advertisementCategory.id);
+    if (founded) {this.categoryChanged(founded); }
+    /* debugger;
     const clearedAdds = this.isClearedAdds();
 
     const adsApps = this.groupedApplications.find(x => x.type == ApplicationTypes.CLEAR_ADS)?.applications;
@@ -397,11 +436,15 @@ export class ProfileWizardComponent {
     adsApps.forEach(x => {
       x.isBlocked = !clearedAdds;
       this.applicationChanged(x);
-    });
+    }); */
 
   }
 
   saveProfile() {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      return ;
+      }
     let status = false;
 
     if (!this.selectedAgent.rootProfile.name && this.selectedAgent.rootProfile.name.trim().length === 0) {
@@ -517,6 +560,10 @@ export class ProfileWizardComponent {
   }
 
   addToBlackList() {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      return ;
+      }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain === this.blackListItem.domain)) {
         this.notification.warning(this.staticMessageService.thisDomainAllreadyExitsInBlackListMessage);
@@ -533,6 +580,10 @@ export class ProfileWizardComponent {
   }
 
   removeFromBlackList(item: ListItem) {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      return ;
+      }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.splice(
         this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b.domain === item.domain), 1);
@@ -553,6 +604,10 @@ export class ProfileWizardComponent {
   }
 
   addToWhiteList() {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      return ;
+      }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain === this.whiteListItem.domain)) {
         this.notification.warning(this.staticMessageService.thisDomainAllreadyExitsInWhiteListMessage);
@@ -569,6 +624,10 @@ export class ProfileWizardComponent {
   }
 
   removeFromWhiteList(item: string) {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      return ;
+      }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.splice(
         this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.findIndex(b => b.domain === item), 1);
@@ -576,19 +635,40 @@ export class ProfileWizardComponent {
   }
 
   changeSafeSearchMode() {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      return ;
+      }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.isSafeSearchEnabled = this.selectedAgent.rootProfile.isSafeSearchEnabled ? false : true;
     }
   }
 
   changeYoutubeMode() {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      return ;
+      }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled = this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled ? false : true;
     }
   }
 
   setSecurityMode(val: boolean) {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.getNotEditableSystemProfile);
+      return ;
+      }
+   // const firstseenCategory = {id: 62, name: 'Firstly Seen'};
     this.selectedAgent.rootProfile.isPositiveSecurity = val;
+    if (val) {
+      this.blockCategory(FIRSTLY_SEEN);
+    } else {
+      this.allowCategory(FIRSTLY_SEEN);
+    }
+     this.reCalculateisPositiveSecurity();
   }
+
+
 
 }

@@ -20,7 +20,7 @@ export class Category {
     isBlocked: boolean;
     // timeProfile: TimeProfile;
 }
-const FIRSTLY_SEEN = 62;
+export const FIRSTLY_SEEN = 62;
 export class SecurityProfile {
     id: number;
     name: string;
@@ -31,13 +31,17 @@ export class SecurityProfile {
     blackWhiteListProfile: BlackWhiteListProfile = new BlackWhiteListProfile();
     numberOfUsage: number;
     isSystem = false;
-    get isPositiveSecurity(): boolean {
+    isPositiveSecurity = false;
+    // burasi boyle yazildiginda calismiyor neden anlamadim
+    /* get isPositiveSecurity(): boolean {
 
         const firstlyseen = this.domainProfile.categories.find(x => x.id == FIRSTLY_SEEN);
+        console.log(`${firstlyseen ? 'found' : 'notfound'} , ${firstlyseen ? firstlyseen.isBlocked : 'not known'}`);
         if (firstlyseen && firstlyseen.isBlocked) {return true; }
         return false;
     }
     set isPositiveSecurity(value: boolean)  {
+
         let firstlyseen = this.domainProfile.categories.find(x => x.id == FIRSTLY_SEEN);
         if (!firstlyseen) {
         this.domainProfile.categories.push({id: 62, isBlocked: false});
@@ -45,7 +49,7 @@ export class SecurityProfile {
         firstlyseen = this.domainProfile.categories.find(x => x.id == FIRSTLY_SEEN);
         firstlyseen.isBlocked = value;
 
-    }
+    } */
 }
 
 

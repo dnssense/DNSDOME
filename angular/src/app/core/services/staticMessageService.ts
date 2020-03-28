@@ -220,6 +220,9 @@ get savedUserMessage(): string {
 
   }
 
+  get getNotEditableSystemProfile(): string {
+    return this.translator.translate('SystemSecurityProfileCannotUpdate');
+  }
 
 
 
