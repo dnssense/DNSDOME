@@ -20,6 +20,7 @@ export class StaticMessageService {
 
 
 
+
   constructor(private translator: TranslatorService) {
 
 
@@ -307,6 +308,18 @@ get savedUserMessage(): string {
 
   get passwordResetLinkSendedPleaseCheckYourEmail(): string {
     return this.translator.translate('PasswordResetLinkSendedPleaseCheckYourEmail');
+  }
+
+  get  profileCannotFind(): string {
+    return this.translator.translate('ProfileCannotFind');
+  }
+
+  get  pleaseEnterValidIp(): string {
+    return this.translator.translate('PleaseEnterValidIp');
+  }
+
+  get  pleaseEnterValidIpAndMask(): string {
+    return this.translator.translate('PleaseEnterValidIpAndMask');
   }
 
 

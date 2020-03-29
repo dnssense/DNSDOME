@@ -128,7 +128,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         }
       );
     } else {
-      this.notification.warning('Login form is not valid!');
+      this.notification.warning(this.staticMessageService.pleaseFillRequirementFields);
       return;
     }
   }

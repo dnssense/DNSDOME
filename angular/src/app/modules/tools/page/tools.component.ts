@@ -48,23 +48,5 @@ export class ToolsComponent {
         }
     }
 
-  /*   reportDomain() {
 
-
-            const request = {
-                domain: this.domain,
-                category: this.sele
-            } as Domain2CategorizeRequestV2;
-
-            if (this.comment.trim().length > 0) {
-                request.comment = this.comment;
-            }
-            this.toolsService.sendCategoryRequestV2(body).subscribe(res => {
-                if (res) {
-                    this.domainForReq = '';
-                    this.notification.success('Category request is successfully sent');
-                }
-            });
-        }
-    } */
 }

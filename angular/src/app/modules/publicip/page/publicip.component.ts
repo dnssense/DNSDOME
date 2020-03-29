@@ -263,7 +263,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
         this.profileModal.toggle();
       } else {
-        this.notification.warning('Profile can not find!');
+        this.notification.warning(this.staticMessageService.profileCannotFind);
       }
     }
   }
@@ -501,13 +501,13 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     const isDomain = ValidationService.isDomainValid(this.selectedIp.dynamicIpDomain);
 
     if (!this.isNullOrEmpty(this.selectedIp.agentAlias)) {
-      this.notification.warning('Please enter a name');
+      this.notification.warning(this.staticMessageService.pleaseFillName);
       return false;
     } else if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
-      this.notification.warning('Form is not valid! Please enter IP fields with valid values.');
+      this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
       return false;
     } else if (this.ipType === 'dynamicIp' && (!this.selectedIp.dynamicIpDomain || !isDomain)) {
-      this.notification.warning('Form is not valid! Please enter IP fields with valid values.');
+      this.notification.warning(this.staticMessageService.enterValidDomainMessage);
       return false;
     } else if (!this.ipType) {
       return false;
@@ -517,7 +517,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
         const e = this.selectedIp.staticSubnetIp[i];
         if (e.baseIp == null || e.mask === 0) {
-          this.notification.warning('Please enter IP fields with valid values and select a mask for your IP address!');
+          this.notification.warning(this.staticMessageService.pleaseEnterValidIpAndMask);
           return false;
         }
       }

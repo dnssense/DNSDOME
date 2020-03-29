@@ -8,30 +8,30 @@
 
 <rk-accordion isWizard="true" [activeNumber]="currentStep">
   <rk-accordion-panel index="1" class="accordion-p-0">
-    <div class="rk-accordion-title">Security Settings</div>
+    <div class="rk-accordion-title">{{'SecuritySettings'|translate}}</div>
 
     <div class="rk-accordion-body py-2">
       <div class="d-flex flex-column p-2" [ngStyle]="{'background': selectedAgent.rootProfile.isPositiveSecurity ? '#4fb75d' : '#97a5bb'}">
-        <div class="accordion-label text-white">Security Mode:</div>
+        <div class="accordion-label text-white">{{'SecurityMode'|translate}}:</div>
         <div class="d-flex align-items-center justify-content-between mt-1">
           <button class="rk-toggle-btn w-100 mr-2" [ngClass]="{'active': selectedAgent.rootProfile.isPositiveSecurity}"
-            (click)="setSecurityMode(true)">POSITIVE
-            SECURITY</button>
+            (click)="setSecurityMode(true)">{{'PositiveSecurity'|translate}}</button>
           <button class="rk-toggle-btn w-100 passive" [ngClass]="{'active': !selectedAgent.rootProfile.isPositiveSecurity}"
-            (click)="setSecurityMode(false)">NEGATIVE
-            SECURITY</button>
+            (click)="setSecurityMode(false)">{{'NegativeSecurity'|translate}}</button>
         </div>
 
-        <div class="accordion-description mt-2 text-white">
-          Sadece guvenli alanda gezinilmesini saglar. Zararlı ve bilinmeyen domainler engellenir. Bilinmeyen domainler
-          10 dk içinde sınıflandırılır.
+        <div class="accordion-description mt-2 text-white" *ngIf="selectedAgent.rootProfile.isPositiveSecurity">
+          {{'PositiveSecurityDescription'|translate}}
+        </div>
+        <div class="accordion-description mt-2 text-white" *ngIf="!selectedAgent.rootProfile.isPositiveSecurity">
+         {{'NegativeSecurityDescription'|translate}}
         </div>
       </div>
 
       <div style="padding: 0 15px;">
         <div class="d-flex align-items-center justify-content-between mt-3 pb-2"
           style="border-bottom: 1px solid #e4e9f1;">
-          <div class="accordion-label">Safe Search;</div>
+          <div class="accordion-label">{{'SafeSearch'|translate}};</div>
           <div style="width: 78px;">
             <rk-toggle-button [active]="selectedAgent.rootProfile.isSafeSearchEnabled" (click)="changeSafeSearchMode()"
               clickClose="true"  [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }"></rk-toggle-button >
@@ -39,7 +39,7 @@
         </div>
         <div class="d-flex align-items-center justify-content-between my-2 pb-2"
           style="border-bottom: 1px solid #e4e9f1;">
-          <div class="accordion-label">YouTube Restrict Mode;</div>
+          <div class="accordion-label">{{'YouTubeRestrictMode'|translate}};</div>
           <div style="width: 78px;">
             <rk-toggle-button [active]="selectedAgent.rootProfile.isYoutubeStrictModeEnabled"
               (click)="changeYoutubeMode()" clickClose="true" [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }">
@@ -48,18 +48,17 @@
         </div>
         <div class="d-flex align-items-center justify-content-between my-2 pb-2"
           style="border-bottom: 1px solid #e4e9f1;">
-          <div class="accordion-label">Clear Ads</div>
+          <div class="accordion-label">{{'Clear Ads'|translate}}</div>
           <div style="width: 78px;">
             <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }" [active]="isClearedAdds()" (click)="changeClearAds()" ></rk-toggle-button>
           </div>
         </div>
 
         <rk-collapse color="#d8d8d8" class="d-flex mt-3">
-          <rk-collapse-title>Malicious Categories</rk-collapse-title>
+          <rk-collapse-title>{{'MaliciousCategories'|translate}}</rk-collapse-title>
 
           <rk-collapse-description>
-            Phishing,Spam Sites,Warez gibi içerik ve güvenlik riski değişiklik gösterebilen
-            domainleri içerir.
+            {{'MaliciousDescription'|translate}}
           </rk-collapse-description>
 
           <rk-collapse-body>
@@ -82,11 +81,10 @@
         </rk-collapse>
 
         <rk-collapse color="#d8d8d8" class="d-flex mt-3">
-          <rk-collapse-title>Harmfull Categories</rk-collapse-title>
+          <rk-collapse-title>{{'HarmfullCategories'|translate}}</rk-collapse-title>
 
           <rk-collapse-description>
-            Illegal,Adult,Hate/Violance/illegal gibi içerik ve güvenlik riski değişiklik gösterebilen
-            domainleri içerir.
+            {{'HarmfullCategories'|translate}}
           </rk-collapse-description>
 
           <rk-collapse-body>
@@ -109,11 +107,10 @@
         </rk-collapse>
 
         <rk-collapse color="#d8d8d8" class="d-flex mt-3">
-          <rk-collapse-title>Variable Categories</rk-collapse-title>
+          <rk-collapse-title>{{'VariableCategories'|translate}}</rk-collapse-title>
 
           <rk-collapse-description>
-            Newly up, Undecided Safe gibi içerik ve güvenlik riski değişiklik gösterebilen
-            domainleri içerir.
+            {{'VariableDescription'|translate}}
           </rk-collapse-description>
 
           <rk-collapse-body>
@@ -136,11 +133,10 @@
         </rk-collapse>
 
         <rk-collapse color="#d8d8d8" class="d-flex mt-3">
-          <rk-collapse-title>Safe Categories</rk-collapse-title>
+          <rk-collapse-title>{{'SafeCategories'|translate}}</rk-collapse-title>
 
           <rk-collapse-description>
-            Cooking, Sport, Shopping gibi içerik gösterebilen
-            domainleri içerir.
+            {{'SafeDescription'|translate}}
           </rk-collapse-description>
 
           <rk-collapse-body>
@@ -166,7 +162,7 @@
     </div>
   </rk-accordion-panel>
   <rk-accordion-panel index="2">
-    <div class="rk-accordion-title">Applications</div>
+    <div class="rk-accordion-title">{{'Applications'|translate}}</div>
 
     <div class="rk-accordion-body">
       <rk-collapse color="#d8d8d8" class="d-flex mt-3" *ngFor="let groupedApp of groupedApplications">
@@ -199,19 +195,19 @@
     </div>
   </rk-accordion-panel>
   <rk-accordion-panel index="3">
-    <div class="rk-accordion-title">Black-White List</div>
+    <div class="rk-accordion-title">{{'BlackWhiteList'|translate}}</div>
 
     <div class="rk-accordion-body">
 
-      <h6 class="rk-title">White List</h6>
+      <h6 class="rk-title">{{'WhiteList'|translate}}</h6>
       <p class="rk-description">
-        White listesine eklediğiniz domainin kategorisi ne olursa olsun izin verilir.
+        {{'WhiteListDescription1'|translate}}
         <br />
-        Eklenen domainlerin tüm subdomainleri ile izin verilir.
+        {{'WhiteListDescription2'|translate}}
         <br />
-        Ör: google.com —> *.google.com
+        {{'WhiteListDescription3'|translate}}
         <br>
-        Bir domain'in uzunluğu en fazla 64 karakter olabilir.
+        {{'WhiteListDescription4'|translate}}
       </p>
 
       <div class="input-container">
@@ -223,7 +219,7 @@
 
         <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewWhiteListItem"
           (click)="addToWhiteList()">
-          Add
+          {{'Add'|translate}}
         </button>
       </div>
 
@@ -244,15 +240,15 @@
         </div>
       </div>
 
-      <h6 class="rk-title mt-4">Black List</h6>
+      <h6 class="rk-title mt-4">{{"BlackList"|translate}}</h6>
       <p class="rk-description">
-        Black listesine eklediğiniz domainin kategorisi ne olursa olsun bloklanır.
+        {{'BlackListDescription1'|translate}}
         <br />
-        Eklenen domainlerin tüm subdomainleri engellenir.
+        {{'BlackListDescription2'|translate}}
         <br />
-        Ör: google.com —> *.google.com
+        {{'BlackListDescription3'|translate}}
         <br>
-        Bir domain'in uzunluğu en fazla 64 karakter olabilir.
+        {{'BlackListDescription4'|translate}}
       </p>
 
       <div class="input-container">
@@ -264,7 +260,7 @@
 
         <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewBlackListItem"
           (click)="addToBlackList()">
-          Add
+          {{'Add'|translate}}
         </button>
       </div>
 
