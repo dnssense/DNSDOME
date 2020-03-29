@@ -39,9 +39,9 @@ export class ConfigService {
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-statement.htm';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       this.host.docUrl = 'http://docs.dnssense.com/DnsSense_Secure_DNS_Setup_Guide.pdf';
-      this.host.supportUrl = 'https:dnssense.com';
-      this.host.onlineHelpUrl = 'https:dnssense.com';
-      this.host.portal = 'https:portal.dnssense.com';
+      this.host.supportUrl = 'https://dnssense.com';
+      this.host.onlineHelpUrl = 'https://dnssense.com';
+      this.host.portal = 'https://portal.dnssense.com';
     } else if (window.location.host.indexOf('cyte') >= 0) {
       this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'CyberCyte';
@@ -53,7 +53,7 @@ export class ConfigService {
       this.host.privacyUrl = 'https://www.cybercyte.com/privacy-and-cookie-policy/';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58'; // dnccyte için yenisi gerekli
       this.host.docUrl = 'http://docs.netcyte.co/Secure_DNS_Setup_Guide.pdf';
-      this.host.portal = 'https:portal.dnscyte.com';
+      this.host.portal = 'https://portal.dnscyte.com';
       this.host.supportUrl = 'https://support.cybercyte.com/portal/home';
       this.host.onlineHelpUrl = 'https://docs.dnscyte.com';
     } else
@@ -68,9 +68,9 @@ export class ConfigService {
         this.host.privacyUrl = 'https://www.roksit.com/privacy-statement.htm';
         this.host.captcha_key = '6LdZopwUAAAAALG7uO9JV88w2y9sQnTJ9M0Lqhrg';
         this.host.docUrl = 'http://docs.roksit.com/Roksit_Secure_DNS_Setup_Guide.pdf';
-        this.host.portal = 'https:portal.roksit.com';
-        this.host.supportUrl = 'https:roksit.com';
-        this.host.onlineHelpUrl = 'https:roksit.com';
+        this.host.portal = 'https://portal.roksit.com';
+        this.host.supportUrl = 'https://roksit.com';
+        this.host.onlineHelpUrl = 'https://roksit.com';
       } else {
 
         this.host.www = 'https://www.dnssense.com';
@@ -83,9 +83,9 @@ export class ConfigService {
         this.host.privacyUrl = 'https://www.dnssense.com/privacy-statement.htm';
         this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
         this.host.docUrl = 'http://docs.dnssense.com/DnsSense_Secure_DNS_Setup_Guide.pdf';
-        this.host.portal = 'https:portal.dnssense.com';
-        this.host.supportUrl = 'https:dnssense.com';
-        this.host.onlineHelpUrl = 'https:dnssense.com';
+        this.host.portal = 'https://portal.dnssense.com';
+        this.host.supportUrl = 'https://dnssense.com';
+        this.host.onlineHelpUrl = 'https://dnssense.com';
       }
   }
   loadLanguage(): string|undefined {

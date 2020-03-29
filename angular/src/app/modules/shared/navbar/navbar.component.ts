@@ -6,7 +6,7 @@ import { Location } from '@angular/common';
 import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { ConfigService } from 'src/app/core/services/config.service';
+import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { Notification, NotificationApiService, NotificationRequest } from 'src/app/core/services/notification-api.service';
@@ -31,7 +31,8 @@ export class NavbarComponent implements OnInit {
     private toggleButton: any;
     private sidebarVisible: boolean;
     private _router: Subscription;
-
+    host: ConfigHost;
+    private _;
     @ViewChild('app-navbar-cmp') button: any;
 
     title: string;
@@ -50,10 +51,12 @@ export class NavbarComponent implements OnInit {
         private auth: AuthenticationService,
         private config: ConfigService,
         private translator: TranslatorService,
-        private notificationApiService: NotificationApiService
+        private notificationApiService: NotificationApiService,
+
     ) {
         this.location = location;
         this.nativeElement = element.nativeElement;
+        this.host = this.config.host;
     }
 
     notifications: Notification[] = [];
