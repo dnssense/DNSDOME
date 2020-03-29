@@ -94,7 +94,8 @@ export class UsersComponent implements OnInit {
     newUserClick() {
         this.userModalType = 'create';
         this.user = new User();
-        (this.user as any).roles = ['ROLE_USER'];
+        (this.user as any).roles = this.userRoles.filter(x => x.name == 'ROLE_USER');
+        this.prepareRoleSelect(this.user);
         this.userModal.toggle();
     }
     clean() {
@@ -114,7 +115,6 @@ export class UsersComponent implements OnInit {
 
     private prepareRoleSelect(user: User) {
         const role = this.userRoles.find(x => x.name === user.roles[0].name);
-
         this.selectedRoleId = role.id;
 
         this.userRolesForSelect = [];
@@ -158,6 +158,24 @@ export class UsersComponent implements OnInit {
 
     save() {
 
+        if (!this.user.name) {
+            this.notification.warning(this.staticMessageService.pleaseFillName);
+            return;
+        }
+        if (!this.user.username) {
+            this.notification.warning(this.staticMessageService.pleaseEnterAValidEmail);
+            return;
+        }
+        if (!this.emailValidator(this.user.username)) {
+            this.notification.warning(this.staticMessageService.pleaseEnterAValidEmail);
+            return;
+        }
+
+        if (!this.user.roles || !(this.user.roles as any).length) {
+            this.notification.warning(this.staticMessageService.pleaseSelectARole);
+        }
+
+
         if (this.emailValidator(this.user.username)) {
             if (this.user.id > 0) {
                 this.userService.update(this.user).subscribe(res => {
@@ -170,6 +188,14 @@ export class UsersComponent implements OnInit {
 
                 });
             } else {
+                if (!this.user.password) {
+                    this.notification.warning(this.staticMessageService.pleaseFillThePassword);
+                    return;
+                }
+                if (this.passwordStrength != 4) {
+                    this.notification.warning(this.staticMessageService.passwordComplexityMustBe);
+                    return;
+                }
                 if (this.passwordStrength > 3) {
                     this.userService.save(this.user).subscribe(res => {
                         if (res.key) {

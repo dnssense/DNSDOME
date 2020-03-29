@@ -159,6 +159,9 @@
     "PleaseFillThePasswordAgain":"Lütfen şifrenizi tekrar giriniz",
     "PasswordAndConfirmedPasswordAreNotSame":"Şifreniz ve tekrar girdiğiniz şifre aynı değil",
     "CaptchaIsNotValid":"Captcha geçerli değil",
+    "PleaseFillName":"Lütfen isim giriniz",
+    "PleaseSelectARole":"Lütfen bir role seçiniz",
+    "PasswordResetLinkSendedPleaseCheckYourEmail":"Şifre sıfırlama linki email adresinize gönderildi,lütfen email adresinizi kontrol ediniz",
     "REPORT":{
         "SaveReport":"Rapor Kaydet",
         "NewReport":"Yeni Rapor",
@@ -360,6 +363,7 @@
     "ErrSystemProfileCannotUpdate":"Sistem profili değiştirilemez",
     "ErrMaxBlackListSize":"Maximum blacklist sınırı aşıldı",
     "ErrReportSystemDataCannotUpdateOrDelete":"Sistem raporları silinemez ve değiştirilemez",
+    "ErrUserThereWillNotBeAnyAdminUser":"Bu yapmanız durumunda sistemde hiç admin kullanıcı kalmayacak",
     "FORGOTPASSWORD": {
         "Title": "Parola Yenileme"
     },

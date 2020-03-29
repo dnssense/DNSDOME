@@ -45,7 +45,7 @@ import { RecaptchaModule } from 'ng-recaptcha';
     AppRoutingModule,
     NotificationModule,
     NgxUiLoaderModule.forRoot({ fgsPosition: 'center-center', minTime: 100}),
-    NgxUiLoaderHttpModule.forRoot({ showForeground: true, excludeRegexp: ['\/api\/oauth\/', '\/api\/user\/current\/', '\/api\/user\/current\/role', '\/websocket']  }),
+    NgxUiLoaderHttpModule.forRoot({ showForeground: true, excludeRegexp: ['\/api\/oauth\/token$', '\/api\/user\/current$', '\/api\/user\/current\/role$', '\/websocket$']  }),
     NgxUiLoaderRouterModule,
     BsDropdownModule.forRoot(),
     CollapseModule.forRoot(),

@@ -152,6 +152,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   openForgotPassword() {
+
     $('#loginDiv').slideUp(500);
     $('#forgotPasswordDiv').slideDown(500);
   }
@@ -243,8 +244,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
       this.authService.forgotPassword(forgoter).subscribe(res => {
 
-        this.notification.success('Activation code sent your email.');
+        this.notification.success(this.staticMessageService.passwordResetLinkSendedPleaseCheckYourEmail);
         this.router.navigateByUrl('/login');
+        this.openLogin();
+        this.captchaComponent.reset();
 
       });
     }

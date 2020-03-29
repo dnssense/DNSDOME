@@ -271,6 +271,10 @@ get savedUserMessage(): string {
     return this.translator.translate('PasswordComplexityMustBe');
   }
 
+  get pleaseFillName(): string {
+    return this.translator.translate('PleaseFillName');
+  }
+
   get pleaseFillFirstName(): string {
     return this.translator.translate('PleaseFillFirstName');
   }
@@ -297,7 +301,13 @@ get savedUserMessage(): string {
   get captchaIsNotValid(): string {
     return this.translator.translate('CaptchaIsNotValid');
   }
+  get pleaseSelectARole(): string {
+    return this.translator.translate('PleaseSelectARole');
+  }
 
+  get passwordResetLinkSendedPleaseCheckYourEmail(): string {
+    return this.translator.translate('PasswordResetLinkSendedPleaseCheckYourEmail');
+  }
 
 
 

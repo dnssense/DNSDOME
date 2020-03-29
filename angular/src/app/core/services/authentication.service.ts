@@ -27,7 +27,7 @@ export class AuthenticationService {
   private _forgotPasswordChangeURL = this.configuration.getApiUrl() + '/user/forgot/password/confirm';
   private loginUrl = this.configuration.getApiUrl() + '/oauth/token';
   private refreshTokenUrl = this.loginUrl; // this.configuration.getApiUrl() + '/oauth/refresh_token';
-  private userInfoUrl = this.configuration.getApiUrl() + '/user/current/'; // buranin sonuna bilerek / eklendi,spinner service ekraninda gozukmesin diye
+  private userInfoUrl = this.configuration.getApiUrl() + '/user/current'; // buranin sonuna bilerek / eklendi,spinner service ekraninda gozukmesin diye
   private userRoleUrl = this.configuration.getApiUrl() + '/user/current/role';
   private preloginUrl = this.configuration.getApiUrl() + '/user/prelogin';
 
@@ -44,7 +44,8 @@ export class AuthenticationService {
     private spinner: SpinnerService
   ) {
     this.currentUserPropertiesChanged = new Subject();
-    this.refreshTokenTimer = interval(3 * 60 * 1000);
+    // this.refreshTokenTimer = interval(3 * 60 * 1000);
+    this.refreshTokenTimer = interval(15 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
   }
 

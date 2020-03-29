@@ -158,6 +158,9 @@
     "PleaseFillThePasswordAgain":"Please fill the password again",
     "PasswordAndConfirmedPasswordAreNotSame":"Password and  confirmed password are not same",
     "CaptchaIsNotValid":"Captcha is not valid",
+    "PleaseFillName":"Please fill name",
+    "PleaseSelectARole":"Please select a role",
+    "PasswordResetLinkSendedPleaseCheckYourEmail":"Password reset link sended to your email, please check your email",
     "REPORT":{
         "SaveReport":"Save Report",
         "NewReport":"New Report",
@@ -364,6 +367,7 @@
     "ErrSystemProfileCannotUpdate":"System profile cannot update",
     "ErrMaxBlackListSize":"Maximum blacklist size reached",
     "ErrReportSystemDataCannotUpdateOrDelete":"System report cannot update or delete",
+    "ErrUserThereWillNotBeAnyAdminUser":"You cannot do this, there will not be any admin user",
     "FORGOTPASSWORD": {
         "Title": "Reset Password"
     },
