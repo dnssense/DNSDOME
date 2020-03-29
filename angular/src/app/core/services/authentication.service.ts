@@ -44,8 +44,8 @@ export class AuthenticationService {
     private spinner: SpinnerService
   ) {
     this.currentUserPropertiesChanged = new Subject();
-    // this.refreshTokenTimer = interval(3 * 60 * 1000);
-     this.refreshTokenTimer = interval(15 * 1000);
+     this.refreshTokenTimer = interval(3 * 60 * 1000);
+    // this.refreshTokenTimer = interval(15 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
   }
 
