@@ -44,8 +44,8 @@ import { RecaptchaModule } from 'ng-recaptcha';
     PagenotfoundModule,
     AppRoutingModule,
     NotificationModule,
-    NgxUiLoaderModule.forRoot({ fgsPosition: 'center-center', minTime: 100}),
-    NgxUiLoaderHttpModule.forRoot({ showForeground: true, excludeRegexp: ['\/api\/oauth\/token$', '\/api\/user\/current$', '\/api\/user\/current\/role$', '\/websocket$']  }),
+    NgxUiLoaderModule.forRoot({ fgsPosition: 'center-center', minTime: 100 }),
+    NgxUiLoaderHttpModule.forRoot({ showForeground: true, excludeRegexp: ['\/api\/oauth\/token$', '\/api\/user\/current$', '\/api\/user\/current\/role$', '\/websocket$'] }),
     NgxUiLoaderRouterModule,
     BsDropdownModule.forRoot(),
     CollapseModule.forRoot(),
@@ -68,7 +68,7 @@ import { RecaptchaModule } from 'ng-recaptcha';
   providers: [
     AuthGuard,
     AuthenticationService,
-ConfigService,
+    ConfigService,
     CookieService,
     BsModalService,
     DashBoardService,
@@ -87,10 +87,10 @@ ConfigService,
       useClass: HttpErrorInterceptor,
       multi: true
     },
-     {
-       provide: ErrorHandler,
-       useClass: ErrorInterceptor
-     }
+    {
+      provide: ErrorHandler,
+      useClass: ErrorInterceptor
+    }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

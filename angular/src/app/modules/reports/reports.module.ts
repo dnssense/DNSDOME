@@ -40,7 +40,6 @@ import { SharedModule } from '../shared/shared.module';
     NgApexchartsModule,
     ReportsRoutingModule,
     PipesModule,
-    FlatpickrModule.forRoot(),
     DndModule.forRoot(),
     CollapseModule.forRoot(),
     PopoverModule.forRoot(),

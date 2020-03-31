@@ -17,11 +17,13 @@ import { User } from 'src/app/core/models/User';
 import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
 import { Router } from '@angular/router';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import * as moment from 'moment';
 
 export class GroupedCategory {
   type: string;
   name: string;
-  color ?= '#3397c5';
+  color?= '#3397c5';
   items: CategoryV2[];
 }
 
@@ -80,8 +82,8 @@ export class RoksitSearchComponent implements OnInit {
 
   users: User[] = [];
 
-  dateOptions: RkSelectModel[] = [
-    { displayText: 'Last 5 Minutes', value: 5 , selected: true},
+  dateOptions: RkDateTime[] = [
+    { displayText: 'Last 5 Minutes', value: 5, selected: true },
     { displayText: 'Last 15 Minutes', value: 15 },
     { displayText: 'Last 30 Minutes', value: 30 },
     { displayText: 'Last 1 Hour', value: 60 },
@@ -89,7 +91,7 @@ export class RoksitSearchComponent implements OnInit {
     { displayText: 'Last 12 Hour', value: 60 * 12 },
     { displayText: 'Last 1 Day', value: 60 * 24 },
     { displayText: 'Last 2 Day', value: 60 * 24 * 2 },
-    { displayText: 'Last 1 Week', value: 60 * 24 * 7,  },
+    { displayText: 'Last 1 Week', value: 60 * 24 * 7, },
     { displayText: 'Last 2 Week', value: 60 * 24 * 14 },
     { displayText: 'Last 1 Month', value: 60 * 24 * 30 },
   ];
@@ -153,7 +155,7 @@ export class RoksitSearchComponent implements OnInit {
             displayText: x.beautyName,
             value: x.name
           } as RkSelectModel;
-        }).filter(x => x.value !== 'action' && x.value !== 'category');
+        }).filter(x => x.value !== 'action' && x.value !== 'category');
       }
     });
 
@@ -202,6 +204,16 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   onSelectedDateChange($event) {
+    this.searchSettingEmitter.emit(this.searchSettings);
+  }
+
+  rkDateChanhed($event: { startDate: Date, endDate: Date }) {
+    const startDate = moment($event.startDate);
+    const endDate = moment($event.endDate);
+
+    const diff = endDate.diff(startDate, 'minutes');
+
+    this.searchSettings.dateInterval = diff;
 
     this.searchSettingEmitter.emit(this.searchSettings);
   }
@@ -354,8 +366,8 @@ export class RoksitSearchComponent implements OnInit {
     });
     if (!selectedAnyOne && dateOptions.length) {
 
-    dateOptions[0].selected = true;
-    this.searchSettings.dateInterval = this.dateOptions[0].value;
+      dateOptions[0].selected = true;
+      this.searchSettings.dateInterval = this.dateOptions[0].value;
     }
 
     this.dateOptions = dateOptions;
@@ -403,27 +415,27 @@ export class RoksitSearchComponent implements OnInit {
           if (filter.name === 'action') {
             this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
           } else
-          if (filter.name === 'time') {
+            if (filter.name === 'time') {
 
-            const date = new Date(Date.parse(value));
-            this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
-          } else {
-            this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', value));
-          }
+              const date = new Date(Date.parse(value));
+              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
+            } else {
+              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', value));
+            }
         });
       } else {
         filter.values.forEach(value => {
           if (filter.name === 'action') {
             this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
           } else
-          if (filter.name === 'time') {
+            if (filter.name === 'time') {
 
-            const date = new Date(Date.parse(value));
-            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
+              const date = new Date(Date.parse(value));
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
 
-          } else {
-            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
-          }
+            } else {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
+            }
         });
       }
     });
@@ -521,7 +533,7 @@ export class RoksitSearchComponent implements OnInit {
     const savedReport = this.allSavedReports.find(x => x.id === $event);
 
     if (savedReport) {
-     // this.fillSearchSettingsByFilters();
+      // this.fillSearchSettingsByFilters();
 
       this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
 
@@ -537,11 +549,11 @@ export class RoksitSearchComponent implements OnInit {
     if (this.newSavedReport.name.trim().length > 0) {
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
 
-          this.notification.success(res.message);
+        this.notification.success(res.message);
 
-          this.getSavedReports();
+        this.getSavedReports();
 
-          this.saveModal.toggle();
+        this.saveModal.toggle();
 
       });
     } else {
