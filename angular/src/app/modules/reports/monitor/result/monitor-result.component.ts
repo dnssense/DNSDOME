@@ -120,16 +120,20 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   exportAs(extention: ExportTypes) {
     if (this.tableData && this.tableData.length > 0) {
-      this.tableData.forEach(data => {
+      let tableData = JSON.parse(JSON.stringify(this.tableData)) as any[];
+
+      tableData = tableData.filter(x => x.selected);
+
+      tableData.forEach(data => {
         delete data.id;
       });
 
       const d = new Date();
 
       if (extention === 'excel') {
-        this.excelService.exportAsExcelFile(this.tableData, 'MonitorReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
+        this.excelService.exportAsExcelFile(tableData, 'MonitorReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
       } else if (extention === 'pdf') {
-        this.pdfService.exportAsPdfFile('landscape', this.tableData, 'MonitorReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
+        this.pdfService.exportAsPdfFile('landscape', tableData, 'MonitorReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
       }
     }
   }

@@ -296,19 +296,33 @@ export class CustomReportResultComponent implements OnDestroy {
     }
   }
 
+  checkboxAllChange($event: boolean) {
+    this.data.forEach(elem => {
+      elem.selected = $event;
+    });
+  }
+
   exportAs(extention: ExportTypes) {
-    if (this.data && this.data.length > 0) {
+    const data = this.data.filter(x => x.selected);
+
+    if (data && data.length > 0) {
+
       let jsonString = '[';
-      for (let i = 0; i < this.data.length - 1; i++) {
-        const da = this.data[i];
+      for (let i = 0; i < data.length - 1; i++) {
+        const da = data[i];
         jsonString += '{';
+        jsonString += '"id":' + (i + 1) + ',';
         for (let j = 0; j < da.length - 1; j++) {
           const e = da[j];
           jsonString += '"' + this.selectedColumns[j].label + '" : "' + e + '",';
         }
         jsonString += '"Count": "' + da[da.length - 1] + '" },';
       }
-      jsonString = jsonString.substr(0, jsonString.length - 1);
+
+      if (jsonString.length > 1) {
+        jsonString = jsonString.substr(0, jsonString.length - 1);
+      }
+
       jsonString += ']';
 
       const d = new Date();
@@ -364,7 +378,7 @@ export class CustomReportResultComponent implements OnDestroy {
         name: columnName,
         isLink: true,
       },
-      value: value
+      value: columnName === 'action' ? (value ? 'Allow' : 'Deny') : value
     } as LinkClick);
   }
 }

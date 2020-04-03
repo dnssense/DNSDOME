@@ -71,8 +71,16 @@
         <div class="col-12 p-0 mt-3">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
-              <div class="top-content justify-content-between">
-                <div class="rk-table-title">Local DNS Relay Servers</div>
+              <div class="top-content justify-content-start">
+                <div class="rk-table-title mr-5">Local DNS Relay Servers</div>
+
+                <div class="search ml-5">
+                  <div class="rk-autocomplete-container" style="width: 220px;">
+                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="localDNSRelaySearch"
+                      class="rk-input rk-autocomplete" (ngModelChange)="localDNSRelaySearchChanged()">
+                    <i-feather class="search-icon" name="search"></i-feather>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -236,6 +244,14 @@
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between">
                 <div class="rk-table-title">{{'GroupAgent'|translate}}</div>
+
+                <div class="search ml-5">
+                  <div class="rk-autocomplete-container" style="width: 220px;">
+                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="groupAgentSearch"
+                      class="rk-input rk-autocomplete" (ngModelChange)="groupAgentSearchChanged()">
+                    <i-feather class="search-icon" name="search"></i-feather>
+                  </div>
+                </div>
 
                 <button class="btn btn-small btn-icon" (click)="createNewGroup()">
                   <i-feather name="plus" class="mr-2"></i-feather>

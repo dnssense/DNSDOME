@@ -31,7 +31,7 @@ export class UnregisteredAgent {
     /**
      * @description For UI
      */
-    selected ?= false;
+    selected?= false;
 }
 
 export function validLength(val: string) {
@@ -42,7 +42,7 @@ export class GroupAgentModel {
     agentGroup: AgentGroup;
     securityProfile: SecurityProfile;
     agents: Agent[];
-    memberCounts ?= 0;
+    memberCounts?= 0;
 }
 
 @Component({
@@ -64,9 +64,13 @@ export class DevicesComponent implements OnInit {
     unregistereds: UnregisteredAgent[] = [];
     devicesForGroup: AgentInfo[] = [];
     deviceGroup: DeviceGroup = new DeviceGroup();
+
+    private _groupList: GroupAgentModel[] = [];
     groupList: GroupAgentModel[] = [];
+
     boxForm: FormGroup;
     isNewProfileSelected = false;
+    private _boxes: Box[] = [];
     boxes: Box[] = [];
     selectedAgent: Agent = new Agent();
     securityProfiles: SecurityProfile[] = [];
@@ -113,6 +117,10 @@ export class DevicesComponent implements OnInit {
 
     selectedAgentGroupType: 'create' | 'edit' = 'create';
 
+    localDNSRelaySearch: string;
+
+    groupAgentSearch: string;
+
     loadDevices() {
         this.agentService.getSecurityProfiles().subscribe(res => {
             this.securityProfiles = res;
@@ -129,7 +137,10 @@ export class DevicesComponent implements OnInit {
             });
         });
 
-        this.boxService.getBoxes().subscribe(res => { this.boxes = res; });
+        this.boxService.getBoxes().subscribe(res => {
+            this.boxes = res;
+            this._boxes = res;
+        });
 
         this.agentService.getRegisteredDevices().subscribe(res => {
             this.groupList = [];
@@ -144,11 +155,11 @@ export class DevicesComponent implements OnInit {
                             agents: [r]
                         });
 
-                            this.groupListForSelect.push({
-                                displayText: r.agentGroup.groupName,
-                                value: r.agentGroup.id,
-                                selected: index === 0
-                            });
+                        this.groupListForSelect.push({
+                            displayText: r.agentGroup.groupName,
+                            value: r.agentGroup.id,
+                            selected: index === 0
+                        });
 
                     } else {
                         finded['memberCounts']++;
@@ -156,6 +167,8 @@ export class DevicesComponent implements OnInit {
                     }
                 }
             });
+
+            this._groupList = JSON.parse(JSON.stringify(this.groupList));
 
             this.registereds = res.sort((x, y) => {
                 if (!x.agentGroup) {
@@ -190,6 +203,7 @@ export class DevicesComponent implements OnInit {
             } as GroupAgentModel;
         }
     }
+
     createNewGroup() {
 
         this.selectedGroupAgent = new GroupAgentModel();
@@ -607,6 +621,29 @@ export class DevicesComponent implements OnInit {
 
             this.loadDevices();
 
+        });
+    }
+
+    localDNSRelaySearchChanged() {
+        this.boxes = this._boxes.filter(x => {
+            const term = this.localDNSRelaySearch.trim().toLocaleLowerCase();
+
+            const host = x.host.toLocaleLowerCase().includes(term);
+            const profile = x.agent.rootProfile.name.toLocaleLowerCase().includes(term);
+            const captivePortalIp = x.agent.captivePortalIp ? x.agent.captivePortalIp.includes(term) : false;
+
+            return host || profile || captivePortalIp;
+        });
+    }
+
+    groupAgentSearchChanged() {
+        this.groupList = this._groupList.filter(x => {
+            const term = this.groupAgentSearch.trim().toLocaleLowerCase();
+
+            const name = x.agentGroup.groupName.toLocaleLowerCase().includes(term);
+            const profile = x.securityProfile.name.toLocaleLowerCase().includes(term);
+
+            return name || profile;
         });
     }
 }

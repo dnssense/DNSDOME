@@ -14,7 +14,9 @@
                             (pageViewCountChange)="onPageViewCountChange($event)" [info]="true">
                             <ng-template #header>
                                 <tr>
-                                    <th class="index">#</th>
+                                    <th style="width: 60px;">
+                                        <rk-checkbox (valueChange)="checkboxAllChange($event)"></rk-checkbox>
+                                    </th>
                                     <th scope="col" *ngFor="let colz of selectedColumns">
                                         {{ colz.label }}
                                         <button class="table-btn ripple">
@@ -37,8 +39,10 @@
                             </ng-template>
 
                             <ng-template #body>
-                                <tr *ngFor="let dat of data;let i = index">
-                                    <td class="index">{{ i + 1 }}</td>
+                                <tr *ngFor="let dat of data;let i = index" [ngClass]="{'selected': dat.selected}">
+                                    <td class="index">
+                                        <rk-checkbox [(value)]="dat.selected"></rk-checkbox>
+                                    </td>
                                     <td *ngFor="let col of selectedColumns; let colIndex = index">
                                         <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
                                             <button class="btn btn-link table-link-button"
@@ -47,7 +51,7 @@
                                                     {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
                                                 </ng-container>
 
-                                                <ng-template #elseTimeTemplate>{{ dat[colIndex] }}</ng-template>
+                                                <ng-template #elseTimeTemplate>{{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}</ng-template>
                                             </button>
                                         </ng-container>
 
@@ -56,7 +60,7 @@
                                                 {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
                                             </ng-container>
 
-                                            <ng-template #elseTimeTemplate2>{{ dat[colIndex] }}</ng-template>
+                                            <ng-template #elseTimeTemplate2>{{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}</ng-template>
                                         </ng-template>
                                     </td>
                                     <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>

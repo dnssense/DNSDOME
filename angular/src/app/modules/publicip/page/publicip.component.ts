@@ -272,10 +272,10 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.publicIpsFiltered = this.publicIps.filter(x => {
       const searchKey = this.searchKey.trim().toLocaleLowerCase();
 
-      const agentAlias = x.agentAlias.toLocaleLowerCase().includes(searchKey);
+      const agentAlias = x.agentAlias ? x.agentAlias.toLocaleLowerCase().includes(searchKey) : false;
       const ipType = x.staticSubnetIp ? 'static'.includes(searchKey) : 'dynamic'.includes(searchKey);
-      const ipAdresses = x.staticSubnetIp ? x.staticSubnetIp.some(y => y.baseIp.toLocaleLowerCase().includes(searchKey)) : x.dynamicIpDomain.toLocaleLowerCase().includes(searchKey);
-      const profile = x.rootProfile.name.toLocaleLowerCase().includes(searchKey);
+      const ipAdresses = x.staticSubnetIp ? x.staticSubnetIp.some(y => y.baseIp.toLocaleLowerCase().includes(searchKey)) : x.dynamicIpDomain ? x.dynamicIpDomain.toLocaleLowerCase().includes(searchKey) : false;
+      const profile = x.rootProfile && x.rootProfile.name ? x.rootProfile.name.toLocaleLowerCase().includes(searchKey) : false;
 
       return agentAlias || ipType || ipAdresses || profile;
     });
