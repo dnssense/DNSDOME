@@ -89,12 +89,12 @@ export class ConfigService {
         this.host.onlineHelpUrl = 'https://dnssense.com';
       }
   }
-  loadLanguage(): string|undefined {
+  loadLanguage(): string | undefined {
     try {
       const language = localStorage.getItem('language');
-    if (language) {
-      return language;
-    }
+      if (language) {
+        return language;
+      }
 
     } catch (err) {
       console.log(err);
@@ -127,14 +127,15 @@ export class ConfigService {
       // tslint:disable-next-line: triple-equals
       + (window.location.port != '' ? (':' + window.location.port) : '') + '/api';
   }
+
   setDefaultLanguage(lang: string) {
     this.translationservice.setDefaultLang(lang);
     this.translationservice.use(lang);
     this.saveLanguage(lang);
   }
+
   getTranslationLanguage(): string {
     return this.translationservice.getCurrentLang();
   }
-
 
 }

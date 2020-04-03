@@ -20,7 +20,8 @@
             <div class="container-fluid">
               <div class="row" *ngIf="selectedBox">
                 <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder="{{'BOX.Name'|translate}}" [(ngModel)]="selectedBox.host">
+                  <input type="text" class="rk-input w-100" placeholder="{{'BOX.Name'|translate}}"
+                    [(ngModel)]="selectedBox.host">
                 </div>
 
                 <div class="col-12 mt-3">
@@ -64,7 +65,8 @@
 
           <rk-modal-footer>
             <button class="btn btn-small w-100 mr-2" (click)="saveBox()">{{'Apply'|translate}}</button>
-            <button class="btn btn-small w-100 btn-default" (click)="selectedBoxModal.toggle()">{{'Close'|translate}}</button>
+            <button class="btn btn-small w-100 btn-default"
+              (click)="selectedBoxModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -147,7 +149,8 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder="{{'GroupName'|translate}}" [(ngModel)]="groupName">
+                  <input type="text" class="rk-input w-100" placeholder="{{'GroupName'|translate}}"
+                    [(ngModel)]="groupName">
                 </div>
               </div>
 
@@ -235,7 +238,8 @@
 
           <rk-modal-footer>
             <button class="btn w-100 btn-small mr-2" (click)="saveGroupAgent()">{{'Apply'|translate}}</button>
-            <button class="btn w-100 btn-default btn-small" (click)="groupAgentModal.toggle()">{{'Close'|translate}}</button>
+            <button class="btn w-100 btn-default btn-small"
+              (click)="groupAgentModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -304,7 +308,8 @@
         <rk-modal #changeGroupModal>
           <rk-modal-header icon="plus">
             <rk-modal-header-title>
-              <h5>{{  selectedAgentGroupType === 'edit' ? 'Change' : 'Add to' }} Group</h5>
+              <h5 *ngIf="selectedAgentGroupType !== 'edit'">{{ 'AddToGroup' | translate }} </h5>
+              <h5 *ngIf="selectedAgentGroupType === 'edit'">{{ 'ChangeGroup' | translate }}</h5>
             </rk-modal-header-title>
             <rk-modal-header-close (click)="changeGroupModal.toggle()"></rk-modal-header-close>
           </rk-modal-header>
@@ -327,7 +332,7 @@
               </div>
 
               <div class="row">
-               <!--  <div class="col-12 mt-3"  *ngFor="let sp of securityProfiles">
+                <!--  <div class="col-12 mt-3"  *ngFor="let sp of securityProfiles">
                   <div class="rk-radio my-0">
                     <input type="radio" id="s-{{ sp.id }}" [(ngModel)]="selectedProfileId"
                       name="selectedSecurityProfile" [value]="sp.id">
@@ -336,13 +341,13 @@
                 </div> -->
 
                 <div class="col-12 mt-3">
-                  <p class="rk-group-title">Select the Devices whose group you want to change</p>
+                  <p class="rk-group-title">{{'SelectDevicesChangeGroup' | translate}}</p>
                 </div>
               </div>
 
               <div class="row">
                 <div class="col-12 mt-3">
-                  <h6 class="rk-title mb-2">Other Group Members</h6>
+                  <h6 class="rk-title mb-2">{{'OtherGroupMembers' | translate}}</h6>
 
                   <table class="table small-table table-borderless">
                     <thead>
@@ -356,7 +361,8 @@
 
                     <tbody>
                       <tr *ngFor="let groupMember of selectedGroupMembers">
-                        <td>{{ groupMember.agentAlias ? groupMember.agentAlias : groupMember.agentInfo.agentAlias }}</td>
+                        <td>{{ groupMember.agentAlias ? groupMember.agentAlias : groupMember.agentInfo.agentAlias }}
+                        </td>
                         <td style="max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                           {{ groupMember.mac ? groupMember.mac : groupMember.agentInfo.mac | MacAddressFormatterPipe }}
                         </td>
@@ -381,8 +387,10 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2" (click)="changeGroupModalApplyClick()">{{'Apply'|translate}}</button>
-            <button class="btn btn-small btn-default w-100" (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
+            <button class="btn btn-small w-100 mr-2"
+              (click)="changeGroupModalApplyClick()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small btn-default w-100"
+              (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -391,11 +399,12 @@
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between">
                 <div>
-                  <div class="rk-table-title">Group Members</div>
-                  <p class="rk-table-description">( uyesi oldugu gurubun politikasi uygulanır )</p>
+                  <div class="rk-table-title">{{'GroupMembers' | translate}}</div>
+                  <p class="rk-table-description">( {{'GroupPolicyApplies' | translate}} )</p>
                 </div>
 
-                <button class="btn btn-small" (click)="changeTableGroup('edit')">Change Group</button>
+                <button class="btn btn-small"
+                  (click)="changeTableGroup('edit')">{{ 'ChangeGroup' | translate }}</button>
               </div>
             </div>
 
@@ -445,12 +454,13 @@
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between">
                 <div>
-                  <div class="rk-table-title">Ungroup Members</div>
-                  <p class="rk-table-description">( üzerinden çıktığı Dns Relay serverin security profili uygulanır )
+                  <div class="rk-table-title">{{ 'UngroupMembers' | translate }}</div>
+                  <p class="rk-table-description">( {{'DnsRelayServerSecurityProfileApplied' | translate}} )
                   </p>
                 </div>
 
-                <button class="btn btn-small" (click)="changeTableGroup('create')">Add to Group</button>
+                <button class="btn btn-small"
+                  (click)="changeTableGroup('create')">{{ 'AddToGroup' | translate }}</button>
               </div>
             </div>
 
@@ -475,7 +485,7 @@
                   <td>{{ device.agentInfo.mac | MacAddressFormatterPipe }}</td>
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
-                      <span>No Group</span>
+                      <span>{{'NoGroup' | translate}}</span>
 
                       <!-- <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
                         (click)="deleteUngroupDevice(device)">

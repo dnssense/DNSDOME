@@ -17,6 +17,16 @@ const misc: any = {
     disabled_collapse_init: 0
 };
 
+const helpRoutes = [
+    { appRoute: '/admin/dashboard', helpRoute: '' },
+    { appRoute: '/admin/reports/monitor', helpRoute: 'monitor' },
+    { appRoute: '/admin/reports/custom-reports', helpRoute: 'custom-reports' },
+    { appRoute: '/admin/deployment/public-ip', helpRoute: 'deployment-1/public-ip' },
+    { appRoute: '/admin/deployment/devices', helpRoute: 'deployment-1/devices' },
+    { appRoute: '/admin/deployment/roaming-clients', helpRoute: 'deployment-1/roaming-clients' },
+    { appRoute: '/admin/settings/profiles', helpRoute: 'guevenlik-profilleri' },
+];
+
 declare var $: any;
 @Component({
     selector: 'app-navbar-cmp',
@@ -42,6 +52,8 @@ export class NavbarComponent implements OnInit {
 
     breadcrumb: string[] = [];
 
+    helpRoute = 'https://docs.roksit.com/';
+
     constructor(
         location: Location,
         private element: ElementRef,
@@ -52,11 +64,12 @@ export class NavbarComponent implements OnInit {
         private config: ConfigService,
         private translator: TranslatorService,
         private notificationApiService: NotificationApiService,
-
     ) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.host = this.config.host;
+
+        this.helpRoute = `${this.host.docUrl}/${this.currentLanguage.toLocaleLowerCase()}`;
     }
 
     notifications: Notification[] = [];
@@ -75,6 +88,11 @@ export class NavbarComponent implements OnInit {
         }
 
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
+
+            const url = event.url;
+
+            this.helpUrlChanged(url);
+
             const $layer = document.getElementsByClassName('close-layer')[0];
             if ($layer) {
                 $layer.remove();
@@ -140,13 +158,24 @@ export class NavbarComponent implements OnInit {
         );
     }
 
-    currentLanguage() {
+    get currentLanguage() {
         return this.config.getTranslationLanguage().toUpperCase();
     }
 
     setLanguage(lang: string) {
-
         this.config.setDefaultLanguage(lang);
         this.notification.success(this.translator.translate('LanguageChanged'));
+
+        this.helpUrlChanged(this.router.url, lang);
+    }
+
+    helpUrlChanged(url: string, lang?: string) {
+        const findedAppRoute = helpRoutes.find(x => x.appRoute === url);
+
+        if (findedAppRoute) {
+            this.helpRoute = `${this.host.docUrl}/${lang ? lang : this.currentLanguage.toLocaleLowerCase()}/${findedAppRoute.helpRoute}`;
+        } else {
+            this.helpRoute = `${this.host.docUrl}/${lang ? lang : this.currentLanguage.toLocaleLowerCase()}`;
+        }
     }
 }

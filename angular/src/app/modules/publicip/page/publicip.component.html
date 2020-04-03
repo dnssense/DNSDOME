@@ -58,7 +58,7 @@
                     <input type="text" class="rk-input w-100" placeholder="{{'Name'|translate}}" name="agentName"
                       id="agentName" [(ngModel)]="selectedIp.agentAlias" formControlName="agentName" maxlength="64">
 
-                    <p class="rk-description m-0">*Konfigürasyon ve trafik raporlarında lokasyon bu isimle yer alacaktır.</p>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.AgentAlias' | translate}}</p>
                   </div>
 
                   <ng-container *ngIf="ipType == 'dynamicIp'; else elseTemplateIpType">
@@ -69,8 +69,7 @@
                     </div>
 
                     <div class="col-12">
-                      <p class="rk-description m-0">*Modeminizin desteklediği dinamik dns servislerinden birini kullanarak ip
-                        adresiniz değişmesi durumunda da filtreleme tercihleriniz aktif kalmasını sağlayabilirsiniz.</p>
+                      <p class="rk-description m-0">{{'PublicIpDescriptions.IpType' | translate}}</p>
                     </div>
                   </ng-container>
 
@@ -105,24 +104,25 @@
 
                   <div class="col-12 mt-3">
                     <rk-select [options]="securityProfilesForRkSelect" placeholder="{{'SelectProfile'|translate}}"
-                      (valueChange)="securityProfileChanged($event)" [isShowButton]="true" buttonIcon="plus" buttonText="Create new profile" (buttonClickEmitter)="rkSelectButtonClicked($event)">
+                      (valueChange)="securityProfileChanged($event)" [isShowButton]="true" buttonIcon="plus"
+                      buttonText="Create new profile" (buttonClickEmitter)="rkSelectButtonClicked($event)">
                     </rk-select>
-                    <p class="rk-description m-0">*Hangi profili kullanıcığınızı seçersiniz.</p>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.Profile' | translate}}</p>
                   </div>
 
                   <div class="col-12 mt-3">
                     <textarea class="rk-input textarea w-100 resize:none" name="blockMessage" id="blockMessage"
                       [(ngModel)]="selectedIp.blockMessage" placeholder="{{'BlockMessage'|translate}}" rows="4"
                       [ngModelOptions]="{standalone: true}"></textarea>
-                    <p class="rk-description m-0">Kullanıcıların erişim izni olmayan bir web sayfasına erişmek istediklerinde çıkan bilgilendirme sayfasında yazacak mesajdır.</p>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.BlockMessage' | translate}}</p>
                   </div>
 
                   <div class="col-12 mt-3">
                     <input type="text" class="rk-input w-100" placeholder="{{'SinkHoleIp'|translate}}"
                       (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)" [(ngModel)]="selectedIp.cyberXRayIp"
                       [ngModelOptions]="{standalone: true}">
-                      <p class="rk-description m-0">Bloklanan trafiğin standart blok sayfası dışında yönlendirilmesini istediğiniz özel bir ip adresi varsa bu bölüme girmelisiniz.</p>
-                      <p class="rk-description m-0">Local DNS Visibility ürünü kullanmanız durumunda DNS Visibility ürününün ip adresini girmelisiniz.</p>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp1' | translate}}</p>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp2' | translate}}</p>
                   </div>
                 </div>
               </div>

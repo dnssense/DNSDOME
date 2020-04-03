@@ -509,5 +509,18 @@
     "PleaseChangeSomething":"Hiç değişiklik yapılmadı",
     "CategoryRequestSuccessfullySended":"Kategorizasyon isteği başarılı bir şekilde gönderildi",
     "IsVerified" : "Doğrulandı mı",
-    "IsLocked": "Kilitli mi"
+    "IsLocked": "Kilitli mi",
+    "GroupPolicyApplies": "üyesi olduğu gurubun politikasi uygulanır.",
+    "UngroupMembers": "Grupsuz Üyeler",
+    "DnsRelayServerSecurityProfileApplied": "üzerinden çıktığı Dns Relay serverin security profili uygulanır.",
+    "SelectDevicesChangeGroup": "Grubunu değiştirmek istediğiniz cihazları seçin",
+    "Group": "Grup",
+    "PublicIpDescriptions": {
+        "AgentAlias": "*Konfigürasyon ve trafik raporlarında lokasyon bu isimle yer alacaktır.",
+        "IpType": "*Modeminizin desteklediği dinamik dns servislerinden birini kullanarak ip adresiniz değişmesi durumunda da filtreleme tercihleriniz aktif kalmasını sağlayabilirsiniz.",
+        "Profile": "*Hangi profili kullanıcığınızı seçersiniz.",
+        "BlockMessage": "Kullanıcıların erişim izni olmayan bir web sayfasına erişmek istediklerinde çıkan bilgilendirme sayfasında yazacak mesajdır.",
+        "ShinkholeIp1": "Bloklanan trafiğin standart blok sayfası dışında yönlendirilmesini istediğiniz özel bir ip adresi varsa bu bölüme girmelisiniz.",
+        "ShinkholeIp2": "Local DNS Visibility ürünü kullanmanız durumunda DNS Visibility ürününün ip adresini girmelisiniz."
+    }
 }
