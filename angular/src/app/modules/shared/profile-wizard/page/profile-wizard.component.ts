@@ -17,6 +17,7 @@ import { DeviceGroup, AgentInfo } from 'src/app/core/models/DeviceGroup';
 import { BWListItem } from 'src/app/core/models/BWListItem';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var $: any;
 
@@ -136,9 +137,14 @@ export class ProfileWizardComponent {
     private roamingService: RoamingService,
     private boxService: BoxService,
     private staticMessageService: StaticMessageService,
-    private translatorService: TranslatorService
+    private translatorService: TranslatorService,
+    private translateService: TranslateService
   ) {
     this.getCategoriesAndApps();
+
+    translateService.onLangChange.subscribe(result => {
+      this.fillGroupedApplications();
+    });
   }
 
   isSafeSearchEnabled: boolean;
@@ -239,47 +245,48 @@ export class ProfileWizardComponent {
       if (el.application.isVisible) {
 
 
-      switch (el.application.type) {
-        case ApplicationTypes.HTTP:
-          http.push(el);
-          break;
+        switch (el.application.type) {
+          case ApplicationTypes.HTTP:
+            http.push(el);
+            break;
 
-        case ApplicationTypes.INSTANT_MESSAGING:
-          instantMessaging.push(el);
-          break;
+          case ApplicationTypes.INSTANT_MESSAGING:
+            instantMessaging.push(el);
+            break;
 
-        case ApplicationTypes.ONLINE_VIDEO:
-          onlineVideo.push(el);
-          break;
+          case ApplicationTypes.ONLINE_VIDEO:
+            onlineVideo.push(el);
+            break;
 
-        case ApplicationTypes.REMOTE_ACCESS:
-          remoteAccess.push(el);
-          break;
+          case ApplicationTypes.REMOTE_ACCESS:
+            remoteAccess.push(el);
+            break;
 
-        case ApplicationTypes.SOCIAL:
-          social.push(el);
-          break;
+          case ApplicationTypes.SOCIAL:
+            social.push(el);
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
-    }});
+    });
 
     // TODO burasi multi language yapilmali
 
     this.groupedApplications = [
       // { type: ApplicationTypes.CLEAR_ADS, displayText: 'Advertisement', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: clearAds },
       // { type: ApplicationTypes.HTTP, displayText: 'HTTP', description: '',  applications: http },
-      { type: ApplicationTypes.INSTANT_MESSAGING, displayText: 'Instant Messaging', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: instantMessaging },
-      { type: ApplicationTypes.ONLINE_VIDEO, displayText: 'Online Video', description: 'Pornogrphy, Adult, Gamblig gibi istenmeyen domainleri içerir.', applications: onlineVideo },
-      { type: ApplicationTypes.REMOTE_ACCESS, displayText: 'Remote Access Tools', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: remoteAccess },
-      { type: ApplicationTypes.SOCIAL, displayText: 'Social Media', description: 'Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.', applications: social },
+      { type: ApplicationTypes.INSTANT_MESSAGING, displayText: this.translatorService.translate('InstantMessaging'), description: this.translatorService.translate('InstantMessagingDesc'), applications: instantMessaging },
+      { type: ApplicationTypes.ONLINE_VIDEO, displayText: this.translatorService.translate('OnlineVideo'), description: this.translatorService.translate('OnlineVideoDesc'), applications: onlineVideo },
+      { type: ApplicationTypes.REMOTE_ACCESS, displayText: this.translatorService.translate('RemoteAccessTools'), description: this.translatorService.translate('RemoteAccessToolsDesc'), applications: remoteAccess },
+      { type: ApplicationTypes.SOCIAL, displayText: this.translatorService.translate('SocialMedia'), description: this.translatorService.translate('SocialMediaDesc'), applications: social },
     ];
   }
 
   reCalculateisPositiveSecurity() {
     if (this.selectedAgent?.rootProfile?.domainProfile?.categories) {
-    this.selectedAgent.rootProfile.isPositiveSecurity = Boolean(this.selectedAgent.rootProfile.domainProfile.categories.find(x => x.id == FIRSTLY_SEEN)?.isBlocked);
+      this.selectedAgent.rootProfile.isPositiveSecurity = Boolean(this.selectedAgent.rootProfile.domainProfile.categories.find(x => x.id == FIRSTLY_SEEN)?.isBlocked);
     }
   }
 
@@ -300,7 +307,7 @@ export class ProfileWizardComponent {
       });
       this.reCalculateisPositiveSecurity();
 
-    } else if (this.saveMode === 'ProfileUpdate' || this.saveMode === 'NotEditable') {
+    } else if (this.saveMode === 'ProfileUpdate' || this.saveMode === 'NotEditable') {
 
       this.selectedAgent.rootProfile.domainProfile.categories.forEach(x => {
         this.categoryList.find(y => y.category.id === x.id).isBlocked = x.isBlocked;
@@ -332,7 +339,7 @@ export class ProfileWizardComponent {
   categoryChanged(category: categoryItem) {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-    return ;
+      return;
     }
     if (category.isBlocked) {
       this.allowCategory(category.category.id);
@@ -360,7 +367,7 @@ export class ProfileWizardComponent {
   applicationChanged(application: applicationItem) {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-    return ;
+      return;
     }
 
     if (application.isBlocked) {
@@ -400,34 +407,34 @@ export class ProfileWizardComponent {
   }
 
   isClearedAdds(): boolean {
-    const advertisementCategory = {id: 6, name: 'Advertisements'};
+    const advertisementCategory = { id: 6, name: 'Advertisements' };
     const founded = this.categoryList.find(x => x.category?.id == advertisementCategory.id);
-    if (!founded) {return false; }
+    if (!founded) { return false; }
     return founded.isBlocked;
 
-   /*  debugger;
-    // advertisement apps
-    const adsIds = this.groupedApplications.find(x => x.type == ApplicationTypes.CLEAR_ADS)?.applications.map(x => x.application.id);
-    if (!adsIds) { return false; }
-
-    const adsApplicatons = this.selectedAgent.rootProfile.applicationProfile.categories.filter(x => adsIds.find(y => x.id == y));
-    const filtered = adsApplicatons.filter(x => x.isBlocked);
-
-
-    // tslint:disable-next-line: triple-equals
-    if (filtered.length == adsIds.length) {
-      return true;
-    }
-    return false; */
+    /*  debugger;
+     // advertisement apps
+     const adsIds = this.groupedApplications.find(x => x.type == ApplicationTypes.CLEAR_ADS)?.applications.map(x => x.application.id);
+     if (!adsIds) { return false; }
+ 
+     const adsApplicatons = this.selectedAgent.rootProfile.applicationProfile.categories.filter(x => adsIds.find(y => x.id == y));
+     const filtered = adsApplicatons.filter(x => x.isBlocked);
+ 
+ 
+     // tslint:disable-next-line: triple-equals
+     if (filtered.length == adsIds.length) {
+       return true;
+     }
+     return false; */
   }
   changeClearAds() {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-    return ;
+      return;
     }
-    const advertisementCategory = {id: 6, name: 'Advertisements'};
+    const advertisementCategory = { id: 6, name: 'Advertisements' };
     const founded = this.categoryList.find(x => x.category?.id == advertisementCategory.id);
-    if (founded) {this.categoryChanged(founded); }
+    if (founded) { this.categoryChanged(founded); }
     /* debugger;
     const clearedAdds = this.isClearedAdds();
 
@@ -443,8 +450,8 @@ export class ProfileWizardComponent {
   saveProfile() {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-      return ;
-      }
+      return;
+    }
     let status = false;
 
     if (!this.selectedAgent.rootProfile.name && this.selectedAgent.rootProfile.name.trim().length === 0) {
@@ -562,8 +569,8 @@ export class ProfileWizardComponent {
   addToBlackList() {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-      return ;
-      }
+      return;
+    }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.find(b => b.domain === this.blackListItem.domain)) {
         this.notification.warning(this.staticMessageService.thisDomainAllreadyExitsInBlackListMessage);
@@ -582,8 +589,8 @@ export class ProfileWizardComponent {
   removeFromBlackList(item: ListItem) {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-      return ;
-      }
+      return;
+    }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.splice(
         this.selectedAgent.rootProfile.blackWhiteListProfile.blackList.findIndex(b => b.domain === item.domain), 1);
@@ -606,8 +613,8 @@ export class ProfileWizardComponent {
   addToWhiteList() {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-      return ;
-      }
+      return;
+    }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       if (this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.find(b => b.domain === this.whiteListItem.domain)) {
         this.notification.warning(this.staticMessageService.thisDomainAllreadyExitsInWhiteListMessage);
@@ -626,8 +633,8 @@ export class ProfileWizardComponent {
   removeFromWhiteList(item: string) {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-      return ;
-      }
+      return;
+    }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.splice(
         this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList.findIndex(b => b.domain === item), 1);
@@ -637,8 +644,8 @@ export class ProfileWizardComponent {
   changeSafeSearchMode() {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-      return ;
-      }
+      return;
+    }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.isSafeSearchEnabled = this.selectedAgent.rootProfile.isSafeSearchEnabled ? false : true;
     }
@@ -647,8 +654,8 @@ export class ProfileWizardComponent {
   changeYoutubeMode() {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-      return ;
-      }
+      return;
+    }
     if (this.selectedAgent.rootProfile && this.selectedAgent.rootProfile.isSystem === false) {
       this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled = this.selectedAgent.rootProfile.isYoutubeStrictModeEnabled ? false : true;
     }
@@ -657,16 +664,16 @@ export class ProfileWizardComponent {
   setSecurityMode(val: boolean) {
     if (this.saveMode == 'NotEditable') {
       this.notification.warning(this.staticMessageService.notEditableSystemProfile);
-      return ;
-      }
-   // const firstseenCategory = {id: 62, name: 'Firstly Seen'};
+      return;
+    }
+    // const firstseenCategory = {id: 62, name: 'Firstly Seen'};
     this.selectedAgent.rootProfile.isPositiveSecurity = val;
     if (val) {
       this.blockCategory(FIRSTLY_SEEN);
     } else {
       this.allowCategory(FIRSTLY_SEEN);
     }
-     this.reCalculateisPositiveSecurity();
+    this.reCalculateisPositiveSecurity();
   }
 
 

@@ -5,9 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class TranslatorService {
-  constructor(private translationService: TranslateService) {
-
-  }
+  constructor(private translationService: TranslateService) { }
   translate(data: string): string {
     return this.translationService.instant(data);
   }
@@ -28,11 +26,11 @@ export class TranslatorService {
 
     const browserLang = this.translationService.getBrowserLang();
     if (!lang) {
-    this.translationService.use(languages.find(x => x == browserLang) ? browserLang : languages[0]);
+      this.translationService.use(languages.find(x => x == browserLang) ? browserLang : languages[0]);
     } else {
       const language = languages.find(x => x == lang);
       if (language) {
-      this.translationService.use(language);
+        this.translationService.use(language);
       } else { this.translationService.use(languages[0]); }
     }
   }

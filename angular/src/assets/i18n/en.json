@@ -519,5 +519,13 @@
         "BlockMessage": "This is the message that will be written on the information page when users want to access a web page without access.",
         "ShinkholeIp1": "If there is a special ip address that you want the blocked traffic outside of the standard block page, you should enter this section.",
         "ShinkholeIp2": "If you use Local DNS Visibility, you must enter the IP address of the DNS Visibility product."
-    }
+    },
+    "InstantMessaging": "Instant Messaging",
+    "InstantMessagingDesc": "Contains domains such as Newly Register, Newly Up, Domain Parking, Dead Sites that may vary in content and security risk.",
+    "OnlineVideo": "Online Video",
+    "OnlineVideoDesc": "Contains unwanted domains such as Pornogrphy, Adult, Gamblig.",
+    "RemoteAccessTools": "Remote Access Tools",
+    "RemoteAccessToolsDesc": "Contains domains such as Newly Register, Newly Up, Domain Parking, Dead Sites, which may vary in content and security risk.",
+    "SocialMedia": "Social Media",
+    "SocialMediaDesc": "Contains domains such as Newly Register, Newly Up, Domain Parking, Dead Sites that may vary in content and security risk."
 }
