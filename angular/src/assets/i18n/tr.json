@@ -522,5 +522,24 @@
     "RemoteAccessTools": "Uzaktan Erişim Araçları",
     "RemoteAccessToolsDesc": "Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.",
     "SocialMedia": "Sosyal Medya",
-    "SocialMediaDesc": "Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir."
+    "SocialMediaDesc": "Newly Register, Newly Up, Domain Parking, Dead Sites gibi içerik ve güvenlik riski değişiklik gösterebilen domainleri içerir.",
+    "TableColumn": {
+        "Time": "Zaman",
+        "Domain": "Alan Adı",
+        "Subdomain": "Alt Alan Adı",
+        "SourceIp": "Kaynak Ip",
+        "SourceCountry": "Kaynak Ülke",
+        "DestinationIp": "Hedef Ip",
+        "DestinationCountry": "Hedef Ülke",
+        "AgentAlias": "Agent",
+        "UserId": "Kull. Adı",
+        "Action": "Aksiyon",
+        "ApplicationName": "Uygulama Adı",
+        "Category": "Kategori",
+        "ReasonType": "Block Nedeni",
+        "ClientLocalIp": "İstemci Yerel Ip",
+        "ClientMacAddress": "İstemci Mac Adresi",
+        "ClientBoxSerial": "İstemci Makine Serisi",
+        "HostName": "Ana Bilgisayar Adı"
+    }
 }

@@ -34,3 +34,17 @@
 .rk-modal-item.title {
   font-weight: 400 !important;
 }
+
+.btn {
+  &.btn-icon {
+    svg {
+      fill: var(--primary);
+    }
+  }
+
+  &:focus {
+    svg {
+      fill: #fff;
+    }
+  }
+}

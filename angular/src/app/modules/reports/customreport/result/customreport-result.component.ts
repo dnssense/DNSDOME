@@ -10,9 +10,8 @@ import { PdfService } from 'src/app/core/services/pdfService';
 import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 import { LinkClick } from '../../monitor/result/monitor-result.component';
-
-
-declare var moment: any;
+import * as moment from 'moment';
+import { TranslatorService } from 'src/app/core/services/translator.service';
 
 export interface TableBadgeOutput {
   name: string;
@@ -30,7 +29,8 @@ export class CustomReportResultComponent implements OnDestroy {
     private customReportService: CustomReportService,
     private fastReportService: FastReportService,
     private excelService: ExcelService,
-    private pdfService: PdfService
+    private pdfService: PdfService,
+    private translateService: TranslatorService
   ) { }
 
   elementRef: ElementRef;
@@ -66,22 +66,22 @@ export class CustomReportResultComponent implements OnDestroy {
   tableConfig: RkTableConfigModel = {
     columns: [
       /* { id: 0, name: 'time', displayText: 'Time', isLink: true }, */
-      { id: 1, name: 'domain', displayText: 'Domain', isLink: true },
-      { id: 2, name: 'subdomain', displayText: 'Subdomain', isLink: true },
-      { id: 3, name: 'sourceIp', displayText: 'Src.Ip', isLink: true },
-      { id: 4, name: 'sourceIpCountryCode', displayText: 'Src. Country', isLink: true },
-      { id: 5, name: 'destinationIp', displayText: 'Dst.Ip', isLink: true },
-      { id: 6, name: 'destinationIpCountryCode', displayText: 'Dst.Country', isLink: true },
-      { id: 7, name: 'agentAlias', displayText: 'Location/Agent', isLink: true },
-      { id: 8, name: 'userId', displayText: 'User Id', isLink: true },
-      { id: 9, name: 'action', displayText: 'Action', isLink: true },
-      { id: 10, name: 'applicationName', displayText: 'Application', isLink: true },
-      { id: 11, name: 'category', displayText: 'Category', isLink: true },
-      { id: 12, name: 'reasonType', displayText: 'Reason Block', isLink: true },
-      { id: 13, name: 'clientLocalIp', displayText: 'Local Src. Ip', isLink: true },
-      { id: 14, name: 'clientMacAddress', displayText: 'Mac Address', isLink: true },
-      { id: 15, name: 'clientBoxSerial', displayText: 'Box Serial', isLink: true },
-      { id: 16, name: 'hostName', displayText: 'Host Name', isLink: true }
+      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true },
+      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true },
+      { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), isLink: true },
+      { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), isLink: true },
+      { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
+      { id: 6, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
+      { id: 7, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), isLink: true },
+      { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
+      { id: 9, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
+      { id: 10, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
+      { id: 11, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
+      { id: 12, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
+      { id: 13, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
+      { id: 14, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
+      { id: 15, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
+      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
     ],
     rows: [],
     selectableRows: true
@@ -200,7 +200,7 @@ export class CustomReportResultComponent implements OnDestroy {
           {
             name: 'Hit', type: 'area', data: data.filter ? data.filter(x => x.length >= 2).map(x => {
 
-              return [x[0], x[1]];
+              return [moment(x[0]).utc(true), x[1]];
 
             }) : []
           }
