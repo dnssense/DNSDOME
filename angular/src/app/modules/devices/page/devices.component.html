@@ -73,10 +73,10 @@
         <div class="col-12 p-0 mt-3">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
-              <div class="top-content justify-content-start">
+              <div class="top-content justify-content-start flex-wrap">
                 <div class="rk-table-title mr-5">Local DNS Relay Servers</div>
 
-                <div class="search ml-5">
+                <div class="search mt-2 ml-5">
                   <div class="rk-autocomplete-container" style="width: 220px;">
                     <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="localDNSRelaySearch"
                       class="rk-input rk-autocomplete" (ngModelChange)="localDNSRelaySearchChanged()">
@@ -246,18 +246,20 @@
         <div class="col-12 p-0 mt-3">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
-              <div class="top-content justify-content-between">
-                <div class="rk-table-title">{{'GroupAgent'|translate}}</div>
+              <div class="top-content justify-content-between flex-wrap">
+                <div class="d-flex align-items-center">
+                  <div class="rk-table-title mr-4">{{'GroupAgent'|translate}}</div>
 
-                <div class="search ml-5">
-                  <div class="rk-autocomplete-container" style="width: 220px;">
-                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="groupAgentSearch"
-                      class="rk-input rk-autocomplete" (ngModelChange)="groupAgentSearchChanged()">
-                    <i-feather class="search-icon" name="search"></i-feather>
+                  <div class="search ml-5 mt-2">
+                    <div class="rk-autocomplete-container" style="width: 220px;">
+                      <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="groupAgentSearch"
+                        class="rk-input rk-autocomplete" (ngModelChange)="groupAgentSearchChanged()">
+                      <i-feather class="search-icon" name="search"></i-feather>
+                    </div>
                   </div>
                 </div>
 
-                <button class="btn btn-small btn-icon" (click)="createNewGroup()">
+                <button class="btn btn-small btn-icon mt-2" (click)="createNewGroup()">
                   <i-feather name="plus" class="mr-2"></i-feather>
                   {{'CreateNewGroup'|translate}}
                 </button>
@@ -394,16 +396,25 @@
           </rk-modal-footer>
         </rk-modal>
 
-        <div class="col-12 col-md-6 px-0 pr-md-2 mt-3">
+        <div class="col-12 col-lg-6 px-0 pr-lg-2 mt-3">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
-              <div class="top-content justify-content-between">
+              <div class="top-content justify-content-between flex-wrap">
                 <div>
                   <div class="rk-table-title">{{'GroupMembers' | translate}}</div>
                   <p class="rk-table-description">( {{'GroupPolicyApplies' | translate}} )</p>
                 </div>
 
-                <button class="btn btn-small"
+
+                <div class="search mt-2">
+                  <div class="rk-autocomplete-container" style="width: 160px;">
+                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="groupMemberSearch"
+                      class="rk-input rk-autocomplete" (ngModelChange)="groupMemberSearchChanged()">
+                    <i-feather class="search-icon" name="search"></i-feather>
+                  </div>
+                </div>
+
+                <button class="btn btn-small mt-2"
                   (click)="changeTableGroup('edit')">{{ 'ChangeGroup' | translate }}</button>
               </div>
             </div>
@@ -449,17 +460,25 @@
           </rk-table-container>
         </div>
 
-        <div class="col-12 col-md-6 px-0 pl-md-2 mt-3">
+        <div class="col-12 col-lg-6 px-0 pl-lg-2 mt-3">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
-              <div class="top-content justify-content-between">
+              <div class="top-content justify-content-between flex-wrap">
                 <div>
                   <div class="rk-table-title">{{ 'UngroupMembers' | translate }}</div>
                   <p class="rk-table-description">( {{'DnsRelayServerSecurityProfileApplied' | translate}} )
                   </p>
                 </div>
 
-                <button class="btn btn-small"
+                <div class="search mt-2">
+                  <div class="rk-autocomplete-container" style="width: 160px;">
+                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="ungroupMemberSearch"
+                      class="rk-input rk-autocomplete" (ngModelChange)="ungroupMemberSearchChanged()">
+                    <i-feather class="search-icon" name="search"></i-feather>
+                  </div>
+                </div>
+
+                <button class="btn btn-small mt-2"
                   (click)="changeTableGroup('create')">{{ 'AddToGroup' | translate }}</button>
               </div>
             </div>

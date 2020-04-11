@@ -71,7 +71,7 @@ export class DashboardComponent implements OnInit {
   categoryList = [];
   categoryListFiltered = [];
   selectedCategoryForTraffic: string;
-  selectedCategory: CategoryV2|null = null;
+  selectedCategory: CategoryV2 | null = null;
   trafficChart: any;
   timeLineChart: any;
 
@@ -98,7 +98,7 @@ export class DashboardComponent implements OnInit {
 
   dateButtons: RkDateButton[] = [
     {
-      startDate: new Date(this.now.getFullYear() , this.now.getMonth(), this.now.getDate() - 14),
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 14),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
       displayText: 'Last 2 week'
     },
@@ -113,7 +113,7 @@ export class DashboardComponent implements OnInit {
       displayText: 'Last 3  day'
     },
     {
-      startDate: new Date(this.now.getFullYear(), this.now.getMonth() , this.now.getDate() - 2),
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 2),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
       displayText: 'Last 2 day'
     },
@@ -342,16 +342,16 @@ export class DashboardComponent implements OnInit {
   getTopDomains(request: TopDomainsRequestV4) {
     this.dashboardService.getTopDomains({ ...request, type: 'malicious' }).subscribe(result => {
       if (result.items.length) {
-      this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
-        cats.forEach(cat => {
-          const finded = result.items.find(abc => abc.name == cat.domain);
-          if (finded) {
-          finded.category = cat.categoryList.join(',');
-          }
-        });
-        this.maliciousDomains = result.items;
+        this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+          cats.forEach(cat => {
+            const finded = result.items.find(abc => abc.name == cat.domain);
+            if (finded) {
+              finded.category = cat.categoryList.join(',');
+            }
+          });
+          this.maliciousDomains = result.items;
 
-      });
+        });
       }
 
 
@@ -361,17 +361,17 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getTopDomains({ ...request, type: 'new' }).subscribe(result => {
 
       if (result.items.length) {
-      this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+        this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
 
-        cats.forEach(cat => {
-          const finded = result.items.find(abc => abc.name == cat.domain);
-          if (finded) {
-          finded.category = cat.categoryList.join(',');
-          }
+          cats.forEach(cat => {
+            const finded = result.items.find(abc => abc.name == cat.domain);
+            if (finded) {
+              finded.category = cat.categoryList.join(',');
+            }
+          });
+          this.newDomains = result.items;
+
         });
-        this.newDomains = result.items;
-
-      });
       }
 
     });
@@ -379,16 +379,16 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
 
       if (result.items.length) {
-      this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
-        cats.forEach(cat => {
-          const finded = result.items.find(abc => abc.name == cat.domain);
-          if (finded) {
-          finded.category = cat.categoryList.join(',');
-          }
-        });
-        this.harmfulDomains = result.items;
+        this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+          cats.forEach(cat => {
+            const finded = result.items.find(abc => abc.name == cat.domain);
+            if (finded) {
+              finded.category = cat.categoryList.join(',');
+            }
+          });
+          this.harmfulDomains = result.items;
 
-      });
+        });
       }
 
 
@@ -446,7 +446,7 @@ export class DashboardComponent implements OnInit {
     const series = [{
       name: 'Hits',
       type: 'line',
-      data: data.map(x => [Date.parse(x.date), x.hit])
+      data: data.map(x => [Date.parse(moment(x.date).utc(true).toLocaleString()), x.hit])
     }];
 
     if (this.uniqueDomainChart) {
@@ -686,11 +686,11 @@ export class DashboardComponent implements OnInit {
 
 
     this.categoryListFiltered = istatistic.categories;
-    const times = timelineChart.map(x => x.date.getTime());
+    const times = timelineChart.map(x => moment(x.date).utc(true).toDate().getTime());
     const series = [
-       { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [ times[index], Math.round(x) >= 0 ? Math.round(x) : 0]) },
-       { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
-       { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
+      { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x) >= 0 ? Math.round(x) : 0]) },
+      { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
+      { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
 
     ];
 
@@ -709,16 +709,16 @@ export class DashboardComponent implements OnInit {
     let yMax = 0;
     series.forEach(x => {
       x.data.forEach(element => {
-          if (element[1] > yMax) {
+        if (element[1] > yMax) {
           yMax = element[1];
-          }
+        }
       });
     });
 
 
 
-/*     let xaxismax=0;
-    xaxismax=series[1].data.filter(x=>x) */
+    /*     let xaxismax=0;
+        xaxismax=series[1].data.filter(x=>x) */
 
     // console.log(anomalies);
 
@@ -726,8 +726,8 @@ export class DashboardComponent implements OnInit {
 
     if (this.trafficChart) {
       this.trafficChart.destroy();
-    //  this.trafficChart.
-    //  return;
+      //  this.trafficChart.
+      //  return;
     }
 
     this.trafficChart = new ApexCharts(document.querySelector('#chart'), {
@@ -784,7 +784,9 @@ export class DashboardComponent implements OnInit {
         shared: true,
         x: {
           format: 'MMM dd yyyy HH:mm'
-        }
+        },
+        // fillSeriesColor: true,
+        theme: 'dark'
       },
       fill: {
         opacity: 1,
@@ -808,7 +810,7 @@ export class DashboardComponent implements OnInit {
         max: yMax + 10,
         labels: {
           formatter: (value) => {
-            return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' :  (Math.sign(value) * Math.abs(value)).toFixed(1);
+            return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : (Math.sign(value) * Math.abs(value)).toFixed(1);
           }
         }
       },
@@ -1017,7 +1019,7 @@ export class DashboardComponent implements OnInit {
       const filtered = categoryList?.filter(a => filterList.findIndex(b => a?.name == b) > -1);
       let std = 0;
       if (filtered && filtered.length) {
-        std = filtered.map(x => x.std_deviation ).reduce((x, y) => x + y, 0) ;
+        std = filtered.map(x => x.std_deviation).reduce((x, y) => x + y, 0);
       }
       return Math.round(std);
     });
@@ -1028,7 +1030,7 @@ export class DashboardComponent implements OnInit {
       const filtered = categoryList?.filter(a => filterList.findIndex(b => a?.name == b) > -1);
       let std = 0;
       if (filtered && filtered.length) {
-        std = filtered.map(x => x.average).reduce((x, y) => x + y, 0)  ;
+        std = filtered.map(x => x.average).reduce((x, y) => x + y, 0);
       }
       return Math.round(std);
     });
@@ -1040,7 +1042,7 @@ export class DashboardComponent implements OnInit {
       const filtered = categoryList?.filter(a => filterList.findIndex(b => a?.name == b) > -1);
       let std = 0;
       if (filtered && filtered.length) {
-        std = filtered.map(x => x.hits).reduce((x, y) => x + y, 0) ;
+        std = filtered.map(x => x.hits).reduce((x, y) => x + y, 0);
       }
       return Math.round(std);
     });
@@ -1056,7 +1058,7 @@ export class DashboardComponent implements OnInit {
     let selectedCategoryItems = null;
     if (selectedCategory) {
 
-       selectedCategoryItems = filtered.map(x => x.category_hits).reduce((x, y) => {
+      selectedCategoryItems = filtered.map(x => x.category_hits).reduce((x, y) => {
         const item = y.find(z => z.name == selectedCategory);
         x.push(item);
         return x;
@@ -1065,7 +1067,7 @@ export class DashboardComponent implements OnInit {
 
 
 
-    const selectedCategoryItems2 = selectedCategoryItems ? selectedCategoryItems.map(x => [x]).reduce((x, y) => {x.push(y); return x; }, []) as CategorySummary[][] : null;
+    const selectedCategoryItems2 = selectedCategoryItems ? selectedCategoryItems.map(x => [x]).reduce((x, y) => { x.push(y); return x; }, []) as CategorySummary[][] : null;
 
     const anomaly: TrafficAnomaly = {} as TrafficAnomaly;
     anomaly.total = {} as TrafficAnomalyItem;
@@ -1078,7 +1080,7 @@ export class DashboardComponent implements OnInit {
     anomaly.total.ratio = (Math.round((anomaly.total.currentHit - anomaly.total.averageHit) / anomaly.total.averageHit * 100)) || 0;
 
 
-    anomaly.total.std_deviations = selectedCategory ? selectedCategoryItems.map(x => x ? x.std_deviation  : 0) : filtered.map(x => x.total_hit.std_deviation );
+    anomaly.total.std_deviations = selectedCategory ? selectedCategoryItems.map(x => x ? x.std_deviation : 0) : filtered.map(x => x.total_hit.std_deviation);
     anomaly.total.averages = selectedCategory ? selectedCategoryItems.map(x => x ? x.average : 0) : filtered.map(x => x.total_hit.average);
     anomaly.total.hits = selectedCategory ? selectedCategoryItems.map(x => x ? x.hits : 0) : filtered.map(x => x.total_hit.count);
 

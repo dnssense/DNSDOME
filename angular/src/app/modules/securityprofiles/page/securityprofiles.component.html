@@ -70,7 +70,7 @@
                 <tr *ngFor="let profile of securityProfiles | filter: searchKey: 'name'; let index = index">
                   <td style="width: 32px;">{{ index + 1 }}</td>
                   <td>{{ profile.name }}</td>
-                  <td>{{ profile.name === 'Monitor_Profile' && profile.isSystem ? '-1' : profile.numberOfUsage }}</td>
+                  <td>{{ profile.numberOfUsage }}</td>
                   <td class="text-center" style="width: 60px;">
                     <button class="btn btn-link btn-icon p-0 hover-gray" (click)="cloneProfile(profile)" data-tooltip="Existing profile clones" data-tooltip-location="left">
                       <i-feather name="copy" class="mr-0"></i-feather>

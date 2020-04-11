@@ -90,13 +90,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.defineNewAgentForProfile();
   }
 
-  ngOnInit() {
-    this.publicIpService.getMyIp().subscribe(result => {
-      this.ip = result;
-    }, (err) => {
-      return err;
-    });
-  }
+  ngOnInit() { }
 
   saveProfile() {
     this.profileWizard.saveProfile();
@@ -114,7 +108,13 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void { }
+  ngAfterViewInit() {
+    this.publicIpService.getMyIp().subscribe(result => {
+      this.ip = result;
+    }, (err) => {
+      return err;
+    });
+  }
 
   getPublicIpsDataAndProfiles(type?: string) {
 

@@ -68,7 +68,7 @@
 .categories {
   .rk-item {
     &.active {
-      background-color: #3397c5;
+      background-color: var(--primary);
     }
   }
 }

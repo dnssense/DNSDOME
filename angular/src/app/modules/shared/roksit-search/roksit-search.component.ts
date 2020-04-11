@@ -19,6 +19,8 @@ import { Router } from '@angular/router';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import * as moment from 'moment';
+import { TranslatorService } from 'src/app/core/services/translator.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export class GroupedCategory {
   type: string;
@@ -54,7 +56,9 @@ export class RoksitSearchComponent implements OnInit {
     private notification: NotificationService,
     private userService: UserService,
     private router: Router,
-    private staticmessageService: StaticMessageService
+    private staticmessageService: StaticMessageService,
+    private translatorService: TranslatorService,
+    private translateService: TranslateService
   ) {
     this.getSavedReports();
 
@@ -70,6 +74,10 @@ export class RoksitSearchComponent implements OnInit {
     this.userService.getUsers().subscribe(result => {
       this.users = result.filter(x => x.isActive);
     });
+
+    this.translateService.onLangChange.subscribe(result => {
+      this.dateText = this.convertTimeString(Number(this.searchSettings.dateInterval));
+    });
   }
 
   @Input() searchSettings: SearchSetting;
@@ -82,18 +90,25 @@ export class RoksitSearchComponent implements OnInit {
 
   users: User[] = [];
 
-  dateOptions: RkDateTime[] = [
+  _dateOptions: RkDateTime[] = [
     { displayText: 'Last 5 Minutes', value: 5, selected: true },
-    { displayText: 'Last 15 Minutes', value: 15 },
-    { displayText: 'Last 30 Minutes', value: 30 },
-    { displayText: 'Last 1 Hour', value: 60 },
-    { displayText: 'Last 3 Hour', value: 60 * 3 },
-    { displayText: 'Last 12 Hour', value: 60 * 12 },
+    // { displayText: 'Last 15 Minutes', value: 15 },
+    // { displayText: 'Last 30 Minutes', value: 30 },
+    // { displayText: 'Last 1 Hour', value: 60 },
+    { displayText: 'Last 6 Hour', value: 60 * 6 },
+    // { displayText: 'Last 12 Hour', value: 60 * 12 },
     { displayText: 'Last 1 Day', value: 60 * 24 },
-    { displayText: 'Last 2 Day', value: 60 * 24 * 2 },
+    // { displayText: 'Last 2 Day', value: 60 * 24 * 2 },
     { displayText: 'Last 1 Week', value: 60 * 24 * 7, },
-    { displayText: 'Last 2 Week', value: 60 * 24 * 14 },
-    { displayText: 'Last 1 Month', value: 60 * 24 * 30 },
+    // { displayText: 'Last 2 Week', value: 60 * 24 * 14 },
+    // { displayText: 'Last 1 Month', value: 60 * 24 * 30 },
+  ];
+
+  dateOptions: RkDateTime[] = [
+    { value: 1, displayText: '1 hour' },
+    { value: 6, displayText: '6 hour' },
+    { value: 24, displayText: 'Last 1 day' },
+    { value: 24 * 7, displayText: 'Last 1 week' },
   ];
 
   groupedCategories: GroupedCategory[] = [];
@@ -144,6 +159,8 @@ export class RoksitSearchComponent implements OnInit {
 
   savedReportOptions: RkSelectModel[] = [];
 
+  dateText: string;
+
   ngOnInit() {
     this.reportService.initTableColumns().subscribe(columns => {
 
@@ -161,6 +178,8 @@ export class RoksitSearchComponent implements OnInit {
 
     this.filters.concat(this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value])));
     this.filters.concat(this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value])));
+
+    this.dateText = this.convertTimeString(Number(this.searchSettings.dateInterval));
   }
 
   private getSavedReports() {
@@ -207,6 +226,54 @@ export class RoksitSearchComponent implements OnInit {
     this.searchSettingEmitter.emit(this.searchSettings);
   }
 
+  private convertTimeString(num: number) {
+    const month = Math.floor(num / (1440 * 30));
+    const w = Math.floor((num - (month * 1440 * 30)) / (1440 * 7));
+    const d = Math.floor((num - (w * 1440 * 7)) / 1440); // 60*24
+    const h = Math.floor((num - (d * 1440)) / 60);
+    const m = Math.round(num % 60);
+
+    let text = '';
+
+    if (month > 0) {
+      text = `${month} ${this.translatorService.translate('Month')}`;
+
+      if (w > 0) {
+        text += ` ${w} ${this.translatorService.translate('Week')}`;
+      }
+    } else if (w > 0) {
+      text = `${w} ${this.translatorService.translate('Week')}`;
+
+      if (d > 0) {
+        text += ` ${d} ${this.translatorService.translate('Day')}`;
+      }
+    } else if (d > 0) {
+      text = `${d} ${this.translatorService.translate('Day')}`;
+
+      if (h > 0) {
+        text += ` ${h} ${this.translatorService.translate('Hour')}`;
+      }
+    } else if (h > 0) {
+      text = `${h} ${this.translatorService.translate('Hour')}`;
+
+      if (m > 0) {
+        text += ` ${m} ${this.translatorService.translate('Minute')}`;
+      }
+    } else {
+      text = `${m} ${this.translatorService.translate('Minute')}`;
+    }
+
+    return text;
+  }
+
+  clickedDateOption(option: RkDateTime) {
+    this.searchSettings.dateInterval = option.value;
+
+    this.searchSettingEmitter.emit(this.searchSettings);
+
+    this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
+  }
+
   rkDateChanhed($event: { startDate: Date, endDate: Date }) {
     const startDate = moment($event.startDate);
     const endDate = moment($event.endDate);
@@ -214,6 +281,8 @@ export class RoksitSearchComponent implements OnInit {
     const diff = endDate.diff(startDate, 'minutes');
 
     this.searchSettings.dateInterval = diff;
+
+    this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
 
     this.searchSettingEmitter.emit(this.searchSettings);
   }

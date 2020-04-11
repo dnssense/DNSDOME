@@ -120,8 +120,8 @@
 
               <div class="px-4 d-flex flex-column" style="flex: 1;">
                 <div class="d-flex justify-content-end align-items-center" *ngIf="trafficChart">
-                    <button class="btn btn-link btn-accent py-0" (click)="showSummary()">{{'DASHBOARD.ShowSummary'|translate}}</button>
-                    <button class="btn btn-link btn-accent py-0 pr-0"  (click)="showDetail()" >{{'DASHBOARD.ShowDetail'|translate}}</button>
+                    <button class="btn btn-link btn-accent py-0" style="background: transparent;" (click)="showSummary()">{{'DASHBOARD.ShowSummary'|translate}}</button>
+                    <button class="btn btn-link btn-accent py-0 pr-0" style="background: transparent;"  (click)="showDetail()" >{{'DASHBOARD.ShowDetail'|translate}}</button>
                 </div>
                 
                 <div class="chart" id="chart"></div>
@@ -283,7 +283,7 @@
 
               <button class="btn btn-accent ml-3" (click)="search()">{{'Search'|translate}}</button>
             </div>
-            <div class="rk-panel-item bg-white p-0" style="flex: 1">
+            <div class="rk-panel-item p-0" style="flex: 1">
               <div class="unique-chart" id="unique-chart"></div>
             </div>
           </div>

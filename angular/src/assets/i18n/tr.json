@@ -541,5 +541,10 @@
         "ClientMacAddress": "İstemci Mac Adresi",
         "ClientBoxSerial": "İstemci Makine Serisi",
         "HostName": "Ana Bilgisayar Adı"
-    }
+    },
+    "Month": "Ay",
+    "Week": "Hafta",
+    "Day": "Gün",
+    "Hour": "Saat",
+    "Minute": "Dakika"
 }

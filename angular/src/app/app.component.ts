@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ConfigService, ConfigHost } from './core/services/config.service';
 import { AuthenticationService } from './core/services/authentication.service';
+import { RkUtilityService, ThemeColor } from 'roksit-lib';
+import { LOCAL_STORAGE_THEME_COLOR } from './modules/theme/theme.component';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,8 @@ export class AppComponent {
   constructor(
     private config: ConfigService,
     private authenticationService: AuthenticationService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private rkUtilityService: RkUtilityService
   ) {
     this.config.init();
     this.authenticationService.checkSessionIsValid();
@@ -27,7 +30,11 @@ export class AppComponent {
     // authenticationService.checkSessionIsValid();
 
 
-    // utilityService.changeTheme(true);
+    const themeColor = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+
+    if (themeColor) {
+      this.rkUtilityService.changeTheme(themeColor === 'dark');
+    }
 
   }
 }

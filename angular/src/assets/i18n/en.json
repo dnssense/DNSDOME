@@ -546,5 +546,10 @@
         "ClientMacAddress": "Mac Address",
         "ClientBoxSerial": "Box Serial",
         "HostName": "Host Name"
-    }
+    },
+    "Month": "Months",
+    "Week": "Weeks",
+    "Day": "Days",
+    "Hour": "Hours",
+    "Minute": "Minutes"
 }

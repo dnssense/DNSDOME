@@ -60,8 +60,13 @@ export class DevicesComponent implements OnInit {
         this.initializeSelectedAgentProfile();
     }
     ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
+
+    private _registereds: Agent[] = [];
     registereds: Agent[] = [];
+
+    private _unregistereds: UnregisteredAgent[] = [];
     unregistereds: UnregisteredAgent[] = [];
+
     devicesForGroup: AgentInfo[] = [];
     deviceGroup: DeviceGroup = new DeviceGroup();
 
@@ -120,6 +125,10 @@ export class DevicesComponent implements OnInit {
     localDNSRelaySearch: string;
 
     groupAgentSearch: string;
+
+    groupMemberSearch: string;
+
+    ungroupMemberSearch: string;
 
     loadDevices() {
         this.agentService.getSecurityProfiles().subscribe(res => {
@@ -180,6 +189,8 @@ export class DevicesComponent implements OnInit {
                 }
                 return -1;
             });
+
+            this._registereds = this.deepCopy(this.registereds);
         });
 
         this.agentService.getUnregisteredDevices().subscribe(res => {
@@ -192,6 +203,8 @@ export class DevicesComponent implements OnInit {
                     a.agentAlias = d.hostName;
                     this.unregistereds.push({ agentGroup: null, agentInfo: a, rootProfile: null });
                 });
+
+                this._unregistereds = this.deepCopy(this.unregistereds);
             }
         });
     }
@@ -257,8 +270,6 @@ export class DevicesComponent implements OnInit {
     openTooltipGuide() {
         // tooltip istenirse eklenecek
     }
-
-
 
     saveBox() {
         if (this.isBoxFormValid()) {
@@ -420,10 +431,7 @@ export class DevicesComponent implements OnInit {
         }
     }
 
-
-
     closeModal() { }
-
 
     groupMembersTableCheckboxChanged($event) {
         this.registereds.forEach(elem => elem.selected = $event);
@@ -433,9 +441,7 @@ export class DevicesComponent implements OnInit {
         this.unregistereds.forEach(elem => elem.selected = $event);
     }
 
-
     selectRow(ev: boolean, item) { }
-
 
     changeTableGroup(type: 'edit' | 'create') {
         let selecteds;
@@ -574,8 +580,6 @@ export class DevicesComponent implements OnInit {
         this.selectedBox.agent.captivePortalIp = '';
     }
 
-
-
     changeGroupModalApplyClick() {
 
         // const selectedProfile =  this.securityProfiles.find(x => x.id === this.selectedProfileId);
@@ -643,7 +647,30 @@ export class DevicesComponent implements OnInit {
             const name = x.agentGroup.groupName.toLocaleLowerCase().includes(term);
             const profile = x.securityProfile.name.toLocaleLowerCase().includes(term);
 
-            return name || profile;
+            return name || profile;
+        });
+    }
+
+    groupMemberSearchChanged() {
+        this.registereds = this._registereds.filter(x => {
+            const term = this.groupMemberSearch.trim().toLocaleLowerCase();
+
+            const agentAlias = x.agentAlias.toLocaleLowerCase().includes(term);
+            const mac = x.mac.toLocaleLowerCase().match(/.{1,2}/g).join(':').includes(term);
+            const agentGroup = x.agentGroup ? x.agentGroup.groupName.toLocaleLowerCase().includes(term) : false;
+
+            return agentAlias || mac || agentGroup;
+        });
+    }
+
+    ungroupMemberSearchChanged() {
+        this.unregistereds = this._unregistereds.filter(x => {
+            const term = this.ungroupMemberSearch.trim().toLocaleLowerCase();
+
+            const agentAlias = x.agentInfo.agentAlias.toLocaleLowerCase().includes(term);
+            const mac = x.agentInfo.mac.toLocaleLowerCase().match(/.{1,2}/g).join(':').includes(term);
+
+            return agentAlias || mac;
         });
     }
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { RkUtilityService } from 'roksit-lib';
 
 export type ThemeColor = 'white' | 'dark';
 
-const LOCAL_STORAGE_THEME_COLOR = 'themeColor';
+export const LOCAL_STORAGE_THEME_COLOR = 'themeColor';
 
 @Component({
     selector: 'app-theme',
@@ -11,7 +12,9 @@ const LOCAL_STORAGE_THEME_COLOR = 'themeColor';
 
 export class ThemeComponent implements OnInit {
 
-    constructor() { }
+    constructor(
+        private rkUtilitiyService: RkUtilityService
+    ) { }
 
     themeMode: ThemeColor = 'white';
 
@@ -25,5 +28,7 @@ export class ThemeComponent implements OnInit {
 
     colorChanged($event: { color: ThemeColor }) {
         localStorage.setItem(LOCAL_STORAGE_THEME_COLOR, $event.color);
+
+        this.rkUtilitiyService.changeTheme($event.color === 'dark');
     }
 }
