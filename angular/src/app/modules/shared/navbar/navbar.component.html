@@ -11,7 +11,7 @@
             <div class="btn-group mr-2" dropdown placement="bottom right">
               <button class="notification-btn ripple" dropdownToggle type="button">
                 <i-feather name="globe"></i-feather>
-                <div class="btn-badge" style="background: #3397c5;">{{currentLanguage}}</div>
+                <div class="btn-badge" style="background: var(--primary);">{{currentLanguage}}</div>
               </button>
 
               <div *dropdownMenu class="dropdown-menu dropdown-menu-right rk-list-dropdown-container" role="menu">
@@ -104,7 +104,7 @@
             </ng-container> -->
           </a>
 
-          <a class="text-capitalize text-primary rk-link" *ngFor="let item of breadcrumb; let index = index"
+          <a class="text-capitalize text-primary rk-link" style="color: var(--primary)" *ngFor="let item of breadcrumb; let index = index"
             style="font-size: 14px;">
             {{ breadcrumb.length > 1 && index > 0 ? ' >' : '' }} {{ item }}
           </a>

@@ -261,6 +261,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   clickedDateOption(option: RkDateTime, init: boolean) {
     this.searchSettings.dateInterval = option.value;
 
+    this.searchSettings.startDate = null;
+    this.searchSettings.endDate = null;
+
     if (!init) {
       this.searchSettingEmitter.emit(this.searchSettings);
     }
@@ -282,9 +285,12 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     const diff = endDate.diff(startDate, 'minutes');
 
-    this.searchSettings.dateInterval = diff;
+    this.searchSettings.dateInterval = null;
 
-    this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
+    this.searchSettings.startDate = $event.startDate.toISOString();
+    this.searchSettings.endDate = $event.endDate.toISOString();
+
+    this.dateText = this.convertTimeString(diff);
 
     this.setDateOptionBySearchSettings();
 
@@ -454,7 +460,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     this.setShowRunBar(false);
 
-    this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
+    if (this.searchSettings.dateInterval) {
+      this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
+    }
 
     if (showFilterModal) {
       this.filterModal.toggle();
