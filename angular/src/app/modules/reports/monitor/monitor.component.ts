@@ -33,7 +33,6 @@ export class MonitorComponent implements OnInit, AfterViewInit {
   ) {
     activatedRoute.queryParams.subscribe((params: MonitorReportRouteParams) => {
       this.queryParams = params;
-
     });
   }
 
@@ -49,58 +48,62 @@ export class MonitorComponent implements OnInit, AfterViewInit {
 
   isShowRunBar = false;
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() { }
   ngAfterViewInit() {
     this.init();
   }
-// bu kod customreport.component.ts icindede var
+  // bu kod customreport.component.ts icindede var
   init() {
 
 
-      if (this.queryParams.startDate && this.queryParams.endDate) {
-        const startDate = new Date(this.queryParams.startDate);
-        const endDate = new Date(this.queryParams.endDate);
+    if (this.queryParams.startDate && this.queryParams.endDate) {
+      const startDate = new Date(this.queryParams.startDate);
+      const endDate = new Date(this.queryParams.endDate);
 
-        const _startDate = moment([startDate.getFullYear(), startDate.getMonth(), startDate.getDate()]);
-        const _endDate = moment([endDate.getFullYear(), endDate.getMonth(), endDate.getDate()]);
+      const _startDate = moment([startDate.getFullYear(), startDate.getMonth(), startDate.getDate()]);
+      const _endDate = moment([endDate.getFullYear(), endDate.getMonth(), endDate.getDate()]);
 
-        const difference = _endDate.diff(_startDate, 'minutes');
+      const difference = _endDate.diff(_startDate, 'minutes');
 
-        this.roksitSearchComponent.searchSettings.type = 'roksit';
-        this.roksitSearchComponent.searchSettings.dateInterval = difference;
-        this.roksitSearchComponent.searchSettings.should = [];
-        this.roksitSearchComponent.searchSettings.must = [];
-        this.roksitSearchComponent.searchSettings.mustnot = [];
+      this.roksitSearchComponent.searchSettings.type = 'roksit';
+      this.roksitSearchComponent.searchSettings.dateInterval = difference;
+      this.roksitSearchComponent.searchSettings.should = [];
+      this.roksitSearchComponent.searchSettings.must = [];
+      this.roksitSearchComponent.searchSettings.mustnot = [];
 
-        if (this.queryParams.category && this.queryParams.category != 'total') {
-          if (categoryMappings[this.queryParams.category]) {
-            categoryMappings[this.queryParams.category]?.forEach(x => {
-              this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', x));
-            });
-          } else if (this.queryParams.category != 'total') {
-            this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', this.queryParams.category));
-          }
-
+      if (this.queryParams.category && this.queryParams.category != 'total') {
+        if (categoryMappings[this.queryParams.category]) {
+          categoryMappings[this.queryParams.category]?.forEach(x => {
+            this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', x));
+          });
+        } else if (this.queryParams.category != 'total') {
+          this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', this.queryParams.category));
         }
 
-        this.roksitSearchComponent.filters = this.filters;
-        this.roksitSearchComponent.categoryFilters = this.roksitSearchComponent.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
+      }
 
-        this.roksitSearchComponent.search('', false);
+      this.roksitSearchComponent.filters = this.filters;
+      this.roksitSearchComponent.categoryFilters = this.roksitSearchComponent.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
+
+      this.roksitSearchComponent.search('', false);
 
 
     } else {
 
       const state = this.location.getState();
 
-      if (state['filters']) {
+      if (state['filters'] && state['searchSettings']) {
         this.filters = state['filters'];
+
+        this.searchSettings = state['searchSettings'];
 
         this.roksitSearchComponent.filters = this.filters;
 
+        this.roksitSearchComponent.searchSettings = state['searchSettings'];
+
         this.roksitSearchComponent.search('', false);
+
+        this.roksitSearchComponent.convertTimeString(this.roksitSearchComponent.searchSettings.dateInterval);
       }
 
     }

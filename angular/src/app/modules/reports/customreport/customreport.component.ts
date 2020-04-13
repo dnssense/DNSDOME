@@ -106,12 +106,18 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
       const state = this.location.getState();
 
-      if (state['filters']) {
+      if (state['filters'] && state['searchSettings']) {
         this.filters = state['filters'];
+
+        this.searchSetting = state['searchSettings'];
+
+        this.customReportSearchComponent.searchSettings = this.searchSetting;
 
         this.customReportSearchComponent.filters = this.filters;
 
         this.customReportSearchComponent.search('', false);
+
+        this.customReportSearchComponent.convertTimeString(this.customReportSearchComponent.searchSettings.dateInterval);
       } else {
         this.search(this.searchSetting);
       }

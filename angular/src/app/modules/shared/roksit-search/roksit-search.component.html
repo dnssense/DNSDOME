@@ -282,11 +282,11 @@
             Search
           </button> -->
 
-          <button class="btn btn-small mr-2 mt-1" *ngFor="let option of _dateOptions"
+          <button class="btn btn-small mr-2 mt-1" [ngClass]="{'active': option.selected}" *ngFor="let option of dateOptions"
             (click)="clickedDateOption(option)">{{ option.displayText }}</button>
 
           <div style="min-width: 200px;" class="mt-1 d-flex flex-column justify-content-center align-items-center">
-            <rk-date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions"></rk-date>
+            <rk-date #date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions"></rk-date>
 
             <span class="date-text mt-1">{{ dateText }}</span>
 

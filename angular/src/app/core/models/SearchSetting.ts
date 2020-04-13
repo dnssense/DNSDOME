@@ -12,7 +12,7 @@ export class SearchSetting {
   id = -1;
   name = '';
   refresh = -1;
-  dateInterval: string | number = 5;
+  dateInterval = 5;
   type: SearchSettingsType = 'roksit';
   topNumber = 10;
   query: string;
@@ -28,24 +28,7 @@ export class SearchSetting {
 
   selected ?= false;
 
-  // public getMaxTime() {
-  //   let date = 0;
-
-  //   if (this.dateInterval.indexOf('-') < 0) {
-  //     date = new Date().getTime();
-  //   }
-
-  //   return date;
-  // }
-
-  // public getMinTime() {
-  //   let date = 0;
-
-  //   if (this.dateInterval.indexOf('-') < 0) {
-  //     date = new Date().getTime() - parseInt(this.dateInterval, null) * 60 * 1000;
-  //   }
-
-  //   return date;
-  // }
+  startDate?: string;
+  endDate?: string;
 
 }

@@ -153,6 +153,10 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
       tableData = tableData.filter(x => x.selected);
 
+      if (tableData.length === 0) {
+        tableData = JSON.parse(JSON.stringify(this.tableData)) as any[];
+      }
+
       tableData.forEach(data => {
         delete data.id;
       });

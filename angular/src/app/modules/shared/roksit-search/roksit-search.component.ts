@@ -47,7 +47,7 @@ export class FilterBadgeModel {
   styleUrls: ['roksit-search.component.scss']
 })
 
-export class RoksitSearchComponent implements OnInit {
+export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   constructor(
     private staticService: StaticService,
@@ -90,25 +90,11 @@ export class RoksitSearchComponent implements OnInit {
 
   users: User[] = [];
 
-  _dateOptions: RkDateTime[] = [
-    { displayText: 'Last 5 Minutes', value: 5, selected: true },
-    // { displayText: 'Last 15 Minutes', value: 15 },
-    // { displayText: 'Last 30 Minutes', value: 30 },
-    // { displayText: 'Last 1 Hour', value: 60 },
-    { displayText: 'Last 6 Hour', value: 60 * 6 },
-    // { displayText: 'Last 12 Hour', value: 60 * 12 },
-    { displayText: 'Last 1 Day', value: 60 * 24 },
-    // { displayText: 'Last 2 Day', value: 60 * 24 * 2 },
-    { displayText: 'Last 1 Week', value: 60 * 24 * 7, },
-    // { displayText: 'Last 2 Week', value: 60 * 24 * 14 },
-    // { displayText: 'Last 1 Month', value: 60 * 24 * 30 },
-  ];
-
   dateOptions: RkDateTime[] = [
-    { value: 1, displayText: '1 hour' },
-    { value: 6, displayText: '6 hour' },
-    { value: 24, displayText: 'Last 1 day' },
-    { value: 24 * 7, displayText: 'Last 1 week' },
+    { value: 5, displayText: 'Last 5 Minutes' },
+    { value: 60 * 6, displayText: '6 hour' },
+    { value: 60 * 24, displayText: 'Last 1 day' },
+    { value: 60 * 24 * 7, displayText: 'Last 1 week' },
   ];
 
   groupedCategories: GroupedCategory[] = [];
@@ -161,6 +147,8 @@ export class RoksitSearchComponent implements OnInit {
 
   dateText: string;
 
+  @ViewChild('date') date;
+
   ngOnInit() {
     this.reportService.initTableColumns().subscribe(columns => {
 
@@ -196,6 +184,10 @@ export class RoksitSearchComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.clickedDateOption(this.dateOptions[0], true);
+  }
+
   setActiveTabNumber(val: number) {
     this.activeTabNumber = val;
   }
@@ -226,7 +218,7 @@ export class RoksitSearchComponent implements OnInit {
     this.searchSettingEmitter.emit(this.searchSettings);
   }
 
-  private convertTimeString(num: number) {
+  convertTimeString(num: number) {
     const month = Math.floor(num / (1440 * 30));
     const w = Math.floor((num - (month * 1440 * 30)) / (1440 * 7));
     const d = Math.floor((num - (w * 1440 * 7)) / 1440); // 60*24
@@ -266,12 +258,22 @@ export class RoksitSearchComponent implements OnInit {
     return text;
   }
 
-  clickedDateOption(option: RkDateTime) {
+  clickedDateOption(option: RkDateTime, init: boolean) {
     this.searchSettings.dateInterval = option.value;
 
-    this.searchSettingEmitter.emit(this.searchSettings);
+    if (!init) {
+      this.searchSettingEmitter.emit(this.searchSettings);
+    }
 
     this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
+
+    const finded = this.dateOptions.find(x => x.value === option.value);
+
+    if (finded) {
+      this.date.selectTime(finded);
+    }
+
+    this.setDateOptionBySearchSettings();
   }
 
   rkDateChanhed($event: { startDate: Date, endDate: Date }) {
@@ -283,6 +285,8 @@ export class RoksitSearchComponent implements OnInit {
     this.searchSettings.dateInterval = diff;
 
     this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
+
+    this.setDateOptionBySearchSettings();
 
     this.searchSettingEmitter.emit(this.searchSettings);
   }
@@ -421,26 +425,11 @@ export class RoksitSearchComponent implements OnInit {
   }
 
   setDateOptionBySearchSettings() {
-
-    let selectedAnyOne = false;
     const dateOptions = this.dateOptions.map(x => {
-      x.selected = false;
-
-      if (x.value == this.searchSettings.dateInterval) {
-        selectedAnyOne = true;
-        x.selected = true;
-      }
-
-      return x;
+      return { ...x, selected: x.value === this.searchSettings.dateInterval };
     });
-    if (!selectedAnyOne && dateOptions.length) {
-
-      dateOptions[0].selected = true;
-      this.searchSettings.dateInterval = this.dateOptions[0].value;
-    }
 
     this.dateOptions = dateOptions;
-
   }
 
   search(type?: 'savedreport' | string, showFilterModal = false) {
@@ -465,7 +454,7 @@ export class RoksitSearchComponent implements OnInit {
 
     this.setShowRunBar(false);
 
-
+    this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
 
     if (showFilterModal) {
       this.filterModal.toggle();
@@ -551,7 +540,7 @@ export class RoksitSearchComponent implements OnInit {
 
     const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
 
-    this.searchSettings = JSON.parse(JSON.stringify(report));
+    this.searchSettings = JSON.parse(JSON.stringify({ ...report, dateInterval: this.searchSettings.dateInterval }));
 
     const should = this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
     const mustnot = this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value]));
@@ -680,7 +669,8 @@ export class RoksitSearchComponent implements OnInit {
   routeReportPage(pageName: 'monitor' | 'custom-reports') {
     this.router.navigateByUrl(`/admin/reports/${pageName}`, {
       state: {
-        filters: this.filters
+        filters: this.filters,
+        searchSettings: this.searchSettings
       }
     });
   }

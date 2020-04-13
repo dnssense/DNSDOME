@@ -7,10 +7,10 @@
                 <div>
                     <rk-table-container [config]="tableConfig" class="m-0 border-0 pagination-disabled"
                         (columnBadgeChange)="columnChanged($event)">
-                        <rk-table-export (event)="exportAs($event)"></rk-table-export>
+                        <rk-table-export (event)="exportAs($event)" [showTypes]="{ excel: true, pdf: false }"></rk-table-export>
 
                         <rk-table (pageChange)="onPageChange($event)" [totalCount]="100"
-                            [pageViewCount]="searchSetting.topNumber"
+                            [pageViewCount]="searchSetting.topNumber" [paginationOptions]="paginationOptions"
                             (pageViewCountChange)="onPageViewCountChange($event)" [info]="true">
                             <ng-template #header>
                                 <tr>

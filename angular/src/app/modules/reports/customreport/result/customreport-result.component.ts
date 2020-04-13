@@ -12,6 +12,7 @@ import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-
 import { LinkClick } from '../../monitor/result/monitor-result.component';
 import * as moment from 'moment';
 import { TranslatorService } from 'src/app/core/services/translator.service';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 
 export interface TableBadgeOutput {
   name: string;
@@ -86,6 +87,15 @@ export class CustomReportResultComponent implements OnDestroy {
     rows: [],
     selectableRows: true
   };
+
+  paginationOptions: RkSelectModel[] = [
+    { displayText: '10', value: 10, selected: true },
+    { displayText: '25', value: 25 },
+    { displayText: '50', value: 50 },
+    { displayText: '100', value: 100 },
+    { displayText: '250', value: 250 },
+    { displayText: '500', value: 500 },
+  ]
 
   firstDate: any;
 
@@ -274,28 +284,6 @@ export class CustomReportResultComponent implements OnDestroy {
     });
   }
 
-  updateResultTable(min: any, max: any): void {
-    if (min && max) {
-      const md = new Date(min);
-      md.setHours(md.getUTCHours());
-      md.setDate(md.getUTCDate());
-
-      const mxd = new Date(max);
-      mxd.setHours(mxd.getUTCHours());
-      mxd.setDate(mxd.getUTCDate());
-
-      const startDate = moment(md).format('DD.MM.YYYY HH:mm:ss');
-      const endDate = moment(mxd).format('DD.MM.YYYY HH:mm:ss');
-
-      const dateVal = startDate + ' - ' + endDate;
-      this.searchSetting.dateInterval = dateVal;
-      this.fillResultTable(this.searchSetting);
-    } else {
-      this.searchSetting.dateInterval = this.firstDate;
-      this.fillResultTable(this.searchSetting);
-    }
-  }
-
   checkboxAllChange($event: boolean) {
     this.data.forEach(elem => {
       elem.selected = $event;
@@ -303,7 +291,11 @@ export class CustomReportResultComponent implements OnDestroy {
   }
 
   exportAs(extention: ExportTypes) {
-    const data = this.data.filter(x => x.selected);
+    let data = this.data.filter(x => x.selected);
+
+    if (data.length === 0) {
+      data = this.data;
+    }
 
     if (data && data.length > 0) {
 
