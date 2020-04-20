@@ -60,15 +60,15 @@
             <div class="row">
               <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.total"  (change)="infoboxChanged($event, 'total')" [title]="translate('Total')"
-                  [color]="'#4353ff'" className="blue" [type]="1" [valueOne]="trafficAnomaly?.total?.allowCount"
-                  [valueTwo]="trafficAnomaly?.total?.blockCount" [description]="translate('DASHBOARD.TotalDnsRequestCount')">
+                  [color]="'#4353ff'" className="blue" [type]="1" [valueOne]="trafficAnomaly?.total?.hit"
+                  [valueTwo]="trafficAnomaly?.total?.block" [description]="translate('DASHBOARD.TotalDnsRequestCount')">
                 </rk-infobox>
               </div>
 
               <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe')"
-                  [title]="translate('Safe')" [color]="'#3dd49a'" className="green" [valueOne]="trafficAnomaly?.safe?.hitCount"
-                  [valueTwo]="trafficAnomaly?.safe?.uniqueCount"
+                  [title]="translate('Safe')" [color]="'#3dd49a'" className="green" [valueOne]="trafficAnomaly?.safe?.hit"
+                  [valueTwo]="trafficAnomaly?.safe?.hit_ratio"
                   description="{{'SafeDescription'|translate}}">
                 </rk-infobox>
               </div>
@@ -76,7 +76,7 @@
               <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.malicious"  (change)="infoboxChanged($event, 'malicious')" [type]="2"
                   [title]="translate('Malicious')" className="red" [color]="'#f95656'"
-                  [valueOne]="trafficAnomaly?.malicious?.hitCount" [valueTwo]="trafficAnomaly?.malicious?.uniqueCount"
+                  [valueOne]="trafficAnomaly?.malicious?.hit" [valueTwo]="trafficAnomaly?.malicious?.hit_ratio"
                   description="{{'MaliciousDescription'|translate}}">
                 </rk-infobox>
               </div>
@@ -84,7 +84,7 @@
               <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.variable"  (change)="infoboxChanged($event, 'variable')" [type]="2"
                   [title]="translate('Variable')" className="gray" [color]="'#d8d8d8'"
-                  [valueOne]="trafficAnomaly?.variable?.hitCount" [valueTwo]="trafficAnomaly?.variable?.uniqueCount"
+                  [valueOne]="trafficAnomaly?.variable?.hit" [valueTwo]="trafficAnomaly?.variable?.hit_ratio"
                   description="{{'VariableDescription'|translate}}">
                 </rk-infobox>
               </div>
@@ -92,7 +92,7 @@
               <div class="col-12 col-lg-6 col-xl">
                 <rk-infobox [active]="infoBoxes.harmful"  (change)="infoboxChanged($event, 'harmful')" [type]="2"
                   [title]="translate('HarmfullContent')" className="yellow" [color]="'#f9df56'"
-                  [valueOne]="trafficAnomaly?.harmful?.hitCount" [valueTwo]="trafficAnomaly?.harmful?.uniqueCount"
+                  [valueOne]="trafficAnomaly?.harmful?.hit" [valueTwo]="trafficAnomaly?.harmful?.hit_ratio"
                   description="{{'HarmfulDescription'|translate}}">
                 </rk-infobox>
               </div>
@@ -103,16 +103,16 @@
               <div style="width: 190px;">
                 <div class="rk-selectable-table categories" style="width: auto !important;">
                   <div class="rk-item" *ngFor="let cat of categoryListFiltered"
-                    [ngClass]="{ 'active' : selectedCategoryForTraffic == cat.name }" (click)="addCategoryToTraffic(cat)">
+                    [ngClass]="{ 'active' : selectedCategory?.name == cat.name }" (click)="selectCategory(cat)">
                     <div class="rk-i-header">
                       <div class="d-flex align-items-center">
                         <span class="rk-selectable-table-item-title"> {{ cat.name }} </span>
-                        <span class="rk-selectable-badge">{{ cat.hitCount }} </span>
+                        <span class="rk-selectable-badge">{{ cat.hit }} </span>
                       </div>
                       <i-feather name="arrow-right"></i-feather>
                     </div>
 
-                    <rk-progressbar [value]="cat.ratio" [showType]="'outside'" [sizeType]="'small'">
+                    <rk-progressbar [value]="cat.hit_ratio" [showType]="'outside'" [sizeType]="'small'">
                     </rk-progressbar>
                   </div>
                 </div>
@@ -127,35 +127,16 @@
                 <div class="chart" id="chart"></div>
               </div>
 
-              <div>
-                <div class="chart-info">
-                  <div class="section">
-                    <span class="section-title">{{'Selected'|translate}} <br />{{'DASHBOARD.TimeHit'|translate}}</span>
-                    <span class="value">{{ trafficAnomaly[selectedBox]?.currentHit }}</span>
-                  </div>
-                  <div class="section flex-column active" style="border-radius: 0;">
-                    <span style="font-size: 12px;">{{'DASHBOARD.SelectedTimevsAverage'|translate}}</span>
-                    
-                    <span>
-                      <i-feather name="arrow-up"></i-feather>
-                      <span class="value">{{ trafficAnomaly[selectedBox]?.ratio }}%</span>
-                    </span>
-                  </div>
-                  <div class="section">
-                    <div class="section-title">Average Hit</div>
-                    <span class="value">{{ trafficAnomaly[selectedBox]?.averageHit }}</span>
-                  </div>
-                </div>
-              </div>
+        
             </div>
           </div>
         </div>
 
         <div class="row mt-0 mt-lg-3 dashboard-domains-table">
-          <!-- Malicious -->
+          <!-- top domains -->
           <div class="col-12 col-lg-4 mt-3 mt-lg-0 rk-panel">
             <div class="rk-panel-header rk-title-2">
-              {{'Malicious'|translate}}
+               {{'Malicious'|translate}}
             </div>
             <div class="rk-panel-item rk-info-table bg-white p-0" style="border-radius: 13px;">
               <rk-table-container class="overflow-hidden m-0">
@@ -175,7 +156,7 @@
                     </tr>
                   </ng-template>
                   <ng-template #body>
-                    <tr *ngFor="let domain of maliciousDomains; let index = index">
+                    <tr *ngFor="let domain of topDomains; let index = index">
                       <td class="index">{{ index + 1 }}</td>
                       <td>
                         <a (click)="addDomain(domain)" class="anchor">{{ domain.name }}</a>
@@ -191,83 +172,7 @@
             </div>
           </div>
 
-          <!-- New Domains -->
-          <div class="col-12 col-lg-4 mt-3 mt-lg-0 rk-panel">
-            <div class="rk-panel-header rk-title-2">
-              {{'NewDomains'|translate}}
-            </div>
-            <div class="rk-panel-item bg-white p-0" style="border-radius: 13px;">
-              <rk-table-container class="overflow-hidden m-0">
-                <rk-table [info]="true" [showPagination]="false">
-                  <ng-template #header>
-                    <tr>
-                      <th class="index">#</th>
-                      <th scope="col">
-                        {{'Domain'|translate}}
-                      </th>
-                      <th scope="col">
-                        {{'Count'|translate}}
-                      </th>
-                      <th scope="col">
-                        {{'Categories'|translate}}
-                      </th>
-                    </tr>
-                  </ng-template>
-                  <ng-template #body>
-                    <tr *ngFor="let domain of newDomains; let index = index">
-                      <td class="index">{{ index + 1 }}</td>
-                      <td>
-                        <a (click)="addDomain(domain)" class="anchor">{{ domain.name }}</a>
-                      </td>
-                      <td>{{ domain.hit }}</td>
-                      <td>
-                       {{domain.category}}
-                      </td>
-                    </tr>
-                  </ng-template>
-                </rk-table>
-              </rk-table-container>
-            </div>
-          </div>
 
-          <!-- Harmful -->
-          <div class="col-12 col-lg-4 mt-3 mt-lg-0 rk-panel">
-            <div class="rk-panel-header rk-title-2">
-              {{'Harmful'|translate}}
-            </div>
-            <div class="rk-panel-item bg-white p-0" style="border-radius: 13px;">
-              <rk-table-container class="overflow-hidden m-0">
-                <rk-table [info]="true" [showPagination]="false">
-                  <ng-template #header>
-                    <tr>
-                      <th class="index">#</th>
-                      <th scope="col">
-                        {{'Domain'|translate}}
-                      </th>
-                      <th scope="col">
-                        {{'Count'|translate}}
-                      </th>
-                      <th scope="col">
-                        {{'Categories'|translate}}
-                      </th>
-                    </tr>
-                  </ng-template>
-                  <ng-template #body>
-                    <tr *ngFor="let domain of harmfulDomains; let index = index">
-                      <td class="index">{{ index + 1 }}</td>
-                      <td>
-                        <a (click)="addDomain(domain)" class="anchor">{{ domain.name }}</a>
-                      </td>
-                      <td>{{ domain.hit }}</td>
-                      <td>
-                      {{domain.category}}
-                      </td>
-                    </tr>
-                  </ng-template>
-                </rk-table>
-              </rk-table-container>
-            </div>
-          </div>
         </div>
 
         <div class="row">
@@ -284,7 +189,7 @@
               <button class="btn btn-accent ml-3" (click)="search()">{{'Search'|translate}}</button>
             </div>
             <div class="rk-panel-item p-0" style="flex: 1">
-              <div class="unique-chart" id="unique-chart"></div>
+              <div class="unique-chart" id="topDomainChart"></div>
             </div>
           </div>
         </div>

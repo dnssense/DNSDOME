@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DashBoardService, TopDomainsRequestV4, DistinctAgentResponse, DistinctBoxResponse } from 'src/app/core/services/dashBoardService';
-import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
+
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { StaticService } from 'src/app/core/services/staticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
@@ -12,8 +12,7 @@ import { ConfigHost, ConfigService } from 'src/app/core/services/config.service'
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import {
-  AgentCountModel, DateParamModel, TrafficAnomaly, Domain, HourlyCompanySummaryV4Response,
-  TrafficAnomalyItem, CategorySummary, TrafficAnomalyCategory, TrafficAnomalyItem2, Result
+  AgentCountModel, DateParamModel, HourlyCompanySummaryV5Response, Domain, TopDomainsRequestV5, Result, TopDomainValuesResponseV4, Category, Bucket
 } from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
 import { RkApexHelper } from 'roksit-lib';
@@ -63,19 +62,19 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   host: ConfigHost;
-  elasticData: HourlyCompanySummaryV4Response;
+  trafficAnomaly: HourlyCompanySummaryV5Response;
   dateParameter = 0;
-  ds: DashboardStats = new DashboardStats();
+  // ds: DashboardStats = new DashboardStats();
   searchKey: string;
   labelArray: string[] = [];
-  categoryList = [];
-  categoryListFiltered = [];
-  selectedCategoryForTraffic: string;
+  // categoryList = [];
+  categoryListFiltered: Category[] = [];
+
   selectedCategory: CategoryV2 | null = null;
   trafficChart: any;
   timeLineChart: any;
 
-  uniqueDomainChart: any;
+  topDomainChart: any;
   trafficChartType = 'hit';
   uniqueChartType = 'domain';
 
@@ -129,7 +128,6 @@ export class DashboardComponent implements OnInit {
     },
   ];
 
-  trafficAnomaly: TrafficAnomaly = {} as TrafficAnomaly;
 
   items: TagInputValue[] = [];
 
@@ -221,9 +219,8 @@ export class DashboardComponent implements OnInit {
 
   diffrence: number;
 
-  maliciousDomains: Domain[] = [];
-  newDomains: Domain[] = [];
-  harmfulDomains: Domain[] = [];
+  topDomains: Domain[] = [];
+
 
   ngOnInit() {
     this.startDate.setDate(this.today.getDate() - 7);
@@ -232,7 +229,7 @@ export class DashboardComponent implements OnInit {
 
     this.startDashboardOperations();
 
-    const request = { duration: 7 * 24 } as TopDomainsRequestV4;
+    const request: TopDomainsRequestV5 = { duration: 30 * 24, type: 'total' } as TopDomainsRequestV5;
 
     this.getTopDomains(request);
     this.getAgents();
@@ -286,11 +283,11 @@ export class DashboardComponent implements OnInit {
       // add box serials that are not in distinctagents
       // registered clientlardan gelen verinin box bilgileride distinct agents olarak ekleniyor
       serials.forEach(x => {
-        const box = boxes.find(y => (y).serial == x);
+        const box = boxes.find(y => (y).serial === x);
         if (!box) { return; }
-        const foundedBox = distinctBoxs.items.find(y => y.serial == x);
+        const foundedBox = distinctBoxs.items.find(y => y.serial === x);
         if (!foundedBox) { return; }
-        if (distinctAgents.items.find(y => y.id == box.id)) { return; }
+        if (distinctAgents.items.find(y => y.id === box.id)) { return; }
         distinctAgents.items.push({ id: box.agent.id, count: 1 });
       });
 
@@ -298,7 +295,7 @@ export class DashboardComponent implements OnInit {
 
       // calcuate location agents
       distinctAgents.items.forEach(x => {
-        if (agentsLocation.find(y => y.id == x.id)) {
+        if (agentsLocation.find(y => y.id === x.id)) {
           publicip.activeCount++;
         }
       });
@@ -306,7 +303,7 @@ export class DashboardComponent implements OnInit {
 
       // calculate roaming clients
       distinctAgents.items.forEach(x => {
-        if (agentsRoamingClient.find(y => y.id == x.id)) {
+        if (agentsRoamingClient.find(y => y.id === x.id)) {
           roamingclient.activeCount++;
         }
       });
@@ -315,7 +312,7 @@ export class DashboardComponent implements OnInit {
 
       // calculate box
       distinctAgents.items.forEach(x => {
-        if (agentsBox.find(y => y.id == x.id)) {
+        if (agentsBox.find(y => y.id === x.id)) {
           dnsrelay.activeCount++;
         }
       });
@@ -339,77 +336,37 @@ export class DashboardComponent implements OnInit {
     return this.translateService.instant(data);
   }
 
-  getTopDomains(request: TopDomainsRequestV4) {
-    this.dashboardService.getTopDomains({ ...request, type: 'malicious' }).subscribe(result => {
-      if (result.items.length) {
-        this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
-          cats.forEach(cat => {
-            const finded = result.items.find(abc => abc.name == cat.domain);
-            if (finded) {
-              finded.category = cat.categoryList.join(',');
-            }
-          });
-          this.maliciousDomains = result.items;
+  getTopDomains(request: TopDomainsRequestV5) {
 
-        });
-      }
+    this.dashboardService.getTopDomains(request).subscribe(result => {
+        if (result.items.length) {
+         this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+           cats.forEach(cat => {
+             const finded = result.items.find(abc => abc.name == cat.domain);
+             if (finded) {
+               finded.category = cat.categoryList.join(',');
+             }
+           });
+           this.topDomains = result.items;
+
+         });
+       }
 
 
-
-    });
-
-    this.dashboardService.getTopDomains({ ...request, type: 'new' }).subscribe(result => {
-
-      if (result.items.length) {
-        this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
-
-          cats.forEach(cat => {
-            const finded = result.items.find(abc => abc.name == cat.domain);
-            if (finded) {
-              finded.category = cat.categoryList.join(',');
-            }
-          });
-          this.newDomains = result.items;
-
-        });
-      }
 
     });
 
-    this.dashboardService.getTopDomains({ ...request, type: 'harmful' }).subscribe(result => {
-
-      if (result.items.length) {
-        this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
-          cats.forEach(cat => {
-            const finded = result.items.find(abc => abc.name == cat.domain);
-            if (finded) {
-              finded.category = cat.categoryList.join(',');
-            }
-          });
-          this.harmfulDomains = result.items;
-
-        });
-      }
 
 
-    });
   }
 
-  calculateDomainHitPercentage(value: number): number {
-    if (!this.trafficAnomaly.total) {
-      return 0;
-    }
-    return (value / (this.trafficAnomaly.total.allowCount + this.trafficAnomaly.total.blockCount)) || 0;
-  }
+
 
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
 
-    const trafficAnomalyType = this.trafficAnomaly[type];
-    this.selectedCategoryForTraffic = null;
+
+
     this.selectedCategory = null;
-    if (trafficAnomalyType) {
-      this.categoryListFiltered = trafficAnomalyType.categories;
-    }
 
     this.selectedBox = type;
 
@@ -419,43 +376,53 @@ export class DashboardComponent implements OnInit {
 
     this.infoBoxes[type] = true;
     this.drawChartAnomaly();
+
+    this.refreshTopDomains();
+
+  }
+
+  calculateDateDiff(): number {
+    const startDate = moment([this.startDate.getFullYear(), this.startDate.getMonth(), this.startDate.getDate()]);
+    const endDate = moment([this.endDate.getFullYear(), this.endDate.getMonth(), this.endDate.getDate()]);
+
+    const diff = endDate.diff(startDate, 'days');
+    return diff;
+
   }
 
   dateChanged(ev: { startDate: Date, endDate: Date }) {
     this.startDate = ev.startDate;
     this.endDate = ev.endDate;
 
-    // const dates = this.getDatesTwoDaysBetween(this.startDate, this.endDate).map(x => moment(x));
 
-    const startDate = moment([ev.startDate.getFullYear(), ev.startDate.getMonth(), ev.startDate.getDate()]);
-    const endDate = moment([ev.endDate.getFullYear(), ev.endDate.getMonth(), ev.endDate.getDate()]);
 
-    const diff = endDate.diff(startDate, 'days');
-
+    const diff = this.calculateDateDiff();
     this.diffrence = diff;
 
-    const request = { duration: diff * 24 } as TopDomainsRequestV4;
-    // this.drawChartTimeLine();
+
+
     this.drawChartAnomaly();
-    this.getTopDomains(request);
+
+   this.refreshTopDomains();
   }
 
-  drawUniqueDomainChart(data: Result[]) {
-    if (!data) { return; }
+  drawTopDomainChart(response: TopDomainValuesResponseV4) {
 
+    if (!response || !response.items) { return; }
+    const data = response.items;
     const series = [{
       name: 'Hits',
       type: 'line',
       data: data.map(x => [Date.parse(moment(x.date).utc(true).toLocaleString()), x.hit])
     }];
 
-    if (this.uniqueDomainChart) {
-      this.uniqueDomainChart.updateSeries(series);
+    if (this.topDomainChart) {
+      this.topDomainChart.updateSeries(series);
       return;
     }
 
 
-    this.uniqueDomainChart = new ApexCharts(document.querySelector('#unique-chart'), {
+    this.topDomainChart = new ApexCharts(document.querySelector('#topDomainChart'), {
       series: series,
       chart: {
         id: 'unique-chart2',
@@ -519,20 +486,12 @@ export class DashboardComponent implements OnInit {
         tickAmount: 8
       }
     });
-    this.uniqueDomainChart.render();
+    this.topDomainChart.render();
   }
 
-  // onCategoryClick(cat) { }
 
-  private calculateTotalTrafficTimeLine(summary: any, start: Date, end: Date): any[] {
-    if (!summary || !summary.items) { return []; }
-    return summary.items.filter(x => {
-      const date = Date.parse(x.date);
-      return date >= start.getTime() && date <= end.getTime();
-    }).map(x => {
-      return { date: new Date(Date.parse(x.date)), hit: x.total_hit.count };
-    });
-  }
+
+
 
   private addDays(date: Date) {
     date.setDate(date.getDate() + 1);
@@ -556,13 +515,8 @@ export class DashboardComponent implements OnInit {
     return dates;
   }
 
-  private drawChartTimeLine() {
-    const timelineChart = this.calculateTotalTrafficTimeLine(this.elasticData, this.startDate, this.endDate);
-
-    this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate, this.selectedCategoryForTraffic);
-    const istatistic: TrafficAnomalyItem | TrafficAnomalyItem2 = this.trafficAnomaly[this.selectedBox];
-
-    this.categoryListFiltered = istatistic.categories;
+/*   private drawChartTimeLine() {
+    const timelineChart = [];
 
     const series = [{
       name: 'Hits',
@@ -605,7 +559,7 @@ export class DashboardComponent implements OnInit {
            enabled: true
          }, */
 
-      },
+    /*  },
       dataLabels: {
         enabled: false,
 
@@ -664,29 +618,48 @@ export class DashboardComponent implements OnInit {
     });
 
     this.timeLineChart.render();
-  }
+  } */
 
 
 
-  private drawChartAnomaly(catId: number = 0) {
-    //  const chartData = [];
+  private drawChartAnomaly() {
+
+    // calculate categories
+    this.categoryListFiltered = [];
+    if (this.trafficAnomaly?.categories ) {
+      for (const cat of this.trafficAnomaly.categories) {
+        cat.hit = cat.buckets.map(x => x.sum).reduce((x, y) => x + y);
+        cat.hit_ratio = Math.floor(cat.hit / (this.trafficAnomaly.total.hit + this.trafficAnomaly.total.block) * 100);
+        if (this.selectedBox === 'total') {
+          this.categoryListFiltered.push(cat);
+        } else if (cat.type === this.selectedBox) {
+          this.categoryListFiltered.push(cat);
+        }
+      }
+    }
+    // sort descending
+    this.categoryListFiltered = this.categoryListFiltered.sort((x, y) => {
+      if (x.hit === y.hit) {
+        return x.name.localeCompare(y.name);
+      }
+      return (x.hit - y.hit) * -1;
+
+    });
+
+
+    const istatistic = { averages: [], std_deviations: [], hits: [] };
+
+    // calculate chart
+    const whichBox = this.trafficAnomaly[this.selectedBox];
+    const buckets: Bucket[] = this.selectedCategory ? this.trafficAnomaly.categories.find(x => x.name === this.selectedCategory.name)?.buckets : whichBox.buckets;
+    istatistic.std_deviations = buckets.map(x => x.std);
+    istatistic.averages = buckets.map(x => x.avg);
+    istatistic.hits = buckets.map(x => x.sum);
 
 
 
-    const timelineChart = this.calculateTotalTrafficTimeLine(this.elasticData, this.startDate, this.endDate);
-
-    /*  timelineChart.forEach(elem => {
-       // timelineData.push([elem.date.toString(), elem.hit]);
-       chartData.push([elem.date.toString(), elem.hit]);
-     }); */
-
-    this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate, this.selectedCategoryForTraffic);
-    const istatistic: TrafficAnomalyItem | TrafficAnomalyItem2 = this.trafficAnomaly[this.selectedBox];
-
-
-
-    this.categoryListFiltered = istatistic.categories;
-    const times = timelineChart.map(x => moment(x.date).utc(true).toDate().getTime());
+    const timelineChart = [];
+    const times = whichBox.buckets.map(x => moment(x.date).utc(true).toDate().getTime());
     const series = [
       { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x) >= 0 ? Math.round(x) : 0]) },
       { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
@@ -853,159 +826,59 @@ export class DashboardComponent implements OnInit {
   }
 
   startDashboardOperations() {
-    this.selectedCategoryForTraffic = '';
+
     this.selectedCategory = null;
 
-    this.staticService.getCategoryList().subscribe(res => {
+    /* this.staticService.getCategoryList().subscribe(res => {
       this.categoryList = res;
-    });
+    }); */
 
-    this.getElasticData();
+    this.getTrafficAnomaly();
   }
 
-  private getElasticData() {
-    this.dashboardService.getHourlyCompanySummary({ duration: 7 * 24 }).subscribe(res => {
-      this.elasticData = res;
-      this.elasticData.items = this.elasticData.items.sort((x, y) => {
-        const x1 = Date.parse(x.date);
-        const y1 = Date.parse(y.date);
-        return x1 - y1;
-      });
-      if (!this.elasticData.items.length) {
+  private  refreshTopDomains() {
+     //
+     const diff = this.calculateDateDiff();
+     const request = { duration: diff * 24 } as TopDomainsRequestV5;
+     request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedBox;
+     this.getTopDomains(request);
+  }
+
+  private getTrafficAnomaly() {
+    this.dashboardService.getHourlyCompanySummary({ duration: 30 * 24 }).subscribe(res => {
+      this.trafficAnomaly = res;
+      /*   this.elasticData.items = this.elasticData.items.sort((x, y) => {
+          const x1 = Date.parse(x.date);
+          const y1 = Date.parse(y.date);
+          return x1 - y1;
+        }); */
+      if (!this.trafficAnomaly.hit) {
         this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
       }
       this.drawChartAnomaly();
     });
   }
 
-  /*  updateCharts() {
-     this.getElasticData();
-   } */
 
-  /* calculatePercentage(num1: number, num2: number) {
-    return Math.round((num2 - num1) / num1 * 100);
-  } */
 
-  /* changeTrafficChartData(type: string) {
-    this.trafficChartType = type;
-  } */
+  selectCategory(cat: CategoryV2) {
+    if (cat.name === this.selectedCategory?.name) {
 
-  /* searchCategoryForTraffic(val: any) {
-    this.categoryListFiltered = this.categoryList.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
-  } */
-
-  addCategoryToTraffic(cat: CategoryV2) {
-    if (cat.name === this.selectedCategoryForTraffic) {
-      this.selectedCategoryForTraffic = '';
       this.selectedCategory = null;
     } else {
-      this.selectedCategoryForTraffic = cat.name;
+
       this.selectedCategory = cat;
     }
 
-    /*  const averageData = [];
-     const hitData = [];
 
-     for (let i = 0; i < this.elasticData.items.length; i++) {
-       const elData = this.elasticData.items[i];
-
-       const label = moment(elData.date).format('YYYY-MM-DD HH:mm');
-
-
-       if (this.selectedCategoryForTraffic === '') {
-         averageData.push([label, elData.total_hit]);
-         hitData.push([label, elData.total_hit]);
-       } else {
-         this.selectedCategoryForTraffic = this.categoryList.find(c => c.name === cat.name).name;
-
-         const catData = elData.category_hits.find(x => x.name === this.selectedCategoryForTraffic);
-
-         if (catData) {
-           const average = catData.average ? catData.average.toFixed(2) : 0;
-
-           averageData.push([label, average]);
-           hitData.push([label, catData.hits.toFixed(2)]);
-         }
-       }
-     }
-
-     this.trafficChart.updateSeries([
-       { name: cat.name + ' Normal Traffic Count', data: averageData, type: 'line' },
-       { name: 'Hit Count', type: 'area', data: hitData }
-     ]);
-
-     this.timeLineChart.updateSeries([
-       { data: hitData },
-     ]); */
 
     this.drawChartAnomaly();
+
+    this.refreshTopDomains();
+
   }
 
-  /*  deleteCatFromTraffic(id: number) {
-     if (id && id > 0) {
-       this.selectedCategoryForTraffic = '';
-       this.trafficChart.updateSeries([{ name: 'Today Hits', data: this.ds.totalHits }, { name: 'Average Hits', data: this.ds.hitAverages }]);
-     }
-   } */
 
-  /*   addCategoryToUnique(id: number) {
-      this.selectedCategoryForUnique = this.categoryList.find(c => c.id === id);
-      const catName = this.selectedCategoryForUnique.name;
-      const catHits = [], catAvs = [];
-      const indexLimit = this.dateParameter === -1 ? this.elasticData.items.length - 1 : 0;
-      for (let i = indexLimit; i < this.elasticData.items.length; i++) {
-        const data = this.elasticData[i];
-        Object.keys(data.category_hits).forEach(function eachKey(key) {
-          if (key.toString() === catName) {
-            catHits.push(data.category_hits[key].unique_domain);
-            catAvs.push(Math.round(data.category_hits[key].unique_domain_average));
-          }
-        });
-      }
-
-      this.uniqueDomainChart.updateSeries([{ name: catName + 'Unique Domain', data: catHits }, { name: 'Unique Domain Avg', data: catAvs }]);
-
-      this.resetCategoryListFiltered();
-    } */
-  /*
-    deleteCatFromUnique(id: number) {
-      if (id && id > 0) {
-        this.selectedCategoryForUnique = null;
-        this.uniqueDomainChart.updateSeries([{ name: 'Unique Domain', data: this.ds.uniqueDomain }, { name: 'Unique Domain Avg', data: this.ds.uniqueDomainAvg }]);
-      }
-    }
-   */
-  /*  private resetCategoryListFiltered() {
-     this.searchKey = null;
-     this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => a.name > b.name ? 1 : -1))); // deep copy
-   } */
-
-  /* showInReport(param: string) {
-    localStorage.setItem('dashboardParam', param + '&' + this.dateParameter);
-    this.router.navigate(['/admin/reports/customreport']);
-  }
- */
-  calculateCategory(categoryList: CategorySummary[], total: number): TrafficAnomalyCategory[] {
-    const map: Map<string, TrafficAnomalyCategory> = new Map();
-
-    categoryList.forEach(x => {
-      if (!map.has(x.name)) {
-        map.set(x.name, { name: x.name, hitCount: 0, ratio: 0, std_deviation: 0, average: 0 });
-      }
-
-      const item = map.get(x.name);
-
-      if (item) {
-        item.name = x.name;
-        item.hitCount += x.hits;
-        item.ratio = 0;
-        item.std_deviation = x.std_deviation;
-        item.average = x.average;
-      }
-    });
-    map.forEach(x => x.ratio = (x.hitCount * 100 / total) || 0);
-    return Array.from(map.values());
-  }
 
   flatten(list) {
     return list.reduce(
@@ -1013,145 +886,6 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  stdDeviation(categoryLists: CategorySummary[][], filterList: string[]) {
-
-    return categoryLists.map(categoryList => {
-      const filtered = categoryList?.filter(a => filterList.findIndex(b => a?.name == b) > -1);
-      let std = 0;
-      if (filtered && filtered.length) {
-        std = filtered.map(x => x.std_deviation).reduce((x, y) => x + y, 0);
-      }
-      return Math.round(std);
-    });
-  }
-  average(categoryLists: CategorySummary[][], filterList: string[]) {
-
-    return categoryLists.map(categoryList => {
-      const filtered = categoryList?.filter(a => filterList.findIndex(b => a?.name == b) > -1);
-      let std = 0;
-      if (filtered && filtered.length) {
-        std = filtered.map(x => x.average).reduce((x, y) => x + y, 0);
-      }
-      return Math.round(std);
-    });
-  }
-
-  hits(categoryLists: CategorySummary[][], filterList: string[]) {
-
-    return categoryLists.map(categoryList => {
-      const filtered = categoryList?.filter(a => filterList.findIndex(b => a?.name == b) > -1);
-      let std = 0;
-      if (filtered && filtered.length) {
-        std = filtered.map(x => x.hits).reduce((x, y) => x + y, 0);
-      }
-      return Math.round(std);
-    });
-  }
-
-  calculateTrafficAnomaly(summary: HourlyCompanySummaryV4Response, start: Date, end: Date, selectedCategory?: string): TrafficAnomaly {
-
-    const filtered = summary.items.filter(x => {
-      const date = Date.parse(x.date);
-      return date >= start.getTime() && date <= end.getTime();
-    });
-
-    let selectedCategoryItems = null;
-    if (selectedCategory) {
-
-      selectedCategoryItems = filtered.map(x => x.category_hits).reduce((x, y) => {
-        const item = y.find(z => z.name == selectedCategory);
-        x.push(item);
-        return x;
-      }, []);
-    }
-
-
-
-    const selectedCategoryItems2 = selectedCategoryItems ? selectedCategoryItems.map(x => [x]).reduce((x, y) => { x.push(y); return x; }, []) as CategorySummary[][] : null;
-
-    const anomaly: TrafficAnomaly = {} as TrafficAnomaly;
-    anomaly.total = {} as TrafficAnomalyItem;
-    anomaly.total.allowCount = filtered.map(x => x.allowed_count.count).reduce((x, y) => x + y, 0);
-    anomaly.total.blockCount = filtered.map(x => x.blocked_count.count).reduce((x, y) => x + y, 0);
-    anomaly.total.categories = this.calculateCategory(this.flatten(filtered.map(x => x.category_hits)), anomaly.total.allowCount + anomaly.total.blockCount);
-    let selectedCategoryList = selectedCategory ? this.flatten(filtered.map(x => x.category_hits)).filter(x => x.name == selectedCategory) : null;
-    anomaly.total.averageHit = Math.round((selectedCategoryList ? selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length : Math.round(filtered.map(x => x.total_hit.average).reduce((x, y) => x + y, 0) / filtered.length)) || 0);
-    anomaly.total.currentHit = Math.round((selectedCategoryList ? selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length : Math.round(filtered.map(x => x.total_hit.count).reduce((x, y) => x + y, 0) / filtered.length)) || 0);
-    anomaly.total.ratio = (Math.round((anomaly.total.currentHit - anomaly.total.averageHit) / anomaly.total.averageHit * 100)) || 0;
-
-
-    anomaly.total.std_deviations = selectedCategory ? selectedCategoryItems.map(x => x ? x.std_deviation : 0) : filtered.map(x => x.total_hit.std_deviation);
-    anomaly.total.averages = selectedCategory ? selectedCategoryItems.map(x => x ? x.average : 0) : filtered.map(x => x.total_hit.average);
-    anomaly.total.hits = selectedCategory ? selectedCategoryItems.map(x => x ? x.hits : 0) : filtered.map(x => x.total_hit.count);
-
-
-
-    anomaly.harmful = {} as TrafficAnomalyItem2;
-
-    let category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.harmful.indexOf(x.name) > -1);
-    anomaly.harmful.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
-    anomaly.harmful.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.harmful.categories = this.calculateCategory(category_hits, anomaly.total.allowCount + anomaly.total.blockCount);
-    selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
-    anomaly.harmful.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
-    anomaly.harmful.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
-    anomaly.harmful.ratio = (Math.round((anomaly.harmful.currentHit - anomaly.harmful.averageHit) / anomaly.harmful.averageHit * 100)) || 0;
-
-
-    anomaly.harmful.std_deviations = selectedCategory ? this.stdDeviation(selectedCategoryItems2, this.categoryMappings.harmful) : this.stdDeviation(filtered.map(x => x.category_hits), this.categoryMappings.harmful);
-    anomaly.harmful.averages = selectedCategory ? this.average(selectedCategoryItems2, this.categoryMappings.harmful) : this.average(filtered.map(x => x.category_hits), this.categoryMappings.harmful);
-    anomaly.harmful.hits = selectedCategory ? this.hits(selectedCategoryItems2, this.categoryMappings.harmful) : this.hits(filtered.map(x => x.category_hits), this.categoryMappings.harmful);
-
-
-    anomaly.safe = {} as TrafficAnomalyItem2;
-    category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.safe.indexOf(x.name) > -1);
-    anomaly.safe.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
-    anomaly.safe.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.safe.categories = this.calculateCategory(category_hits, anomaly.safe.hitCount);
-    selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
-    anomaly.safe.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
-    anomaly.safe.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
-    anomaly.safe.ratio = (Math.round((anomaly.safe.currentHit - anomaly.safe.averageHit) / anomaly.safe.averageHit * 100)) || 0;
-
-    anomaly.safe.std_deviations = selectedCategory ? this.stdDeviation(selectedCategoryItems2, this.categoryMappings.safe) : this.stdDeviation(filtered.map(x => x.category_hits), this.categoryMappings.safe);
-    anomaly.safe.averages = selectedCategory ? this.average(selectedCategoryItems2, this.categoryMappings.safe) : this.average(filtered.map(x => x.category_hits), this.categoryMappings.safe);
-    anomaly.safe.hits = selectedCategory ? this.hits(selectedCategoryItems2, this.categoryMappings.safe) : this.hits(filtered.map(x => x.category_hits), this.categoryMappings.safe);
-
-
-    anomaly.malicious = {} as TrafficAnomalyItem2;
-    category_hits = this.flatten(filtered.map(x => x.category_hits).concat()).filter(x => this.categoryMappings.malicious.indexOf(x.name) > -1);
-    anomaly.malicious.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
-    anomaly.malicious.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.malicious.categories = this.calculateCategory(category_hits, anomaly.malicious.hitCount);
-    selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
-    anomaly.malicious.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
-    anomaly.malicious.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
-    anomaly.malicious.ratio = (Math.round((anomaly.malicious.currentHit - anomaly.malicious.averageHit) / anomaly.malicious.averageHit * 100)) || 0;
-
-    anomaly.malicious.std_deviations = selectedCategory ? this.stdDeviation(selectedCategoryItems2, this.categoryMappings.malicious) : this.stdDeviation(filtered.map(x => x.category_hits), this.categoryMappings.malicious);
-    anomaly.malicious.averages = selectedCategory ? this.average(selectedCategoryItems2, this.categoryMappings.malicious) : this.average(filtered.map(x => x.category_hits), this.categoryMappings.malicious);
-    anomaly.malicious.hits = selectedCategory ? this.hits(selectedCategoryItems2, this.categoryMappings.malicious) : this.hits(filtered.map(x => x.category_hits), this.categoryMappings.malicious);
-
-
-
-    anomaly.variable = {} as TrafficAnomalyItem2;
-    category_hits = this.flatten(filtered.map(x => x.category_hits)).filter(x => this.categoryMappings.variable.indexOf(x.name) > -1);
-    anomaly.variable.hitCount = category_hits.map(x => x.hits).reduce((x, y) => x + y, 0);
-    anomaly.variable.uniqueCount = category_hits.map(x => x.unique_domain).reduce((x, y) => x + y, 0);
-    anomaly.variable.categories = this.calculateCategory(category_hits, anomaly.variable.hitCount);
-    selectedCategoryList = selectedCategory ? category_hits?.filter(x => x.name == selectedCategory) : category_hits;
-    anomaly.variable.averageHit = (Math.round(selectedCategoryList.map(x => x.average).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
-    anomaly.variable.currentHit = (Math.round(selectedCategoryList.map(x => x.hits).reduce((x, y) => x + y, 0) / selectedCategoryList.length)) || 0;
-    anomaly.variable.ratio = (Math.round((anomaly.variable.currentHit - anomaly.variable.averageHit) / anomaly.variable.averageHit * 100)) || 0;
-
-    anomaly.variable.std_deviations = selectedCategory ? this.stdDeviation(selectedCategoryItems2, this.categoryMappings.variable) : this.stdDeviation(filtered.map(x => x.category_hits), this.categoryMappings.variable);
-    anomaly.variable.averages = selectedCategory ? this.average(selectedCategoryItems2, this.categoryMappings.variable) : this.average(filtered.map(x => x.category_hits), this.categoryMappings.variable);
-    anomaly.variable.hits = selectedCategory ? this.hits(selectedCategoryItems2, this.categoryMappings.variable) : this.hits(filtered.map(x => x.category_hits), this.categoryMappings.variable);
-
-
-
-    return anomaly;
-  }
 
   addDomain(domain: Domain) {
     this.items = [{ display: domain.name, value: domain.name }];
@@ -1190,7 +924,7 @@ export class DashboardComponent implements OnInit {
 
 
 
-      this.drawUniqueDomainChart(result.items);
+      this.drawTopDomainChart(result);
     });
   }
 

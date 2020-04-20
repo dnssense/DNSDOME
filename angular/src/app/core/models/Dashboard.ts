@@ -26,191 +26,87 @@ export class DateParamModel extends KeyValueModel<string, TimeRangeEnum> {
   dateParam = 0;
 }
 
-export interface HourlyCompanySummaryV4Request {
-  duration: number; // last hours
+export interface HourlyCompanySummaryV5Request {
+  duration?: number; // last hours
+  startDate?: string;
+  endDate?: string;
 }
 
-export interface StdDeviationBounds {
-  upper: number;
-  lower: number;
-}
 
-export interface UniqueBlockedDomain {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
+
+export interface Bucket {
+  date: string;
   count: number;
-  std_deviation: number;
+  avg: number;
+  std: number;
+  sum: number;
 }
 
-export interface UniqueDomain {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface TotalHit {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface CategorySummary {
+export interface Category {
   name: string;
-  hits: number;
-  average: number;
-  unique_domain: number;
-  std_deviation_bounds: StdDeviationBounds;
-  unique_domain_average: number;
-  std_deviation: number;
+  type: string;
+  buckets: Bucket[];
+  hit?: number; // bunlar servisten gelmiyor
+  hit_ratio?: number; // bunlar servisten gelmiyor
 }
-
-export interface UniqueDestip {
-  average: number;
-  count: number;
-}
-
-export interface BlockedCount {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface UniqueSrcip {
-  average: number;
-  count: number;
-}
-
-export interface TimeRange {
+export interface Total {
   hit: number;
-  hour_gte: string;
-  lt: Date;
-  gte: Date;
-}
-
-export interface UniqueMac {
-  average: number;
-  count: number;
-}
-
-export interface UniqueUser {
-  average: number;
-  count: number;
-}
-
-export interface AllowedCount {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
-}
-
-export interface UniqueSubdomain {
-  average: number;
-  std_deviation_bounds: StdDeviationBounds;
-  count: number;
-  std_deviation: number;
+  block: number;
+  buckets: Bucket[];
 }
 
 export interface Summary {
-  unique_blocked_domain: UniqueBlockedDomain;
-  date: string;
-  unique_domain: UniqueDomain;
-  total_hit: TotalHit;
-  firstly_seen_status: string;
-  len_firstly_seen_domains: number;
-  insert_date: Date;
-  query_process_time: number;
-  category_hits: CategorySummary[];
-  unique_destip: UniqueDestip;
-  blocked_count: BlockedCount;
-  unique_srcip: UniqueSrcip;
-  time_range: TimeRange;
-  unique_mac: UniqueMac;
-  unique_user: UniqueUser;
-  allowed_count: AllowedCount;
-  unique_subdomain: UniqueSubdomain;
-}
-
-export interface HourlyCompanySummaryV4Response {
-  items: Summary[];
-}
-
-export interface TrafficTotal {
-  date: Date;
   hit: number;
-  std_deviation: number;
-  average: number;
+  hit_ratio: number;
+  buckets: Bucket[];
 }
-
-export interface TrafficAnomalyCategory {
-  name: string;
-  hitCount: number;
-  ratio: number;
-  std_deviation: number;
-  average: number;
-}
-
-export interface TrafficAnomalyItem {
-  allowCount: number;
-  blockCount: number;
-  categories: TrafficAnomalyCategory[];
-  averageHit: number;
-  currentHit: number;
-  ratio: number;
-  std_deviations: number[];
-  averages: number[];
-  hits: number[];
+export interface HourlyCompanySummaryV5Response {
+  categories: Category[];
+  total: Total;
+  safe: Summary;
+  malicious: Summary;
+  variable: Summary;
+  harmful: Summary;
+  hit: number;
 
 }
 
-export interface TrafficAnomalyItem2 {
-  hitCount: number;
-  uniqueCount: number;
-  categories: TrafficAnomalyCategory[];
-  averageHit: number;
-  currentHit: number;
-  ratio: number;
-  std_deviations: number[];
-  averages: number[];
-  hits: number[];
-}
 
-export interface TrafficAnomaly {
-  total: TrafficAnomalyItem;
-  malicious: TrafficAnomalyItem2;
-  variable: TrafficAnomalyItem2;
-  harmful: TrafficAnomalyItem2;
-  safe: TrafficAnomalyItem2;
+
+
+
+export interface TopDomainsRequestV5 {
+  duration?: number; // last hours
+  startDate?: string; // utc
+  endDate?: string;
+  type: 'total'|'safe'| 'malicious' | 'new' | 'harmful'|string;
+
 }
 
 export interface Domain {
   name: string;
   hit: number;
+  category?: string; // bunlar servisten gelmiyor
 }
-
-export interface Domain {
-  name: string;
-  hit: number;
-category?: string;
-}
-
-export interface TopDomainsResponseV4 {
+export interface TopDomainsResponseV5 {
   items: Domain[];
 }
 
+
+
+
 export interface TopDomainValuesRequestV4 {
-  duration: number; // last hours
+  duration?: number; // last hours
+  startDate?: string;
+  endDate?: string;
   domain: string;
+
 }
 
 export interface Result {
   date: string;
   hit: number;
 }
-
 export interface TopDomainValuesResponseV4 {
   items: Result[];
 }
