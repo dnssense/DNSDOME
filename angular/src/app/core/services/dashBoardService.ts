@@ -4,7 +4,7 @@ import 'rxjs/Rx';
 import { SearchSetting } from '../models/SearchSetting';
 // tslint:disable-next-line: import-blacklist
 import { Observable } from 'rxjs/Rx';
-import { Dashboard, TopDomainsResponseV4, TopDomainValuesRequestV4, TopDomainValuesResponseV4 } from '../models/Dashboard';
+import { Dashboard, TopDomainValuesRequestV4, TopDomainValuesResponseV4, TopDomainsResponseV5, TopDomainsRequestV5 } from '../models/Dashboard';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
 
@@ -39,8 +39,8 @@ export class DashBoardService {
 
 
   // ES urls
-  private _hourlyCompanySummaryURL = this.configuration.getApiUrl() + '/calculate/hourlyCompanySummaryV4';
-  private _topDomainURL = this.configuration.getApiUrl() + '/calculate/topDomain';
+  private _hourlyCompanySummaryURL = this.configuration.getApiUrl() + '/calculate/hourlyCompanySummaryV5';
+  private _topDomainURL = this.configuration.getApiUrl() + '/calculate/topDomainV5';
   private _topDomainValueURL = this.configuration.getApiUrl() + '/calculate/topDomainValue';
   private _distinctAgentURL = this.configuration.getApiUrl() + '/calculate/distinctAgent';
   private _distinctBoxURL = this.configuration.getApiUrl() + '/calculate/distinctBox';
@@ -54,8 +54,8 @@ export class DashBoardService {
     return this.http.post<{ duration: number }>(this._hourlyCompanySummaryURL, request).map(res => res);
   }
 
-  public getTopDomains(request: TopDomainsRequestV4): Observable<TopDomainsResponseV4> {
-    return this.http.post<TopDomainsResponseV4>(this._topDomainURL, request).map(res => res);
+  public getTopDomains(request: TopDomainsRequestV5): Observable<TopDomainsResponseV5> {
+    return this.http.post<TopDomainsResponseV5>(this._topDomainURL, request).map(res => res);
   }
 
   public getTopDomainValue(request: TopDomainValuesRequestV4): Observable<TopDomainValuesResponseV4> {
@@ -69,28 +69,7 @@ export class DashBoardService {
     return this.http.post<DistinctBoxResponse>(this._distinctBoxURL, request).map(res => res);
   }
 
-  /* public getDashboardSettings(dashboard: Dashboard): Observable<SearchSetting[]> {
-    const url = this._dashboardSettingsURL + 'id=' + dashboard.id;
 
-    return this.http.post<SearchSetting[]>(url, this.getOptions()).map(res => res);
-  }
-
-  public list() {
-    return this.http.get(this._ListURL).map(res => res);
-  }
-
-  public save(dashboard: Dashboard): Observable<Object> {
-    return this.http.post(this._saveDashboardURL, JSON.stringify(dashboard), this.getOptions()).map(res => res);
-  }
-
-  public delete(dashboard: Dashboard): Observable<Object> {
-    return this.http.post(this._deleteDashboardURL, JSON.stringify(dashboard), this.getOptions()).map(res => res);
-  }
-
-  public setDefaultDashboard(dashboard: Dashboard): Observable<Object> {
-    return this.http.post(this._setDefaultDashboardURL, JSON.stringify(dashboard), this.getOptions()).map(res => res);
-  }
- */
   private getOptions() {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
