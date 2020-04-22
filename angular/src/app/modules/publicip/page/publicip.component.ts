@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, OnInit } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, OnInit, AfterContentChecked } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -76,6 +76,13 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     private staticMessageService: StaticMessageService
   ) {
     this.roleName = this.authService.currentSession.currentUser.roles.name;
+
+    this.publicIpService.getMyIp().subscribe(result => {
+      this.ip = result;
+    }, (err) => {
+      return err;
+    });
+
     this.getPublicIpsDataAndProfiles();
 
     this.publicIpForm = this.formBuilder.group({
@@ -108,13 +115,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {
-    this.publicIpService.getMyIp().subscribe(result => {
-      this.ip = result;
-    }, (err) => {
-      return err;
-    });
-  }
+  ngAfterViewInit() { }
 
   getPublicIpsDataAndProfiles(type?: string) {
 

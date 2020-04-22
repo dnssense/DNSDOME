@@ -1,4 +1,4 @@
-import { ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
+import { ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { Subject } from 'rxjs';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
@@ -24,7 +24,7 @@ export interface TableBadgeOutput {
   templateUrl: 'customreport-result.component.html',
   styleUrls: ['customreport-result.component.css']
 })
-export class CustomReportResultComponent implements OnDestroy {
+export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
 
   constructor(
     private customReportService: CustomReportService,
@@ -64,6 +64,8 @@ export class CustomReportResultComponent implements OnDestroy {
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
 
+  maxHeight = window.innerWidth > 768 ? (window.innerHeight - 218) - (document.body.scrollHeight - document.body.clientHeight) : null;
+
   tableConfig: RkTableConfigModel = {
     columns: [
       /* { id: 0, name: 'time', displayText: 'Time', isLink: true }, */
@@ -95,9 +97,17 @@ export class CustomReportResultComponent implements OnDestroy {
     { displayText: '100', value: 100 },
     { displayText: '250', value: 250 },
     { displayText: '500', value: 500 },
-  ]
+  ];
 
   firstDate: any;
+
+  sortDirection;
+
+  sortedColumn: string;
+
+  ngAfterViewInit() {
+    this.maxHeight = window.innerWidth > 768 ? (window.innerHeight - 218) - (document.body.scrollHeight - document.body.clientHeight) : null;
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -176,6 +186,8 @@ export class CustomReportResultComponent implements OnDestroy {
 
         this.tableConfig.rows.push(rowItem);
       });
+
+      this.maxHeight = window.innerWidth > 768 ? (window.innerHeight - 218) - (document.body.scrollHeight - document.body.clientHeight) : null;
     });
   }
 
@@ -209,6 +221,9 @@ export class CustomReportResultComponent implements OnDestroy {
         const series = [
           {
             name: 'Hit', type: 'area', data: data.filter ? data.filter(x => x.length >= 2).map(x => {
+              // const d = new Date(x[0]);
+
+              // return [new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()).getTime(), x[1]];
 
               return [moment(x[0]).utc(true), x[1]];
 
@@ -230,6 +245,19 @@ export class CustomReportResultComponent implements OnDestroy {
                 pan: false
               }
             },
+            events: {
+              zoomed: (chartContext, { xaxis, yaxis }) => {
+                const startDate = moment(xaxis.min).utc(true).toDate().toISOString();
+                const endDate = moment(xaxis.max).utc(true).toDate().toISOString();
+
+                this.searchSetting.dateInterval = null;
+
+                this.searchSetting.startDate = startDate;
+                this.searchSetting.endDate = endDate;
+
+                this.searchEmitter.emit(this.searchSetting);
+              }
+            }
           },
           colors: ['#2cd9c5'],
           fill: {
@@ -372,5 +400,17 @@ export class CustomReportResultComponent implements OnDestroy {
       },
       value: columnName === 'action' ? (value ? 'Allow' : 'Deny') : value
     } as LinkClick);
+  }
+
+  sort(col, columnIndex: number) {
+    this.data = this.data.sort((a, b) => {
+      return this.sortDirection === 'asc' ? (a[columnIndex] > b[columnIndex] ? 1 : -1) : (a[columnIndex] < b[columnIndex] ? 1 : -1);
+    });
+
+    if (col) {
+      this.sortedColumn = col.name;
+    }
+
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
   }
 }

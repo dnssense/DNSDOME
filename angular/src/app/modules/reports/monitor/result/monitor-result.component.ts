@@ -1,4 +1,4 @@
-import { OnInit, Component, Input, Output, EventEmitter, ElementRef, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
+import { OnInit, Component, Input, Output, EventEmitter, ElementRef, ViewChild, OnDestroy, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { MonitorService } from 'src/app/core/services/monitorService';
 import { Subject } from 'rxjs';
@@ -25,7 +25,7 @@ export interface LinkClick {
   styleUrls: ['monitor-result.component.css'],
   providers: [CountryPipe, MacAddressFormatterPipe]
 })
-export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
 
   constructor(
     private monitorService: MonitorService,
@@ -35,11 +35,10 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
     private translateService: TranslatorService,
     private _translateService: TranslateService
   ) {
-    // _translateService.onLangChange.subscribe(result => {
-    //   this.changeColumnNames();
-    // });
+    _translateService.onLangChange.subscribe(result => {
+      this.changeColumnNames();
+    });
   }
-
 
   columns: LogColumn[];
   selectedColumns: LogColumn[];
@@ -53,6 +52,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   pageViewCount = 10;
 
   totalCount = 0;
+
+  tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
 
   tableConfig: RkTableConfigModel = {
     columns: [
@@ -93,6 +94,10 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  ngAfterViewChecked() {
+
   }
 
   ngAfterViewInit() {
@@ -195,6 +200,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, OnDestroy 
 
           this.tableConfig.rows.push(rowItem);
         });
+
+        this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
       });
   }
 

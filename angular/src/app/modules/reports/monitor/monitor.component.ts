@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import { categoryMappings } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { ReportService } from 'src/app/core/services/reportService';
+import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 
 export interface MonitorReportRouteParams {
   startDate?: string;
@@ -103,7 +104,21 @@ export class MonitorComponent implements OnInit, AfterViewInit {
 
         this.roksitSearchComponent.search('', false);
 
-        this.roksitSearchComponent.convertTimeString(this.roksitSearchComponent.searchSettings.dateInterval);
+        if (this.searchSettings.startDate && this.searchSettings.endDate) {
+          const startDate = moment(this.searchSettings.startDate);
+          const endDate = moment(this.searchSettings.endDate);
+
+          const diff = endDate.diff(startDate, 'minutes');
+
+          this.roksitSearchComponent.date.selectTime({ value: diff } as RkDateTime, { startDate: new Date(this.searchSettings.startDate), endDate: new Date(this.searchSettings.endDate) });
+
+          this.roksitSearchComponent.dateText = this.roksitSearchComponent.convertTimeString(diff);
+        } else {
+          this.roksitSearchComponent.date.selectTime({ value: this.searchSettings.dateInterval } as RkDateTime);
+
+          this.roksitSearchComponent.convertTimeString(this.roksitSearchComponent.searchSettings.dateInterval);
+        }
+
       }
 
     }

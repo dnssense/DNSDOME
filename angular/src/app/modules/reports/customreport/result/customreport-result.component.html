@@ -1,39 +1,42 @@
 <div class="row">
     <div class="col-12 mt-3">
-        <div class="rk-basic-card p-2">
+        <!-- style="overflow-y: auto;" [ngStyle]="{'max-height': maxHeight + 'px'}" -->
+        <div class="rk-basic-card p-2" style="overflow-y: auto;" [ngStyle]="{'max-height': maxHeight + 'px'}">
             <ng-container>
-                <div id="customReportChart"></div>
+                <div id="customReportChart"
+                    style="max-height: 270px !important; min-height: 270px !important; overflow: hidden;"></div>
 
                 <div>
                     <rk-table-container [config]="tableConfig" class="m-0 border-0 pagination-disabled"
                         (columnBadgeChange)="columnChanged($event)">
-                        <rk-table-export (event)="exportAs($event)" [showTypes]="{ excel: true, pdf: false }"></rk-table-export>
+                        <rk-table-export (event)="exportAs($event)" [showTypes]="{ excel: true, pdf: false }">
+                        </rk-table-export>
 
                         <rk-table (pageChange)="onPageChange($event)" [totalCount]="100"
                             [pageViewCount]="searchSetting.topNumber" [paginationOptions]="paginationOptions"
-                            (pageViewCountChange)="onPageViewCountChange($event)" [info]="true">
+                            (pageViewCountChange)="onPageViewCountChange($event)" [info]="true"
+                            [paginationSelectDirection]="'up'">
                             <ng-template #header>
                                 <tr>
                                     <th style="width: 60px;">
                                         <rk-checkbox (valueChange)="checkboxAllChange($event)"></rk-checkbox>
                                     </th>
-                                    <th scope="col" *ngFor="let colz of selectedColumns">
-                                        {{ colz.label }}
-                                        <button class="table-btn ripple">
-                                            <i-feather name="more-vertical"></i-feather>
+                                    <th scope="col" *ngFor="let col of selectedColumns; let index = index">
+                                        {{ col.label }}
+                                        <button class="table-btn ripple" (click)="sort(col, index)"
+                                            [ngClass]="{'sort-icon-transformed': sortDirection === 'desc' && sortedColumn === col?.column?.name, 'active': sortedColumn === col?.column?.name }">
+                                            <icon-sort></icon-sort>
                                         </button>
                                     </th>
                                     <th scope="col">
                                         Count
-                                        <button class="table-btn ripple">
-                                            <i-feather name="more-vertical"></i-feather>
+                                        <button class="table-btn ripple" (click)="sort(null, selectedColumns.length)"
+                                            [ngClass]="{'sort-icon-transformed': sortDirection === 'desc' && sortedColumn === col?.column?.name, 'active': sortedColumn === col?.column?.name }">
+                                            <icon-sort></icon-sort>
                                         </button>
                                     </th>
                                     <th scope="col">
                                         Percent
-                                        <button class="table-btn ripple">
-                                            <i-feather name="more-vertical"></i-feather>
-                                        </button>
                                     </th>
                                 </tr>
                             </ng-template>
@@ -51,7 +54,9 @@
                                                     {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
                                                 </ng-container>
 
-                                                <ng-template #elseTimeTemplate>{{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}</ng-template>
+                                                <ng-template #elseTimeTemplate>
+                                                    {{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}
+                                                </ng-template>
                                             </button>
                                         </ng-container>
 
@@ -60,7 +65,9 @@
                                                 {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
                                             </ng-container>
 
-                                            <ng-template #elseTimeTemplate2>{{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}</ng-template>
+                                            <ng-template #elseTimeTemplate2>
+                                                {{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}
+                                            </ng-template>
                                         </ng-template>
                                     </td>
                                     <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>

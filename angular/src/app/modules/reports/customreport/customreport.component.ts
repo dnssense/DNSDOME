@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
 import { categoryMappings } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { ColumnTagInput } from '../../../core/models/ColumnTagInput';
 import { ReportService } from 'src/app/core/services/reportService';
+import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 
 export interface CustomReportRouteParams {
   startDate?: string;
@@ -117,7 +118,20 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
         this.customReportSearchComponent.search('', false);
 
-        this.customReportSearchComponent.convertTimeString(this.customReportSearchComponent.searchSettings.dateInterval);
+        if (this.searchSetting.startDate && this.searchSetting.endDate) {
+          const startDate = moment(this.searchSetting.startDate);
+          const endDate = moment(this.searchSetting.endDate);
+
+          const diff = endDate.diff(startDate, 'minutes');
+
+          this.customReportSearchComponent.date.selectTime({ value: diff } as RkDateTime, { startDate: new Date(this.searchSetting.startDate), endDate: new Date(this.searchSetting.endDate) });
+
+          this.customReportSearchComponent.dateText = this.customReportSearchComponent.convertTimeString(diff);
+        } else {
+          this.customReportSearchComponent.date.selectTime({ value: this.searchSetting.dateInterval } as RkDateTime);
+
+          this.customReportSearchComponent.convertTimeString(this.customReportSearchComponent.searchSettings.dateInterval);
+        }
       } else {
         this.search(this.searchSetting);
       }
@@ -128,6 +142,17 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
   public search(setting: SearchSetting) {
     this.searchSetting = setting;
+
+    if (this.searchSetting.startDate && this.searchSetting.endDate) {
+      const startDate = moment(this.searchSetting.startDate);
+      const endDate = moment(this.searchSetting.endDate);
+
+      const diff = endDate.diff(startDate, 'minutes');
+
+      this.customReportSearchComponent.date.selectTime({ value: diff } as RkDateTime, { startDate: new Date(this.searchSetting.startDate), endDate: new Date(this.searchSetting.endDate) });
+
+      this.customReportSearchComponent.dateText = this.customReportSearchComponent.convertTimeString(diff);
+    }
 
     if (this.searchSetting.columns.columns.length === 0) {
       this.searchSetting.columns.columns = [

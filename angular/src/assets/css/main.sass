@@ -2,6 +2,9 @@
 
 $white: #fff
 
+html, body
+  scroll-behavior: smooth
+
 body
   font-family: "Roboto", sans-serif !important
   // background: var(--color-primary)
@@ -597,9 +600,13 @@ rk-collapse-description
   font-size: 10px
 
 .toolbar 
-  height: 110px !important
-  min-height: 110px !important
+  height: 60px !important
+  min-height: 60px !important
   flex-direction: column !important
+
+.main-content 
+  > .rk-base-card 
+    padding-top: 10px
 
 .rk-link
   cursor: pointer
@@ -718,3 +725,6 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
 .btn.active
   background: var(--primary)
   color: var(--text-light)
+
+.table-link-button
+  font-size: 11px

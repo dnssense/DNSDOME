@@ -16,7 +16,7 @@ import {
   TrafficAnomalyItem, CategorySummary, TrafficAnomalyCategory, TrafficAnomalyItem2, Result
 } from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
-import { RkApexHelper } from 'roksit-lib';
+import { RkApexHelper, RkUtilityService } from 'roksit-lib';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Agent } from 'src/app/core/models/Agent';
@@ -59,7 +59,8 @@ export class DashboardComponent implements OnInit {
     private translateService: TranslateService,
     private toolService: ToolsService,
     private notificationService: NotificationService,
-    private staticMesssageService: StaticMessageService
+    private staticMesssageService: StaticMessageService,
+    private utilityService: RkUtilityService
   ) { }
 
   host: ConfigHost;
@@ -95,6 +96,8 @@ export class DashboardComponent implements OnInit {
   selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
 
   private now: Date = new Date();
+
+  theme: any = 'light';
 
   dateButtons: RkDateButton[] = [
     {
@@ -230,6 +233,8 @@ export class DashboardComponent implements OnInit {
     this.endDate = new Date();
     this.host = this.config.host;
 
+    this.getTheme();
+
     this.startDashboardOperations();
 
     const request = { duration: 7 * 24 } as TopDomainsRequestV4;
@@ -239,6 +244,14 @@ export class DashboardComponent implements OnInit {
     this.agentCounts.push({ name: 'PublicIp', activeCount: 0, passiveCount: 0 });
     this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0 });
     this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0 });
+  }
+
+  private async getTheme() {
+    const theme = localStorage.getItem('themeColor') as 'light' | 'dark';
+
+    if (theme) {
+      this.theme = theme;
+    }
   }
 
   getAgents() {
@@ -668,7 +681,7 @@ export class DashboardComponent implements OnInit {
 
 
 
-  private drawChartAnomaly(catId: number = 0) {
+  private async drawChartAnomaly(catId: number = 0) {
     //  const chartData = [];
 
 
@@ -730,6 +743,8 @@ export class DashboardComponent implements OnInit {
       //  return;
     }
 
+    const chartBg = this.theme === 'white' ? '#ffffff' : '#232328';
+
     this.trafficChart = new ApexCharts(document.querySelector('#chart'), {
       series: series,
       chart: {
@@ -768,7 +783,7 @@ export class DashboardComponent implements OnInit {
           },
         },
       },
-      colors: ['#ffffff', '#b1dcff', '#0084ff'],
+      colors: [chartBg, '#b1dcff', '#0084ff'],
       stroke: {
         width: 2,
         curve: ['smooth', 'smooth', 'smooth']

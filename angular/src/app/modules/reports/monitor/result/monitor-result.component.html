@@ -1,10 +1,12 @@
 <div>
   <rk-table-container [config]="tableConfig" class="m-0">
-    <rk-table-export (event)="exportAs($event)"  [showTypes]="{ excel: true, pdf: false }"></rk-table-export>
-    
-    <rk-table [config]="tableConfig" (pageChange)="onPageChange($event)" [maxSize]="5" [totalCount]="totalCount > 10000 ? 10000 : totalCount" [totalCountPlaceholder]="totalCount"
-      [pageViewCount]="searchSetting.topNumber" [currentPage]="currentPage" (pageViewCountChange)="onPageViewCountChange($event)"
-      [showPagination]="true" (linkColumnClicked)="linkClicked($event)">
+    <rk-table-export (event)="exportAs($event)" [showTypes]="{ excel: true, pdf: false }"></rk-table-export>
+
+    <rk-table [config]="tableConfig" [tableHeight]="tableHeight + 'px'" (pageChange)="onPageChange($event)"
+      [maxSize]="5" [totalCount]="totalCount > 10000 ? 10000 : totalCount" [totalCountPlaceholder]="totalCount"
+      [pageViewCount]="searchSetting.topNumber" [currentPage]="currentPage"
+      (pageViewCountChange)="onPageViewCountChange($event)" [showPagination]="true"
+      (linkColumnClicked)="linkClicked($event)" [paginationSelectDirection]="'up'">
     </rk-table>
   </rk-table-container>
 </div>

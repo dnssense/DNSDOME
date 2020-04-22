@@ -9,6 +9,8 @@ import { ProfileWizardComponent } from './page/profile-wizard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
 import { RkLayoutModule, RkToggleButtonModule, RkCollapseModule, IconsModule } from 'roksit-lib';
+import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { PipesModule } from '../pipes/pipes.module';
 
 
 @NgModule({
@@ -29,7 +31,10 @@ import { RkLayoutModule, RkToggleButtonModule, RkCollapseModule, IconsModule } f
     RkLayoutModule,
     RkToggleButtonModule,
     RkCollapseModule,
-    IconsModule
+    IconsModule,
+    NgbModule,
+    NgbPaginationModule,
+    PipesModule
   ],
   exports: [ ProfileWizardComponent ]
 

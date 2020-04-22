@@ -310,7 +310,9 @@
 
       <div class="d-flex align-items-center flex-wrap">
         <div class="d-flex flex-wrap align-items-center" style="width: calc(100% - 335px); padding-right: 25px;">
-          <span class="filter-text mb-2">{{ 'REPORT.Filter' | translate }};</span>
+          <span class="filter-text mb-2" *ngIf="filters?.length > 0">{{ 'REPORT.Filter' | translate }};</span>
+
+          <span class="filter-text mb-2 ml-2" *ngIf="filters?.length === 0">{{ 'NoFilter' | translate }}</span>
 
           <rk-filter-badge class="ml-2 mb-2" *ngFor="let filter of filters; let index = index" [name]="filter.name"
             [equal]="filter.equal" [values]="filter.values" (deleted)="onDeletedFilterBadge($event, index)"

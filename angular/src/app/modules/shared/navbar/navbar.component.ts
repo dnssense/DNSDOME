@@ -52,7 +52,7 @@ export class NavbarComponent implements OnInit {
 
     breadcrumb: string[] = [];
 
-    helpRoute = 'https://docs.roksit.com/';
+    helpRoute = 'https://docs.roksit.com/v/';
 
     constructor(
         location: Location,

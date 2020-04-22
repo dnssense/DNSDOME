@@ -1,7 +1,8 @@
 <div class="container-fluid mb-3">
   <div class="row">
     <div class="col-12">
-      <input type="text" class="rk-input w-100" placeholder="Name" [(ngModel)]="selectedAgent.rootProfile.name" minlength="1" [readonly]="selectedAgent.rootProfile.isSystem">
+      <input type="text" class="rk-input w-100" placeholder="Name" [(ngModel)]="selectedAgent.rootProfile.name"
+        minlength="1" [readonly]="selectedAgent.rootProfile.isSystem">
     </div>
   </div>
 </div>
@@ -11,12 +12,14 @@
     <div class="rk-accordion-title">{{'SecuritySettings'|translate}}</div>
 
     <div class="rk-accordion-body py-2">
-      <div class="d-flex flex-column p-2" [ngStyle]="{'background': selectedAgent.rootProfile.isPositiveSecurity ? '#4fb75d' : '#97a5bb'}">
+      <div class="d-flex flex-column p-2"
+        [ngStyle]="{'background': selectedAgent.rootProfile.isPositiveSecurity ? '#4fb75d' : '#97a5bb'}">
         <div class="accordion-label text-white">{{'SecurityMode'|translate}}:</div>
         <div class="d-flex align-items-center justify-content-between mt-1">
           <button class="rk-toggle-btn w-100 mr-2" [ngClass]="{'active': selectedAgent.rootProfile.isPositiveSecurity}"
             (click)="setSecurityMode(true)">{{'PositiveSecurity'|translate}}</button>
-          <button class="rk-toggle-btn w-100 passive" [ngClass]="{'active': !selectedAgent.rootProfile.isPositiveSecurity}"
+          <button class="rk-toggle-btn w-100 passive"
+            [ngClass]="{'active': !selectedAgent.rootProfile.isPositiveSecurity}"
             (click)="setSecurityMode(false)">{{'NegativeSecurity'|translate}}</button>
         </div>
 
@@ -24,7 +27,7 @@
           {{'PositiveSecurityDescription'|translate}}
         </div>
         <div class="accordion-description mt-2 text-white" *ngIf="!selectedAgent.rootProfile.isPositiveSecurity">
-         {{'NegativeSecurityDescription'|translate}}
+          {{'NegativeSecurityDescription'|translate}}
         </div>
       </div>
 
@@ -50,7 +53,8 @@
           style="border-bottom: 1px solid #e4e9f1;">
           <div class="accordion-label">{{'Clear Ads'|translate}}</div>
           <div style="width: 78px;">
-            <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }" [active]="isClearedAdds()" (click)="changeClearAds()" ></rk-toggle-button>
+            <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }" [active]="isClearedAdds()"
+              (click)="changeClearAds()"></rk-toggle-button>
           </div>
         </div>
 
@@ -63,15 +67,14 @@
 
           <rk-collapse-body>
             <ng-container *ngFor="let cat of categoryList">
-              <ng-container
-                *ngIf="isInCategoryType('malicious', cat)">
+              <ng-container *ngIf="isInCategoryType('malicious', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
                   style="border-bottom: 1px solid #e4e9f1;">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
                     <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
-                      [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
+                      [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
                   </div>
                 </div>
               </ng-container>
@@ -89,15 +92,14 @@
 
           <rk-collapse-body>
             <ng-container *ngFor="let cat of categoryList">
-              <ng-container
-                *ngIf="isInCategoryType('harmful', cat)">
+              <ng-container *ngIf="isInCategoryType('harmful', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
                   style="border-bottom: 1px solid #e4e9f1;">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
                     <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
-                      [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
+                      [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
                   </div>
                 </div>
               </ng-container>
@@ -115,15 +117,14 @@
 
           <rk-collapse-body>
             <ng-container *ngFor="let cat of categoryList">
-              <ng-container
-                *ngIf="isInCategoryType('variable', cat)">
+              <ng-container *ngIf="isInCategoryType('variable', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
                   style="border-bottom: 1px solid #e4e9f1;">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
                     <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
-                      [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
+                      [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
                   </div>
                 </div>
               </ng-container>
@@ -141,15 +142,14 @@
 
           <rk-collapse-body>
             <ng-container *ngFor="let cat of categoryList">
-              <ng-container
-                *ngIf="isInCategoryType('safe', cat)">
+              <ng-container *ngIf="isInCategoryType('safe', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
                   style="border-bottom: 1px solid #e4e9f1;">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
                     <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
-                      [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
+                      [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
                   </div>
                 </div>
               </ng-container>
@@ -173,17 +173,17 @@
         <rk-collapse-body>
 
           <ng-container *ngFor="let app of groupedApp.applications">
-              <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-                style="border-bottom: 1px solid #e4e9f1;">
-                <div class="accordion-label">{{ app.application.name }}</div>
+            <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+              style="border-bottom: 1px solid #e4e9f1;">
+              <div class="accordion-label">{{ app.application.name }}</div>
 
-                <div style="width: 78px;">
-                  <rk-toggle-button clickClose="true" (click)="applicationChanged(app)" [active]="!app.isBlocked"
-                    [toggleTexts]="{ pos: 'Allow', neg: 'Not Allow' }"></rk-toggle-button>
-                </div>
+              <div style="width: 78px;">
+                <rk-toggle-button clickClose="true" (click)="applicationChanged(app)" [active]="!app.isBlocked"
+                  [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
               </div>
-            </ng-container>
-          
+            </div>
+          </ng-container>
+
           <!-- <ng-container *ngFor="let app of groupedApp.applications">
             <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="app.isSystem ? app.isBlocked = !app.isBlocked : null; applicationChanged(app)"
               [active]="app.isBlocked">
@@ -228,7 +228,7 @@
 
       <div class="cards mt-3">
         <div class="card success-card"
-          *ngFor="let item of selectedAgent.rootProfile.blackWhiteListProfile?.whiteList; let i=index;">
+          *ngFor="let item of (selectedAgent.rootProfile.blackWhiteListProfile?.whiteList | filter: whiteListItem.domain: 'domain') | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize; let i=index;">
           <div class="card-content">
             <h6 class="title">{{ i + 1 }}. {{ item.domain }}</h6>
             <p class="description">{{ item.comment }}</p>
@@ -238,6 +238,13 @@
             <i-feather name="trash-2" (click)="removeFromWhiteList(item.domain)"></i-feather>
           </div>
         </div>
+
+        <ngb-pagination class="d-block mt-3"
+          *ngIf="selectedAgent.rootProfile.blackWhiteListProfile?.whiteList.length > 0" [(page)]="page"
+          [pageSize]="pageSize" [collectionSize]="selectedAgent.rootProfile.blackWhiteListProfile?.whiteList?.length"
+          [maxSize]="4">
+        </ngb-pagination>
+
       </div>
 
       <h6 class="rk-title mt-4">{{"BlackList"|translate}}</h6>
@@ -269,7 +276,7 @@
 
       <div class="cards mt-3">
         <div class="card danger-card"
-          *ngFor="let item of selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse(); let i=index;">
+          *ngFor="let item of (selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse() | filter: blackListItem.domain: 'domain') | slice: (pageBlack-1) * pageSizeBlack : (pageBlack-1) * pageSizeBlack + pageSizeBlack; let i=index;">
           <div class="card-content">
             <h6 class="title">{{ i + 1 }}. {{ item.domain }}</h6>
             <p class="description">{{ item.comment }}</p>
@@ -279,6 +286,12 @@
             <i-feather name="trash-2" (click)="removeFromBlackList(item)"></i-feather>
           </div>
         </div>
+
+        <ngb-pagination class="d-block mt-3"
+          *ngIf="selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse().length > 0" [(page)]="pageBlack"
+          [pageSize]="pageSizeBlack" [collectionSize]="selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse().length"
+          [maxSize]="4">
+        </ngb-pagination>
       </div>
 
     </div>

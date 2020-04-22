@@ -546,5 +546,6 @@
     "Week": "Hafta",
     "Day": "Gün",
     "Hour": "Saat",
-    "Minute": "Dakika"
+    "Minute": "Dakika",
+    "NoFilter": "Filtre tanımlanmadı"
 }

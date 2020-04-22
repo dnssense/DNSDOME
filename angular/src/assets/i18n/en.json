@@ -551,5 +551,6 @@
     "Week": "Weeks",
     "Day": "Days",
     "Hour": "Hours",
-    "Minute": "Minutes"
+    "Minute": "Minutes",
+    "NoFilter": "Filter not defined"
 }

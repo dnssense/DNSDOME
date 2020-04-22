@@ -201,6 +201,12 @@ export class ProfileWizardComponent {
 
   @Output() public saveEmitter = new EventEmitter();
 
+  page = 1;
+  pageSize = 4;
+
+  pageBlack = 1;
+  pageSizeBlack = 4;
+
   getCategoriesAndApps(): void {
 
     this.staticService.getCategoryList().subscribe(res => {

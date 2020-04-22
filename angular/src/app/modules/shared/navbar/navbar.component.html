@@ -94,21 +94,6 @@
             </div>
           </div>
         </div>
-
-        <div class="d-flex align-items-center justify-content-between w-100">
-          <a href="{{ getPath() }}" class="page text-capitalize" routerLinkActive="router-link-active"
-            style="font-weight: 400;">
-            {{ getTitle[getTitle?.length - 1] }}
-            <!-- <ng-container *ngIf="getTitle?.length > 2">
-              <span class="sub-page-title" *ngFor="let t of getTitle?.splice(2)">/ {{ getCleanText(t) }}</span>
-            </ng-container> -->
-          </a>
-
-          <a class="text-capitalize text-primary rk-link" style="color: var(--primary)" *ngFor="let item of breadcrumb; let index = index"
-            style="font-size: 14px;">
-            {{ breadcrumb.length > 1 && index > 0 ? ' >' : '' }} {{ item }}
-          </a>
-        </div>
       </div>
     </div>
   </div>
