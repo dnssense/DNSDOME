@@ -221,11 +221,11 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
         const series = [
           {
             name: 'Hit', type: 'area', data: data.filter ? data.filter(x => x.length >= 2).map(x => {
-              // const d = new Date(x[0]);
+              const d = new Date(x[0]);
 
               // return [new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()).getTime(), x[1]];
 
-              return [moment(x[0]).utc(true), x[1]];
+              return [moment(d).utc(true), x[1]];
 
             }) : []
           }
@@ -247,8 +247,12 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
             },
             events: {
               zoomed: (chartContext, { xaxis, yaxis }) => {
-                const startDate = moment(xaxis.min).utc(true).toDate().toISOString();
-                const endDate = moment(xaxis.max).utc(true).toDate().toISOString();
+
+                const offset = moment().utcOffset() * 60 * 1000;
+
+                 const startDate = moment(xaxis.min - offset).utc(false).toISOString();
+                 const endDate = moment.utc(xaxis.max - offset).toISOString();
+
 
                 this.searchSetting.dateInterval = null;
 
