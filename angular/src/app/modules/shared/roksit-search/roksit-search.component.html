@@ -97,7 +97,7 @@
   </rk-modal-footer>
 </rk-modal>
 
-<rk-modal #modal>
+<rk-modal #modal [isLightBlueBg]="true">
   <rk-modal-header icon="filter">
     <rk-modal-header-title>
       <h5> {{ 'REPORT.Filters' | translate }}</h5>
@@ -121,89 +121,97 @@
     </div>
 
     <div *ngIf="activeTabNumber === 0">
-      <div class="rk-modal-item">
-        <h5 class="modal-item title"> {{ 'REPORT.Action' | translate }}</h5>
+      <div class="rk-modal-item" style="border-bottom: none;">
+        <div class="section-card p-2 py-3">
+          <h5 class="modal-item title"> {{ 'REPORT.Action' | translate }}</h5>
 
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-12 col-md-6">
-              <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'allow'" value="allow"
-                (valueChange)="actionChanged($event)"> {{ 'REPORT.Allow' | translate }}</rk-radio>
-            </div>
-            <div class="col-12 col-md-6">
-              <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'deny'" value="deny"
-                (valueChange)="actionChanged($event)"> {{ 'REPORT.Deny' | translate }}</rk-radio>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'allow'" value="allow"
+                  (valueChange)="actionChanged($event)"> {{ 'REPORT.Allow' | translate }}</rk-radio>
+              </div>
+              <div class="col-12 col-md-6">
+                <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'deny'" value="deny"
+                  (valueChange)="actionChanged($event)"> {{ 'REPORT.Deny' | translate }}</rk-radio>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="rk-modal-item">
-        <h5 class="modal-item title"> {{ 'REPORT.AddFilter' | translate }}</h5>
+      <div class="rk-modal-item" style="border-bottom: none;">
 
-        <rk-select [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
+        <div class="section-card p-2 py-3">
+          <h5 class="modal-item title"> {{ 'REPORT.AddFilter' | translate }}</h5>
 
-        <div class="d-flex mt-2">
-          <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
-            [ngClass]="{'btn-outline-active': modalIsEqual}" (click)="modalIsEqual = true">
-            <icon-equal></icon-equal>
-          </button>
+          <rk-select [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
 
-          <button class="btn btn-icon btn-small w-100 filter-btn-outline"
-            [ngClass]="{'btn-outline-active': !modalIsEqual}" (click)="modalIsEqual = false">
-            <icon-not-equal></icon-not-equal>
-          </button>
-        </div>
+          <div class="d-flex mt-2">
+            <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
+              [ngClass]="{'btn-outline-active': modalIsEqual}" (click)="modalIsEqual = true">
+              <icon-equal></icon-equal>
+            </button>
 
-        <div class="d-flex align-items-center justify-content-between mt-2">
-          <input type="text" class="rk-input w-100 mr-2" [(ngModel)]="filterText" (keydown.enter)="addManuelFilter()"
-            placeholder="...">
+            <button class="btn btn-icon btn-small w-100 filter-btn-outline"
+              [ngClass]="{'btn-outline-active': !modalIsEqual}" (click)="modalIsEqual = false">
+              <icon-not-equal></icon-not-equal>
+            </button>
+          </div>
 
-          <button class="btn btn-icon bg-primary fill-white p-0 px-2" style="height: 35px;" (click)="addManuelFilter()"
-            [disabled]="filterText?.trim().length === 0">
-            <i-feather name="plus" class="mr-0"></i-feather>
-          </button>
-        </div>
+          <div class="d-flex align-items-center justify-content-between mt-2">
+            <input type="text" class="rk-input w-100 mr-2" [(ngModel)]="filterText" (keydown.enter)="addManuelFilter()"
+              placeholder="...">
 
-        <div class="mt-3" *ngFor="let filter of getFiltersByColumn(selectedColumnFilter); let filterIndex = index">
-          <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
-            *ngFor="let value of filter.values; let valueIndex = index">
-            {{ value }}
+            <button class="btn btn-icon bg-primary fill-white p-0 px-2" style="height: 35px;"
+              (click)="addManuelFilter()" [disabled]="filterText?.trim().length === 0">
+              <i-feather name="plus" class="mr-0"></i-feather>
+            </button>
+          </div>
 
-            <i-feather name="x" class="hover-gray"
-              (click)="removeManuelFilter(filter, filterIndex, valueIndex, selectedColumnFilter)"></i-feather>
+          <div class="mt-3" *ngFor="let filter of getFiltersByColumn(selectedColumnFilter); let filterIndex = index">
+            <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
+              *ngFor="let value of filter.values; let valueIndex = index">
+              {{ value }}
+
+              <i-feather name="x" class="hover-gray"
+                (click)="removeManuelFilter(filter, filterIndex, valueIndex, selectedColumnFilter)"></i-feather>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="rk-modal-item" style="height: 1px; border-bottom: none;">
-        <h5 class="modal-item title"> {{ 'Category' | translate }}</h5>
 
-        <div class="d-flex mt-2">
-          <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
-            [ngClass]="{'btn-outline-active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
-            <icon-equal></icon-equal>
-          </button>
+        <div class="section-card p-2 py-3">
+          <h5 class="modal-item title"> {{ 'Category' | translate }}</h5>
 
-          <button class="btn btn-icon btn-small w-100 filter-btn-outline"
-            [ngClass]="{'btn-outline-active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
-            <icon-not-equal></icon-not-equal>
-          </button>
-        </div>
+          <div class="d-flex mt-2">
+            <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
+              [ngClass]="{'btn-outline-active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
+              <icon-equal></icon-equal>
+            </button>
 
-        <div class="mt-3">
-          <!-- (enterPress)="categoryEnterPress($event)"  -->
-          <rk-autocomplete [onSelectClear]="true" [items]="autocompleteItems" (onSelect)="categoryEnterPress($event)">
-          </rk-autocomplete>
-        </div>
+            <button class="btn btn-icon btn-small w-100 filter-btn-outline"
+              [ngClass]="{'btn-outline-active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
+              <icon-not-equal></icon-not-equal>
+            </button>
+          </div>
 
-        <div class="mt-3" *ngFor="let filter of getCategoryFilters; let index = index">
-          <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
-            *ngFor="let value of filter.values; let valueIndex = index">
-            {{ value }}
+          <div class="mt-3">
+            <!-- (enterPress)="categoryEnterPress($event)"  -->
+            <rk-autocomplete [onSelectClear]="true" [items]="autocompleteItems" (onSelect)="categoryEnterPress($event)">
+            </rk-autocomplete>
+          </div>
 
-            <i-feather name="x" class="hover-gray" (click)="removeCategoryFilter(filter, index, valueIndex)">
-            </i-feather>
+          <div class="mt-3" *ngFor="let filter of getCategoryFilters; let index = index">
+            <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
+              *ngFor="let value of filter.values; let valueIndex = index">
+              {{ value }}
+
+              <i-feather name="x" class="hover-gray" (click)="removeCategoryFilter(filter, index, valueIndex)">
+              </i-feather>
+            </div>
           </div>
         </div>
       </div>
@@ -282,8 +290,8 @@
             Search
           </button> -->
 
-          <button class="btn btn-small mr-2 mt-1" [ngClass]="{'active': option.selected}" *ngFor="let option of dateOptions"
-            (click)="clickedDateOption(option)">{{ option.displayText }}</button>
+          <button class="btn btn-small mr-2 mt-1" [ngClass]="{'active': option.selected}"
+            *ngFor="let option of dateOptions" (click)="clickedDateOption(option)">{{ option.displayText }}</button>
 
           <div style="min-width: 200px;" class="mt-1 d-flex flex-column justify-content-center align-items-center">
             <rk-date #date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions"></rk-date>
