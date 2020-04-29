@@ -547,5 +547,7 @@
     "Day": "Gün",
     "Hour": "Saat",
     "Minute": "Dakika",
-    "NoFilter": "Filtre tanımlanmadı"
+    "NoFilter": "Filtre tanımlanmadı",
+    "PreviousWeek": "Önceki Hafta",
+    "NextWeek": "Sonraki Hafta"
 }

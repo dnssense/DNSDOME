@@ -95,28 +95,28 @@ export class RoamingComponent implements OnInit {
             'blockMessage': []
         });
 
-         this.loadClients();
+        this.loadClients();
 
         this.getConfParameters();
         // this.defineNewAgentForProfile();
     }
 
     loadClients() {
-         this.agentService.getSecurityProfiles().subscribe(result => {
+        this.agentService.getSecurityProfiles().subscribe(result => {
             this.securityProfiles = result;
 
             this.fillSecurityProfilesSelect(result);
         });
 
-         this.roamingService.getClients().subscribe(res => {
-             this.clients = res;
+        this.roamingService.getClients().subscribe(res => {
+            this.clients = res;
 
             this.clientsFiltered = this.clients;
 
             this.groupedClients = this.getGroupClients(this.clients);
             this.groupListForSelect = [];
             this.clients.filter(x => x.agentGroup).forEach(((x, index) => {
-                const item: RkSelectModel = {displayText: x.agentGroup.groupName, value: x.agentGroup.groupName, selected: false};
+                const item: RkSelectModel = { displayText: x.agentGroup.groupName, value: x.agentGroup.groupName, selected: false };
                 if (!this.groupListForSelect.find(x => x.displayText == item.displayText)) {
                     this.groupListForSelect.push(item);
                 }
@@ -127,8 +127,8 @@ export class RoamingComponent implements OnInit {
             });
             this.selectedGroupName = '';
             if (this.groupListForSelect.length) {
-            this.groupListForSelect[0].selected = true;
-            this.selectedGroupName = this.groupListForSelect[0].displayText;
+                this.groupListForSelect[0].selected = true;
+                this.selectedGroupName = this.groupListForSelect[0].displayText;
             }
 
 
@@ -230,6 +230,12 @@ export class RoamingComponent implements OnInit {
         document.body.removeChild(selBox);
     }
 
+    removeElementFromDomainList(index: number) {
+        this.dontDomains.splice(index, 1);
+
+        this.saveDomainChanges();
+    }
+
     saveDomainChanges() {
         const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
 
@@ -258,14 +264,14 @@ export class RoamingComponent implements OnInit {
         });
     }
 
-     addDomainToList() {
+    addDomainToList() {
 
         if (this.dontDomains && this.dontDomains.length < 10) {
-           const result = this.checkIsValidDomaind(this.domain);
-           if (!result) {
-               this.notification.warning(this.staticMessageService.enterValidDomainMessage);
-               return;
-           }
+            const result = this.checkIsValidDomaind(this.domain);
+            if (!result) {
+                this.notification.warning(this.staticMessageService.enterValidDomainMessage);
+                return;
+            }
 
             this.dontDomains.push(result);
 
@@ -281,7 +287,7 @@ export class RoamingComponent implements OnInit {
 
 
 
-    checkIsValidDomaind(d: string): string|null {
+    checkIsValidDomaind(d: string): string | null {
         d = d.toLocaleLowerCase().replace('https://', '').replace('http://', '');
 
         for (let i = 0; i < d.length; i++) {
@@ -351,25 +357,25 @@ export class RoamingComponent implements OnInit {
 
         if (!this.selectedAgentsForChangeAddGroup.length) {
             this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
-            return ;
+            return;
         }
 
-            this.selectedAgentsForChangeAddGroup.forEach(x => {
-                if (!x.agentGroup) {
-                    x.agentGroup = new AgentGroup();
-                    x.agentGroup.id = 0;
-                }
-                x.agentGroup.groupName = this.selectedGroupName;
+        this.selectedAgentsForChangeAddGroup.forEach(x => {
+            if (!x.agentGroup) {
+                x.agentGroup = new AgentGroup();
+                x.agentGroup.id = 0;
+            }
+            x.agentGroup.groupName = this.selectedGroupName;
+
+        });
+        this.roamingService.saveClients(this.selectedAgentsForChangeAddGroup).subscribe(
+            res => {
+
+                this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
+                this.loadClients();
+                this.changeGroupModel.toggle();
 
             });
-            this.roamingService.saveClients(this.selectedAgentsForChangeAddGroup).subscribe(
-                res => {
-
-                    this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
-                    this.loadClients();
-                    this.changeGroupModel.toggle();
-
-                });
 
     }
     cleanChangedGroup() {
@@ -393,57 +399,57 @@ export class RoamingComponent implements OnInit {
         }
         if (this.groupOperation == 'Create New') {
 
-        selectedItems = this.noGroupedClients.filter(x => x.selected);
-        if (!selectedItems.length) {
-            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
-            return ;
-        }
-        // set agent groupnames
-        selectedItems.forEach(x => {
-         if (!x.agentGroup) {
-             x.agentGroup = new AgentGroup();
-             x.agentGroup.id = 0;
-         }
-         x.agentGroup.groupName = this.groupName;
-
-        });
-    } else {
-        const addClients = this.noGroupedClients.filter(x => x.selected);
-        addClients.forEach(x => {
-            if (!x.agentGroup) {
-                x.agentGroup = new AgentGroup();
-                x.agentGroup.id = 0;
+            selectedItems = this.noGroupedClients.filter(x => x.selected);
+            if (!selectedItems.length) {
+                this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
+                return;
             }
-            x.agentGroup.groupName = this.groupName;
+            // set agent groupnames
+            selectedItems.forEach(x => {
+                if (!x.agentGroup) {
+                    x.agentGroup = new AgentGroup();
+                    x.agentGroup.id = 0;
+                }
+                x.agentGroup.groupName = this.groupName;
 
-        });
-        selectedItems = selectedItems.concat(addClients);
-
-        const removeClients = this.groupMembers.filter(x => !x.selected);
-        removeClients.forEach(x => {
-            x.agentGroup = null;
-
-        });
-
-        selectedItems = selectedItems.concat(removeClients);
-
-        if (this.groupNameBeforeEdit != this.groupName) {// name changed
-            const changedItems = this.groupMembers.filter(x => x.selected).filter(x => x.agentGroup);
-            changedItems.forEach(element => {
-                element.agentGroup.groupName = this.groupName;
             });
-            selectedItems = selectedItems.concat(changedItems);
+        } else {
+            const addClients = this.noGroupedClients.filter(x => x.selected);
+            addClients.forEach(x => {
+                if (!x.agentGroup) {
+                    x.agentGroup = new AgentGroup();
+                    x.agentGroup.id = 0;
+                }
+                x.agentGroup.groupName = this.groupName;
+
+            });
+            selectedItems = selectedItems.concat(addClients);
+
+            const removeClients = this.groupMembers.filter(x => !x.selected);
+            removeClients.forEach(x => {
+                x.agentGroup = null;
+
+            });
+
+            selectedItems = selectedItems.concat(removeClients);
+
+            if (this.groupNameBeforeEdit != this.groupName) {// name changed
+                const changedItems = this.groupMembers.filter(x => x.selected).filter(x => x.agentGroup);
+                changedItems.forEach(element => {
+                    element.agentGroup.groupName = this.groupName;
+                });
+                selectedItems = selectedItems.concat(changedItems);
+            }
+
+            if (!selectedItems.length) {
+                this.notification.warning(this.staticMessageService.pleaseChangeSomethingMessage);
+                return;
+            }
+
+
+
+
         }
-
-        if (!selectedItems.length) {
-            this.notification.warning(this.staticMessageService.pleaseChangeSomethingMessage);
-            return;
-        }
-
-
-
-
-    }
 
 
 

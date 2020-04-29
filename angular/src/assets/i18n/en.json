@@ -552,5 +552,7 @@
     "Day": "Days",
     "Hour": "Hours",
     "Minute": "Minutes",
-    "NoFilter": "Filter not defined"
+    "NoFilter": "Filter not defined",
+    "PreviousWeek": "Previous Week",
+    "NextWeek": "Next Week"
 }

@@ -65,10 +65,107 @@
   }
 }
 
-.categories {
-  .rk-item {
+$info-colors: (
+  "total": #4353ff,
+  "safe": #3dd49a,
+  "malicious": #f95656,
+  "variable": #d8d8d8,
+  "harmful": #f9df56,
+);
+
+@each $key, $val in $info-colors {
+  .rk-c-#{$key} {
     &.active {
-      background-color: var(--primary);
+      td {
+        background-color: $val;
+      }
+    }
+  }
+}
+
+.dashboard {
+  border: 1px solid rgba(68, 81, 101, 0.2);
+  border-radius: 19px;
+
+  .infos {
+    min-height: 43px;
+    padding: 10px;
+
+    .col-12 {
+      border-right: 1px solid #e4e9f1;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      h5.title {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--gray);
+        margin-bottom: 0;
+      }
+
+      .values {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .name,
+        .value {
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--blue-grey);
+        }
+
+        .value {
+          font-size: 21px;
+        }
+
+        .active,
+        .passive {
+          display: flex;
+          align-items: center;
+
+          .name {
+            margin-right: 10px;
+          }
+        }
+
+        .active {
+          margin-right: 15px;
+
+          .value {
+            color: var(--primary);
+          }
+        }
+      }
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+
+  .rk-base-card {
+    .card-item.content {
+      border-radius: 19px;
+    }
+  }
+
+  .section-card {
+    background: var(--white);
+    border-radius: 10px;
+    // height: 340px;
+  }
+}
+
+@media (max-width: 992px) {
+  .dashboard {
+    .infos {
+      .col-12 {
+        border-right: none;
+        border-bottom: 1px solid var(--blue-grey-3);
+      }
     }
   }
 }

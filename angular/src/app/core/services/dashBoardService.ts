@@ -34,6 +34,12 @@ export interface DistinctBoxResponse {
   items: BoxValue[];
 }
 
+export interface HourlyCompanySummaryV5Request {
+  duration?: number;
+  startDate?: string;
+  endDate?: string;
+}
+
 @Injectable()
 export class DashBoardService {
 
@@ -50,7 +56,7 @@ export class DashBoardService {
     private configuration: ConfigService
   ) { }
 
-  public getHourlyCompanySummary(request: { duration: number }): Observable<any> {
+  public getHourlyCompanySummary(request: HourlyCompanySummaryV5Request): Observable<any> {
     return this.http.post<{ duration: number }>(this._hourlyCompanySummaryURL, request).map(res => res);
   }
 

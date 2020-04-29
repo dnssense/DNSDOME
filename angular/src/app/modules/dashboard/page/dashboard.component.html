@@ -1,199 +1,216 @@
 <div class="main-content">
-  <div class="container-fluid ">
-    <div class="row" style="margin-top: -10px">
-      <div class="col-md-12">
-        <div class="rk-base-card responsive-card">
-          <div class="card-item" *ngFor="let data of agentCounts">
-            <div class="rk-grow rk-v-center rk-title-1">
-              {{ data.name | translate }}
-            </div>
-            <div class="rk-row">
-              <div class="rk-data-row active">
-                <span class="name">{{'Active' | translate}}</span>
-                <span class="value">{{ data.activeCount }}</span>
-              </div>
+  <div class="container-fluid mt-3 mb-3">
+    <div class="row mx-0">
+      <div class="col-12">
+        <div class="container-fluid dashboard">
+          <div class="row infos">
+            <div class="col-12 col-lg-4" *ngFor="let data of agentCounts">
+              <h5 class="title">{{ data.name | translate }}</h5>
 
-              <div class="rk-data-row   m-l-15">
-                <span class="name">{{'Passive'|translate}}</span>
-                <span class="value">{{ data.passiveCount }}</span>
-              </div>
-            </div>
-          </div>
+              <div class="values">
+                <div class="active">
+                  <span class="name">{{'Active' | translate}}</span>
+                  <span class="value">{{ data.activeCount }}</span>
+                </div>
 
-        </div>
-      </div>
-    </div>
-
-    <div class="rk-base-card">
-      <div class="card-item rk-col">
-        <div class="traffic-timeline row justify-content-between">
-          <div class="rk-v-center col-12 col-md">
-           <!--  <div class="rk-title-2">{{'DASHBOARD.TotalTrafficTime'|translate}}</div> -->
-          <!--   <div class="timeline-sub-title"> {{'DASHBOARD.TotalDays365'|translate}}</div> -->
-          </div>
-
-         <!--  <div class="d-flex align-items-start justify-content-end col-12 col-md-auto mt-md-3"> -->
-            <!-- <span class="rk-title-2 rk-v-center">{{'DASHBOARD.TimeRange'|translate}}</span> -->
-
-          <!--   <button class="btn btn-default ml-2 d-none d-xl-flex" *ngFor="let dateButton of dateButtons" (click)="setDateByDateButton(dateButton)">{{ dateButton.displayText }}</button> -->
-            
-           <!--  <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal> -->
-            
-           <!--  <div class="d-flex flex-column text-center">
-              <rk-date [startDate]="startDate" [endDate]="endDate" (complete)="dateChanged($event)" [alignment]="'right'"></rk-date>
-              <span class="date-text mt-1" *ngIf="diffrence">{{ diffrence }} gün</span>
-            </div> -->
-         <!--  </div> -->
-        </div>
-
-        <!-- <div class="rk-panel mt-4">
-          <div class="rk-panel-item">
-            <div class="timeline" id="timeline"></div>
-          </div>
-        </div>
- -->
-        <div class="rk-panel" style="margin-top: 10px;">
-          <div class="rk-panel-header rk-title-1">
-            {{'DASHBOARD.TrafficBasedAnomaly'|translate}}({{'TotalDays'|translate}} 7)
-          </div>
-          <div class="rk-panel-item d-flex flex-column">
-            <div class="row">
-              <div class="col-12 col-lg-6 col-xl">
-                <rk-infobox [active]="infoBoxes.total"  (change)="infoboxChanged($event, 'total')" [title]="translate('Total')"
-                  [color]="'#4353ff'" className="blue" [type]="1" [valueOne]="trafficAnomaly?.total?.hit"
-                  [valueTwo]="trafficAnomaly?.total?.block" [description]="translate('DASHBOARD.TotalDnsRequestCount')">
-                </rk-infobox>
-              </div>
-
-              <div class="col-12 col-lg-6 col-xl">
-                <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe')"
-                  [title]="translate('Safe')" [color]="'#3dd49a'" className="green" [valueOne]="trafficAnomaly?.safe?.hit"
-                  [valueTwo]="trafficAnomaly?.safe?.hit_ratio"
-                  description="{{'SafeDescription'|translate}}">
-                </rk-infobox>
-              </div>
-
-              <div class="col-12 col-lg-6 col-xl">
-                <rk-infobox [active]="infoBoxes.malicious"  (change)="infoboxChanged($event, 'malicious')" [type]="2"
-                  [title]="translate('Malicious')" className="red" [color]="'#f95656'"
-                  [valueOne]="trafficAnomaly?.malicious?.hit" [valueTwo]="trafficAnomaly?.malicious?.hit_ratio"
-                  description="{{'MaliciousDescription'|translate}}">
-                </rk-infobox>
-              </div>
-
-              <div class="col-12 col-lg-6 col-xl">
-                <rk-infobox [active]="infoBoxes.variable"  (change)="infoboxChanged($event, 'variable')" [type]="2"
-                  [title]="translate('Variable')" className="gray" [color]="'#d8d8d8'"
-                  [valueOne]="trafficAnomaly?.variable?.hit" [valueTwo]="trafficAnomaly?.variable?.hit_ratio"
-                  description="{{'VariableDescription'|translate}}">
-                </rk-infobox>
-              </div>
-
-              <div class="col-12 col-lg-6 col-xl">
-                <rk-infobox [active]="infoBoxes.harmful"  (change)="infoboxChanged($event, 'harmful')" [type]="2"
-                  [title]="translate('HarmfullContent')" className="yellow" [color]="'#f9df56'"
-                  [valueOne]="trafficAnomaly?.harmful?.hit" [valueTwo]="trafficAnomaly?.harmful?.hit_ratio"
-                  description="{{'HarmfulDescription'|translate}}">
-                </rk-infobox>
+                <div class="passive">
+                  <span class="name">{{'Passive'|translate}}</span>
+                  <span class="value">{{ data.passiveCount }}</span>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div class="d-flex justify-content-between align-items-center mt-4 pt-2"
-              style="border-top: 1px solid rgba(68, 81, 101, 0.2);">
-              <div style="width: 190px;">
-                <div class="rk-selectable-table categories" style="width: auto !important;">
-                  <div class="rk-item" *ngFor="let cat of categoryListFiltered"
-                    [ngClass]="{ 'active' : selectedCategory?.name == cat.name }" (click)="selectCategory(cat)">
-                    <div class="rk-i-header">
-                      <div class="d-flex align-items-center">
-                        <span class="rk-selectable-table-item-title"> {{ cat.name }} </span>
-                        <span class="rk-selectable-badge">{{ cat.hit }} </span>
+          <div class="row mt-2">
+            <div class="rk-base-card p-0">
+              <div class="card-item content">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="rk-title-2">{{'DASHBOARD.TrafficBasedAnomaly'|translate}}</div>
+
+                        <div class="d-flex align-items-start justify-content-end">
+                          <button class="btn btn-small mr-2 d-none d-xl-flex" *ngFor="let dateButton of dateButtons"
+                            (click)="setDateByDateButton(dateButton)"
+                            [ngClass]="{'active': dateButton?.active}">{{ dateButton.displayText }}</button>
+
+                          <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal>
+
+                          <div class="d-flex flex-column text-center">
+                            <rk-date [startDate]="startDate" [endDate]="endDate" (complete)="dateChanged($event, true)"
+                              [alignment]="'right'"></rk-date>
+
+                            <span class="date-text mt-1">{{ dateText }}</span>
+
+                            <!-- <span class="date-text mt-1" *ngIf="diffrence">{{ diffrence }} gün</span> -->
+                          </div>
+                        </div>
                       </div>
-                      <i-feather name="arrow-right"></i-feather>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-12 col-lg-6 col-xl mt-3">
+                      <rk-infobox [active]="infoBoxes.total"  (change)="infoboxChanged($event, 'total', 'Total')"
+                        [title]="translate('Total')" [color]="'#4353ff'" className="blue" [type]="1"
+                        [valueOne]="trafficAnomaly?.total?.hit" [valueTwo]="trafficAnomaly?.total?.block"
+                        [description]="translate('DASHBOARD.TotalDnsRequestCount')">
+                      </rk-infobox>
                     </div>
 
-                    <rk-progressbar [value]="cat.hit_ratio" [showType]="'outside'" [sizeType]="'small'">
-                    </rk-progressbar>
+                    <div class="col-12 col-lg-6 col-xl mt-3">
+                      <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe', 'Safe')"
+                        [title]="translate('Safe')" [color]="'#3dd49a'" className="green"
+                        [valueOne]="trafficAnomaly?.safe?.hit" [valueTwo]="trafficAnomaly?.safe?.hit_ratio"
+                        description="{{'SafeDescription'|translate}}">
+                      </rk-infobox>
+                    </div>
+
+                    <div class="col-12 col-lg-6 col-xl mt-3">
+                      <rk-infobox [active]="infoBoxes.malicious"
+                         (change)="infoboxChanged($event, 'malicious', 'Malicious')" [type]="2"
+                        [title]="translate('Malicious')" className="red" [color]="'#f95656'"
+                        [valueOne]="trafficAnomaly?.malicious?.hit" [valueTwo]="trafficAnomaly?.malicious?.hit_ratio"
+                        description="{{'MaliciousDescription'|translate}}">
+                      </rk-infobox>
+                    </div>
+
+                    <div class="col-12 col-lg-6 col-xl mt-3">
+                      <rk-infobox [active]="infoBoxes.variable"
+                        (change)="infoboxChanged($event, 'variable', 'Variable')" [type]="2"
+                        [title]="translate('Variable')" className="gray" [color]="'#d8d8d8'"
+                        [valueOne]="trafficAnomaly?.variable?.hit" [valueTwo]="trafficAnomaly?.variable?.hit_ratio"
+                        description="{{'VariableDescription'|translate}}">
+                      </rk-infobox>
+                    </div>
+
+                    <div class="col-12 col-lg-6 col-xl mt-3">
+                      <rk-infobox [active]="infoBoxes.harmful"
+                         (change)="infoboxChanged($event, 'harmful', 'HarmfullContent')" [type]="2"
+                        [title]="translate('HarmfullContent')" className="yellow" [color]="'#f9df56'"
+                        [valueOne]="trafficAnomaly?.harmful?.hit" [valueTwo]="trafficAnomaly?.harmful?.hit_ratio"
+                        description="{{'HarmfulDescription'|translate}}">
+                      </rk-infobox>
+                    </div>
+                  </div>
+
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <div class="section-card">
+
+                        <div class="container-fluid">
+                          <div class="row">
+                            <div class="col-12 col-lg-4 mt-3 d-flex flex-column justify-content-between"
+                              style="border-right: 1px solid var(--infobox-border);">
+                              <h6 class="rk-title-1">{{ selectedCategoryName | translate }}</h6>
+
+                              <div class="rk-selectable-container mb-2">
+                                <table class="rk-selectable-table w-100">
+                                  <tr *ngFor="let cat of categoryListFiltered; let index = index"
+                                    class="rk-c-{{ selectedBox }}"
+                                    [ngClass]="{ 'active' : selectedCategory?.name == cat.name }"
+                                    (click)="selectCategory(cat)">
+                                    <td class="idx">{{ index + 1 }}</td>
+                                    <td class="text">{{ cat.name }}</td>
+                                    <td class="value">{{ getRoundedNumber(cat.hit) }}</td>
+                                    <td class="percent">%{{ cat.hit_ratio }}</td>
+                                  </tr>
+                                </table>
+                              </div>
+                            </div>
+
+                            <div class="col-12 col-lg-8 mt-3">
+                              <div class="d-flex justify-content-end align-items-center" *ngIf="trafficChart">
+                                <!-- <button class="btn btn-link btn-accent py-0" style="background: transparent;"
+                                  (click)="showSummary()">{{'DASHBOARD.ShowSummary'|translate}}</button> -->
+                                <button class="btn btn-small btn-outline"
+                                  (click)="showDetail()">{{'DASHBOARD.ShowDetail'|translate}}</button>
+
+                                <button class="btn btn-link btn-icon py-0" *ngIf="calculateDateDiff() <= 7" (click)="getWeeklyData('prev')">
+                                  <i-feather name="arrow-left"></i-feather>
+                                  {{ 'PreviousWeek' | translate }}
+                                </button>
+
+                                <button class="btn btn-link btn-icon py-0" *ngIf="calculateDateDiff() <= 7" (click)="getWeeklyData('next')">
+                                  {{ 'NextWeek' | translate }}
+                                  <i-feather name="arrow-right"></i-feather>
+                                </button>
+                              </div>
+
+                              <div class="chart" id="chart"></div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <div class="section-card">
+                        <div class="container-fluid">
+                          <div class="row">
+                            <div class="col-12 col-lg-6 mt-3 d-flex flex-column justify-content-around"
+                              style="border-right: 1px solid var(--infobox-border);">
+                              <h6 class="rk-title-1">{{ 'Malicious' | translate }}</h6>
+
+                              <div class="rk-selectable-container">
+                                <table class="rk-selectable-table">
+                                  <thead>
+                                    <tr>
+                                      <th>#</th>
+                                      <th>{{'Domain'|translate}}</th>
+                                      <th>{{'Categories'|translate}}</th>
+                                      <th>{{'Count'|translate}}</th>
+                                      <th colspan="2" style="width: 120px;">{{'Percent'|translate}}</th>
+                                    </tr>
+                                  </thead>
+
+                                  <tbody class="rk-selectable-table-body">
+                                    <tr *ngFor="let domain of topDomains; let index = index"
+                                      [ngClass]="{'active': items[0]?.value === domain.name}"
+                                      (click)="addDomain(domain)">
+                                      <td class="idx" style="width: 40px">{{ index + 1 }}</td>
+                                      <td class="text">{{ domain.name }}</td>
+                                      <td class="text">{{domain.category}}</td>
+                                      <td class="value">{{ getRoundedNumber(domain.hit) }}</td>
+                                      <td>
+                                        <rk-progressbar-n [value]="100 * domain.hit / topDomainsCountTotal | number">
+                                        </rk-progressbar-n>
+                                      </td>
+                                      <td class="percent" style="width:43px">
+                                        %{{100 * domain.hit / topDomainsCountTotal | number}}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 mt-3 d-flex flex-column justify-content-between">
+                              <div class="search d-flex justify-content-between">
+                                <div class="tag-input-container w-100">
+                                  <tag-input [(ngModel)]="items" (onAdd)="onItemAdded($event)" [maxItems]="1">
+                                  </tag-input>
+                                </div>
+
+                                <button class="btn btn-accent ml-3" (click)="search()">{{'Search'|translate}}</button>
+                              </div>
+
+                              <div class="unique-chart" id="topDomainChart"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <div class="px-4 d-flex flex-column" style="flex: 1;">
-                <div class="d-flex justify-content-end align-items-center" *ngIf="trafficChart">
-                    <button class="btn btn-link btn-accent py-0" style="background: transparent;" (click)="showSummary()">{{'DASHBOARD.ShowSummary'|translate}}</button>
-                    <button class="btn btn-link btn-accent py-0 pr-0" style="background: transparent;"  (click)="showDetail()" >{{'DASHBOARD.ShowDetail'|translate}}</button>
-                </div>
-                
-                <div class="chart" id="chart"></div>
-              </div>
-
-        
-            </div>
-          </div>
-        </div>
-
-        <div class="row mt-0 mt-lg-3 dashboard-domains-table">
-          <!-- top domains -->
-          <div class="col-12 col-lg-4 mt-3 mt-lg-0 rk-panel">
-            <div class="rk-panel-header rk-title-2">
-               {{'Malicious'|translate}}
-            </div>
-            <div class="rk-panel-item rk-info-table bg-white p-0" style="border-radius: 13px;">
-              <rk-table-container class="overflow-hidden m-0">
-                <rk-table [info]="true" [showPagination]="false">
-                  <ng-template #header>
-                    <tr>
-                      <th class="index">#</th>
-                      <th scope="col">
-                        {{'Domain'|translate}}
-                      </th>
-                      <th scope="col">
-                        {{'Count'|translate}}
-                      </th>
-                      <th scope="col">
-                        {{'Categories'|translate}}
-                      </th>
-                    </tr>
-                  </ng-template>
-                  <ng-template #body>
-                    <tr *ngFor="let domain of topDomains; let index = index">
-                      <td class="index">{{ index + 1 }}</td>
-                      <td>
-                        <a (click)="addDomain(domain)" class="anchor">{{ domain.name }}</a>
-                      </td>
-                      <td>{{ domain.hit }}</td>
-                      <td>
-                       {{domain.category}}
-                      </td>
-                    </tr>
-                  </ng-template>
-                </rk-table>
-              </rk-table-container>
             </div>
           </div>
 
-
         </div>
-
-        <div class="row">
-          <div class="col-12 rk-panel" style="margin-top: 30px;">
-            <div class="d-flex align-items-center">
-              <div class="rk-panel-header rk-title-2 mr-3">
-                {{'Domain'|translate}}
-              </div>
-
-              <div class="tag-input-container">
-                <tag-input [(ngModel)]="items" (onAdd)="onItemAdded($event)" [maxItems]="1"></tag-input>
-              </div>
-
-              <button class="btn btn-accent ml-3" (click)="search()">{{'Search'|translate}}</button>
-            </div>
-            <div class="rk-panel-item p-0" style="flex: 1">
-              <div class="unique-chart" id="topDomainChart"></div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>

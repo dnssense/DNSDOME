@@ -49,7 +49,7 @@ import { RecaptchaModule } from 'ng-recaptcha';
     PagenotfoundModule,
     AppRoutingModule,
     NotificationModule,
-    NgxUiLoaderModule.forRoot({ fgsPosition: 'center-center', minTime: 100 }),
+    NgxUiLoaderModule.forRoot({ fgsPosition: 'center-center', minTime: 100, fgsType: 'ball-scale-multiple', fgsColor: '#507df3', pbColor: '#507df3' }),
     NgxUiLoaderHttpModule.forRoot({ showForeground: true, excludeRegexp: ['\/api\/oauth\/token$', '\/api\/user\/current$', '\/api\/user\/current\/role$', '\/websocket$'] }),
     NgxUiLoaderRouterModule,
     BsDropdownModule.forRoot(),

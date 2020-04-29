@@ -29,6 +29,11 @@ export class AppComponent {
     this.iconImage = this.host.iconImage;
     // authenticationService.checkSessionIsValid();
 
+    const lang = localStorage.getItem('language');
+
+    if (lang) {
+      this.config.setDefaultLanguage(lang);
+    }
 
     const themeColor = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
 

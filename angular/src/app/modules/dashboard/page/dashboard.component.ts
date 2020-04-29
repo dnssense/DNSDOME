@@ -12,7 +12,7 @@ import { ConfigHost, ConfigService } from 'src/app/core/services/config.service'
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import {
-  AgentCountModel, DateParamModel, HourlyCompanySummaryV5Response, Domain, TopDomainsRequestV5, Result, TopDomainValuesResponseV4, Category, Bucket
+  AgentCountModel, DateParamModel, HourlyCompanySummaryV5Response, Domain, TopDomainsRequestV5, Result, TopDomainValuesResponseV4, Category, Bucket, HourlyCompanySummaryV5Request
 } from 'src/app/core/models/Dashboard';
 import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
 import { RkApexHelper, RkUtilityService } from 'roksit-lib';
@@ -27,6 +27,7 @@ import { debug } from 'util';
 import * as moment from 'moment';
 import { ToolsService } from 'src/app/core/services/toolsService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { TranslatorService } from 'src/app/core/services/translator.service';
 
 interface TagInputValue {
   value: string;
@@ -37,6 +38,7 @@ export interface RkDateButton {
   startDate: Date;
   endDate: Date;
   displayText: string;
+  active: boolean;
 }
 
 declare let $: any;
@@ -46,6 +48,7 @@ declare let $: any;
   styleUrls: ['dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+
 
   constructor(
     private dashboardService: DashBoardService,
@@ -59,7 +62,8 @@ export class DashboardComponent implements OnInit {
     private toolService: ToolsService,
     private notificationService: NotificationService,
     private staticMesssageService: StaticMessageService,
-    private utilityService: RkUtilityService
+    private utilityService: RkUtilityService,
+    private translatorService: TranslatorService
   ) { }
 
   host: ConfigHost;
@@ -91,6 +95,7 @@ export class DashboardComponent implements OnInit {
     harmful: false
   };
 
+  selectedCategoryName = 'Total';
 
   selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
 
@@ -100,37 +105,37 @@ export class DashboardComponent implements OnInit {
 
   dateButtons: RkDateButton[] = [
     {
-      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 14),
+      startDate: new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
-      displayText: 'Last 2 week'
+      displayText: 'Last Year',
+      active: false
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 3, this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last 3 Month',
+      active: false
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last Month',
+      active: true
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
-      displayText: 'Last 1 week'
-    },
-    {
-      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 3),
-      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
-      displayText: 'Last 3  day'
-    },
-    {
-      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 2),
-      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
-      displayText: 'Last 2 day'
-    },
-    {
-      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 1),
-      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
-      displayText: 'Last 1 day'
+      displayText: 'Last Week',
+      active: false
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 0),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 10),
-      displayText: 'Today (00:00-10:00)'
+      displayText: 'Today (00:00-10:00)',
+      active: false
     },
   ];
-
+  topDomainsCountTotal: number;
 
   items: TagInputValue[] = [];
 
@@ -220,15 +225,16 @@ export class DashboardComponent implements OnInit {
 
   endDate: Date = new Date();
 
-  diffrence: number;
+  dateText: string;
 
   topDomains: Domain[] = [];
 
-
   ngOnInit() {
-    this.startDate.setDate(this.today.getDate() - 7);
+    this.startDate.setDate(this.today.getMonth() - 1);
     this.endDate = new Date();
     this.host = this.config.host;
+
+    this.setDateTextByDates();
 
     this.getTheme();
 
@@ -248,7 +254,18 @@ export class DashboardComponent implements OnInit {
 
     if (theme) {
       this.theme = theme;
+    } else {
+      this.theme = 'white';
     }
+  }
+
+  private setDateTextByDates() {
+    const startDate = moment(this.startDate);
+    const endDate = moment(this.endDate);
+
+    const minutes = endDate.diff(startDate, 'minutes');
+
+    this.dateText = this.convertTimeString(minutes);
   }
 
   getAgents() {
@@ -258,9 +275,9 @@ export class DashboardComponent implements OnInit {
     const agentsRoamingClient: Agent[] = [];
     const distinctAgents: DistinctAgentResponse = { items: [] };
     const distinctBoxs: DistinctBoxResponse = { items: [] };
+
     // wait all requests to finish
     forkJoin(
-
       this.agentService.getAgentLocation().map(x => {
         x.forEach(y => agentsLocation.push(y));
       }),
@@ -276,7 +293,6 @@ export class DashboardComponent implements OnInit {
         });
         x.forEach(y => boxes.push(y));
       }),
-
 
       this.dashboardService.getDistinctAgent({ duration: 24 }).map(x => {
         x.items.forEach(y => distinctAgents.items.push(y));
@@ -304,8 +320,6 @@ export class DashboardComponent implements OnInit {
         distinctAgents.items.push({ id: box.agent.id, count: 1 });
       });
 
-
-
       // calcuate location agents
       distinctAgents.items.forEach(x => {
         if (agentsLocation.find(y => y.id === x.id)) {
@@ -322,7 +336,6 @@ export class DashboardComponent implements OnInit {
       });
       roamingclient.passiveCount = agentsRoamingClient.length - roamingclient.activeCount;
 
-
       // calculate box
       distinctAgents.items.forEach(x => {
         if (agentsBox.find(y => y.id === x.id)) {
@@ -330,11 +343,9 @@ export class DashboardComponent implements OnInit {
         }
       });
 
-
       dnsrelay.passiveCount = agentsBox.length - dnsrelay.activeCount;
-      ///
-      this.agentCounts = [publicip, roamingclient, dnsrelay];
 
+      this.agentCounts = [publicip, roamingclient, dnsrelay];
     });
   }
 
@@ -343,6 +354,8 @@ export class DashboardComponent implements OnInit {
     this.endDate = dateButtonItem.endDate;
 
     this.dateChanged({ startDate: this.startDate, endDate: this.endDate });
+
+    dateButtonItem.active = true;
   }
 
   translate(data: string): string {
@@ -350,34 +363,26 @@ export class DashboardComponent implements OnInit {
   }
 
   getTopDomains(request: TopDomainsRequestV5) {
-
     this.dashboardService.getTopDomains(request).subscribe(result => {
-        if (result.items.length) {
-         this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
-           cats.forEach(cat => {
-             const finded = result.items.find(abc => abc.name == cat.domain);
-             if (finded) {
-               finded.category = cat.categoryList.join(',');
-             }
-           });
-           this.topDomains = result.items;
+      if (result.items.length) {
+        this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+          cats.forEach(cat => {
+            const finded = result.items.find(abc => abc.name == cat.domain);
+            if (finded) {
+              finded.category = cat.categoryList.join(',');
+            }
+          });
 
-         });
-       }
+          this.topDomainsCountTotal = result.items.reduce((prev, cur) => prev + cur.hit, 0);
 
-
-
+          this.topDomains = result.items;
+        });
+      }
     });
-
-
-
   }
 
-
-
-  infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful') {
-
-
+  infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful', selectedCategoryName: string) {
+    this.selectedCategoryName = selectedCategoryName;
 
     this.selectedCategory = null;
 
@@ -391,7 +396,6 @@ export class DashboardComponent implements OnInit {
     this.drawChartAnomaly();
 
     this.refreshTopDomains();
-
   }
 
   calculateDateDiff(): number {
@@ -400,27 +404,47 @@ export class DashboardComponent implements OnInit {
 
     const diff = endDate.diff(startDate, 'days');
     return diff;
-
   }
 
-  dateChanged(ev: { startDate: Date, endDate: Date }) {
+  getWeeklyData(type: 'prev' | 'next') {
+    if (type === 'prev') {
+      this.startDate.setDate(this.startDate.getDate() - 7);
+      this.endDate.setDate(this.endDate.getDate() - 7);
+    } else {
+      this.startDate.setDate(this.startDate.getDate() + 7);
+      this.endDate.setDate(this.endDate.getDate() + 7);
+    }
+
+    this.dateChanged({ startDate: this.startDate, endDate: this.endDate }, true);
+  }
+
+  async dateChanged(ev: { startDate: Date, endDate: Date }, isDateComponent = false) {
+    this.dateButtons.forEach(elem => elem.active = false);
+
     this.startDate = ev.startDate;
     this.endDate = ev.endDate;
 
+    this.setDateTextByDates();
 
+    this.selectedCategory = null;
 
-    const diff = this.calculateDateDiff();
-    this.diffrence = diff;
+    const request = {} as HourlyCompanySummaryV5Request;
 
+    if (isDateComponent) {
+      request.startDate = this.startDate.toISOString();
+      request.endDate = this.endDate.toISOString();
+    } else {
+      const diff = this.calculateDateDiff();
 
+      request.duration = diff * 24;
+    }
 
-    this.drawChartAnomaly();
+    await this.getTrafficAnomaly(request);
 
-   this.refreshTopDomains();
+    this.refreshTopDomains();
   }
 
   drawTopDomainChart(response: TopDomainValuesResponseV4) {
-
     if (!response || !response.items) { return; }
     const data = response.items;
     const series = [{
@@ -434,13 +458,12 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-
     this.topDomainChart = new ApexCharts(document.querySelector('#topDomainChart'), {
       series: series,
       chart: {
         id: 'unique-chart2',
         type: 'line',
-        height: 350,
+        height: 280,
         toolbar: {
           show: false,
           offsetX: 0,
@@ -465,9 +488,9 @@ export class DashboardComponent implements OnInit {
           size: 7,
         }
       } */,
-      colors: ['#0084ff', '#0084ff'],
+      colors: ['#ff6c40', '#ff6c40'],
       stroke: {
-        width: 2,
+        width: 4,
         curve: ['smooth']
       },
       dataLabels: {
@@ -502,10 +525,6 @@ export class DashboardComponent implements OnInit {
     this.topDomainChart.render();
   }
 
-
-
-
-
   private addDays(date: Date) {
     date.setDate(date.getDate() + 1);
     return date;
@@ -528,118 +547,133 @@ export class DashboardComponent implements OnInit {
     return dates;
   }
 
-/*   private drawChartTimeLine() {
-    const timelineChart = [];
+  /*   private drawChartTimeLine() {
+      const timelineChart = [];
+  
+      const series = [{
+        name: 'Hits',
+        data: timelineChart.map(x => [x.date.getTime(), x.hit])
+      }];
+  
+      if (this.timeLineChart) {
+        this.timeLineChart.updateSeries(series);
+        return;
+      }
+  
+      this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
+        series: series,
+        chart: {
+          id: 'chart1',
+          height: 200,
+          type: 'bar',
+          group: 'deneme',
+          zoom: {
+            enabled: true
+          },
+          toolbar: {
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+            tools: {
+              download: true,
+              selection: false,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+              reset: true,
+              customIcons: []
+            },
+            autoSelected: 'zoom'
+          },
+          /*  brush: {
+             target: 'chart2',
+             enabled: true
+           }, */
 
-    const series = [{
-      name: 'Hits',
-      data: timelineChart.map(x => [x.date.getTime(), x.hit])
-    }];
+  /*  },
+    dataLabels: {
+      enabled: false,
 
-    if (this.timeLineChart) {
-      this.timeLineChart.updateSeries(series);
+    },
+    markers: {
+
+      size: [2, 2, 2],
+      colors: ['#f95656'],
+      strokeColors: '#f95656',
+      strokeWidth: 2,
+      hover: {
+        size: 7,
+      }
+    },
+    colors: ['#ff7b00', '#b1dcff', '#eedcff'],
+    stroke: {
+      width: 3,
+      curve: ['smooth', 'smooth', 'smooth']
+    },
+    events: {
+      beforeMount: (chartContext, config) => {
+
+      },
+      updated: (chart) => {
+
+      }
+    },
+    tooltip: {
+      enabled: true,
+      marker: {
+        show: false
+      }
+    },
+    xaxis: {
+      type: 'datetime',
+
+      labels: {
+        show: true,
+        trim: true,
+        showDuplicates: false,
+        datetimeFormatter: {
+          year: 'yyyy',
+          month: 'MMM \'yy',
+          day: 'dd MMM',
+          hour: 'HH:mm'
+        }
+      },
+      tickAmount: 12
+
+
+
+    },
+    yaxis: {
+      tickAmount: undefined
+    }
+  });
+
+  this.timeLineChart.render();
+} */
+
+  private drawChartAnomaly() {
+    if (!this.trafficAnomaly.hit) {
+      this.trafficChart.updateSeries([
+        { name: 'Min', type: 'area', data: [] },
+        { name: 'Max', type: 'area', data: [] },
+        { name: 'Hit', type: 'line', data: [] }
+      ]);
+
+      this.trafficChart.updateOptions({
+        annotations: {
+          points: []
+        }
+      });
+
+      this.categoryListFiltered = [];
+
       return;
     }
 
-    this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
-      series: series,
-      chart: {
-        id: 'chart1',
-        height: 200,
-        type: 'bar',
-        group: 'deneme',
-        zoom: {
-          enabled: true
-        },
-        toolbar: {
-          show: true,
-          offsetX: 0,
-          offsetY: 0,
-          tools: {
-            download: true,
-            selection: false,
-            zoom: true,
-            zoomin: true,
-            zoomout: true,
-            pan: true,
-            reset: true,
-            customIcons: []
-          },
-          autoSelected: 'zoom'
-        },
-        /*  brush: {
-           target: 'chart2',
-           enabled: true
-         }, */
-
-    /*  },
-      dataLabels: {
-        enabled: false,
-
-      },
-      markers: {
-
-        size: [2, 2, 2],
-        colors: ['#f95656'],
-        strokeColors: '#f95656',
-        strokeWidth: 2,
-        hover: {
-          size: 7,
-        }
-      },
-      colors: ['#ff7b00', '#b1dcff', '#eedcff'],
-      stroke: {
-        width: 3,
-        curve: ['smooth', 'smooth', 'smooth']
-      },
-      events: {
-        beforeMount: (chartContext, config) => {
-
-        },
-        updated: (chart) => {
-
-        }
-      },
-      tooltip: {
-        enabled: true,
-        marker: {
-          show: false
-        }
-      },
-      xaxis: {
-        type: 'datetime',
-
-        labels: {
-          show: true,
-          trim: true,
-          showDuplicates: false,
-          datetimeFormatter: {
-            year: 'yyyy',
-            month: 'MMM \'yy',
-            day: 'dd MMM',
-            hour: 'HH:mm'
-          }
-        },
-        tickAmount: 12
-
-
-
-      },
-      yaxis: {
-        tickAmount: undefined
-      }
-    });
-
-    this.timeLineChart.render();
-  } */
-
-
-
-  private drawChartAnomaly() {
-
     // calculate categories
     this.categoryListFiltered = [];
-    if (this.trafficAnomaly?.categories ) {
+    if (this.trafficAnomaly?.categories) {
       for (const cat of this.trafficAnomaly.categories) {
         cat.hit = cat.buckets.map(x => x.sum).reduce((x, y) => x + y);
         cat.hit_ratio = Math.floor(cat.hit / (this.trafficAnomaly.total.hit + this.trafficAnomaly.total.block) * 100);
@@ -659,7 +693,6 @@ export class DashboardComponent implements OnInit {
 
     });
 
-
     const istatistic = { averages: [], std_deviations: [], hits: [] };
 
     // calculate chart
@@ -669,15 +702,12 @@ export class DashboardComponent implements OnInit {
     istatistic.averages = buckets.map(x => x.avg);
     istatistic.hits = buckets.map(x => x.sum);
 
-
-
     const timelineChart = [];
     const times = whichBox.buckets.map(x => moment(x.date).utc(true).toDate().getTime());
     const series = [
       { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x) >= 0 ? Math.round(x) : 0]) },
       { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
       { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
-
     ];
 
     const anomalies = series[2].data.filter((x, index) => {
@@ -691,7 +721,6 @@ export class DashboardComponent implements OnInit {
       return false;
     });
 
-
     let yMax = 0;
     series.forEach(x => {
       x.data.forEach(element => {
@@ -700,8 +729,6 @@ export class DashboardComponent implements OnInit {
         }
       });
     });
-
-
 
     /*     let xaxismax=0;
         xaxismax=series[1].data.filter(x=>x) */
@@ -725,7 +752,7 @@ export class DashboardComponent implements OnInit {
         type: 'line',
         stacked: false,
         group: 'deneme',
-        height: 350,
+        height: 280,
         zoom: {
           enabled: true
         },
@@ -747,8 +774,6 @@ export class DashboardComponent implements OnInit {
         },
         events: {
           beforeMount: (chartContext, config) => {
-
-
             // this.infoboxChanged({ active: true }, 'total');
           },
           updated: (chart) => {
@@ -759,7 +784,7 @@ export class DashboardComponent implements OnInit {
       colors: [chartBg, '#b1dcff', '#0084ff'],
       stroke: {
         width: 2,
-        curve: ['smooth', 'smooth', 'smooth']
+        curve: ['smooth', 'smooth', 'straight']
       },
       annotations: {
         points: points
@@ -798,7 +823,7 @@ export class DashboardComponent implements OnInit {
         max: yMax + 10,
         labels: {
           formatter: (value) => {
-            return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : (Math.sign(value) * Math.abs(value)).toFixed(1);
+            return this.getRoundedNumber(value);
           }
         }
       },
@@ -841,40 +866,44 @@ export class DashboardComponent implements OnInit {
   }
 
   startDashboardOperations() {
-
     this.selectedCategory = null;
 
     /* this.staticService.getCategoryList().subscribe(res => {
       this.categoryList = res;
     }); */
 
-    this.getTrafficAnomaly();
+    this.getTrafficAnomaly({ duration: 30 * 24 });
   }
 
-  private  refreshTopDomains() {
-     //
-     const diff = this.calculateDateDiff();
-     const request = { duration: diff * 24 } as TopDomainsRequestV5;
-     request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedBox;
-     this.getTopDomains(request);
+  private refreshTopDomains() {
+    //
+    const diff = this.calculateDateDiff();
+    const request = { duration: diff * 24 } as TopDomainsRequestV5;
+    request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedBox;
+    this.getTopDomains(request);
   }
 
-  private getTrafficAnomaly() {
-    this.dashboardService.getHourlyCompanySummary({ duration: 30 * 24 }).subscribe(res => {
-      this.trafficAnomaly = res;
-      /*   this.elasticData.items = this.elasticData.items.sort((x, y) => {
-          const x1 = Date.parse(x.date);
-          const y1 = Date.parse(y.date);
-          return x1 - y1;
-        }); */
-      if (!this.trafficAnomaly.hit) {
-        this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
+  getRoundedNumber(value: number) {
+    return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : (Math.sign(value) * Math.abs(value)).toFixed(1);
+  }
+
+  private async getTrafficAnomaly(request: HourlyCompanySummaryV5Request) {
+    try {
+      const result = await this.dashboardService.getHourlyCompanySummary(request).toPromise();
+
+      if (result) {
+        this.trafficAnomaly = result;
+
+        if (!this.trafficAnomaly.hit) {
+          this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
+        }
+
+        this.drawChartAnomaly();
       }
-      this.drawChartAnomaly();
-    });
+    } catch (error) {
+      throw error;
+    }
   }
-
-
 
   selectCategory(cat: CategoryV2) {
     if (cat.name === this.selectedCategory?.name) {
@@ -885,22 +914,16 @@ export class DashboardComponent implements OnInit {
       this.selectedCategory = cat;
     }
 
-
-
     this.drawChartAnomaly();
 
     this.refreshTopDomains();
-
   }
-
-
 
   flatten(list) {
     return list.reduce(
       (a, b) => a.concat(Array.isArray(b) ? this.flatten(b) : b), []
     );
   }
-
 
   addDomain(domain: Domain) {
     this.items = [{ display: domain.name, value: domain.name }];
@@ -937,8 +960,6 @@ export class DashboardComponent implements OnInit {
         return x1 - y1;
       });
 
-
-
       this.drawTopDomainChart(result);
     });
   }
@@ -952,4 +973,43 @@ export class DashboardComponent implements OnInit {
     this.router.navigateByUrl(url);
   }
 
+  convertTimeString(num: number) {
+    const month = Math.floor(num / (1440 * 30));
+    const w = Math.floor((num - (month * 1440 * 30)) / (1440 * 7));
+    const d = Math.floor((num - (w * 1440 * 7)) / 1440); // 60*24
+    const h = Math.floor((num - (d * 1440)) / 60);
+    const m = Math.round(num % 60);
+
+    let text = '';
+
+    if (month > 0) {
+      text = `${month} ${this.translatorService.translate('Month')}`;
+
+      if (w > 0) {
+        text += ` ${w} ${this.translatorService.translate('Week')}`;
+      }
+    } else if (w > 0) {
+      text = `${w} ${this.translatorService.translate('Week')}`;
+
+      if (d > 0) {
+        text += ` ${d} ${this.translatorService.translate('Day')}`;
+      }
+    } else if (d > 0) {
+      text = `${d} ${this.translatorService.translate('Day')}`;
+
+      if (h > 0) {
+        text += ` ${h} ${this.translatorService.translate('Hour')}`;
+      }
+    } else if (h > 0) {
+      text = `${h} ${this.translatorService.translate('Hour')}`;
+
+      if (m > 0) {
+        text += ` ${m} ${this.translatorService.translate('Minute')}`;
+      }
+    } else {
+      text = `${m} ${this.translatorService.translate('Minute')}`;
+    }
+
+    return text;
+  }
 }
