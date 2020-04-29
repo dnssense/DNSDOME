@@ -21,10 +21,10 @@ const helpRoutes = [
     { appRoute: '/admin/dashboard', helpRoute: '' },
     { appRoute: '/admin/reports/monitor', helpRoute: 'monitor' },
     { appRoute: '/admin/reports/custom-reports', helpRoute: 'custom-reports' },
-    { appRoute: '/admin/deployment/public-ip', helpRoute: 'deployment-1/public-ip' },
-    { appRoute: '/admin/deployment/devices', helpRoute: 'deployment-1/devices' },
-    { appRoute: '/admin/deployment/roaming-clients', helpRoute: 'deployment-1/roaming-clients' },
-    { appRoute: '/admin/settings/profiles', helpRoute: 'guevenlik-profilleri' },
+    { appRoute: '/admin/deployment/public-ip', helpRoute: 'deployment/public-ip' },
+    { appRoute: '/admin/deployment/devices', helpRoute: 'deployment/devices' },
+    { appRoute: '/admin/deployment/roaming-clients', helpRoute: 'deployment/roaming-clients' },
+    { appRoute: '/admin/settings/profiles', helpRoute: 'guvenlik-profilleri' },
 ];
 
 declare var $: any;
@@ -52,7 +52,7 @@ export class NavbarComponent implements OnInit {
 
     breadcrumb: string[] = [];
 
-    helpRoute = 'https://docs.roksit.com/v/';
+    helpRoute = 'https://docs.roksit.com';
 
     constructor(
         location: Location,
@@ -69,8 +69,12 @@ export class NavbarComponent implements OnInit {
         this.nativeElement = element.nativeElement;
         this.host = this.config.host;
 
-        this.helpRoute = `${this.host.docUrl}/${this.currentLanguage.toLocaleLowerCase()}`;
+        this.helpRoute = this.getBaseHelpPage();
+
+
     }
+
+
 
     notifications: Notification[] = [];
 
@@ -98,6 +102,10 @@ export class NavbarComponent implements OnInit {
                 $layer.remove();
             }
         });
+    }
+
+    getBaseHelpPage() {
+        return this.currentLanguage.toLocaleLowerCase() == 'tr' ? `${this.host.docUrl}` : `${this.host.docUrl}/v/${this.currentLanguage.toLocaleLowerCase()}`;
     }
 
     getNotifications() {
@@ -173,9 +181,9 @@ export class NavbarComponent implements OnInit {
         const findedAppRoute = helpRoutes.find(x => x.appRoute === url);
 
         if (findedAppRoute) {
-            this.helpRoute = `${this.host.docUrl}/${lang ? lang : this.currentLanguage.toLocaleLowerCase()}/${findedAppRoute.helpRoute}`;
+            this.helpRoute = `${this.getBaseHelpPage()}/${findedAppRoute.helpRoute}`;
         } else {
-            this.helpRoute = `${this.host.docUrl}/${lang ? lang : this.currentLanguage.toLocaleLowerCase()}`;
+            this.helpRoute = this.getBaseHelpPage();
         }
     }
 }

@@ -169,6 +169,7 @@ export class AuthenticationService {
           user.surname = '';
 
           user.twoFactorAuthentication = Boolean(res.isTwoFactorAuthentication);
+          user.isGsmVerified = Boolean(res.isGsmVerified);
           user.active = Boolean(res.isActive);
           user.language = res.language;
           user.gsmCode = res.gsmCode;

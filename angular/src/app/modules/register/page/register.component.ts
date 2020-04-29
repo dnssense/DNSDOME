@@ -112,8 +112,8 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
         'password': ['', [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
         'passwordAgain': ['', [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
         'company': ['', [Validators.required]],
-        'gsmCode': ['', [Validators.required]],
-        'gsm': ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+        'gsmCode': ['', []],
+        'gsm': ['', []],
         'name': ['', [Validators.required]],
         'surname': ['', [Validators.required]]
       }, { validator: Validators.compose([ValidationService.matchingPasswords('password', 'passwordAgain')]) }
@@ -242,14 +242,14 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       return;
     }
 
-    if (!this.user.gsmCode) {
+   /*  if (!this.user.gsmCode) {
       this.notification.warning(this.staticMessageService.pleaseFillTheGsmCode);
       return;
-    }
-    if (!this.user.gsm) {
+    } */
+   /*  if (this.user.gsm) {
       this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
       return;
-    }
+    } */
 
     if (!this.user.username) {
       this.notification.warning(this.staticMessageService.pleaseEnterAValidEmail);

@@ -29,6 +29,8 @@ export class AccountService {
   }
 
   public update(user: RestUserUpdateRequest): Observable<RestEmptyResponse> {
+    //return Observable.of({});
+    
     return this.http.put<RestEmptyResponse>(this._updateAccountURL, user, this.getOptions());
   }
 

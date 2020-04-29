@@ -103,8 +103,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
 
   ngAfterViewInit(): void {
-   // this.captchaComponent.reset()
-   // this.captchaComponent.ngOnInit();
+    // this.captchaComponent.reset()
+    // this.captchaComponent.ngOnInit();
   }
 
 
@@ -201,6 +201,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
             this.openLogin();
             this.notification.error('You have exceeded the number of attempts! Try Again!');
 
+          } else if (err && err.error && err.error.status == 400) {
+
+            this.notification.error(this.staticMessageService.pleaseEnterSmsCodeMessage);
+
           } else {
             this.notification.error(err.statusText);
           }
@@ -239,7 +243,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       forgoter.username = this.forgoterEmail;
 
 
-        forgoter.c_answer = this.captcha;
+      forgoter.c_answer = this.captcha;
 
 
       this.authService.forgotPassword(forgoter).subscribe(res => {

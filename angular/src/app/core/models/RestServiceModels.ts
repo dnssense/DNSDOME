@@ -7,6 +7,7 @@ export interface RestUser {
     isActive: number; // mandatory
     isLocked: number; // mandatory
     isTwoFactorAuthentication: number; // mandatory
+    isGsmVerified:number;//mandatory
     isVerified: number; // mandatory
     source: string | 'local' | 'google' | null | undefined; // mandatory
     gsm?: string;

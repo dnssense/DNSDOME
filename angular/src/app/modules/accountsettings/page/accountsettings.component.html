@@ -52,7 +52,7 @@
               <span class="text-accent">*</span> {{'ACCOUNTSETTINGS.TwoFactorAuthMessage' | translate}}
             </p>
 
-            <ng-container *ngIf="user.gsmCode && user.gsm?.length > 0; else elseTemplate2FA">
+            <ng-container *ngIf="isValidateButtonDisabled() && !isSmsConfirming &&  user.gsmCode && user.gsm?.length > 0; else elseTemplate2FA">
               <div class="category-item">
                 <rk-checkbox [value]="user.twoFactorAuthentication" alignment="right" size="sm"
                   (valueChange)="change2FASubmit()">{{'ACCOUNTSETTINGS.EnableTwoFactorAuth' | translate}}</rk-checkbox>
@@ -63,7 +63,7 @@
               <p>{{'ACCOUNTSETTINGS.TwoFactorAuthElseMessage' | translate}}</p>
             </ng-template>
 
-            <ng-container *ngIf="!user.twoFactorAuthentication && user.gsm != null && user.gsm !=''">
+            <!-- <ng-container *ngIf="!user.twoFactorAuthentication && user.gsm != null && user.gsm !=''">
               <div class="mt-4">
                 <label for="gsm-code" class="rk-label">{{'ACCOUNTSETTINGS.GSMCode' | translate}}</label>
                 <input type="text" class="rk-input w-100" readonly [value]="gsmCodeTemp">
@@ -73,9 +73,9 @@
                 <label for="gsm-code" class="rk-label">GSM</label>
                 <input type="text" class="rk-input w-100" readonly [value]="phoneNumberTemp">
               </div>
-            </ng-container>
+            </ng-container> -->
 
-            <ng-container *ngIf="user.twoFactorAuthentication || user.gsm == null || user.gsm ==''">
+            <ng-container >
               <div class="mt-4">
                 <label class="rk-label">{{'ACCOUNTSETTINGS.GSMCode' | translate}}</label>
                 <rk-select [options]="countryOptions" [(value)]="gsmCodeTemp" (valueChange)="gsmCodeChange()"
@@ -91,7 +91,7 @@
 
             </ng-container>
 
-            <div id="smsValidationDiv" style="display: none;">
+            <div id="smsValidationDiv"   style="display:none;">
               <div class="mt-3">
                 <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
               </div>
@@ -108,8 +108,8 @@
 
             </div>
 
-            <div class="mt-3 mb-2 d-flex justify-content-end" id="changePhoneBtn">
-              <button class="btn btn-default btn-small" style="min-width: 100px;"
+            <div class="mt-3 mb-2 d-flex justify-content-end" *ngIf="!isSmsConfirming"  id="validateButton">
+              <button [disabled]="isValidateButtonDisabled()" class="btn  btn-small" style="min-width: 100px;"
                 (click)="changePhoneNumber()">{{'Validate' | translate}}</button>
             </div>
           </form>

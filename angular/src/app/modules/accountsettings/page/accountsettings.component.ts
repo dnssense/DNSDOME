@@ -94,6 +94,7 @@ export class AccountSettingsComponent implements OnInit {
     public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
 
     notificationIndex = 0;
+    isSmsConfirming = false;
 
     activeTabNumber = 0;
 
@@ -178,11 +179,11 @@ export class AccountSettingsComponent implements OnInit {
                 , { validator: Validators.compose([ValidationService.matchingPasswords('password', 'passwordAgain')]) }
             );
 
-        if (this.phoneNumberTemp === this.user.gsm) {
-            $('#changePhoneBtn').attr('disabled', 'disabled');
+        /* if (this.phoneNumberTemp === this.user.gsm) {
+            $('#validateButton').prop('disabled', true);
         } else {
-            $('#changePhoneBtn').removeAttr('disabled');
-        }
+            $('#validateButton').prop('disabled', false);
+        } */
     }
 
     emailValidationRegister(e) {
@@ -205,19 +206,11 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     gsmChange() {
-        if (this.phoneNumberTemp === this.user.gsm || this.phoneNumberTemp.length < 10 || !this.gsmCodeTemp) {
-            $('#changePhoneBtn').attr('disabled', 'disabled');
-        } else {
-            $('#changePhoneBtn').removeAttr('disabled');
-        }
+
     }
 
     gsmCodeChange() {
-        if (this.phoneNumberTemp === this.user.gsm || this.phoneNumberTemp.length < 10 || !this.gsmCodeTemp) {
-            $('#changePhoneBtn').attr('disabled', 'disabled');
-        } else {
-            $('#changePhoneBtn').removeAttr('disabled');
-        }
+
     }
 
     selectFile($event) {
@@ -289,6 +282,13 @@ export class AccountSettingsComponent implements OnInit {
             this.notification.error(this.staticMessageService.enterRequiredFieldsMessage);
             return;
         }
+    }
+    isValidateButtonDisabled() {
+
+        
+          if ( (this.user.isGsmVerified && this.phoneNumberTemp && this.phoneNumberTemp === this.user.gsm && this.gsmCodeTemp === this.user.gsmCode)
+           || this.phoneNumberTemp?.length < 10 || !this.gsmCodeTemp) {return true; }
+          return false;
     }
 
     changePasswordFormSubmit() {
@@ -374,7 +374,8 @@ export class AccountSettingsComponent implements OnInit {
             this.user.gsmCode = this.gsmCodeTemp;
 
             this.smsService.sendSmsCommon(this.user.gsmCode + this.user.gsm).subscribe(res => {
-                $('#changePhoneBtn').hide(200);
+
+                $('#validateButton').hide(200);
                 $('#smsValidationDiv').show(300);
                 this.smsInformation = res;
                 this.maxRequest = 3;
@@ -383,6 +384,7 @@ export class AccountSettingsComponent implements OnInit {
                 this.endTime = new Date();
                 this.endTime.setMinutes(new Date().getMinutes() + 2);
                 this.isTimeSetted = true;
+                this.isSmsConfirming = true;
             });
 
         }
@@ -407,18 +409,26 @@ export class AccountSettingsComponent implements OnInit {
 
                     this.accountService.update(updateRequest).subscribe(res2 => {
                         this.notification.success(this.staticMessageService.phoneNumberUpdatedMessage);
-                        $('#changePhoneBtn').attr('disabled', 'disabled');
+                        // $('#validateButton').prop('disabled', true);
                         this.notificationIndex++;
                         this.user.gsm = this.phoneNumberTemp;
                         this.user.gsmCode = this.gsmCodeTemp;
+                        this.user.isGsmVerified = true;
                         this.authService.saveSession();
-                    });
-                    $('#changePhoneBtn').show(300);
+
+                        $('#validateButton').show(300);
                     $('#smsValidationDiv').hide(200);
+                    this.isSmsConfirming = false;
+                    });
+
 
                 }, err => {
                     if (this.maxRequest === 0) {
                         this.notification.error(this.staticMessageService.exceededTheNumberOfAttemptsMessage);
+                    } else if (err && err.error && err.error.status == 400) {
+
+                        this.notification.error(this.staticMessageService.pleaseEnterSmsCodeMessage);
+
                     } else { throw err; }
                 });
 
@@ -429,8 +439,12 @@ export class AccountSettingsComponent implements OnInit {
     timeEnd() {
         if (this.isTimeSetted && this.notificationIndex < 1) {
             this.notification.error(this.staticMessageService.confirmationTimeIsUpMessage);
-            location.reload();
+            // location.reload();
             this.notificationIndex++;
+            $('#validateButton').show(300);
+            $('#smsValidationDiv').hide(200);
+            this.isSmsConfirming = false;
+
         }
     }
 

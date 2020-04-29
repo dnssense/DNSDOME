@@ -8,6 +8,7 @@ import { OperationResult } from '../models/OperationResult';
 import { User } from '../models/User';
 import { SmsType } from '../models/SmsType';
 import { RestPreloginResponse, RestPreloginSmsResponse, RestPreloginSmsConfirmRequet, RestSmsResponse, RestSmsConfirmRequest } from '../models/RestServiceModels';
+import { observable } from 'rxjs';
 
 
 
@@ -36,10 +37,12 @@ export class SmsService {
   }
 
   public sendSmsCommon(phoneNumber: string): Observable<RestSmsResponse> {
+    // return Observable.of({id: '123456'});
     return this.http.post<RestSmsResponse>(this._commonSendSmsUrl, {gsm: phoneNumber}, this.getOptions());
   }
 
   public confirmCommonSms(data: RestSmsConfirmRequest): Observable<any> {
+    // return Observable.of({});
     return this.http.post<any>(this._commonSendSmsConfirmUrl, JSON.stringify(data), this.getOptions());
   }
 

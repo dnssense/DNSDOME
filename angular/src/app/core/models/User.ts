@@ -1,3 +1,4 @@
+
 import { Role } from './Role';
 
 export class User {
@@ -17,6 +18,7 @@ export class User {
     public companyId: number;
     public twoFactorAuthentication = false;
     public usageType: number;
+    public isGsmVerified = false;
 
     /**
      * @description For UI
