@@ -532,7 +532,7 @@
         "DestinationIp": "Hedef Ip",
         "DestinationCountry": "Hedef Ülke",
         "AgentAlias": "Kaynak",
-        "UserId": "Kullanıcı Adı",
+        "UserId": "Kullanıcı No",
         "Action": "Aksiyon",
         "ApplicationName": "Uygulama Adı",
         "Category": "Kategori",
