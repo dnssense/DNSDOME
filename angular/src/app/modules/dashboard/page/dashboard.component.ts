@@ -120,13 +120,13 @@ export class DashboardComponent implements OnInit {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
       displayText: 'Last Month',
-      active: true
+      active: false
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
       displayText: 'Last Week',
-      active: false
+      active: true
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 0),
@@ -225,12 +225,13 @@ export class DashboardComponent implements OnInit {
 
   endDate: Date = new Date();
 
+
   dateText: string;
 
   topDomains: Domain[] = [];
 
   ngOnInit() {
-    this.startDate.setDate(this.today.getMonth() - 1);
+    this.startDate.setDate(this.today.getDate() - 7);
     this.endDate = new Date();
     this.host = this.config.host;
 
@@ -240,7 +241,7 @@ export class DashboardComponent implements OnInit {
 
     this.startDashboardOperations();
 
-    const request: TopDomainsRequestV5 = { duration: 30 * 24, type: 'total' } as TopDomainsRequestV5;
+    const request: TopDomainsRequestV5 = { duration: 7 * 24, type: 'total' } as TopDomainsRequestV5;
 
     this.getTopDomains(request);
     this.getAgents();
@@ -350,6 +351,7 @@ export class DashboardComponent implements OnInit {
   }
 
   setDateByDateButton(dateButtonItem: RkDateButton) {
+
     this.startDate = dateButtonItem.startDate;
     this.endDate = dateButtonItem.endDate;
 
@@ -549,17 +551,17 @@ export class DashboardComponent implements OnInit {
 
   /*   private drawChartTimeLine() {
       const timelineChart = [];
-  
+
       const series = [{
         name: 'Hits',
         data: timelineChart.map(x => [x.date.getTime(), x.hit])
       }];
-  
+
       if (this.timeLineChart) {
         this.timeLineChart.updateSeries(series);
         return;
       }
-  
+
       this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
         series: series,
         chart: {
@@ -878,7 +880,7 @@ export class DashboardComponent implements OnInit {
   private refreshTopDomains() {
     //
     const diff = this.calculateDateDiff();
-    const request = { duration: diff * 24 } as TopDomainsRequestV5;
+    const request = { startDate: this.startDate.toISOString(), endDate: this.endDate.toISOString() } as TopDomainsRequestV5;
     request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedBox;
     this.getTopDomains(request);
   }
@@ -951,7 +953,7 @@ export class DashboardComponent implements OnInit {
 
     const diff = endDate.diff(startDate, 'days');
 
-    this.dashboardService.getTopDomainValue({ domain: domain, duration: diff * 24 }).subscribe(result => {
+    this.dashboardService.getTopDomainValue({ domain: domain, startDate: this.startDate.toISOString(), endDate: this.endDate.toISOString() }).subscribe(result => {
 
 
       result.items = result.items.sort((x, y) => {
