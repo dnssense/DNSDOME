@@ -44,6 +44,9 @@ build_building:
     paths:
       - angular
       - node_modules
+  except:
+    refs:
+      - dev
 
 
 
@@ -61,5 +64,6 @@ package_docker_dev:
   except:
     refs:
       - master
+      - dev
 
 
