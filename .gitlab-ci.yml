@@ -67,3 +67,71 @@ package_docker_dev:
       - dev
 
 
+package_docker_prod:
+  image: node:12.14.1
+  tags:
+    - packager-runner
+  stage: package
+  script:
+    - ssh root@$K8_PROD "docker pull $REGISTRY_DEV/$NS/$IMAGE:$VERSION"
+    - ssh root@$K8_PROD "docker tag $REGISTRY_DEV/$NS/$IMAGE:$VERSION $REGISTRY_PROD/$NS/$IMAGE:$VERSION"
+    - ssh root@$K8_PROD "docker push $REGISTRY_PROD/$NS/$IMAGE:$VERSION"
+  only:
+    refs:
+      - master
+
+
+
+deploy_k8_dev:
+  tags:
+    - deployer-runner
+  stage: deploy
+  script:
+    - git clone git@gitlab:kube_conf/conf_test.git
+    - cd conf_test
+    - export CURRENTIMAGE=$(cat dnssense/$K8_FILE|grep "$REGISTRY_DEV/$NS/$IMAGE")
+    - echo  "current  $CURRENTIMAGE"
+    - export CURRENTVERSION=$(echo $CURRENTIMAGE|cut -d ":" -f 3)
+    - export NEWIMAGE="${CURRENTIMAGE//$CURRENTVERSION/$VERSION}"
+    - echo "new $NEWIMAGE"
+    - sed -i "s/${CURRENTIMAGE//\//\\/}/${NEWIMAGE//\//\\/}/g" dnssense/$K8_FILE
+    - cat dnssense/$K8_FILE
+    - scp dnssense/$K8_FILE root@$K8_DEV:/tmp
+    - ssh root@$K8_DEV "K8_FILE=$K8_FILE kubectl delete -f /tmp/$K8_FILE" || exit_code=$?
+    - ssh root@$K8_DEV "K8_FILE=$K8_FILE kubectl apply -f /tmp/$K8_FILE"
+    - git add . || exit_code=$?
+    - git commit -m 'rest.calculate updated' || exit_code=$?
+    - git push
+  except:
+    refs:
+      - master
+      - dev
+
+
+deploy_k8_prod:
+  tags:
+    - deployer-runner
+  stage: deploy
+  script:
+    - git clone git@gitlab:kube_conf/conf_prod.git
+    - cd conf_prod
+    - export CURRENTIMAGE=$(cat dnssense/$K8_FILE|grep "$REGISTRY_PROD/$NS/$IMAGE")
+    - echo  "current  $CURRENTIMAGE"
+    - export CURRENTVERSION=$(echo $CURRENTIMAGE|cut -d ":" -f 3)
+    - export NEWIMAGE="${CURRENTIMAGE//$CURRENTVERSION/$VERSION}"
+    - echo "new $NEWIMAGE"
+    - sed -i "s/${CURRENTIMAGE//\//\\/}/${NEWIMAGE//\//\\/}/g" dnssense/$K8_FILE
+    - cat dnssense/$K8_FILE
+    - scp dnssense/$K8_FILE root@$K8_PROD:/tmp
+    - ssh root@$K8_PROD "K8_FILE=$K8_FILE kubectl apply -f /tmp/$K8_FILE"
+    - git add . || exit_code=$?
+    - git commit -m 'rest.calculate updated' || exit_code=$?
+    - git push
+  only:
+    refs:
+      - master
+
+
+
+
+
