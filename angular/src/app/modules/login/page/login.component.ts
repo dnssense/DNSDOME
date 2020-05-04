@@ -191,7 +191,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
         this.smsService.confirmSmsForLogin(this.smsInformation, this.smsCode).subscribe(res => {
           this.notification.info('Sms confirmed');
-          this.authService.login(this.email, this.password).subscribe(res2 => {
+          this.authService.login(this.email, this.password, res.code).subscribe(res2 => {
 
             this.router.navigateByUrl('/admin/dashboard');
           });

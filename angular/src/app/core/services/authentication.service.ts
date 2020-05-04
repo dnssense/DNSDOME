@@ -187,7 +187,7 @@ export class AuthenticationService {
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
     return this.http.
-      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass }, this.getHttpOptions())
+      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass} , this.getHttpOptions())
       .map(res => {
         return res;
       });
@@ -203,7 +203,7 @@ export class AuthenticationService {
     return httpOptions;
   }
 
-  login(email: string, pass: string): Observable<Session> {
+  login(email: string, pass: string, code?: string): Observable<Session> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -215,6 +215,9 @@ export class AuthenticationService {
     body.set('grant_type', 'password');
     body.set('username', email);
     body.set('password', pass);
+    if (code) {
+    body.set('code', code);
+    }
 
     return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
       .pipe(mergeMap((res: any) => {

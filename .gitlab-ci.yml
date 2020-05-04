@@ -95,7 +95,6 @@ deploy_k8_dev:
     - export NEWIMAGE="${CURRENTIMAGE//$CURRENTVERSION/$VERSION}"
     - echo "new $NEWIMAGE"
     - sed -i "s/${CURRENTIMAGE//\//\\/}/${NEWIMAGE//\//\\/}/g" dnssense/$K8_FILE
-    - cat dnssense/$K8_FILE
     - scp dnssense/$K8_FILE root@$K8_DEV:/tmp
     - ssh root@$K8_DEV "K8_FILE=$K8_FILE kubectl delete -f /tmp/$K8_FILE" || exit_code=$?
     - ssh root@$K8_DEV "K8_FILE=$K8_FILE kubectl apply -f /tmp/$K8_FILE"
@@ -121,7 +120,6 @@ deploy_k8_prod:
     - export NEWIMAGE="${CURRENTIMAGE//$CURRENTVERSION/$VERSION}"
     - echo "new $NEWIMAGE"
     - sed -i "s/${CURRENTIMAGE//\//\\/}/${NEWIMAGE//\//\\/}/g" dnssense/$K8_FILE
-    - cat dnssense/$K8_FILE
     - scp dnssense/$K8_FILE root@$K8_PROD:/tmp
     - ssh root@$K8_PROD "K8_FILE=$K8_FILE kubectl apply -f /tmp/$K8_FILE"
     - git add . || exit_code=$?
