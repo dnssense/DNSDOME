@@ -3,8 +3,8 @@
     <div class="row mx-0">
       <div class="col-12">
         <div class="container-fluid dashboard">
-          <div class="row infos justify-content-around">
-            <div class="col-12 col-lg-4" *ngFor="let data of agentCounts">
+          <div class="row infos">
+            <div class="col-12 col-lg-4 d-flex justify-content-around" *ngFor="let data of agentCounts">
               <h5 class="title">{{ data.name | translate }}</h5>
 
               <div class="values">
@@ -38,7 +38,7 @@
                           <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal>
 
                           <div class="d-flex flex-column text-center">
-                            <rk-date [startDate]="startDate" [endDate]="endDate" (complete)="dateChanged($event, true)"
+                            <rk-date #date [startDate]="startDate" [endDate]="endDate" (complete)="dateChanged($event, true)"
                               [alignment]="'right'"></rk-date>
 
                             <span class="date-text mt-1">{{ dateText }}</span>
@@ -101,18 +101,25 @@
 
                         <div class="container-fluid">
                           <div class="row">
-                            <div class="col-12 col-lg-4 mt-3 d-flex flex-column justify-content-between"
+                            <div class="categories-column mt-3 d-flex flex-column justify-content-between"
                               style="border-right: 1px solid var(--infobox-border);">
-                              <h6 class="rk-title-1">{{ selectedCategoryName | translate }}</h6>
+                              <h6 class="rk-title-1">
+                                {{ selectedCategoryName | translate }}
+                                <span *ngIf="selectedBox !== 'total'">{{ 'Categories' | translate }}</span>
+                              </h6>
 
                               <div class="rk-selectable-container mb-2">
                                 <table class="rk-selectable-table w-100">
                                   <tr *ngFor="let cat of categoryListFiltered; let index = index"
                                     class="rk-c-{{ selectedBox }}"
                                     [ngClass]="{ 'active' : selectedCategory?.name == cat.name }"
-                                    (click)="selectCategory(cat)">
-                                    <td class="idx">{{ index + 1 }}</td>
-                                    <td class="text">{{ cat.name }}</td>
+                                    (click)="selectCategory(cat)" [title]="cat.name">
+                                    <td class="idx pr-1">{{ index + 1 }}</td>
+                                    <td class="text">
+                                      <div class="overflowed-text">
+                                        {{ cat.name }}
+                                      </div>
+                                    </td>
                                     <td class="value">{{ getRoundedNumber(cat.hit) }}</td>
                                     <td class="percent">%{{ cat.hit_ratio }}</td>
                                   </tr>
@@ -120,22 +127,69 @@
                               </div>
                             </div>
 
-                            <div class="col-12 col-lg-8 mt-3">
-                              <div class="d-flex justify-content-end align-items-center" *ngIf="trafficChart">
+                            <div class="anomaly-chart mt-3">
+                              <div class="d-flex flex-wrap justify-content-between align-items-center" *ngIf="trafficChart">
                                 <!-- <button class="btn btn-link btn-accent py-0" style="background: transparent;"
                                   (click)="showSummary()">{{'DASHBOARD.ShowSummary'|translate}}</button> -->
-                                <button class="btn btn-small btn-outline"
-                                  (click)="showDetail()">{{'DASHBOARD.ShowDetail'|translate}}</button>
 
-                                <button class="btn btn-link btn-icon py-0" *ngIf="calculateDateDiff() <= 7" (click)="getWeeklyData('prev')">
-                                  <i-feather name="arrow-left"></i-feather>
-                                  {{ 'PreviousWeek' | translate }}
-                                </button>
+                                <div style="flex: 1">
+                                  <span class="chart-marker-info">
+                                    <span style="background-color:#4353ff;"></span>%30
+                                  </span>
+                                  <span class="chart-marker-info">
+                                    <span style="background-color:#3dd49a;"></span>%50
+                                  </span>
+                                  <span class="chart-marker-info">
+                                    <span style="background-color:#f9df56;"></span>%70
+                                  </span>
+                                  <span class="chart-marker-info">
+                                    <span style="background-color:#f99256;"></span>%80
+                                  </span>
+                                  <span class="chart-marker-info">
+                                    <span style="background-color:#f95656;"></span>%100
+                                  </span>
+                                </div>
 
-                                <button class="btn btn-link btn-icon py-0" *ngIf="calculateDateDiff() <= 7" (click)="getWeeklyData('next')">
-                                  {{ 'NextWeek' | translate }}
-                                  <i-feather name="arrow-right"></i-feather>
-                                </button>
+                                <div class="d-flex align-items-center justify-content-end">
+                                  <button class="btn btn-link btn-icon py-0 bg-transparent"
+                                    *ngIf="calculateDateDiff() <= 7" (click)="getDataByTime('prev', 7)">
+                                    <i-feather name="arrow-left"></i-feather>
+                                    {{ 'PreviousWeek' | translate }}
+                                  </button>
+
+                                  <button class="btn btn-link btn-icon py-0 bg-transparent"
+                                    *ngIf="calculateDateDiff() <= 7" [disabled]="getDisabledNextButton('week')" (click)="getDataByTime('next', 7)">
+                                    {{ 'NextWeek' | translate }}
+                                    <i-feather name="arrow-right"></i-feather>
+                                  </button>
+                                  
+                                  <button class="btn btn-link btn-icon py-0 bg-transparent"
+                                    *ngIf="calculateDateDiff() >= 30 && calculateDateDiff() < 90" (click)="getDataByTime('prev', 30)">
+                                    <i-feather name="arrow-left"></i-feather>
+                                    {{ 'PreviousMonth' | translate }}
+                                  </button>
+
+                                  <button class="btn btn-link btn-icon py-0 bg-transparent"
+                                    *ngIf="calculateDateDiff() >= 30 && calculateDateDiff() < 90" (click)="getDataByTime('next', 30)">
+                                    {{ 'NextMonth' | translate }}
+                                    <i-feather name="arrow-right"></i-feather>
+                                  </button>
+                                  
+                                  <button class="btn btn-link btn-icon py-0 bg-transparent"
+                                    *ngIf="calculateDateDiff() >= 90" [disabled]="calculateDateDiff() >= 365" (click)="getDataByTime('prev', 90)">
+                                    <i-feather name="arrow-left"></i-feather>
+                                    {{ 'Previous3Month' | translate }}
+                                  </button>
+
+                                  <button class="btn btn-link btn-icon py-0 bg-transparent"
+                                    *ngIf="calculateDateDiff() >= 90" [disabled]="calculateDateDiff() >= 365" (click)="getDataByTime('next', 90)">
+                                    {{ 'Next3Month' | translate }}
+                                    <i-feather name="arrow-right"></i-feather>
+                                  </button>
+
+                                  <button class="btn btn-small btn-outline"
+                                    (click)="showDetail()">{{'DASHBOARD.ShowDetail'|translate}}</button>
+                                </div>
                               </div>
 
                               <div class="chart" id="chart"></div>
@@ -152,35 +206,42 @@
                       <div class="section-card">
                         <div class="container-fluid">
                           <div class="row">
-                            <div class="col-12 col-lg-6 mt-3 d-flex flex-column justify-content-around"
-                              style="border-right: 1px solid var(--infobox-border);">
-                              <h6 class="rk-title-1">{{ 'Malicious' | translate }}</h6>
+                            <div class="col-12 mt-3" style="border-bottom: 1px solid var(--infobox-border);">
+                              <h6 class="rk-title-1">{{ selectedCategoryName | translate }} {{ 'TopDomainList' | translate }}
+                              </h6>
+                            </div>
 
-                              <div class="rk-selectable-container">
+                            <div class="top-domain-list-column d-flex flex-column"
+                              style="border-right: 1px solid var(--infobox-border);">
+                              <div class="rk-selectable-container" style="max-height: 340px;">
                                 <table class="rk-selectable-table">
                                   <thead>
                                     <tr>
-                                      <th>#</th>
-                                      <th>{{'Domain'|translate}}</th>
-                                      <th>{{'Categories'|translate}}</th>
+                                      <th style="width: 30px">#</th>
+                                      <th style="width: 100px">{{'Domain'|translate}}</th>
+                                      <th style="width: 120px">{{'Categories'|translate}}</th>
                                       <th>{{'Count'|translate}}</th>
-                                      <th colspan="2" style="width: 120px;">{{'Percent'|translate}}</th>
+                                      <th style="width: 60px;">{{'Percent'|translate}}</th>
                                     </tr>
                                   </thead>
 
                                   <tbody class="rk-selectable-table-body">
                                     <tr *ngFor="let domain of topDomains; let index = index"
                                       [ngClass]="{'active': items[0]?.value === domain.name}"
-                                      (click)="addDomain(domain)">
+                                      (click)="addDomain(domain)" class="rk-c-{{ selectedBox }}">
                                       <td class="idx" style="width: 40px">{{ index + 1 }}</td>
-                                      <td class="text">{{ domain.name }}</td>
-                                      <td class="text">{{domain.category}}</td>
+                                      <td class="text">
+                                        <div class="overflowed-text">{{ domain.name }}</div>
+                                      </td>
+                                      <td class="text">
+                                        <div class="overflowed-text">{{domain.category}}</div>
+                                      </td>
                                       <td class="value">{{ getRoundedNumber(domain.hit) }}</td>
-                                      <td>
+                                      <!-- <td>
                                         <rk-progressbar-n [value]="100 * domain.hit / topDomainsCountTotal | number">
                                         </rk-progressbar-n>
-                                      </td>
-                                      <td class="percent" style="width:43px">
+                                      </td> -->
+                                      <td class="percent">
                                         %{{100 * domain.hit / topDomainsCountTotal | number}}</td>
                                     </tr>
                                   </tbody>
@@ -188,7 +249,7 @@
                               </div>
                             </div>
 
-                            <div class="col-12 col-lg-6 mt-3 d-flex flex-column justify-content-between">
+                            <div class="top-domain-chart pt-2 d-flex flex-column justify-content-between">
                               <div class="search d-flex justify-content-between">
                                 <div class="tag-input-container w-100">
                                   <tag-input [(ngModel)]="items" (onAdd)="onItemAdded($event)" [maxItems]="1">

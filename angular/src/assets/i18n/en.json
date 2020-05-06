@@ -554,5 +554,10 @@
     "Minute": "Minutes",
     "NoFilter": "Filter not defined",
     "PreviousWeek": "Previous Week",
-    "NextWeek": "Next Week"
+    "NextWeek": "Next Week",
+    "PreviousMonth": "Previous Month",
+    "NextMonth": "Next Month",
+    "Previous3Month": "Previous 3 Month",
+    "Next3Month": "Next 3 Month",
+    "TopDomainList": "Top Domain List"
 }

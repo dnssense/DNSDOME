@@ -549,5 +549,10 @@
     "Minute": "Dakika",
     "NoFilter": "Filtre tanımlanmadı",
     "PreviousWeek": "Önceki Hafta",
-    "NextWeek": "Sonraki Hafta"
+    "NextWeek": "Sonraki Hafta",
+    "PreviousMonth": "Geçen Ay",
+    "NextMonth": "Sonraki Ay",
+    "Previous3Month": "Önceki 3 Ay",
+    "Next3Month": "Sonraki 3 Ay",
+    "TopDomainList": "En çok ziyaret edilen alan adları"
 }

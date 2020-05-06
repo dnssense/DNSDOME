@@ -144,7 +144,7 @@ export class SidebarComponent implements OnInit {
         { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
         { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false },
         { id: 4.4, path: 'settings/query-category', text: 'Query Category', icon: 'tools', selected: false },
-        { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-category', selected: false },
+        { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-changing', selected: false },
         { id: 4.6, path: 'settings/theme-mode', text: 'Theme Mode', icon: 'theme-mode', selected: false },
       ]
     }

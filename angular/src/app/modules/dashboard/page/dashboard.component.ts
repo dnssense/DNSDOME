@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { DashBoardService, TopDomainsRequestV4, DistinctAgentResponse, DistinctBoxResponse } from 'src/app/core/services/dashBoardService';
 
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -28,6 +28,7 @@ import * as moment from 'moment';
 import { ToolsService } from 'src/app/core/services/toolsService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
+import { RkDateComponent } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 
 interface TagInputValue {
   value: string;
@@ -39,6 +40,7 @@ export interface RkDateButton {
   endDate: Date;
   displayText: string;
   active: boolean;
+  isToday: boolean;
 }
 
 declare let $: any;
@@ -108,31 +110,36 @@ export class DashboardComponent implements OnInit {
       startDate: new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
       displayText: 'Last Year',
-      active: false
+      active: false,
+      isToday: false
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 3, this.now.getDate()),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
       displayText: 'Last 3 Month',
-      active: false
+      active: false,
+      isToday: false
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
       displayText: 'Last Month',
-      active: false
+      active: false,
+      isToday: false
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
       displayText: 'Last Week',
-      active: true
+      active: true,
+      isToday: false
     },
     {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 0),
-      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 10),
-      displayText: 'Today (00:00-10:00)',
-      active: false
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours(), this.now.getMinutes()),
+      displayText: `Today (00:00-${this.now.getHours()}:${this.now.getMinutes()})`,
+      active: false,
+      isToday: true
     },
   ];
   topDomainsCountTotal: number;
@@ -225,10 +232,11 @@ export class DashboardComponent implements OnInit {
 
   endDate: Date = new Date();
 
-
   dateText: string;
 
   topDomains: Domain[] = [];
+
+  @ViewChild('date') date;
 
   ngOnInit() {
     this.startDate.setDate(this.today.getDate() - 7);
@@ -355,7 +363,7 @@ export class DashboardComponent implements OnInit {
     this.startDate = dateButtonItem.startDate;
     this.endDate = dateButtonItem.endDate;
 
-    this.dateChanged({ startDate: this.startDate, endDate: this.endDate });
+    this.dateChanged({ startDate: this.startDate, endDate: this.endDate }, false, dateButtonItem.isToday);
 
     dateButtonItem.active = true;
   }
@@ -378,6 +386,10 @@ export class DashboardComponent implements OnInit {
           this.topDomainsCountTotal = result.items.reduce((prev, cur) => prev + cur.hit, 0);
 
           this.topDomains = result.items;
+
+          if (this.topDomains.length > 0) {
+            this.addDomain(this.topDomains[0]);
+          }
         });
       }
     });
@@ -408,19 +420,33 @@ export class DashboardComponent implements OnInit {
     return diff;
   }
 
-  getWeeklyData(type: 'prev' | 'next') {
+  getDataByTime(type: 'prev' | 'next', interval: number) {
     if (type === 'prev') {
-      this.startDate.setDate(this.startDate.getDate() - 7);
-      this.endDate.setDate(this.endDate.getDate() - 7);
+      this.startDate.setDate(this.startDate.getDate() - interval);
+      this.endDate.setDate(this.endDate.getDate() - interval);
     } else {
-      this.startDate.setDate(this.startDate.getDate() + 7);
-      this.endDate.setDate(this.endDate.getDate() + 7);
+      this.startDate.setDate(this.startDate.getDate() + interval);
+      this.endDate.setDate(this.endDate.getDate() + interval);
     }
+
+    this.startDate = new Date(this.startDate);
+    this.endDate = new Date(this.endDate);
+
+    // this.date.selectTime({ value: 1, displayText: '' }, { startDate: this.startDate, endDate: this.endDate });
 
     this.dateChanged({ startDate: this.startDate, endDate: this.endDate }, true);
   }
 
-  async dateChanged(ev: { startDate: Date, endDate: Date }, isDateComponent = false) {
+  getDisabledNextButton(type: 'week' | 'month' | 'last3month' | string) {
+    if (type === 'week') {
+      const startDate = new Date(JSON.parse(JSON.stringify(this.startDate)));
+      startDate.setDate(7);
+
+      return startDate > this.today;
+    }
+  }
+
+  async dateChanged(ev: { startDate: Date, endDate: Date }, isDateComponent = false, isToday = false) {
     this.dateButtons.forEach(elem => elem.active = false);
 
     this.startDate = ev.startDate;
@@ -432,7 +458,7 @@ export class DashboardComponent implements OnInit {
 
     const request = {} as HourlyCompanySummaryV5Request;
 
-    if (isDateComponent) {
+    if (isDateComponent || isToday) {
       request.startDate = this.startDate.toISOString();
       request.endDate = this.endDate.toISOString();
     } else {
@@ -464,6 +490,7 @@ export class DashboardComponent implements OnInit {
       series: series,
       chart: {
         id: 'unique-chart2',
+        foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
         type: 'line',
         height: 280,
         toolbar: {
@@ -506,7 +533,8 @@ export class DashboardComponent implements OnInit {
         shared: true,
         x: {
           format: 'MMM dd yyyy HH:mm'
-        }
+        },
+        theme: 'dark'
       },
       xaxis: {
         type: 'datetime',
@@ -522,7 +550,10 @@ export class DashboardComponent implements OnInit {
           }
         },
         tickAmount: 8
-      }
+      },
+      grid: {
+        borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
+      },
     });
     this.topDomainChart.render();
   }
@@ -755,6 +786,7 @@ export class DashboardComponent implements OnInit {
         stacked: false,
         group: 'deneme',
         height: 280,
+        foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
         zoom: {
           enabled: true
         },
@@ -775,15 +807,15 @@ export class DashboardComponent implements OnInit {
           autoSelected: 'zoom'
         },
         events: {
-          beforeMount: (chartContext, config) => {
-            // this.infoboxChanged({ active: true }, 'total');
+          click: () => {
+            console.log('clicked');
           },
-          updated: (chart) => {
-            // this.trafficAnomaly = this.calculateTrafficAnomaly(this.elasticData, this.startDate, this.endDate);
+          markerClick: (event, chartContext, { seriesIndexz, dataPointIndexz, config }) => {
+
           },
         },
       },
-      colors: [chartBg, '#b1dcff', '#0084ff'],
+      colors: [chartBg, (this.theme === 'white' ? '#b1dcff' : '#004175'), '#0084ff'],
       stroke: {
         width: 2,
         curve: ['smooth', 'smooth', 'straight']
@@ -797,11 +829,31 @@ export class DashboardComponent implements OnInit {
       tooltip: {
         enabled: true,
         shared: true,
+        intersect: false,
         x: {
           format: 'MMM dd yyyy HH:mm'
         },
         // fillSeriesColor: true,
-        theme: 'dark'
+        theme: 'dark',
+        // custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        //   // console.log(series, seriesIndex, dataPointIndex, w);
+
+        //   return `
+        //     <div class="__apexcharts_custom_tooltip">
+        //       <span class="__apexcharts_custom_tooltip_row">
+        //         <span class="color" style="background: ${w.config.colors[0]}"></span> Min: ${series[0][dataPointIndex]}
+        //       </span>
+        //       <span class="__apexcharts_custom_tooltip_row">
+        //         <span class="color" style="background: ${w.config.colors[1]}"></span> Max: ${series[1][dataPointIndex]}
+        //       </span>
+        //       <span class="__apexcharts_custom_tooltip_row">
+        //         <span class="color" style="background: ${w.config.colors[2]}"></span> Hit: ${series[2][dataPointIndex]}
+        //       </span>
+
+        //       <button class="btn btn-small" (click)="test()">Detay'a git</button>
+        //     </div>
+        //   `;
+        // }
       },
       fill: {
         opacity: 1,
@@ -818,6 +870,9 @@ export class DashboardComponent implements OnInit {
             hour: 'HH:mm'
           },
           tickAmount: 7
+        },
+        lines: {
+          show: true
         }
       },
       yaxis: {
@@ -827,6 +882,9 @@ export class DashboardComponent implements OnInit {
           formatter: (value) => {
             return this.getRoundedNumber(value);
           }
+        },
+        lines: {
+          show: true
         }
       },
       noData: {
@@ -840,7 +898,10 @@ export class DashboardComponent implements OnInit {
           fontSize: '14px',
           fontFamily: undefined
         }
-      }
+      },
+      grid: {
+        borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
+      },
     });
 
     this.trafficChart.render();
@@ -848,21 +909,30 @@ export class DashboardComponent implements OnInit {
 
   getAnnotations(data: any[][]) {
     const points = [];
+
+    const totalCount = data.reduce((prev, cur) => prev + cur[1], 0);
+
     data.forEach(e => {
+      const percent = 100 * e[1] / totalCount;
+
+      const color = percent > 50 ? '#3dd49a' : (percent > 70 ? '#f9df56' : (percent > 80 ? '#f99256' : (percent > 95 ? '#f95656' : '#4353ff')));
+
       const elm = {
         x: e[0],
         y: e[1],
         marker: {
-          size: 3,
-          fillColor: '#f95656',
-          strokeColor: '#f95656',
-          strokeSize: 3,
+          size: percent > 50 ? 3 : 0,
+          fillColor: color,
+          strokeColor: color,
+          strokeSize: percent > 50 ? 3 : 0,
           radius: 2
         }
       };
 
       points.push(elm);
     });
+
+    // console.log()
 
     return points;
   }
@@ -874,7 +944,7 @@ export class DashboardComponent implements OnInit {
       this.categoryList = res;
     }); */
 
-    this.getTrafficAnomaly({ duration: 30 * 24 });
+    this.getTrafficAnomaly({ duration: 7 * 24 });
   }
 
   private refreshTopDomains() {
@@ -929,6 +999,8 @@ export class DashboardComponent implements OnInit {
 
   addDomain(domain: Domain) {
     this.items = [{ display: domain.name, value: domain.name }];
+
+    this.search();
   }
 
   onItemAdded($event: TagInputValue) {
