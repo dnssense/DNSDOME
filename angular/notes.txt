@@ -34,3 +34,6 @@ sample proxy.config.json
 Pozitif Security : Alan adlarını güvenlik seviyesine göre zararlı, zararsız ve bilinmeyen ( henüz sınıflandırılmamış) olarak 3 ana sınıfa ayrılır. Pozitif security modeli seçerek zero hour ataklarının kaynağı olan "bilinmeyen domainlere" karşı koruma sağlamış olursunuz. %99.9 sınıflandırma oranı ve 10 dk içerisinde sorgulanan bilinmeyen domainin sınıflandırması garantisi ile ağınızı en üst seviye korumaya alırken internet kullanım konforundan minimum taviz verirsiniz.
 
 Negatif Security :Alan adlarını güvenlik seviyesine göre zararlı, zararsız ve bilinmeyen ( henüz sınıflandırılmamış) olarak 3 ana sınıfa ayrılır. Negatif security modeli seçerek zero hour ataklarının kaynağı olan "bilinmeyen domainlere" karşı korumasız kalırsınız.
+
+
+
