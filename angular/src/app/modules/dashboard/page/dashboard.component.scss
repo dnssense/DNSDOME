@@ -92,7 +92,7 @@ $info-colors: (
     padding: 10px;
 
     .col-12 {
-      border-right: 1px solid #e4e9f1;
+      border-right: 1px solid var(--base-border-color);
 
       display: flex;
       align-items: center;

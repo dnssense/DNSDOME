@@ -168,6 +168,8 @@ export class SidebarComponent implements OnInit {
 
   toggleCollapse() {
     this.rkLayout.setSidebarCollapse(!this.collapsed);
+
+    localStorage.setItem('menuCollapsed', JSON.stringify(!this.collapsed));
   }
 
   getUserName() {
@@ -197,7 +199,16 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit() {
+    const isCollapsed = JSON.parse(localStorage.getItem('menuCollapsed'));
+
+    if (isCollapsed) {
+      this.rkLayout.setSidebarCollapse(true);
+    } else {
+      this.rkLayout.setSidebarCollapse(false);
+    }
+
     this.refreshMenus();
+
     this.authService.currentUserPropertiesChanged.subscribe(data => {
       this.refreshMenus();
     });
