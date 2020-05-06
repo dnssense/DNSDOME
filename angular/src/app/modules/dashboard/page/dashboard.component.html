@@ -4,7 +4,7 @@
       <div class="col-12">
         <div class="container-fluid dashboard">
           <div class="row infos">
-            <div class="col-12 col-lg-4 d-flex justify-content-around" *ngFor="let data of agentCounts">
+            <div class="col-12 col-lg-4 d-flex justify-content-lg-around justify-content-md-between" *ngFor="let data of agentCounts">
               <h5 class="title">{{ data.name | translate }}</h5>
 
               <div class="values">
@@ -23,7 +23,7 @@
 
           <div class="row mt-2">
             <div class="rk-base-card p-0">
-              <div class="card-item content">
+              <div class="card-item content" style="padding: 20px 0;">
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-12">
