@@ -686,30 +686,16 @@ export class DashboardComponent implements OnInit {
 } */
 
   private drawChartAnomaly() {
-    if (!this.trafficAnomaly.hit) {
-      this.trafficChart.updateSeries([
-        { name: 'Min', type: 'area', data: [] },
-        { name: 'Max', type: 'area', data: [] },
-        { name: 'Hit', type: 'line', data: [] }
-      ]);
 
-      this.trafficChart.updateOptions({
-        annotations: {
-          points: []
-        }
-      });
-
-      this.categoryListFiltered = [];
-
-      return;
-    }
 
     // calculate categories
     this.categoryListFiltered = [];
     if (this.trafficAnomaly?.categories) {
       for (const cat of this.trafficAnomaly.categories) {
-        cat.hit = cat.buckets.map(x => x.sum).reduce((x, y) => x + y);
+
+        cat.hit = cat.buckets.map(x => x.sum).reduce((x, y) => x + y, 0);
         cat.hit_ratio = Math.floor(cat.hit / (this.trafficAnomaly.total.hit + this.trafficAnomaly.total.block) * 100);
+        cat.hit_ratio = cat.hit_ratio || 0;
         if (this.selectedBox === 'total') {
           this.categoryListFiltered.push(cat);
         } else if (cat.type === this.selectedBox) {
@@ -725,6 +711,24 @@ export class DashboardComponent implements OnInit {
       return (x.hit - y.hit) * -1;
 
     });
+
+    if (!this.trafficAnomaly.hit && this.trafficChart) {
+      this.trafficChart.updateSeries([
+        { name: 'Min', type: 'area', data: [] },
+        { name: 'Max', type: 'area', data: [] },
+        { name: 'Hit', type: 'line', data: [] }
+      ]);
+
+      this.trafficChart.updateOptions({
+        annotations: {
+          points: []
+        }
+      });
+
+     // this.categoryListFiltered = [];
+
+      return;
+    }
 
     const istatistic = { averages: [], std_deviations: [], hits: [] };
 

@@ -29,8 +29,8 @@ export class AccountService {
   }
 
   public update(user: RestUserUpdateRequest): Observable<RestEmptyResponse> {
-    //return Observable.of({});
-    
+    // return Observable.of({});
+
     return this.http.put<RestEmptyResponse>(this._updateAccountURL, user, this.getOptions());
   }
 
@@ -39,7 +39,7 @@ export class AccountService {
       'oldPassword': oldPassword,
       'password': newPassword
 
-    }, this.getOptions()).map(res => res);
+    }, this.getOptions());
   }
 
   /*   public savePersonalSettings(user: User): Observable<OperationResult> {
