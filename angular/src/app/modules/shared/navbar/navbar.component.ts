@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -10,6 +10,8 @@ import { ConfigService, ConfigHost } from 'src/app/core/services/config.service'
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { Notification, NotificationApiService, NotificationRequest } from 'src/app/core/services/notification-api.service';
+import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -30,7 +32,8 @@ const helpRoutes = [
 declare var $: any;
 @Component({
     selector: 'app-navbar-cmp',
-    templateUrl: 'navbar.component.html'
+    templateUrl: 'navbar.component.html',
+    styleUrls: ['navbar.component.scss']
 })
 
 export class NavbarComponent implements OnInit {
@@ -70,15 +73,40 @@ export class NavbarComponent implements OnInit {
         this.host = this.config.host;
 
         this.helpRoute = this.getBaseHelpPage();
-
-
     }
-
-
 
     notifications: Notification[] = [];
 
     unReadedNotificationsCount = 0;
+
+    showSidebar = false;
+
+    @ViewChild('sidebar') sidebar: RkModalModel;
+
+    _menuItems: RkMenuItem[] = [
+        { id: 0, path: '/admin/dashboard', text: 'Dashboard', icon: 'dashboard', selected: false },
+        { id: 1, path: '/admin/reports/monitor', text: 'Monitor', icon: 'monitor', selected: false },
+        { id: 2, path: '/admin/reports/custom-reports', text: 'Custom Reports', icon: 'custom-reports', selected: false, },
+        {
+            id: 3, path: '/admin/', text: 'Deployment', icon: 'dashboard', selected: false,
+            subMenu: [
+                { id: 3.1, path: 'deployment/public-ip', text: 'Public IP', icon: 'public-ip', selected: false },
+                { id: 3.2, path: 'deployment/devices', text: 'Devices', icon: 'device', selected: false },
+                { id: 3.3, path: 'deployment/roaming-clients', text: 'Roaming Clients', icon: 'roaming-clients', selected: false },
+            ]
+        },
+        {
+            id: 4, path: '/admin/', text: 'Settings', icon: 'settings', selected: false,
+            subMenu: [
+                { id: 4.1, path: 'settings/users', text: 'User', icon: 'user', selected: false },
+                { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
+                { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false },
+                { id: 4.4, path: 'settings/query-category', text: 'Query Category', icon: 'tools', selected: false },
+                { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-category', selected: false },
+                { id: 4.6, path: 'settings/theme-mode', text: 'Theme Mode', icon: 'theme-mode', selected: false },
+            ]
+        }
+    ];
 
     ngOnInit() {
         this.listTitles = ROUTES.filter(listTitle => listTitle);
@@ -184,6 +212,28 @@ export class NavbarComponent implements OnInit {
             this.helpRoute = `${this.getBaseHelpPage()}/${findedAppRoute.helpRoute}`;
         } else {
             this.helpRoute = this.getBaseHelpPage();
+        }
+    }
+
+    setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, existsSubMenu = false) {
+        this._menuItems.forEach(elem => elem.selected = false);
+
+        menuItem.selected = true;
+
+        this._menuItems.forEach(elem => {
+            if (elem.subMenu) {
+                elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
+            }
+        });
+
+        if (!existsSubMenu) {
+            this.sidebar.toggle();
+        }
+
+        if (subMenuItem) {
+            subMenuItem.selected = true;
+
+            this.sidebar.toggle();
         }
     }
 }

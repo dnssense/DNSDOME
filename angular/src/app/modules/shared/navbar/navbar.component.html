@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-12">
-      <div class="toolbar">
+      <div class="toolbar mt-1">
         <div class="d-flex align-items-center justify-content-between w-100">
           <div style="width: 200px; overflow: hidden;">
             <img src="/assets/img/{{host.logoImage}}" alt="logo" height="40px" style="position: relative;">
@@ -64,9 +64,9 @@
               </div>
             </div>
 
-            <div class="border"></div>
+            <div class="border navbar-border"></div>
 
-            <div class="account-dropdown">
+            <div class="account-dropdown lg">
               <rk-avatar>
                 <div class="rk-img">
                   <img src="/assets/img/default-avatar.png" alt="" />
@@ -92,9 +92,84 @@
                 </div>
               </rk-avatar>
             </div>
+
+            <button class="collapse-btn __navbar ripple" (click)="sidebar.toggle()">
+              <i-feather name="bar-chart-2"></i-feather>
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<rk-modal #sidebar className="mobile-menu">
+  <rk-modal-body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 d-flex justify-content-end">
+          <button class="btn btn-icon btn-link bg-transparent px-0" (click)="sidebar.toggle()">
+            <i-feather name="x" class="mr-0"></i-feather>
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="account-dropdown w-100">
+            <rk-avatar>
+              <div class="rk-img">
+                <img src="/assets/img/default-avatar.png" alt="" />
+              </div>
+              <div class="rk-text" style="text-transform: capitalize;">
+                {{ currentUser?.name }}
+              </div>
+              <div class="rk-dropdown">
+                <div class="rk-dropdown-title">Account</div>
+                <li>
+                  <a [routerLink]="['/admin/account-settings']" routerLinkActive="router-link-active"
+                    class="dropdown-item">
+                    <i-feather name="settings"></i-feather>
+                    Account Settings
+                  </a>
+                </li>
+                <li>
+                  <a (click)="logout()" class="dropdown-item">
+                    <i-feather name="log-out"></i-feather>
+                    Exit
+                  </a>
+                </li>
+              </div>
+            </rk-avatar>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-12">
+          <div class="sidebar-list">
+            <li class="sidebar-list-item" [ngClass]="{'active': menuItem.selected}" *ngFor="let menuItem of _menuItems">
+              <a class="ripple" (click)="setActive(menuItem, null, menuItem?.subMenu?.length > 0)" [routerLink]="!menuItem.subMenu ? [menuItem.path] : []"
+                routerLinkActive="active">
+                <icon-for-menu [type]="menuItem.icon"></icon-for-menu>
+                <span class="text">{{ menuItem.text }}</span>
+                <i-feather name="chevron-down" class="dropdown-icon" *ngIf="menuItem.subMenu"></i-feather>
+              </a>
+
+              <ul class="dropdown sidebar-list" *ngIf="menuItem.subMenu">
+                <li class="sidebar-list-item" [ngClass]="{'active': subMenuItem.selected}"
+                  *ngFor="let subMenuItem of menuItem.subMenu">
+                  <a (click)="setActive(menuItem, subMenuItem, menuItem?.subMenu?.length > 0)" [routerLink]="[menuItem.path + subMenuItem.path]"
+                    routerLinkActive="active">
+                    <icon-for-menu [type]="subMenuItem.icon"></icon-for-menu>
+                    <span class="text">{{ subMenuItem.text }}</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </div>
+        </div>
+      </div>
+    </div>
+  </rk-modal-body>
+</rk-modal>

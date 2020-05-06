@@ -764,3 +764,46 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
       background: #fdfdfd
       border-radius: 16px
 
+.__navbar.collapse-btn
+  display: none
+
+@media ( max-width: 768px )
+  .account-dropdown.lg
+    display: none
+  
+  .border.navbar-border
+    display: none
+
+  .__navbar.collapse-btn
+    display: flex
+    width: 44px
+    height: 44px
+    align-items: center
+    justify-content: center
+    border: 1px solid var(--base-border-color)
+    background: var(--white)
+    border-radius: 6px
+    overflow: hidden
+
+    svg
+      position: relative
+      transform: rotate(90deg)
+      color: var(--primary)
+    
+  .wrapper
+    .sidebar
+      display: none !important
+
+    .content
+      width: 100% !important
+
+.mobile-menu
+  .sidebar
+    a
+      &:hover
+        text-decoration: none !important;
+
+@media (max-width: 568px)
+  .mobile-menu
+    .rk-modal
+      width: 100%;
