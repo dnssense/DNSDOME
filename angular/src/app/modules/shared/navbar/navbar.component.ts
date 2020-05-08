@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Location } from '@angular/common';
 import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
@@ -19,14 +19,25 @@ const misc: any = {
     disabled_collapse_init: 0
 };
 
-const helpRoutes = [
-    { appRoute: '/admin/dashboard', helpRoute: '' },
-    { appRoute: '/admin/reports/monitor', helpRoute: 'monitor' },
-    { appRoute: '/admin/reports/custom-reports', helpRoute: 'custom-reports' },
-    { appRoute: '/admin/deployment/public-ip', helpRoute: 'deployment/public-ip' },
-    { appRoute: '/admin/deployment/devices', helpRoute: 'deployment/devices' },
-    { appRoute: '/admin/deployment/roaming-clients', helpRoute: 'deployment/roaming-clients' },
-    { appRoute: '/admin/settings/profiles', helpRoute: 'guvenlik-profilleri' },
+export interface HelpRoute {
+    appRoute: string;
+    helpRouteEn: string;
+    helpRouteTr: string;
+}
+
+const helpRoutes: HelpRoute[] = [
+    { appRoute: '/admin/dashboard', helpRouteEn: 'dashboard/overview', helpRouteTr: 'dashboard/genel-bakis' },
+    { appRoute: '/admin/reports/monitor', helpRouteEn: 'monitor/overview', helpRouteTr: 'monitoer/genel-bakis' },
+    { appRoute: '/admin/reports/custom-reports', helpRouteEn: 'custom-report/overview', helpRouteTr: 'oezellestirilmis-raporlar-custom-report/genel-bakis' },
+    { appRoute: '/admin/deployment/public-ip', helpRouteEn: 'kurulum/public-ip', helpRouteTr: 'kurulum/gercek-public-ip' },
+    { appRoute: '/admin/deployment/devices', helpRouteEn: 'devices/dns-relay-nedir', helpRouteTr: 'devices/dns-relay-nedir' },
+    { appRoute: '/admin/deployment/roaming-clients', helpRouteEn: 'roaming-client/roaming-client', helpRouteTr: 'roaming-client/genel-bakis' },
+    { appRoute: '/admin/settings/profiles', helpRouteEn: 'kurulum/guvenlik-profilleri', helpRouteTr: 'kurulum/guevenlik-profilleri' },
+    { appRoute: '/admin/settings/users', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari' },
+    { appRoute: '/admin/settings/scheduled-reports', helpRouteEn: 'ayarlar/saved-reports', helpRouteTr: 'ayarlar/saved-reports' },
+    { appRoute: '/admin/settings/query-category', helpRouteEn: 'kurulum/query-category', helpRouteTr: 'ayarlar/query-category-araci' },
+    { appRoute: '/admin/settings/change-domain-category', helpRouteEn: 'kurulum/request-changing-domain-category', helpRouteTr: 'ayarlar/request-changing-domain-category' },
+    { appRoute: '/admin/settings/theme-mode', helpRouteEn: 'kurulum/theme-mode', helpRouteTr: 'ayarlar/theme-mode' },
 ];
 
 declare var $: any;
@@ -67,12 +78,13 @@ export class NavbarComponent implements OnInit {
         private config: ConfigService,
         private translator: TranslatorService,
         private notificationApiService: NotificationApiService,
+        private activatedRoute: ActivatedRoute
     ) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.host = this.config.host;
 
-        this.helpRoute = this.getBaseHelpPage();
+        this.helpUrlChanged(location.path(), this.currentLanguage.toLocaleLowerCase());
     }
 
     notifications: Notification[] = [];
@@ -123,7 +135,7 @@ export class NavbarComponent implements OnInit {
 
             const url = event.url;
 
-            this.helpUrlChanged(url);
+            this.helpUrlChanged(url, this.currentLanguage.toLocaleLowerCase());
 
             const $layer = document.getElementsByClassName('close-layer')[0];
             if ($layer) {
@@ -205,11 +217,11 @@ export class NavbarComponent implements OnInit {
         this.helpUrlChanged(this.router.url, lang);
     }
 
-    helpUrlChanged(url: string, lang?: string) {
+    helpUrlChanged(url: string, lang: string) {
         const findedAppRoute = helpRoutes.find(x => x.appRoute === url);
 
         if (findedAppRoute) {
-            this.helpRoute = `${this.getBaseHelpPage()}/${findedAppRoute.helpRoute}`;
+            this.helpRoute = `${this.getBaseHelpPage()}/${this.currentLanguage.toLocaleLowerCase() === 'en' ? findedAppRoute.helpRouteEn : findedAppRoute.helpRouteTr}`;
         } else {
             this.helpRoute = this.getBaseHelpPage();
         }
