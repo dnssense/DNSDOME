@@ -555,5 +555,13 @@
     "Previous3Month": "Önceki 3 Ay",
     "Next3Month": "Sonraki 3 Ay",
     "TopDomainList": "En çok ziyaret edilen alan adları",
-    "DateDifferenceWarning": "Tarih aralığı 7 günden fazla olmamalı."
+    "DateDifferenceWarning": "Tarih aralığı 7 günden fazla olmamalı.",
+    "Date": {
+        "StartHour": "Başlangıç Saati",
+        "EndHour": "Bitiş Saati",
+        "Cancel": "İptal",
+        "Apply": "Uygula",
+        "SelectDate": "Tarih seçiniz",
+        "Custom": "Özel"
+    }
 }

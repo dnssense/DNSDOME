@@ -737,29 +737,48 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
   text-align: left
 
 .__apexcharts_custom_tooltip
-  padding: 10px
+  min-width: 125px
+  width: 125px
+  min-height: 150px
   height: 150px
-  display: flex
-  flex-direction: column
-  background: var(--white)
+  background: var(--primary)
   box-shadow: 0 2px 10px 0 var(--primary-box-shadow)
   left: -50px
+  font-size: 10px
+  border-radius: 5px
+  white-space: normal !important
+
+  .__apexcharts_custom_tooltip_date
+    padding: 2px 7px
+    font-size: 12px
+
+  .__apexcharts_custom_tooltip_content
+    padding: 10px
+    background: var(--white)
+    display: flex
+    flex-direction: column
+    border-radius: 5px
+
+  p
+    font-size: 10px
+    color: var(--text-dark)
+    width: 100%
+    break-word: break-all
 
   .__apexcharts_custom_tooltip_row
     display: block
     width: 100%
-    margin-bottom: 10px
+    margin-bottom: 8px
     font-size: 13px
     color: var(--text-dark)
     
     &:last-child
       margin-bottom: 0
     
-
     .color
       display: inline-block
-      width: 16px
-      height: 16px
+      width: 8px
+      height: 8px
       margin-right: 10px
       background: #fdfdfd
       border-radius: 16px

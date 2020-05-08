@@ -69,7 +69,7 @@ $info-colors: (
   "total": #4353ff,
   "safe": #3dd49a,
   "malicious": #f95656,
-  "variable": #d8d8d8,
+  "variable": #a6a6a6,
   "harmful": #f9df56,
 );
 
@@ -206,6 +206,60 @@ $info-colors: (
 .top-domain-chart {
   width: calc(100% - 500px);
   padding: 0 15px;
+}
+
+.chart-legends {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--blue-grey);
+  font-size: 11px;
+  font-weight: 500;
+  flex-wrap: wrap;
+
+  > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+    margin-right: 10px;
+    flex-wrap: wrap;
+
+    svg,
+    span {
+      margin-right: 10px;
+    }
+  }
+
+  > div:last-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    flex-wrap: wrap;
+
+    span {
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+
+      .color {
+        width: 8px;
+        height: 8px;
+        border-radius: 8px;
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+@media (max-width: 568px) {
+  .top-domain-chart {
+    .tag-input-container {
+      min-width: auto;
+    }
+  }
 }
 
 @media (max-width: 992px) {

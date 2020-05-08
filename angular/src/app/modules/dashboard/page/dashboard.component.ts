@@ -1,10 +1,7 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { DashBoardService, TopDomainsRequestV4, DistinctAgentResponse, DistinctBoxResponse } from 'src/app/core/services/dashBoardService';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DashBoardService, DistinctAgentResponse, DistinctBoxResponse } from 'src/app/core/services/dashBoardService';
 
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { StaticService } from 'src/app/core/services/staticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
-import { DashboardStats } from 'src/app/core/models/DashboardStats';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { Router } from '@angular/router';
 import { AgentService } from 'src/app/core/services/agent.service';
@@ -12,23 +9,18 @@ import { ConfigHost, ConfigService } from 'src/app/core/services/config.service'
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import {
-  AgentCountModel, DateParamModel, HourlyCompanySummaryV5Response, Domain, TopDomainsRequestV5, Result, TopDomainValuesResponseV4, Category, Bucket, HourlyCompanySummaryV5Request
+  AgentCountModel, DateParamModel, HourlyCompanySummaryV5Response, Domain, TopDomainsRequestV5, TopDomainValuesResponseV4, Category, Bucket, HourlyCompanySummaryV5Request
 } from 'src/app/core/models/Dashboard';
-import { KeyValueModel, TimeRangeEnum } from 'src/app/core/models/Utility';
-import { RkApexHelper, RkUtilityService } from 'roksit-lib';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Agent } from 'src/app/core/models/Agent';
-import { Observable, forkJoin } from 'rxjs';
-import { fork } from 'cluster';
+import { forkJoin } from 'rxjs';
 import { Box } from 'src/app/core/models/Box';
-import { AstPath } from '@angular/compiler';
-import { debug } from 'util';
 import * as moment from 'moment';
 import { ToolsService } from 'src/app/core/services/toolsService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
-import { RkDateComponent } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import { RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 
 interface TagInputValue {
   value: string;
@@ -43,7 +35,6 @@ export interface RkDateButton {
   isToday: boolean;
 }
 
-declare let $: any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
@@ -54,7 +45,6 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dashboardService: DashBoardService,
-    private staticService: StaticService,
     private agentService: AgentService,
     private boxService: BoxService,
     private roamingService: RoamingService,
@@ -64,7 +54,6 @@ export class DashboardComponent implements OnInit {
     private toolService: ToolsService,
     private notificationService: NotificationService,
     private staticMesssageService: StaticMessageService,
-    private utilityService: RkUtilityService,
     private translatorService: TranslatorService
   ) { }
 
@@ -143,6 +132,15 @@ export class DashboardComponent implements OnInit {
     },
   ];
   topDomainsCountTotal: number;
+
+  dateConfig: RkDateConfig = {
+    startHourText: this.translatorService.translate('Date.StartHour'),
+    endHourText: this.translatorService.translate('Date.EndHour'),
+    applyText: this.translatorService.translate('Date.Apply'),
+    cancelText: this.translatorService.translate('Date.Cancel'),
+    customText: this.translatorService.translate('Date.Custom'),
+    selectDateText: this.translatorService.translate('Date.SelectDate')
+  };
 
   items: TagInputValue[] = [];
 
@@ -309,7 +307,7 @@ export class DashboardComponent implements OnInit {
       this.dashboardService.getDistinctBox({ duration: 24 }).map(x => {
         x.items.forEach(y => distinctBoxs.items.push(y));
       })
-    ).subscribe(val => {
+    ).subscribe(() => {
 
       const publicip: AgentCountModel = { name: 'PublicIp', activeCount: 0, passiveCount: 0 };
       const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0 };
@@ -395,7 +393,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful', selectedCategoryName: string) {
+  infoboxChanged(type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful', selectedCategoryName: string) {
     this.selectedCategoryName = selectedCategoryName;
 
     this.selectedCategory = null;
@@ -558,27 +556,8 @@ export class DashboardComponent implements OnInit {
     this.topDomainChart.render();
   }
 
-  private addDays(date: Date) {
-    date.setDate(date.getDate() + 1);
-    return date;
-  }
 
-  private getEqualDates(startDate: Date, endDate: Date) {
-    return `${startDate.getDate()}-${startDate.getMonth()}-${startDate.getFullYear()}` === `${endDate.getDate()}-${endDate.getMonth()}-${endDate.getFullYear()}`;
-  }
 
-  private getDatesTwoDaysBetween(startDate: Date, endDate: Date): string[] {
-    let currentDate = startDate;
-    const dates = [];
-
-    while (!this.getEqualDates(currentDate, endDate)) {
-      dates.push(currentDate.toISOString());
-
-      currentDate = this.addDays(currentDate);
-    }
-
-    return dates;
-  }
 
   /*   private drawChartTimeLine() {
       const timelineChart = [];
@@ -739,7 +718,6 @@ export class DashboardComponent implements OnInit {
     istatistic.averages = buckets.map(x => x.avg);
     istatistic.hits = buckets.map(x => x.sum);
 
-    const timelineChart = [];
     const times = whichBox.buckets.map(x => moment(x.date).utc(true).toDate().getTime());
     const series = [
       { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x) >= 0 ? Math.round(x) : 0]) },
@@ -814,10 +792,10 @@ export class DashboardComponent implements OnInit {
           click: () => {
             console.log('clicked');
           },
-          markerClick: (event, chartContext, { seriesIndexz, dataPointIndexz, config }) => {
+          markerClick: () => {
 
           },
-        },
+        }
       },
       colors: [chartBg, (this.theme === 'white' ? '#b1dcff' : '#004175'), '#0084ff'],
       stroke: {
@@ -835,29 +813,37 @@ export class DashboardComponent implements OnInit {
         shared: true,
         intersect: false,
         x: {
-          format: 'MMM dd yyyy HH:mm'
+          show: true
         },
         // fillSeriesColor: true,
         theme: 'dark',
-        // custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-        //   // console.log(series, seriesIndex, dataPointIndex, w);
+        custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+          const date = new Date(w.globals.seriesX[0][dataPointIndex]);
 
-        //   return `
-        //     <div class="__apexcharts_custom_tooltip">
-        //       <span class="__apexcharts_custom_tooltip_row">
-        //         <span class="color" style="background: ${w.config.colors[0]}"></span> Min: ${series[0][dataPointIndex]}
-        //       </span>
-        //       <span class="__apexcharts_custom_tooltip_row">
-        //         <span class="color" style="background: ${w.config.colors[1]}"></span> Max: ${series[1][dataPointIndex]}
-        //       </span>
-        //       <span class="__apexcharts_custom_tooltip_row">
-        //         <span class="color" style="background: ${w.config.colors[2]}"></span> Hit: ${series[2][dataPointIndex]}
-        //       </span>
-
-        //       <button class="btn btn-small" (click)="test()">Detay'a git</button>
-        //     </div>
-        //   `;
-        // }
+          const mDate = moment(date).format('MMM DD YYYY - HH:mm');
+          
+          return `
+            <div class="__apexcharts_custom_tooltip">
+              <div class="__apexcharts_custom_tooltip_date">${mDate}</div>
+              
+              <div class="__apexcharts_custom_tooltip_content">
+                <span class="__apexcharts_custom_tooltip_row">
+                  <span class="color" style="background: #507df3"></span> Min: <b>${series[0][dataPointIndex]}</b>
+                </span>
+                <span class="__apexcharts_custom_tooltip_row">
+                  <span class="color" style="background: #c41505"></span> Max: <b>${series[1][dataPointIndex]}</b>
+                </span>
+                <span class="__apexcharts_custom_tooltip_row">
+                  <span class="color" style="background: ${this.theme === 'white' ? '#b5dbff' : '#004175'}"></span> Hit: <b>${series[2][dataPointIndex]}</b>
+                </span>
+                
+                <p>
+                  Detaylı bilgi için nokta imlecine tıklayınz 
+                </p>
+                </div>
+            </div>
+          `;
+        }
       },
       legend: {
         show: false
@@ -904,11 +890,15 @@ export class DashboardComponent implements OnInit {
         },
         lines: {
           show: true
-        }
+        },
+        tooltip: {
+          enabled: false,
+        },
       },
       yaxis: {
         min: 0,
         max: yMax + 10,
+        tickAmount: 5,
         labels: {
           formatter: (value) => {
             return this.getRoundedNumber(value);
@@ -932,6 +922,16 @@ export class DashboardComponent implements OnInit {
       },
       grid: {
         borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
+        xaxis: {
+          lines: {
+            show: true
+          }
+        },
+        yaxis: {
+          lines: {
+            show: true
+          }
+        },
       },
     });
 
@@ -979,8 +979,6 @@ export class DashboardComponent implements OnInit {
   }
 
   private refreshTopDomains() {
-    //
-    const diff = this.calculateDateDiff();
     const request = { startDate: this.startDate.toISOString(), endDate: this.endDate.toISOString() } as TopDomainsRequestV5;
     request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedBox;
     this.getTopDomains(request);
@@ -1051,10 +1049,7 @@ export class DashboardComponent implements OnInit {
 
     if (domain.trim().length === 0) { return; }
 
-    const startDate = moment([this.startDate.getFullYear(), this.startDate.getMonth(), this.startDate.getDate()]);
-    const endDate = moment([this.endDate.getFullYear(), this.endDate.getMonth(), this.endDate.getDate()]);
 
-    const diff = endDate.diff(startDate, 'days');
 
     this.dashboardService.getTopDomainValue({ domain: domain, startDate: this.startDate.toISOString(), endDate: this.endDate.toISOString() }).subscribe(result => {
 
@@ -1076,13 +1071,11 @@ export class DashboardComponent implements OnInit {
   showDetail() {
     if (this.getDetailButtonDisabled) {
       this.notificationService.warning(this.translatorService.translate('DateDifferenceWarning'));
+    } else {
+      const url = (`/admin/reports/monitor?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
 
-      return;
+      this.router.navigateByUrl(url);
     }
-
-    const url = (`/admin/reports/monitor?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
-
-    this.router.navigateByUrl(url);
   }
 
   convertTimeString(num: number) {
@@ -1129,8 +1122,8 @@ export class DashboardComponent implements OnInit {
     const startDate = moment(this.startDate);
     const endDate = moment(this.endDate);
 
-    const diff = endDate.diff(startDate, 'days');
+    const diff = endDate.diff(startDate, 'minutes');
 
-    return diff > 7;
+    return diff > 60 * 24 * 7;
   }
 }
