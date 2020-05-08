@@ -559,5 +559,6 @@
     "NextMonth": "Next Month",
     "Previous3Month": "Previous 3 Month",
     "Next3Month": "Next 3 Month",
-    "TopDomainList": "Top Domain List"
+    "TopDomainList": "Top Domain List",
+    "DateDifferenceWarning": "The date range should not be more than 7 days."
 }

@@ -285,12 +285,20 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     const diff = endDate.diff(startDate, 'minutes');
 
+    this.dateText = this.convertTimeString(diff);
+
+    const diffDay = endDate.diff(startDate, 'days');
+
+    if(diffDay > 7) {
+      this.notification.warning(this.translatorService.translate('DateDifferenceWarning'));
+      
+      return;
+    }
+
     this.searchSettings.dateInterval = null;
 
     this.searchSettings.startDate = $event.startDate.toISOString();
     this.searchSettings.endDate = $event.endDate.toISOString();
-
-    this.dateText = this.convertTimeString(diff);
 
     this.setDateOptionBySearchSettings();
 

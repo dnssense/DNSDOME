@@ -485,6 +485,10 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       this.selectedIp.rootProfile = this.securityProfiles.find(x => x.id === selectedProfile.value);
     }
 
+    if (this.ipType === 'staticIp') {
+      this.selectedIp.dynamicIpDomain = null;
+    }
+
     this.agentService.saveAgentLocation(this.selectedIp).subscribe(res => {
 
       this.notification.success(this.staticMessageService.savedAgentLocationMessage);

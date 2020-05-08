@@ -725,7 +725,7 @@ export class DashboardComponent implements OnInit {
         }
       });
 
-     // this.categoryListFiltered = [];
+      // this.categoryListFiltered = [];
 
       return;
     }
@@ -859,8 +859,35 @@ export class DashboardComponent implements OnInit {
         //   `;
         // }
       },
+      legend: {
+        show: false
+      },
       fill: {
         opacity: 1,
+        type: ['solid', 'solid', 'gradient'],
+        gradient: {
+          type: 'vertical',
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.9,
+          colorStops: [
+            {
+              offset: 0,
+              color: "#c41505",
+              opacity: 1
+            },
+            {
+              offset: 50,
+              color: "#7c26bd",
+              opacity: 1
+            },
+            {
+              offset: 100,
+              color: "#507df3",
+              opacity: 1
+            },
+          ]
+        }
       },
       xaxis: {
         type: 'datetime',
@@ -1047,7 +1074,14 @@ export class DashboardComponent implements OnInit {
   }
 
   showDetail() {
+    if (this.getDetailButtonDisabled) {
+      this.notificationService.warning(this.translatorService.translate('DateDifferenceWarning'));
+
+      return;
+    }
+
     const url = (`/admin/reports/monitor?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
+
     this.router.navigateByUrl(url);
   }
 
@@ -1089,5 +1123,14 @@ export class DashboardComponent implements OnInit {
     }
 
     return text;
+  }
+
+  get getDetailButtonDisabled(): boolean {
+    const startDate = moment(this.startDate);
+    const endDate = moment(this.endDate);
+
+    const diff = endDate.diff(startDate, 'days');
+
+    return diff > 7;
   }
 }

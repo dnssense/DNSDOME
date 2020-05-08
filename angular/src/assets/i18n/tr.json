@@ -554,5 +554,6 @@
     "NextMonth": "Sonraki Ay",
     "Previous3Month": "Önceki 3 Ay",
     "Next3Month": "Sonraki 3 Ay",
-    "TopDomainList": "En çok ziyaret edilen alan adları"
+    "TopDomainList": "En çok ziyaret edilen alan adları",
+    "DateDifferenceWarning": "Tarih aralığı 7 günden fazla olmamalı."
 }
