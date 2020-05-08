@@ -64,14 +64,14 @@ export class AdminLayoutComponent implements OnInit {
             }
         });
 
-        const html = document.getElementsByTagName('html')[0];
-        if (elemMainPanel && elemSidebar && window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
-            let ps = new PerfectScrollbar(elemMainPanel);
-            ps = new PerfectScrollbar(elemSidebar);
-            html.classList.add('perfect-scrollbar-on');
-        } else {
-            html.classList.add('perfect-scrollbar-off');
-        }
+        // const html = document.getElementsByTagName('html')[0];
+        // if (elemMainPanel && elemSidebar && window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
+        //     let ps = new PerfectScrollbar(elemMainPanel);
+        //     ps = new PerfectScrollbar(elemSidebar);
+        //     html.classList.add('perfect-scrollbar-on');
+        // } else {
+        //     html.classList.add('perfect-scrollbar-off');
+        // }
 
         this.navItems = [];
     }

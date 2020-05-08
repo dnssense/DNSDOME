@@ -269,10 +269,10 @@ export class SidebarComponent implements OnInit {
       const elemSidebar = <HTMLElement>(
         document.querySelector('.sidebar .sidebar-wrapper')
       );
-      let ps = new PerfectScrollbar(elemSidebar, {
-        wheelSpeed: 2,
-        suppressScrollX: true
-      });
+      // let ps = new PerfectScrollbar(elemSidebar, {
+      //   wheelSpeed: 2,
+      //   suppressScrollX: true
+      // });
     }
   }
 
