@@ -393,7 +393,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  infoboxChanged(type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful', selectedCategoryName: string) {
+  infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful', selectedCategoryName: string) {
     this.selectedCategoryName = selectedCategoryName;
 
     this.selectedCategory = null;
@@ -821,7 +821,7 @@ export class DashboardComponent implements OnInit {
           const date = new Date(w.globals.seriesX[0][dataPointIndex]);
 
           const mDate = moment(date).format('MMM DD YYYY - HH:mm');
-          
+
           return `
             <div class="__apexcharts_custom_tooltip">
               <div class="__apexcharts_custom_tooltip_date">${mDate}</div>

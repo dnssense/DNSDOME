@@ -54,7 +54,7 @@
 
                   <div class="row">
                     <div class="col-12 col-lg-6 col-xl mt-3">
-                      <rk-infobox [active]="infoBoxes.total"  (change)="infoboxChanged($event, 'total', 'Total')"
+                      <rk-infobox [active]="infoBoxes.total" (change)="infoboxChanged($event, 'total', 'Total')"
                         [title]="translate('Total')" [color]="'#4353ff'" className="blue" [type]="1"
                         [valueOne]="trafficAnomaly?.total?.hit" [valueTwo]="trafficAnomaly?.total?.block"
                         [description]="translate('DASHBOARD.TotalDnsRequestCount')">
@@ -130,8 +130,7 @@
                             </div>
 
                             <div class="anomaly-chart mt-3">
-                              <div class="d-flex flex-wrap justify-content-end align-items-center"
-                                *ngIf="trafficChart">
+                              <div class="d-flex flex-wrap justify-content-end align-items-center" *ngIf="trafficChart">
                                 <!-- <button class="btn btn-link btn-accent py-0" style="background: transparent;"
                                   (click)="showSummary()">{{'DASHBOARD.ShowSummary'|translate}}</button> -->
 
@@ -202,7 +201,7 @@
                                   </svg>
 
                                   <span>Query Count</span>
-                                  
+
                                   <svg width="35px" height="11px" viewBox="0 0 35 11" version="1.1"
                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                     <title>Path 9</title>
@@ -218,31 +217,31 @@
                                     </g>
                                   </svg>
 
-                                  <span>Learned Normal Traffic Range</span>                                  
+                                  <span>Learned Normal Traffic Range</span>
                                 </div>
 
                                 <div>
-                                   <span>Traffic Excess Rate:</span>
+                                  <span>Traffic Excess Rate:</span>
 
-                                   <span>
-                                     <div class="color" style="background: #507df3;"></div> %20
-                                   </span>
+                                  <span>
+                                    <div class="color" style="background: #507df3;"></div> %20
+                                  </span>
 
-                                   <span>
-                                     <div class="color" style="background: #6158ca;"></div> %40
-                                   </span>
+                                  <span>
+                                    <div class="color" style="background: #6158ca;"></div> %40
+                                  </span>
 
-                                   <span>
-                                     <div class="color" style="background: #7c26bd;"></div> %60
-                                   </span>
+                                  <span>
+                                    <div class="color" style="background: #7c26bd;"></div> %60
+                                  </span>
 
-                                   <span>
-                                     <div class="color" style="background: #9c1e6c;"></div> %80
-                                   </span>
+                                  <span>
+                                    <div class="color" style="background: #9c1e6c;"></div> %80
+                                  </span>
 
-                                   <span>
-                                     <div class="color" style="background: #c41505;"></div> %100
-                                   </span>
+                                  <span>
+                                    <div class="color" style="background: #c41505;"></div> %100
+                                  </span>
                                 </div>
                               </div>
                             </div>
