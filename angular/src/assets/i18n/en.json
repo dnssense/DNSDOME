@@ -568,5 +568,6 @@
         "Apply": "Apply",
         "SelectDate": "Select Date",
         "Custom": "Custom"
-    }
+    },
+    "TooltipDescription": "Click on the dot cursor for detailed information"
 }

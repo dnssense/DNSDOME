@@ -826,7 +826,7 @@ export class DashboardComponent implements OnInit {
           return `
             <div class="__apexcharts_custom_tooltip">
               <div class="__apexcharts_custom_tooltip_date">${mDate}</div>
-              
+
               <div class="__apexcharts_custom_tooltip_content">
                 <span class="__apexcharts_custom_tooltip_row">
                   <span class="color" style="background: #507df3"></span> Min: <b>${series[0][dataPointIndex]}</b>
@@ -837,9 +837,9 @@ export class DashboardComponent implements OnInit {
                 <span class="__apexcharts_custom_tooltip_row">
                   <span class="color" style="background: ${this.theme === 'white' ? '#b5dbff' : '#004175'}"></span> Hit: <b>${series[2][dataPointIndex]}</b>
                 </span>
-                
+
                 <p>
-                  Detaylı bilgi için nokta imlecine tıklayınz 
+                  ${this.translatorService.translate('TooltipDescription')}
                 </p>
                 </div>
             </div>
@@ -851,30 +851,30 @@ export class DashboardComponent implements OnInit {
       },
       fill: {
         opacity: 1,
-        type: ['solid', 'solid', 'gradient'],
-        gradient: {
-          type: 'vertical',
-          shadeIntensity: 1,
-          opacityFrom: 0.7,
-          opacityTo: 0.9,
-          colorStops: [
-            {
-              offset: 0,
-              color: "#c41505",
-              opacity: 1
-            },
-            {
-              offset: 50,
-              color: "#7c26bd",
-              opacity: 1
-            },
-            {
-              offset: 100,
-              color: "#507df3",
-              opacity: 1
-            },
-          ]
-        }
+        // type: ['solid', 'solid', 'gradient'],
+        // gradient: {
+        //   type: 'vertical',
+        //   shadeIntensity: 1,
+        //   opacityFrom: 0.7,
+        //   opacityTo: 0.9,
+        //   colorStops: [
+        //     {
+        //       offset: 0,
+        //       color: "#c41505",
+        //       opacity: 1
+        //     },
+        //     {
+        //       offset: 50,
+        //       color: "#7c26bd",
+        //       opacity: 1
+        //     },
+        //     {
+        //       offset: 100,
+        //       color: "#507df3",
+        //       opacity: 1
+        //     },
+        //   ]
+        // }
       },
       xaxis: {
         type: 'datetime',
@@ -947,16 +947,28 @@ export class DashboardComponent implements OnInit {
     data.forEach(e => {
       const percent = 100 * e[1] / totalCount;
 
-      const color = percent > 50 ? '#3dd49a' : (percent > 70 ? '#f9df56' : (percent > 80 ? '#f99256' : (percent > 95 ? '#f95656' : '#4353ff')));
+      let color = '';
+
+      if (percent >= 100) {
+        color = '#c41505';
+      } else if (percent >= 80) {
+        color = '#9c1e6c';
+      } else if (percent >= 60) {
+        color = '#7c26bd';
+      } else if (percent >= 40) {
+        color = '#6158ca';
+      } else if (percent >= 20) {
+        color = '#507df3';
+      }
 
       const elm = {
         x: e[0],
         y: e[1],
         marker: {
-          size: percent > 50 ? 3 : 0,
+          size: percent >= 20 ? 3 : 0,
           fillColor: color,
           strokeColor: color,
-          strokeSize: percent > 50 ? 3 : 0,
+          strokeSize: percent >= 20 ? 3 : 0,
           radius: 2
         }
       };

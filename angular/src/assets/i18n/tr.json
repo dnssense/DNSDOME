@@ -563,5 +563,6 @@
         "Apply": "Uygula",
         "SelectDate": "Tarih seçiniz",
         "Custom": "Özel"
-    }
+    },
+    "TooltipDescription": "Detaylı bilgi için nokta imlecine tıklayınız"
 }
