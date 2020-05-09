@@ -21,6 +21,7 @@ import { ToolsService } from 'src/app/core/services/toolsService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import * as numeral from 'numeral';
 
 interface TagInputValue {
   value: string;
@@ -985,7 +986,8 @@ export class DashboardComponent implements OnInit {
   }
 
   getRoundedNumber(value: number) {
-    return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : (Math.sign(value) * Math.abs(value)).toFixed(1);
+    return numeral(value).format('0.0a').replace('.0', '');
+    // return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : (Math.sign(value) * Math.abs(value)).toFixed(1);
   }
 
   private async getTrafficAnomaly(request: HourlyCompanySummaryV5Request) {
