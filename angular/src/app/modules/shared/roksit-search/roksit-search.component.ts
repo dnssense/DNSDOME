@@ -25,7 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class GroupedCategory {
   type: string;
   name: string;
-  color?= '#3397c5';
+  color ?= '#3397c5';
   items: CategoryV2[];
 }
 
@@ -289,9 +289,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     const diffDay = endDate.diff(startDate, 'days');
 
-    if(diffDay > 7) {
+    if (diffDay > 7) {
       this.notification.warning(this.translatorService.translate('DateDifferenceWarning'));
-      
+
       return;
     }
 
