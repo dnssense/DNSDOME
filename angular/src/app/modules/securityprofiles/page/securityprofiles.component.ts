@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { Agent } from 'src/app/core/models/Agent';
-import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
-
-declare var $: any;
+import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 
 @Component({
     selector: 'app-securityprofiles',
@@ -13,108 +15,103 @@ declare var $: any;
     styleUrls: ['securityprofiles.component.sass']
 })
 export class SecurityProfilesComponent {
-    searchKey: string;
-    securityProfiles: SecurityProfile[];
-    securityProfilesFiltered: SecurityProfile[];
-    selectedAgent: Agent;
-    profileList: SecurityProfile[];
-    startWizard: boolean = false;
-    saveMode: string;
-    updateCount: number = 0;
-    constructor(private agentService: AgentService, private notification: NotificationService,
-        private alert: AlertService) {
 
+    constructor(
+        private agentService: AgentService,
+        private notification: NotificationService,
+        private alertService: AlertService,
+        private staticMessageService: StaticMessageService
+    ) {
         this.getProfiles();
-        this.defineNewAgentForProfile();
-
-        $('#newAgentBtn').click(function () {
-
-            $('#closeNewAgentBtn').removeClass('d-none');
-            $(this).addClass('d-none');
-            $('#agent-wizard').removeClass('d-none');
-        });
     }
+
+    searchKey: string;
+
+    securityProfiles: SecurityProfile[] = [];
+    securityProfilesForSelect: RkSelectModel[] = [];
+
+    selectedAgent: Agent = new Agent();
+
+    saveMode: 'NewProfile' | 'ProfileUpdate' | 'NotEditable';
+
+    @ViewChild('profileModal') profileModal: RkModalModel;
+
+    @ViewChild('profileWizard') profileWizard: ProfileWizardComponent;
 
     getProfiles() {
         this.agentService.getSecurityProfiles().subscribe(res => {
+
             this.securityProfiles = res;
-            this.securityProfilesFiltered = this.securityProfiles;
+
+            this.fillProfilesOnSelect();
         });
     }
 
-    defineNewAgentForProfile() {
-        this.selectedAgent = new Agent();
-        this.selectedAgent.rootProfile = new SecurityProfile();
-        // this.selectedAgent.rootProfile.name = "Agent1-Profile";
-        this.selectedAgent.rootProfile.domainProfile = {} as SecurityProfileItem;
-        this.selectedAgent.rootProfile.applicationProfile = {} as SecurityProfileItem;
-        this.selectedAgent.rootProfile.blackWhiteListProfile = {} as BlackWhiteListProfile;
-        this.selectedAgent.rootProfile.domainProfile.categories = [];
-        this.selectedAgent.rootProfile.applicationProfile.categories = [];
-        this.selectedAgent.rootProfile.blackWhiteListProfile.blackList = [];
-        this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList = [];
+    private fillProfilesOnSelect(selectedId?: number) {
+        this.securityProfilesForSelect = this.securityProfiles.map(x => {
+            return { displayText: x.name, value: x.id, selected: selectedId === x.id } as RkSelectModel;
+        });
     }
 
-    showNewWizard() {
-        $('#securityProfilesPanel').toggle("slide", { direction: "left" }, 600);
-        $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+    newProfile() {
+
 
         this.saveMode = 'NewProfile';
-        this.defineNewAgentForProfile();
-        this.updateCount++;
-        this.startWizard = true;
-        document.getElementById('wizardPanel').scrollIntoView();
+        this.profileWizard.saveMode = this.saveMode;
+        this.selectedAgent = new Agent();
 
+        this.selectedAgent.rootProfile = new SecurityProfile();
+        this.profileWizard.selectedAgent = this.selectedAgent;
+        this.changeProfileSelect(-1);
+
+
+
+       // this.profileWizard.updateModels();
+        this.profileModal.toggle();
     }
 
-    showEditWizard(id: number) {
-        if (id) {
-            $('#securityProfilesPanel').toggle("slide", { direction: "left" }, 600);
-            $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
+    editProfile(profile: SecurityProfile) {
 
-            this.selectedAgent.rootProfile = this.securityProfiles.find(p => p.id == id);
-            this.updateCount++;
-            this.saveMode = 'ProfileUpdate';
-            this.startWizard = true;
-            document.getElementById('wizardPanel').scrollIntoView();
-        }
+
+        this.saveMode = 'ProfileUpdate';
+        this.profileWizard.saveMode = this.saveMode;
+        this.fillProfilesOnSelect(profile.id);
+
+        this.selectedAgent = new Agent();
+
+        this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(profile));
+        this.profileWizard.selectedAgent = this.selectedAgent;
+
+         // this.profileWizard.updateModels();
+         this.profileModal.toggle();
     }
+    viewProfile(profile: SecurityProfile) {
+        this.selectedAgent = new Agent();
+        this.saveMode = 'NotEditable';
+        this.profileWizard.saveMode = this.saveMode;
+        this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(profile));
+        this.profileWizard.selectedAgent = this.selectedAgent;
 
-    hideWizard() {
-        if (this.selectedAgent.rootProfile.isSystem) {
-            this.hideWizardWithoutConfirm();
-        } else {
-            this.alert.alertWarningAndCancel('Are You Sure?', 'If you made changes, Your Changes will be cancelled!').subscribe(
-                res => {
-                    if (res) {
-                        this.hideWizardWithoutConfirm();
-                    }
-                }
-            );
-        }
-    }
+        // this.profileWizard.updateModels();
 
-    hideWizardWithoutConfirm() {
-        this.getProfiles();
-        $('#wizardPanel').hide("slide", { direction: "right" }, 1000);
-        $('#securityProfilesPanel').show("slide", { direction: "left" }, 1000);
+        this.profileModal.toggle();
     }
 
     deleteProfile(id: number) {
+        const profile = this.securityProfiles.find(p => p.id === id);
 
-        if (this.securityProfiles.find(p => p.id == id).numberOfUsage > 0) {
-            this.alert.alertTitleAndText('Can not delete!', 'This profile using by some agents.')
+        if (profile.numberOfUsage > 0) {
+            this.alertService.alertTitleAndText(this.staticMessageService.canNotDeleteMessage, this.staticMessageService.thisSecurityProfileIsUsingBySomeAgentsMessage);
         } else {
-            this.alert.alertWarningAndCancel('Are You Sure?', 'Item will be deleted!').subscribe(
+            this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.itWillBeDeletedMessage).subscribe(
                 res => {
                     if (res) {
                         this.agentService.deleteSecurityProfile(id).subscribe(delRes => {
-                            if (delRes.status == 200) {
-                                this.notification.success(delRes.message);
-                                this.getProfiles();
-                            } else {
-                                this.notification.error(delRes.message);
-                            }
+
+                            this.notification.success(this.staticMessageService.deletedProfileMessage);
+
+                            this.getProfiles();
+
                         });
                     }
                 }
@@ -122,31 +119,55 @@ export class SecurityProfilesComponent {
         }
     }
 
-    cloneDefaultProfile(id: number) {
-        this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(this.securityProfiles.find(p => p.id == id)));
+    changeProfileSelect(id: number) {
+        this.securityProfilesForSelect = this.securityProfilesForSelect.map(x => {
+            const obj = { ...x, selected: false } as RkSelectModel;
+
+            if (x.value === id) {
+                obj.selected = true;
+            }
+
+            return obj;
+        });
+    }
+
+    saveProfile() {
+        this.profileWizard.saveProfile();
+    }
+
+    saveSuccess() {
+        this.profileModal.toggle();
+
+        this.getProfiles();
+    }
+
+    cloneProfile(profile: SecurityProfile) {
+        const cloneAgent = new Agent();
+
+        const deepCopy = JSON.parse(JSON.stringify(profile)) as SecurityProfile;
+
+        deepCopy.name = deepCopy.name + '-Clone';
+
+        cloneAgent.rootProfile = deepCopy;
+
+        this.selectedAgent = cloneAgent;
+
         this.selectedAgent.rootProfile.id = null;
-        this.selectedAgent.rootProfile.name = this.selectedAgent.rootProfile.name + '-Clone';
         this.selectedAgent.rootProfile.isSystem = false;
+        this.selectedAgent.rootProfile.numberOfUsage = 0;
 
         this.selectedAgent.rootProfile.applicationProfile.id = null;
+        this.selectedAgent.rootProfile.applicationProfile.id = null;
+        this.selectedAgent.rootProfile.domainProfile.id = null;
         this.selectedAgent.rootProfile.domainProfile.id = null;
         this.selectedAgent.rootProfile.blackWhiteListProfile.id = null;
-        
-        $('#securityProfilesPanel').toggle("slide", { direction: "left" }, 600);
-        $('#wizardPanel').toggle("slide", { direction: "right" }, 600);
-
+        this.selectedAgent.rootProfile.blackWhiteListProfile.id = null;
         this.saveMode = 'ProfileUpdate';
-        this.updateCount++;
-        this.startWizard = true;
-        document.getElementById('wizardPanel').scrollIntoView();
+        this.profileWizard.saveMode = this.saveMode;
+        this.profileWizard.selectedAgent = this.selectedAgent;
+        // this.profileWizard.updateModels();
+        this.profileModal.toggle();
     }
 
-    searchByKeyword() {
-        if (this.searchKey && this.searchKey.length > 0) {
-            this.securityProfilesFiltered = this.securityProfiles.filter(f => f.name.toLowerCase().includes(this.searchKey.toLowerCase()));
-        } else {
-            this.securityProfilesFiltered = this.securityProfiles;
-        }
-    }
 
 }

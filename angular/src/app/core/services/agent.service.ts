@@ -6,75 +6,92 @@ import { Agent } from '../models/Agent';
 import { SecurityProfile } from '../models/SecurityProfile';
 import { OperationResult } from '../models/OperationResult';
 import { DeviceResponse } from '../models/DeviceResponse';
+import { DeviceGroup } from '../models/DeviceGroup';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AgentService {
 
-  private getRegisteredURL = this.config.getApiUrl() + "/devices/registered";
-  private saveDeviceURL = this.config.getApiUrl() + "/devices/save";
-  private getUnregisteredURL = this.config.getApiUrl() + "/devices/unregistered";
-  private deleteDeviceURL = this.config.getApiUrl() + "/devices/delete";
-  private getAgentsURL = this.config.getApiUrl() + "/agents";
-  private saveAgentURL = this.config.getApiUrl() + "/agents/save";
-  private deleteAgentURL = this.config.getApiUrl() + "/agents/delete/";
-  private getSecurityProfilesURL = this.config.getApiUrl() + "/profiles";
-  private saveSecurityProfileURL = this.config.getApiUrl() + "/profiles/save";
-  private deleteSecurityProfileURL = this.config.getApiUrl() + "/profiles/delete";
+  private getRegisteredURL = this.config.getApiUrl() + '/agent/device';
+  private getUnregisteredURL = this.config.getApiUrl() + '/device/unregistered';
+  private getAgentsURL = this.config.getApiUrl() + '/agent/location';
 
-  
+  private getSecurityProfilesURL = this.config.getApiUrl() + '/profile';
+  private saveSecurityProfileURL = this.config.getApiUrl() + '/profile';
+  private deleteSecurityProfileURL = this.config.getApiUrl() + '/profile';
+
+  private saveDeviceURL = this.config.getApiUrl() + '/agent/device';
+  private deleteDeviceURL = this.config.getApiUrl() + '/agent/device';
+
+  private saveAgentURL = this.config.getApiUrl() + '/agent/location';
+  private deleteAgentURL = this.config.getApiUrl() + '/agent/location';
+
+
 
   constructor(private http: HttpClient, private config: ConfigService) { }
 
   getRegisteredDevices(): Observable<Agent[]> {
+
     return this.http.get<Agent[]>(this.getRegisteredURL).map(data => data);
   }
 
   getUnregisteredDevices(): Observable<DeviceResponse[]> {
+
     return this.http.get<DeviceResponse[]>(this.getUnregisteredURL).map(data => data);
   }
 
-  saveDevice(agent: any): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.saveDeviceURL, agent, this.getOptions()).map(data => data);
+  saveAgentDevice(devices: DeviceGroup): Observable<Agent> {
+
+    return Observable.from(devices.agents).concatMap(x => {
+
+      x.agentGroup = { id: x.agentGroup ? x.agentGroup.id : 0, groupName: devices.agentGroup.groupName };
+      x.rootProfile = devices.rootProfile;
+
+      return this.http.post<Agent>(this.saveDeviceURL, x, this.getOptions()).map(data => data);
+    }).map(x => x).last();
+
   }
 
-  deleteDevice(ids: number[]): Observable<OperationResult> {
-    let idList = []
-    for (let i = 0; i < ids.length; i++) {
-      idList.push({ id: ids[i] });
-    }
-    return this.http.post<OperationResult>(this.deleteDeviceURL, { agents: idList }, this.getOptions()).map(res => res);
+  deleteAgentDevice(ids: number[]): Observable<{}> {
+
+    return Observable.from(ids).concatMap(id =>
+      this.http.delete<{}>(this.deleteDeviceURL + `/${id}`, this.getOptions())
+    ).map(x => x).last();
+
   }
 
-  getAgents(): Observable<Agent[]> {
+  getAgentLocation(): Observable<Agent[]> {
     return this.http.get<Agent[]>(this.getAgentsURL).map(data => data);
   }
 
-  saveAgent(agent: Agent): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.saveAgentURL, JSON.stringify(agent), this.getOptions()).map(data => data);
+  saveAgentLocation(agent: Agent): Observable<Agent> {
+
+    return this.http.post<Agent>(this.saveAgentURL, agent, this.getOptions()).map(data => data);
   }
 
-  deleteAgent(id: number): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.deleteAgentURL, { "id": id }, this.getOptions()).map(res => res);
+  deleteAgent(id: number): Observable<{}> {
+    return this.http.delete<{}>(this.deleteAgentURL + `/${id}`, this.getOptions()).map(res => res);
   }
 
   getSecurityProfiles(): Observable<SecurityProfile[]> {
     return this.http.get<SecurityProfile[]>(this.getSecurityProfilesURL).map(data => data);
   }
 
-  saveSecurityProfile(p: SecurityProfile): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.saveSecurityProfileURL, JSON.stringify(p), this.getOptions()).map(res => res);
+  saveSecurityProfile(p: SecurityProfile): Observable<SecurityProfile> {
+    return this.http.post<SecurityProfile>(this.saveSecurityProfileURL, p, this.getOptions()).map(res => res);
+
   }
 
-  deleteSecurityProfile(id: number): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.deleteSecurityProfileURL, { "id": id }, this.getOptions()).map(res => res);
+  deleteSecurityProfile(id: number): Observable<{}> {
+    return this.http.delete<{}>(this.deleteSecurityProfileURL + `/${id}`, this.getOptions()).map(res => res);
   }
 
   getOptions() {
-    let options = {
+    const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }
+    };
+
     return options;
   }
 

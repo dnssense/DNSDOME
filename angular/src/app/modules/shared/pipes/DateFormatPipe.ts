@@ -8,7 +8,8 @@ declare var moment: any;
 @Injectable()
 export class DateFormatPipe implements PipeTransform {
   transform(value: any, args: Array<any>): string {
-    let utc = moment.utc(value).toDate();
-    return moment(utc).format('YYYY.MM.DD HH:mm:ss');
+    const utc = moment.utc(value).toDate();
+    // burasi degisirse fillSearchSettingsByFilters bu fonksiyon icindeki yere bak
+    return moment(utc).format('YYYY-MM-DD HH:mm:ss');
   }
 }

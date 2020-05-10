@@ -1,0 +1,40 @@
+<div class="rk-base-card">
+    <div class="card-item">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 p-0">
+                    <h5 class="page-title">{{'CATEGORYREQUEST.ChangeDomainCategory' | translate}}</h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6 p-0 mt-3">
+                    <div class="rk-basic-card">
+                        <p>{{'AllFieldsRequired' | translate}}</p>
+
+                        <div class="row">
+                            <div class="col-12 col-md-6 mt-3 mt-md-0">
+                                <input type="text" class="rk-input w-100 mr-2" placeholder="Domain"
+                                    [(ngModel)]="domain">
+                            </div>
+                            <div class="col-12 col-md-6 mt-3 mt-md-0">
+                                <rk-select placeholder="Category" [options]="categoryOptions" [(value)]="category" [isSearchable]="true"></rk-select>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-8">
+                                <input type="text" class="rk-input w-100" placeholder="Comment" [(ngModel)]="comment">
+                            </div>
+
+                            <div class="col-4">
+                                <button class="btn btn-primary btn-small w-100 justify-content-center"
+                                    [disabled]="!getIsValidForm" (click)="sendCategorize()">{{'Send' | translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

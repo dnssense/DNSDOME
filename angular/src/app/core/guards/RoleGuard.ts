@@ -7,7 +7,7 @@ import { AuthenticationService } from '../services/authentication.service';
 export class RoleGuard implements CanActivate {
     constructor(public auth: AuthenticationService, public router: Router) { }
     canActivate(route: ActivatedRouteSnapshot): boolean {
-        
+
         const expectedRole = route.data.expectedRole;
         const roles: string[] = expectedRole.split(',');
         const ss = this.auth.currentSession;
@@ -16,6 +16,7 @@ export class RoleGuard implements CanActivate {
             && ss.currentUser.roles && roles.includes(ss.currentUser.roles.name)) {
             return true;
         } else {
+           // console.log(`roleguard failed ${expectedRole} ${this.auth.isCurrentSessionValid()} ${JSON.stringify(ss)} `);
             this.router.navigate(['login']);
             return false;
         }

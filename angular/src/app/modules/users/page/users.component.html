@@ -1,186 +1,160 @@
-<div class="main-content">
- 
-  <div class="container-fluid col-md-11">
-    <div class="row">
-      <div class="col-12">
-        <div class="dns-base-card">
-          <div class="dns-base-card-header pt-3">
+<div class="rk-base-card">
+  <div class="card-item">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 p-0 d-flex align-items-center justify-content-between">
+          <h5 class="page-title">{{'Users'|translate}}</h5>
+
+          <button class="btn btn-icon btn-small" (click)="newUserClick()">
+            <i-feather name="user"></i-feather>
+            {{'CreateNewUser'|translate}}
+          </button>
+        </div>
+      </div>
+
+      <rk-modal #userModal (close)="modalClosed($event)">
+        <rk-modal-header icon="plus">
+          <rk-modal-header-title>
+            <h5>{{ (user.id > 0 ? 'EditUser' : 'CreateNewUser')|translate }} </h5>
+          </rk-modal-header-title>
+
+          <rk-modal-header-close (click)="userModal.toggle()"></rk-modal-header-close>
+        </rk-modal-header>
+
+        <rk-modal-body>
+          <div class="container-fluid">
             <div class="row">
-              <button class="btns btn-teritary border-radius-8 card-create-btn" id="createUserBtn"
-                (click)="showNewWizard()">
-                <img src="assets/images/icons/add.svg">
-                Create New User
-              </button>
+             
 
-              <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                <span class="mr-3 flex-2">Users</span>
+              <div class="col-12 mt-3">
+                <input type="text" class="rk-input w-100" placeholder=" {{'UserName'|translate}}" minlength="2" [(ngModel)]="user.name">
+              </div>
 
-                <!-- <div class="dns-datatable-pagination ml-3 d-inline-flex align-items-center">
-                    <span>Show Rows</span>
-                    <div class="dnssense-select ml-3">
-                      <select>
-                        <option>10</option>
-                        <option>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                      </select>
-                    </div>
-                    <div class="page-numbers ml-3 mr-3">1 - 109</div>
-                    <button class="btn page-prev">
-                      <i class="icon-left-open-big"></i>
-                    </button>
-                    <button class="btn page-next">
-                      <i class="icon-right-open-big"></i>
-                    </button>
-                  </div> -->
+              <div class="col-12 mt-3">
+                <input type="text" class="rk-input w-100" placeholder=" {{'Email'|translate}}" [(ngModel)]="user.username">
+              </div>
+
+              <div class="col-12 mt-3">
+                <rk-select [options]="userRolesForSelect" placeholder=" {{'Role'|translate}}" [value]="selectedRoleId"
+                  (valueChange)="roleChange($event)"></rk-select>
+              </div>
+
+              <div class="col-12 mt-3">
+                <input type="password" class="rk-input w-100" placeholder=" {{'Password'|translate}}" minlength="8"
+                  [(ngModel)]="user.password" (ngModelChange)="checkPasswordStrength()">
+
+                <div class="password-strength justify-content-end mt-3">
+                  <div [ngClass]="{ active: passwordStrength > 0 }"></div>
+                  <div [ngClass]="{ active: passwordStrength > 1 }"></div>
+                  <div [ngClass]="{ active: passwordStrength > 2 }"></div>
+                  <div [ngClass]="{ active: passwordStrength > 3 }"></div>
+                </div>
+
+                <p class="password-text mt-2"> {{'YourPasswordHasToBeAtLeast'|translate}}</p>
+              </div>
+
+              <div class="col-12 mt-3" *ngIf="user.id > 0">
+                <rk-checkbox class="rk-checkbox-font" [(value)]="user.isActive" (valueChange)="isActiveChanged($event)" alignment="right"> {{'IsActive'|translate}}
+                </rk-checkbox>
+              </div>
+
+              <div class="col-12 mt-3" *ngIf="user.id > 0">
+                <rk-checkbox class="rk-checkbox-font" [(value)]="user.isLocked" (valueChange)="isLockedChanged($event)" alignment="right">{{ 'IsLocked' | translate }}</rk-checkbox>
+              </div>
+
+            </div>
+          </div>
+        </rk-modal-body>
+
+        <rk-modal-footer>
+          <button class="btn btn-small w-100 mr-2" (click)="save()"> {{'Save'|translate}}</button>
+          <button class="btn btn-small btn-default w-100" (click)="userModal.toggle()"> {{'Close'|translate}}</button>
+        </rk-modal-footer>
+      </rk-modal>
+
+      <div class="row">
+        <div class="col-12 p-0 mt-3">
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content justify-content-start">
+                <div class="inf mr-4">
+                  <span class="text-primary">{{ users?.length }}</span>  {{'QueriesListed'|translate}}
+                </div>
+
+                <div class="search ml-5">
+                  <div class="rk-autocomplete-container" style="width: 220px;">
+                    <input type="text" placeholder=" {{'Search'|translate}}" [(ngModel)]="searchKey" class="rk-input rk-autocomplete">
+                    <i-feather class="search-icon" name="search"></i-feather>
+                  </div>
+                </div>
               </div>
             </div>
 
-          </div>
-          <div class="dns-base-card-content">
-            <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
-              <thead>
-                <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">E-mail</th>
-                <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Role</th>
-                <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Is Active</th>
-                <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Edit</th>
-
-              </thead>
-              <tbody>
-                <tr *ngFor="let row of userList">
-                  <td><small>{{row.username}}</small></td>
-                  <td><small>{{userFriendlyRoleName(row.roles[0].name)}}</small></td>
-                  <td class="text-center">
-                    <ng-container *ngIf="row.isActive==1; else elseTemplate2">
-                      <button class="btns btn-clear">
-                        <img src="./assets/images/icons/checkbox.svg" title="Active">
-                      </button>
-                    </ng-container>
-                    <ng-template #elseTemplate2>
-                      <button class="btns btn-clear">
-                        <img src="./assets/images/icons/close.svg" title="Not Active">
-                      </button>
-                    </ng-template>
-                  </td>
-                  <td class="text-center">
-                    <button class="btns btn-info" (click)="showEditWizard(row.id)">
-                      <small>Edit</small>
-                    </button>
-                  </td>
-
+            <rk-table [showPagination]="false" [info]="false">
+              <ng-template #header>
+                <tr>
+                  <th
+                    style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
+                    {{'User'|translate}}</th>
+                  <th
+                    style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
+                    {{'Email'|translate}}</th>
+                  <th
+                    style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
+                    {{'Role'|translate}}</th>
+                  <th class="text-center"
+                    style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
+                    {{'IsActive'|translate}}</th>
+                  <th class="text-center"
+                    style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
+                    {{'IsVerified'|translate}}</th>
+                  <th class="text-center"
+                    style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
+                    {{'IsLocked'|translate}}</th>
+                  <th
+                    style="border-top: 1px solid #eeeff2 !important;background: rgba(137, 142, 164, 0.05) !important;">
+                    {{'Edit'|translate}}</th>
                 </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+              </ng-template>
 
-
-    <!-- Modal start -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content" style="background: #262626; color: white;">
-          <form [formGroup]="userForm" class="form-horizontal">
-            <div class="modal-header" style="border-bottom: none; color:white">
-              <h4 class="modal-title" id="exampleModalLabel">New User</h4>
-              <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close"
-                (click)="closeModal()">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body" style="border-bottom: none;">
-              <div class="form-ux activated" id="userInformationForm">
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="text " class="dns-form-control input-reverse" id="email" placeholder="Enter e-mail"
-                    [(ngModel)]="selectedUser.username" formControlName="email">
-                </div>
-                <!-- <div class="form-group">
-                  <label for="name">Name</label>
-                  <input type="text " class="dns-form-control input-reverse" id="name" [(ngModel)]="selectedUser.name"
-                    formControlName="name" placeholder="Enter full name">
-                </div> -->
-                <div class="form-group not-ux light-select dns-full-width">
-                  <label>Roles</label>
-                  <select class="dns-form-control reverse-form" [(ngModel)]="selectedUser.roles.name"
-                    formControlName="role">
-                    <option disabled selected>Select Role</option>
-                    <option [ngValue]="role.name" *ngFor="let role of roleList">{{role.description}}</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <input type="password" class="form-control input-reverse" id="password" placeholder="X X X X X"
-                    [(ngModel)]="selectedUser.password" formControlName="password"
-                    (ngModelChange)="checkPasswordStrength()" />
-                </div>
-                <div class="row">
-                  <div class="col-4">
-                    <span class="color-9d9d9d">
-                      <small>Password Strength</small>
-                    </span>
-                  </div>
-                  <div class="col-8">
-                    <div class="password-length mt-2">
-                      <div [ngClass]="{'active': passStrength>0}"></div>
-                      <div [ngClass]="{'active': passStrength>1}"></div>
-                      <div [ngClass]="{'active': passStrength>2}"></div>
-                      <div [ngClass]="{'active': passStrength>3}"></div>
-                    </div>
-                    <span class="color-9d9d9d">
-                      <small>* Your password has to be at least 8 characters with at least one upper case, one lower
-                        case, one number.</small>
-                    </span>
-                  </div>
-                </div>
-                <div *ngIf="modalStatus =='edit'" class="row mt-3">
-                  <div class="col-6">
-                    <label class="dns-chk-label">
-                      <span>Activity </span>
-                      <div data-width="30" class="dns-form-switch">
-                        <ng-container *ngIf="selectedUser.isActive===1; else elseTemplateDaily">
-                          <input type="checkbox" id="chk2" checked (change)="changeActiveStatus()"
-                            title="Activation Status">
-                        </ng-container>
-                        <ng-template #elseTemplateDaily>
-                          <input type="checkbox" id="chk2" (change)="changeActiveStatus()">
-                        </ng-template>
-                        <i></i><span></span>
-                      </div>
-                    </label>
-                    <button class="btn btn-clear p-0 m-0" tabindex="0" data-toggle="tooltip" data-placement="bottom"
-                      title="Activation of User">
-                      <i class="fa fa-question-circle ml-3"></i>
+              <ng-template #body>
+                <tr *ngFor="let user of users | filter: searchKey: 'username'">
+                  <td>{{ user?.name }}</td>
+                  <td>{{ user.username }}</td>
+                  <td>{{ userFriendlyRoleName(user.roles[0].name) }}</td>
+                  <td class="text-center" style="width: 80px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <path [attr.fill]="user.isActive ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
+                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                    </svg>
+                  </td>
+                  <td class="text-center" style="width: 110px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <path [attr.fill]="user.isVerified === 1 ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
+                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                    </svg>
+                  </td>
+                  <td class="text-center" style="width: 100px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <path [attr.fill]="user.isLocked === 1 ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
+                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                    </svg>
+                  </td>
+                  <td style="width: 60px">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="editUserClick(user)">
+                      <i-feather name="edit-3"></i-feather>
                     </button>
-                  </div>
-                  <div class="col-6">
-                    Status:
-                    <ng-container *ngIf="selectedUser.isActive===0; else elseTemplateStatus1">
-                      Locked
-                    </ng-container>
-                    <ng-template #elseTemplateStatus1>
-                      Active
-                    </ng-template>
+                  </td>
+                </tr>
 
-                  </div>
-                </div>
-
-              </div>
-            </div>
-            <div class="modal-footer justify-content-start">
-              <button class="btns btn-teritary pl-3 pr-3 pull-right" (click)="userFormSubmit()">
-                <i class="fa fa-save mr-3"></i>Save
-              </button>
-            </div>
-          </form>
+                <tr *ngIf="users.length === 0">
+                  <td colspan="5"> {{'NoData'|translate}}</td>
+                </tr>
+              </ng-template>
+            </rk-table>
+          </rk-table-container>
         </div>
       </div>
     </div>
-    <!-- Modal end -->
-
-
   </div>
-
 </div>

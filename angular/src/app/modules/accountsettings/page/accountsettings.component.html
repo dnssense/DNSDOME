@@ -1,310 +1,205 @@
-<div class="main-content">
-  <div class="container-fluid col-md-11">
-
-    <div class="row">
-      <div class="col-md-12">
-        <div class="dns-base-card">
-          <div class="dns-base-card-header pt-3" style="border-bottom: 1px solid #8b8b8b;">
-            <ul class="nav nav-pills nav-pills-success nav-pills-icons justify-content-center" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link mb-1 active" style="color: whitesmoke;" data-toggle="tab" href="#link1"
-                  role="tablist"> User Information </a>
-              </li>
-              <li class="nav-item mb-1"><a class="nav-link" data-toggle="tab" style="color: whitesmoke;" href="#link2"
-                  role="tablist"> Company Information</a>
-              </li>
-              <li class="nav-item mb-1"><a class="nav-link" data-toggle="tab" style="color: whitesmoke;" href="#link3"
-                  role="tablist">Change Password</a>
-              </li>
-            </ul>
+<div class="rk-base-card h-100">
+  <div class="card-item">
+    <div class="container-fluid" style="border-radius: 13px;">
+      <div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center py-3 mb-2"
+          style="border-bottom: 2px solid #e4e9f1;">
+          <div class="rk-tabs" style="width: 420px;">
+            <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">
+              {{'ACCOUNTSETTINGS.UserInformation' | translate}}</div>
+            <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">
+              {{'ACCOUNTSETTINGS.CompanyInformation' | translate}}</div>
+            <div class="rk-tab" (click)="activeTabNumber = 2" [ngClass]="{'active': activeTabNumber === 2}">
+              {{'ACCOUNTSETTINGS.ChangePassword' | translate}}</div>
           </div>
+        </div>
 
-          <div class="dns-base-card-content">
-            <div class="row mt-1">
-              <div class="col-md-8 ml-auto mr-auto">
-                <div class="tab-content">
-                  <div class="tab-pane active" id="link1">
-                    <div class="dns-base-card-header">
-                      <div class="row">
-                        <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                          <span class="mr-3 flex-2">User Information</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="dns-base-card-content">
-                      <form [formGroup]="userInfoForm" (ngSubmit)="userFormSubmit()">
-                        <div class="form-ux" id="userInformationForm">
-                          <div class="row">
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                <div class="form-group">
-                                  <label for="fullName">Full name</label>
-                                  <input type="text " class="dns-form-control input-reverse" id="fullName"
-                                    [(ngModel)]="user.name" formControlName="name" placeholder="Enter full name">
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" class="dns-form-control input-reverse" id="email"
-                                  value={{user.username}} disabled>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group-sm has-default">
-                          <div class="input-group">
-                            <div class="col-md-12 text-right" style="width:100%;">
-                              <button class="btn btn-teritary pull-right">
-                                <i class="fa fa-save"></i>
-                                <span class="ml-3">Save</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
-                      <form [formGroup]="userPhoneForm">
+        <div class="col-12 col-md-4 my-3" *ngIf="activeTabNumber === 0">
+          <h5 class="rk-head-title">{{'ACCOUNTSETTINGS.UserInformation' | translate}}</h5>
 
-                        <div class="form-group-sm has-default">
-                          <div class="row">
-                            <div class="col-md-6 mt-4 text-danger">
-                              In order to login via two factor authentication and use sms service, enable 2FA feature.
-                            </div>
-                            <div class="col-md-6 mt-4">
-                              <ng-container *ngIf="user.gsmCode && user.gsm; else elseTemplate2FA">
-                                <label for="chk" class="dns-chk-label">
-                                  <span>Enable two factor Authentication</span>
-                                  <div class="dns-form-switch ml-5">
-                                    <ng-container *ngIf="user.twoFactorAuthentication; else elseTemplate1">
-                                      <input type="checkbox" id="chk" checked (change)="change2FASubmit()">
-                                    </ng-container>
-                                    <ng-template #elseTemplate1>
-                                      <input type="checkbox" id="chk" (change)="change2FASubmit()">
-                                    </ng-template>
-                                    <i></i><span></span>
-                                  </div>
-                                </label>
-                              </ng-container>
-                              <ng-template #elseTemplate2FA>
-                                <p>Before using two factor authentication please enter and validate a gsm number. </p>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
+          <form [formGroup]="userInfoForm">
+            <div>
+              <label for="fullname" class="rk-label">{{'ACCOUNTSETTINGS.UserFullName' | translate}}</label>
+              <input type="text" class="rk-input w-100" id="fullname" placeholder="Full Name" [(ngModel)]="user.name"
+                formControlName="name" required>
+            </div>
 
-                        <div *ngIf="!user.twoFactorAuthentication && user.gsm != null && user.gsm !='' ">
-                          <div class="row">
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                <label for="gsmCode">GSM Code</label>
-                                <input type="tel" disabled class="dns-form-control input-reverse" value="{{user.gsmCode}}">
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                <label for="gsm">GSM</label>
-                                <input type="tel" disabled class="dns-form-control input-reverse" value="{{user.gsm}}">
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+            <div class="mt-3">
+              <label for="email" class="rk-label">{{'ACCOUNTSETTINGS.UserEmail' | translate}}</label>
+              <input type="email" class="rk-input w-100" id="email" placeholder="Email" [value]="user.username" required
+                readonly>
+            </div>
 
+            <div class="mt-3 mb-2 d-flex">
+              <button class="btn btn-small w-100 btn-default mr-2"
+                (click)="activeTabNumber = 2">{{'ACCOUNTSETTINGS.ChangePassword' | translate}}</button>
+              <button class="btn btn-small w-100 btn-accent" (click)="userFormSubmit()">{{'Save' | translate}}</button>
+            </div>
+          </form>
+        </div>
 
-                        <div *ngIf="user.twoFactorAuthentication || user.gsm == null || user.gsm =='' ">
+        <div class="col-12 col-md-2" *ngIf="activeTabNumber === 0" style="border-right: 1px solid #e4e9f1;"></div>
 
-                          <div class="row">
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                <label for="gsmCode">GSM Code</label>
-                                <select class="dns-form-control reverse-form" [(ngModel)]="gsmCodeTemp"
-                                (change)="gsmCodeChange()" formControlName="gsmCode">
-                                  <option value="0" disabled selected>Select</option>
-                                  <option *ngFor="let pc of phoneNumberCodes" [(ngValue)]="pc.dial_code">
-                                    {{pc.name}} ( {{pc.dial_code}} )</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                <label for="gsm">GSM</label>
-                                <input type="tel" maxlength="10" name="gsm" class="dns-form-control input-reverse"
-                                  (keydown)="checkisTelNumber($event)" [(ngModel)]="phoneNumberTemp" (ngModelChange)="gsmChange()"
-                                  formControlName="gsm" placeholder="Enter GSM">
-                              </div>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="col-md-12">
-                              <button type="button" id="changePhoneBtn" disabled (click)="changePhoneNumber()"
-                                class="btns btn-teritary pull-right">Validate</button>
-                            </div>
-                          </div>
-                        </div>
-                        <div id="smsValidationDiv" class="form-group-sm has-default" style="display: none;">
-                          <div class="row">
-                            <div class="col-md-6 mt-5 text-center text-success" style="font-size: 38px; font-weight: 500;">
-                              <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                <label for="smsCode">SMS Code</label>
-                                <input type="text" class="dns-form-control input-reverse"
-                                  placeholder="SMS Validation Code" [(ngModel)]="smsCode" formControlName="smsCode">
-                              </div>
-                            </div>
-                            <div class="col-md-12">
-                              <button type="button" (click)="confirmGsm()"
-                                class="btns btn-teritary pull-right">Confirm</button>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
+        <div class="col-12 col-md-4 mt-3" *ngIf="activeTabNumber === 0">
+          <form [formGroup]="userPhoneForm">
+            <h5 class="rk-head-title">{{'ACCOUNTSETTINGS.TwoFactorAuthMessage' | translate}}</h5>
 
+            <p class="rk-description">
+              {{'ACCOUNTSETTINGS.TwoFactorAuthElseMessage' | translate}}
+            </p>
 
-                    </div>
-                  </div>
-                  <div class="tab-pane" id="link2">
-                    <div class="dns-base-card-header">
-                      <div class="row">
-                        <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                          <span class="mr-3 flex-2">Company Information</span>
-                        </div>
-                      </div>
-                    </div>
-                    <form [formGroup]="companyInfoForm" (ngSubmit)="companyFormSubmit()">
-                      <div class="dns-base-card-content">
-                        <div class="form-group dns-full-width">
-                          <label>Company Name</label>
-                          <input type="text" class="dns-form-control input-reverse" placeholder="Company Name"
-                            [(ngModel)]="signupUser.company.name" formControlName="companyName" />
-                        </div>
+            <p class="rk-description">
+              <span class="text-accent">*</span> {{'ACCOUNTSETTINGS.TwoFactorAuthMessage' | translate}}
+            </p>
 
-                        <div class="form-group light-select dns-full-width">
-                          <label>Industry</label>
-                          <select class="dns-form-control reverse-form" [(ngModel)]="signupUser.company.industry"
-                            formControlName="industry">
-                            <option selected="selected">PleaseSpecify</option>
-                            <option value="Cloud Computing/Saas">Cloud Computing/Saas</option>
-                            <option value="Computer HW, SW">Computer HW, SW</option>
-                            <option value="Consumer Goods/Retail">Consumer Goods/Retail</option>
-                            <option value="Ecommerce/Online Advertising">Ecommerce/Online Advertising</option>
-                            <option value="Energy/Utility ">Energy/Utility</option>
-                            <option value="Financial Services/Insurance">Financial Services/Insurance</option>
-                            <option value="Healthcare/Lifesciences/Pharmaceuticals">
-                              Healthcare/Lifesciences/Pharmaceuticals
-                            </option>
-                            <option value="ISP / Hosting ">ISP / Hosting</option>
-                            <option value="IT Services">IT Services</option>
-                            <option value="Manufacturing">Manufacturing</option>
-                            <option value="Media/Entertainment">Media/Entertainment</option>
-                            <option value="Professional Services (Legal, Accounting, etc.) ">Professional
-                              Services (Legal,Accounting, etc.)</option>
-                            <option value="Telecommunications">Telecommunications</option>
-                            <option value="University">University</option>
-                            <option value="K12">K-12 Education</option>
-                            <option value="non-profits">Non-Profits</option>
-                            <option value="Other">Other</option>
-                          </select>
-                        </div>
+            <ng-container *ngIf="isValidateButtonDisabled() && !isSmsConfirming &&  user.gsmCode && user.gsm?.length > 0; else elseTemplate2FA">
+              <div class="category-item">
+                <rk-checkbox [value]="user.twoFactorAuthentication" alignment="right" size="sm"
+                  (valueChange)="change2FASubmit()">{{'ACCOUNTSETTINGS.EnableTwoFactorAuth' | translate}}</rk-checkbox>
+              </div>
+            </ng-container>
 
-                        <div class="row">
-                          <div class="col-8">
-                            <div class="form-group dns-full-width">
-                              <label>Web Site</label>
-                              <input type="text" class="dns-form-control input-reverse"
-                                [(ngModel)]="signupUser.company.url" formControlName="url" placeholder="Website URL" />
-                            </div>
-                          </div>
-                          <div class="col-4">
-                            <div class="form-group dns-full-width">
-                              <label>Personnel</label>
-                              <select class="dns-form-control reverse-form"
-                                [(ngModel)]="signupUser.company.personnelCount" formControlName="personnelCount">
-                                <option selected>Please Specify</option>
-                                <option value="1-50">1-50</option>
-                                <option value="50-99">50-99</option>
-                                <option value="100-249">100-249</option>
-                                <option value="250-499">250-499</option>
-                                <option value="500-999">500-999</option>
-                                <option value="1000-2499">1000-2499</option>
-                                <option value="2500-4999">2500-4999</option>
-                                <option value="5000-9999">5000-9999</option>
-                                <option value="10000-19999">10000-19999</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group dns-full-width">
-                          <label>Block Message</label>
-                          <input type="text" class="dns-form-control input-reverse" placeholder="Block Message"
-                            [(ngModel)]="signupUser.company.blockMessage" formControlName="blockMessage" />
-                        </div>
-                        <div class="form-group">
-                          <button class="btn btn-teritary pull-right">
-                            <i class="fa fa-save"></i>
-                            <span class="ml-3">Save</span>
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <div class="tab-pane" id="link3">
-                    <div class="dns-base-card-header">
-                      <div class="row">
-                        <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                          <span class="mr-3 flex-2">Change Password</span>
-                        </div>
-                      </div>
+            <ng-template #elseTemplate2FA>
+              <p>{{'ACCOUNTSETTINGS.TwoFactorAuthElseMessage' | translate}}</p>
+            </ng-template>
 
-                    </div>
-                    <div class="dns-base-card-content">
-                      <form [formGroup]="changePasswordForm" (ngSubmit)="changePasswordFormSubmit()">
-                        <div class="row">
-                          <div class="col-md-12">
-                            <div class="form-group">
-                              <label for="currentPassword">Current Password</label>
-                              <input type="password" class="dns-form-control input-reverse" id="currentPassword"
-                                [(ngModel)]="currentPassword" formControlName="currentPassword"
-                                placeholder="Current Password">
-                            </div>
-                          </div>
-                          <div class="col-md-12">
-                            <div class="form-group">
-                              <label for="newPassword">New Password</label>
-                              <input type="password" class="dns-form-control input-reverse" id="newPassword"
-                                placeholder="New Password" [(ngModel)]="signupUser.password" formControlName="password">
-                            </div>
-                          </div>
-                          <div class="col-md-12">
-                            <div class="form-group">
-                              <label for="newPasswordAgain">Confirm New Password</label>
-                              <input type="password" class="dns-form-control input-reverse"
-                                placeholder="Confirm New Password" [(ngModel)]="signupUser.passwordAgain"
-                                formControlName="passwordAgain">
-                            </div>
-                          </div>
-                          <div class="col-md-12">
-                            <button class="btn btn-teritary pull-right">
-                              <i class="fa fa-save"></i>
-                              <span class="ml-3">Save</span>
-                            </button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
+            <!-- <ng-container *ngIf="!user.twoFactorAuthentication && user.gsm != null && user.gsm !=''">
+              <div class="mt-4">
+                <label for="gsm-code" class="rk-label">{{'ACCOUNTSETTINGS.GSMCode' | translate}}</label>
+                <input type="text" class="rk-input w-100" readonly [value]="gsmCodeTemp">
+              </div>
+
+              <div class="mt-4">
+                <label for="gsm-code" class="rk-label">GSM</label>
+                <input type="text" class="rk-input w-100" readonly [value]="phoneNumberTemp">
+              </div>
+            </ng-container> -->
+
+            <ng-container >
+              <div class="mt-4">
+                <label class="rk-label">{{'ACCOUNTSETTINGS.GSMCode' | translate}}</label>
+                <rk-select [options]="countryOptions" [(value)]="gsmCodeTemp" (valueChange)="gsmCodeChange()"
+                  class="w-100"></rk-select>
+              </div>
+
+              <div class="mt-3">
+                <label for="gsm" class="rk-label">GSM</label>
+                <input type="text" class="rk-input w-100" id="gsm" (keydown)="checkisTelNumber($event)"
+                  [(ngModel)]="phoneNumberTemp" (ngModelChange)="gsmChange()" formControlName="gsm"
+                  placeholder="Enter GSM" maxlength="10">
+              </div>
+
+            </ng-container>
+
+            <div id="smsValidationDiv"   style="display:none;">
+              <div class="mt-3">
+                <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
+              </div>
+
+              <div class="mt-2">
+                <label for="sms" class="rk-label">{{'ACCOUNTSETTINGS.SMSCode' | translate}}</label>
+                <input type="text" class="rk-input w-100" [(ngModel)]="smsCode" formControlName="smsCode">
+              </div>
+
+              <div class="mt-3 d-flex justify-content-end">
+                <button class="btn btn-small" style="min-width: 100px;"
+                  (click)="confirmGsm()">{{'Confirm' | translate}}</button>
+              </div>
+
+            </div>
+
+            <div class="mt-3 mb-2 d-flex justify-content-end" *ngIf="!isSmsConfirming"  id="validateButton">
+              <button [disabled]="isValidateButtonDisabled()" class="btn  btn-small" style="min-width: 100px;"
+                (click)="changePhoneNumber()">{{'Validate' | translate}}</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-12 col-md-2" *ngIf="activeTabNumber === 0"></div>
+
+        <div class="col-12 col-md-4 mt-3" *ngIf="activeTabNumber === 1">
+          <form [formGroup]="companyInfoForm">
+            <h5 class="rk-head-title">{{'ACCOUNTSETTINGS.CompanyInformation' | translate}}</h5>
+
+            <div>
+              <label for="company-name" class="rk-label">{{'ACCOUNTSETTINGS.CompanyName' | translate}}</label>
+              <input type="text" class="rk-input w-100" id="company-name" formControlName="companyName"
+                placeholder="Enter company name" [(ngModel)]="signupUser.company.name">
+            </div>
+
+            <div class="mt-3">
+              <label class="rk-label">{{'ACCOUNTSETTINGS.Industry' | translate}}</label>
+              <rk-select placeholder="Select industry" [options]="industuryOptions"
+                [(value)]="signupUser.company.industry"></rk-select>
+            </div>
+
+            <div class="mt-3">
+              <label class="rk-label" for="website">{{'ACCOUNTSETTINGS.WebSite' | translate}}</label>
+              <input type="text" class="rk-input w-100" id="website" formControlName="url"
+                [(ngModel)]="signupUser.company.url">
+            </div>
+
+            <div class="mt-3">
+              <label class="rk-label">{{'ACCOUNTSETTINGS.Personnel' | translate}}</label>
+              <rk-select placeholder="Personel count" [options]="personCountsOptions"
+                [(value)]="signupUser.company.personnelCount"></rk-select>
+            </div>
+
+            <div class="mt-3">
+              <label class="rk-label" for="block-message">{{'ACCOUNTSETTINGS.BlockMessage' | translate}}</label>
+              <input type="text" class="rk-input w-100" id="block-message" formControlName="blockMessage"
+                [(ngModel)]="signupUser.company.blockMessage">
+            </div>
+
+            <div class="d-flex justify-content-end mt-3 mb-2">
+              <button class="btn btn-small btn-accent" style="min-width: 100px;"
+                (click)="companyFormSubmit()">{{'Save' | translate}}</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-12 col-md-4 mt-3" *ngIf="activeTabNumber === 2">
+          <form [formGroup]="changePasswordForm">
+            <h5 class="rk-head-title">{{'ACCOUNTSETTINGS.ChangePassword' | translate}}</h5>
+
+            <div>
+              <label class="rk-label" for="current-password">{{'ACCOUNTSETTINGS.CurrentPassword' | translate}}</label>
+              <input type="password" class="rk-input w-100" id="current-password" [(ngModel)]="currentPassword"
+                formControlName="currentPassword" placeholder="{{'ACCOUNTSETTINGS.CurrentPassword' | translate}}">
+            </div>
+
+            <div class="mt-3">
+              <label class="rk-label" for="new-password">{{'ACCOUNTSETTINGS.NewPassword' | translate}}</label>
+              <input type="password" class="rk-input w-100" id="new-password"
+                placeholder="{{'ACCOUNTSETTINGS.NewPassword' | translate}}" [(ngModel)]="signupUser.password" (ngModelChange)="checkPasswordStrength()"
+                formControlName="password">
+            </div>
+
+            <div class="mt-3">
+              <label class="rk-label"
+                for="confirm-password">{{'ACCOUNTSETTINGS.ConfirmNewPassword' | translate}}</label>
+              <input type="password" class="rk-input w-100" id="confirm-password"
+                placeholder="{{'ACCOUNTSETTINGS.ConfirmNewPassword' | translate}}"
+                [(ngModel)]="signupUser.passwordAgain" formControlName="passwordAgain">
+            </div>
+
+            <div class="mt-2">
+              <div class="password-strength justify-content-end">
+                <div [ngClass]="{ active: passwordStrength > 0 }"></div>
+                <div [ngClass]="{ active: passwordStrength > 1 }"></div>
+                <div [ngClass]="{ active: passwordStrength > 2 }"></div>
+                <div [ngClass]="{ active: passwordStrength > 3 }"></div>
               </div>
             </div>
 
-          </div>
-
+            <div class="d-flex justify-content-end mt-3 mb-2" (click)="changePasswordFormSubmit()">
+              <button class="btn btn-small btn-accent"
+                style="min-width: 100px;">{{'ACCOUNTSETTINGS.Save' | translate}}</button>
+            </div>
+          </form>
         </div>
 
       </div>
     </div>
-
-
   </div>
 </div>

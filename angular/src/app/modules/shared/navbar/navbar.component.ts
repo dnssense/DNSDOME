@@ -1,14 +1,17 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Location } from '@angular/common';
 import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { ConfigService } from 'src/app/core/services/config.service';
+import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { Notification, NotificationApiService, NotificationRequest } from 'src/app/core/services/notification-api.service';
+import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -16,10 +19,32 @@ const misc: any = {
     disabled_collapse_init: 0
 };
 
+export interface HelpRoute {
+    appRoute: string;
+    helpRouteEn: string;
+    helpRouteTr: string;
+}
+
+const helpRoutes: HelpRoute[] = [
+    { appRoute: '/admin/dashboard', helpRouteEn: 'dashboard/overview', helpRouteTr: 'dashboard/genel-bakis' },
+    { appRoute: '/admin/reports/monitor', helpRouteEn: 'monitor/overview', helpRouteTr: 'monitoer/genel-bakis' },
+    { appRoute: '/admin/reports/custom-reports', helpRouteEn: 'custom-report/overview', helpRouteTr: 'oezellestirilmis-raporlar-custom-report/genel-bakis' },
+    { appRoute: '/admin/deployment/public-ip', helpRouteEn: 'kurulum/public-ip', helpRouteTr: 'kurulum/gercek-public-ip' },
+    { appRoute: '/admin/deployment/devices', helpRouteEn: 'devices/dns-relay-nedir', helpRouteTr: 'devices/dns-relay-nedir' },
+    { appRoute: '/admin/deployment/roaming-clients', helpRouteEn: 'roaming-client/roaming-client', helpRouteTr: 'roaming-client/genel-bakis' },
+    { appRoute: '/admin/settings/profiles', helpRouteEn: 'kurulum/guvenlik-profilleri', helpRouteTr: 'kurulum/guevenlik-profilleri' },
+    { appRoute: '/admin/settings/users', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari' },
+    { appRoute: '/admin/settings/scheduled-reports', helpRouteEn: 'ayarlar/saved-reports', helpRouteTr: 'ayarlar/saved-reports' },
+    { appRoute: '/admin/settings/query-category', helpRouteEn: 'kurulum/query-category', helpRouteTr: 'ayarlar/query-category-araci' },
+    { appRoute: '/admin/settings/change-domain-category', helpRouteEn: 'kurulum/request-changing-domain-category', helpRouteTr: 'ayarlar/request-changing-domain-category' },
+    { appRoute: '/admin/settings/theme-mode', helpRouteEn: 'kurulum/theme-mode', helpRouteTr: 'ayarlar/theme-mode' },
+];
+
 declare var $: any;
 @Component({
     selector: 'app-navbar-cmp',
-    templateUrl: 'navbar.component.html'
+    templateUrl: 'navbar.component.html',
+    styleUrls: ['navbar.component.scss']
 })
 
 export class NavbarComponent implements OnInit {
@@ -30,90 +55,87 @@ export class NavbarComponent implements OnInit {
     private toggleButton: any;
     private sidebarVisible: boolean;
     private _router: Subscription;
-
+    host: ConfigHost;
+    private _;
     @ViewChild('app-navbar-cmp') button: any;
 
-    constructor(location: Location, private element: ElementRef, private router: Router,private notification:NotificationService,
-        private alert: AlertService, private auth: AuthenticationService, private config: ConfigService, private translator: TranslatorService) {
+    title: string;
+    subtitle?: string;
+
+    currentUser: any;
+
+    breadcrumb: string[] = [];
+
+    helpRoute = 'https://docs.roksit.com';
+
+    constructor(
+        location: Location,
+        private element: ElementRef,
+        private router: Router,
+        private notification: NotificationService,
+        private alert: AlertService,
+        private auth: AuthenticationService,
+        private config: ConfigService,
+        private translator: TranslatorService,
+        private notificationApiService: NotificationApiService,
+        private activatedRoute: ActivatedRoute
+    ) {
         this.location = location;
         this.nativeElement = element.nativeElement;
-        this.sidebarVisible = false;
-        this.minimizeSidebar();
+        this.host = this.config.host;
+
+        this.helpUrlChanged(location.path(), this.currentLanguage.toLocaleLowerCase());
     }
 
-    minimizeSidebar() {
-        const body = document.getElementsByTagName('body')[0];
+    notifications: Notification[] = [];
 
-        if (misc.sidebar_mini_active === true) {
-            body.classList.remove('sidebar-mini');
-            misc.sidebar_mini_active = false;
+    unReadedNotificationsCount = 0;
 
-        } else {
-            setTimeout(function () {
-                body.classList.add('sidebar-mini');
+    showSidebar = false;
 
-                misc.sidebar_mini_active = true;
-            }, 300);
+    @ViewChild('sidebar') sidebar: RkModalModel;
+
+    _menuItems: RkMenuItem[] = [
+        { id: 0, path: '/admin/dashboard', text: 'Dashboard', icon: 'dashboard', selected: false },
+        { id: 1, path: '/admin/reports/monitor', text: 'Monitor', icon: 'monitor', selected: false },
+        { id: 2, path: '/admin/reports/custom-reports', text: 'Custom Reports', icon: 'custom-reports', selected: false, },
+        {
+            id: 3, path: '/admin/', text: 'Deployment', icon: 'dashboard', selected: false,
+            subMenu: [
+                { id: 3.1, path: 'deployment/public-ip', text: 'Public IP', icon: 'public-ip', selected: false },
+                { id: 3.2, path: 'deployment/devices', text: 'Devices', icon: 'device', selected: false },
+                { id: 3.3, path: 'deployment/roaming-clients', text: 'Roaming Clients', icon: 'roaming-clients', selected: false },
+            ]
+        },
+        {
+            id: 4, path: '/admin/', text: 'Settings', icon: 'settings', selected: false,
+            subMenu: [
+                { id: 4.1, path: 'settings/users', text: 'User', icon: 'user', selected: false },
+                { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
+                { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false },
+                { id: 4.4, path: 'settings/query-category', text: 'Query Category', icon: 'tools', selected: false },
+                { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-category', selected: false },
+                { id: 4.6, path: 'settings/theme-mode', text: 'Theme Mode', icon: 'theme-mode', selected: false },
+            ]
         }
-
-        // we simulate the window Resize so the charts will get updated in realtime.
-        const simulateWindowResize = setInterval(function () {
-            window.dispatchEvent(new Event('resize'));
-        }, 180);
-
-        // we stop the simulation of Window Resize after the animations are completed
-        setTimeout(function () {
-            clearInterval(simulateWindowResize);
-        }, 1000);
-    }
-    hideSidebar() {
-        const body = document.getElementsByTagName('body')[0];
-        const sidebar = document.getElementsByClassName('sidebar')[0];
-
-        if (misc.hide_sidebar_active === true) {
-            setTimeout(function () {
-                body.classList.remove('hide-sidebar');
-                misc.hide_sidebar_active = false;
-            }, 300);
-            setTimeout(function () {
-                sidebar.classList.remove('animation');
-            }, 600);
-            sidebar.classList.add('animation');
-
-        } else {
-            setTimeout(function () {
-                body.classList.add('hide-sidebar');
-                // $('.sidebar').addClass('animation');
-                misc.hide_sidebar_active = true;
-            }, 300);
-        }
-
-        // we simulate the window Resize so the charts will get updated in realtime.
-        const simulateWindowResize = setInterval(function () {
-            window.dispatchEvent(new Event('resize'));
-        }, 180);
-
-        // we stop the simulation of Window Resize after the animations are completed
-        setTimeout(function () {
-            clearInterval(simulateWindowResize);
-        }, 1000);
-    }
+    ];
 
     ngOnInit() {
         this.listTitles = ROUTES.filter(listTitle => listTitle);
-       // this.listTitles.push(...ProfileRoutes);
 
-        const navbar: HTMLElement = this.element.nativeElement;
-        const body = document.getElementsByTagName('body')[0];
-        this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
-        if (body.classList.contains('sidebar-mini')) {
-            misc.sidebar_mini_active = true;
+        this.getNotifications();
+
+        const user = JSON.parse(localStorage.getItem('currentSession'));
+
+        if (user) {
+            this.currentUser = user.currentUser;
         }
-        if (body.classList.contains('hide-sidebar')) {
-            misc.hide_sidebar_active = true;
-        }
+
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
-            this.sidebarClose();
+
+            const url = event.url;
+
+            this.helpUrlChanged(url, this.currentLanguage.toLocaleLowerCase());
 
             const $layer = document.getElementsByClassName('close-layer')[0];
             if ($layer) {
@@ -121,111 +143,58 @@ export class NavbarComponent implements OnInit {
             }
         });
     }
-    onResize(event) {
-        if ($(window).width() > 991) {
-            return false;
-        }
-        return true;
+
+    getBaseHelpPage() {
+        return this.currentLanguage.toLocaleLowerCase() == 'tr' ? `${this.host.docUrl}` : `${this.host.docUrl}/v/${this.currentLanguage.toLocaleLowerCase()}`;
     }
-    sidebarOpen() {
-        var $toggle = document.getElementsByClassName('navbar-toggler')[0];
-        const toggleButton = this.toggleButton;
-        const body = document.getElementsByTagName('body')[0];
-        setTimeout(function () {
-            toggleButton.classList.add('toggled');
-        }, 500);
-        body.classList.add('nav-open');
-        setTimeout(function () {
-            $toggle.classList.add('toggled');
-        }, 430);
 
-        var $layer = document.createElement('div');
-        $layer.setAttribute('class', 'close-layer');
+    getNotifications() {
+        this.notificationApiService.getNotifications(new NotificationRequest()).subscribe(result => {
+            this.notifications = result;
 
+            this.unReadedNotificationsCount = this.notifications.filter(x => x.status === 0).length;
+        });
+    }
 
-        if (body.querySelectorAll('.main-panel')) {
-            document.getElementsByClassName('main-panel')[0].appendChild($layer);
-        } else if (body.classList.contains('off-canvas-sidebar')) {
-            document.getElementsByClassName('wrapper-full-page')[0].appendChild($layer);
-        }
+    setAsRead(notification: Notification) {
+        if (notification.status === 0) {
+            notification.status = 1;
 
-        setTimeout(function () {
-            $layer.classList.add('visible');
-        }, 100);
-
-        $layer.onclick = function () { //asign a function
-            body.classList.remove('nav-open');
-            this.mobile_menu_visible = 0;
-            this.sidebarVisible = false;
-
-            $layer.classList.remove('visible');
-            setTimeout(function () {
-                $layer.remove();
-                $toggle.classList.remove('toggled');
-            }, 400);
-        }.bind(this);
-
-        body.classList.add('nav-open');
-        this.mobile_menu_visible = 1;
-        this.sidebarVisible = true;
-    };
-
-    sidebarClose() {
-        var $toggle = document.getElementsByClassName('navbar-toggler')[0];
-        const body = document.getElementsByTagName('body')[0];
-        this.toggleButton.classList.remove('toggled');
-        var $layer = document.createElement('div');
-        $layer.setAttribute('class', 'close-layer');
-
-        this.sidebarVisible = false;
-        body.classList.remove('nav-open');
-        // $('html').removeClass('nav-open');
-        body.classList.remove('nav-open');
-        if ($layer) {
-            $layer.remove();
-        }
-
-        setTimeout(function () {
-            $toggle.classList.remove('toggled');
-        }, 400);
-
-        this.mobile_menu_visible = 0;
-    };
-
-    sidebarToggle() {
-        if (this.sidebarVisible === false) {
-            this.sidebarOpen();
-        } else {
-            this.sidebarClose();
+            this.notificationApiService.updateNotification(notification).subscribe(result => { });
         }
     }
 
-    getTitle() {
-        let titlee: string = this.location.prepareExternalUrl(this.location.path());
-        titlee = titlee.substring(1);
-        for (let i = 0; i < this.listTitles.length; i++) {
-            if (this.listTitles[i].type === "link" && this.listTitles[i].path === titlee) {
-                return this.listTitles[i].title;
-            } else if (this.listTitles[i].type === "sub") {
-                for (let j = 0; j < this.listTitles[i].children.length; j++) {
-                    let subtitle = this.listTitles[i].path + '/' + this.listTitles[i].children[j].path;
-                    if (subtitle === titlee) {
-                        return this.listTitles[i].children[j].title;
-                    }
-                }
-            }
+    get getTitle() {
+        let title: string = this.location.prepareExternalUrl(this.location.path()).substring(7);
+
+        const questionIndex = title.indexOf('?');
+
+        if (questionIndex > -1) {
+            title = title.substring(0, questionIndex);
         }
-        return 'Dashboard';
+
+        this.breadcrumb = title.substring(1).trim().split('/').map(x => this.getCleanText(x));
+
+        return title.split('/').map(x => this.getCleanText(x));
     }
+
+    getCleanText(t: string) {
+        return t
+            .replace('-', ' ')
+            .replace('/', ' ');
+    }
+
     getPath() {
-        return this.location.prepareExternalUrl(this.location.path());
+        const path = this.location.prepareExternalUrl(this.location.path());
+
+        return path;
     }
 
     logout() {
         this.alert.alertWarningAndCancel(
-            this.translator.translate('AreYouSure'), 
+            this.translator.translate('AreYouSure'),
             this.translator.translate('LOGOUT.LogoutMessage')
-            ).subscribe(
+        ).subscribe(
             res => {
                 if (res) {
                     this.alert.alertAutoClose(
@@ -237,8 +206,46 @@ export class NavbarComponent implements OnInit {
         );
     }
 
-    language(lang: string) {
-        this.config.setTranslationLanguage(lang);
+    get currentLanguage() {
+        return this.config.getTranslationLanguage().toUpperCase();
+    }
+
+    setLanguage(lang: string) {
+        this.config.setDefaultLanguage(lang);
         this.notification.success(this.translator.translate('LanguageChanged'));
-      }
+
+        this.helpUrlChanged(this.router.url, lang);
+    }
+
+    helpUrlChanged(url: string, lang: string) {
+        const findedAppRoute = helpRoutes.find(x => x.appRoute === url);
+
+        if (findedAppRoute) {
+            this.helpRoute = `${this.getBaseHelpPage()}/${this.currentLanguage.toLocaleLowerCase() === 'en' ? findedAppRoute.helpRouteEn : findedAppRoute.helpRouteTr}`;
+        } else {
+            this.helpRoute = this.getBaseHelpPage();
+        }
+    }
+
+    setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, existsSubMenu = false) {
+        this._menuItems.forEach(elem => elem.selected = false);
+
+        menuItem.selected = true;
+
+        this._menuItems.forEach(elem => {
+            if (elem.subMenu) {
+                elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
+            }
+        });
+
+        if (!existsSubMenu) {
+            this.sidebar.toggle();
+        }
+
+        if (subMenuItem) {
+            subMenuItem.selected = true;
+
+            this.sidebar.toggle();
+        }
+    }
 }

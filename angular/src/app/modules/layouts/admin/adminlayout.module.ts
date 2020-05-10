@@ -25,7 +25,6 @@ import { MdModule } from '../../shared/md/md.module';
     FooterModule,
     SidebarModule,
     MdModule
-
   ]
 })
 export class AdminLayoutModule { }

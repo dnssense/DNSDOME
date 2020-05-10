@@ -20,14 +20,14 @@ const adminlayoutRoutes: Routes = [
       },
       {
         path: 'reports',
-        canActivate: [RoleGuard], 
+        canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
         loadChildren: '../../reports/reports.module#ReportsModule'
       },
       {
-        path: 'devices',
+        path: 'deployment/devices',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -35,7 +35,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../devices/devices.module#DevicesModule'
       },
       {
-        path: 'publicip',
+        path: 'deployment/public-ip',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -43,7 +43,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../publicip/publicip.module#PublicipModule'
       },
       {
-        path: 'profiles',
+        path: 'settings/profiles',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -51,15 +51,15 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../securityprofiles/securityprofiles.module#SecurityProfilesModule'
       },
       {
-        path: 'accountsettings',
+        path: 'account-settings',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
-        loadChildren:'../../accountsettings/accountsettings.module#AccountSettingsModule'
+        loadChildren: '../../accountsettings/accountsettings.module#AccountSettingsModule'
       },
       {
-        path: 'scheduledreports',
+        path: 'settings/scheduled-reports',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -68,7 +68,7 @@ const adminlayoutRoutes: Routes = [
           '../../scheduledreports/scheduledreports.module#ScheduledReportsModule'
       },
       {
-        path: 'users',
+        path: 'settings/users',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -76,15 +76,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../users/users.module#UsersModule'
       },
       {
-        path: 'help',
-        canActivate: [RoleGuard],
-        data: {
-          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
-        },
-        loadChildren: '../../help/help.module#HelpModule'
-      },
-      {
-        path: 'roaming',
+        path: 'deployment/roaming-clients',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
@@ -92,14 +84,30 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../roaming/roaming.module#RoamingModule'
       },
       {
-        path: 'tools',
+        path: 'settings/query-category',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
         loadChildren: '../../tools/tools.module#ToolsModule'
       },
-      { path: '**', redirectTo: '', pathMatch: 'full' }
+      {
+        path: 'settings/change-domain-category',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
+        loadChildren: '../../category-request/category-request.module#CategoryRequestModule'
+      },
+      {
+        path: 'settings/theme-mode',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
+        loadChildren: '../../theme/theme.module#ThemeModule'
+      },
+      { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
 ];

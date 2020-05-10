@@ -16,4 +16,4 @@ export const geoLocation = {
     getCurrent: (http: HttpClient): Observable<GeoLocation> => {
         return http.get<GeoLocation>('https://ipapi.co/json');
     }
-}
+};;

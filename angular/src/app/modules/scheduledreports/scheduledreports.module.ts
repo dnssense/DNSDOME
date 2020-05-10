@@ -8,12 +8,13 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
-
-
+import { IconsModule, RkRadioModule, RkTableModule } from 'roksit-lib';
 
 @NgModule({
   declarations: [
-    ScheduledReportsComponent,FieldErrorDisplayComponent],
+    ScheduledReportsComponent,
+    FieldErrorDisplayComponent
+  ],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -26,8 +27,10 @@ import { FieldErrorDisplayComponent } from './components/field-error-display/fie
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    IconsModule,
+    RkRadioModule,
+    RkTableModule
   ]
-
 })
 export class ScheduledReportsModule { }

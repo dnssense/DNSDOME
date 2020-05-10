@@ -1,8 +1,8 @@
+
 import { Role } from './Role';
-import { Company } from './Company';
 
 export class User {
-    public id: number = -1;
+    public id = -1;
     public username: string;
     public password: string;
     public name: string;
@@ -10,22 +10,22 @@ export class User {
     public gsm: string;
     public gsmCode: string;
     public language: string;
-    public locked: boolean = false;
+    public locked = false;
     public isLocked: number;
-    public active: boolean = true;
+    public active = true;
     public isActive: number;
     public roles: Role;
-    public companyId:number;
-   // public company: Company;
-   // public passwordAgain: string;
-   /*  public gsmVerification: boolean = false;
-    public emailVerification: boolean = false; */
-    public twoFactorAuthentication: boolean = false;
+    public companyId: number;
+    public twoFactorAuthentication = false;
     public usageType: number;
+    public isGsmVerified = false;
 
+    /**
+     * @description For UI
+     */
+    selected ?= false;
 }
 
-export class UserExtended extends User{
-    passwordAgain:string;
+export class UserExtended extends User {
+    passwordAgain: string;
 }
-

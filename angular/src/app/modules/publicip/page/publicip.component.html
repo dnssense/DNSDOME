@@ -1,322 +1,244 @@
-<div class="main-content">
-  <div class="container-fluid col-md-11">
-
-    <section id="publicIpPanel" class="publicIpPanel">
-
-      <form [formGroup]="publicIpForm" class="publicIpForm" id="newIpRow" style="display: none;" data-step="5"
-        data-intro="Save to start" data-position='bottom-middle-aligned'>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-12 pl-0 pr-0 mb-3">
-              <div class="dns-base-card d-none d-block" id="filterCard">
-                <div class="dns-base-card-header">
-                </div>
-                <div class="dns-base-card-content">
-                  <div class="container-fluid">
-                    <div class="row" id="pi_add_filter">
-                      <div class="col-12 d-flex">
-                        <h4 class="mr-3 flex-1">Public IP </h4>
-                        <button class="btns btn-clear text-right close-btn" (click)="openTooltipGuide()"
-                          title="Start Form Guide">
-                          <i class="fa fa-lightbulb-o" style="color: orange;" aria-hidden="true"></i>
-                        </button>
-                        <button class="btns btn-clear text-right close-btn" (click)="hideNewWizard()"
-                          title="Close Form">
-                          <img src="./assets/images/icons/close.svg">
-                        </button>
-                      </div>
-                      <div class="col-12 col-sm-3 d-flex align-items-end">
-                        <input type="text" class="dns-form-control reverse-form" name="agentName" id="agentName"
-                          placeholder="Name" [(ngModel)]="selectedIp.agentAlias"
-                          formControlName="agentName" data-step="2" data-position='bottom-middle-aligned'
-                          data-intro="Please give a name for the Public Ip">
-                      </div>
-                      <div class="col-12 col-sm-3 d-flex flex-column">
-                        <div class="flex-1" data-step="1" data-intro="Please identify your external IP type. It can be static or dynamic"
-                          data-position='auto'>
-                          <div class="dns-radio">
-                            <input id="IpType1" name="ipType" type="radio" value="staticIp" [(ngModel)]="ipType"
-                              (click)="onSelectionChangeIPType('staticIp')" formControlName="ipType">
-                            <label for="IpType1" class="ipType">Static IP</label>
-                          </div>
-                          <div class="dns-radio">
-                            <input id="IpType2" name="ipType" type="radio" value="dynamicIp" [(ngModel)]="ipType"
-                              (click)="onSelectionChangeIPType('dynamicIp')" formControlName="ipType">
-                            <label for="IpType2" class="ipType">Dynamic IP</label>
-                          </div>
-                        </div>
-                        <div class="flex-1 d-flex flex-column" data-step="3"
-                          data-intro="Please identify your external IP Address. Please ask your network administrator  or google “What is my IP”"
-                          data-position='auto'>
-                          <ng-container *ngIf="ipType=='dynamicIp'; else elseTemplateIpType">
-                            <div id="dnsFqnDiv" name="dnsFqnDiv" class="dns-ip-input-container mt-3">
-                              <input type="text" id="dnsFqdn" name="dnsFqdn" class="dns-form-control reverse-form"
-                                [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn"
-                                placeholder="DNS FQDN">
-                            </div>
-                          </ng-container>
-                          <ng-template #elseTemplateIpType>
-                            <div class="dns-ip-input-container mt-3"
-                              *ngFor="let row of selectedIp.staticSubnetIp; index as i">
-                              <input type="text" maxlength="15" name="'ip'+i"
-                                (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)" placeholder="IP"
-                                [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" formControlName="ip{{i}}">
-                              <span class="color-4a4a4a size-14 mr-2">/</span>
-                              <div class="1dnssense-select light-select">
-                                <select class="options mr-1" [(ngModel)]="selectedIp.staticSubnetIp[i].mask"
-                                  [ngModelOptions]="{ standalone: true }">
-                                  <option value="0" disabled selected>Mask</option>
-                                  <option *ngFor="let ind of ipRanges;" [ngValue]="ind">{{ind}}</option>
-                                </select>
-                              </div>
-                              <ng-container *ngIf="i>0; else elseTemplate11">
-                                <button mat-raised-button type="button"
-                                  class="btn btn-danger btn-link btn-just-icon btn-sm"
-                                  (click)="removeElementFromIpList(i)">
-                                  <i class="material-icons">close</i>
-                                </button>
-                              </ng-container>
-                              <ng-template #elseTemplate11>
-                                <button type="button" class="btn btn-success btn-just-icon btn-sm"
-                                  [matTooltipShowDelay]="800" matTooltip="Add Another Ip" (click)="addIpRangeToList()">
-                                  <i class="material-icons">add_circle_outline</i>
-                                </button>
-                              </ng-template>
-                            </div>
-                          </ng-template>
-
-                        </div>
-                      </div>
-                      <div class="col-12 col-sm-3 d-flex align-items-end">
-                        <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" data-step="4"
-                          data-intro="Please select a predefined security profile or create new one" data-position='top'>
-                          <button class="btns dropdown-toggle dns-full-width reverse-form text-left" type="button"
-                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <ng-container
-                              *ngIf="selectedIp.rootProfile && selectedIp.rootProfile.name; else elseTemplateSelectedProfile">
-                              {{selectedIp.rootProfile.name}}
-                            </ng-container>
-                            <ng-template #elseTemplateSelectedProfile>
-                              Select Profile
-                            </ng-template>
-                            <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-                            <div class="table-responsive" style="max-height: 300px;">
-                              <button class="dropdown-item" *ngFor="let p of securityProfiles"
-                                (click)="securityProfileChanged(p.id)">
-                                {{p.name}}
-                              </button>
-                            </div>
-
-                            <div class="dropdown-divider"></div>
-                            <button class="btns btn-teritary dropdown-item-btn border-radius-8 dns-full-width m-2"
-                              (click)="showNewProfileWizard()">
-                              <img src="./assets/images/icons/settings.svg">
-                              <span class="ml-2">New Profile</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-12 col-sm-3 d-flex align-items-end">
-                        <button class="btns reverse-form dns-full-width" id="defaultSaveBtn"
-                          [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile"
-                          [matTooltipShowDelay]="800"
-                          [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
-                          (click)="savePublicIp()">
-                          <i class="fa fa-save"></i> <span class="ml-2">Save</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    <div class="row align-items-center d-none" id="advancedContent">
-                      <div class="col-12 col-lg-3 mt-3 ml-lg-0">
-                        <input type="file" class="inputfile inputfile-4" id="fileUpload" (change)="selectFile($event)"
-                          accept="image/*">
-                        <label for="fileUpload">
-                          <figure>
-                            <ng-container *ngIf="selectedIp.logo; else elseTemplateLogo">
-                              <img src="{{selectedIp.logo}}" class="dns-full-width" accept="image/png, image/jpeg">
-                            </ng-container>
-                            <ng-template #elseTemplateLogo>
-                              <img src="./assets/images/icons/upload-image.svg" class="dns-full-width">
-                            </ng-template>
-                          </figure>
-                          <span>Add Chose Block Image</span>
-                        </label>
-                      </div>
-                      <div class="col-12 col-lg-3 mt-3 ml-lg-0">
-                        <textarea type="text" placeholder="Block Message" class="dns-form-control reverse-form"
-                          id="blockMessage" name="blockMessage" [(ngModel)]="selectedIp.blockMessage"
-                          formControlName="blockMessage"></textarea>
-                      </div>
-                      <div class="col-12 col-lg-3 mt-3 ml-lg-0">
-                        <input type="text" placeholder="Sinkhole IP" class="dns-form-control reverse-form"
-                          name="cyberXRayIp" id="cyberXRayIp" (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)"
-                          [(ngModel)]="selectedIp.cyberXRayIp" formControlName="cyberXRayIp">
-                      </div>
-                      <div class="col-12 col-lg-3 mt-3 ml-lg-0 d-flex align-items-end">
-                        <button class="btns reverse-form dns-full-width" id="advancedSaveBtn"
-                          [disabled]="!isNewItemUpdated" matTooltip="Save with selected profile"
-                          [ngClass]="{'btn-success' : isNewItemUpdated, 'btn-default' : !isNewItemUpdated}"
-                          (click)="savePublicIp()">
-                          <i class="fa fa-save"></i>
-                          <span class="ml-2">Save</span>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-12 text-right">
-                        <button class="btns btn-clear p-0" id="advancedBtn">
-                          <i class="icon-down-open-big mr-2" id="advancedBtnIcon"></i>
-                          Advanced
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-
-      <div class="row mt-4">
-        <div class="col-md-12">
-          <div class="dns-base-card">
-            <div class="dns-base-card-header pt-3">
-              <div class="row">
-
-                <button class="btns btn-teritary border-radius-8" id="pi_card_btn" matTooltip="Create a new Public IP"
-                  [matTooltipShowDelay]="800" (click)="showNewIpForm()">
-                  <img src="assets/images/icons/add.svg">
-                  Create New Agent
-                </button>
-                <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                  <span class="mr-3 flex-1">Public IP/Agents</span>
-                  <div class="search-form flex-1">
-                    <img src="assets/images/icons/search.svg" class="icon">
-                    <input type="text" class="dns-form-control reverse-form" placeholder="Search by name"
-                      [(ngModel)]="searchKey" (ngModelChange)="searchByKeyword($event)" />
-                  </div>
-                  <div class="dns-datatable-pagination ml-3 d-inline-flex align-items-center flex-1">
-                    <!-- <span>Show Rows</span>
-                    <div class="dnssense-select ml-3">
-                      <select>
-                        <option>10</option>
-                        <option>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                      </select>
-                    </div>
-                    <div class="page-numbers ml-3 mr-3">1 - 109</div>
-                    <button class="btns page-prev">
-                      <i class="icon-left-open-big"></i>
-                    </button>
-                    <button class="btns page-next">
-                      <i class="icon-right-open-big"></i>
-                    </button> -->
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="dns-base-card-content">
-              <div class="table-responsive" style="max-height: 600px;">
-                <table class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
-                  <thead>
-                    <th class="no-border"></th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Name</th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Ip Type</th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Ip Address/Domain</th>
-                    <!-- <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Block Message</th> -->
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Profile</th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Block Logo</th>
-                    <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);" colspan="2" class="text-center">Operation</th>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let pi of publicIpsFiltered; let i = index;">
-                      <td class="numeration">{{i+1}}</td>
-                      <td><small>{{pi.agentAlias}}</small></td>
-                      <td>
-                        <ng-container
-                          *ngIf="pi.staticSubnetIp && pi.staticSubnetIp.length > 0; else elseTemplateIpType2">
-                          <small>Static</small>
-                        </ng-container>
-                        <ng-template #elseTemplateIpType2>
-                          <small>Dynamic</small>
-                        </ng-template>
-                      </td>
-                      <td>
-                        <small>
-                          <div *ngIf="pi.staticSubnetIp && pi.staticSubnetIp.length > 0">
-                            <div *ngFor="let pis of pi.staticSubnetIp">[{{pis.baseIp}}]/[{{pis.mask}}] </div>
-                          </div>
-                          <div *ngIf="!pi.staticSubnetIp && pi.dynamicIpDomain">
-                            [{{pi.dynamicIpDomain}}]
-                          </div>
-
-                        </small>
-                      </td>
-                      <!-- <td><small>{{pi.blockMessage?pi.blockMessage:"No Message!"}}</small></td> -->
-                      <td>
-                        <button class="btns btn-clear btnOverFlow profileBtn text-left" [matTooltipShowDelay]="800"
-                          matTooltip="Edit Profile" (click)="showProfileEditWizard(pi.id)">
-                          <img src="./assets/images/icons/settings-outline.svg">
-                          <small>{{pi.rootProfile?pi.rootProfile.name:"No Profile!"}}</small>
-                        </button>
-
-                      </td>
-                      <td>
-                        <!-- <img src="{{pi.logo}}" class="picture-src" id="wizardPicturePreview" title="logo" /> -->
-                        <ng-container *ngIf="pi.logo; else elseTemplatePiLogo">
-                          <img src="{{pi.logo}}" class="dns-full-width row-img" accept="image/*">
-                        </ng-container>
-                        <ng-template #elseTemplatePiLogo>
-                          <img src="./assets/images/icons/upload-image.svg" accept="image/*"
-                            class="dns-full-width row-img">
-                        </ng-template>
-                      </td>
-                      <td class="text-center">
-                        <button class="btns btn-clear" matTooltip="Edit item" [matTooltipShowDelay]="800"
-                          (click)="showEditWizard(pi.id)">
-                          <img src="./assets/images/icons/edit.svg">
-                        </button>
-                      </td>
-                      <td class="text-center">
-                        <button class="btns btn-clear" matTooltip="Delete item" [matTooltipShowDelay]="800"
-                          (click)="deletePublicIp(pi.id)">
-                          <img src="./assets/images/icons/close-red.svg">
-                        </button>
-                      </td>
-                    </tr>
-                    <tr *ngIf="publicIpsFiltered == null || publicIpsFiltered.length<1">
-                      <td class="numeration"></td>
-                      <td colspan="10">No Data</td>
-                    </tr>
-                  </tbody>
-
-                </table>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="wizardPanel" class="wizardPanel" style="display: none;">
+<div class="rk-base-card">
+  <div class="card-item">
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-md-12">
-          <button mat-raised-button type="button" class="btn btn-warning" (click)="hideWizard()">
-            <i class="material-icons">arrow_back</i>
+        <div class="col-12 p-0 d-flex align-items-center justify-content-between">
+          <h5 class="page-title">{{'PublicIp'|translate}}</h5>
+
+          <button class="btn btn-icon btn-small ml-2" (click)="showNewIpForm()">
+            <i-feather name="plus"></i-feather>
+            {{'AddNewIp'|translate}}
           </button>
-          <app-profile-wizard [selectedAgent]="selectedAgent" [startWizard]="startWizard" [saveMode]="saveMode"
-            (saveEmitter)="hideWizardWithoutConfirm();"></app-profile-wizard>
+        </div>
+
+        <rk-modal #agentModal>
+          <rk-modal-header icon="plus">
+            <rk-modal-header-title>
+              <h5>{{'CreateNewAgent'|translate}}</h5>
+            </rk-modal-header-title>
+            <rk-modal-header-close (click)="agentModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+            <form [formGroup]="publicIpForm" class="publicIpForm">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-6">
+                    <rk-radio name="ipType" (valueChange)="onSelectionChangeIPType('staticIp')"
+                      [checked]="ipType == 'staticIp'">{{'StaticIp'|translate}}</rk-radio>
+                  </div>
+                  <div class="col-6">
+                    <rk-radio name="ipType" (valueChange)="onSelectionChangeIPType('dynamicIp')"
+                      [checked]="ipType == 'dynamicIp'">{{'DynamicIp'|translate}}</rk-radio>
+                  </div>
+                </div>
+
+                <div class="row mt-3 mb-1">
+                  <div class="col-12 d-flex justify-content-center">
+                    <input type="file" class="input-file" id="fileUpload" (change)="selectFile($event)"
+                      accept="image/*">
+                    <label for="fileUpload" class="mx-auto d-flex flex-column align-items-center">
+                      <figure>
+                        <ng-container *ngIf="selectedIp.logo; else elseTemplateLogo">
+                          <img src="{{ selectedIp.logo }}" class="w-100" accept="image/png, image/jpeg">
+                        </ng-container>
+                        <ng-template #elseTemplateLogo>
+                          <div class="file-upload mx-auto">
+                            <i-feather name="plus"></i-feather>
+                          </div>
+                        </ng-template>
+                      </figure>
+                      <span class="file-upload-text">{{'BlockPageLogo'|translate}}</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12">
+                    <input type="text" class="rk-input w-100" placeholder="{{'Name'|translate}}" name="agentName"
+                      id="agentName" [(ngModel)]="selectedIp.agentAlias" formControlName="agentName" maxlength="64">
+
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.AgentAlias' | translate}}</p>
+                  </div>
+
+                  <ng-container *ngIf="ipType == 'dynamicIp'; else elseTemplateIpType">
+                    <div id="dnsFqnDiv" name="dnsFqnDiv" class="col-12 mt-2">
+                      <input type="text" id="dnsFqdn" name="dnsFqdn" class="rk-input w-100"
+                        [(ngModel)]="selectedIp.dynamicIpDomain" formControlName="dnsFqdn"
+                        placeholder="{{'DNSFQDN'|translate}}">
+                    </div>
+
+                    <div class="col-12">
+                      <p class="rk-description m-0">{{'PublicIpDescriptions.IpType' | translate}}</p>
+                    </div>
+                  </ng-container>
+
+                  <ng-template #elseTemplateIpType>
+                    <div class="col-12 d-flex mt-3" *ngFor="let row of selectedIp.staticSubnetIp; index as i">
+                      <div class="rk-input-container">
+                        <span style="flex: 2">
+                          <input type="text" placeholder="{{'IP'|translate}}" maxlength="15" name="'ip'+i"
+                            (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)"
+                            [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" [ngModelOptions]="{standalone: true}">
+                          /
+                        </span>
+
+                        <rk-select [placeholder]="selectedIp.staticSubnetIp[i].mask" [options]="ipRanges"
+                          [(value)]="selectedIp.staticSubnetIp[i].mask">
+                        </rk-select>
+                      </div>
+
+                      <ng-container *ngIf="i > 0; else elseTemplate11">
+                        <button class="btn btn-icon p-0 px-2 ml-1" (click)="removeElementFromIpList(i)">
+                          <i-feather name="trash-2" class="mr-0 fill-red"></i-feather>
+                        </button>
+                      </ng-container>
+
+                      <ng-template #elseTemplate11>
+                        <button class="btn btn-icon fill-white p-0 px-2 ml-1" style="background: var(--primary)" (click)="addIpRangeToList()">
+                          <i-feather name="plus" class="mr-0"></i-feather>
+                        </button>
+                      </ng-template>
+                    </div>
+                  </ng-template>
+
+                  <div class="col-12 mt-3">
+                    <rk-select [options]="securityProfilesForRkSelect" placeholder="{{'SelectProfile'|translate}}"
+                      (valueChange)="securityProfileChanged($event)" [isShowButton]="true" buttonIcon="plus"
+                      buttonText="Create new profile" (buttonClickEmitter)="rkSelectButtonClicked($event)">
+                    </rk-select>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.Profile' | translate}}</p>
+                  </div>
+
+                  <div class="col-12 mt-3">
+                    <textarea class="rk-input textarea w-100 resize:none" name="blockMessage" id="blockMessage"
+                      [(ngModel)]="selectedIp.blockMessage" placeholder="{{'BlockMessage'|translate}}" rows="4"
+                      [ngModelOptions]="{standalone: true}"></textarea>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.BlockMessage' | translate}}</p>
+                  </div>
+
+                  <div class="col-12 mt-3">
+                    <input type="text" class="rk-input w-100" placeholder="{{'SinkHoleIp'|translate}}"
+                      (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)" [(ngModel)]="selectedIp.cyberXRayIp"
+                      [ngModelOptions]="{standalone: true}">
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp1' | translate}}</p>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp2' | translate}}</p>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn w-100 btn-small mr-2" id="defaultSaveBtn" [disabled]="!isNewItemUpdated"
+              (click)="savePublicIp()">{{'Apply'|translate}}</button>
+            <button class="btn w-100 btn-default btn-small" (click)="agentModal.toggle()">{{'Close'|translate}}</button>
+          </rk-modal-footer>
+        </rk-modal>
+
+        <rk-modal #profileModal>
+          <rk-modal-header>
+            <rk-modal-header-title>
+              <h5>{{'SecurityProfile'|translate}}</h5>
+            </rk-modal-header-title>
+            <rk-modal-header-close (click)="profileModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+
+            <app-profile-wizard #profileWizard [selectedAgent]="selectedAgent" [currentStep]="currentStep"
+              [saveMode]="saveMode" (saveEmitter)="saveProfileEmit()"></app-profile-wizard>
+
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn w-100 btn-small mr-2" (click)="saveProfile()">{{'Save'|translate}}</button>
+            <button class="btn w-100 btn-small" (click)="nextStep()">{{'Next'|translate}}</button>
+          </rk-modal-footer>
+        </rk-modal>
+
+        <div class="col-12 p-0 mt-3">
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content justify-content-start">
+                <div class="inf mr-4">
+                  <span class="text-primary">{{ publicIpsFiltered.length }}</span> {{'QueriesListed'|translate}}
+                </div>
+
+                <div class="search ml-5">
+                  <div class="rk-autocomplete-container" style="width: 220px;">
+                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="searchKey"
+                      class="rk-input rk-autocomplete" (ngModelChange)="searchChanged()">
+                    <i-feather class="search-icon" name="search"></i-feather>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <rk-table [showPagination]="false">
+              <ng-template #header>
+                <tr>
+                  <th class="index">#</th>
+                  <th>{{'Name'|translate}}</th>
+                  <th>{{'IpType'|translate}}</th>
+                  <th>{{'IpAddressDomain'|translate}}</th>
+                  <th>{{'SecurityProfile'|translate}}</th>
+                  <th style="width: 85px;">{{'Operation'|translate}}</th>
+                </tr>
+              </ng-template>
+
+              <ng-template #body>
+                <tr *ngFor="let pi of publicIpsFiltered; let i = index">
+                  <td class=" index">{{ i+1 }}</td>
+                  <td>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <span>{{ pi.agentAlias }}</span>
+                      <button class="btn btn-link btn-icon p-0 hover-gray" (click)="showEditWizard(pi.id)">
+                        <i-feather name="settings" class="mr-0"></i-feather>
+                      </button>
+                    </div>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="pi.staticSubnetIp && pi.staticSubnetIp.length > 0; else elseTemplateIpType2">
+                      {{'Static'|translate}}
+                    </ng-container>
+                    <ng-template #elseTemplateIpType2>
+                      {{'Dynamic'|translate}}
+                    </ng-template>
+                  </td>
+                  <td>
+                    <div *ngIf="pi.staticSubnetIp && pi.staticSubnetIp.length > 0">
+                      <div *ngFor="let pis of pi.staticSubnetIp">[{{pis.baseIp}}]/[{{pis.mask}}] </div>
+                    </div>
+                    <div *ngIf="!pi.staticSubnetIp && pi.dynamicIpDomain">
+                      [{{pi.dynamicIpDomain}}]
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <span>{{ pi.rootProfile?pi.rootProfile.name: 'No Profile!' }}</span>
+
+                      <button class="btn btn-link btn-icon p-0 hover-gray" (click)="showProfileEditWizard(pi.id)">
+                        <i-feather name="settings" class="mr-0"></i-feather>
+                      </button>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deletePublicIp(pi.id)">
+                      <i-feather name="trash-2" class="mr-0"></i-feather>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="publicIpsFiltered == null || publicIpsFiltered.length < 1">
+                  <td></td>
+                  <td colspan="10">{{'NoData'|translate}}</td>
+                </tr>
+              </ng-template>
+            </rk-table>
+          </rk-table-container>
         </div>
       </div>
-    </section>
-
-
+    </div>
   </div>
 </div>

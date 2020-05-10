@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Response, Headers, RequestOptions, Http } from "@angular/http";
-import { TranslatorService } from './translator.service';
 import { NotificationService } from './notification.service';
-import { environment } from 'src/environments/environment';
+import { TranslatorService } from './translator.service';
 
 
 @Injectable({
@@ -19,7 +17,7 @@ export class CaptchaService {
   validCaptcha(captcha: string) {
 
 
-
+    
     if (!captcha) {
 
       this.notification.error(this.translator.translate('CaptchaMessage'));

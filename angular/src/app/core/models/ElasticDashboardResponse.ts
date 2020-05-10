@@ -14,7 +14,7 @@ export class ElasticDashboardResponse {
     total_hit: number;
     unique_destip: number;
     unique_domain: number;
-    unique_blocked_domain:number;
+    unique_blocked_domain: number;
     unique_mac: number;
     unique_srcip: number;
     unique_subdomain: number;
@@ -24,8 +24,8 @@ export class ElasticDashboardResponse {
 }
 
 export interface DomainItem {
-    hits: number
-    domain: string
-    category: string[]
-    unique_subdomain: number
+    hits: number;
+    domain: string;
+    category: string[];
+    unique_subdomain: number;
 }

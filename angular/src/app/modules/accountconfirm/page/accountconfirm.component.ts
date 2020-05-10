@@ -4,9 +4,11 @@ import { ConfigService, ConfigHost } from 'src/app/core/services/config.service'
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
-import { SmsService } from 'src/app/core/services/SmsService';
-import { AccountService } from 'src/app/core/services/AccountService';
+import { SmsService } from 'src/app/core/services/smsService';
+import { AccountService } from 'src/app/core/services/accountService';
 import { of } from 'rxjs';
+
+
 
 
 @Component({
@@ -17,7 +19,7 @@ import { of } from 'rxjs';
 export class AccountConfirmComponent implements OnInit, OnDestroy {
   host: ConfigHost;
   toggleButton: any;
-  activated: number = 0;
+  activated = 0;
   accountActivateId: string;
   /**
    *
@@ -50,7 +52,7 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
       // this.notification.success('Account activated');
       of(null).delay(2000).subscribe(() => {
         this.router.navigateByUrl('/login');
-      })
+      });
     }, err => {
       this.activated = -1;
       throw err;

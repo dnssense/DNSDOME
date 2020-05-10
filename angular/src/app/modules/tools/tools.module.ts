@@ -9,6 +9,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { AmazingTimePickerModule } from 'amazing-time-picker'; 
+import { IconsModule } from 'roksit-lib';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { AmazingTimePickerModule } from 'amazing-time-picker';
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    IconsModule
   ]
 
 })

@@ -10,9 +10,10 @@ import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
-import { ReCaptchaModule } from 'angular2-recaptcha';
+
 import { CountdownTimerModule } from 'ngx-countdown-timer';
 import { FooterModule } from '../shared/footer/footer.module';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 @NgModule({
   declarations: [LoginComponent, FieldErrorDisplayComponent],
@@ -22,7 +23,7 @@ import { FooterModule } from '../shared/footer/footer.module';
     ReactiveFormsModule,
     NouisliderModule,
     MaterialModule,
-    ReCaptchaModule,
+    RecaptchaModule,
     LoginRoutingModule,
     FooterModule,
     CountdownTimerModule.forRoot(),

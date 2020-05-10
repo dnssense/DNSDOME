@@ -3,7 +3,7 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
-import { ReportService } from 'src/app/core/services/ReportService';
+import { ReportService } from 'src/app/core/services/reportService';
 
 @Component({
     selector: 'app-scheduledreports',
@@ -11,69 +11,69 @@ import { ReportService } from 'src/app/core/services/ReportService';
     styleUrls: ['scheduledreports.component.sass']
 })
 export class ScheduledReportsComponent {
-    userReports: SearchSetting[] = [];
 
-    constructor(private notification: NotificationService,
-        private alert: AlertService, private reportService: ReportService) {
- 
+    constructor(
+        private notification: NotificationService,
+        private alert: AlertService,
+        private reportService: ReportService
+    ) {
         this.loadReports();
     }
 
+    private allReports: SearchSetting[] = [];
+
+    userReports: SearchSetting[] = [];
+
+    systemReports: SearchSetting[] = [];
+
     loadReports() {
-        
-        this.reportService.getReportList().subscribe((res: SearchSetting[]) => {
-            this.userReports = [];
-            res.forEach(r => {
-                if (!r.system) {
-                    this.userReports.push(r);
-                }
-            });
+        this.reportService.getReportList().subscribe((result: SearchSetting[]) => {
+            this.allReports = result;
+
+            this.userReports = result.filter(x => !x.system);
+
+            this.systemReports = result.filter(x => x.system);
         });
     }
 
     changeScheduledPeriod(id: number, p: string) {
+        const report = this.allReports.find(x => x.id === id);
 
-        if (this.userReports.find(r => r.id == id) != null) {
-            if (p == 'd' || p == 'w') {
-                this.userReports.find(r => r.id == id).scheduledReport = new ScheduledReport();
-                this.userReports.find(r => r.id == id).scheduledReport.period = p;
-                this.saveReport(this.userReports.find(r => r.id == id));
+        if (report) {
+            if (p === 'd' || p === 'w' || p === 'm') {
+                report.scheduledReport = new ScheduledReport();
+                report.scheduledReport.period = p;
+
+                this.saveReport(report);
             } else {
-                this.userReports.find(r => r.id == id).scheduledReport.period = null;
+                report.scheduledReport.period = null;
             }
         }
     }
 
     saveReport(report: SearchSetting) {
         this.reportService.saveReport(report).subscribe(res => {
-            if (res.status == 200) {
-                this.notification.success(res.message);
-                this.loadReports();
-            } else {
-                this.notification.error(res.message);
-            }
-        });
 
+
+                this.loadReports();
+
+        });
     }
 
     deleteReport(id: number) {
-        let report = this.userReports.find(r => r.id == id);
+        const report = this.userReports.find(r => r.id === id);
+
         this.alert.alertWarningAndCancel('Are You Sure?', 'Settings for this report will be deleted!').subscribe(
             res => {
                 if (res) {
-                    this.reportService.deleteReport(report).subscribe(res => {
-                        if (res.status == 200) {
-                            this.notification.success(res.message);
+                    this.reportService.deleteReport(report).subscribe(result => {
+
+                            this.notification.success(result.message);
                             this.loadReports();
-                        } else {
-                            this.notification.error(res.message);
-                        }
+
                     });
                 }
             }
         );
-
     }
-
-
 }

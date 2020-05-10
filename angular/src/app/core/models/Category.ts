@@ -8,16 +8,4 @@ export class Category {
   public categoryName: string;
   public categoryType: CategoryType;
   public visible: boolean;
-
-
-  // public colorCategoryOrder: number;
-  // public categoryName: string;
-  // public name: string;
-  // public categoryNameEN: string;
-  // public categoryNameTR: string;
-  // public colorCategory: string;
-  // public parent: Category;
-  // public image: string;
-  // public imagePath: string;
-
 }

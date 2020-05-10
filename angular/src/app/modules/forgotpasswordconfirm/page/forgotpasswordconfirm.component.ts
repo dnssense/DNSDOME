@@ -6,10 +6,11 @@ import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ReCaptchaComponent } from 'angular2-recaptcha';
+
 import { CaptchaService } from 'src/app/core/services/captcha.service';
-import { SmsService } from 'src/app/core/services/SmsService';
+import { SmsService } from 'src/app/core/services/smsService';
 import { ValidationService } from 'src/app/core/services/validation.service';
+import { RecaptchaComponent } from 'ng-recaptcha';
 
 
 declare var $: any;
@@ -26,24 +27,13 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
-
+// TODO bunu kullanan yer yok silsek mi acaba
 @Component({
   selector: 'app-forgotpasswordconfirm',
   templateUrl: 'forgotpasswordconfirm.component.html',
   styleUrls: ['forgotpasswordconfirm.component.sass']
 })
 export class ForgotPasswordConfirmComponent implements OnInit {
-  host: ConfigHost;
-  forgotPasswordConfirmForm: any;
-  validPasswordLogin: true | false;
-  model: ForgotPasswordModel = {};
-  validPasswordRegister: true | false;
-  private toggleButton: any;
-  private captcha: string;
-  private forgotId: string;
-  public captcha_key: string;
-  @ViewChild(ReCaptchaComponent) captchaComponent: ReCaptchaComponent;
-  matcher = new MyErrorStateMatcher(); 
 
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
     private element: ElementRef, private notification: NotificationService,
@@ -53,15 +43,33 @@ export class ForgotPasswordConfirmComponent implements OnInit {
     this.forgotId = this.route.snapshot.queryParams.key;
     this.forgotPasswordConfirmForm =
       this.formBuilder.group({
-        "password": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
-        "passwordAgain": ["", [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]]
+        'password': ['', [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
+        'passwordAgain': ['', [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]]
       }
-        , { validator: Validators.compose([ValidationService.matchingPasswords("password", "passwordAgain")]) }
+        , { validator: Validators.compose([ValidationService.matchingPasswords('password', 'passwordAgain')]) }
       );
 
 
 
-  } 
+  }
+  host: ConfigHost;
+  forgotPasswordConfirmForm: any;
+  validPasswordLogin: true | false;
+  model: ForgotPasswordModel = {};
+  validPasswordRegister: true | false;
+  private toggleButton: any;
+  private captcha: string;
+  private forgotId: string;
+  public captcha_key: string;
+  @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
+  matcher = new MyErrorStateMatcher();
+
+
+  passStrength = 0;
+  numStrength = false;
+  upStrength = false;
+  lowStrength = false;
+  lengthStrength = false;
   ngOnInit() {
     // const navbar: HTMLElement = this.element.nativeElement;
     // this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
@@ -87,27 +95,20 @@ export class ForgotPasswordConfirmComponent implements OnInit {
   }
 
   handleCaptcha($event) {
-    this.captcha = $event;    
+    this.captcha = $event;
   }
 
   forgotPasswordConfirm() {
     if (!this.capthaService.validCaptcha(this.captcha)) {
       return;
     } else {
-      //this.user.c_answer = this.captcha;
+      // this.user.c_answer = this.captcha;
     }
 
     this.authService.forgotPasswordConfirm(this.forgotId, this.model.password, this.model.passwordAgain).subscribe(x => {
-      this.router.navigateByUrl("/login");
+      this.router.navigateByUrl('/login');
     });
   }
-
-
-  passStrength = 0;
-  numStrength = false;
-  upStrength = false;
-  lowStrength = false;
-  lengthStrength = false;
   checkPasswordStrength() {
     this.passStrength = 0;
     this.numStrength = false;
@@ -135,7 +136,7 @@ export class ForgotPasswordConfirmComponent implements OnInit {
 
       if (this.passStrength > 3) {
         $('#passDetails').hide(300);
-      }else{
+      } else {
         $('#passDetails').show(300);
       }
     }

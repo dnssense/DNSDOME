@@ -7,5 +7,4 @@ export class LogColumn {
   public hrType: string;
   public aggsType: string;
   public checked: boolean;
-
 }

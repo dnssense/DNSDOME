@@ -1,580 +1,1143 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { DashBoardService } from 'src/app/core/services/DashBoardService';
-import { ElasticDashboardResponse } from 'src/app/core/models/ElasticDashboardResponse';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { StaticService } from 'src/app/core/services/StaticService';
-import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js'
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DashBoardService, DistinctAgentResponse, DistinctBoxResponse } from 'src/app/core/services/dashBoardService';
+
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
-import { DashboardStats } from 'src/app/core/models/DashboardStats';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { Router } from '@angular/router';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { CustomReportService } from 'src/app/core/services/CustomReportService';
-import { AggregationItem } from 'src/app/core/models/AggregationItem';
-import { LogColumn } from 'src/app/core/models/LogColumn';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
-import { ThrowStmt } from '@angular/compiler';
+import {
+  AgentCountModel, DateParamModel, HourlyCompanySummaryV5Response, Domain, TopDomainsRequestV5, TopDomainValuesResponseV4, Category, Bucket, HourlyCompanySummaryV5Request
+} from 'src/app/core/models/Dashboard';
+import { ValidationService } from 'src/app/core/services/validation.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Agent } from 'src/app/core/models/Agent';
+import { forkJoin } from 'rxjs';
+import { Box } from 'src/app/core/models/Box';
+import * as moment from 'moment';
+import { ToolsService } from 'src/app/core/services/toolsService';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { TranslatorService } from 'src/app/core/services/translator.service';
+import { RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import * as numeral from 'numeral';
 
-declare let $: any;
-declare let moment: any;
+interface TagInputValue {
+  value: string;
+  display: string;
+}
+
+export interface RkDateButton {
+  startDate: Date;
+  endDate: Date;
+  displayText: string;
+  active: boolean;
+  isToday: boolean;
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
-  styleUrls: ['dashboard.component.css']
+  styleUrls: ['dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
-  host: ConfigHost;
-  elasticData: ElasticDashboardResponse[];
-  dateParameter: number = 0;
-  ds: DashboardStats = new DashboardStats();
-  searchKey: string;
-  labelArray: string[] = []
-  categoryList = [];
-  categoryListFiltered = [];
-  selectedCategoryForTraffic = CategoryV2;
-  selectedCategoryForUnique = CategoryV2;
-  trafficChart: any;
-  uniqueDomainChart: any;
-  uniqueSubdomainChart:any;
-  uniqueDestIpChart:any;
-  gaugeChart:any;
-  trafficChartType: string = 'hit';
-  uniqueChartType: string = 'domain';
+export class DashboardComponent implements OnInit {
 
-  constructor(private dashboardService: DashBoardService, private authService: AuthenticationService,
-    private staticService: StaticService, private notification: NotificationService, private router: Router,
-    private agentService: AgentService, private customReportService: CustomReportService, private config: ConfigService,
-    private boxService: BoxService, private roamingService: RoamingService) { }
+
+  constructor(
+    private dashboardService: DashBoardService,
+    private agentService: AgentService,
+    private boxService: BoxService,
+    private roamingService: RoamingService,
+    private router: Router,
+    private config: ConfigService,
+    private translateService: TranslateService,
+    private toolService: ToolsService,
+    private notificationService: NotificationService,
+    private staticMesssageService: StaticMessageService,
+    private translatorService: TranslatorService
+  ) { }
+
+  host: ConfigHost;
+  trafficAnomaly: HourlyCompanySummaryV5Response;
+  dateParameter = 0;
+  // ds: DashboardStats = new DashboardStats();
+  searchKey: string;
+  labelArray: string[] = [];
+  // categoryList = [];
+  categoryListFiltered: Category[] = [];
+
+  selectedCategory: CategoryV2 | null = null;
+  trafficChart: any;
+  timeLineChart: any;
+
+  topDomainChart: any;
+  trafficChartType = 'hit';
+  uniqueChartType = 'domain';
+
+  agentCounts: AgentCountModel[] = [];
+  timeRangeButtons: DateParamModel[] = [];
+  totalCategoryHits = 0;
+
+  infoBoxes = {
+    total: true,
+    safe: false,
+    malicious: false,
+    variable: false,
+    harmful: false
+  };
+
+  selectedCategoryName = 'Total';
+
+  selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
+
+  private now: Date = new Date();
+
+  theme: any = 'light';
+
+  dateButtons: RkDateButton[] = [
+    {
+      startDate: new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last Year',
+      active: false,
+      isToday: false
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 3, this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last 3 Month',
+      active: false,
+      isToday: false
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last Month',
+      active: false,
+      isToday: false
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+      displayText: 'Last Week',
+      active: true,
+      isToday: false
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 0),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours(), this.now.getMinutes()),
+      displayText: `Today (00:00-${this.now.getHours()}:${this.now.getMinutes()})`,
+      active: false,
+      isToday: true
+    },
+  ];
+  topDomainsCountTotal: number;
+
+  dateConfig: RkDateConfig = {
+    startHourText: this.translatorService.translate('Date.StartHour'),
+    endHourText: this.translatorService.translate('Date.EndHour'),
+    applyText: this.translatorService.translate('Date.Apply'),
+    cancelText: this.translatorService.translate('Date.Cancel'),
+    customText: this.translatorService.translate('Date.Custom'),
+    selectDateText: this.translatorService.translate('Date.SelectDate')
+  };
+
+  items: TagInputValue[] = [];
+
+  categoryMappings = {
+    'variable': [
+      'Unknown',
+      'Undecided Not Safe',
+      'Undecided Safe',
+      'Domain Parking',
+      'Newly Register',
+      'Newly Up',
+      'Dead Sites',
+      'Firstly Seen'
+    ],
+    'harmful': [
+      'Illegal Drugs',
+      'Adult',
+      'Pornography',
+      'Hate/Violance/illegal',
+      'Gambling',
+      'Games',
+      'Swimsuits and Underwear',
+      'Dating',
+      'Alcohol'
+    ],
+    'safe': [
+      'Cooking',
+      'Online Video',
+      'Sport',
+      'Advertisements',
+      'Shopping',
+      'Software Downloads',
+      'Reference',
+      'Financial Services',
+      'Health',
+      'Society',
+      'Webmail',
+      'Vehicles',
+      'Government and Organization',
+      'Search Engines',
+      'Online Storage',
+      'Business Services',
+      'Entertainment',
+      'Tobacco',
+      'Blogs',
+      'Content Delivery Networks (CDN)',
+      'Social Networks',
+      'Real Estate',
+      'Forums',
+      'Arts and Culture',
+      'Kids',
+      'Job Search',
+      'Clothing and Fashion',
+      'Chats',
+      'Education',
+      'Technology and Computer',
+      'Infrastructure Service',
+      'Music',
+      'Weapon and Military',
+      'News',
+      'Religion',
+      'Vacation and Travel',
+      'Local IP',
+      'WhiteList'
+    ],
+    'malicious': [
+      'Phishing',
+      'Spam Sites',
+      'Proxy',
+      'Warez',
+      'Hacking',
+      'Potentially Dangerous',
+      'Malware/Virus',
+      'Dynamic DNS',
+      'Botnet CC',
+      'DGA Domain',
+      'BlackList',
+      'Malformed Query',
+      'Bad-IP',
+      'NX Domain'
+    ]
+  };
+
+  private today: Date = new Date();
+
+  startDate: Date = new Date();
+
+  endDate: Date = new Date();
+
+  dateText: string;
+
+  topDomains: Domain[] = [];
+
+  @ViewChild('date') date;
 
   ngOnInit() {
+    this.startDate.setDate(this.today.getDate() - 7);
+    this.endDate = new Date();
     this.host = this.config.host;
-    let roleName: string = this.authService.currentSession.currentUser.roles.name;
-    
-    if (roleName != 'ROLE_USER') {
-      this.agentService.getAgents().subscribe(res => {
-        if (res == null || res.length < 1) {
-          this.boxService.getBoxes().subscribe(res2 => {
-            if (res2 == null || res2.length < 1) {
-              this.roamingService.getClients().subscribe(res3 => {
-                if (res3 == null || res3.length < 1) {
-                  //TODO: redericeting temporarily
-                  this.router.navigateByUrl('/admin/publicip');
-                  //this.openModal();
-                } else {
-                  this.startDashboardOperations();
-                }
-              })
-            } else {
-              this.startDashboardOperations();
-            }
-          })
-        } else {
-          this.startDashboardOperations();
-        }
-      });
+
+    this.setDateTextByDates();
+
+    this.getTheme();
+
+    this.startDashboardOperations();
+
+    const request: TopDomainsRequestV5 = { duration: 7 * 24, type: 'total' } as TopDomainsRequestV5;
+
+    this.getTopDomains(request);
+    this.getAgents();
+    this.agentCounts.push({ name: 'PublicIp', activeCount: 0, passiveCount: 0 });
+    this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0 });
+    this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0 });
+  }
+
+  private async getTheme() {
+    const theme = localStorage.getItem('themeColor') as 'light' | 'dark';
+
+    if (theme) {
+      this.theme = theme;
     } else {
-      this.startDashboardOperations();
+      this.theme = 'white';
     }
-
   }
 
-  ngAfterViewInit(): void {
-    // introJs().start();
+  private setDateTextByDates() {
+    const startDate = moment(this.startDate);
+    const endDate = moment(this.endDate);
+
+    const minutes = endDate.diff(startDate, 'minutes');
+
+    this.dateText = this.convertTimeString(minutes);
   }
 
-  startDashboardOperations() {
-    this.selectedCategoryForTraffic = null;
-    this.selectedCategoryForUnique = null;
-    this.staticService.getCategoryList().subscribe(res => {
-      this.categoryList = res;
-      this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
-    });
+  getAgents() {
+    const agentsLocation: Agent[] = [];
+    const agentsBox: Agent[] = [];
+    const boxes: Box[] = [];
+    const agentsRoamingClient: Agent[] = [];
+    const distinctAgents: DistinctAgentResponse = { items: [] };
+    const distinctBoxs: DistinctBoxResponse = { items: [] };
 
-    this.elasticData = [];
-    this.ds = new DashboardStats();
-    this.changeDateParameter(0);
-  }
+    // wait all requests to finish
+    forkJoin(
+      this.agentService.getAgentLocation().map(x => {
+        x.forEach(y => agentsLocation.push(y));
+      }),
+      this.roamingService.getClients().map(x => {
+        x.forEach(y => agentsRoamingClient.push(y));
+      }),
 
-  prepareWorldMap(time: string) {
-    let values: Map<string, number> = new Map();
-    let searchSetting = new SearchSetting();
-    let col: LogColumn = { name: "destinationIpCountryCode", beautyName: "Dst.Country", hrType: "COUNTRY_FLAG", aggsType: "TERM", checked: true };
-    let item = new AggregationItem(col, col.beautyName);
-    searchSetting.columns.columns.push(item);
-    searchSetting.topNumber = 250
-    searchSetting.dateInterval = '5'
-
-    if (time == '0') {
-      let d = new Date();
-      searchSetting.dateInterval = ((d.getHours() * 60) + d.getMinutes()).toString();
-    } else if (time == '-1') {
-      searchSetting.dateInterval = '60';
-    } else if (time == '1' || time == '2' || time == '3' || time == '6' || time == '7') {
-      let d1 = new Date();
-      let d2 = new Date();
-      d1.setDate(d1.getDate() - Number(time))
-      let startDate = moment(new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-      let endDate = moment(new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(), 23, 59, 59), 'DD.MM.YYYY HH:mm:ss', true).format('DD.MM.YYYY HH:mm:ss');
-      const dateVal = startDate + ' - ' + endDate;
-      searchSetting.dateInterval = dateVal;
-    } else {
-      searchSetting.dateInterval = time;
-    }
-
-    this.customReportService.getData(searchSetting).subscribe(res => {
-      if (res instanceof Array) {
-        for (let i = 0; i < res.length; i++) {
-          values.set(res[i][0].toLowerCase(), Number(res[i][1]));
-        }
-
-        let max = 0, min = Number.MAX_VALUE, startColor = [200, 238, 255], endColor = [0, 100, 145], colors = <any>{}, hex;
-
-        values.forEach((value: number, key: string) => {
-          if (value > max) { max = value }
-          if (value < min) { min = value }
-        });
-
-        values.forEach((value: number, key: string) => {
-          if (value > 0) {
-            colors[key] = '#';
-            for (var i = 0; i < 3; i++) {
-              hex = Math.round(startColor[i] + (endColor[i] - startColor[i]) * (value == max ? 1 : (value / (max - min)))).toString(16);
-              if (hex.length == 1) { hex = '0' + hex; }
-              colors[key] += (hex.length == 1 ? '0' : '') + hex;
-            }
+      this.boxService.getBoxes().map(x => {
+        x.forEach(y => {
+          if (y.agent) {
+            agentsBox.push(y.agent);
           }
         });
+        x.forEach(y => boxes.push(y));
+      }),
 
-        $('#worldMap').vectorMap({
-          map: 'world_en',
-          backgroundColor: 'transparent',
-          borderColor: '#818181',
-          borderOpacity: 0.25,
-          borderWidth: 1,
-          color: '#f4f3f0',
-          enableZoom: true,
-          hoverColor: '#c9dfaf',
-          showTooltip: true,
-          colors: colors,
-          series: {
-            regions: [{
-              values: values,
-              scale: ['#C8EEFF', '#0071A4'],
-              normalizeFunction: 'polynomial'
-            }]
-          },
-          onRegionOver: (event, code, region) => {
-            event.preventDefault();
-          },
-          onRegionClick: (element, code, region) => {
-            let elements = $('.jqvmap-label')
-            if (elements && elements.length > 0) {
-              for (let i = 0; i < elements.length; i++) {
-                const e = elements[i];
-                e.style.display = "none"
-              }
+      this.dashboardService.getDistinctAgent({ duration: 24 }).map(x => {
+        x.items.forEach(y => distinctAgents.items.push(y));
+      }),
+      this.dashboardService.getDistinctBox({ duration: 24 }).map(x => {
+        x.items.forEach(y => distinctBoxs.items.push(y));
+      })
+    ).subscribe(() => {
+
+      const publicip: AgentCountModel = { name: 'PublicIp', activeCount: 0, passiveCount: 0 };
+      const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0 };
+
+      const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0 };
+
+      const serials = boxes.filter(x => (x).serial).map(x => (x).serial);
+
+      // add box serials that are not in distinctagents
+      // registered clientlardan gelen verinin box bilgileride distinct agents olarak ekleniyor
+      serials.forEach(x => {
+        const box = boxes.find(y => (y).serial === x);
+        if (!box) { return; }
+        const foundedBox = distinctBoxs.items.find(y => y.serial === x);
+        if (!foundedBox) { return; }
+        if (distinctAgents.items.find(y => y.id === box.id)) { return; }
+        distinctAgents.items.push({ id: box.agent.id, count: 1 });
+      });
+
+      // calcuate location agents
+      distinctAgents.items.forEach(x => {
+        if (agentsLocation.find(y => y.id === x.id)) {
+          publicip.activeCount++;
+        }
+      });
+      publicip.passiveCount = agentsLocation.length - publicip.activeCount;
+
+      // calculate roaming clients
+      distinctAgents.items.forEach(x => {
+        if (agentsRoamingClient.find(y => y.id === x.id)) {
+          roamingclient.activeCount++;
+        }
+      });
+      roamingclient.passiveCount = agentsRoamingClient.length - roamingclient.activeCount;
+
+      // calculate box
+      distinctAgents.items.forEach(x => {
+        if (agentsBox.find(y => y.id === x.id)) {
+          dnsrelay.activeCount++;
+        }
+      });
+
+      dnsrelay.passiveCount = agentsBox.length - dnsrelay.activeCount;
+
+      this.agentCounts = [publicip, roamingclient, dnsrelay];
+    });
+  }
+
+  setDateByDateButton(dateButtonItem: RkDateButton) {
+
+    this.startDate = dateButtonItem.startDate;
+    this.endDate = dateButtonItem.endDate;
+
+    this.dateChanged({ startDate: this.startDate, endDate: this.endDate }, false, dateButtonItem.isToday);
+
+    dateButtonItem.active = true;
+  }
+
+  translate(data: string): string {
+    return this.translateService.instant(data);
+  }
+
+  getTopDomains(request: TopDomainsRequestV5) {
+    this.dashboardService.getTopDomains(request).subscribe(result => {
+      if (result.items.length) {
+        this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
+          cats.forEach(cat => {
+            const finded = result.items.find(abc => abc.name == cat.domain);
+            if (finded) {
+              finded.category = cat.categoryList.join(',');
             }
-            this.showInReport('map' + code)
-          },
-          onLabelShow: (event, label, code) => {
-            label[0].innerText = label[0].innerText + ' : ' + (values.has(code) ? values.get(code) : 0);
+          });
+
+          this.topDomainsCountTotal = result.items.reduce((prev, cur) => prev + cur.hit, 0);
+
+          this.topDomains = result.items;
+
+          if (this.topDomains.length > 0) {
+            this.addDomain(this.topDomains[0]);
           }
         });
       }
     });
-
   }
 
-  private getElasticData(d1: string, d2: string) {
-    this.dashboardService.getHourlyCompanySummary(d1, d2).subscribe(res => {
-      this.elasticData = res;
-      this.elasticData.sort((x, y) => { return new Date(x.date).getTime() - new Date(y.date).getTime(); });
-      this.createCharts();
+  infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful', selectedCategoryName: string) {
+    this.selectedCategoryName = selectedCategoryName;
+
+    this.selectedCategory = null;
+
+    this.selectedBox = type;
+
+    Object.keys(this.infoBoxes).forEach(elem => {
+      this.infoBoxes[elem] = false;
+    });
+
+    this.infoBoxes[type] = true;
+    this.drawChartAnomaly();
+
+    this.refreshTopDomains();
+  }
+
+  calculateDateDiff(): number {
+    const startDate = moment([this.startDate.getFullYear(), this.startDate.getMonth(), this.startDate.getDate()]);
+    const endDate = moment([this.endDate.getFullYear(), this.endDate.getMonth(), this.endDate.getDate()]);
+
+    const diff = endDate.diff(startDate, 'days');
+    return diff;
+  }
+
+  getDataByTime(type: 'prev' | 'next', interval: number) {
+    if (type === 'prev') {
+      this.startDate.setDate(this.startDate.getDate() - interval);
+      this.endDate.setDate(this.endDate.getDate() - interval);
+    } else {
+      this.startDate.setDate(this.startDate.getDate() + interval);
+      this.endDate.setDate(this.endDate.getDate() + interval);
+    }
+
+    this.startDate = new Date(this.startDate);
+    this.endDate = new Date(this.endDate);
+
+    // this.date.selectTime({ value: 1, displayText: '' }, { startDate: this.startDate, endDate: this.endDate });
+
+    this.dateChanged({ startDate: this.startDate, endDate: this.endDate }, true);
+  }
+
+  getDisabledNextButton(type: 'week' | 'month' | 'last3month' | string) {
+    if (type === 'week') {
+      const startDate = new Date(JSON.parse(JSON.stringify(this.startDate)));
+      startDate.setDate(7);
+
+      return startDate > this.today;
+    }
+  }
+
+  async dateChanged(ev: { startDate: Date, endDate: Date }, isDateComponent = false, isToday = false) {
+    this.dateButtons.forEach(elem => elem.active = false);
+
+    this.startDate = ev.startDate;
+    this.endDate = ev.endDate;
+
+    this.setDateTextByDates();
+
+    this.selectedCategory = null;
+
+    const request = {} as HourlyCompanySummaryV5Request;
+
+    if (isDateComponent || isToday) {
+      request.startDate = this.startDate.toISOString();
+      request.endDate = this.endDate.toISOString();
+    } else {
+      const diff = this.calculateDateDiff();
+
+      request.duration = diff * 24;
+    }
+
+    await this.getTrafficAnomaly(request);
+
+    this.refreshTopDomains();
+  }
+
+  drawTopDomainChart(response: TopDomainValuesResponseV4) {
+    if (!response || !response.items) { return; }
+    const data = response.items;
+    const series = [{
+      name: 'Hits',
+      type: 'line',
+      data: data.map(x => [Date.parse(moment(x.date).utc(true).toLocaleString()), x.hit])
+    }];
+
+    if (this.topDomainChart) {
+      this.topDomainChart.updateSeries(series);
+      return;
+    }
+
+    this.topDomainChart = new ApexCharts(document.querySelector('#topDomainChart'), {
+      series: series,
+      chart: {
+        id: 'unique-chart2',
+        foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
+        type: 'line',
+        height: 280,
+        toolbar: {
+          show: false,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            customIcons: []
+          },
+          autoSelected: 'zoom'
+        }
+      }/* ,
+      markers: {
+        size: [2, 0],
+        strokeWidth: 2,
+        hover: {
+          size: 7,
+        }
+      } */,
+      colors: ['#ff6c40', '#ff6c40'],
+      stroke: {
+        width: 4,
+        curve: ['smooth']
+      },
+      dataLabels: {
+        enabled: false
+      },
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        enabled: true,
+        shared: true,
+        x: {
+          format: 'MMM dd yyyy HH:mm'
+        },
+        theme: 'dark'
+      },
+      xaxis: {
+        type: 'datetime',
+        labels: {
+          show: true,
+          trim: true,
+          showDuplicates: false,
+          datetimeFormatter: {
+            year: 'yyyy',
+            month: 'MMM \'yy',
+            day: 'dd MMM',
+            hour: 'HH:mm'
+          }
+        },
+        tickAmount: 8
+      },
+      grid: {
+        borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
+      },
+    });
+    this.topDomainChart.render();
+  }
+
+
+
+
+  /*   private drawChartTimeLine() {
+      const timelineChart = [];
+
+      const series = [{
+        name: 'Hits',
+        data: timelineChart.map(x => [x.date.getTime(), x.hit])
+      }];
+
+      if (this.timeLineChart) {
+        this.timeLineChart.updateSeries(series);
+        return;
+      }
+
+      this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
+        series: series,
+        chart: {
+          id: 'chart1',
+          height: 200,
+          type: 'bar',
+          group: 'deneme',
+          zoom: {
+            enabled: true
+          },
+          toolbar: {
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+            tools: {
+              download: true,
+              selection: false,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+              reset: true,
+              customIcons: []
+            },
+            autoSelected: 'zoom'
+          },
+          /*  brush: {
+             target: 'chart2',
+             enabled: true
+           }, */
+
+  /*  },
+    dataLabels: {
+      enabled: false,
+
+    },
+    markers: {
+
+      size: [2, 2, 2],
+      colors: ['#f95656'],
+      strokeColors: '#f95656',
+      strokeWidth: 2,
+      hover: {
+        size: 7,
+      }
+    },
+    colors: ['#ff7b00', '#b1dcff', '#eedcff'],
+    stroke: {
+      width: 3,
+      curve: ['smooth', 'smooth', 'smooth']
+    },
+    events: {
+      beforeMount: (chartContext, config) => {
+
+      },
+      updated: (chart) => {
+
+      }
+    },
+    tooltip: {
+      enabled: true,
+      marker: {
+        show: false
+      }
+    },
+    xaxis: {
+      type: 'datetime',
+
+      labels: {
+        show: true,
+        trim: true,
+        showDuplicates: false,
+        datetimeFormatter: {
+          year: 'yyyy',
+          month: 'MMM \'yy',
+          day: 'dd MMM',
+          hour: 'HH:mm'
+        }
+      },
+      tickAmount: 12
+
+
+
+    },
+    yaxis: {
+      tickAmount: undefined
+    }
+  });
+
+  this.timeLineChart.render();
+} */
+
+  private drawChartAnomaly() {
+
+
+    // calculate categories
+    this.categoryListFiltered = [];
+    if (this.trafficAnomaly?.categories) {
+      for (const cat of this.trafficAnomaly.categories) {
+
+        cat.hit = cat.buckets.map(x => x.sum).reduce((x, y) => x + y, 0);
+        cat.hit_ratio = Math.floor(cat.hit / (this.trafficAnomaly.total.hit + this.trafficAnomaly.total.block) * 100);
+        cat.hit_ratio = cat.hit_ratio || 0;
+        if (this.selectedBox === 'total') {
+          this.categoryListFiltered.push(cat);
+        } else if (cat.type === this.selectedBox) {
+          this.categoryListFiltered.push(cat);
+        }
+      }
+    }
+    // sort descending
+    this.categoryListFiltered = this.categoryListFiltered.sort((x, y) => {
+      if (x.hit === y.hit) {
+        return x.name.localeCompare(y.name);
+      }
+      return (x.hit - y.hit) * -1;
+
+    });
+
+    if (!this.trafficAnomaly.hit && this.trafficChart) {
+      this.trafficChart.updateSeries([
+        { name: 'Min', type: 'area', data: [] },
+        { name: 'Max', type: 'area', data: [] },
+        { name: 'Hit', type: 'line', data: [] }
+      ]);
+
+      this.trafficChart.updateOptions({
+        annotations: {
+          points: []
+        }
+      });
+
+      // this.categoryListFiltered = [];
+
+      return;
+    }
+
+    const istatistic = { averages: [], std_deviations: [], hits: [] };
+
+    // calculate chart
+    const whichBox = this.trafficAnomaly[this.selectedBox];
+    const buckets: Bucket[] = this.selectedCategory ? this.trafficAnomaly.categories.find(x => x.name === this.selectedCategory.name)?.buckets : whichBox.buckets;
+    istatistic.std_deviations = buckets.map(x => x.std);
+    istatistic.averages = buckets.map(x => x.avg);
+    istatistic.hits = buckets.map(x => x.sum);
+
+    const times = whichBox.buckets.map(x => moment(x.date).utc(true).toDate().getTime());
+    const series = [
+      { name: 'Min', type: 'area', data: istatistic.averages.map((x, index) => x - istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x) >= 0 ? Math.round(x) : 0]) },
+      { name: 'Max', type: 'area', data: istatistic.averages.map((x, index) => x + istatistic.std_deviations[index]).map((x, index) => [times[index], Math.round(x)]) },
+      { name: 'Hit', type: 'line', data: istatistic.hits.map((x, index) => [times[index], Math.round(x)]) }
+    ];
+
+    const anomalies = series[2].data.filter((x, index) => {
+      const min = series[0].data[index][1];
+      const max = series[1].data[index][1];
+      const hit = x[1];
+
+      if (hit > max || hit < min) {
+        return true;
+      }
+      return false;
+    });
+
+    let yMax = 0;
+    series.forEach(x => {
+      x.data.forEach(element => {
+        if (element[1] > yMax) {
+          yMax = element[1];
+        }
+      });
+    });
+
+    /*     let xaxismax=0;
+        xaxismax=series[1].data.filter(x=>x) */
+
+    // console.log(anomalies);
+
+    const points = this.getAnnotations(anomalies);
+
+    if (this.trafficChart) {
+      this.trafficChart.destroy();
+      //  this.trafficChart.
+      //  return;
+    }
+
+    const chartBg = this.theme === 'white' ? '#ffffff' : '#232328';
+
+    this.trafficChart = new ApexCharts(document.querySelector('#chart'), {
+      series: series,
+      chart: {
+        id: 'chart2',
+        type: 'line',
+        stacked: false,
+        group: 'deneme',
+        height: 280,
+        foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
+        zoom: {
+          enabled: true
+        },
+        toolbar: {
+          show: false,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: false,
+            customIcons: []
+          },
+          autoSelected: 'zoom'
+        },
+        events: {
+          click: () => {
+            console.log('clicked');
+          },
+          markerClick: () => {
+
+          },
+        }
+      },
+      colors: [chartBg, (this.theme === 'white' ? '#b1dcff' : '#004175'), '#0084ff'],
+      stroke: {
+        width: 2,
+        curve: ['smooth', 'smooth', 'straight']
+      },
+      annotations: {
+        points: points
+      },
+      dataLabels: {
+        enabled: false
+      },
+      tooltip: {
+        enabled: true,
+        shared: true,
+        intersect: false,
+        x: {
+          show: true
+        },
+        // fillSeriesColor: true,
+        theme: 'dark',
+        custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+          const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+
+          const mDate = moment(date).format('MMM DD YYYY - HH:mm');
+
+          return `
+            <div class="__apexcharts_custom_tooltip">
+              <div class="__apexcharts_custom_tooltip_date">${mDate}</div>
+
+              <div class="__apexcharts_custom_tooltip_content">
+                <span class="__apexcharts_custom_tooltip_row">
+                  <span class="color" style="background: #507df3"></span> Min: <b>${series[0][dataPointIndex]}</b>
+                </span>
+                <span class="__apexcharts_custom_tooltip_row">
+                  <span class="color" style="background: #c41505"></span> Max: <b>${series[1][dataPointIndex]}</b>
+                </span>
+                <span class="__apexcharts_custom_tooltip_row">
+                  <span class="color" style="background: ${this.theme === 'white' ? '#b5dbff' : '#004175'}"></span> Hit: <b>${series[2][dataPointIndex]}</b>
+                </span>
+
+                <p>
+                  ${this.translatorService.translate('TooltipDescription')}
+                </p>
+                </div>
+            </div>
+          `;
+        }
+      },
+      legend: {
+        show: false
+      },
+      fill: {
+        opacity: 1,
+        // type: ['solid', 'solid', 'gradient'],
+        // gradient: {
+        //   type: 'vertical',
+        //   shadeIntensity: 1,
+        //   opacityFrom: 0.7,
+        //   opacityTo: 0.9,
+        //   colorStops: [
+        //     {
+        //       offset: 0,
+        //       color: "#c41505",
+        //       opacity: 1
+        //     },
+        //     {
+        //       offset: 50,
+        //       color: "#7c26bd",
+        //       opacity: 1
+        //     },
+        //     {
+        //       offset: 100,
+        //       color: "#507df3",
+        //       opacity: 1
+        //     },
+        //   ]
+        // }
+      },
+      xaxis: {
+        type: 'datetime',
+        labels: {
+          show: true,
+          trim: true,
+          datetimeFormatter: {
+            year: 'yyyy',
+            month: 'MMM \'yy',
+            day: 'dd MMM',
+            hour: 'HH:mm'
+          },
+          tickAmount: 7
+        },
+        lines: {
+          show: true
+        },
+        tooltip: {
+          enabled: false,
+        },
+      },
+      yaxis: {
+        min: 0,
+        max: yMax + 10,
+        tickAmount: 5,
+        labels: {
+          formatter: (value) => {
+            return this.getRoundedNumber(value);
+          }
+        },
+        lines: {
+          show: true
+        }
+      },
+      noData: {
+        text: 'No Data',
+        align: 'center',
+        verticalAlign: 'middle',
+        offsetX: 0,
+        offsetY: 0,
+        style: {
+          color: undefined,
+          fontSize: '14px',
+          fontFamily: undefined
+        }
+      },
+      grid: {
+        borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
+        xaxis: {
+          lines: {
+            show: true
+          }
+        },
+        yaxis: {
+          lines: {
+            show: true
+          }
+        },
+      },
+    });
+
+    this.trafficChart.render();
+  }
+
+  getAnnotations(data: any[][]) {
+    const points = [];
+
+    const totalCount = data.reduce((prev, cur) => prev + cur[1], 0);
+
+    data.forEach(e => {
+      const percent = 100 * e[1] / totalCount;
+
+      let color = '';
+
+      if (percent >= 100) {
+        color = '#c41505';
+      } else if (percent >= 80) {
+        color = '#9c1e6c';
+      } else if (percent >= 60) {
+        color = '#7c26bd';
+      } else if (percent >= 40) {
+        color = '#6158ca';
+      } else if (percent >= 20) {
+        color = '#507df3';
+      }
+
+      const elm = {
+        x: e[0],
+        y: e[1],
+        marker: {
+          size: percent >= 20 ? 3 : 0,
+          fillColor: color,
+          strokeColor: color,
+          strokeSize: percent >= 20 ? 3 : 0,
+          radius: 2
+        }
+      };
+
+      points.push(elm);
+    });
+
+    // console.log()
+
+    return points;
+  }
+
+  startDashboardOperations() {
+    this.selectedCategory = null;
+
+    /* this.staticService.getCategoryList().subscribe(res => {
+      this.categoryList = res;
+    }); */
+
+    this.getTrafficAnomaly({ duration: 7 * 24 });
+  }
+
+  private refreshTopDomains() {
+    const request = { startDate: this.startDate.toISOString(), endDate: this.endDate.toISOString() } as TopDomainsRequestV5;
+    request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedBox;
+    this.getTopDomains(request);
+  }
+
+  getRoundedNumber(value: number) {
+    return numeral(value).format('0.0a').replace('.0', '');
+    // return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : (Math.sign(value) * Math.abs(value)).toFixed(1);
+  }
+
+  private async getTrafficAnomaly(request: HourlyCompanySummaryV5Request) {
+    try {
+      const result = await this.dashboardService.getHourlyCompanySummary(request).toPromise();
+
+      if (result) {
+        this.trafficAnomaly = result;
+
+        if (!this.trafficAnomaly.hit) {
+          this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
+        }
+
+        this.drawChartAnomaly();
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  selectCategory(cat: CategoryV2) {
+    if (cat.name === this.selectedCategory?.name) {
+
+      this.selectedCategory = null;
+    } else {
+
+      this.selectedCategory = cat;
+    }
+
+    this.drawChartAnomaly();
+
+    this.refreshTopDomains();
+  }
+
+  flatten(list) {
+    return list.reduce(
+      (a, b) => a.concat(Array.isArray(b) ? this.flatten(b) : b), []
+    );
+  }
+
+  addDomain(domain: Domain) {
+    this.items = [{ display: domain.name, value: domain.name }];
+
+    this.search();
+  }
+
+  onItemAdded($event: TagInputValue) {
+    const isDomain = ValidationService.isDomainValid($event.value);
+
+    if (!isDomain) {
+      this.items = [];
+    }
+  }
+
+  search() {
+    let domain = '';
+
+    this.items.forEach(elem => {
+      domain = elem.value;
+    });
+
+    if (domain.trim().length === 0) { return; }
+
+
+
+    this.dashboardService.getTopDomainValue({ domain: domain, startDate: this.startDate.toISOString(), endDate: this.endDate.toISOString() }).subscribe(result => {
+
+
+      result.items = result.items.sort((x, y) => {
+        const x1 = Date.parse(x.date);
+        const y1 = Date.parse(y.date);
+        return x1 - y1;
+      });
+
+      this.drawTopDomainChart(result);
     });
   }
 
-  createCharts() {
-    this.ds = new DashboardStats();
-    let sRCounter = 0, mTotalAverages = 0, uSRCounter = 0, uSRAverages = 0, grayCounter = 0, grayTotalAverages = 0,
-      uGrayCounter = 0, uGrayCounterAverages = 0;
-    this.labelArray = [];
-    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
+  showSummary() {
+    this.router.navigateByUrl(`/admin/reports/custom-reports?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
+  }
 
-    for (let i = indexLimit; i < this.elasticData.length; i++) {
-      const data = this.elasticData[i];
-      this.labelArray.push(moment(data.date).format('YYYY-MM-DDTHH:mm:ss.sssZ'))
-      this.ds.totalHitCountForDashboard += data.total_hit;
-      this.ds.totalBlockCountForDashboard += data.blocked_count;
-      this.ds.totalUniqueBlockedDomainForDashboard += data.unique_blocked_domain;
-      this.ds.uniqueBlockedDomain.push(Math.round(data.averages.unique_blocked_domain));
-      this.ds.totalUniqueDomain += data.unique_domain;
-      this.ds.hitAverages.push(Math.round(data.averages.total_hit));
-      this.ds.totalHits.push(data.total_hit);
-      this.ds.blockAverages.push(Math.round(data.averages.blocked_count));
-      this.ds.totalBlocks.push(data.blocked_count);
-      this.ds.uniqueDomain.push(data.unique_domain);
-      this.ds.uniqueDomainAvg.push(Math.round(data.averages.unique_domain))
-      this.ds.uniqueDesIp.push(data.unique_destip)
-      this.ds.uniqueDesIpAvg.push(Math.round(data.averages.unique_destip))
-      this.ds.uniqueSubdomain.push(data.unique_subdomain)
-      this.ds.uniqueSubdomainAvg.push(Math.round(data.averages.unique_subdomain))
-
-      Object.keys(data.category_hits).forEach(function eachKey(key) {
-        if (key.toString() == 'Malware/Virus' || key.toString() == 'Potentially Dangerous' || key.toString() == 'Phishing') {
-          sRCounter += data.category_hits[key].hits;
-          mTotalAverages += data.category_hits[key].average;
-
-          uSRCounter += data.category_hits[key].unique_domain;
-          uSRAverages += data.category_hits[key].unique_domain_average
-
-        } else if (key.toString() == 'Unknown' || key.toString() == 'Undecided Not Safe' || key.toString() == 'Undecided Safe'
-          || key.toString() == 'Domain Parking' || key.toString() == 'Newly Register' || key.toString() == 'Newly Up'
-          || key.toString() == 'Dead Sites' || key.toString() == 'Firstly Seen') {
-          grayCounter += data.category_hits[key].hits;
-          grayTotalAverages += data.category_hits[key].average;
-
-          uGrayCounter += data.category_hits[key].unique_domain;
-          uGrayCounterAverages += data.category_hits[key].unique_domain_average;
-        }
-      });
-
-      this.ds.securityRiskCountForDashboard = sRCounter;
-      this.ds.uSecurityRiskCountForDashboard = uSRCounter;
-      this.ds.grayCountForDashboard = grayCounter;
-      this.ds.uGrayCountForDashboard = uGrayCounter;
-    }
-
-    this.ds.riskScore = 0;
-    if (this.ds.totalHitCountForDashboard && this.ds.totalHitCountForDashboard > 0) {
-      this.ds.riskScore = Math.round(100 * ((2 * this.ds.uSecurityRiskCountForDashboard) + this.ds.uGrayCountForDashboard) / this.ds.totalUniqueDomain);
-    }
-
-    if (this.elasticData && this.elasticData.length > 0) {
-      this.ds.totalHitCountForDashboardDelta = this.calculatePercentage(this.ds.hitAverages.reduce((a, b) => a + b), this.ds.totalHitCountForDashboard);
-      this.ds.totalBlockCountForDashboardDelta = this.calculatePercentage(this.ds.blockAverages.reduce((a, b) => a + b), this.ds.totalBlockCountForDashboard);
-      this.ds.totalUniqueBlockedDomainForDashboardDelta = this.calculatePercentage(this.ds.uniqueBlockedDomain.reduce((a, b) => a + b), this.ds.totalUniqueBlockedDomainForDashboard);
-      this.ds.totalUniqueDomainDelta = this.calculatePercentage(this.ds.uniqueDomainAvg.reduce((a, b) => a + b), this.ds.totalUniqueDomain);
-      this.ds.securityRiskCountForDashboardDelta = this.calculatePercentage(mTotalAverages, this.ds.securityRiskCountForDashboard);
-      this.ds.uSecurityRiskCountForDashboardDelta = this.calculatePercentage(uSRAverages, this.ds.uSecurityRiskCountForDashboard);
-      this.ds.grayCountForDashboardDelta = this.calculatePercentage(grayTotalAverages, this.ds.grayCountForDashboard);
-      this.ds.uGrayCountForDashboardDelta = this.calculatePercentage(uGrayCounterAverages, this.ds.uGrayCountForDashboard);
+  showDetail() {
+    if (this.getDetailButtonDisabled) {
+      this.notificationService.warning(this.translatorService.translate('DateDifferenceWarning'));
     } else {
-      this.notification.warning('There is no dashboard data!', false);
-    }
+      const url = (`/admin/reports/monitor?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
 
-    // Total Traffic Chart
-    var trafficChartoptions = {
-      chart: {
-        height: 310, type: 'line', foreColor: '#9b9b9b',
-        toolbar: { tools: { download: false, pan: false } },
-        events: {
-          zoomed: (chartContext, { xaxis, yaxis }) => {
-            this.updateCharts(xaxis.min, xaxis.max);
-          }
-        }
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: [3, 3], curve: 'smooth' },
-      colors: ['#9d60fb', '#4a90e2'],
-      series: [{ data: [1] }, { data: [1] }],
-      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { type: 'datetime', categories: this.labelArray, tickAmount: 1, style: { color: '#f0f0f0' } },
-      grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'center', show: true },
-      annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
-      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' }
+      this.router.navigateByUrl(url);
     }
-    if(!this.trafficChart){
-      this.trafficChart = new ApexCharts(document.querySelector("#trafficChartHits"), trafficChartoptions);
-      this.trafficChart.render();
-     // this.trafficChart.updateSeries([{ name: "Today Hits", data:this.elasticData.length? this.ds.totalHits:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] }, { name: " Total Hit Averages", data:this.elasticData.length? this.ds.hitAverages:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] }])
-    }
-    this.trafficChart.updateOptions(trafficChartoptions);
-    //this.trafficChart.render();
-    this.trafficChart.updateSeries([{ name: "Today Hits", data:this.ds.totalHits }, { name: " Total Hit Averages", data: this.ds.hitAverages }])
-    
-
-    //Uniquer Domain Chart
-    var uniqueDomainOptions = {
-      chart: {
-        height: 280, type: 'line', foreColor: '#9b9b9b',
-        toolbar: { tools: { download: false, pan: false } },
-        events: {
-          zoomed: (chartContext, { xaxis, yaxis }) => {
-            this.updateCharts(xaxis.min, xaxis.max);
-          }
-        }
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
-      colors: ['#9d60fb', '#4a90e2'],
-      series: [{ data: [1] }, { data: [1] }],
-      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { type: 'datetime', categories: this.labelArray, labels: { minHeight: 20 } },
-      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
-      grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'center', show: true },
-      annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
-    }
-    if(!this.uniqueDomainChart){
-      this.uniqueDomainChart = new ApexCharts(document.querySelector("#uniqueDomainChart"), uniqueDomainOptions);
-    this.uniqueDomainChart.render();
-    }
-    this.uniqueDomainChart.updateOptions(uniqueDomainOptions);
-    this.uniqueDomainChart.updateSeries([{ name: "Unique Domain", data: this.ds.uniqueDomain }, { name: "Unique Domain Avg", data: this.ds.uniqueDomainAvg }]);
-    
-
-    //Unique Subdomain Chart
-    var uniqueSubdomainChartOptions = {
-      chart: {
-        height: 280, type: 'line', foreColor: '#9b9b9b',
-        toolbar: { tools: { download: false, pan: false } },
-        events: {
-          zoomed: (chartContext, { xaxis, yaxis }) => {
-            this.updateCharts(xaxis.min, xaxis.max);
-          }
-        }
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
-      colors: ['#9d60fb', '#4a90e2'],
-      series: [{ data: [1] }, { data: [1] }],
-      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { type: 'datetime', categories: this.labelArray, labels: { minHeight: 20 } },
-      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
-      grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'center', show: true },
-      annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
-    }
-    if(!this.uniqueSubdomainChart){
-      this.uniqueSubdomainChart = new ApexCharts(document.querySelector("#uniqueSubdomainChart"), uniqueSubdomainChartOptions);
-    this.uniqueSubdomainChart.render();
-    }
-    this.uniqueSubdomainChart.updateOptions(uniqueSubdomainChartOptions);
-    this.uniqueSubdomainChart.updateSeries([{ name: "Unique Subdomain", data: this.ds.uniqueSubdomain }, { name: "Unique Subdomain Avg", data: this.ds.uniqueSubdomainAvg }])
-
-    // Unique Dest Ip Chart
-    var uniqueDestIpChartOptions = {
-      chart: {
-        height: 280, type: 'line', foreColor: '#9b9b9b',
-        toolbar: { tools: { download: false, pan: false } },
-        events: {
-          zoomed: (chartContext, { xaxis, yaxis }) => {
-            this.updateCharts(xaxis.min, xaxis.max);
-          }
-        }
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: [3, 3], curve: 'smooth', dashArray: [0, 10] },
-      colors: ['#9d60fb', '#4a90e2'],
-      series: [{ data: [1] }, { data: [1] }],
-      markers: { size: 2, strokeColor: ['#9d60fb', '#4a90e2'], hover: { sizeOffset: 6 } },
-      xaxis: { type: 'datetime', categories: this.labelArray, labels: { minHeight: 20 } },
-      tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' }, theme: 'dark' },
-      grid: { borderColor: '#626262', strokeDashArray: 6, },
-      legend: { position: 'top', horizontalAlign: 'center', show: true },
-      annotations: { yaxis: [{ label: { fontSize: '20px' } }] }
-    }
-    if(!this.uniqueDestIpChart){
-     this.uniqueDestIpChart = new ApexCharts(document.querySelector("#uniqueDestIpChart"), uniqueDestIpChartOptions);
-      this.uniqueDestIpChart.render();
-    }
-    this.uniqueDestIpChart.updateOptions(uniqueDestIpChartOptions);
-    this.uniqueDestIpChart.updateSeries([{ name: "Unique Dest. Ip", data: this.ds.uniqueDesIp }, { name: "Unique Dest. Ip Avg", data: this.ds.uniqueDesIpAvg }])
-
-    // GAUGE Chart
-    var gaugeOptions = {
-      chart: { height: 250, type: 'radialBar', },
-      plotOptions: {
-        radialBar: {
-          startAngle: -100, endAngle: 100,
-          dataLabels: {
-            name: { fontSize: '16px', color: '#e4e4e4', offsetY: 25 },
-            value: { offsetY: -20, fontSize: '22px', color: '#fffefe' }
-          }
-        }
-      },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shade: 'dark',
-          type: 'horizontal',
-          shadeIntensity: 0.5,
-          gradientToColors: ['#ffe20b'],
-          inverseColors: true,
-          opacityFrom: 1,
-          opacityTo: 1,
-          stops: [0, 100]
-        }
-      },
-      colors: ['#fa1e1e'],
-      series: [{ data: 1 }],
-      labels: ['Risk Score'],
-
-    }
-    if(!this.gaugeChart){
-      this.gaugeChart = new ApexCharts(document.querySelector("#gaugeChart"), gaugeOptions);
-    this.gaugeChart.render();
-    }
-    this.gaugeChart.updateOptions(gaugeOptions);
-    this.gaugeChart.updateSeries([this.ds.riskScore]);
-  
-
   }
 
-  changeDateParameter(param: number) {
-    this.dateParameter = param;
-    if (param == -1) {
-      param = 0;
-    }
-    let today = new Date();
-    let d1 = new Date();
-    d1.setDate(d1.getDate() - param);
-    d1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 0, 0, 0);
-    let d2 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+  convertTimeString(num: number) {
+    const month = Math.floor(num / (1440 * 30));
+    const w = Math.floor((num - (month * 1440 * 30)) / (1440 * 7));
+    const d = Math.floor((num - (w * 1440 * 7)) / 1440); // 60*24
+    const h = Math.floor((num - (d * 1440)) / 60);
+    const m = Math.round(num % 60);
 
-    this.getElasticData(d1.toISOString(), d2.toISOString());
-    this.prepareWorldMap(this.dateParameter.toString());
-  }
+    let text = '';
 
-  updateCharts(min: any, max: any) {
-    if (min && max) {
-      let mn = new Date(min);
-      let mx = new Date(max);
-      this.getElasticData(mn.toISOString(), mx.toISOString());
+    if (month > 0) {
+      text = `${month} ${this.translatorService.translate('Month')}`;
 
-      let startDate = moment(mn).format('DD.MM.YYYY HH:mm:ss');
-      let endDate = moment(mx).format('DD.MM.YYYY HH:mm:ss');
-      const time = startDate + ' - ' + endDate;
-      this.prepareWorldMap(time)
+      if (w > 0) {
+        text += ` ${w} ${this.translatorService.translate('Week')}`;
+      }
+    } else if (w > 0) {
+      text = `${w} ${this.translatorService.translate('Week')}`;
+
+      if (d > 0) {
+        text += ` ${d} ${this.translatorService.translate('Day')}`;
+      }
+    } else if (d > 0) {
+      text = `${d} ${this.translatorService.translate('Day')}`;
+
+      if (h > 0) {
+        text += ` ${h} ${this.translatorService.translate('Hour')}`;
+      }
+    } else if (h > 0) {
+      text = `${h} ${this.translatorService.translate('Hour')}`;
+
+      if (m > 0) {
+        text += ` ${m} ${this.translatorService.translate('Minute')}`;
+      }
     } else {
-      this.changeDateParameter(0);
+      text = `${m} ${this.translatorService.translate('Minute')}`;
     }
 
+    return text;
   }
 
-  calculatePercentage(num1: number, num2: number) {
-    return Math.round((num2 - num1) / num1 * 100);
-  }
+  get getDetailButtonDisabled(): boolean {
+    const startDate = moment(this.startDate);
+    const endDate = moment(this.endDate);
 
-  changeTrafficChartData(type: string) {
-    this.trafficChartType = type;
-    if (type == 'hit') {
-      $('#hitChartDiv').show();
-      $('#blockChartDiv').hide();
-    } else {
-      $('#hitChartDiv').hide();
-      $('#blockChartDiv').show();
-    }
+    const diff = endDate.diff(startDate, 'minutes');
 
-  }
-
-  changeUniqueChartData(type: string) {
-    this.uniqueChartType = type;
-    if (type == 'domain') {
-      $('#uniqueDomainChartDiv').show();
-      $('#uniqueSubdomainChartDiv').hide();
-      $('#uniqueDestIpChartDiv').hide();
-    } else if (type == 'subdomain') {
-      $('#uniqueDomainChartDiv').hide();
-      $('#uniqueSubdomainChartDiv').show();
-      $('#uniqueDestIpChartDiv').hide();
-    } else {
-      $('#uniqueDomainChartDiv').hide();
-      $('#uniqueSubdomainChartDiv').hide();
-      $('#uniqueDestIpChartDiv').show();
-    }
-
-  }
-
-  searchCategoryForTraffic(val: any) {
-    this.categoryListFiltered = this.categoryList.filter(c => c.name.toLowerCase().includes(val.toLowerCase()));
-  }
-
-  addCategoryToTraffic(id: number) {
-    this.selectedCategoryForTraffic = this.categoryList.find(c => c.id == id);
-    let catName = this.selectedCategoryForTraffic.name;
-
-    let catHits = [], catAvs = []
-    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
-    for (let i = indexLimit; i < this.elasticData.length; i++) {
-      const data = this.elasticData[i];
-
-      Object.keys(data.category_hits).forEach(function eachKey(key) {
-        if (key.toString() == catName) {
-          catHits.push(data.category_hits[key].hits);
-          catAvs.push(Math.round(data.category_hits[key].average));
-
-        }
-      });
-    }
-
-    this.trafficChart.updateSeries([{ name: catName + " Hits", data: catHits }, { name: "Average Hits", data: catAvs }])
-
-    this.resetCategoryListFiltered();
-  }
-
-  deleteCatFromTraffic(id: number) {
-    if (id && id > 0) {
-      this.selectedCategoryForTraffic = null;
-      this.trafficChart.updateSeries([{ name: "Today Hits", data: this.ds.totalHits }, { name: "Average Hits", data: this.ds.hitAverages }])
-    }
-  }
-
-  addCategoryToUnique(id: number) {
-    this.selectedCategoryForUnique = this.categoryList.find(c => c.id == id);
-    let catName = this.selectedCategoryForUnique.name;
-    let catHits = [], catAvs = []
-    const indexLimit = this.dateParameter == -1 ? this.elasticData.length - 1 : 0;
-    for (let i = indexLimit; i < this.elasticData.length; i++) {
-      const data = this.elasticData[i];
-
-      Object.keys(data.category_hits).forEach(function eachKey(key) {
-        if (key.toString() == catName) {
-          catHits.push(data.category_hits[key].unique_domain);
-          catAvs.push(Math.round(data.category_hits[key].unique_domain_average));
-
-        }
-      });
-    }
-
-    this.uniqueDomainChart.updateSeries([{ name: catName + "Unique Domain", data: catHits }, { name: "Unique Domain Avg", data: catAvs }]);
-
-    this.resetCategoryListFiltered();
-  }
-
-  deleteCatFromUnique(id: number) {
-    if (id && id > 0) {
-      this.selectedCategoryForUnique = null;
-      this.uniqueDomainChart.updateSeries([{ name: "Unique Domain", data: this.ds.uniqueDomain }, { name: "Unique Domain Avg", data: this.ds.uniqueDomainAvg }]);
-    }
-
-  }
-
-  private resetCategoryListFiltered() {
-    this.searchKey = null;
-    this.categoryListFiltered = JSON.parse(JSON.stringify(this.categoryList.sort((a, b) => { return a.name > b.name ? 1 : -1; })));//deep copy
-  }
-
-  showInReport(param: string) {
-    localStorage.setItem('dashboardParam', param + '&' + this.dateParameter);
-    this.router.navigate(['/admin/reports/customreport']);
-  }
-
-  openModal() {
-    $(document.body).addClass('modal-open');
-    $('#exampleModal').css('display', 'block');
-    $('#exampleModal').attr('aria-hidden', 'false');
-    $('#exampleModal').addClass('show');
-  }
-
-  closeModal() {
-    $(document.body).removeClass('modal-open');
-    $('#exampleModal').css('display', 'none');
-    $('#exampleModal').attr('aria-hidden', 'true');
-    $('#exampleModal').removeClass('show');
+    return diff > 60 * 24 * 7;
   }
 }

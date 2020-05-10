@@ -1,14 +1,14 @@
-import {Ip} from "./Ip";
+import { Ip } from './Ip';
 export class WAgentIpGroup {
-  public id: number = -1;
+  public id = -1;
   public ips: number[] = [];
 
   public beginIpAddress: string;
   public endIpAddress: string;
 
 
-  public  constructor() {
-    if (this.ips == null || this.ips.length == 0) {
+  public constructor() {
+    if (this.ips == null || this.ips.length === 0) {
       this.ips = Ip.emptyIP();
     }
     if (this.ips != null && this.ips.length > 0) {
@@ -18,11 +18,11 @@ export class WAgentIpGroup {
   }
 
   public initIpBlocks() {
-    this.beginIpAddress = this.ips[0] + "." + this.ips[1] + "." + this.ips[2] + "." + this.ips[3];
+    this.beginIpAddress = this.ips[0] + '.' + this.ips[1] + '.' + this.ips[2] + '.' + this.ips[3];
     if (this.ips[3] != this.ips[4]) {
-      this.endIpAddress = this.ips[0] + "." + this.ips[1] + "." + this.ips[2] + "." + this.ips[4];
+      this.endIpAddress = this.ips[0] + '.' + this.ips[1] + '.' + this.ips[2] + '.' + this.ips[4];
     } else {
-      this.endIpAddress = "";
+      this.endIpAddress = '';
     }
   }
 

@@ -18,7 +18,10 @@ export class ErrorInterceptor implements ErrorHandler {
     const spinnerService = this.injector.get(SpinnerService);
     spinnerService.hide();
     const translatorService = this.injector.get(TranslatorService);
-    if (error instanceof HttpErrorResponse) {
+
+     // throw error;
+
+     if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
       if (!navigator.onLine) {
         notificationService.danger('No Internet Connection');
@@ -26,13 +29,19 @@ export class ErrorInterceptor implements ErrorHandler {
         // Handle Http Error (error.status === 403, 404...)
         const status = error.status;
         if (error.error.code) {
-          let message = translatorService.translate(error.error.code);
+          const message = translatorService.translate(error.error.code);
           console.log(`${status} - ${message}`);
           if (error.error.code != 'ErrOAuthJwtVerificationFailed') {
             notificationService.error(`${message}`);
           }
+        } else
+        if (error.statusText == 'Service Temporarily Unavailable') {
+          const message = translatorService.translate(error.statusText);
+          notificationService.error(translatorService.translate(message));
+          console.log(`${status} - ${message}`);
         } else {
-          let message = translatorService.translate(error.statusText);
+
+          const message = translatorService.translate(error.statusText);
           notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
           console.log(`${status} - ${message}`);
         }
@@ -40,12 +49,15 @@ export class ErrorInterceptor implements ErrorHandler {
     } else {
 
       const message = translatorService.translate(error.message);
-      console.log(message); 
-      if (!(message.includes("'push' of undefined") && error.stack.includes("reports-module"))) { // TODO: will remove; after unfound push error fixed 
-        notificationService.error('Error');
-      }
+      console.log(message);
+      throw error;
+      // if (!(message.includes('\'push\' of undefined') && error.stack.includes('reports-module'))) { // TODO: will remove; after unfound push error fixed
+      //   notificationService.error('Error');
+      // }
     }
+
+
     // Log the error anyway
-    //console.error(error.name);
+    console.error(error.name);
   }
 }

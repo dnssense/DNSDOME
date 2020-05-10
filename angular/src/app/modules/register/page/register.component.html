@@ -1,4 +1,4 @@
-<div class="wrapper wrapper-full-page" style="background-color: white;">
+<div class="wrapper wrapper-full-page flex-column" style="background-color: white; color: #222222">
 
   <div class="row ml-1 mr-1" style="min-height: 92vh;">
     <div class="col-md-8 ml-auto mr-auto" *ngIf="pageMode=='register'">
@@ -6,15 +6,15 @@
         <div class="col-md-3 text-left">
           <img src="/assets/img/{{host.logoImage}}" style="max-height: 40px;" />
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 d-flex align-items-center justify-content-end">
           <a class="nav-link pull-right" [routerLink]="['/login']"
             style="color: #868e96; font-weight: 500; font-size: 16px;">
-            Log In
+            {{'LOGIN.Login' | translate}}
           </a>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-12 signUpHeader text-center">Sign Up</div>
+        <div class="col-md-12 signUpHeader text-center">{{ 'LOGIN.Register' | translate}}</div>
         <div class="col-md-12 mt-4 mb-3" style="border: 0.5px solid #eeeeee"></div>
       </div>
       <div class="row">
@@ -53,8 +53,8 @@
                 Simple deployment with no overhead.</div>
               <div class="ml-4">
                 <div class="container">
-                  <img src="/assets/img/dashboardImage.png" alt="Dashboard" />
-                  <img src="/assets/img/play.svg" style="transform: translate(-240%, 0%);" />
+                  <img src="/assets/img/dashboardImage2.png" alt="Dashboard" />
+                  <!-- <img src="/assets/img/play.svg" style="transform: translate(-240%, 0%);" /> -->
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@
               <form [formGroup]="registerForm" class="form-horizontal mt-3">
                 <div class="row">
                   <div class="col-md-12" style="max-width: 450px;">
-                    <p style="font-size: 12px; margin-top: -15px; margin-bottom: 0px;">All fields are required.</p>
+                    <p style="font-size: 12px; margin-top: -15px; margin-bottom: 0px;">All fields are required except phone number</p>
 
                     <input type="text" class="formInput" placeholder="Company Name" [(ngModel)]="user.company.name"
                       formControlName="company" [ngClass]="{'formInputHasError':(registerForm.get('company').dirty|| registerForm.get('company').touched) 
@@ -80,7 +80,7 @@
 
                     <div class="form-group-sm has-default">
                       <div class="input-group">
-                        <div class="input-group-prepend" style="width:100%;">
+                        <div class="input-group-prepend d-flex" style="width:100%;">
 
                           <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" style="width: 130px;">
                             <button class="btns dropdown-toggle reverse-form text-left formInput mt-2" [ngClass]="{'formInputHasError':(registerForm.get('gsmCode').dirty|| registerForm.get('gsmCode').touched) 
@@ -127,7 +127,7 @@
                       [ngClass]="{'formInputHasError':(registerForm.get('password').dirty|| registerForm.get('password').touched) 
                       && !registerForm.get('password').valid}">
 
-                    <div class="password-length mt-2" style="max-width: 100%;">
+                    <div class="password-strength-register mt-2" style="max-width: 100%;">
                       <div [ngClass]="{'active': passStrength>0}"></div>
                       <div [ngClass]="{'active': passStrength>1}"></div>
                       <div [ngClass]="{'active': passStrength>2}"></div>
@@ -159,7 +159,7 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group-sm has-default text-center ml-auto">
-                      <re-captcha [site_key]="captcha_key" (captchaResponse)="handleCaptcha($event)">
+                      <re-captcha [siteKey]="captcha_key" language='en' (resolved)="handleCaptcha($event)">
                       </re-captcha>
                     </div>
                     <div class="row">
@@ -231,6 +231,8 @@
     </div>
   </div>
 
-  <app-footer-cmp></app-footer-cmp>
+  <div class="mt-3">
+    <app-footer-cmp></app-footer-cmp>
+  </div>
 
 </div>

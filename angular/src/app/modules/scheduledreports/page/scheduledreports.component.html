@@ -1,82 +1,109 @@
-<div class="main-content">
-  <div class="container-fluid col-md-11">
-    <section id="listPanel" class="listPanel" F>
+<div class="rk-base-card">
+  <div class="card-item">
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-md-12 ml-auto mr-auto">
-
-          <div class="dns-base-card">
-            <div class="dns-base-card-content">
-              <div class="datatable-container container-fluid">
-                <div class="row">
-                  <h4 class="dns-base-card-header col-sm-4">Saved Reports</h4>
-                  <div class="col-sm-4">
-                  </div>
-                </div>
+        <div class="col-12 p-0 mt-3">
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content">
+                <div class="rk-table-title">User Reports</div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-12">
-                <div class="table-responsive" style="max-height: 600px;">
-                  <table class="table table-bordered">
-                    <thead>
-                      <th class="no-border"></th>
-                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Report Name</th>
-                      <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Schedule Interval</th>
-                      <th class="text-center" style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Delete</th>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let row of userReports; let i = index;">
-                        <td class="numeration">{{i}}</td>
-                        <td>{{row.name}}</td>
-                        <td>
-                          <label class="dns-chk-label">
-                            <span>Daily</span>
-                            <div data-width="30" class="dns-form-switch">
-                              <ng-container *ngIf="row.scheduledReport?.period=='d'; else elseTemplateDaily">
-                                <input type="checkbox" id="chk2" checked (change)="changeScheduledPeriod(row.id, 'n')">
-                              </ng-container>
-                              <ng-template #elseTemplateDaily>
-                                <input type="checkbox" id="chk2" (change)="changeScheduledPeriod(row.id, 'd')">
-                              </ng-template>
-                              <i></i><span></span>
-                            </div>
-                          </label>
-                          <label class="dns-chk-label ml-4">
-                            <span>Weekly</span>
-                            <div data-width="30" class="dns-form-switch">
-                              <ng-container *ngIf="row.scheduledReport?.period=='w'; else elseTemplateWeekly">
-                                <input type="checkbox" id="chk2" checked (change)="changeScheduledPeriod(row.id, 'n')">
-                              </ng-container>
-                              <ng-template #elseTemplateWeekly>
-                                <input type="checkbox" id="chk2" (change)="changeScheduledPeriod(row.id, 'w')">
-                              </ng-template>
-                              <i></i>
-                              <span></span>
-                            </div>
-                          </label>
-                        </td>
-                        <td class="text-center">
-                          <button class="btns btn-clear" matTooltip="Delete Report" [matTooltipShowDelay]="800"
-                            (click)="deleteReport(row.id)">
-                            <img src="./assets/images/icons/close-red.svg">
-                          </button>
-                        </td>
-                      </tr>
-                      <tr *ngIf="userReports == null || userReports.length<1">
-                        <td class="numeration"></td>
-                        <td colspan="10">No Data</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
 
+            <rk-table [showPagination]="false">
+              <ng-template #header>
+                <tr>
+                  <th>#</th>
+                  <th>Report Name</th>
+                  <th colspan="3">Schedule Interval</th>
+                  <th>Delete</th>
+                </tr>
+              </ng-template>
 
+              <ng-template #body>
+                <tr *ngFor="let report of userReports; let index = index">
+                  <td style="width: 32px;">{{ index + 1 }}</td>
+                  <td>{{ report.name }}</td>
+                  <td class="rk-radio-for-table" style="width: 230px;">
+                    <rk-radio class="rk-radio-m-0" [checked]="report.scheduledReport?.period === 'd'"
+                      (valueChange)="changeScheduledPeriod(report.id, 'd')" [name]="'report-' + index" value="d">
+                      Schedule Daily report email
+                    </rk-radio>
+                  </td>
+                  <td class="rk-radio-for-table" style="width: 230px;">
+                    <rk-radio class="rk-radio-m-0" [checked]="report.scheduledReport?.period === 'w'"
+                      (valueChange)="changeScheduledPeriod(report.id, 'w')" [name]="'report-' + index" value="w">
+                      Schedule Weekly report email
+                    </rk-radio>
+                  </td>
+                  <td class="rk-radio-for-table" style="width: 230px;">
+                    <rk-radio class="rk-radio-m-0" [checked]="report.scheduledReport?.period === 'm'"
+                      (valueChange)="changeScheduledPeriod(report.id, 'm')" [name]="'report-' + index" value="m">
+                      Schedule Monthly report email
+                    </rk-radio>
+                  </td>
+                  <td style="width: 60px;">
+                    <button class="btn btn-icon btn-link p-0 hover-gray" (click)="deleteReport(report.id)">
+                      <i-feather name="trash-2"></i-feather>
+                    </button>
+                  </td>
+                </tr>
+              </ng-template>
+            </rk-table>
+          </rk-table-container>
         </div>
-      </div>
-    </section>
 
+   <!-- d
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content">
+                <div class="rk-table-title">System Reports</div>
+              </div>
+            </div>
+
+            <rk-table [showPagination]="false">
+              <ng-template #header>
+                <tr>
+                  <th>#</th>
+                  <th>Report Name</th>
+                  <th colspan="3">Schedule Interval</th>
+                  <th>Delete</th>
+                </tr>
+              </ng-template>
+
+              <ng-template #body>
+                <tr *ngFor="let report of systemReports; let index = index">
+                  <td style="width: 32px;">{{ index + 1 }}</td>
+                  <td>{{ report.name }}</td>
+                  <td class="rk-radio-for-table" style="width: 230px;">
+                    <rk-radio class="rk-radio-m-0" [checked]="report.scheduledReport?.period === 'd'"
+                      (valueChange)="changeScheduledPeriod(report.id, 'd')" [name]="'system-report-' + index" value="d">
+                      Schedule Daily report email
+                    </rk-radio>
+                  </td>
+                  <td class="rk-radio-for-table" style="width: 230px;">
+                    <rk-radio class="rk-radio-m-0" [checked]="report.scheduledReport?.period === 'w'"
+                      (valueChange)="changeScheduledPeriod(report.id, 'w')" [name]="'system-report-' + index" value="w">
+                      Schedule Weekly report email
+                    </rk-radio>
+                  </td>
+                  <td class="rk-radio-for-table" style="width: 230px;">
+                    <rk-radio class="rk-radio-m-0" [checked]="report.scheduledReport?.period === 'm'"
+                      (valueChange)="changeScheduledPeriod(report.id, 'm')" [name]="'system-report-' + index" value="m">
+                      Schedule Monthly report email
+                    </rk-radio>
+                  </td>
+                  <td style="width: 60px;">
+                    <button class="btn btn-icon btn-link p-0 hover-gray" (click)="deleteReport(report.id)">
+                      <i-feather name="trash-2"></i-feather>
+                    </button>
+                  </td>
+                </tr>
+              </ng-template>
+            </rk-table>
+          </rk-table-container>
+        </div> -->
+      </div>
+    </div>
   </div>
 </div>

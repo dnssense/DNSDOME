@@ -3,8 +3,8 @@ set /p version="Enter version: "
 cd angular
 call npm run build-prod
 cd..
-docker build -t ui.dnssense .
-docker tag ui.dnssense registry.sea.net/dnssense/ui.dnssense:%version%
+docker build -t ui.dnssense.kodiks .
+docker tag ui.dnssense.kodiks registry.sea.net/dnssense/ui.dnssense.kodiks:%version%
 :start
 SET choice=
 SET /p choice=Do you want to push? [Y/N]: 

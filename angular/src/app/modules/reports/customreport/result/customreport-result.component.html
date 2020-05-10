@@ -1,106 +1,86 @@
-<div class="row mt-3">
-    <div class="col-12">
-        <div class="dns-base-card">
-            <div class="dns-base-card-content">
-                <div id="customReportChart"></div>
-                <div class="mt-0"></div>
-                <ng-container *ngIf="data; else elseTemplate">
-                    <div class="dns-datatable-container container-fluid">
-                        <div class="row">
-                            <h4 class="dns-datatable-heading col-sm-4">Results</h4>
-                            <div class="col-sm-8 text-right">
-                                <div class="dns-dropdown d-inline-block dns-table-select" id="dropdownExport"
-                                    style="width: 120px;">
-                                    <button class="btns dropdown-toggle text-left" type="button"
-                                        id="dropdownMenuButtonExport" data-toggle="dropdown" aria-haspopup="false"
-                                        aria-expanded="false">
-                                        Export As
-                                        <i class="icon-down-open-big btn-arrow" style="font-size: 20px"></i>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonExport"
-                                        x-placement="top-start" style="min-width: 120px !important;">
-                                        <button class="dropdown-item" (click)="exportAs('xlsx')">
-                                            <i class="fa fa-table mr-3"></i> Excel
-                                        </button>
-                                        <button class="dropdown-item" (click)="exportAs('pdf')">
-                                            <i class="fa  fa-file-pdf-o mr-3"></i> PDF
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="dns-datatable-pagination ml-5">
-                                    <span>Show Rows:</span>
-                                    <div class="dns-select-container default-select ml-3">
-                                        <select class="dns-form-control" [(ngModel)]="searchSetting.topNumber"
-                                            (change)="setTopCount($event.target.value)">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                            <option value="150">150</option>
-                                            <option value="250">250</option>
-                                        </select>
-                                    </div>
-                                    <div class="page-numbers ml-3 mr-3"><a class="btn btn-default btn-link btn-sm"
-                                            style="margin-left: 10px" (click)="refresh()">
-                                            REFRESH TABLE<i class="material-icons">refresh</i>
-                                        </a></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="table-responsive col-md-12">
-                                <table #tableDivComponent id="table-data" class="table table-bordered">
-                                    <thead>
-                                        <th class="no-border"></th>
-                                        <th nowrap style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);" *ngFor="let colz of selectedColumns">
-                                            <strong>{{colz.label}}</strong></th>
-                                        <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Count</th>
-                                        <th style="border-bottom: 1px solid rgba(255, 255, 255, 0.06);">Percent</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let dat of data;  let i = index" [ngClass]="{'baseTableRow': i%2==0}">
-                                            <td class="numeration">{{i+1}}</td>
-                                            <td nowrap *ngFor="let col of selectedColumns; let inde=index">
-                                                <a *ngIf="col.column.name!='action'">
-                                                    <app-customreport-result-column [value]="dat[inde]"
-                                                        [columnName]="col.column.name"
-                                                        (addColumnValueEmitter)="addValuesIntoSelected($event)">
-                                                    </app-customreport-result-column>
-                                                </a>
-                                                <a *ngIf="col.column.name == 'action'">
-                                                    <app-customreport-result-column
-                                                        [value]="dat[inde]== 'false' ? false:true"
-                                                        [columnName]="col.column.name"
-                                                        (addColumnValueEmitter)="addValuesIntoSelected($event)">
-                                                    </app-customreport-result-column>
-                                                </a>
-                                            <td>
-                                                {{dat[selectedColumns.length] | customDecimalPipe}}
-                                            </td>
-                                            <td>
-                                                {{100*dat[selectedColumns.length]/total | number:'1.0-0'}}%
-                                                <mat-progress-bar mode="determinate"
-                                                    value="{{100*dat[selectedColumns.length]/total}}">
-                                                </mat-progress-bar>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+<div class="row">
+    <div class="col-12 mt-3">
+        <!-- style="overflow-y: auto;" [ngStyle]="{'max-height': maxHeight + 'px'}" -->
+        <div class="rk-basic-card p-2" style="overflow-y: auto;" [ngStyle]="{'max-height': maxHeight + 'px'}">
+            <ng-container>
+                <div id="customReportChart"
+                    style="max-height: 270px !important; min-height: 270px !important; overflow: hidden;"></div>
 
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </ng-container>
-                <ng-template #elseTemplate>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p #tableDivComponent style="color: whitesmoke">
-                                <strong>{{ 'Data not found!' }}</strong>
-                            </p>
-                        </div>
-                    </div>
-                </ng-template>
-            </div>
+                <div>
+                    <rk-table-container [config]="tableConfig" class="m-0 border-0 pagination-disabled"
+                        (columnBadgeChange)="columnChanged($event)">
+                        <rk-table-export (event)="exportAs($event)" [showTypes]="{ excel: true, pdf: false }">
+                        </rk-table-export>
+
+                        <rk-table (pageChange)="onPageChange($event)" [totalCount]="100"
+                            [pageViewCount]="searchSetting.topNumber" [paginationOptions]="paginationOptions"
+                            (pageViewCountChange)="onPageViewCountChange($event)" [info]="true"
+                            [paginationSelectDirection]="'up'">
+                            <ng-template #header>
+                                <tr>
+                                    <th style="width: 60px;">
+                                        <rk-checkbox (valueChange)="checkboxAllChange($event)"></rk-checkbox>
+                                    </th>
+                                    <th scope="col" *ngFor="let col of selectedColumns; let index = index">
+                                        {{ col.label }}
+                                        <button class="table-btn ripple" (click)="sort(col, index)"
+                                            [ngClass]="{'sort-icon-transformed': sortDirection === 'desc' && sortedColumn === col?.column?.name, 'active': sortedColumn === col?.column?.name }">
+                                            <icon-sort></icon-sort>
+                                        </button>
+                                    </th>
+                                    <th scope="col">
+                                        Count
+                                        <button class="table-btn ripple" (click)="sort(null, selectedColumns.length)"
+                                            [ngClass]="{'sort-icon-transformed': sortDirection === 'desc' && sortedColumn === col?.column?.name, 'active': sortedColumn === col?.column?.name }">
+                                            <icon-sort></icon-sort>
+                                        </button>
+                                    </th>
+                                    <th scope="col">
+                                        Percent
+                                    </th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template #body>
+                                <tr *ngFor="let dat of data;let i = index" [ngClass]="{'selected': dat.selected}">
+                                    <td class="index">
+                                        <rk-checkbox [(value)]="dat.selected"></rk-checkbox>
+                                    </td>
+                                    <td *ngFor="let col of selectedColumns; let colIndex = index">
+                                        <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
+                                            <button class="btn btn-link table-link-button"
+                                                (click)="linkClicked(col.column.name, dat[colIndex])">
+                                                <ng-container *ngIf="col.column.name === 'time'; else elseTimeTemplate">
+                                                    {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
+                                                </ng-container>
+
+                                                <ng-template #elseTimeTemplate>
+                                                    {{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}
+                                                </ng-template>
+                                            </button>
+                                        </ng-container>
+
+                                        <ng-template #elseTemplate>
+                                            <ng-container *ngIf="col === 'time'; else elseTimeTemplate2">
+                                                {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
+                                            </ng-container>
+
+                                            <ng-template #elseTimeTemplate2>
+                                                {{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}
+                                            </ng-template>
+                                        </ng-template>
+                                    </td>
+                                    <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>
+                                    <td>
+                                        <rk-progressbar [value]="100 * dat[selectedColumns.length] / total"
+                                            [showType]="'outside'" [sizeType]="'small'"></rk-progressbar>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </rk-table>
+                    </rk-table-container>
+                </div>
+            </ng-container>
         </div>
     </div>
 </div>

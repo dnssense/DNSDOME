@@ -1,11 +1,11 @@
-
 <div class="wrapper">
-    <div class="sidebar" data-color="white" data-background-color="blueice">
-        <app-sidebar-cmp></app-sidebar-cmp>
+    <div class="sidebar" [ngClass]="{'collapsed': collapsed}">
+        <app-sidebar-cmp [collapsed]="collapsed" class="d-block w-100"></app-sidebar-cmp>
     </div>
-    <div class="main-panel">
+
+    <div class="content">
         <app-navbar-cmp></app-navbar-cmp>
+
         <router-outlet></router-outlet>
     </div>
-   
 </div>

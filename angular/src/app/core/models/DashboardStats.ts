@@ -1,32 +1,33 @@
 export class DashboardStats {
-    totalHitCountForDashboard: number = 0;
-    totalHitCountForDashboardDelta: number = 0;
-    totalBlockCountForDashboard: number = 0;
-    totalBlockCountForDashboardDelta: number = 0;
-    totalUniqueDomain: number = 0;
-    totalUniqueDomainDelta: number = 0;
-    totalUniqueBlockedDomainForDashboard: number = 0;
-    totalUniqueBlockedDomainForDashboardDelta: number = 0;
-    securityRiskCountForDashboard: number = 0;
-    securityRiskCountForDashboardDelta: number = 0;
-    uSecurityRiskCountForDashboard: number = 0;
-    uSecurityRiskCountForDashboardDelta: number = 0;
-    grayCountForDashboard: number = 0;
-    grayCountForDashboardDelta: number = 0;
-    uGrayCountForDashboard: number = 0;
-    uGrayCountForDashboardDelta: number = 0;
-    riskScore: number = 0;
+    totalHitCountForDashboard = 0;
+    totalHitCountForDashboardDelta = 0;
+    totalBlockCountForDashboard = 0;
+    totalAllowedCountForDashboard = 0;
+    totalBlockCountForDashboardDelta = 0;
+    totalUniqueDomain = 0;
+    totalUniqueDomainDelta = 0;
+    totalUniqueBlockedDomainForDashboard = 0;
+    totalUniqueBlockedDomainForDashboardDelta = 0;
+    securityRiskCountForDashboard = 0;
+    securityRiskCountForDashboardDelta = 0;
+    uSecurityRiskCountForDashboard = 0;
+    uSecurityRiskCountForDashboardDelta = 0;
+    grayCountForDashboard = 0;
+    grayCountForDashboardDelta = 0;
+    uGrayCountForDashboard = 0;
+    uGrayCountForDashboardDelta = 0;
+    riskScore = 0;
     hitAverages: number[] = [];
     totalHits: number[] = [];
     totalBlocks: number[] = [];
     blockAverages: number[] = [];
-    uniqueDomain: number[] = []
-    uniqueBlockedDomain: number[] = []
-    uniqueDomainAvg: number[] = []
-    uniqueSubdomain: number[] = []
-    uniqueSubdomainAvg: number[] = []
-    uniqueDesIp: number[] = []
-    uniqueDesIpAvg: number[] = []
+    uniqueDomain: number[] = [];
+    uniqueBlockedDomain: number[] = [];
+    uniqueDomainAvg: number[] = [];
+    uniqueSubdomain: number[] = [];
+    uniqueSubdomainAvg: number[] = [];
+    uniqueDesIp: number[] = [];
+    uniqueDesIpAvg: number[] = [];
 
     /**
      *
@@ -36,13 +37,13 @@ export class DashboardStats {
         this.hitAverages = [];
         this.totalHits = [];
         this.blockAverages = [];
-        this.uniqueDomain = []
-        this.uniqueDomainAvg = []
-        this.uniqueSubdomain = []
-        this.uniqueSubdomainAvg = []
-        this.uniqueDesIp = []
-        this.uniqueDesIpAvg = []
-        this.uniqueBlockedDomain= []
+        this.uniqueDomain = [];
+        this.uniqueDomainAvg = [];
+        this.uniqueSubdomain = [];
+        this.uniqueSubdomainAvg = [];
+        this.uniqueDesIp = [];
+        this.uniqueDesIpAvg = [];
+        this.uniqueBlockedDomain = [];
 
     }
 }

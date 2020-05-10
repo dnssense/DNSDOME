@@ -4,7 +4,6 @@ import { DayProfileGroup } from 'src/app/core/models/DayProfileGroup';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { DayProfile } from 'src/app/core/models/DayProfile';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { forEach } from '@angular/router/src/utils/collection';
 
 declare var $: any;
 

@@ -1,107 +1,59 @@
-<div class="main-content">
-
-  <div class="container-fluid col-md-11">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="dns-base-card">
-          <div class="dns-base-card-header pt-3" style="border-bottom-color: aliceblue;
-          border-bottom: 1px solid #8b8b8b;">
-            <ul class="nav nav-pills nav-pills-success nav-pills-icons justify-content-center" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link mb-1 active" style="color: whitesmoke;" data-toggle="tab" href="#link1"
-                  role="tablist"> Query Category </a>
-              </li>
-              <li class="nav-item mb-1"><a class="nav-link" data-toggle="tab" style="color: whitesmoke;" href="#link2"
-                  role="tablist"> Category Request</a>
-              </li>
-            </ul>
-          </div>
-
-          <div class="dns-base-card-content">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="tab-content">
-                  <div class="tab-pane active" id="link1">
-                    <div class="dns-base-card-header pt-3">
-                      <div class="row">
-                        <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                          <span class="mr-3 flex-2">Query Category</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="dns-base-card-content">
-                      <form [formGroup]="searchForm">
-                        <div class="row">
-                          <div class="col-md-6 ml-auto mr-auto d-flex">
-                            <input type="text" id="domain" class="dns-form-control input-reverse"
-                              placeholder="Enter domain" [(ngModel)]="domain" (ngModelChange)="checkDomain('category')"
-                              formControlName="domain" (keydown.space)="$event.preventDefault();">
-                            <button class="btns btn-teritary pl-3 pr-3 pull-right ml-2" (click)="searchCategory()"
-                              [disabled]="!isDomain">Search
-                            </button>
-                          </div>
-                        </div>
-                      </form>
-
-                      <div class="row">
-                        <div class="col-md-6 ml-auto mr-auto">
-                          <table
-                            class="table table-bordered table-padding-05 table-responsive-md table-responsive-sm mt-3">
-                            <tr>
-                              <td style="width: 150px;">Domain</td>
-                              <td>
-                                {{categoryQuery?.domain}}
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style="width: 150px;">Categories</td>
-                              <td>
-                                <div *ngFor="let item of categoryQuery?.categoryList">
-                                  {{item}}
-                                </div>
-                              </td>
-                            </tr>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="tab-pane" id="link2">
-                    <div class="dns-base-card-header pt-3">
-                      <div class="row">
-                        <div class="col-12 d-flex flex-column flex-sm-column flex-md-row">
-                          <span class="mr-3 flex-2">Category Request</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="dns-base-card-content mb-5">
-                      <div class="row">
-                        <div class="col-md-5 ml-auto mt-2">
-                          <textarea type="text" id="domainReq" class="dns-form-control input-reverse" rows="5"
-                            placeholder="Enter a domain or max. 5 domains with comma separated"
-                            [(ngModel)]="domainForReq" (ngModelChange)="checkDomain('report')" (keydown.space)="$event.preventDefault();"></textarea>
-                        </div>
-                        <div class="col-md-1 mr-auto mt-2">
-                          <button class="btns btn-teritary" (click)="reportDomain()"
-                            title="Report the domain for analyze" [disabled]='!isDomainForReq'>Send
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
+<div class="rk-base-card">
+  <div class="card-item">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 p-0">
+          <h5 class="page-title">{{'QueryCategory'|translate}}</h5>
         </div>
+      </div>
 
+      <div class="row">
+        <div class="col-12 col-md-6 p-0 mt-3">
+          <div class="rk-basic-card">
+            <p></p>
+
+            <form [formGroup]="searchForm">
+              <div class="search d-flex align-items-center justify-content-between">
+                <div class="rk-autocomplete-container w-100 mr-2">
+                  <input type="text" class="rk-input rk-autocomplete" placeholder="Enter domain" [(ngModel)]="domain"
+                    (ngModelChange)="checkDomain('category')" formControlName="domain"
+                    (keydown.space)="$event.preventDefault()" (keydown.enter)="isDomain ? searchCategory() : null" [ngStyle]="{'border-color': domain?.length > 1 && isDomain ? '#3397c5' : '#f95656'}">
+                  <i-feather name="search" class="search-icon"></i-feather>
+                </div>
+
+                <button class="btn btn-small" (click)="searchCategory()" [disabled]="!isDomain" type="button">{{ 'Search' | translate }}</button>
+              </div>
+            </form>
+
+            <table class="table mt-3">
+              <tr>
+                <td class="color-898ea4">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <b>{{'Domain'|translate}}</b>
+                    <b>:</b>
+                  </div>
+                </td>
+                <td class="color-898ea4">{{ categoryQuery?.domain }}</td>
+              </tr>
+              <tr>
+                <td class="color-898ea4">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <b>{{'Categories'|translate}}</b>
+                    <b>:</b>
+                  </div>
+                </td>
+                <td class="color-898ea4">
+                  <div class="mt-1" *ngFor="let category of categoryQuery?.categoryList">
+                    {{ category }}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
-
-
-
   </div>
-
 </div>
+
+

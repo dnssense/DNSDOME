@@ -13,12 +13,18 @@ export class Agent {
     cyberXRayIp: string;
     staticSubnetIp: IpWithMask[];
     dynamicIpDomain: string;
-    rootProfile: SecurityProfile;
+    rootProfile: SecurityProfile = new SecurityProfile();
     agentGroup: AgentGroup;
     logo?: any = null;
+    agents: any[];
+
+    /**
+     * @description For UI
+     */
+    selected ?= false;
 }
 
 export interface IpWithMask {
-    baseIp: string
-    mask: number
+    baseIp: string;
+    mask: number;
 }

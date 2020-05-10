@@ -14,6 +14,7 @@ import { OperationResult } from '../models/OperationResult';
 import { Role, RestRole, RestRight, RestUserRoleRight } from '../models/Role';
 import { Clearance } from '../models/Clearance';
 import { RestPreloginResponse, RestUser } from '../models/RestServiceModels';
+import { SpinnerService } from './spinner.service';
 
 
 @Injectable({
@@ -26,7 +27,7 @@ export class AuthenticationService {
   private _forgotPasswordChangeURL = this.configuration.getApiUrl() + '/user/forgot/password/confirm';
   private loginUrl = this.configuration.getApiUrl() + '/oauth/token';
   private refreshTokenUrl = this.loginUrl; // this.configuration.getApiUrl() + '/oauth/refresh_token';
-  private userInfoUrl = this.configuration.getApiUrl() + '/user/current';
+  private userInfoUrl = this.configuration.getApiUrl() + '/user/current'; // buranin sonuna bilerek / eklendi,spinner service ekraninda gozukmesin diye
   private userRoleUrl = this.configuration.getApiUrl() + '/user/current/role';
   private preloginUrl = this.configuration.getApiUrl() + '/user/prelogin';
 
@@ -35,25 +36,26 @@ export class AuthenticationService {
   private refreshTokenTimer: Observable<any>;
   currentUserPropertiesChanged: Subject<any>;
 
-  constructor(private configuration: ConfigService, private http: HttpClient, private cookieService: CookieService,
-    private router: Router, private logger: LoggerService) {
-
+  constructor(
+    private configuration: ConfigService,
+    private http: HttpClient,
+    private cookieService: CookieService,
+    private router: Router,
+    private spinner: SpinnerService
+  ) {
     this.currentUserPropertiesChanged = new Subject();
-    this.refreshTokenTimer = interval(4 * 60 * 1000);
+     this.refreshTokenTimer = interval(3 * 60 * 1000);
+    // this.refreshTokenTimer = interval(15 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
-
   }
 
   saveSession() {
-
     localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
     this.currentUserPropertiesChanged.next('changed');
   }
 
-  checkSessionIsValid() {
-
+   checkSessionIsValid() {
     try {
-
       const sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
         const session: Session = JSON.parse(sessionString);
@@ -69,7 +71,7 @@ export class AuthenticationService {
 
   }
 
-  isCurrentSessionValid(): boolean {
+   isCurrentSessionValid(): boolean {
     try {
       const sessionString = localStorage.getItem(this.STORAGENAME);
       if (sessionString) {
@@ -121,7 +123,7 @@ export class AuthenticationService {
   getCurrentUserRoles(): Observable<Session> {
 
     return this.http.get<RestUserRoleRight>(this.userRoleUrl).pipe(map((x: RestUserRoleRight) => {
-      // TODO: buranın ciddi sorunları var.
+
       x.roles.forEach((y: RestRole) => {
         const role = new Role();
         role.name = y.name;
@@ -166,15 +168,13 @@ export class AuthenticationService {
           user.surname = '';
 
           user.twoFactorAuthentication = Boolean(res.isTwoFactorAuthentication);
+          user.isGsmVerified = Boolean(res.isGsmVerified);
           user.active = Boolean(res.isActive);
           user.language = res.language;
           user.gsmCode = res.gsmCode;
           user.gsm = res.gsm;
           user.usageType = 1;
-          let previousRoles: Role = null;
-          if (this.currentSession && this.currentSession.currentUser) {
-           previousRoles = this.currentSession.currentUser.roles;
-          }
+          const previousRoles = this.currentSession?.currentUser?.roles;
           this.currentSession.currentUser = user;
           // burasi onemli once roles save edilmeli yoksa senkron sorunu olusur ve login ekrani calisir
           this.currentSession.currentUser.roles = previousRoles;
@@ -186,7 +186,7 @@ export class AuthenticationService {
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
     return this.http.
-      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass }, this.getHttpOptions())
+      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass} , this.getHttpOptions())
       .map(res => {
         return res;
       });
@@ -202,7 +202,7 @@ export class AuthenticationService {
     return httpOptions;
   }
 
-  login(email: string, pass: string): Observable<Session> {
+  login(email: string, pass: string, code?: string): Observable<Session> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -214,6 +214,9 @@ export class AuthenticationService {
     body.set('grant_type', 'password');
     body.set('username', email);
     body.set('password', pass);
+    if (code) {
+    body.set('code', code);
+    }
 
     return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
       .pipe(mergeMap((res: any) => {
@@ -242,7 +245,7 @@ export class AuthenticationService {
 
   clear() {
     this.currentSession = null;
-    localStorage.clear();
+    localStorage.removeItem(this.STORAGENAME);
     this.cookieService.clear();
   }
 

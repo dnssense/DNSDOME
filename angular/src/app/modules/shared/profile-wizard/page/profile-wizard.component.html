@@ -1,557 +1,299 @@
-<div class="dns-base-card">
-  <div class="dns-datatable-container container-fluid" id="agent-wizard">
-    <div class="row d-flex align-items-center">
-      <h5 class="dns-datatable-heading flex-1 size-20">Security Profile
-        <span class="text-warning" *ngIf="selectedAgent.rootProfile && selectedAgent.rootProfile.isSystem == true;">
-          This is a Default profile. You can not edit.
-        </span>
-      </h5>
-    </div>
-    <div class="row">
-      <div class="col-5 ml-auto mr-auto">
-        <div class="dns-full-width flex-1">
-          <input type="text" class="dns-form-control reverse-form" style="min-width: 150px;" placeholder="Profile Name"
-            name="profileName" id="profileName" [(ngModel)]="selectedAgent.rootProfile.name"
-            (ngModelChange)="profileNameChanged()" />
-          <span class="profileNameToolTip">Profile name is required!</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="row mt-3">
-      <div class="dns-wizard-container" id="securityProfileWizard">
-        <div class="dns-wizard-header">
-          <button id="contentFilterBtn" class="btn activated" (click)="changeWizardStep(0)">1- Content
-            Filtering</button>
-          <button id="securityBtn" class="btn" (click)="changeWizardStep(1)">2- Security</button>
-          <button id="applicationsBtn" class="btn" (click)="changeWizardStep(2)">3- Applications</button>
-          <button id="blackWhiteListsBtn" class="btn" (click)="changeWizardStep(3)">4- Black-White Lists</button>
-        </div>
-        <div class="dns-wizard-content">
-          <div class="container-fluid wizard-item d-none" id="contentFilter">
-            <div class="row">
-              <div class="col-12">
-                <label for="chk" class="dns-chk-label">
-                  <span>Safe Search</span>
-                  <div class="dns-form-switch">
-                    <ng-container *ngIf="selectedAgent.rootProfile.isSafeSearchEnabled; else elseTemplate1">
-                      <input type="checkbox" id="chk" checked (change)="changeSafeSearchMode()">
-                    </ng-container>
-                    <ng-template #elseTemplate1>
-                      <input type="checkbox" id="chk" (change)="changeSafeSearchMode()">
-                    </ng-template>
-                    <i></i>
-                    <span></span>
-                  </div>
-                </label>
-                <label for="chk2" class="dns-chk-label ml-4">
-                  <span>YouTube Restrict Mode</span>
-                  <div data-width="30" class="dns-form-switch">
-                    <ng-container *ngIf="selectedAgent.rootProfile.isYoutubeStrictModeEnabled; else elseTemplate2">
-                      <input type="checkbox" id="chk2" checked (change)="changeYoutubeMode()">
-                    </ng-container>
-                    <ng-template #elseTemplate2>
-                      <input type="checkbox" id="chk2" (change)="changeYoutubeMode()">
-                    </ng-template>
-                    <i></i>
-                    <span></span>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-12 d-flex align-items-center flex-column">
-                <div class="d-flex dns-full-width align-items-center">
-                  <h5 class="mt-3 flex-3">Harmful Categories</h5>
-                  <!-- <span class="flex-1 text-right size-13 color-9d9d9d">Select All</span> -->
-                </div>
-                <hr class="dns-full-width mt-1 mb-2">
-              </div>
-              <div class="col-12 p-0">
-                <div class="container-fluid">
-                  <div class="row">
-
-                    <ng-container *ngFor="let cat of categoryList">
-                      <ng-container
-                        *ngIf="(cat.category.type=='UNSAFE_LIST' || cat.category.type=='HARMFULL_CONTENT') && cat.category.isVisible">
-                        <div class="col-12 col-md-4 col-lg-2">
-                          <div class="dns-base-card bg-3b3b3b mt-3 d-flex flex-column border-radius-4">
-                            <div>
-                              <h6 class="color-white">{{cat.category.name}}</h6>
-                            </div>
-                            <div>
-                              <ng-container *ngIf="cat.isBlocked; else elseTemplate">
-                                <button class="btns btn-warning dns-full-width border-radius-8"
-                                  (click)="allowCategory(cat.category.id)">
-                                  Not Allowed</button>
-                              </ng-container>
-                              <ng-template #elseTemplate>
-                                <button class="btns btn-teritary dns-full-width border-radius-8"
-                                  (click)="blockCategory(cat.category.id)">Allowed</button>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 p-0">
-
-                <div id="cleanCategoriesAccordion" role="tablist" style="width: 97%;" class="ml-3 mr-2">
-                  <div class="card-collapse">
-                    <div class="card-header" role="tab" id="headingOne" style="background-color: transparent">
-                      <h5 class="mb-0">
-                        <a data-toggle="collapse" href="#cleanCategories" aria-expanded="false"
-                          aria-controls="collapseOne" class="collapsed" style="color: white;">
-                          <h5 class="mt-3">Clean Categories</h5>
-                          <i class="material-icons">keyboard_arrow_down</i>
-                        </a>
-                      </h5>
-                    </div>
-                    <div id="cleanCategories" class="collapse" role="tabpanel" aria-labelledby="headingOne"
-                      data-parent="#cleanCategoriesAccordion">
-                      <div class="container-fluid">
-                        <div class="row">
-                          <ng-container *ngFor="let cat of categoryList">
-                            <ng-container
-                              *ngIf="!(cat.category.type=='SECURITY' ||cat.category.type=='UNSAFE_LIST' 
-                                  || cat.category.type=='HARMFULL_CONTENT'|| cat.category.type=='GRAY_LIST' ) && cat.category.isVisible">
-                              <div class="col-12 col-md-4 col-lg-2">
-                                <div class="dns-base-card bg-3b3b3b mt-3 d-flex flex-column border-radius-4">
-                                  <div>
-                                    <h6 class="color-white">{{cat.category.name}}</h6>
-                                  </div>
-                                  <div>
-                                    <ng-container *ngIf="cat.isBlocked; else elseTemplate">
-                                      <button class="btns btn-warning dns-full-width border-radius-8"
-                                        (click)="allowCategory(cat.category.id)">
-                                        Not Allowed</button>
-                                    </ng-container>
-                                    <ng-template #elseTemplate>
-                                      <button class="btns btn-teritary dns-full-width border-radius-8"
-                                        (click)="blockCategory(cat.category.id)">Allowed</button>
-                                    </ng-template>
-                                  </div>
-                                </div>
-                              </div>
-                            </ng-container>
-                          </ng-container>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-          <div class="container-fluid wizard-item d-none" id="security">
-            <div class="row">
-              <div class="col-12 d-flex align-items-center flex-column">
-                <div class="d-flex dns-full-width align-items-center">
-                  <h5 class="mt-3 flex-3">Security</h5>
-                  <!-- <span class="flex-1 text-right size-13 color-9d9d9d">Select All</span> -->
-                </div>
-                <hr class="dns-full-width mt-1 mb-2">
-              </div>
-              <div class="col-12 p-0">
-                <div class="container-fluid">
-                  <div class="row">
-
-                    <ng-container *ngFor="let cat of categoryList">
-                      <ng-container *ngIf="cat.category.type=='SECURITY' && cat.category.isVisible">
-                        <div class="col-12 col-md-4 col-lg-2">
-                          <div class="dns-base-card bg-3b3b3b mt-3 d-flex flex-column border-radius-4">
-                            <div>
-                              <h6 class="color-white">{{cat.category.name}}</h6>
-                            </div>
-                            <div>
-                              <ng-container *ngIf="cat.isBlocked; else elseTemplate">
-                                <button class="btns btn-warning dns-full-width border-radius-8"
-                                  (click)="allowCategory(cat.category.id)">
-                                  Not Allowed</button>
-                              </ng-container>
-                              <ng-template #elseTemplate>
-                                <button class="btns btn-teritary dns-full-width border-radius-8"
-                                  (click)="blockCategory(cat.category.id)">Allowed</button>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12">
-                <h5 class="mt-3">Gray List</h5>
-                <hr class="dns-full-width mt-1 mb-2">
-              </div>
-              <div class="col-12 p-0">
-                <div class="container-fluid">
-                  <div class="row">
-
-                    <ng-container *ngFor="let cat of categoryList">
-                      <ng-container *ngIf="cat.category.type=='GRAY_LIST' && cat.category.isVisible">
-                        <div class="col-12 col-md-4 col-lg-2">
-                          <div class="dns-base-card bg-3b3b3b mt-3 d-flex flex-column border-radius-4">
-                            <div>
-                              <h6 class="color-white">{{cat.category.name}}</h6>
-                            </div>
-                            <div>
-                              <ng-container *ngIf="cat.isBlocked; else elseTemplate">
-                                <button class="btns btn-warning dns-full-width border-radius-8"
-                                  (click)="allowCategory(cat.category.id)">
-                                  Not Allowed</button>
-                              </ng-container>
-                              <ng-template #elseTemplate>
-                                <button class="btns btn-teritary dns-full-width border-radius-8"
-                                  (click)="blockCategory(cat.category.id)">Allowed</button>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="container-fluid wizard-item d-none" id="applications">
-            <div class="row">
-              <div class="col-12 d-flex align-items-center flex-column">
-                <div class="d-flex dns-full-width align-items-center">
-                  <h5 class="mt-3 flex-3">Online Video</h5>
-                  <!-- <span class="flex-1 text-right size-13 color-9d9d9d">Select All</span> -->
-                </div>
-                <hr class="dns-full-width mt-1 mb-2">
-              </div>
-              <div class="col-12 p-0">
-                <div class="container-fluid">
-                  <div class="row">
-
-                    <ng-container *ngFor="let app of applicationList">
-                      <ng-container *ngIf="app.application.isVisible && app.application.type=='ONLINE_VIDEO'">
-                        <div class="col-12 col-md-4 col-lg-2">
-                          <div class="dns-base-card bg-3b3b3b mt-3 d-flex flex-column border-radius-4">
-                            <div>
-                              <h6 class="color-white">{{app.application.name}}</h6>
-                            </div>
-                            <div>
-                              <ng-container *ngIf="app.isBlocked; else elseTemplate">
-                                <button class="btns btn-warning dns-full-width border-radius-8"
-                                  (click)="allowApplication(app.application.id)">
-                                  Not Allowed</button>
-                              </ng-container>
-                              <ng-template #elseTemplate>
-                                <button class="btns btn-teritary dns-full-width border-radius-8"
-                                  (click)="blockApplication(app.application.id)">Allowed</button>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 d-flex align-items-center flex-column">
-                <div class="d-flex dns-full-width align-items-center">
-                  <h5 class="mt-3 flex-3 mb-0">Social Media</h5>
-                  <!-- <span class="flex-1 text-right size-13 color-9d9d9d">Select All</span> -->
-                </div>
-                <hr class="dns-full-width mt-1 mb-2">
-              </div>
-              <div class="col-12 p-0">
-                <div class="container-fluid">
-                  <div class="row">
-
-                    <ng-container *ngFor="let app of applicationList">
-                      <ng-container *ngIf="app.application.isVisible && app.application.type=='SOCIAL'">
-                        <div class="col-12 col-md-4 col-lg-2">
-                          <div class="dns-base-card bg-3b3b3b mt-3 d-flex flex-column border-radius-4">
-                            <div>
-                              <h6 class="color-white">{{app.application.name}}</h6>
-                            </div>
-                            <div>
-                              <ng-container *ngIf="app.isBlocked; else elseTemplate">
-                                <button class="btns btn-warning dns-full-width border-radius-8"
-                                  (click)="allowApplication(app.application.id)">
-                                  Not Allowed</button>
-                              </ng-container>
-                              <ng-template #elseTemplate>
-                                <button class="btns btn-teritary dns-full-width border-radius-8"
-                                  (click)="blockApplication(app.application.id)">Allowed</button>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 d-flex align-items-center flex-column">
-                <div class="d-flex dns-full-width align-items-center">
-                  <h5 class="mt-3 flex-3 mb-0">Instant Messaging</h5>
-                  <!-- <span class="flex-1 text-right size-13 color-9d9d9d">Select All</span> -->
-                </div>
-                <hr class="dns-full-width mt-1 mb-2">
-              </div>
-              <div class="col-12 p-0">
-                <div class="container-fluid">
-                  <div class="row">
-
-                    <ng-container *ngFor="let app of applicationList">
-                      <ng-container *ngIf="app.application.isVisible && app.application.type=='INSTANT_MESSAGING'">
-                        <div class="col-12 col-md-4 col-lg-2">
-                          <div class="dns-base-card bg-3b3b3b mt-3 d-flex flex-column border-radius-4">
-                            <div>
-                              <h6 class="color-white">{{app.application.name}}</h6>
-                            </div>
-                            <div>
-                              <ng-container *ngIf="app.isBlocked; else elseTemplate">
-                                <button class="btns btn-warning dns-full-width border-radius-8"
-                                  (click)="allowApplication(app.application.id)">
-                                  Not Allowed</button>
-                              </ng-container>
-                              <ng-template #elseTemplate>
-                                <button class="btns btn-teritary dns-full-width border-radius-8"
-                                  (click)="blockApplication(app.application.id)">Allowed</button>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 d-flex align-items-center flex-column">
-                <div class="d-flex dns-full-width align-items-center">
-                  <h5 class="mt-3 flex-3 mb-0">Advertisement</h5>
-                  <!-- <span class="flex-1 text-right size-13 color-9d9d9d">Select All</span> -->
-                </div>
-                <hr class="dns-full-width mt-1 mb-2">
-              </div>
-              <div class="col-12 p-0">
-                <div class="container-fluid">
-                  <div class="row">
-
-                    <ng-container *ngFor="let app of applicationList">
-                      <ng-container *ngIf="app.application.isVisible && app.application.type=='CLEAR_ADS'">
-                        <div class="col-12 col-md-4 col-lg-2">
-                          <div class="dns-base-card bg-3b3b3b mt-3 d-flex flex-column border-radius-4">
-                            <div>
-                              <h6 class="color-white">{{app.application.name}}</h6>
-                            </div>
-                            <div>
-                              <ng-container *ngIf="app.isBlocked; else elseTemplate">
-                                <button class="btns btn-warning dns-full-width border-radius-8"
-                                  (click)="allowApplication(app.application.id)">
-                                  Not Allowed</button>
-                              </ng-container>
-                              <ng-template #elseTemplate>
-                                <button class="btns btn-teritary dns-full-width border-radius-8"
-                                  (click)="blockApplication(app.application.id)">Allowed</button>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 d-flex align-items-center flex-column">
-                <div class="d-flex dns-full-width align-items-center">
-                  <h5 class="mt-3 flex-3 mb-0">Remote Access Tools</h5>
-                  <!-- <span class="flex-1 text-right size-13 color-9d9d9d">Select All</span> -->
-                </div>
-                <hr class="dns-full-width mt-1 mb-2">
-              </div>
-              <div class="col-12 p-0">
-                <div class="container-fluid">
-                  <div class="row">
-
-                    <ng-container *ngFor="let app of applicationList">
-                      <ng-container *ngIf="app.application.isVisible && app.application.type=='REMOTE_ACCESS'">
-                        <div class="col-12 col-md-4 col-lg-2">
-                          <div class="dns-base-card bg-3b3b3b mt-3 d-flex flex-column border-radius-4">
-                            <div>
-                              <h6 class="color-white">{{app.application.name}}</h6>
-                            </div>
-                            <div>
-                              <ng-container *ngIf="app.isBlocked; else elseTemplate">
-                                <button class="btns btn-warning dns-full-width border-radius-8"
-                                  (click)="allowApplication(app.application.id)">
-                                  Not Allowed</button>
-                              </ng-container>
-                              <ng-template #elseTemplate>
-                                <button class="btns btn-teritary dns-full-width border-radius-8"
-                                  (click)="blockApplication(app.application.id)">Allowed</button>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="container-fluid wizard-item d-none" id="blackWhiteLists">
-
-            <div class="row">
-              <div class="col-6 d-flex">
-                <div class="container-fluid">
-                  <div class="row mt-3 d-flex align-items-center">
-                    <h5 class="dns-datatable-heading flex-1 size-20">White List</h5>
-                    <div class="search-form dns-full-width flex-1">
-                      <!-- <img src="assets/images/icons/search.svg" class="icon">
-                      <input type="text" class="dns-form-control reverse-form" placeholder="Search by name" /> -->
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="row mt-3">
-                    <form class="dns-form-group">
-                      <input type="text" placeholder="White List Domain" name="whiteListText"
-                        [(ngModel)]="whiteListItem.domain" (ngModelChange)="whiteListItemValidation()">
-                      <input name="whiteListComment" placeholder="Comment" type="text" maxlength="255"
-                        [(ngModel)]="whiteListItem.comment" style="border-left: 1px solid #262626;">
-                      <button class="btns btn-gray" [disabled]="!isNewWhiteListItem"
-                        [ngClass]="{'btn-success' : isNewWhiteListItem, 'btn-default' : !isNewWhiteListItem}"
-                        (click)="addToWhiteList()">
-                        <img src="./assets/images/icons/add-black.svg" />
-                        <span class="ml-3">Add</span>
-                      </button>
-                    </form>
-                  </div>
-
-                  <div class="row mt-3">
-                    <div class="table-responsive mr-1" style="max-height: 280px;">
-                      <table class="table table-hover">
-                        <tbody>
-                          <tr class="table-success" style="color: black;"
-                            *ngFor="let item of selectedAgent.rootProfile.blackWhiteListProfile?.whiteList; let i=index;">
-                            <td class="text-right">{{i+1}}.</td>
-                            <td style="border-right: 1px solid #262626;">{{item.domain}}</td>
-                            <td>{{item.comment}}</td>
-                            <td>
-                              <button class="btns btn-clear float-right p-0 m-0"
-                                (click)="removeFromWhiteList(item.domain)">
-                                <img src="./assets/images/icons/close.svg">
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div class="col-6 d-flex">
-                <div class="container-fluid">
-                  <div class="row mt-3 d-flex align-items-center">
-                    <h5 class="dns-datatable-heading flex-1 size-20">Black List</h5>
-                    <div class="search-form dns-full-width flex-1">
-                      <!-- <img src="assets/images/icons/search.svg" class="icon">
-                      <input type="text" class="dns-form-control reverse-form" placeholder="Search by name" /> -->
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="row mt-3">
-                    <form class="dns-form-group">
-                      <input type="text" name="blackListText" placeholder="Black List Domain"
-                        [(ngModel)]="blackListItem.domain" (ngModelChange)="blackListItemValidation()">
-                      <input name="blackListComment" placeholder="Comment" type="text" maxlength="255"
-                        [(ngModel)]="blackListItem.comment" style="border-left: 1px solid #262626;">
-                      <button class="btns" [disabled]="!isNewBlackListItem"
-                        [ngClass]="{'btn-success' : isNewBlackListItem, 'btn-default' : !isNewBlackListItem}"
-                        (click)="addToBlackList()">
-                        <img src="./assets/images/icons/add.svg" />
-                        <span class="ml-3">Add</span>
-                      </button>
-                    </form>
-                  </div>
-
-                  <div class="row mt-3">
-                    <!-- <div class="alert alert-danger alert-red dns-full-width">
-                      <span>This is a primary alert—check it out!</span>
-                      <button class="btn btn-clear float-right p-0 m-0">
-                        <img src="./assets/images/icons/close.svg">
-                      </button>
-                    </div> -->
-
-                    <div class="table-responsive mr-1" style="max-height: 280px;">
-                      <table class="table table-hover">
-                        <tbody>
-                          <tr class="table-danger" style="color: black;"
-                            *ngFor="let item of selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse(); let i=index;">
-                            <td class="text-right">{{i+1}}</td>
-                            <td style="border-right: 1px solid #262626;">{{item.domain}}</td>
-                            <td>{{item.comment}}</td>
-                            <td>
-                              <button class="btns btn-clear float-right p-0 m-0" (click)="removeFromBlackList(item)">
-                                <img src="./assets/images/icons/close.svg">
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <div>
-            <button class="btn wizard-btn prev-btn" id="prevBtn" (click)="prevStep()"></button>
-            <button class="btn wizard-btn next-btn" id="nextBtn" (click)="nextStep()"></button>
-            <button class="btn wizard-btn finish-btn" style="height: 45px;" id="finishBtn" (click)="saveProfile()"
-              *ngIf="selectedAgent.rootProfile && selectedAgent.rootProfile.isSystem == false;"></button>
-
-          </div>
-
-        </div>
-      </div>
-
+<div class="container-fluid mb-3">
+  <div class="row">
+    <div class="col-12">
+      <input type="text" class="rk-input w-100" placeholder="Name" [(ngModel)]="selectedAgent.rootProfile.name"
+        minlength="1" [readonly]="selectedAgent.rootProfile.isSystem">
     </div>
   </div>
-
-
 </div>
+
+<rk-accordion isWizard="true" [activeNumber]="currentStep">
+  <rk-accordion-panel index="1" class="accordion-p-0">
+    <div class="rk-accordion-title">{{'SecuritySettings'|translate}}</div>
+
+    <div class="rk-accordion-body py-2">
+      <div class="d-flex flex-column p-2"
+        [ngStyle]="{'background': selectedAgent.rootProfile.isPositiveSecurity ? '#4fb75d' : '#97a5bb'}">
+        <div class="accordion-label text-white">{{'SecurityMode'|translate}}:</div>
+        <div class="d-flex align-items-center justify-content-between mt-1">
+          <button class="rk-toggle-btn w-100 mr-2" [ngClass]="{'active': selectedAgent.rootProfile.isPositiveSecurity}"
+            (click)="setSecurityMode(true)">{{'PositiveSecurity'|translate}}</button>
+          <button class="rk-toggle-btn w-100 passive"
+            [ngClass]="{'active': !selectedAgent.rootProfile.isPositiveSecurity}"
+            (click)="setSecurityMode(false)">{{'NegativeSecurity'|translate}}</button>
+        </div>
+
+        <div class="accordion-description mt-2 text-white" *ngIf="selectedAgent.rootProfile.isPositiveSecurity">
+          {{'PositiveSecurityDescription'|translate}}
+        </div>
+        <div class="accordion-description mt-2 text-white" *ngIf="!selectedAgent.rootProfile.isPositiveSecurity">
+          {{'NegativeSecurityDescription'|translate}}
+        </div>
+      </div>
+
+      <div style="padding: 0 15px;">
+        <div class="d-flex align-items-center justify-content-between mt-3 pb-2"
+          style="border-bottom: 1px solid #e4e9f1;">
+          <div class="accordion-label">{{'SafeSearch'|translate}};</div>
+          <div style="width: 78px;">
+            <rk-toggle-button [active]="selectedAgent.rootProfile.isSafeSearchEnabled" (click)="changeSafeSearchMode()"
+              clickClose="true"  [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }"></rk-toggle-button >
+          </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between my-2 pb-2"
+          style="border-bottom: 1px solid #e4e9f1;">
+          <div class="accordion-label">{{'YouTubeRestrictMode'|translate}};</div>
+          <div style="width: 78px;">
+            <rk-toggle-button [active]="selectedAgent.rootProfile.isYoutubeStrictModeEnabled"
+              (click)="changeYoutubeMode()" clickClose="true" [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }">
+            </rk-toggle-button>
+          </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between my-2 pb-2"
+          style="border-bottom: 1px solid #e4e9f1;">
+          <div class="accordion-label">{{'Clear Ads'|translate}}</div>
+          <div style="width: 78px;">
+            <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }" [active]="isClearedAdds()"
+              (click)="changeClearAds()"></rk-toggle-button>
+          </div>
+        </div>
+
+        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+          <rk-collapse-title>{{'MaliciousCategories'|translate}}</rk-collapse-title>
+
+          <rk-collapse-description>
+            {{'MaliciousDescription'|translate}}
+          </rk-collapse-description>
+
+          <rk-collapse-body>
+            <ng-container *ngFor="let cat of categoryList">
+              <ng-container *ngIf="isInCategoryType('malicious', cat)">
+                <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+                  style="border-bottom: 1px solid #e4e9f1;">
+                  <div class="accordion-label">{{ cat.name }}</div>
+
+                  <div style="width: 78px;">
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
+                      [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+          </rk-collapse-body>
+        </rk-collapse>
+
+        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+          <rk-collapse-title>{{'HarmfullCategories'|translate}}</rk-collapse-title>
+
+          <rk-collapse-description>
+            {{'HarmfullCategories'|translate}}
+          </rk-collapse-description>
+
+          <rk-collapse-body>
+            <ng-container *ngFor="let cat of categoryList">
+              <ng-container *ngIf="isInCategoryType('harmful', cat)">
+                <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+                  style="border-bottom: 1px solid #e4e9f1;">
+                  <div class="accordion-label">{{ cat.name }}</div>
+
+                  <div style="width: 78px;">
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
+                      [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+          </rk-collapse-body>
+        </rk-collapse>
+
+        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+          <rk-collapse-title>{{'VariableCategories'|translate}}</rk-collapse-title>
+
+          <rk-collapse-description>
+            {{'VariableDescription'|translate}}
+          </rk-collapse-description>
+
+          <rk-collapse-body>
+            <ng-container *ngFor="let cat of categoryList">
+              <ng-container *ngIf="isInCategoryType('variable', cat)">
+                <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+                  style="border-bottom: 1px solid #e4e9f1;">
+                  <div class="accordion-label">{{ cat.name }}</div>
+
+                  <div style="width: 78px;">
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
+                      [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+          </rk-collapse-body>
+        </rk-collapse>
+
+        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+          <rk-collapse-title>{{'SafeCategories'|translate}}</rk-collapse-title>
+
+          <rk-collapse-description>
+            {{'SafeDescription'|translate}}
+          </rk-collapse-description>
+
+          <rk-collapse-body>
+            <ng-container *ngFor="let cat of categoryList">
+              <ng-container *ngIf="isInCategoryType('safe', cat)">
+                <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+                  style="border-bottom: 1px solid #e4e9f1;">
+                  <div class="accordion-label">{{ cat.name }}</div>
+
+                  <div style="width: 78px;">
+                    <rk-toggle-button clickClose="true" (click)="categoryChanged(cat)" [active]="!cat.isBlocked"
+                      [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+          </rk-collapse-body>
+        </rk-collapse>
+
+      </div>
+    </div>
+  </rk-accordion-panel>
+  <rk-accordion-panel index="2">
+    <div class="rk-accordion-title">{{'Applications'|translate}}</div>
+
+    <div class="rk-accordion-body">
+      <rk-collapse color="#d8d8d8" class="d-flex mt-3" *ngFor="let groupedApp of groupedApplications">
+        <rk-collapse-title>{{ groupedApp.displayText }}</rk-collapse-title>
+
+        <rk-collapse-description>{{ groupedApp.description }}</rk-collapse-description>
+
+        <rk-collapse-body>
+
+          <ng-container *ngFor="let app of groupedApp.applications">
+            <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
+              style="border-bottom: 1px solid #e4e9f1;">
+              <div class="accordion-label">{{ app.application.name }}</div>
+
+              <div style="width: 78px;">
+                <rk-toggle-button clickClose="true" (click)="applicationChanged(app)" [active]="!app.isBlocked"
+                  [toggleTexts]="{ pos: 'Allowed', neg: 'Not Allow' }"></rk-toggle-button>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- <ng-container *ngFor="let app of groupedApp.applications">
+            <rk-toggle-button class="d-flex mt-2" clickClose="true" (click)="app.isSystem ? app.isBlocked = !app.isBlocked : null; applicationChanged(app)"
+              [active]="app.isBlocked">
+              {{ app.application.name }}</rk-toggle-button>
+          </ng-container> -->
+
+        </rk-collapse-body>
+      </rk-collapse>
+    </div>
+  </rk-accordion-panel>
+  <rk-accordion-panel index="3">
+    <div class="rk-accordion-title">{{'BlackWhiteList'|translate}}</div>
+
+    <div class="rk-accordion-body">
+
+      <h6 class="rk-title">{{'WhiteList'|translate}}</h6>
+      <p class="rk-description">
+        {{'WhiteListDescription1'|translate}}
+        <br />
+        {{'WhiteListDescription2'|translate}}
+        <br />
+        {{'WhiteListDescription3'|translate}}
+        <br>
+        {{'WhiteListDescription4'|translate}}
+      </p>
+
+      <div class="input-container">
+        <div class="rk-search-container w-100">
+          <input type="text" placeholder="White List Domain" class="rk-input" [(ngModel)]="whiteListItem.domain"
+            (ngModelChange)="whiteListItemValidation()" maxlength="64">
+          <i-feather name="search"></i-feather>
+        </div>
+
+        <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewWhiteListItem"
+          (click)="addToWhiteList()">
+          {{'Add'|translate}}
+        </button>
+      </div>
+
+      <input type="text" class="rk-input w-100 mt-2" maxlength="255" [(ngModel)]="whiteListItem.comment"
+        placeholder="Comment(Optionals)">
+
+      <div class="cards mt-3">
+        <div class="card success-card"
+          *ngFor="let item of (selectedAgent.rootProfile.blackWhiteListProfile?.whiteList | filter: whiteListItem.domain: 'domain') | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize; let i=index;">
+          <div class="card-content">
+            <h6 class="title">{{ i + 1 }}. {{ item.domain }}</h6>
+            <p class="description">{{ item.comment }}</p>
+          </div>
+
+          <div class="card-close">
+            <i-feather name="trash-2" (click)="removeFromWhiteList(item.domain)"></i-feather>
+          </div>
+        </div>
+
+        <ngb-pagination class="d-block mt-3"
+          *ngIf="selectedAgent.rootProfile.blackWhiteListProfile?.whiteList.length > 0" [(page)]="page"
+          [pageSize]="pageSize" [collectionSize]="selectedAgent.rootProfile.blackWhiteListProfile?.whiteList?.length"
+          [maxSize]="4">
+        </ngb-pagination>
+
+      </div>
+
+      <h6 class="rk-title mt-4">{{"BlackList"|translate}}</h6>
+      <p class="rk-description">
+        {{'BlackListDescription1'|translate}}
+        <br />
+        {{'BlackListDescription2'|translate}}
+        <br />
+        {{'BlackListDescription3'|translate}}
+        <br>
+        {{'BlackListDescription4'|translate}}
+      </p>
+
+      <div class="input-container">
+        <div class="rk-search-container w-100">
+          <input type="text" placeholder="Black List Domain" class="rk-input" [(ngModel)]="blackListItem.domain"
+            (ngModelChange)="blackListItemValidation()" maxlength="64">
+          <i-feather name="search"></i-feather>
+        </div>
+
+        <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewBlackListItem"
+          (click)="addToBlackList()">
+          {{'Add'|translate}}
+        </button>
+      </div>
+
+      <input type="text" class="rk-input w-100 mt-2" maxlength="255" [(ngModel)]="blackListItem.comment"
+        placeholder="Comment(Optionals)">
+
+      <div class="cards mt-3">
+        <div class="card danger-card"
+          *ngFor="let item of (selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse() | filter: blackListItem.domain: 'domain') | slice: (pageBlack-1) * pageSizeBlack : (pageBlack-1) * pageSizeBlack + pageSizeBlack; let i=index;">
+          <div class="card-content">
+            <h6 class="title">{{ i + 1 }}. {{ item.domain }}</h6>
+            <p class="description">{{ item.comment }}</p>
+          </div>
+
+          <div class="card-close">
+            <i-feather name="trash-2" (click)="removeFromBlackList(item)"></i-feather>
+          </div>
+        </div>
+
+        <ngb-pagination class="d-block mt-3"
+          *ngIf="selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse().length > 0" [(page)]="pageBlack"
+          [pageSize]="pageSizeBlack" [collectionSize]="selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse().length"
+          [maxSize]="4">
+        </ngb-pagination>
+      </div>
+
+    </div>
+  </rk-accordion-panel>
+</rk-accordion>

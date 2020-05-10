@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -27,17 +28,13 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.sass",
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
               "node_modules/angular-calendar/scss/angular-calendar.scss",
               "node_modules/sweetalert2/src/sweetalert2.scss",
-              "src/assets/css/demo.css",
-              "src/assets/scss/material-dashboard.scss",
               "node_modules/intro.js/introjs.css",
-              "src/assets/fonts/entypo/entypo.css",
-              "src/assets/css/bootstrap.css",
-              "src/assets/css/main.css"
-
+              "node_modules/roksit-lib/assets/scss/roksit.core.scss",
+              "src/assets/css/animate.css",
+              "src/styles.sass"
             ],
             "scripts": [
               "node_modules/intro.js/intro.js",
@@ -48,7 +45,6 @@
               "node_modules/bootstrap-material-design/dist/js/bootstrap-material-design.min.js",
               "node_modules/moment/moment.js",
               "node_modules/arrive/src/arrive.js",
-              "node_modules/hammerjs/hammer.min.js",
               "node_modules/web-animations-js/web-animations.min.js",
               "node_modules/apexcharts/dist/apexcharts.min.js",
               "node_modules/chartist/dist/chartist.js",
@@ -208,5 +204,13 @@
       }
     }
   },
-  "defaultProject": "dnssense"
+  "defaultProject": "dnssense",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
 }

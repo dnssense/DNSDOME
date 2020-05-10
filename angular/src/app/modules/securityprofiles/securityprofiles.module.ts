@@ -10,6 +10,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
+import { IconsModule, RkTableModule, RkModalModule, RkSelectModule } from 'roksit-lib';
+import { PipesModule } from '../shared/pipes/pipes.module';
 
 
 @NgModule({
@@ -31,7 +33,12 @@ import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.mod
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    RkTableModule,
+    IconsModule,
+    PipesModule,
+    RkModalModule,
+    RkSelectModule
   ]
 
 })

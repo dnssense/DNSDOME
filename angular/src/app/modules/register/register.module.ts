@@ -12,8 +12,9 @@ import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
-import { ReCaptchaComponent, ReCaptchaModule } from 'angular2-recaptcha';
+
 import { FooterModule } from '../shared/footer/footer.module';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 
 @NgModule({
@@ -25,7 +26,7 @@ import { FooterModule } from '../shared/footer/footer.module';
     NouisliderModule,
     TagInputModule,
     MaterialModule,
-    ReCaptchaModule,
+    RecaptchaModule,
     RegisterRoutingModule,
     FooterModule,
     TranslateModule.forChild({

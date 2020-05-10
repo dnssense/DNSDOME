@@ -5,21 +5,34 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class TranslatorService {
-  constructor(private translationService: TranslateService) {
-
-  }
+  constructor(private translationService: TranslateService) { }
   translate(data: string): string {
     return this.translationService.instant(data);
   }
 
-  initLanguages() {
+  translateCategoryName(data: string) {
+    return this.translationService.instant(`CATEGORY.${data}`);
+  }
 
-    this.translationService.addLangs(['en']);
-    this.translationService.setDefaultLang('en');
+  initLanguages(lang?: string) {
+    // const languages = ['en', 'tr'];
+    const languages = ['en'];
+    languages.forEach(x => {
+      this.translationService.addLangs([x]);
+    });
+
+
+    this.translationService.setDefaultLang(languages[0]);
 
     const browserLang = this.translationService.getBrowserLang();
-    this.translationService.use('en'); //browserLang.match(/en|tr/) ? browserLang : 'en');
-
+    if (!lang) {
+      this.translationService.use(languages.find(x => x == browserLang) ? browserLang : languages[0]);
+    } else {
+      const language = languages.find(x => x == lang);
+      if (language) {
+        this.translationService.use(language);
+      } else { this.translationService.use(languages[0]); }
+    }
   }
 
   use(lang: string): any {
