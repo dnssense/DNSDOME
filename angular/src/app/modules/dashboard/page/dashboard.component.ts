@@ -751,7 +751,7 @@ export class DashboardComponent implements OnInit {
 
     // console.log(anomalies);
 
-    const points = this.getAnnotations(anomalies);
+    const points = this.getAnnotations(series as any);
 
     if (this.trafficChart) {
       this.trafficChart.destroy();
@@ -939,44 +939,48 @@ export class DashboardComponent implements OnInit {
     this.trafficChart.render();
   }
 
-  getAnnotations(data: any[][]) {
+  getAnnotations(data: { name: string, type: string, data: any[][] }) {
     const points = [];
 
-    const totalCount = data.reduce((prev, cur) => prev + cur[1], 0);
+    for (let i = 0; i < data[0].data.length; i++) {
+      const min = data[0].data[i][1];
+      const max = data[1].data[i][1];
+      const hit = data[2].data[i][1];
 
-    data.forEach(e => {
-      const percent = 100 * e[1] / totalCount;
+      const time = data[0].data[i][0];
+
+      const percentMax = (hit - max) / max * 100;
 
       let color = '';
 
-      if (percent >= 100) {
+      if (percentMax >= 100) {
         color = '#c41505';
-      } else if (percent >= 80) {
+      } else if (percentMax >= 80) {
         color = '#9c1e6c';
-      } else if (percent >= 60) {
+      } else if (percentMax >= 60) {
         color = '#7c26bd';
-      } else if (percent >= 40) {
+      } else if (percentMax >= 40) {
         color = '#6158ca';
-      } else if (percent >= 20) {
+      } else if (percentMax >= 20) {
         color = '#507df3';
       }
 
       const elm = {
-        x: e[0],
-        y: e[1],
+        x: time,
+        y: hit,
         marker: {
-          size: percent >= 20 ? 3 : 0,
+          size: percentMax >= 20 ? 3 : 0,
           fillColor: color,
           strokeColor: color,
-          strokeSize: percent >= 20 ? 3 : 0,
+          strokeSize: percentMax >= 20 ? 3 : 0,
           radius: 2
         }
       };
 
       points.push(elm);
-    });
 
-    // console.log()
+      points.push(isNaN(percentMax) ? 0 : percentMax);
+    }
 
     return points;
   }

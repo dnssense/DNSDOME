@@ -8,7 +8,7 @@ let NOTIFICATION_URL = '';
 export class NotificationRequest {
     page = 0;
     pageSize = 10;
-    date: Date = new Date('1970-01-01 00:00:00');
+    date: Date = new Date('1970/01/01 00:00:00');
 }
 
 export interface Notification {

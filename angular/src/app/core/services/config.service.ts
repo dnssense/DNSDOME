@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-
 import { TranslatorService } from './translator.service';
-
 
 export class ConfigHost {
   www: string;
@@ -73,7 +70,6 @@ export class ConfigService {
         this.host.supportUrl = 'https://roksit.com';
         this.host.onlineHelpUrl = 'https://roksit.com';
       } else {
-
         this.host.www = 'https://www.dnssense.com';
         this.host.brand = 'DNSSense';
         this.host.aboutus = 'https://www.dnssense.com/about-us';
