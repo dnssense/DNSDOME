@@ -23,41 +23,50 @@
     </div>
 
     <div class="container-fluid" *ngIf="reportActiveTabNumber === 0">
+      <div class="rk-modal-card mt-1">
+        <h6 class="rk-modal-card-title">{{ 'REPORT.ReportName' | translate }}</h6>
+
+        <div class="row">
+          <div class="col-12">
+            <input type="text" class="rk-input w-100 mt-1" placeholder="Filter Name" [(ngModel)]="newSavedReport.name">
+          </div>
+        </div>
+      </div>
+
+      <div class="rk-modal-card mt-3">
+        <h6 class="rk-modal-card-title">{{ 'REPORT.ScheduleReportSendToEmail' | translate }}</h6>
+
+        <div class="row">
+          <div class="col-12">
+            <!-- <div class="mt-2">
+              <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
+                value="all">
+                {{ 'All' | translate }}
+              </rk-radio>
+            </div> -->
+            <div class="mt-2">
+              <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
+                value="d">
+                {{ 'REPORT.ScheduleDailyReportEmail' | translate }}
+              </rk-radio>
+            </div>
+            <div class="mt-2">
+              <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
+                value="w">
+                {{ 'REPORT.ScheduleWeeklyReportEmail' | translate }}
+              </rk-radio>
+            </div>
+            <div class="mt-2">
+              <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
+                value="m">
+                {{ 'REPORT.ScheduleMontlyReportEmail' | translate }}
+              </rk-radio>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
-        <div class="col-12">
-          <div class="rk-title">{{ 'REPORT.ReportName' | translate }}</div>
-
-          <input type="text" class="rk-input w-100 mt-1" placeholder="Filter Name" [(ngModel)]="newSavedReport.name">
-        </div>
-
-        <div class="col-12 mt-3">
-          <div class="rk-title">{{ 'REPORT.ScheduleReportSendToEmail' | translate }}</div>
-          <!-- <div class="mt-2">
-            <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
-              value="all">
-              {{ 'All' | translate }}
-            </rk-radio>
-          </div> -->
-          <div class="mt-2">
-            <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
-              value="d">
-              {{ 'REPORT.ScheduleDailyReportEmail' | translate }}
-            </rk-radio>
-          </div>
-          <div class="mt-2">
-            <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
-              value="w">
-              {{ 'REPORT.ScheduleWeeklyReportEmail' | translate }}
-            </rk-radio>
-          </div>
-          <div class="mt-2">
-            <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
-              value="m">
-              {{ 'REPORT.ScheduleMontlyReportEmail' | translate }}
-            </rk-radio>
-          </div>
-        </div>
-
         <!-- <div class="col-12 mt-3" *ngIf="newSavedReport?.scheduledReport !== 'all'">
           <div class="rk-title">Users</div>
 
@@ -82,18 +91,21 @@
     </div>
 
     <div class="container-fluid" *ngIf="reportActiveTabNumber === 1">
-      <div class="row">
-        <div class="col-12">
-          <rk-select [options]="savedReportOptions" (valueChange)="savedReportSelectChanged($event)"></rk-select>
+      <div class="rk-modal-card">
+        <h6 class="rk-modal-card-title">{{ 'REPORT.UserReports' | translate }}</h6>
+
+        <div class="row mt-2">
+          <div class="col-12">
+            <rk-select [options]="savedReportOptions" (valueChange)="savedReportSelectChanged($event)"></rk-select>
+          </div>
         </div>
       </div>
     </div>
-
   </rk-modal-body>
 
   <rk-modal-footer>
-    <button class="btn btn-small w-100 mr-2" (click)="saveReport()"> {{ 'Save' | translate }}</button>
     <button class="btn btn-small btn-default w-100" (click)="saveModal.toggle()"> {{ 'Close' | translate }}</button>
+    <button class="btn btn-small btn-fill w-100" (click)="saveReport()"> {{ 'Save' | translate }}</button>
   </rk-modal-footer>
 </rk-modal>
 
@@ -121,7 +133,7 @@
     </div>
 
     <div *ngIf="activeTabNumber === 0">
-      <div class="rk-modal-item" style="border-bottom: none;">
+      <div class="rk-modal-item pb-0" style="border-bottom: none;">
         <div class="section-card p-2 py-3">
           <h5 class="modal-item title"> {{ 'REPORT.Action' | translate }}</h5>
 
@@ -140,30 +152,39 @@
         </div>
       </div>
 
-      <div class="rk-modal-item" style="border-bottom: none;">
+      <div class="rk-modal-item pb-0" style="border-bottom: none;">
 
         <div class="section-card p-2 py-3">
           <h5 class="modal-item title"> {{ 'REPORT.AddFilter' | translate }}</h5>
 
-          <rk-select [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
+          <div class="d-flex">
+            <rk-select class="mr-2" style="flex: 1" [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
 
-          <div class="d-flex mt-2">
+            <div class="rk-tabs toggle-tabs" style="width: 90px;">
+              <div class="rk-tab" [ngClass]="{'active': modalIsEqual}" (click)="modalIsEqual = true">
+                <icon-equal></icon-equal>
+              </div>
+              <div class="rk-tab" [ngClass]="{'active': !modalIsEqual}" (click)="modalIsEqual = false">
+                <icon-not-equal></icon-not-equal>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="d-flex mt-2">
             <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
               [ngClass]="{'btn-outline-active': modalIsEqual}" (click)="modalIsEqual = true">
-              <icon-equal></icon-equal>
             </button>
 
             <button class="btn btn-icon btn-small w-100 filter-btn-outline"
               [ngClass]="{'btn-outline-active': !modalIsEqual}" (click)="modalIsEqual = false">
-              <icon-not-equal></icon-not-equal>
             </button>
-          </div>
+          </div> -->
 
           <div class="d-flex align-items-center justify-content-between mt-2">
             <input type="text" class="rk-input w-100 mr-2" [(ngModel)]="filterText" (keydown.enter)="addManuelFilter()"
               placeholder="...">
 
-            <button class="btn btn-icon p-0 px-2" style="height: 35px; background-color: var(-primary)"
+            <button class="btn btn-icon p-0 px-2 safe-btn" style="height: 35px; background-color: var(--safe)"
               (click)="addManuelFilter()" [disabled]="filterText?.trim().length === 0">
               <i-feather name="plus" class="mr-0"></i-feather>
             </button>
@@ -181,27 +202,24 @@
         </div>
       </div>
 
-      <div class="rk-modal-item" style="height: 1px; border-bottom: none;">
+      <div class="rk-modal-item pb-0" style="height: 1px; border-bottom: none;">
 
         <div class="section-card p-2 py-3">
           <h5 class="modal-item title"> {{ 'Category' | translate }}</h5>
 
-          <div class="d-flex mt-2">
-            <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
-              [ngClass]="{'btn-outline-active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
-              <icon-equal></icon-equal>
-            </button>
-
-            <button class="btn btn-icon btn-small w-100 filter-btn-outline"
-              [ngClass]="{'btn-outline-active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
-              <icon-not-equal></icon-not-equal>
-            </button>
-          </div>
-
-          <div class="mt-3">
+          <div class="d-flex mt-3">
             <!-- (enterPress)="categoryEnterPress($event)"  -->
-            <rk-autocomplete [onSelectClear]="true" [items]="autocompleteItems" (onSelect)="categoryEnterPress($event)">
+            <rk-autocomplete style="flex: 1" class="mr-2" [onSelectClear]="true" [items]="autocompleteItems" (onSelect)="categoryEnterPress($event)">
             </rk-autocomplete>
+
+            <div class="rk-tabs toggle-tabs" style="width: 90px;">
+              <div class="rk-tab" [ngClass]="{'active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
+                <icon-equal></icon-equal>
+              </div>
+              <div class="rk-tab" [ngClass]="{'active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
+                <icon-not-equal></icon-not-equal>
+              </div>
+            </div>
           </div>
 
           <div class="mt-3" *ngFor="let filter of getCategoryFilters; let index = index">
@@ -219,33 +237,35 @@
 
     <div *ngIf="activeTabNumber === 1">
       <div class="container-fluid">
-        <div class="row">
-          <div class="col-12 py-2" style="border-bottom: 1px solid #eeeef2;">
-            <h6 class="rk-title">{{ 'REPORT.UserReports' | translate }}</h6>
+        <div class="rk-modal-card mt-3">
+          <h6 class="rk-modal-card-title">{{ 'REPORT.UserReports' | translate }}</h6>
 
-            <div *ngFor="let report of savedReports; let index = index" class="mt-3">
-              <div class="rk-radio my-0">
-                <input type="radio" id="savedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport"
-                  [value]="report.id" (change)="savedReportValueChange($event)">
-                <label for="savedReport-{{ index }}">{{ report.name }}</label>
+          <div class="row">
+            <div class="col-12">
+              <div *ngFor="let report of savedReports; let index = index" class="mt-3">
+                <div class="rk-radio my-0">
+                  <input type="radio" id="savedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport"
+                    [value]="report.id" (change)="savedReportValueChange($event)">
+                  <label for="savedReport-{{ index }}">{{ report.name }}</label>
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="col-12 py-2" style="border-bottom: 1px solid #eeeef2;">
-            <h6 class="rk-title">{{ 'REPORT.SystemReports' | translate }}</h6>
+        <div class="rk-modal-card mt-3">
+          <h6 class="rk-modal-card-title">{{ 'REPORT.SystemReports' | translate }}</h6>
 
-            <div *ngFor="let report of systemSavedReports; let index = index" class="mt-3">
-              <div class="rk-radio my-0">
-                <input type="radio" id="savedReportSystem-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport"
-                  [value]="report.id" (change)="savedReportValueChange($event)">
-                <label for="savedReportSystem-{{ index }}">{{ report.name }}</label>
+          <div class="row">
+            <div class="col-12">
+              <div *ngFor="let report of systemSavedReports; let index = index" class="mt-3">
+                <div class="rk-radio my-0">
+                  <input type="radio" id="savedReportSystem-{{ index }}" [(ngModel)]="savedReportValue"
+                    name="savedReport" [value]="report.id" (change)="savedReportValueChange($event)">
+                  <label for="savedReportSystem-{{ index }}">{{ report.name }}</label>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div class="col-12">
-            <button class="btn-fill w-100 mt-3" (click)="search('savedreport')">Apply</button>
           </div>
         </div>
       </div>
@@ -253,8 +273,13 @@
   </rk-modal-body>
 
   <rk-modal-footer *ngIf="activeTabNumber === 0">
-    <button class="btn w-100 btn-small mr-2" (click)="apply(true); search('', true);">{{ 'Apply' | translate }}</button>
     <button class="btn w-100 btn-default btn-small" (click)="modal.toggle()">{{ 'Close' | translate }}</button>
+    <button class="btn w-100 btn-small btn-fill"
+      (click)="apply(true); search('', true);">{{ 'Apply' | translate }}</button>
+  </rk-modal-footer>
+
+  <rk-modal-footer *ngIf="activeTabNumber === 1">
+    <button class="btn btn-small btn-fill w-100 ml-0" (click)="search('savedreport')">Apply</button>
   </rk-modal-footer>
 </rk-modal>
 

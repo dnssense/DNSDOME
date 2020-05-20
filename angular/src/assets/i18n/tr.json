@@ -564,5 +564,8 @@
         "SelectDate": "Tarih seçiniz",
         "Custom": "Özel"
     },
-    "TooltipDescription": "Detaylı bilgi için nokta imlecine tıklayınız"
+    "TooltipDescription": "Detaylı bilgi için nokta imlecine tıklayınız",
+    "LocationDetails": "Lokasyon Detayı",
+    "UserInformation": "Kullanıcı Bilgileri",
+    "PleaseEnterTimeTrueValue": "Lütfen tarih formatını doğru formatta giriniz."
 }

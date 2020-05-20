@@ -25,7 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class GroupedCategory {
   type: string;
   name: string;
-  color ?= '#3397c5';
+  color?= '#3397c5';
   items: CategoryV2[];
 }
 
@@ -490,9 +490,13 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
             this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
           } else
             if (filter.name === 'time') {
+              const date = moment(Date.parse(value));
 
-              const date = new Date(Date.parse(value));
-              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
+              if (date.isValid()) {
+                this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
+              } else {
+                this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
+              }
             } else {
               this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', value));
             }
@@ -503,10 +507,13 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
             this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
           } else
             if (filter.name === 'time') {
+              const date = moment(Date.parse(value));
 
-              const date = new Date(Date.parse(value));
-              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
-
+              if (date.isValid()) {
+                this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
+              } else {
+                this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
+              }
             } else {
               this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
             }

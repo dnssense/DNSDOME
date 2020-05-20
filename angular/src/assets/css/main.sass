@@ -837,3 +837,63 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
 // @media ( max-width: 1400px )
 //   .rk-infobox
 //     flex: 
+
+.rk-tabs.toggle-tabs
+  height: 36px
+  
+  .rk-tab
+    svg
+      path
+        fill: white
+
+    &:first-child
+      svg
+        path
+          fill: var(--primary)
+      
+      &:hover
+        background: var(--primary)
+
+        svg
+          path
+            fill: white
+      
+      &.active
+        background: var(--primary)
+
+        svg
+          path
+            fill: white
+
+    &:last-child
+      svg
+        path
+          fill: #dc3545
+
+      &:hover
+        background: #dc3545
+        
+        svg
+          path
+            fill: white
+
+      &.active
+        background: #dc3545
+
+        svg
+          path
+            fill: white
+
+.safe-btn
+  svg
+    color: white !important
+
+.toggle-tab-safe
+  .rk-tab
+    color: #28a745
+
+    &.active,
+    &:hover
+      background: #28a745
+      color: white
+    

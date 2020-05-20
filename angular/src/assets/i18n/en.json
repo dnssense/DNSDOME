@@ -569,5 +569,8 @@
         "SelectDate": "Select Date",
         "Custom": "Custom"
     },
-    "TooltipDescription": "Click on the dot cursor for detailed information."
+    "TooltipDescription": "Click on the dot cursor for detailed information",
+    "LocationDetails": "Location Detail",
+    "UserInformation": "User Information",
+    "PleaseEnterTimeTrueValue": "Please enter the date in the correct format."
 }
