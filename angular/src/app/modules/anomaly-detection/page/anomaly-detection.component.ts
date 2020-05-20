@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LOCAL_STORAGE_THEME_COLOR } from '../../theme/theme.component';
+import * as moment from 'moment';
 
 @Component({
     templateUrl: 'anomaly-detection.component.html',
@@ -80,7 +81,24 @@ export class AnomalyDetectionComponent implements OnInit {
                 x: {
                     format: 'MMM dd yyyy HH:mm'
                 },
-                theme: 'dark'
+                theme: 'dark',
+                custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+                    const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+
+                    const mDate = moment(date).format('MMM DD YYYY - HH:mm');
+
+                    return `
+                    <div class="__apexcharts_custom_tooltip" id="top-domain-tooltip">
+                      <div class="__apexcharts_custom_tooltip_date" >${mDate}</div>
+
+                      <div class="__apexcharts_custom_tooltip_content">
+                        <span class="__apexcharts_custom_tooltip_row">
+                          <span class="color" style="background: #ff6c40"></span> Hit: <b>${series[0][dataPointIndex]}</b>
+                        </span>
+                      </div>
+                    </div>
+                  `;
+                }
             },
             xaxis: {
                 type: 'datetime',

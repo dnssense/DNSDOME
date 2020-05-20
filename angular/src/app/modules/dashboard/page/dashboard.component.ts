@@ -523,10 +523,24 @@ export class DashboardComponent implements OnInit {
       tooltip: {
         enabled: true,
         shared: true,
-        x: {
-          format: 'MMM dd yyyy HH:mm'
-        },
-        theme: 'dark'
+        theme: 'dark',
+        custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+          const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+
+          const mDate = moment(date).format('MMM DD YYYY - HH:mm');
+
+          return `
+            <div class="__apexcharts_custom_tooltip" id="top-domain-tooltip">
+              <div class="__apexcharts_custom_tooltip_date">${mDate}</div>
+
+              <div class="__apexcharts_custom_tooltip_content">
+                <span class="__apexcharts_custom_tooltip_row">
+                  <span class="color" style="background: #ff6c40"></span> Hit: <b>${series[0][dataPointIndex]}</b>
+                </span>
+              </div>
+            </div>
+          `;
+        }
       },
       xaxis: {
         type: 'datetime',
@@ -541,7 +555,10 @@ export class DashboardComponent implements OnInit {
             hour: 'HH:mm'
           }
         },
-        tickAmount: 8
+        tickAmount: 8,
+        tooltip: {
+          enabled: false
+        }
       },
       grid: {
         borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',

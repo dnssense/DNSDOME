@@ -378,7 +378,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       if (this.actionType === 'allow') {
         this.addFilterBadge(new FilterBadgeModel('action', true, ['Allow']));
       } else {
-        this.addFilterBadge(new FilterBadgeModel('action', false, ['Deny']));
+        this.addFilterBadge(new FilterBadgeModel('action', true, ['Deny']));
       }
     }
 
@@ -487,7 +487,13 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       if (filter.equal) {
         filter.values.forEach(value => {
           if (filter.name === 'action') {
-            this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
+            if (filter.values[0] === 'Deny') {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
+              this.actionType = 'deny';
+            } else {
+              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
+              this.actionType = 'allow';
+            }
           } else
             if (filter.name === 'time') {
               const date = moment(Date.parse(value));
@@ -504,7 +510,13 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       } else {
         filter.values.forEach(value => {
           if (filter.name === 'action') {
-            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
+            if (filter.values[0] === 'Deny') {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'false'));
+              this.actionType = 'allow';
+            } else {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
+              this.actionType = 'deny';
+            }
           } else
             if (filter.name === 'time') {
               const date = moment(Date.parse(value));
@@ -682,6 +694,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     filter.equal = !filter.equal;
 
     this.setShowRunBar(true);
+
     this.fillSearchSettingsByFilters();
   }
 
