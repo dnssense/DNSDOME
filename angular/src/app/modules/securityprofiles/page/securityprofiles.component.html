@@ -72,23 +72,33 @@
                   <td>{{ profile.name }}</td>
                   <td>{{ profile.numberOfUsage }}</td>
                   <td class="text-center" style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="cloneProfile(profile)" data-tooltip="Existing profile clones" data-tooltip-location="left">
-                      <i-feather name="copy" class="mr-0"></i-feather>
+                    <button class="btn btn-link btn-icon p-0 hover-gray no-animation" (click)="cloneProfile(profile)"
+                      data-tooltip="Existing profile clones" data-tooltip-location="left">
+                      <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <g id="feather-icon/copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                          <path
+                            d="M20,8 C21.6568543,8 23,9.34314576 23,11 L23,20 C23,21.6568543 21.6568543,23 20,23 L11,23 C9.34314576,23 8,21.6568543 8,20 L8,11 C8,9.34314576 9.34314576,8 11,8 L20,8 Z M20,10 L11,10 C10.4477153,10 10,10.4477153 10,11 L10,20 C10,20.5522848 10.4477153,21 11,21 L20,21 C20.5522848,21 21,20.5522848 21,20 L21,11 C21,10.4477153 20.5522848,10 20,10 Z M15.5,11.5 C16.0522848,11.5 16.5,11.9477153 16.5,12.5 L16.5,12.5 L16.499,14.499 L18.5,14.5 C19.0128359,14.5 19.4355072,14.8860402 19.4932723,15.3833789 L19.5,15.5 C19.5,16.0522848 19.0522848,16.5 18.5,16.5 L18.5,16.5 L16.499,16.499 L16.5,18.5 C16.5,19.0128359 16.1139598,19.4355072 15.6166211,19.4932723 L15.5,19.5 C14.9477153,19.5 14.5,19.0522848 14.5,18.5 L14.5,18.5 L14.499,16.499 L12.5,16.5 C11.9871642,16.5 11.5644928,16.1139598 11.5067277,15.6166211 L11.5,15.5 C11.5,14.9477153 11.9477153,14.5 12.5,14.5 L12.5,14.5 L14.499,14.499 L14.5,12.5 C14.5,11.9871642 14.8860402,11.5644928 15.3833789,11.5067277 Z M13,1 C14.6568543,1 16,2.34314576 16,4 L16,4 L16,5 C16,5.55228477 15.5522848,6 15,6 C14.4477153,6 14,5.55228477 14,5 L14,5 L14,4 C14,3.44771526 13.5522848,3 13,3 L13,3 L4,3 C3.44771526,3 3,3.44771526 3,4 L3,4 L3,13 C3,13.5522848 3.44771526,14 4,14 L4,14 L5,14 C5.55228477,14 6,14.4477153 6,15 C6,15.5522848 5.55228477,16 5,16 L5,16 L4,16 C2.34314576,16 1,14.6568543 1,13 L1,13 L1,4 C1,2.34314576 2.34314576,1 4,1 L4,1 Z"
+                            id="Shape" fill="#7B8AA1"></path>
+                        </g>
+                      </svg>
                     </button>
                   </td>
                   <td class="text-center" style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" data-tooltip="You can view the profile." data-tooltip-location="left"
-                      *ngIf="profile.isSystem" (click)="viewProfile(profile)">
+                    <button class="btn btn-link btn-icon p-0 hover-gray no-animation" data-tooltip="You can view the profile."
+                      data-tooltip-location="left" *ngIf="profile.isSystem" (click)="viewProfile(profile)">
                       <i-feather name="eye" class="mr-0"></i-feather>
                     </button>
 
-                    <button class="btn btn-link btn-icon p-0 hover-gray" data-tooltip="You can edit the profile." data-tooltip-location="left"
-                      *ngIf="!profile.isSystem" (click)="editProfile(profile)">
+                    <button class="btn btn-link btn-icon p-0 hover-gray no-animation" data-tooltip="You can edit the profile."
+                      data-tooltip-location="left" *ngIf="!profile.isSystem" (click)="editProfile(profile)">
                       <i-feather name="edit-3" class="mr-0"></i-feather>
                     </button>
                   </td>
                   <td class="text-center" style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray"  *ngIf="!profile.isSystem" (click)="deleteProfile(profile.id)" data-tooltip="You can remove the profile." data-tooltip-location="left">
+                    <button class="btn btn-link btn-icon p-0 hover-gray no-animation" *ngIf="!profile.isSystem"
+                      (click)="deleteProfile(profile.id)" data-tooltip="You can remove the profile."
+                      data-tooltip-location="left">
                       <i-feather name="trash-2" class="mr-0"></i-feather>
                     </button>
                   </td>
