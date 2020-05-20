@@ -438,9 +438,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.setShowRunBar(true);
   }
 
-  setDateOptionBySearchSettings() {
+  setDateOptionBySearchSettings(dateInterval?: number) {
     const dateOptions = this.dateOptions.map(x => {
-      return { ...x, selected: x.value === this.searchSettings.dateInterval };
+      return { ...x, selected: x.value === (dateInterval ? dateInterval : this.searchSettings.dateInterval) };
     });
 
     this.dateOptions = dateOptions;
@@ -530,6 +530,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   clear() {
+    this.searchSettings = new SearchSetting();
+
     this.searchSettings.must = [];
     this.searchSettings.mustnot = [];
     this.searchSettings.should = [];
@@ -563,7 +565,17 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
 
-    this.searchSettings = JSON.parse(JSON.stringify({ ...report, dateInterval: this.searchSettings.dateInterval }));
+    this.dateText = this.convertTimeString(report.dateInterval);
+
+    const finded = this.dateOptions.find(x => x.value === Number(report.dateInterval));
+
+    if (finded) {
+      this.date.selectTime(finded);
+    }
+
+    this.setDateOptionBySearchSettings(Number(report.dateInterval));
+
+    this.searchSettings = JSON.parse(JSON.stringify({ ...report, dateInterval: report.dateInterval }));
 
     const should = this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
     const mustnot = this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value]));
@@ -585,9 +597,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     });
 
     this.setShowRunBar(true);
-    this.setDateOptionBySearchSettings();
-
-    // this.search('savedreport');
   }
 
   changeSavedReportType($event: RkRadioOutput) {
@@ -595,11 +604,28 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   saveFilterClick() {
+    if (this.searchSettings.name.length > 0) {
+      this.reportActiveTabNumber = 1;
 
-    this.fillSearchSettingsByFilters();
-    this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
-    this.searchSettings.system = false;
-    this.prepareNewSaveFilter();
+      this.savedReportOptions = this.savedReportOptions.map(x => {
+        return { ...x, selected: x.value === this.searchSettings.id };
+      });
+
+      this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
+
+      this.newSavedReport.name = this.searchSettings.name;
+
+      this.newSavedReport.id = this.searchSettings.id;
+
+      this.fillSearchSettingsByFilters();
+    } else {
+      this.fillSearchSettingsByFilters();
+
+      this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
+
+      this.searchSettings.system = false;
+      this.prepareNewSaveFilter();
+    }
 
     this.saveModal.toggle();
   }

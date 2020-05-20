@@ -46,8 +46,8 @@
                     <div class="input-container">
                       <input type="text" placeholder="Domain" [(ngModel)]="domain" class="rk-input w-100">
 
-                      <button class="btn btn-small ml-1" style="width: 60px"
-                        (click)="addDomainToList()">{{'Add'|translate}}</button>
+                      <button class="btn btn-small ml-1 safe-btn" style="width: 60px"
+                        (click)="addDomainToList()" [disabled]="domain?.length === 0">{{'Add'|translate}}</button>
                     </div>
 
                     <div class="cards mt-3">
@@ -199,8 +199,6 @@
           </rk-modal-footer>
         </rk-modal>
 
-
-
         <rk-modal #changeGroupModal>
           <rk-modal-header icon="plus">
             <rk-modal-header-title>
@@ -216,8 +214,6 @@
                   <rk-select [options]="groupListForSelect" [(value)]="selectedGroupName"
                     (valueChange)="groupSelectChange($event)" class="w-100">
                   </rk-select>
-
-
                 </div>
               </div>
 
@@ -268,7 +264,6 @@
               (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
-
 
         <div class="col-12 p-0 mt-3">
           <rk-table-container class="m-0">
@@ -388,7 +383,6 @@
             </rk-table>
           </rk-table-container>
         </div>
-
       </div>
     </div>
   </div>

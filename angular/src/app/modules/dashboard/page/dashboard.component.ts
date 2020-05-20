@@ -508,14 +508,7 @@ export class DashboardComponent implements OnInit {
           },
           autoSelected: 'zoom'
         }
-      }/* ,
-      markers: {
-        size: [2, 0],
-        strokeWidth: 2,
-        hover: {
-          size: 7,
-        }
-      } */,
+      },
       colors: ['#ff6c40', '#ff6c40'],
       stroke: {
         width: 4,
@@ -557,117 +550,7 @@ export class DashboardComponent implements OnInit {
     this.topDomainChart.render();
   }
 
-
-
-
-  /*   private drawChartTimeLine() {
-      const timelineChart = [];
-
-      const series = [{
-        name: 'Hits',
-        data: timelineChart.map(x => [x.date.getTime(), x.hit])
-      }];
-
-      if (this.timeLineChart) {
-        this.timeLineChart.updateSeries(series);
-        return;
-      }
-
-      this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
-        series: series,
-        chart: {
-          id: 'chart1',
-          height: 200,
-          type: 'bar',
-          group: 'deneme',
-          zoom: {
-            enabled: true
-          },
-          toolbar: {
-            show: true,
-            offsetX: 0,
-            offsetY: 0,
-            tools: {
-              download: true,
-              selection: false,
-              zoom: true,
-              zoomin: true,
-              zoomout: true,
-              pan: true,
-              reset: true,
-              customIcons: []
-            },
-            autoSelected: 'zoom'
-          },
-          /*  brush: {
-             target: 'chart2',
-             enabled: true
-           }, */
-
-  /*  },
-    dataLabels: {
-      enabled: false,
-
-    },
-    markers: {
-
-      size: [2, 2, 2],
-      colors: ['#f95656'],
-      strokeColors: '#f95656',
-      strokeWidth: 2,
-      hover: {
-        size: 7,
-      }
-    },
-    colors: ['#ff7b00', '#b1dcff', '#eedcff'],
-    stroke: {
-      width: 3,
-      curve: ['smooth', 'smooth', 'smooth']
-    },
-    events: {
-      beforeMount: (chartContext, config) => {
-
-      },
-      updated: (chart) => {
-
-      }
-    },
-    tooltip: {
-      enabled: true,
-      marker: {
-        show: false
-      }
-    },
-    xaxis: {
-      type: 'datetime',
-
-      labels: {
-        show: true,
-        trim: true,
-        showDuplicates: false,
-        datetimeFormatter: {
-          year: 'yyyy',
-          month: 'MMM \'yy',
-          day: 'dd MMM',
-          hour: 'HH:mm'
-        }
-      },
-      tickAmount: 12
-
-
-
-    },
-    yaxis: {
-      tickAmount: undefined
-    }
-  });
-
-  this.timeLineChart.render();
-} */
-
   private drawChartAnomaly() {
-
-
     // calculate categories
     this.categoryListFiltered = [];
     if (this.trafficAnomaly?.categories) {
@@ -851,30 +734,6 @@ export class DashboardComponent implements OnInit {
       },
       fill: {
         opacity: 1,
-        // type: ['solid', 'solid', 'gradient'],
-        // gradient: {
-        //   type: 'vertical',
-        //   shadeIntensity: 1,
-        //   opacityFrom: 0.7,
-        //   opacityTo: 0.9,
-        //   colorStops: [
-        //     {
-        //       offset: 0,
-        //       color: "#c41505",
-        //       opacity: 1
-        //     },
-        //     {
-        //       offset: 50,
-        //       color: "#7c26bd",
-        //       opacity: 1
-        //     },
-        //     {
-        //       offset: 100,
-        //       color: "#507df3",
-        //       opacity: 1
-        //     },
-        //   ]
-        // }
       },
       xaxis: {
         type: 'datetime',

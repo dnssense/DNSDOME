@@ -19,6 +19,8 @@
 
             <div class="container-fluid">
               <div class="rk-modal-card">
+                <div class="rk-modal-card-title">{{ 'LocalDnsServer' | translate }}</div>
+
                 <div class="row" *ngIf="selectedBox">
                   <div class="col-12 mt-3">
                     <input type="text" class="rk-input w-100" placeholder="{{'BOX.Name'|translate}}"
@@ -34,11 +36,13 @@
                     <rk-select [options]="securityProfilesForSelect" [(value)]="selectedBox.agent.rootProfile.id">
                     </rk-select>
                   </div>
+                </div>
+              </div>
 
-                  <div class="col-12 mt-3">
-                    <label class="rk-label">{{'IsCpEnabled'|translate}}</label>
-                  </div>
+              <div class="rk-modal-card mt-3" *ngIf="selectedBox">
+                <div class="rk-modal-card-title mb-2">{{'IsCpEnabled'|translate}}</div>
 
+                <div class="row">
                   <div class="col-6">
                     <div class="rk-radio my-0">
                       <input type="radio" id="rd-enable" [(ngModel)]="selectedBox.agent.isCpEnabled" name="rd-enables"
@@ -149,99 +153,105 @@
           <rk-modal-body>
 
             <div class="container-fluid">
-              <div class="row">
-                <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder="{{'GroupName'|translate}}"
-                    [(ngModel)]="groupName">
+              <div class="rk-modal-card mt-3">
+                <div class="rk-modal-card-title">{{ 'GroupName' | translate }}</div>
+
+                <div class="row">
+                  <div class="col-12 mt-3">
+                    <input type="text" class="rk-input w-100" placeholder="{{'GroupName'|translate}}"
+                      [(ngModel)]="groupName">
+                  </div>
                 </div>
+
+                <div class="rk-modal-card-title my-2">{{ 'SelectSecurityProfile' | translate }}</div>
+
+                <div class="row mt-2">
+                  <div class="col-12 mt-3" *ngFor="let profile of securityProfiles; let index = index">
+                    <div class="rk-radio my-0">
+                      <input type="radio" id="rd-sec-{{ index }}" name="securityProfileRd"
+                        [(ngModel)]="selectedProfileRadio" [value]="profile.id">
+                      <label for="rd-sec-{{ index }}">{{ profile.name }}</label>
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
-              <div class="row mt-2">
-                <div class="col-12 mt-3" *ngFor="let profile of securityProfiles; let index = index">
-                  <div class="rk-radio my-0">
-                    <input type="radio" id="rd-sec-{{ index }}" name="securityProfileRd"
-                      [(ngModel)]="selectedProfileRadio" [value]="profile.id">
-                    <label for="rd-sec-{{ index }}">{{ profile.name }}</label>
+              <div class="rk-modal-card mt-3">
+                <div class="rk-modal-card-title">{{ 'SelectDevicesToJoinGroup' | translate }}</div>
+
+                <div class="row">
+                  <div class="col-12 mt-2" *ngIf="selectedGroupAgent?.agents?.length > 0">
+                    <h6 class="rk-title mb-2">{{ 'OtherGroupMembers' | translate }}</h6>
+
+                    <table class="table table-pill">
+                      <thead>
+                        <tr>
+                          <th>{{'HostName'|translate}}</th>
+                          <th>{{'MacAddress'|translate}}</th>
+                          <th colspan="2">{{'GroupName'|translate}}</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr *ngFor="let item of selectedGroupAgent?.agents">
+                          <td>{{ item.agentAlias }}</td>
+                          <td style="max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            {{ item.mac | MacAddressFormatterPipe }}
+                          </td>
+                          <td>{{ item.agentGroup.groupName }}</td>
+                          <td class="text-right">
+                            <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
+                          </td>
+                        </tr>
+
+                        <tr *ngIf="selectedGroupAgent?.length == 0">
+                          <td colspan="4">
+                            {{'DataNotFound'|translate}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-12 mt-2">
+                    <h6 class="rk-title mb-2">{{'NoGroupMembers'|translate}}</h6>
+
+                    <table class="table table-pill">
+                      <thead>
+                        <tr>
+                          <th>{{'HostName'|translate}}</th>
+                          <th colspan="2">{{'MacAddress'|translate}}</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr *ngFor="let item of unregistereds">
+                          <td>{{ item.agentInfo.agentAlias }}</td>
+                          <td style="max-width: 115px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            {{ item.agentInfo.mac | MacAddressFormatterPipe }}
+                          </td>
+                          <td class="text-right">
+                            <rk-checkbox size="sm" (valueChange)="selectRow($event, item)" [(value)]="item.selected">
+                            </rk-checkbox>
+                          </td>
+                        </tr>
+                        <tr *ngIf="unregistereds.length == 0">
+                          <td colspan="3">{{'DataNotFound'|translate}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-12 mt-3">
-                  <h5 class="rk-group-title">Select Devices to Join Group</h5>
-                </div>
-
-                <div class="col-12 mt-2" *ngIf="selectedGroupAgent?.agents?.length > 0">
-                  <h6 class="rk-title mb-2">Other Group Members</h6>
-
-                  <table class="table small-table table-borderless">
-                    <thead>
-                      <tr>
-                        <th>{{'HostName'|translate}}</th>
-                        <th>{{'MacAddress'|translate}}</th>
-                        <th>{{'GroupName'|translate}}</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr *ngFor="let item of selectedGroupAgent?.agents">
-                        <td>{{ item.agentAlias }}</td>
-                        <td style="max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                          {{ item.mac | MacAddressFormatterPipe }}
-                        </td>
-                        <td>{{ item.agentGroup.groupName }}</td>
-                        <td class="text-right">
-                          <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
-                        </td>
-                      </tr>
-
-                      <tr *ngIf="selectedGroupAgent?.length == 0">
-                        <td colspan="4">
-                          {{'DataNotFound'|translate}}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="col-12 mt-2">
-                  <h6 class="rk-title mb-2">{{'NoGroupMembers'|translate}}</h6>
-
-                  <table class="table small-table table-borderless">
-                    <thead>
-                      <tr>
-                        <th>{{'HostName'|translate}}</th>
-                        <th>{{'MacAddress'|translate}}</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr *ngFor="let item of unregistereds">
-                        <td>{{ item.agentInfo.agentAlias }}</td>
-                        <td style="max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                          {{ item.agentInfo.mac | MacAddressFormatterPipe }}
-                        </td>
-                        <td class="text-right">
-                          <rk-checkbox size="sm" (valueChange)="selectRow($event, item)" [(value)]="item.selected">
-                          </rk-checkbox>
-                        </td>
-                      </tr>
-                      <tr *ngIf="unregistereds.length == 0">
-                        <td colspan="3">{{'DataNotFound'|translate}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
             </div>
 
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn w-100 btn-small mr-2" (click)="saveGroupAgent()">{{'Apply'|translate}}</button>
             <button class="btn w-100 btn-default btn-small"
               (click)="groupAgentModal.toggle()">{{'Close'|translate}}</button>
+            <button class="btn w-100 btn-fill btn-small mr-2" (click)="saveGroupAgent()">{{'Apply'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -397,10 +407,10 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2"
-              (click)="changeGroupModalApplyClick()">{{'Apply'|translate}}</button>
             <button class="btn btn-small btn-default w-100"
-              (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
+            (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
+            <button class="btn btn-fill btn-small w-100 mr-2"
+              (click)="changeGroupModalApplyClick()">{{'Apply'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -413,7 +423,6 @@
                   <p class="rk-table-description">( {{'GroupPolicyApplies' | translate}} )</p>
                 </div>
 
-
                 <div class="search mt-2">
                   <div class="rk-autocomplete-container" style="width: 160px;">
                     <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="groupMemberSearch"
@@ -423,7 +432,7 @@
                 </div>
 
                 <button class="btn btn-small mt-2"
-                  (click)="changeTableGroup('edit')">{{ 'ChangeGroup' | translate }}</button>
+                  (click)="changeTableGroup('edit')" [disabled]="getEditDisabled">{{ 'ChangeGroup' | translate }}</button>
               </div>
             </div>
 
@@ -487,7 +496,7 @@
                 </div>
 
                 <button class="btn btn-small mt-2"
-                  (click)="changeTableGroup('create')">{{ 'AddToGroup' | translate }}</button>
+                  (click)="changeTableGroup('create')" [disabled]="getCreateDisabled">{{ 'AddToGroup' | translate }}</button>
               </div>
             </div>
 

@@ -26,7 +26,7 @@
     "Domain": "Domain",
     "Percent": "Percent",
     "NewDomains": "New Domains",
-    "Harmful": "Harmful",
+    "Harmful": "Restricted",
     "Search": "Search",
     "AllFieldsRequired": "All fields required",
     "Selected": "Selected",
@@ -131,7 +131,7 @@
     "Total": "Total",
     "Safe": "Safe",
     "Variable": "Variable",
-    "HarmfullContent": "Harmful Content",
+    "HarmfullContent": "Restricted Content",
     "TotalDays": "Total days",
     "Service Temporarily Unavailable": "Service Temporarily Unavailable",
     "All": "All",
@@ -171,7 +171,7 @@
     "YouTubeRestrictMode": "YouTube Restrict Mode",
     "ClearAds": "Clear Ads",
     "MaliciousCategories": "Malicious Categories",
-    "HarmfullCategories": "Harmful Categories",
+    "HarmfullCategories": "Restricted Categories",
     "VariableCategories": "Variable Categories",
     "SafeCategories": "Safe Categories",
     "Applications": "Applications",
@@ -572,5 +572,8 @@
     "TooltipDescription": "Click on the dot cursor for detailed information",
     "LocationDetails": "Location Detail",
     "UserInformation": "User Information",
-    "PleaseEnterTimeTrueValue": "Please enter the date in the correct format."
+    "PleaseEnterTimeTrueValue": "Please enter the date in the correct format."    ,
+    "FullName": "Full name",
+    "LocalDnsServer": "Local DNS Server",
+    "SelectSecurityProfile": "Select Security Profile"
 }

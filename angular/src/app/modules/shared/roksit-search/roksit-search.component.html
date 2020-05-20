@@ -343,7 +343,9 @@
 
       <div class="d-flex align-items-center flex-wrap">
         <div class="d-flex flex-wrap align-items-center" style="width: calc(100% - 370px); padding-right: 25px;">
-          <span class="filter-text mb-2" *ngIf="filters?.length > 0">{{ 'REPORT.Filter' | translate }};</span>
+          <span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0">{{ searchSettings?.name }}</span>
+          
+          <span class="filter-text mb-2" *ngIf="filters?.length > 0 && searchSettings?.name?.length === 0">{{ 'REPORT.Filter' | translate }};</span>
 
           <span class="filter-text mb-2 ml-2" *ngIf="filters?.length === 0">{{ 'NoFilter' | translate }}</span>
 

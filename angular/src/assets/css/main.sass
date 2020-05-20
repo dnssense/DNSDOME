@@ -896,4 +896,49 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
     &:hover
       background: #28a745
       color: white
+
+#anomaly-detection
+  .rk-basic-card
+    background: var(--body-bg)
+  
+  .column.filter
+    svg
+      path
+        fill: var(--primary)
+  
+  .rk-selectable-table
+
+    tbody
+      tr:hover
+        td
+          background: var(--primary)
+          color: white
+        
+        .rk-progressbar-n
+          .rk-progressbar-n-value
+            background: var(--white)
     
+    .rk-progressbar-n
+      .rk-progressbar-n-value
+        background: var(--primary)
+
+.rk-selectable-table
+  &.prune
+    thead
+      tr
+        th
+          border: 0 !important
+          background: rgba(137, 142, 164, 0.05)
+
+          &:first-child
+            border-top-left-radius: 5px
+            border-bottom-left-radius: 5px
+          
+          &:last-child
+            border-top-right-radius: 5px
+            border-bottom-right-radius: 5px
+
+    tbody
+      tr
+        td:not(.text):not(.idx)
+          color: var(--gray)

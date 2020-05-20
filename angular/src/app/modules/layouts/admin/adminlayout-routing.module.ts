@@ -107,6 +107,14 @@ const adminlayoutRoutes: Routes = [
         },
         loadChildren: '../../theme/theme.module#ThemeModule'
       },
+      {
+        path: 'anomaly-detection',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
+        loadChildren: '../../anomaly-detection/anomaly-detection.module#AnomalyDetectionModule'
+      },
       { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
