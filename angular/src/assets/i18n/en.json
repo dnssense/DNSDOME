@@ -576,5 +576,25 @@
     "FullName": "Full name",
     "LocalDnsServer": "Local DNS Server",
     "SelectSecurityProfile": "Select Security Profile",
-    "ClearImage": "Clear Image"
+    "ClearImage": "Clear Image",
+    "PageName": {
+        "Dashboard": "Dashboard",
+        "Monitor": "Monitor",
+        "CustomReports": "Custom Reports",
+        "Deployment": "Deployment",
+        "PublicIp": "Public IP",
+        "Devices": "Devices",
+        "RoamingClients": "Roaming Clients",
+        "Settings": "Settings",
+        "Users": "Users",
+        "SavedReports": "Saved Reports",
+        "SecurityProfiles": "Security Profiles",
+        "QueryCategory": "Query Category",
+        "RequestChangingDomainCategory": "Request Changing Domain Category",
+        "ThemeMode": "ThemeMode"
+    },
+    "MonitorTraffic": "Monitor Traffic",
+    "QueryCount": "Query Count",
+    "LearnedNormalTrafficRange": "Learned Normal Traffic Range",
+    "TrafficExcessRate": "Traffic Excess Rate"
 }

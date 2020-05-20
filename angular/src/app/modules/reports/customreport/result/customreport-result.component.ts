@@ -13,6 +13,7 @@ import { LinkClick } from '../../monitor/result/monitor-result.component';
 import * as moment from 'moment';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { LOCAL_STORAGE_THEME_COLOR } from 'src/app/modules/theme/theme.component';
 
 export interface TableBadgeOutput {
   name: string;
@@ -32,12 +33,20 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     private excelService: ExcelService,
     private pdfService: PdfService,
     private translateService: TranslatorService
-  ) { }
+  ) {
+    const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+
+    if (theme) {
+      this.theme = theme;
+    }
+  }
 
   elementRef: ElementRef;
   public date = new Date();
   public loading = false;
   public selectedColumns: AggregationItem[];
+
+  theme: string;
 
   @Input() set searchSetting(value: SearchSetting) {
     this.ss = value;
@@ -306,7 +315,19 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
               `;
             }
           },
-          grid: { borderColor: '#e9ebf1' },
+          grid: {
+            borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
+            xaxis: {
+              lines: {
+                show: true
+              }
+            },
+            yaxis: {
+              lines: {
+                show: true
+              }
+            },
+          },
           legend: { show: false },
           annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
           animations: { enabled: true },

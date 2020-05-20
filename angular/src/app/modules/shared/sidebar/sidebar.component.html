@@ -10,7 +10,7 @@
         <a class="ripple" (click)="setActive(menuItem)" [routerLink]="!menuItem.subMenu ? [menuItem.path] : []"
             routerLinkActive="active">
             <icon-for-menu [type]="menuItem.icon"></icon-for-menu>
-            <span class="text">{{ menuItem.text }}</span>
+            <span class="text">{{ menuItem.text | translate}}</span>
             <i-feather name="chevron-down" class="dropdown-icon" *ngIf="menuItem.subMenu"></i-feather>
         </a>
 
@@ -20,7 +20,7 @@
                 <a (click)="setActive(menuItem, subMenuItem)" [routerLink]="[menuItem.path + subMenuItem.path]"
                     routerLinkActive="active">
                     <icon-for-menu [type]="subMenuItem.icon"></icon-for-menu>
-                    <span class="text">{{ subMenuItem.text }}</span>
+                    <span class="text">{{ subMenuItem.text | translate }}</span>
                 </a>
             </li>
         </ul>

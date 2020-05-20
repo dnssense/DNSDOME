@@ -571,5 +571,25 @@
     "FullName": "Tam ad",
     "LocalDnsServer": "Yerel DNS Sunucusu",
     "SelectSecurityProfile": "Güvenlik Profili Seçiniz",
-    "ClearImage": "Resimi temizle"
+    "ClearImage": "Resimi temizle",
+    "PageName": {
+        "Dashboard": "Anasayfa",
+        "Monitor": "Monitor",
+        "CustomReports": "Özel Raporlar",
+        "Deployment": "Kurulum",
+        "PublicIp": "Gerçek IP",
+        "Devices": "Aygıtlar",
+        "RoamingClients": "Mobil Cihazlar",
+        "Settings": "Ayarlar",
+        "Users": "Kullanıcılar",
+        "SavedReports": "Kayıtlı Raporlar",
+        "SecurityProfiles": "Güvenlik Profilleri",
+        "QueryCategory": "Kategory Sorgulama",
+        "RequestChangingDomainCategory": "Alan Adı Kategorisi Değiştirme",
+        "ThemeMode": "Tema"
+    },
+    "MonitorTraffic": "Monitor Trafik",
+    "QueryCount": "Sorgu Sayısı",
+    "LearnedNormalTrafficRange": "Öğrenilmiş Normal Trafik Aralığı",
+    "TrafficExcessRate": "Trafik Aşım Oranı"
 }

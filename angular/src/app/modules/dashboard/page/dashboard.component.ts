@@ -310,7 +310,7 @@ export class DashboardComponent implements OnInit {
       })
     ).subscribe(() => {
 
-      const publicip: AgentCountModel = { name: 'PublicIp', activeCount: 0, passiveCount: 0 };
+      const publicip: AgentCountModel = { name: 'PageName.PublicIp', activeCount: 0, passiveCount: 0 };
       const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0 };
 
       const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0 };
