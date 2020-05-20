@@ -63,7 +63,7 @@ export class ConfigService {
         this.host.brand = 'Roksit';
         this.host.aboutus = 'https://www.roksit.com/about-us';
         this.host.logoImage = 'logo-roksit.png';
-        this.host.logoImage = 'roksit-white.svg';
+        this.host.logoDarkImage = 'roksit-white.svg';
         this.host.iconImage = 'favicon-roksit.png';
         this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-roksit.png';
         this.host.title = 'Roksit';

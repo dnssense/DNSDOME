@@ -32,7 +32,7 @@
 
       <div style="padding: 0 15px;">
         <div class="d-flex align-items-center justify-content-between mt-3 pb-2"
-          style="border-bottom: 1px solid var(--base-border-color);">
+          style="border-bottom: 1px solid var(--infobox-border);">
           <div class="accordion-label">{{'SafeSearch'|translate}};</div>
           <div style="width: 78px;">
             <rk-toggle-button [active]="selectedAgent.rootProfile.isSafeSearchEnabled" (click)="changeSafeSearchMode()"
@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-between my-2 pb-2"
-          style="border-bottom: 1px solid var(--base-border-color);">
+          style="border-bottom: 1px solid var(--infobox-border);">
           <div class="accordion-label">{{'YouTubeRestrictMode'|translate}};</div>
           <div style="width: 78px;">
             <rk-toggle-button [active]="selectedAgent.rootProfile.isYoutubeStrictModeEnabled"
@@ -49,7 +49,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-between my-2 pb-2"
-          style="border-bottom: 1px solid var(--base-border-color);">
+          style="border-bottom: 1px solid var(--infobox-border);">
           <div class="accordion-label">{{'Clear Ads'|translate}}</div>
           <div style="width: 78px;">
             <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }" [active]="isClearedAdds()"
@@ -68,7 +68,7 @@
             <ng-container *ngFor="let cat of categoryList">
               <ng-container *ngIf="isInCategoryType('malicious', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-                  style="border-bottom: 1px solid var(--base-border-color);">
+                  style="border-bottom: 1px solid var(--infobox-border);">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
@@ -93,7 +93,7 @@
             <ng-container *ngFor="let cat of categoryList">
               <ng-container *ngIf="isInCategoryType('harmful', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-                  style="border-bottom: 1px solid var(--base-border-color);">
+                  style="border-bottom: 1px solid var(--infobox-border);">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
@@ -118,7 +118,7 @@
             <ng-container *ngFor="let cat of categoryList">
               <ng-container *ngIf="isInCategoryType('variable', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-                  style="border-bottom: 1px solid var(--base-border-color);">
+                  style="border-bottom: 1px solid var(--infobox-border);">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
@@ -143,7 +143,7 @@
             <ng-container *ngFor="let cat of categoryList">
               <ng-container *ngIf="isInCategoryType('safe', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-                  style="border-bottom: 1px solid var(--base-border-color);">
+                  style="border-bottom: 1px solid var(--infobox-border);">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
@@ -173,7 +173,7 @@
 
           <ng-container *ngFor="let app of groupedApp.applications">
             <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-              style="border-bottom: 1px solid var(--base-border-color);">
+              style="border-bottom: 1px solid var(--infobox-border);">
               <div class="accordion-label">{{ app.application.name }}</div>
 
               <div style="width: 78px;">
