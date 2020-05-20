@@ -12,6 +12,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { Notification, NotificationApiService, NotificationRequest } from 'src/app/core/services/notification-api.service';
 import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { LOCAL_STORAGE_THEME_COLOR } from '../../theme/theme.component';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -85,8 +86,15 @@ export class NavbarComponent implements OnInit {
         this.nativeElement = element.nativeElement;
         this.host = this.config.host;
 
+        const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+        if (theme) {
+            this.theme = theme;
+        }
+
         this.helpUrlChanged(location.path(), this.currentLanguage.toLocaleLowerCase());
     }
+
+    theme = 'white';
 
     notifications: Notification[] = [];
 
