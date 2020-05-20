@@ -570,5 +570,6 @@
     "PleaseEnterTimeTrueValue": "Lütfen tarih formatını doğru formatta giriniz.",
     "FullName": "Tam ad",
     "LocalDnsServer": "Yerel DNS Sunucusu",
-    "SelectSecurityProfile": "Güvenlik Profili Seçiniz"
+    "SelectSecurityProfile": "Güvenlik Profili Seçiniz",
+    "ClearImage": "Resimi temizle"
 }

@@ -575,5 +575,6 @@
     "PleaseEnterTimeTrueValue": "Please enter the date in the correct format."    ,
     "FullName": "Full name",
     "LocalDnsServer": "Local DNS Server",
-    "SelectSecurityProfile": "Select Security Profile"
+    "SelectSecurityProfile": "Select Security Profile",
+    "ClearImage": "Clear Image"
 }

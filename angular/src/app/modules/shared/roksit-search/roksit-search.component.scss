@@ -48,13 +48,3 @@
     }
   }
 }
-
-.filter-text.link-text {
-  color: var(--primary);
-  transition: .1s;
-
-  &:hover {
-    color: var(--primary-hover);
-    transition: .1s;
-  }
-}

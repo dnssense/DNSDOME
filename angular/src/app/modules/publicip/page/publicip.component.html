@@ -51,7 +51,7 @@
                     <div class="col-12 d-flex justify-content-center">
                       <input type="file" class="input-file" id="fileUpload" (change)="selectFile($event)"
                         accept="image/*">
-                      <label for="fileUpload" class="mx-auto d-flex flex-column align-items-center">
+                      <label for="fileUpload" class="mx-auto mb-0 d-flex flex-column align-items-center">
                         <figure>
                           <ng-container *ngIf="selectedIp.logo; else elseTemplateLogo">
                             <img src="{{ selectedIp.logo }}" class="w-100" accept="image/png, image/jpeg">
@@ -64,6 +64,10 @@
                         </figure>
                         <span class="file-upload-text">{{'BlockPageLogo'|translate}}</span>
                       </label>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                      <span class="link-text" style="font-size: 11px; cursor: pointer;" (click)="clearImage()"
+                        *ngIf="selectedIp.logo">{{ 'ClearImage' | translate }}</span>
                     </div>
                   </div>
 

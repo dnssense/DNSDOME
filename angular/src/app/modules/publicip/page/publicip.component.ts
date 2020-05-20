@@ -405,7 +405,10 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       img.onerror = function () { callback(false); };
       img.src = url;
     }
+  }
 
+  clearImage() {
+    this.selectedIp.logo = null;
   }
 
   deletePublicIp(id: number) {
