@@ -32,7 +32,7 @@
                         <div class="rk-title-2">{{'DASHBOARD.TrafficBasedAnomaly'|translate}}</div>
 
                         <div class="d-flex align-items-start justify-content-end">
-                          <button class="btn btn-small mr-2 d-none d-xl-flex" *ngFor="let dateButton of dateButtons"
+                          <button class="btn btn-small mr-2 d-none d-xl-flex dashboard-date-btn" *ngFor="let dateButton of dateButtons"
                             (click)="setDateByDateButton(dateButton)"
                             [ngClass]="{'active': dateButton?.active}">{{ dateButton.displayText }}</button>
 

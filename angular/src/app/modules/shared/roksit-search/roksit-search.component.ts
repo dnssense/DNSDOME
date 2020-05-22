@@ -63,11 +63,18 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.getSavedReports();
 
     this.staticService.getCategoryList().subscribe(result => {
-      this.autocompleteItems = result.map(x => {
-        return {
-          text: x.name,
-          value: x.name
-        } as RkAutoCompleteModel;
+      result.forEach(elem => {
+        const finded = this.autocompleteItems.find(x => x.text === translatorService.translate(elem.type));
+
+        if (finded) {
+          finded.groupItems.push({ text: elem.name, value: elem.name });
+        } else {
+          this.autocompleteItems.push({ text: translatorService.translate(elem.type), value: elem.name, groupItems: [] });
+        }
+      });
+
+      this.autocompleteItems.forEach(elem => {
+        elem.groupItems.sort((a, b) => a.text > b.text ? 1 : -1);
       });
     });
 
@@ -747,5 +754,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   get getCategoryFilters() {
     return this.filters.filter(x => x.name === 'category');
+  }
+
+  revertReport() {
+    this.savedReportValueChange();
   }
 }

@@ -209,7 +209,7 @@
 
           <div class="d-flex mt-3">
             <!-- (enterPress)="categoryEnterPress($event)"  -->
-            <rk-autocomplete style="flex: 1" class="mr-2" [onSelectClear]="true" [items]="autocompleteItems" (onSelect)="categoryEnterPress($event)">
+            <rk-autocomplete style="flex: 1" class="mr-2" [onSelectClear]="true" [items]="autocompleteItems" [grouped]="true" (onSelect)="categoryEnterPress($event)">
             </rk-autocomplete>
 
             <div class="rk-tabs toggle-tabs" style="width: 90px;">
@@ -343,7 +343,7 @@
 
       <div class="d-flex align-items-center flex-wrap">
         <div class="d-flex flex-wrap align-items-center" style="width: calc(100% - 370px); padding-right: 25px;">
-          <span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0">{{ searchSettings?.name }}</span>
+          <span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0" style="cursor: pointer;" (click)="revertReport()">{{ searchSettings?.name }}</span>
           
           <span class="filter-text mb-2" *ngIf="filters?.length > 0 && searchSettings?.name?.length === 0">{{ 'REPORT.Filter' | translate }};</span>
 

@@ -5,7 +5,7 @@
         <div class="col-12 p-0 d-flex align-items-center justify-content-between">
           <h5 class="page-title">{{'PageName.PublicIp'|translate}}</h5>
 
-          <button class="btn btn-icon btn-small ml-2" (click)="showNewIpForm()">
+          <button class="btn btn-icon btn-safe btn-small ml-2" (click)="showNewIpForm()">
             <i-feather name="plus"></i-feather>
             {{'AddNewIp'|translate}}
           </button>
@@ -205,7 +205,7 @@
                   <th>{{'IpType'|translate}}</th>
                   <th>{{'IpAddressDomain'|translate}}</th>
                   <th>{{'SecurityProfile'|translate}}</th>
-                  <th style="width: 85px;">{{'Operation'|translate}}</th>
+                  <th colspan="2" style="width: 110px;">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -215,9 +215,6 @@
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
                       <span>{{ pi.agentAlias }}</span>
-                      <button class="btn btn-link btn-icon p-0 hover-gray" (click)="showEditWizard(pi.id)">
-                        <i-feather name="settings" class="mr-0"></i-feather>
-                      </button>
                     </div>
                   </td>
                   <td>
@@ -238,14 +235,15 @@
                   </td>
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
-                      <span>{{ pi.rootProfile?pi.rootProfile.name: 'No Profile!' }}</span>
-
-                      <button class="btn btn-link btn-icon p-0 hover-gray" (click)="showProfileEditWizard(pi.id)">
-                        <i-feather name="settings" class="mr-0"></i-feather>
-                      </button>
+                      <span class="link-text" style="cursor: pointer;" (click)="showProfileEditWizard(pi.id)">{{ pi.rootProfile?pi.rootProfile.name: 'No Profile!' }}</span>
                     </div>
                   </td>
-                  <td class="text-center">
+                  <td class="text-center" style="width: 55px">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="showEditWizard(pi.id)">
+                      <i-feather name="edit-3" class="mr-0"></i-feather>
+                    </button>
+                  </td>
+                  <td class="text-center" style="width: 55px">
                     <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deletePublicIp(pi.id)">
                       <i-feather name="trash-2" class="mr-0"></i-feather>
                     </button>

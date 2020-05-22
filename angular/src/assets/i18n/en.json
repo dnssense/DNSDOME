@@ -572,7 +572,7 @@
     "TooltipDescription": "Click on the dot cursor for detailed information",
     "LocationDetails": "Location Detail",
     "UserInformation": "User Information",
-    "PleaseEnterTimeTrueValue": "Please enter the date in the correct format."    ,
+    "PleaseEnterTimeTrueValue": "Please enter the date in the correct format.",
     "FullName": "Full name",
     "LocalDnsServer": "Local DNS Server",
     "SelectSecurityProfile": "Select Security Profile",
@@ -596,5 +596,10 @@
     "MonitorTraffic": "Monitor Traffic",
     "QueryCount": "Query Count",
     "LearnedNormalTrafficRange": "Learned Normal Traffic Range",
-    "TrafficExcessRate": "Traffic Excess Rate"
+    "TrafficExcessRate": "Traffic Excess Rate",
+    "UNSAFE_LIST": "Unsafe List",
+    "SAFE_LIST": "Safe List",
+    "SECURITY": "Security",
+    "GRAY_LIST": "Gray List",
+    "HARMFULL_CONTENT": "Restricted Content"
 }

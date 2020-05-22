@@ -591,5 +591,10 @@
     "MonitorTraffic": "Monitor Trafik",
     "QueryCount": "Sorgu Sayısı",
     "LearnedNormalTrafficRange": "Öğrenilmiş Normal Trafik Aralığı",
-    "TrafficExcessRate": "Trafik Aşım Oranı"
+    "TrafficExcessRate": "Trafik Aşım Oranı",
+    "UNSAFE_LIST": "Unsafe List",
+    "SAFE_LIST": "Safe List",
+    "SECURITY": "Security",
+    "GRAY_LIST": "Gray List",
+    "HARMFULL_CONTENT": "Restricted Content"
 }
