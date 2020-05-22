@@ -1,8 +1,12 @@
 <div class="container-fluid mb-3">
-  <div class="row">
-    <div class="col-12">
-      <input type="text" class="rk-input w-100" placeholder="Name" [(ngModel)]="selectedAgent.rootProfile.name"
-        minlength="1" [readonly]="selectedAgent.rootProfile.isSystem">
+  <div class="rk-modal-card">
+    <h6 class="rk-modal-card-title">{{ 'ProfileName' | translate }}</h6>
+
+    <div class="row">
+      <div class="col-12">
+        <input type="text" class="rk-input w-100" placeholder="{{'Name' | translate}}"
+          [(ngModel)]="selectedAgent.rootProfile.name" minlength="1" [readonly]="selectedAgent.rootProfile.isSystem">
+      </div>
     </div>
   </div>
 </div>
@@ -12,28 +16,23 @@
     <div class="rk-accordion-title">{{'SecuritySettings'|translate}}</div>
 
     <div class="rk-accordion-body py-2">
-      <div class="d-flex flex-column p-2"
-        [ngStyle]="{'background': selectedAgent.rootProfile.isPositiveSecurity ? '#4fb75d' : '#97a5bb'}">
-        <div class="accordion-label text-white">{{'SecurityMode'|translate}}:</div>
-        <div class="d-flex align-items-center justify-content-between mt-1">
-          <button class="rk-toggle-btn w-100 mr-2" [ngClass]="{'active': selectedAgent.rootProfile.isPositiveSecurity}"
-            (click)="setSecurityMode(true)">{{'PositiveSecurity'|translate}}</button>
-          <button class="rk-toggle-btn w-100 passive"
-            [ngClass]="{'active': !selectedAgent.rootProfile.isPositiveSecurity}"
-            (click)="setSecurityMode(false)">{{'NegativeSecurity'|translate}}</button>
-        </div>
+      <div class="rk-tabs toggle-tab-safe mx-2">
+        <div class="rk-tab" [ngClass]="{'active': selectedAgent.rootProfile.isPositiveSecurity}"
+          (click)="setSecurityMode(true)">{{'PositiveSecurity'|translate}}</div>
+        <div class="rk-tab" [ngClass]="{'active': !selectedAgent.rootProfile.isPositiveSecurity}"
+          (click)="setSecurityMode(false)">{{'NegativeSecurity'|translate}}</div>
+      </div>
 
-        <div class="accordion-description mt-2 text-white" *ngIf="selectedAgent.rootProfile.isPositiveSecurity">
-          {{'PositiveSecurityDescription'|translate}}
-        </div>
-        <div class="accordion-description mt-2 text-white" *ngIf="!selectedAgent.rootProfile.isPositiveSecurity">
-          {{'NegativeSecurityDescription'|translate}}
-        </div>
+      <div class="accordion-description mx-2 mt-1" *ngIf="selectedAgent.rootProfile.isPositiveSecurity">
+        {{'PositiveSecurityDescription'|translate}}
+      </div>
+      <div class="accordion-description mx-2 mt-1 mb-1" *ngIf="!selectedAgent.rootProfile.isPositiveSecurity">
+        {{'NegativeSecurityDescription'|translate}}
       </div>
 
       <div style="padding: 0 15px;">
         <div class="d-flex align-items-center justify-content-between mt-3 pb-2"
-          style="border-bottom: 1px solid #e4e9f1;">
+          style="border-bottom: 1px solid var(--infobox-border);">
           <div class="accordion-label">{{'SafeSearch'|translate}};</div>
           <div style="width: 78px;">
             <rk-toggle-button [active]="selectedAgent.rootProfile.isSafeSearchEnabled" (click)="changeSafeSearchMode()"
@@ -41,7 +40,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-between my-2 pb-2"
-          style="border-bottom: 1px solid #e4e9f1;">
+          style="border-bottom: 1px solid var(--infobox-border);">
           <div class="accordion-label">{{'YouTubeRestrictMode'|translate}};</div>
           <div style="width: 78px;">
             <rk-toggle-button [active]="selectedAgent.rootProfile.isYoutubeStrictModeEnabled"
@@ -50,7 +49,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-between my-2 pb-2"
-          style="border-bottom: 1px solid #e4e9f1;">
+          style="border-bottom: 1px solid var(--infobox-border);">
           <div class="accordion-label">{{'Clear Ads'|translate}}</div>
           <div style="width: 78px;">
             <rk-toggle-button [toggleTexts]="{ pos: 'ON' , neg: 'OFF' }" [active]="isClearedAdds()"
@@ -58,7 +57,7 @@
           </div>
         </div>
 
-        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+        <rk-collapse color="#f95656" class="d-flex mt-3">
           <rk-collapse-title>{{'MaliciousCategories'|translate}}</rk-collapse-title>
 
           <rk-collapse-description>
@@ -69,7 +68,7 @@
             <ng-container *ngFor="let cat of categoryList">
               <ng-container *ngIf="isInCategoryType('malicious', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-                  style="border-bottom: 1px solid #e4e9f1;">
+                  style="border-bottom: 1px solid var(--infobox-border);">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
@@ -83,7 +82,7 @@
           </rk-collapse-body>
         </rk-collapse>
 
-        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+        <rk-collapse color="#f9df56" class="d-flex mt-3">
           <rk-collapse-title>{{'HarmfullCategories'|translate}}</rk-collapse-title>
 
           <rk-collapse-description>
@@ -94,7 +93,7 @@
             <ng-container *ngFor="let cat of categoryList">
               <ng-container *ngIf="isInCategoryType('harmful', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-                  style="border-bottom: 1px solid #e4e9f1;">
+                  style="border-bottom: 1px solid var(--infobox-border);">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
@@ -119,7 +118,7 @@
             <ng-container *ngFor="let cat of categoryList">
               <ng-container *ngIf="isInCategoryType('variable', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-                  style="border-bottom: 1px solid #e4e9f1;">
+                  style="border-bottom: 1px solid var(--infobox-border);">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
@@ -133,7 +132,7 @@
           </rk-collapse-body>
         </rk-collapse>
 
-        <rk-collapse color="#d8d8d8" class="d-flex mt-3">
+        <rk-collapse color="#3dd49a" class="d-flex mt-3">
           <rk-collapse-title>{{'SafeCategories'|translate}}</rk-collapse-title>
 
           <rk-collapse-description>
@@ -144,7 +143,7 @@
             <ng-container *ngFor="let cat of categoryList">
               <ng-container *ngIf="isInCategoryType('safe', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-                  style="border-bottom: 1px solid #e4e9f1;">
+                  style="border-bottom: 1px solid var(--infobox-border);">
                   <div class="accordion-label">{{ cat.name }}</div>
 
                   <div style="width: 78px;">
@@ -174,7 +173,7 @@
 
           <ng-container *ngFor="let app of groupedApp.applications">
             <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
-              style="border-bottom: 1px solid #e4e9f1;">
+              style="border-bottom: 1px solid var(--infobox-border);">
               <div class="accordion-label">{{ app.application.name }}</div>
 
               <div style="width: 78px;">
@@ -199,101 +198,108 @@
 
     <div class="rk-accordion-body">
 
-      <h6 class="rk-title">{{'WhiteList'|translate}}</h6>
-      <p class="rk-description">
-        {{'WhiteListDescription1'|translate}}
-        <br />
-        {{'WhiteListDescription2'|translate}}
-        <br />
-        {{'WhiteListDescription3'|translate}}
-        <br>
-        {{'WhiteListDescription4'|translate}}
-      </p>
+      <div class="rk-modal-card mt-3">
+        <h6 class="rk-modal-card-title">{{'WhiteList'|translate}}</h6>
 
-      <div class="input-container">
-        <div class="rk-search-container w-100">
-          <input type="text" placeholder="White List Domain" class="rk-input" [(ngModel)]="whiteListItem.domain"
-            (ngModelChange)="whiteListItemValidation()" maxlength="64">
-          <i-feather name="search"></i-feather>
-        </div>
 
-        <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewWhiteListItem"
-          (click)="addToWhiteList()">
-          {{'Add'|translate}}
-        </button>
-      </div>
+        <p class="rk-description">
+          {{'WhiteListDescription1'|translate}}
+          <br />
+          {{'WhiteListDescription2'|translate}}
+          <br />
+          {{'WhiteListDescription3'|translate}}
+          <br>
+          {{'WhiteListDescription4'|translate}}
+        </p>
 
-      <input type="text" class="rk-input w-100 mt-2" maxlength="255" [(ngModel)]="whiteListItem.comment"
-        placeholder="Comment(Optionals)">
-
-      <div class="cards mt-3">
-        <div class="card success-card"
-          *ngFor="let item of (selectedAgent.rootProfile.blackWhiteListProfile?.whiteList | filter: whiteListItem.domain: 'domain') | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize; let i=index;">
-          <div class="card-content">
-            <h6 class="title">{{ i + 1 }}. {{ item.domain }}</h6>
-            <p class="description">{{ item.comment }}</p>
+        <div class="input-container">
+          <div class="rk-search-container w-100">
+            <input type="text" placeholder="White List Domain" class="rk-input" [(ngModel)]="whiteListItem.domain"
+              (ngModelChange)="whiteListItemValidation()" maxlength="64">
+            <i-feather name="search"></i-feather>
           </div>
 
-          <div class="card-close">
-            <i-feather name="trash-2" (click)="removeFromWhiteList(item.domain)"></i-feather>
-          </div>
+          <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewWhiteListItem"
+            (click)="addToWhiteList()">
+            {{'Add'|translate}}
+          </button>
         </div>
 
-        <ngb-pagination class="d-block mt-3"
-          *ngIf="selectedAgent.rootProfile.blackWhiteListProfile?.whiteList.length > 0" [(page)]="page"
-          [pageSize]="pageSize" [collectionSize]="selectedAgent.rootProfile.blackWhiteListProfile?.whiteList?.length"
-          [maxSize]="4">
-        </ngb-pagination>
+        <input type="text" class="rk-input w-100 mt-2" maxlength="255" [(ngModel)]="whiteListItem.comment"
+          placeholder="Comment(Optionals)">
 
-      </div>
+        <div class="cards mt-3">
+          <div class="card success-card"
+            *ngFor="let item of (selectedAgent.rootProfile.blackWhiteListProfile?.whiteList | filter: whiteListItem.domain: 'domain') | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize; let i=index;">
+            <div class="card-content">
+              <h6 class="title">{{ i + 1 }}. {{ item.domain }}</h6>
+              <p class="description">{{ item.comment }}</p>
+            </div>
 
-      <h6 class="rk-title mt-4">{{"BlackList"|translate}}</h6>
-      <p class="rk-description">
-        {{'BlackListDescription1'|translate}}
-        <br />
-        {{'BlackListDescription2'|translate}}
-        <br />
-        {{'BlackListDescription3'|translate}}
-        <br>
-        {{'BlackListDescription4'|translate}}
-      </p>
-
-      <div class="input-container">
-        <div class="rk-search-container w-100">
-          <input type="text" placeholder="Black List Domain" class="rk-input" [(ngModel)]="blackListItem.domain"
-            (ngModelChange)="blackListItemValidation()" maxlength="64">
-          <i-feather name="search"></i-feather>
-        </div>
-
-        <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewBlackListItem"
-          (click)="addToBlackList()">
-          {{'Add'|translate}}
-        </button>
-      </div>
-
-      <input type="text" class="rk-input w-100 mt-2" maxlength="255" [(ngModel)]="blackListItem.comment"
-        placeholder="Comment(Optionals)">
-
-      <div class="cards mt-3">
-        <div class="card danger-card"
-          *ngFor="let item of (selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse() | filter: blackListItem.domain: 'domain') | slice: (pageBlack-1) * pageSizeBlack : (pageBlack-1) * pageSizeBlack + pageSizeBlack; let i=index;">
-          <div class="card-content">
-            <h6 class="title">{{ i + 1 }}. {{ item.domain }}</h6>
-            <p class="description">{{ item.comment }}</p>
+            <div class="card-close">
+              <i-feather name="trash-2" (click)="removeFromWhiteList(item.domain)"></i-feather>
+            </div>
           </div>
 
-          <div class="card-close">
-            <i-feather name="trash-2" (click)="removeFromBlackList(item)"></i-feather>
-          </div>
-        </div>
+          <ngb-pagination class="d-block mt-3"
+            *ngIf="selectedAgent.rootProfile.blackWhiteListProfile?.whiteList.length > 0" [(page)]="page"
+            [pageSize]="pageSize" [collectionSize]="selectedAgent.rootProfile.blackWhiteListProfile?.whiteList?.length"
+            [maxSize]="4">
+          </ngb-pagination>
 
-        <ngb-pagination class="d-block mt-3"
-          *ngIf="selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse().length > 0" [(page)]="pageBlack"
-          [pageSize]="pageSizeBlack" [collectionSize]="selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse().length"
-          [maxSize]="4">
-        </ngb-pagination>
+        </div>
       </div>
 
+      <div class="rk-modal-card mt-3">
+        <h6 class="rk-modal-card-title">{{"BlackList"|translate}}</h6>
+
+        <p class="rk-description">
+          {{'BlackListDescription1'|translate}}
+          <br />
+          {{'BlackListDescription2'|translate}}
+          <br />
+          {{'BlackListDescription3'|translate}}
+          <br>
+          {{'BlackListDescription4'|translate}}
+        </p>
+
+        <div class="input-container">
+          <div class="rk-search-container w-100">
+            <input type="text" placeholder="Black List Domain" class="rk-input" [(ngModel)]="blackListItem.domain"
+              (ngModelChange)="blackListItemValidation()" maxlength="64">
+            <i-feather name="search"></i-feather>
+          </div>
+
+          <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewBlackListItem"
+            (click)="addToBlackList()">
+            {{'Add'|translate}}
+          </button>
+        </div>
+
+        <input type="text" class="rk-input w-100 mt-2" maxlength="255" [(ngModel)]="blackListItem.comment"
+          placeholder="Comment(Optionals)">
+
+        <div class="cards mt-3">
+          <div class="card danger-card"
+            *ngFor="let item of (selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse() | filter: blackListItem.domain: 'domain') | slice: (pageBlack-1) * pageSizeBlack : (pageBlack-1) * pageSizeBlack + pageSizeBlack; let i=index;">
+            <div class="card-content">
+              <h6 class="title">{{ i + 1 }}. {{ item.domain }}</h6>
+              <p class="description">{{ item.comment }}</p>
+            </div>
+
+            <div class="card-close">
+              <i-feather name="trash-2" (click)="removeFromBlackList(item)"></i-feather>
+            </div>
+          </div>
+
+          <ngb-pagination class="d-block mt-3"
+            *ngIf="selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse().length > 0"
+            [(page)]="pageBlack" [pageSize]="pageSizeBlack"
+            [collectionSize]="selectedAgent.rootProfile.blackWhiteListProfile?.blackList.slice().reverse().length"
+            [maxSize]="4">
+          </ngb-pagination>
+        </div>
+      </div>
     </div>
   </rk-accordion-panel>
 </rk-accordion>

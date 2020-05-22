@@ -25,7 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class GroupedCategory {
   type: string;
   name: string;
-  color ?= '#3397c5';
+  color?= '#3397c5';
   items: CategoryV2[];
 }
 
@@ -63,11 +63,18 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.getSavedReports();
 
     this.staticService.getCategoryList().subscribe(result => {
-      this.autocompleteItems = result.map(x => {
-        return {
-          text: x.name,
-          value: x.name
-        } as RkAutoCompleteModel;
+      result.forEach(elem => {
+        const finded = this.autocompleteItems.find(x => x.text === translatorService.translate(elem.type));
+
+        if (finded) {
+          finded.groupItems.push({ text: elem.name, value: elem.name });
+        } else {
+          this.autocompleteItems.push({ text: translatorService.translate(elem.type), value: elem.name, groupItems: [] });
+        }
+      });
+
+      this.autocompleteItems.forEach(elem => {
+        elem.groupItems.sort((a, b) => a.text > b.text ? 1 : -1);
       });
     });
 
@@ -378,7 +385,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       if (this.actionType === 'allow') {
         this.addFilterBadge(new FilterBadgeModel('action', true, ['Allow']));
       } else {
-        this.addFilterBadge(new FilterBadgeModel('action', false, ['Deny']));
+        this.addFilterBadge(new FilterBadgeModel('action', true, ['Deny']));
       }
     }
 
@@ -438,9 +445,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.setShowRunBar(true);
   }
 
-  setDateOptionBySearchSettings() {
+  setDateOptionBySearchSettings(dateInterval?: number) {
     const dateOptions = this.dateOptions.map(x => {
-      return { ...x, selected: x.value === this.searchSettings.dateInterval };
+      return { ...x, selected: x.value === (dateInterval ? dateInterval : this.searchSettings.dateInterval) };
     });
 
     this.dateOptions = dateOptions;
@@ -487,12 +494,22 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       if (filter.equal) {
         filter.values.forEach(value => {
           if (filter.name === 'action') {
-            this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
+            if (filter.values[0] === 'Deny') {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
+              this.actionType = 'deny';
+            } else {
+              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
+              this.actionType = 'allow';
+            }
           } else
             if (filter.name === 'time') {
+              const date = moment(Date.parse(value));
 
-              const date = new Date(Date.parse(value));
-              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
+              if (date.isValid()) {
+                this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
+              } else {
+                this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
+              }
             } else {
               this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', value));
             }
@@ -500,13 +517,22 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       } else {
         filter.values.forEach(value => {
           if (filter.name === 'action') {
-            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
+            if (filter.values[0] === 'Deny') {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'false'));
+              this.actionType = 'allow';
+            } else {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
+              this.actionType = 'deny';
+            }
           } else
             if (filter.name === 'time') {
+              const date = moment(Date.parse(value));
 
-              const date = new Date(Date.parse(value));
-              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
-
+              if (date.isValid()) {
+                this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
+              } else {
+                this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
+              }
             } else {
               this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
             }
@@ -523,6 +549,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   clear() {
+    this.searchSettings = new SearchSetting();
+
     this.searchSettings.must = [];
     this.searchSettings.mustnot = [];
     this.searchSettings.should = [];
@@ -556,7 +584,17 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
 
-    this.searchSettings = JSON.parse(JSON.stringify({ ...report, dateInterval: this.searchSettings.dateInterval }));
+    this.dateText = this.convertTimeString(report.dateInterval);
+
+    const finded = this.dateOptions.find(x => x.value === Number(report.dateInterval));
+
+    if (finded) {
+      this.date.selectTime(finded);
+    }
+
+    this.setDateOptionBySearchSettings(Number(report.dateInterval));
+
+    this.searchSettings = JSON.parse(JSON.stringify({ ...report, dateInterval: report.dateInterval }));
 
     const should = this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
     const mustnot = this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value]));
@@ -578,9 +616,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     });
 
     this.setShowRunBar(true);
-    this.setDateOptionBySearchSettings();
-
-    // this.search('savedreport');
   }
 
   changeSavedReportType($event: RkRadioOutput) {
@@ -588,11 +623,28 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   saveFilterClick() {
+    if (this.searchSettings.name.length > 0) {
+      this.reportActiveTabNumber = 1;
 
-    this.fillSearchSettingsByFilters();
-    this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
-    this.searchSettings.system = false;
-    this.prepareNewSaveFilter();
+      this.savedReportOptions = this.savedReportOptions.map(x => {
+        return { ...x, selected: x.value === this.searchSettings.id };
+      });
+
+      this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
+
+      this.newSavedReport.name = this.searchSettings.name;
+
+      this.newSavedReport.id = this.searchSettings.id;
+
+      this.fillSearchSettingsByFilters();
+    } else {
+      this.fillSearchSettingsByFilters();
+
+      this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
+
+      this.searchSettings.system = false;
+      this.prepareNewSaveFilter();
+    }
 
     this.saveModal.toggle();
   }
@@ -649,6 +701,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     filter.equal = !filter.equal;
 
     this.setShowRunBar(true);
+
     this.fillSearchSettingsByFilters();
   }
 
@@ -701,5 +754,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   get getCategoryFilters() {
     return this.filters.filter(x => x.name === 'category');
+  }
+
+  revertReport() {
+    this.savedReportValueChange();
   }
 }

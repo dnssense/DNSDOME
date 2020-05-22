@@ -448,7 +448,6 @@ export class DevicesComponent implements OnInit {
 
         if (type === 'edit') {
             selecteds = this.registereds.filter(x => x.selected);
-
         } else {
             selecteds = this.unregistereds.filter(x => x.selected);
         }
@@ -463,6 +462,14 @@ export class DevicesComponent implements OnInit {
         this.selectedGroupMembers = selecteds;
 
         this.changeGroupModal.toggle();
+    }
+
+    get getEditDisabled() {
+        return this.registereds.filter(x => x.selected).length === 0;
+    }
+
+    get getCreateDisabled() {
+        return this.unregistereds.filter(x => x.selected).length === 0;
     }
 
     groupNameKeyup($event) {

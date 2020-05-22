@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-
 import { TranslatorService } from './translator.service';
-
 
 export class ConfigHost {
   www: string;
@@ -10,6 +7,7 @@ export class ConfigHost {
   aboutus: string;
   logofullUrl: string;
   logoImage: string;
+  logoDarkImage: string;
   iconImage: string;
   title: string;
   privacyUrl: string;
@@ -33,6 +31,7 @@ export class ConfigService {
       this.host.brand = 'DNSSense';
       this.host.aboutus = 'https://www.dnssense.com/about-us';
       this.host.logoImage = 'logo-dnssense.png';
+      this.host.logoDarkImage = 'logo-dnssense.png';
       this.host.iconImage = 'favicon-dnssense.png';
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnssense.png';
       this.host.title = 'DnsSense';
@@ -47,6 +46,7 @@ export class ConfigService {
       this.host.brand = 'CyberCyte';
       this.host.aboutus = 'https://www.cybercyte.com/about-us/';
       this.host.logoImage = 'logo-dnscyte.svg';
+      this.host.logoDarkImage = 'dnscyte-white.svg';
       this.host.iconImage = 'favicon-dnscyte.png';
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnscyte.svg';
       this.host.title = 'DnsCyte';
@@ -63,6 +63,7 @@ export class ConfigService {
         this.host.brand = 'Roksit';
         this.host.aboutus = 'https://www.roksit.com/about-us';
         this.host.logoImage = 'logo-roksit.png';
+        this.host.logoDarkImage = 'roksit-white.svg';
         this.host.iconImage = 'favicon-roksit.png';
         this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-roksit.png';
         this.host.title = 'Roksit';
@@ -73,11 +74,11 @@ export class ConfigService {
         this.host.supportUrl = 'https://roksit.com';
         this.host.onlineHelpUrl = 'https://roksit.com';
       } else {
-
         this.host.www = 'https://www.dnssense.com';
         this.host.brand = 'DNSSense';
         this.host.aboutus = 'https://www.dnssense.com/about-us';
         this.host.logoImage = 'logo-dnssense.png';
+        this.host.logoDarkImage = 'logo-dnssense.png';
         this.host.iconImage = 'favicon-dnssense.png';
         this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnssense.png';
         this.host.title = 'DnsSense';

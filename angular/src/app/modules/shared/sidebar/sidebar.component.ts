@@ -126,26 +126,26 @@ export class SidebarComponent implements OnInit {
   host: ConfigHost;
 
   _menuItems: RkMenuItem[] = [
-    { id: 0, path: '/admin/dashboard', text: 'Dashboard', icon: 'dashboard', selected: false },
-    { id: 1, path: '/admin/reports/monitor', text: 'Monitor', icon: 'monitor', selected: false },
-    { id: 2, path: '/admin/reports/custom-reports', text: 'Custom Reports', icon: 'custom-reports', selected: false, },
+    { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false },
+    { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false },
+    { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false, },
     {
-      id: 3, path: '/admin/', text: 'Deployment', icon: 'dashboard', selected: false,
+      id: 3, path: '/admin/', text: 'PageName.Deployment', icon: 'dashboard', selected: false,
       subMenu: [
-        { id: 3.1, path: 'deployment/public-ip', text: 'Public IP', icon: 'public-ip', selected: false },
-        { id: 3.2, path: 'deployment/devices', text: 'Devices', icon: 'device', selected: false },
-        { id: 3.3, path: 'deployment/roaming-clients', text: 'Roaming Clients', icon: 'roaming-clients', selected: false },
+        { id: 3.1, path: 'deployment/public-ip', text: 'PageName.PublicIp', icon: 'public-ip', selected: false },
+        { id: 3.2, path: 'deployment/devices', text: 'PageName.Devices', icon: 'device', selected: false },
+        { id: 3.3, path: 'deployment/roaming-clients', text: 'PageName.RoamingClients', icon: 'roaming-clients', selected: false },
       ]
     },
     {
-      id: 4, path: '/admin/', text: 'Settings', icon: 'settings', selected: false,
+      id: 4, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false,
       subMenu: [
-        { id: 4.1, path: 'settings/users', text: 'User', icon: 'user', selected: false },
-        { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
-        { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false },
-        { id: 4.4, path: 'settings/query-category', text: 'Query Category', icon: 'tools', selected: false },
-        { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-category', selected: false },
-        { id: 4.6, path: 'settings/theme-mode', text: 'Theme Mode', icon: 'theme-mode', selected: false },
+        { id: 4.1, path: 'settings/users', text: 'PageName.Users', icon: 'user', selected: false },
+        { id: 4.2, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false },
+        { id: 4.3, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false },
+        { id: 4.4, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false },
+        { id: 4.5, path: 'settings/change-domain-category', text: 'PageName.RequestChangingDomainCategory', icon: 'request-category', selected: false },
+        { id: 4.6, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false },
       ]
     }
   ];

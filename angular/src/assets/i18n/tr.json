@@ -564,5 +564,37 @@
         "SelectDate": "Tarih seçiniz",
         "Custom": "Özel"
     },
-    "TooltipDescription": "Detaylı bilgi için nokta imlecine tıklayınız"
+    "TooltipDescription": "Detaylı bilgi için nokta imlecine tıklayınız",
+    "LocationDetails": "Lokasyon Detayı",
+    "UserInformation": "Kullanıcı Bilgileri",
+    "PleaseEnterTimeTrueValue": "Lütfen tarih formatını doğru formatta giriniz.",
+    "FullName": "Tam ad",
+    "LocalDnsServer": "Yerel DNS Sunucusu",
+    "SelectSecurityProfile": "Güvenlik Profili Seçiniz",
+    "ClearImage": "Resimi temizle",
+    "PageName": {
+        "Dashboard": "Anasayfa",
+        "Monitor": "Monitor",
+        "CustomReports": "Özel Raporlar",
+        "Deployment": "Kurulum",
+        "PublicIp": "Gerçek IP",
+        "Devices": "Aygıtlar",
+        "RoamingClients": "Mobil Cihazlar",
+        "Settings": "Ayarlar",
+        "Users": "Kullanıcılar",
+        "SavedReports": "Kayıtlı Raporlar",
+        "SecurityProfiles": "Güvenlik Profilleri",
+        "QueryCategory": "Kategory Sorgulama",
+        "RequestChangingDomainCategory": "Alan Adı Kategorisi Değiştirme",
+        "ThemeMode": "Tema"
+    },
+    "MonitorTraffic": "Monitor Trafik",
+    "QueryCount": "Sorgu Sayısı",
+    "LearnedNormalTrafficRange": "Öğrenilmiş Normal Trafik Aralığı",
+    "TrafficExcessRate": "Trafik Aşım Oranı",
+    "UNSAFE_LIST": "Unsafe List",
+    "SAFE_LIST": "Safe List",
+    "SECURITY": "Security",
+    "GRAY_LIST": "Gray List",
+    "HARMFULL_CONTENT": "Restricted Content"
 }

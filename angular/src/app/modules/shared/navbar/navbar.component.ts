@@ -12,6 +12,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { Notification, NotificationApiService, NotificationRequest } from 'src/app/core/services/notification-api.service';
 import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { LOCAL_STORAGE_THEME_COLOR } from '../../theme/theme.component';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -23,21 +24,22 @@ export interface HelpRoute {
     appRoute: string;
     helpRouteEn: string;
     helpRouteTr: string;
+    dnscyteRoute: string;
 }
 
 const helpRoutes: HelpRoute[] = [
-    { appRoute: '/admin/dashboard', helpRouteEn: 'dashboard/overview', helpRouteTr: 'dashboard/genel-bakis' },
-    { appRoute: '/admin/reports/monitor', helpRouteEn: 'monitor/overview', helpRouteTr: 'monitoer/genel-bakis' },
-    { appRoute: '/admin/reports/custom-reports', helpRouteEn: 'custom-report/overview', helpRouteTr: 'oezellestirilmis-raporlar-custom-report/genel-bakis' },
-    { appRoute: '/admin/deployment/public-ip', helpRouteEn: 'kurulum/public-ip', helpRouteTr: 'kurulum/gercek-public-ip' },
-    { appRoute: '/admin/deployment/devices', helpRouteEn: 'devices/dns-relay-nedir', helpRouteTr: 'devices/dns-relay-nedir' },
-    { appRoute: '/admin/deployment/roaming-clients', helpRouteEn: 'roaming-client/roaming-client', helpRouteTr: 'roaming-client/genel-bakis' },
-    { appRoute: '/admin/settings/profiles', helpRouteEn: 'kurulum/guvenlik-profilleri', helpRouteTr: 'kurulum/guevenlik-profilleri' },
-    { appRoute: '/admin/settings/users', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari' },
-    { appRoute: '/admin/settings/scheduled-reports', helpRouteEn: 'ayarlar/saved-reports', helpRouteTr: 'ayarlar/saved-reports' },
-    { appRoute: '/admin/settings/query-category', helpRouteEn: 'kurulum/query-category', helpRouteTr: 'ayarlar/query-category-araci' },
-    { appRoute: '/admin/settings/change-domain-category', helpRouteEn: 'kurulum/request-changing-domain-category', helpRouteTr: 'ayarlar/request-changing-domain-category' },
-    { appRoute: '/admin/settings/theme-mode', helpRouteEn: 'kurulum/theme-mode', helpRouteTr: 'ayarlar/theme-mode' },
+    { appRoute: '/admin/dashboard', helpRouteEn: 'dashboard/overview', helpRouteTr: 'dashboard/genel-bakis', dnscyteRoute: 'dashboard' },
+    { appRoute: '/admin/reports/monitor', helpRouteEn: 'monitor/overview', helpRouteTr: 'monitoer/genel-bakis', dnscyteRoute: 'monitor' },
+    { appRoute: '/admin/reports/custom-reports', helpRouteEn: 'custom-report/overview', helpRouteTr: 'oezellestirilmis-raporlar-custom-report/genel-bakis', dnscyteRoute: 'reports' },
+    { appRoute: '/admin/deployment/public-ip', helpRouteEn: 'kurulum/public-ip', helpRouteTr: 'kurulum/gercek-public-ip', dnscyteRoute: 'deployment/public-ip' },
+    { appRoute: '/admin/deployment/devices', helpRouteEn: 'devices/dns-relay-nedir', helpRouteTr: 'devices/dns-relay-nedir', dnscyteRoute: 'deployment/devices' },
+    { appRoute: '/admin/deployment/roaming-clients', helpRouteEn: 'roaming-client/roaming-client', helpRouteTr: 'roaming-client/genel-bakis', dnscyteRoute: 'deployment/roaming-clients' },
+    { appRoute: '/admin/settings/profiles', helpRouteEn: 'kurulum/guvenlik-profilleri', helpRouteTr: 'kurulum/guevenlik-profilleri', dnscyteRoute: 'settings/profiles' },
+    { appRoute: '/admin/settings/users', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari', dnscyteRoute: 'settings/users' },
+    { appRoute: '/admin/settings/scheduled-reports', helpRouteEn: 'ayarlar/saved-reports', helpRouteTr: 'ayarlar/saved-reports', dnscyteRoute: '' },
+    { appRoute: '/admin/settings/query-category', helpRouteEn: 'kurulum/query-category', helpRouteTr: 'ayarlar/query-category-araci', dnscyteRoute: 'settings/query-category' },
+    { appRoute: '/admin/settings/change-domain-category', helpRouteEn: 'kurulum/request-changing-domain-category', helpRouteTr: 'ayarlar/request-changing-domain-category', dnscyteRoute: '' },
+    { appRoute: '/admin/settings/theme-mode', helpRouteEn: 'kurulum/theme-mode', helpRouteTr: 'ayarlar/theme-mode', dnscyteRoute: '' },
 ];
 
 declare var $: any;
@@ -66,7 +68,7 @@ export class NavbarComponent implements OnInit {
 
     breadcrumb: string[] = [];
 
-    helpRoute = 'https://docs.roksit.com';
+    helpRoute = 'https://docs.roksit.com/';
 
     constructor(
         location: Location,
@@ -84,8 +86,15 @@ export class NavbarComponent implements OnInit {
         this.nativeElement = element.nativeElement;
         this.host = this.config.host;
 
+        const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+        if (theme) {
+            this.theme = theme;
+        }
+
         this.helpUrlChanged(location.path(), this.currentLanguage.toLocaleLowerCase());
     }
+
+    theme = 'white';
 
     notifications: Notification[] = [];
 
@@ -145,7 +154,19 @@ export class NavbarComponent implements OnInit {
     }
 
     getBaseHelpPage() {
-        return this.currentLanguage.toLocaleLowerCase() == 'tr' ? `${this.host.docUrl}` : `${this.host.docUrl}/v/${this.currentLanguage.toLocaleLowerCase()}`;
+        let url = this.host.docUrl + '/';
+
+        if (this.host.title.toLocaleLowerCase() !== 'dnscyte') {
+            if (this.currentLanguage.toLocaleLowerCase() === 'tr') {
+                url = this.host.docUrl + '/';
+            }
+
+            if (this.currentLanguage.toLocaleLowerCase() === 'en') {
+                url = this.host.docUrl + '/v/' + this.currentLanguage.toLocaleLowerCase() + '/';
+            }
+        }
+
+        return url;
     }
 
     getNotifications() {
@@ -221,7 +242,19 @@ export class NavbarComponent implements OnInit {
         const findedAppRoute = helpRoutes.find(x => x.appRoute === url);
 
         if (findedAppRoute) {
-            this.helpRoute = `${this.getBaseHelpPage()}/${this.currentLanguage.toLocaleLowerCase() === 'en' ? findedAppRoute.helpRouteEn : findedAppRoute.helpRouteTr}`;
+            this.helpRoute = this.getBaseHelpPage();
+
+            if (this.host.title !== 'dnscyte') {
+                if (this.currentLanguage.toLocaleLowerCase() === 'en') {
+                    this.helpRoute += findedAppRoute.helpRouteEn;
+                }
+
+                if (this.currentLanguage.toLocaleLowerCase() === 'tr') {
+                    this.helpRoute += findedAppRoute.helpRouteTr;
+                }
+            } else {
+                this.helpRoute += findedAppRoute.dnscyteRoute;
+            }
         } else {
             this.helpRoute = this.getBaseHelpPage();
         }

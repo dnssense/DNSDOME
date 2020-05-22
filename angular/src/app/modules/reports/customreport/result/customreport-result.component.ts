@@ -13,6 +13,7 @@ import { LinkClick } from '../../monitor/result/monitor-result.component';
 import * as moment from 'moment';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { LOCAL_STORAGE_THEME_COLOR } from 'src/app/modules/theme/theme.component';
 
 export interface TableBadgeOutput {
   name: string;
@@ -32,13 +33,21 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     private excelService: ExcelService,
     private pdfService: PdfService,
     private translateService: TranslatorService
-  ) { }
+  ) {
+    const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+
+    if (theme) {
+      this.theme = theme;
+    }
+  }
 
   elementRef: ElementRef;
   public date = new Date();
   public loading = false;
   public selectedColumns: AggregationItem[];
   private logChart: any;
+
+  theme: string;
 
   @Input() set searchSetting(value: SearchSetting) {
     this.ss = value;
@@ -251,8 +260,8 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
 
                 const offset = moment().utcOffset() * 60 * 1000;
 
-                 const startDate = moment(xaxis.min - offset).utc(false).toISOString();
-                 const endDate = moment.utc(xaxis.max - offset).toISOString();
+                const startDate = moment(xaxis.min - offset).utc(false).toISOString();
+                const endDate = moment.utc(xaxis.max - offset).toISOString();
 
 
                 this.searchSetting.dateInterval = null;
@@ -279,9 +288,47 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
           dataLabels: { enabled: false },
           stroke: { curve: 'smooth' },
           markers: { size: 0, hover: { sizeOffset: 5 } },
-          xaxis: { type: 'datetime', tickAmount: 1, style: { color: '#e9ebf1' } },
-          tooltip: { x: { format: 'dd/MM/yy HH:mm:ss' } },
-          grid: { borderColor: '#e9ebf1' },
+          xaxis: {
+            type: 'datetime',
+            tickAmount: 1,
+            style: { color: '#e9ebf1' },
+            tooltip: {
+              enabled: false
+            }
+          },
+          tooltip: {
+            x: { format: 'dd/MM/yy HH:mm:ss' },
+            custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+              const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+
+              const mDate = moment(date).format('MMM DD YYYY - HH:mm');
+
+              return `
+                <div class="__apexcharts_custom_tooltip" id="top-domain-tooltip">
+                  <div class="__apexcharts_custom_tooltip_date" >${mDate}</div>
+
+                  <div class="__apexcharts_custom_tooltip_content">
+                    <span class="__apexcharts_custom_tooltip_row">
+                      <span class="color" style="background: #2cd9c5"></span> Hit: <b>${series[0][dataPointIndex]}</b>
+                    </span>
+                  </div>
+                </div>
+              `;
+            }
+          },
+          grid: {
+            borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
+            xaxis: {
+              lines: {
+                show: true
+              }
+            },
+            yaxis: {
+              lines: {
+                show: true
+              }
+            },
+          },
           legend: { show: false },
           annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
           animations: { enabled: true },

@@ -310,7 +310,7 @@ export class DashboardComponent implements OnInit {
       })
     ).subscribe(() => {
 
-      const publicip: AgentCountModel = { name: 'PublicIp', activeCount: 0, passiveCount: 0 };
+      const publicip: AgentCountModel = { name: 'PageName.PublicIp', activeCount: 0, passiveCount: 0 };
       const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0 };
 
       const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0 };
@@ -508,14 +508,7 @@ export class DashboardComponent implements OnInit {
           },
           autoSelected: 'zoom'
         }
-      }/* ,
-      markers: {
-        size: [2, 0],
-        strokeWidth: 2,
-        hover: {
-          size: 7,
-        }
-      } */,
+      },
       colors: ['#ff6c40', '#ff6c40'],
       stroke: {
         width: 4,
@@ -530,10 +523,24 @@ export class DashboardComponent implements OnInit {
       tooltip: {
         enabled: true,
         shared: true,
-        x: {
-          format: 'MMM dd yyyy HH:mm'
-        },
-        theme: 'dark'
+        theme: 'dark',
+        custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+          const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+
+          const mDate = moment(date).format('MMM DD YYYY - HH:mm');
+
+          return `
+            <div class="__apexcharts_custom_tooltip" id="top-domain-tooltip">
+              <div class="__apexcharts_custom_tooltip_date">${mDate}</div>
+
+              <div class="__apexcharts_custom_tooltip_content">
+                <span class="__apexcharts_custom_tooltip_row">
+                  <span class="color" style="background: #ff6c40"></span> Hit: <b>${series[0][dataPointIndex]}</b>
+                </span>
+              </div>
+            </div>
+          `;
+        }
       },
       xaxis: {
         type: 'datetime',
@@ -548,7 +555,10 @@ export class DashboardComponent implements OnInit {
             hour: 'HH:mm'
           }
         },
-        tickAmount: 8
+        tickAmount: 8,
+        tooltip: {
+          enabled: false
+        }
       },
       grid: {
         borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
@@ -557,117 +567,7 @@ export class DashboardComponent implements OnInit {
     this.topDomainChart.render();
   }
 
-
-
-
-  /*   private drawChartTimeLine() {
-      const timelineChart = [];
-
-      const series = [{
-        name: 'Hits',
-        data: timelineChart.map(x => [x.date.getTime(), x.hit])
-      }];
-
-      if (this.timeLineChart) {
-        this.timeLineChart.updateSeries(series);
-        return;
-      }
-
-      this.timeLineChart = new ApexCharts(document.querySelector('#timeline'), {
-        series: series,
-        chart: {
-          id: 'chart1',
-          height: 200,
-          type: 'bar',
-          group: 'deneme',
-          zoom: {
-            enabled: true
-          },
-          toolbar: {
-            show: true,
-            offsetX: 0,
-            offsetY: 0,
-            tools: {
-              download: true,
-              selection: false,
-              zoom: true,
-              zoomin: true,
-              zoomout: true,
-              pan: true,
-              reset: true,
-              customIcons: []
-            },
-            autoSelected: 'zoom'
-          },
-          /*  brush: {
-             target: 'chart2',
-             enabled: true
-           }, */
-
-  /*  },
-    dataLabels: {
-      enabled: false,
-
-    },
-    markers: {
-
-      size: [2, 2, 2],
-      colors: ['#f95656'],
-      strokeColors: '#f95656',
-      strokeWidth: 2,
-      hover: {
-        size: 7,
-      }
-    },
-    colors: ['#ff7b00', '#b1dcff', '#eedcff'],
-    stroke: {
-      width: 3,
-      curve: ['smooth', 'smooth', 'smooth']
-    },
-    events: {
-      beforeMount: (chartContext, config) => {
-
-      },
-      updated: (chart) => {
-
-      }
-    },
-    tooltip: {
-      enabled: true,
-      marker: {
-        show: false
-      }
-    },
-    xaxis: {
-      type: 'datetime',
-
-      labels: {
-        show: true,
-        trim: true,
-        showDuplicates: false,
-        datetimeFormatter: {
-          year: 'yyyy',
-          month: 'MMM \'yy',
-          day: 'dd MMM',
-          hour: 'HH:mm'
-        }
-      },
-      tickAmount: 12
-
-
-
-    },
-    yaxis: {
-      tickAmount: undefined
-    }
-  });
-
-  this.timeLineChart.render();
-} */
-
   private drawChartAnomaly() {
-
-
     // calculate categories
     this.categoryListFiltered = [];
     if (this.trafficAnomaly?.categories) {
@@ -751,7 +651,7 @@ export class DashboardComponent implements OnInit {
 
     // console.log(anomalies);
 
-    const points = this.getAnnotations(anomalies);
+    const points = this.getAnnotations(series as any);
 
     if (this.trafficChart) {
       this.trafficChart.destroy();
@@ -851,30 +751,6 @@ export class DashboardComponent implements OnInit {
       },
       fill: {
         opacity: 1,
-        // type: ['solid', 'solid', 'gradient'],
-        // gradient: {
-        //   type: 'vertical',
-        //   shadeIntensity: 1,
-        //   opacityFrom: 0.7,
-        //   opacityTo: 0.9,
-        //   colorStops: [
-        //     {
-        //       offset: 0,
-        //       color: "#c41505",
-        //       opacity: 1
-        //     },
-        //     {
-        //       offset: 50,
-        //       color: "#7c26bd",
-        //       opacity: 1
-        //     },
-        //     {
-        //       offset: 100,
-        //       color: "#507df3",
-        //       opacity: 1
-        //     },
-        //   ]
-        // }
       },
       xaxis: {
         type: 'datetime',
@@ -939,44 +815,48 @@ export class DashboardComponent implements OnInit {
     this.trafficChart.render();
   }
 
-  getAnnotations(data: any[][]) {
+  getAnnotations(data: { name: string, type: string, data: any[][] }) {
     const points = [];
 
-    const totalCount = data.reduce((prev, cur) => prev + cur[1], 0);
+    for (let i = 0; i < data[0].data.length; i++) {
+      const min = data[0].data[i][1];
+      const max = data[1].data[i][1];
+      const hit = data[2].data[i][1];
 
-    data.forEach(e => {
-      const percent = 100 * e[1] / totalCount;
+      const time = data[0].data[i][0];
+
+      const percentMax = (hit - max) / max * 100;
 
       let color = '';
 
-      if (percent >= 100) {
+      if (percentMax >= 100) {
         color = '#c41505';
-      } else if (percent >= 80) {
+      } else if (percentMax >= 80) {
         color = '#9c1e6c';
-      } else if (percent >= 60) {
+      } else if (percentMax >= 60) {
         color = '#7c26bd';
-      } else if (percent >= 40) {
+      } else if (percentMax >= 40) {
         color = '#6158ca';
-      } else if (percent >= 20) {
+      } else if (percentMax >= 20) {
         color = '#507df3';
       }
 
       const elm = {
-        x: e[0],
-        y: e[1],
+        x: time,
+        y: hit,
         marker: {
-          size: percent >= 20 ? 3 : 0,
+          size: percentMax >= 20 ? 3 : 0,
           fillColor: color,
           strokeColor: color,
-          strokeSize: percent >= 20 ? 3 : 0,
+          strokeSize: percentMax >= 20 ? 3 : 0,
           radius: 2
         }
       };
 
       points.push(elm);
-    });
 
-    // console.log()
+      points.push(isNaN(percentMax) ? 0 : percentMax);
+    }
 
     return points;
   }

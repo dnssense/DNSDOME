@@ -34,34 +34,37 @@
 
           <rk-modal-body>
             <div class="container-fluid">
-              <div class="row">
-                <div class="col-12 mt-3">
-                  <div class="rk-group-title">{{'DontTouchDomains'|translate}}</div>
-                  <p class="rk-description">
-                    {{'DontTouchDomainsDescription'|translate}}
-                  </p>
+              <div class="rk-modal-card">
+                <h6 class="rk-modal-card-title">{{'DontTouchDomains'|translate}}</h6>
 
-                  <div class="input-container">
-                    <input type="text" placeholder="Domain" [(ngModel)]="domain" class="rk-input w-100">
+                <div class="row mt-2">
+                  <div class="col-12 mt-3">
+                    <p class="rk-description">
+                      {{'DontTouchDomainsDescription'|translate}}
+                    </p>
 
-                    <button class="btn btn-small ml-1" style="width: 60px" (click)="addDomainToList()">{{'Add'|translate}}</button>
-                  </div>
+                    <div class="input-container">
+                      <input type="text" placeholder="Domain" [(ngModel)]="domain" class="rk-input w-100">
 
-                  <div class="cards mt-3">
-                    <div class="card gray-card" *ngFor="let domain of dontDomains; let index = index">
-                      <div class="card-content">
-                        <h6 class="title">{{ domain }}</h6>
-                      </div>
+                      <button class="btn btn-small ml-1 safe-btn" style="width: 60px" (click)="addDomainToList()"
+                        [disabled]="domain?.length === 0">{{'Add'|translate}}</button>
+                    </div>
 
-                      <div class="card-close" (click)="removeElementFromDomainList(index)">
-                        <i-feather name="trash-2"></i-feather>
+                    <div class="cards mt-3">
+                      <div class="card gray-card" *ngFor="let domain of dontDomains; let index = index">
+                        <div class="card-content">
+                          <h6 class="title">{{ domain }}</h6>
+                        </div>
+
+                        <div class="card-close" (click)="removeElementFromDomainList(index)">
+                          <i-feather name="trash-2"></i-feather>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-
-              
               </div>
+
             </div>
           </rk-modal-body>
         </rk-modal>
@@ -77,17 +80,22 @@
 
           <rk-modal-body>
             <div class="container-fluid">
-              <div class="row">
-                <div class="col-12">
-                  <input type="text" class="rk-input w-100" placeholder="Name" [(ngModel)]="selectedClient.agentAlias">
-                </div>
+              <div class="rk-modal-card">
+                <div class="row">
+                  <div class="col-12">
+                    <input type="text" class="rk-input w-100" placeholder="Name"
+                      [(ngModel)]="selectedClient.agentAlias">
+                  </div>
 
-                <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder="Block Message" [(ngModel)]="selectedClient.blockMessage">
-                </div>
+                  <div class="col-12 mt-3">
+                    <input type="text" class="rk-input w-100" placeholder="Block Message"
+                      [(ngModel)]="selectedClient.blockMessage">
+                  </div>
 
-                <div class="col-12 mt-3">
-                  <rk-select [options]="securityProfilesForSelect" (valueChange)="profileSelectChange($event)" [(value)]="selectedClient.rootProfile.id"></rk-select>
+                  <div class="col-12 mt-3">
+                    <rk-select [options]="securityProfilesForSelect" (valueChange)="profileSelectChange($event)"
+                      [(value)]="selectedClient.rootProfile.id"></rk-select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -95,7 +103,8 @@
 
           <rk-modal-footer>
             <button class="btn btn-small w-100 mr-2" (click)="saveRoamingClient()">{{'Apply'|translate}}</button>
-            <button class="btn btn-small w-100 btn-default" (click)="roamingClientModal.toggle()">{{'Close'|translate}}</button>
+            <button class="btn btn-small w-100 btn-default"
+              (click)="roamingClientModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -110,87 +119,93 @@
 
           <rk-modal-body>
             <div class="container-fluid">
-              <div class="row">
-                <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder="Group Name" [(ngModel)]="groupName">
+              <div class="rk-modal-card">
+                <h6 class="rk-modal-card-title">{{ 'GroupName' | translate }}</h6>
+
+                <div class="row">
+                  <div class="col-12 mt-3">
+                    <input type="text" class="rk-input w-100" placeholder="{{ 'GroupName' | translate }}"
+                      [(ngModel)]="groupName">
+                  </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-12 mt-3">
-                  <h5 class="rk-group-title">{{'SelectDevicesToJoinGroup'|translate}}</h5>
-                </div> 
-                <div class="col-12 mt-2" *ngIf="groupOperation=='Edit'" >
-                  <h6 class="rk-title mb-2">{{'OtherGroupMembers'|translate}}</h6>
 
-                 <table class="table small-table table-borderless">
-                    <thead>
-                      <tr>
-                        <th>{{'HostName'|translate}}</th>
-                        <th></th>
-                        <th></th>
-                      </tr>
-                    </thead>
+              <div class="rk-modal-card mt-3">
+                <h6 class="rk-modal-card-title">{{'SelectDevicesToJoinGroup'|translate}}</h6>
 
-                    <tbody>
-                      <tr *ngFor="let item of groupMembers">
-                        <td>{{ item.agentAlias }}</td>
-                       
-                        <td class="text-right">
-                          <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
-                        </td>
-                      </tr>
+                <div class="row">
+                  <div class="col-12 mt-2" *ngIf="groupOperation=='Edit'">
+                    <h6 class="rk-title mb-2">{{'OtherGroupMembers'|translate}}</h6>
 
-                      <tr *ngIf="groupMembers?.length == 0">
-                        <td colspan="4">
-                          {{'NoData'|translate}}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table> 
-                </div>
-                <div class="col-12 mt-2" >
-                  <h6 class="rk-title mb-2">{{'NoGroupMembers'|translate}}</h6>
+                    <table class="table small-table table-borderless">
+                      <thead>
+                        <tr>
+                          <th>{{'HostName'|translate}}</th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
 
-                 <table class="table small-table table-borderless">
-                    <thead>
-                      <tr>
-                        <th>{{'HostName'|translate}}</th>
-                        <th></th>
-                        <th></th>
-                      </tr>
-                    </thead>
+                      <tbody>
+                        <tr *ngFor="let item of groupMembers">
+                          <td>{{ item.agentAlias }}</td>
 
-                    <tbody>
-                      <tr *ngFor="let item of noGroupedClients">
-                        <td>{{ item.agentAlias }}</td>
-                       
-                        <td class="text-right">
-                          <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
-                        </td>
-                      </tr>
+                          <td class="text-right">
+                            <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
+                          </td>
+                        </tr>
 
-                      <tr *ngIf="noGroupedClients?.length == 0">
-                        <td colspan="4">
-                          {{'NoData'|translate}}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table> 
+                        <tr *ngIf="groupMembers?.length == 0">
+                          <td colspan="4">
+                            {{'NoData'|translate}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-12 mt-2">
+                    <h6 class="rk-title mb-2">{{'NoGroupMembers'|translate}}</h6>
+
+                    <table class="table small-table table-borderless">
+                      <thead>
+                        <tr>
+                          <th>{{'HostName'|translate}}</th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr *ngFor="let item of noGroupedClients">
+                          <td>{{ item.agentAlias }}</td>
+
+                          <td class="text-right">
+                            <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
+                          </td>
+                        </tr>
+
+                        <tr *ngIf="noGroupedClients?.length == 0">
+                          <td colspan="4">
+                            {{'NoData'|translate}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
 
             </div>
-            
+
 
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2" (click)="saveOrUpdateGroup()">{{'Apply'|translate}}</button>
-            <button class="btn btn-small btn-default w-100" (click)="groupModal.toggle()" >{{'Close'|translate}}</button>
+            <button class="btn btn-small btn-default w-100" (click)="groupModal.toggle()">{{'Close'|translate}}</button>
+            <button class="btn btn-small btn-fill w-100 mr-2"
+              (click)="saveOrUpdateGroup()">{{'Apply'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
-
-
 
         <rk-modal #changeGroupModal>
           <rk-modal-header icon="plus">
@@ -202,62 +217,67 @@
 
           <rk-modal-body>
             <div class="container-fluid">
-              <div class="row">
-                <div class="col-12 mt-3 d-flex align-items-center justify-content-between">
-                  <rk-select [options]="groupListForSelect" [(value)]="selectedGroupName"  (valueChange)="groupSelectChange($event)" class="w-100" >
-                  </rk-select>
+              <div class="rk-modal-card">
+                <h6 class="rk-modal-card-title">{{ 'Group' | translate }}</h6>
 
-                 
+                <div class="row">
+                  <div class="col-12 mt-3 d-flex align-items-center justify-content-between">
+                    <rk-select [options]="groupListForSelect" [(value)]="selectedGroupName"
+                      (valueChange)="groupSelectChange($event)" class="w-100">
+                    </rk-select>
+                  </div>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-12 mt-3">
-                  <h5 class="rk-group-title">{{'SelectDevicesToJoinGroup'|translate}}</h5>
-                </div> 
-                <div class="col-12 mt-2"  >
-                  <h6 class="rk-title mb-2">{{'GroupMembers'|translate}}</h6>
+              <div class="rk-modal-card mt-3">
+                <h6 class="rk-modal-card-title">{{'SelectDevicesToJoinGroup'|translate}}</h6>
 
-                 <table class="table small-table table-borderless">
-                    <thead>
-                      <tr>
-                        <th>{{'HostName'|translate}}</th>
-                        <th></th>
-                        <th></th>
-                      </tr>
-                    </thead>
+                <div class="row">
+                  <div class="col-12 mt-2">
+                    <h6 class="rk-title mb-2">{{'GroupMembers'|translate}}</h6>
 
-                    <tbody>
-                      <tr *ngFor="let item of selectedAgentsForChangeAddGroup">
-                        <td>{{ item.agentAlias }}</td>
-                       
-                        <td class="text-right">
-                          <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
-                        </td>
-                      </tr>
+                    <table class="table small-table table-borderless">
+                      <thead>
+                        <tr>
+                          <th>{{'HostName'|translate}}</th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
 
-                      <tr *ngIf="selectedAgentsForChangeAddGroup?.length == 0">
-                        <td colspan="4">
-                          {{'NoData'|translate}}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table> 
+                      <tbody>
+                        <tr *ngFor="let item of selectedAgentsForChangeAddGroup">
+                          <td>{{ item.agentAlias }}</td>
+
+                          <td class="text-right">
+                            <rk-checkbox size="sm" [(value)]="item.selected"></rk-checkbox>
+                          </td>
+                        </tr>
+
+                        <tr *ngIf="selectedAgentsForChangeAddGroup?.length == 0">
+                          <td colspan="4">
+                            {{'NoData'|translate}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
                 </div>
-              
               </div>
 
             </div>
-            
+
 
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small w-100 mr-2" (click)="saveChangedGroup()">{{'Apply'|translate}}</button>
-            <button class="btn btn-small btn-default w-100" (click)="changeGroupModal.toggle()" >{{'Close'|translate}}</button>
+            <button class="btn btn-small btn-default w-100"
+              (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
+            <button class="btn btn-small btn-fill w-100 mr-2"
+              (click)="saveChangedGroup()">{{'Apply'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
-
 
         <div class="col-12 p-0 mt-3">
           <rk-table-container class="m-0">
@@ -336,7 +356,7 @@
               <div class="top-content justify-content-between">
                 <div class="rk-table-title">{{'GroupAgent'|translate}}</div>
 
-                <button class="btn btn-small btn-icon" (click)="openCreateGroup()">
+                <button class="btn btn-small btn-safe btn-icon" (click)="openCreateGroup()">
                   <i-feather name="plus"></i-feather>
                   {{'CreateNewGroup'|translate}}
                 </button>
@@ -377,7 +397,6 @@
             </rk-table>
           </rk-table-container>
         </div>
-
       </div>
     </div>
   </div>

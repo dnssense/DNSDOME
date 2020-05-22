@@ -359,6 +359,9 @@ rk-accordion
   overflow: hidden
   padding: 0 10px
 
+  .tag-wrapper
+    margin-top: -2px
+
   tag
     background: rgba(80, 125, 243, 0.2) !important
     color: var(--primary) !important
@@ -746,9 +749,14 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
   border-radius: 5px
   white-space: normal !important
 
+  &#top-domain-tooltip
+    min-height: 60px
+    height: 60px
+
   .__apexcharts_custom_tooltip_date
     padding: 2px 7px
     font-size: 12px
+    color: white
 
   .__apexcharts_custom_tooltip_content
     padding: 10px
@@ -827,3 +835,144 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
 
 .progress-bar
   background: var(--primary) !important
+
+.rk-infobox
+  min-width: auto
+
+.rk-infobox .__content .info-allow-block .info-allow, .rk-infobox .__content .info-allow-block .info-block
+  padding-right: 0
+
+// @media ( max-width: 1400px )
+//   .rk-infobox
+//     flex: 
+
+.rk-tabs.toggle-tabs
+  height: 36px
+  
+  .rk-tab
+    svg
+      path
+        fill: white
+
+    &:first-child
+      svg
+        path
+          fill: var(--primary)
+      
+      &:hover
+        background: var(--primary)
+
+        svg
+          path
+            fill: white
+      
+      &.active
+        background: var(--primary)
+
+        svg
+          path
+            fill: white
+
+    &:last-child
+      svg
+        path
+          fill: #dc3545
+
+      &:hover
+        background: #dc3545
+        
+        svg
+          path
+            fill: white
+
+      &.active
+        background: #dc3545
+
+        svg
+          path
+            fill: white
+
+.safe-btn
+  svg
+    color: white !important
+
+.toggle-tab-safe
+  .rk-tab
+    color: #28a745
+
+    &.active,
+    &:hover
+      background: #28a745
+      color: white
+
+#anomaly-detection
+  .rk-basic-card
+    background: var(--body-bg)
+  
+  .column.filter
+    svg
+      path
+        fill: var(--primary)
+  
+  .rk-selectable-table
+
+    tbody
+      tr:hover
+        td
+          background: var(--primary)
+          color: white
+        
+        .rk-progressbar-n
+          .rk-progressbar-n-value
+            background: var(--white)
+    
+    .rk-progressbar-n
+      .rk-progressbar-n-value
+        background: var(--primary)
+
+.rk-selectable-table
+  &.prune
+    thead
+      tr
+        th
+          border: 0 !important
+          background: rgba(137, 142, 164, 0.05)
+
+          &:first-child
+            border-top-left-radius: 5px
+            border-bottom-left-radius: 5px
+          
+          &:last-child
+            border-top-right-radius: 5px
+            border-bottom-right-radius: 5px
+
+    tbody
+      tr
+        td:not(.text):not(.idx)
+          color: var(--gray)
+
+.link-text 
+  color: var(--primary)
+  transition: .1s
+
+  &:hover
+    color: var(--primary-hover)
+    transition: .1s
+
+.rk-accordion
+  rk-accordion-panel
+    border-top: 1px solid var(--infobox-border)
+
+.btn
+  &.btn-safe
+    .feather
+      color: white !important
+
+  &.btn-small
+    .feather
+      width: 20px
+      height: 20px
+      margin-top: -2px
+
+.dashboard-date-btn
+  background: var(--body-bg)
