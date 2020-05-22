@@ -327,6 +327,11 @@ export class RoamingComponent implements OnInit {
         this.fillSecurityProfilesSelect(this.securityProfiles, -1);
     }
 
+    showHamza(){
+        //burasi simdilik gosterilmesi diye
+        return false;
+    }
+
     profileSelectChange($event: number) {
         this.selectedClient.rootProfile = this.securityProfiles.find(x => x.id === $event);
     }
@@ -359,7 +364,7 @@ export class RoamingComponent implements OnInit {
             this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
             return;
         }
-
+        
         this.selectedAgentsForChangeAddGroup.forEach(x => {
             if (!x.agentGroup) {
                 x.agentGroup = new AgentGroup();
