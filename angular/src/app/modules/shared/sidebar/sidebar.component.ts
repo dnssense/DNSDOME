@@ -141,7 +141,7 @@ export class SidebarComponent implements OnInit {
       id: 4, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false,
       subMenu: [
         { id: 4.1, path: 'settings/users', text: 'PageName.Users', icon: 'user', selected: false },
-        { id: 4.2, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false },
+        /* { id: 4.2, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false }, */
         { id: 4.3, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false },
         { id: 4.4, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false },
         { id: 4.5, path: 'settings/change-domain-category', text: 'PageName.RequestChangingDomainCategory', icon: 'request-category', selected: false },
