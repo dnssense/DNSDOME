@@ -158,7 +158,7 @@
           <h5 class="modal-item title"> {{ 'REPORT.AddFilter' | translate }}</h5>
 
           <div class="d-flex">
-            <rk-select class="mr-2" style="flex: 1" [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
+            <rk-select class="mr-2" style="flex: 1" [placeholder]="'Select' | translate" [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
 
             <div class="rk-tabs toggle-tabs" style="width: 90px;">
               <div class="rk-tab" [ngClass]="{'active': modalIsEqual}" (click)="modalIsEqual = true">
