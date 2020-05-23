@@ -56,7 +56,7 @@
                     <div class="col-12 col-lg-6 col-xl mt-3">
                       <rk-infobox [active]="infoBoxes.total" (change)="infoboxChanged($event, 'total', 'Total')"
                         [title]="translate('Total')" [color]="'#4353ff'" className="blue" [type]="1"
-                        [valueOne]="trafficAnomaly?.total?.hit" [valueTwo]="trafficAnomaly?.total?.block"
+                        [valueOne]="trafficAnomaly?.total?.allow" [valueTwo]="trafficAnomaly?.total?.block"
                         [description]="translate('DASHBOARD.TotalDnsRequestCount')">
                       </rk-infobox>
                     </div>

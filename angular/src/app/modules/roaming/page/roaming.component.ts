@@ -117,7 +117,7 @@ export class RoamingComponent implements OnInit {
             this.groupListForSelect = [];
             this.clients.filter(x => x.agentGroup).forEach(((x, index) => {
                 const item: RkSelectModel = { displayText: x.agentGroup.groupName, value: x.agentGroup.groupName, selected: false };
-                if (!this.groupListForSelect.find(x => x.displayText == item.displayText)) {
+                if (!this.groupListForSelect.find(y => y.displayText == item.displayText)) {
                     this.groupListForSelect.push(item);
                 }
             }));
@@ -327,8 +327,8 @@ export class RoamingComponent implements OnInit {
         this.fillSecurityProfilesSelect(this.securityProfiles, -1);
     }
 
-    showHamza(){
-        //burasi simdilik gosterilmesi diye
+    showHamza() {
+        // burasi simdilik gosterilmesi diye
         return false;
     }
 
@@ -364,7 +364,7 @@ export class RoamingComponent implements OnInit {
             this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
             return;
         }
-        
+
         this.selectedAgentsForChangeAddGroup.forEach(x => {
             if (!x.agentGroup) {
                 x.agentGroup = new AgentGroup();
