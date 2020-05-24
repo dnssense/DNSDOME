@@ -11,7 +11,7 @@ export type SearchSettingsType = 'roksit' | 'roksitblock' | string;
 export class SearchSetting {
   id = -1;
   name = '';
-  refresh = -1;
+  // refresh = -1;
   dateInterval = 5;
   type: SearchSettingsType = 'roksit';
   topNumber = 10;
@@ -23,8 +23,8 @@ export class SearchSetting {
   visible = false;
   system = false;
   scheduledReport: ScheduledReport;
-  chartType: string;
-  config: Object;
+  // chartType: string;
+  // config: Object;
 
   selected ?= false;
 

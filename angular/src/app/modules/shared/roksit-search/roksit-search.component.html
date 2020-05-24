@@ -356,9 +356,9 @@
 
         <div style="width: 370px; min-width: 370px;" class="text-right">
           <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
-            (click)="routeReportPage(pageTitle === 'Monitor Traffic' ? 'custom-reports' : 'monitor')">
+            (click)="routeReportPage(pageTitle === 'MonitorTraffic' ? 'custom-reports' : 'monitor')">
             <i-feather name="external-link"></i-feather>
-            {{ pageTitle === 'Monitor Traffic' ? 'Custom Reports View' : 'Monitor Traffics View' }}
+            {{ pageTitle === 'MonitorTraffic' ? 'Custom Reports View' : 'Monitor Traffics View' }}
           </button>
           <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
             (click)="filtersClear()">{{ 'REPORT.CleanFilters' | translate }}</button>

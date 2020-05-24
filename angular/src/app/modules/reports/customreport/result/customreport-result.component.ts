@@ -141,7 +141,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   }
 
   public search(searchSetting: SearchSetting) {
-    this.firstDate = searchSetting.dateInterval;
+    this.firstDate = searchSetting.dateInterval ;
     this.fillResultTable(searchSetting);
   }
 
