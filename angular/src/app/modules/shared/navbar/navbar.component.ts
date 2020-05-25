@@ -36,10 +36,11 @@ const helpRoutes: HelpRoute[] = [
     { appRoute: '/admin/deployment/roaming-clients', helpRouteEn: 'roaming-client/roaming-client', helpRouteTr: 'roaming-client/genel-bakis', dnscyteRoute: 'deployment/roaming-clients' },
     { appRoute: '/admin/settings/profiles', helpRouteEn: 'kurulum/guvenlik-profilleri', helpRouteTr: 'kurulum/guevenlik-profilleri', dnscyteRoute: 'settings/profiles' },
     { appRoute: '/admin/settings/users', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari', dnscyteRoute: 'settings/users' },
-    { appRoute: '/admin/settings/scheduled-reports', helpRouteEn: 'ayarlar/saved-reports', helpRouteTr: 'ayarlar/saved-reports', dnscyteRoute: '' },
+    { appRoute: '/admin/settings/scheduled-reports', helpRouteEn: 'ayarlar/saved-reports', helpRouteTr: 'ayarlar/saved-reports', dnscyteRoute: 'settings/scheduled-reports' },
     { appRoute: '/admin/settings/query-category', helpRouteEn: 'kurulum/query-category', helpRouteTr: 'ayarlar/query-category-araci', dnscyteRoute: 'settings/query-category' },
-    { appRoute: '/admin/settings/change-domain-category', helpRouteEn: 'kurulum/request-changing-domain-category', helpRouteTr: 'ayarlar/request-changing-domain-category', dnscyteRoute: '' },
-    { appRoute: '/admin/settings/theme-mode', helpRouteEn: 'kurulum/theme-mode', helpRouteTr: 'ayarlar/theme-mode', dnscyteRoute: '' },
+    { appRoute: '/admin/settings/change-domain-category', helpRouteEn: 'kurulum/request-changing-domain-category', helpRouteTr: 'ayarlar/request-changing-domain-category', dnscyteRoute: 'settings/change-domain-category' },
+    { appRoute: '/admin/settings/theme-mode', helpRouteEn: 'kurulum/theme-mode', helpRouteTr: 'ayarlar/theme-mode', dnscyteRoute: 'settings/theme-mode' },
+    { appRoute: '/admin/account-settings', helpRouteEn: '', helpRouteTr: '', dnscyteRoute: 'account-settings' },
 ];
 
 declare var $: any;
@@ -120,7 +121,7 @@ export class NavbarComponent implements OnInit {
             id: 4, path: '/admin/', text: 'Settings', icon: 'settings', selected: false,
             subMenu: [
                 { id: 4.1, path: 'settings/users', text: 'User', icon: 'user', selected: false },
-                { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
+                /* { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false }, */
                 { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false },
                 { id: 4.4, path: 'settings/query-category', text: 'Query Category', icon: 'tools', selected: false },
                 { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-category', selected: false },
@@ -153,15 +154,15 @@ export class NavbarComponent implements OnInit {
         });
     }
 
-    getBaseHelpPage() {
+    getBaseHelpPage(lang?: string) {
         let url = this.host.docUrl + '/';
 
-        if (this.host.title.toLocaleLowerCase() !== 'dnscyte') {
-            if (this.currentLanguage.toLocaleLowerCase() === 'tr') {
+        if (!this.host.title.toLocaleLowerCase().includes('dnscyte')) {
+            if (lang === 'tr') {
                 url = this.host.docUrl + '/';
             }
 
-            if (this.currentLanguage.toLocaleLowerCase() === 'en') {
+            if (lang === 'en') {
                 url = this.host.docUrl + '/v/' + this.currentLanguage.toLocaleLowerCase() + '/';
             }
         }
@@ -242,21 +243,21 @@ export class NavbarComponent implements OnInit {
         const findedAppRoute = helpRoutes.find(x => x.appRoute === url);
 
         if (findedAppRoute) {
-            this.helpRoute = this.getBaseHelpPage();
+            this.helpRoute = this.getBaseHelpPage(lang);
 
-            if (this.host.title !== 'dnscyte') {
-                if (this.currentLanguage.toLocaleLowerCase() === 'en') {
+            if (!this.host.title.toLocaleLowerCase().includes('dnscyte')) {
+                if (lang.toLocaleLowerCase() === 'en') {
                     this.helpRoute += findedAppRoute.helpRouteEn;
                 }
 
-                if (this.currentLanguage.toLocaleLowerCase() === 'tr') {
+                if (lang.toLocaleLowerCase() === 'tr') {
                     this.helpRoute += findedAppRoute.helpRouteTr;
                 }
             } else {
                 this.helpRoute += findedAppRoute.dnscyteRoute;
             }
         } else {
-            this.helpRoute = this.getBaseHelpPage();
+            this.helpRoute = this.getBaseHelpPage(lang);
         }
     }
 

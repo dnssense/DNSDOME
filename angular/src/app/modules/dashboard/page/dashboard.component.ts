@@ -319,14 +319,14 @@ export class DashboardComponent implements OnInit {
 
       // add box serials that are not in distinctagents
       // registered clientlardan gelen verinin box bilgileride distinct agents olarak ekleniyor
-      serials.forEach(x => {
+     /*  serials.forEach(x => {
         const box = boxes.find(y => (y).serial === x);
         if (!box) { return; }
         const foundedBox = distinctBoxs.items.find(y => y.serial === x);
         if (!foundedBox) { return; }
         if (distinctAgents.items.find(y => y.id === box.id)) { return; }
         distinctAgents.items.push({ id: box.agent.id, count: 1 });
-      });
+      }); */
 
       // calcuate location agents
       distinctAgents.items.forEach(x => {
@@ -336,6 +336,7 @@ export class DashboardComponent implements OnInit {
       });
       publicip.passiveCount = agentsLocation.length - publicip.activeCount;
 
+
       // calculate roaming clients
       distinctAgents.items.forEach(x => {
         if (agentsRoamingClient.find(y => y.id === x.id)) {
@@ -344,14 +345,16 @@ export class DashboardComponent implements OnInit {
       });
       roamingclient.passiveCount = agentsRoamingClient.length - roamingclient.activeCount;
 
+
       // calculate box
-      distinctAgents.items.forEach(x => {
-        if (agentsBox.find(y => y.id === x.id)) {
+      boxes.forEach(x => {
+        if (distinctBoxs.items.find(y => y.serial === x.serial)) {
           dnsrelay.activeCount++;
         }
       });
 
       dnsrelay.passiveCount = agentsBox.length - dnsrelay.activeCount;
+
 
       this.agentCounts = [publicip, roamingclient, dnsrelay];
     });
@@ -574,7 +577,7 @@ export class DashboardComponent implements OnInit {
       for (const cat of this.trafficAnomaly.categories) {
 
         cat.hit = cat.buckets.map(x => x.sum).reduce((x, y) => x + y, 0);
-        cat.hit_ratio = Math.floor(cat.hit / (this.trafficAnomaly.total.hit + this.trafficAnomaly.total.block) * 100);
+        cat.hit_ratio = Math.floor(cat.hit / (this.trafficAnomaly.total.hit) * 100);
         cat.hit_ratio = cat.hit_ratio || 0;
         if (this.selectedBox === 'total') {
           this.categoryListFiltered.push(cat);
@@ -582,7 +585,24 @@ export class DashboardComponent implements OnInit {
           this.categoryListFiltered.push(cat);
         }
       }
+      // ekranlar normal gozuksun diye burada tekrar datalari yuvarliyoruz
+
+    /*   const totalhit = this.trafficAnomaly.safe.hit +
+       this.trafficAnomaly.malicious.hit +
+        this.trafficAnomaly.variable.hit +
+        this.trafficAnomaly.harmful.hit;
+      this.trafficAnomaly.malicious.hit_ratio = Math.round(this.trafficAnomaly.malicious.hit / totalhit * 100);
+      this.trafficAnomaly.variable.hit_ratio = Math.round(this.trafficAnomaly.variable.hit / totalhit * 100);
+      this.trafficAnomaly.harmful.hit_ratio = Math.round(this.trafficAnomaly.harmful.hit / totalhit * 100);
+      this.trafficAnomaly.safe.hit_ratio = 100 - (this.trafficAnomaly.malicious.hit_ratio + this.trafficAnomaly.variable.hit_ratio + this.trafficAnomaly.harmful.hit_ratio);
+ */
+
+
+
+
     }
+
+
     // sort descending
     this.categoryListFiltered = this.categoryListFiltered.sort((x, y) => {
       if (x.hit === y.hit) {

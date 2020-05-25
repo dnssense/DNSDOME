@@ -25,7 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class GroupedCategory {
   type: string;
   name: string;
-  color?= '#3397c5';
+  color ?= '#3397c5';
   items: CategoryV2[];
 }
 
@@ -83,7 +83,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     });
 
     this.translateService.onLangChange.subscribe(result => {
-      this.dateText = this.convertTimeString(Number(this.searchSettings.dateInterval));
+      this.dateText = this.convertTimeString(Number(this.searchSettings.dateInterval || 5));
     });
   }
 
@@ -174,7 +174,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.filters.concat(this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value])));
     this.filters.concat(this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value])));
 
-    this.dateText = this.convertTimeString(Number(this.searchSettings.dateInterval));
+    this.dateText = this.convertTimeString(Number(this.searchSettings.dateInterval || 5));
   }
 
   private getSavedReports() {
@@ -275,7 +275,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       this.searchSettingEmitter.emit(this.searchSettings);
     }
 
-    this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
+    this.dateText = this.convertTimeString(this.searchSettings.dateInterval || 5);
 
     const finded = this.dateOptions.find(x => x.value === option.value);
 
