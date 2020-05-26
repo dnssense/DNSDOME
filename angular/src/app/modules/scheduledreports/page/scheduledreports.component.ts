@@ -36,17 +36,20 @@ export class ScheduledReportsComponent {
         });
     }
 
-    changeScheduledPeriod(id: number, p: string) {
+    changeScheduledPeriodAndStatus(id: number, p: string) {
         const report = this.allReports.find(x => x.id === id);
 
         if (report) {
             if (p === 'd' || p === 'w' || p === 'm') {
                 report.scheduledReport = new ScheduledReport();
                 report.scheduledReport.period = p;
-
+                report.scheduledReport.status = 1;
                 this.saveReport(report);
             } else {
-                report.scheduledReport.period = null;
+
+                // report.scheduledReport.period = 'd';
+                report.scheduledReport.status = 0;
+                this.saveReport(report);
             }
         }
     }

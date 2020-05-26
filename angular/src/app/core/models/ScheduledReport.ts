@@ -3,4 +3,5 @@
  */
 export class ScheduledReport {
   public period = 'd';
+  public status = 1;
 }
