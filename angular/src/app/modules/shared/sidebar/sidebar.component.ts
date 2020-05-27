@@ -11,7 +11,7 @@ import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 
 declare const $: any;
 
-//Metadata
+// Metadata
 export interface RouteInfo {
   path: string;
   title: string;
@@ -39,7 +39,7 @@ export const ProfileRoutes: RouteInfo[] = [
   }
 ];
 
-//Menu Items
+// Menu Items
 export const ROUTES: RouteInfo[] = [
   {
     path: '/admin/dashboard',
@@ -188,7 +188,7 @@ export class SidebarComponent implements OnInit {
     if (this.authService.currentSession && this.authService.currentSession.currentUser
       && this.authService.currentSession.currentUser.roles && this.authService.currentSession.currentUser.roles.name) {
 
-      let roleName: string = this.authService.currentSession.currentUser.roles.name;
+      const roleName: string = this.authService.currentSession.currentUser.roles.name;
 
       this.menuItems = ROUTES.filter(
         menuItem => menuItem.role == null || (menuItem.role != null && menuItem.role.split(',').includes(roleName))

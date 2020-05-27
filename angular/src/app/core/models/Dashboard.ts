@@ -51,6 +51,7 @@ export interface Category {
 }
 export interface Total {
   hit: number;
+  allow: number;
   block: number;
   buckets: Bucket[];
 }

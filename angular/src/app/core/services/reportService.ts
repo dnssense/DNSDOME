@@ -19,7 +19,11 @@ export class ReportService {
   ) { }
 
   public getReportList(): Observable<SearchSetting[]> {
-    return this.http.get(this.reportListURL).map(res => res as SearchSetting[]);
+    return this.http.get(this.reportListURL).map(res => {
+      const items = res as SearchSetting[];
+      items.forEach(x => x.dateInterval = 5);
+      return items;
+    } );
   }
 
   public saveReport(report: any): Observable<OperationResult> {

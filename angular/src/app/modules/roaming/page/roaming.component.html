@@ -298,11 +298,11 @@
                 </div>
 
                 <div>
-                  <button class="btn btn-small mr-2" (click)="openChangeGroup()">
+                  <button class="btn btn-small mr-2" *ngIf='showHamza()' (click)="openChangeGroup()">
                     {{'ChangeGroup'|translate}}
                   </button>
 
-                  <button class="btn btn-small" (click)="openChangeGroup()">
+                  <button class="btn btn-small" *ngIf='showHamza()' (click)="openChangeGroup()">
                     {{'AddToGroup'|translate}}
                   </button>
                 </div>
@@ -350,7 +350,7 @@
           </rk-table-container>
         </div>
 
-        <div class="col-12 p-0 mt-3">
+        <div class="col-12 p-0 mt-3" *ngIf='showHamza()'>
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between">
