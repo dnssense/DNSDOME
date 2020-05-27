@@ -567,7 +567,10 @@
         "Cancel": "Cancel",
         "Apply": "Apply",
         "SelectDate": "Select Date",
-        "Custom": "Custom"
+        "Custom": "Custom",
+        "Placeholder": "Please Select",
+        "StartDate": "Start Date",
+        "EndDate": "End Date"
     },
     "TooltipDescription": "Click on the dot cursor for detailed information",
     "LocationDetails": "Location Detail",

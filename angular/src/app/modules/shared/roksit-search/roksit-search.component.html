@@ -319,7 +319,7 @@
             *ngFor="let option of dateOptions" (click)="clickedDateOption(option)">{{ option.displayText }}</button>
 
           <div style="min-width: 200px;" class="mt-1 d-flex flex-column justify-content-center align-items-center">
-            <rk-date #date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions"></rk-date>
+            <rk-date #date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions" [config]="dateConfig"></rk-date>
 
             <span class="date-text mt-1">{{ dateText }}</span>
 

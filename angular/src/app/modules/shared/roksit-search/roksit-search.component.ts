@@ -17,7 +17,7 @@ import { User } from 'src/app/core/models/User';
 import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
 import { Router } from '@angular/router';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
-import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import { RkDateTime, RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import * as moment from 'moment';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -155,6 +155,18 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   dateText: string;
 
   @ViewChild('date') date;
+
+  dateConfig: RkDateConfig = {
+    startHourText: this.translatorService.translate('Date.StartHour'),
+    endHourText: this.translatorService.translate('Date.EndHour'),
+    applyText: this.translatorService.translate('Date.Apply'),
+    cancelText: this.translatorService.translate('Date.Cancel'),
+    customText: this.translatorService.translate('Date.Custom'),
+    selectDateText: this.translatorService.translate('Date.SelectDate'),
+    placeholder: this.translatorService.translate('Date.Placeholder'),
+    startDate: this.translatorService.translate('Date.StartDate'),
+    endDate: this.translatorService.translate('Date.EndDate'),
+  };
 
   ngOnInit() {
     this.reportService.initTableColumns().subscribe(columns => {

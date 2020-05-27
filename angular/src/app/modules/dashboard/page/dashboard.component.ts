@@ -140,7 +140,10 @@ export class DashboardComponent implements OnInit {
     applyText: this.translatorService.translate('Date.Apply'),
     cancelText: this.translatorService.translate('Date.Cancel'),
     customText: this.translatorService.translate('Date.Custom'),
-    selectDateText: this.translatorService.translate('Date.SelectDate')
+    selectDateText: this.translatorService.translate('Date.SelectDate'),
+    placeholder: this.translatorService.translate('Date.Placeholder'),
+    startDate: this.translatorService.translate('Date.StartDate'),
+    endDate: this.translatorService.translate('Date.EndDate'),
   };
 
   items: TagInputValue[] = [];

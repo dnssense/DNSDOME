@@ -562,7 +562,10 @@
         "Cancel": "İptal",
         "Apply": "Uygula",
         "SelectDate": "Tarih seçiniz",
-        "Custom": "Özel"
+        "Custom": "Özel",
+        "Placeholder": "Lütfen seçiniz",
+        "StartDate": "Başlangıç Tarihi",
+        "EndDate": "Bitiş Tarihi"
     },
     "TooltipDescription": "Detaylı bilgi için nokta imlecine tıklayınız",
     "LocationDetails": "Lokasyon Detayı",
