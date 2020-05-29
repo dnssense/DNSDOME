@@ -4,7 +4,8 @@
       <div class="toolbar mt-1">
         <div class="d-flex align-items-center justify-content-between w-100">
           <div style="width: 200px; overflow: hidden;">
-            <img src="/assets/img/{{ theme == 'white' ? host.logoImage : host.logoDarkImage }}" alt="logo" height="40px" style="position: relative;">
+            <img *ngIf="theme === 'white'" src="/assets/img/{{  host.logoImage }}" alt="logo" height="40px" style="position: relative;">
+            <img *ngIf="theme !== 'white'" src="/assets/img/{{ host.logoDarkImage }}" alt="logo" height="40px" style="position: relative;">
           </div>
 
           <div class="account">

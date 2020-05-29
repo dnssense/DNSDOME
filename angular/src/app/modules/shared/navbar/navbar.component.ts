@@ -13,6 +13,7 @@ import { Notification, NotificationApiService, NotificationRequest } from 'src/a
 import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { LOCAL_STORAGE_THEME_COLOR } from '../../theme/theme.component';
+import { RkUtilityService } from 'roksit-lib';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -81,7 +82,8 @@ export class NavbarComponent implements OnInit {
         private config: ConfigService,
         private translator: TranslatorService,
         private notificationApiService: NotificationApiService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private rkUtilityService: RkUtilityService
     ) {
         this.location = location;
         this.nativeElement = element.nativeElement;
@@ -91,6 +93,10 @@ export class NavbarComponent implements OnInit {
         if (theme) {
             this.theme = theme;
         }
+
+        this.rkUtilityService.themeColor.subscribe(result => {
+            this.theme = result === 'light' ? 'white' : 'dark';
+        });
 
         this.helpUrlChanged(location.path(), this.currentLanguage.toLocaleLowerCase());
     }

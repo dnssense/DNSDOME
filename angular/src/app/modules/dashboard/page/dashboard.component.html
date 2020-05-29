@@ -81,7 +81,7 @@
                     <div class="col-12 col-lg-6 col-xl mt-3">
                       <rk-infobox [active]="infoBoxes.variable"
                         (change)="infoboxChanged($event, 'variable', 'Variable')" [type]="2"
-                        [title]="translate('Variable')" className="gray" [color]="'#a6a6a6'"
+                        [title]="translate('Variable')" className="gray" [color]="'#A0AAB7'"
                         [valueOne]="trafficAnomaly?.variable?.hit" [valueTwo]="trafficAnomaly?.variable?.hit_ratio"
                         description="{{'VariableDescription'|translate}}">
                       </rk-infobox>
@@ -90,7 +90,7 @@
                     <div class="col-12 col-lg-6 col-xl mt-3">
                       <rk-infobox [active]="infoBoxes.harmful"
                          (change)="infoboxChanged($event, 'harmful', 'HarmfullContent')" [type]="2"
-                        [title]="translate('HarmfullContent')" className="yellow" [color]="'#f9df56'"
+                        [title]="translate('HarmfullContent')" className="yellow" [color]="'#EFBB1E'"
                         [valueOne]="trafficAnomaly?.harmful?.hit" [valueTwo]="trafficAnomaly?.harmful?.hit_ratio"
                         description="{{'HarmfulDescription'|translate}}">
                       </rk-infobox>
