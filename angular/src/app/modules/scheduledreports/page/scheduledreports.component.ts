@@ -29,9 +29,7 @@ export class ScheduledReportsComponent {
     loadReports() {
         this.reportService.getReportList().subscribe((result: SearchSetting[]) => {
             this.allReports = result;
-
             this.userReports = result.filter(x => !x.system);
-
             this.systemReports = result.filter(x => x.system);
         });
     }
