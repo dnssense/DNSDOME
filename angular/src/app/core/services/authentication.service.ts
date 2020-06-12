@@ -31,7 +31,7 @@ export class AuthenticationService {
   private userRoleUrl = this.configuration.getApiUrl() + '/user/current/role';
   private preloginUrl = this.configuration.getApiUrl() + '/user/prelogin';
 
-  currentSession: Session;
+  public currentSession: Session;
   private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
   currentUserPropertiesChanged: Subject<any>;
@@ -43,6 +43,9 @@ export class AuthenticationService {
     private router: Router,
     private spinner: SpinnerService
   ) {
+
+    this.currentSession = this.getCurrentSession();
+
     this.currentUserPropertiesChanged = new Subject();
      this.refreshTokenTimer = interval(3 * 60 * 1000);
     // this.refreshTokenTimer = interval(15 * 1000);
@@ -50,13 +53,13 @@ export class AuthenticationService {
   }
 
   saveSession() {
-    localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
+    sessionStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
     this.currentUserPropertiesChanged.next('changed');
   }
 
-   checkSessionIsValid() {
+    checkSessionIsValid() {
     try {
-      const sessionString = localStorage.getItem(this.STORAGENAME);
+      const sessionString = sessionStorage.getItem(this.STORAGENAME);
       if (sessionString) {
         const session: Session = JSON.parse(sessionString);
         if (session) {
@@ -74,7 +77,7 @@ export class AuthenticationService {
 
    isCurrentSessionValid(): boolean {
     try {
-      const sessionString = localStorage.getItem(this.STORAGENAME);
+      const sessionString = sessionStorage.getItem(this.STORAGENAME);
       if (sessionString) {
         const session: Session = JSON.parse(sessionString);
         if (session) {
@@ -137,7 +140,7 @@ export class AuthenticationService {
         this.currentSession.currentUser.roles = role;
 
       });
-      // localStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
+      // sessinStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
       this.saveSession();
       return this.currentSession;
     }));
@@ -179,7 +182,7 @@ export class AuthenticationService {
           this.currentSession.currentUser = user;
           // burasi onemli once roles save edilmeli yoksa senkron sorunu olusur ve login ekrani calisir
           this.currentSession.currentUser.roles = previousRoles;
-
+          this.configuration.init(this.currentSession.currentUser.id);
           return this.getCurrentUserRoles();
         }));
   }
@@ -210,6 +213,7 @@ export class AuthenticationService {
         'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
       })
     };
+
 
     const body = new URLSearchParams();
     body.set('grant_type', 'password');
@@ -246,7 +250,7 @@ export class AuthenticationService {
 
   clear() {
     this.currentSession = null;
-    localStorage.removeItem(this.STORAGENAME);
+    sessionStorage.removeItem(this.STORAGENAME);
     this.cookieService.clear();
   }
 
@@ -266,8 +270,10 @@ export class AuthenticationService {
 
   }
 
-  getCurrentSession(): Session {
-    const sessionString = localStorage.getItem(this.STORAGENAME);
+
+
+  private getCurrentSession(): Session {
+    const sessionString = sessionStorage.getItem(this.STORAGENAME);
     if (sessionString) {
       const session: Session = JSON.parse(sessionString);
       if (session) {

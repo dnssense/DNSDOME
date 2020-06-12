@@ -14,6 +14,7 @@ import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { LOCAL_STORAGE_THEME_COLOR } from '../../theme/theme.component';
 import { RkUtilityService } from 'roksit-lib';
+import { identifierModuleUrl } from '@angular/compiler';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -83,18 +84,22 @@ export class NavbarComponent implements OnInit {
         private translator: TranslatorService,
         private notificationApiService: NotificationApiService,
         private activatedRoute: ActivatedRoute,
-        private rkUtilityService: RkUtilityService
+        private rkUtilityService: RkUtilityService,
+        private authService: AuthenticationService
     ) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.host = this.config.host;
 
-        const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+        const currentUser = this.authService.currentSession?.currentUser;
+        const theme = this.config.getThemeColor(currentUser?.id);
+        // const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
         if (theme) {
+
             this.theme = theme;
         }
 
-        this.rkUtilityService.themeColor.subscribe(result => {
+       this.rkUtilityService.themeColor.subscribe(result => {
             this.theme = result === 'light' ? 'white' : 'dark';
         });
 
@@ -141,11 +146,10 @@ export class NavbarComponent implements OnInit {
 
         this.getNotifications();
 
-        const user = JSON.parse(localStorage.getItem('currentSession'));
 
-        if (user) {
-            this.currentUser = user.currentUser;
-        }
+
+            this.currentUser = this.auth.currentSession?.currentUser;
+
 
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
 
@@ -239,7 +243,7 @@ export class NavbarComponent implements OnInit {
     }
 
     setLanguage(lang: string) {
-        this.config.setDefaultLanguage(lang);
+        this.config.setDefaultLanguage(this.auth.currentSession?.currentUser?.id,  lang);
         this.notification.success(this.translator.translate('LanguageChanged'));
 
         this.helpUrlChanged(this.router.url, lang);

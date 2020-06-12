@@ -73,7 +73,7 @@
                       <rk-infobox [active]="infoBoxes.malicious"
                          (change)="infoboxChanged($event, 'malicious', 'Malicious')" [type]="2"
                         [title]="translate('Malicious')" className="red" [color]="'#f95656'"
-                        [valueOne]="trafficAnomaly?.malicious?.hit" [valueTwo]="trafficAnomaly?.malicious?.hit_ratio"
+                        [valueOne]="trafficAnomaly?.malicious?.hit " [valueTwo]="trafficAnomaly?.malicious?.hit_ratio "
                         description="{{'MaliciousDescription'|translate}}">
                       </rk-infobox>
                     </div>
@@ -82,7 +82,7 @@
                       <rk-infobox [active]="infoBoxes.variable"
                         (change)="infoboxChanged($event, 'variable', 'Variable')" [type]="2"
                         [title]="translate('Variable')" className="gray" [color]="'#A0AAB7'"
-                        [valueOne]="trafficAnomaly?.variable?.hit" [valueTwo]="trafficAnomaly?.variable?.hit_ratio"
+                        [valueOne]="trafficAnomaly?.variable?.hit  " [valueTwo]="trafficAnomaly?.variable?.hit_ratio "
                         description="{{'VariableDescription'|translate}}">
                       </rk-infobox>
                     </div>
@@ -91,7 +91,7 @@
                       <rk-infobox [active]="infoBoxes.harmful"
                          (change)="infoboxChanged($event, 'harmful', 'HarmfullContent')" [type]="2"
                         [title]="translate('HarmfullContent')" className="yellow" [color]="'#EFBB1E'"
-                        [valueOne]="trafficAnomaly?.harmful?.hit" [valueTwo]="trafficAnomaly?.harmful?.hit_ratio"
+                        [valueOne]="trafficAnomaly?.harmful?.hit || 0" [valueTwo]="trafficAnomaly?.harmful?.hit_ratio ||  0.001"
                         description="{{'HarmfulDescription'|translate}}">
                       </rk-infobox>
                     </div>
@@ -177,7 +177,7 @@
                                   </button>
 
                                   <button class="btn btn-small btn-outline"
-                                    (click)="showDetail()">{{'DASHBOARD.ShowDetail'|translate}}</button>
+                                    (click)="showDetail()"  *ngIf="showDetailButton" >{{'DASHBOARD.ShowDetail'|translate}}</button>
                                 </div>
                               </div>
 

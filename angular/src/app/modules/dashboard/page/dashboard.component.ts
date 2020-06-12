@@ -22,6 +22,7 @@ import { StaticMessageService } from 'src/app/core/services/staticMessageService
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import * as numeral from 'numeral';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 interface TagInputValue {
   value: string;
@@ -55,7 +56,8 @@ export class DashboardComponent implements OnInit {
     private toolService: ToolsService,
     private notificationService: NotificationService,
     private staticMesssageService: StaticMessageService,
-    private translatorService: TranslatorService
+    private translatorService: TranslatorService,
+    private authService: AuthenticationService
   ) { }
 
   host: ConfigHost;
@@ -239,6 +241,7 @@ export class DashboardComponent implements OnInit {
   topDomains: Domain[] = [];
 
   @ViewChild('date') date;
+  showDetailButton = true;
 
   ngOnInit() {
     this.startDate.setDate(this.today.getDate() - 7);
@@ -261,7 +264,9 @@ export class DashboardComponent implements OnInit {
   }
 
   private async getTheme() {
-    const theme = localStorage.getItem('themeColor') as 'light' | 'dark';
+    const currentUser = this.authService.currentSession?.currentUser;
+    const theme = this.config.getThemeColor(currentUser?.id);
+    // const theme = localStorage.getItem('themeColor') as 'light' | 'dark';
 
     if (theme) {
       this.theme = theme;
@@ -368,6 +373,7 @@ export class DashboardComponent implements OnInit {
     this.startDate = dateButtonItem.startDate;
     this.endDate = dateButtonItem.endDate;
 
+
     this.dateChanged({ startDate: this.startDate, endDate: this.endDate }, false, dateButtonItem.isToday);
 
     dateButtonItem.active = true;
@@ -379,6 +385,10 @@ export class DashboardComponent implements OnInit {
 
   getTopDomains(request: TopDomainsRequestV5) {
     this.dashboardService.getTopDomains(request).subscribe(result => {
+      // reset everything
+      this.topDomains = [];
+      this.items = [];
+      this.drawTopDomainChart({items: []});
       if (result.items.length) {
         this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
           cats.forEach(cat => {
@@ -450,12 +460,33 @@ export class DashboardComponent implements OnInit {
       return startDate > this.today;
     }
   }
+  calculateShowDetailButton() {
+    console.log(`${moment(this.startDate).toISOString()}-${moment().add(-7, 'days').toISOString()}`);
+    const startDate =  moment(this.startDate).toDate().getTime();
+    const endDate = moment(this.endDate).toDate().getTime();
+
+    const lastWeek = moment().add(-7, 'days').startOf('day').toDate().getTime();
+    const today = moment().toDate().getTime();
+
+
+
+    this.showDetailButton = (lastWeek <= startDate && endDate <= today);
+  }
 
   async dateChanged(ev: { startDate: Date, endDate: Date }, isDateComponent = false, isToday = false) {
+
     this.dateButtons.forEach(elem => elem.active = false);
 
     this.startDate = ev.startDate;
     this.endDate = ev.endDate;
+    if (moment(this.startDate) > moment(this.endDate)) {
+
+      this.endDate = ev.startDate;
+      this.startDate = ev.endDate;
+      this.date.startDate = this.startDate;
+      this.date.endDate = this.endDate;
+
+    }
 
     this.setDateTextByDates();
 
@@ -472,6 +503,8 @@ export class DashboardComponent implements OnInit {
       request.duration = diff * 24;
     }
 
+    this.calculateShowDetailButton();
+
     await this.getTrafficAnomaly(request);
 
     this.refreshTopDomains();
@@ -483,7 +516,7 @@ export class DashboardComponent implements OnInit {
     const series = [{
       name: 'Hits',
       type: 'line',
-      data: data.map(x => [Date.parse(moment(x.date).utc(true).toLocaleString()), x.hit])
+      data: data.map(x => [moment(x.date).utc(true).toDate().getTime(), x.hit])
     }];
 
     if (this.topDomainChart) {
@@ -531,9 +564,9 @@ export class DashboardComponent implements OnInit {
         shared: true,
         theme: 'dark',
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-          const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+         // const date = new Date(w.globals.seriesX[0][dataPointIndex]);
 
-          const mDate = moment(date).format('MMM DD YYYY - HH:mm');
+          const mDate = moment(w.globals.seriesX[0][dataPointIndex]).utc(false).format('MMM DD YYYY - HH:mm');
 
           return `
             <div class="__apexcharts_custom_tooltip" id="top-domain-tooltip">
@@ -576,6 +609,8 @@ export class DashboardComponent implements OnInit {
   private drawChartAnomaly() {
     // calculate categories
     this.categoryListFiltered = [];
+
+
     if (this.trafficAnomaly?.categories) {
       for (const cat of this.trafficAnomaly.categories) {
 
@@ -588,17 +623,6 @@ export class DashboardComponent implements OnInit {
           this.categoryListFiltered.push(cat);
         }
       }
-      // ekranlar normal gozuksun diye burada tekrar datalari yuvarliyoruz
-
-    /*   const totalhit = this.trafficAnomaly.safe.hit +
-       this.trafficAnomaly.malicious.hit +
-        this.trafficAnomaly.variable.hit +
-        this.trafficAnomaly.harmful.hit;
-      this.trafficAnomaly.malicious.hit_ratio = Math.round(this.trafficAnomaly.malicious.hit / totalhit * 100);
-      this.trafficAnomaly.variable.hit_ratio = Math.round(this.trafficAnomaly.variable.hit / totalhit * 100);
-      this.trafficAnomaly.harmful.hit_ratio = Math.round(this.trafficAnomaly.harmful.hit / totalhit * 100);
-      this.trafficAnomaly.safe.hit_ratio = 100 - (this.trafficAnomaly.malicious.hit_ratio + this.trafficAnomaly.variable.hit_ratio + this.trafficAnomaly.harmful.hit_ratio);
- */
 
 
 
@@ -742,10 +766,11 @@ export class DashboardComponent implements OnInit {
         // fillSeriesColor: true,
         theme: 'dark',
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-          const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+          // const date = new Date(w.globals.seriesX[0][dataPointIndex]);
 
-          const mDate = moment(date).format('MMM DD YYYY - HH:mm');
-
+          const mDate = moment(w.globals.seriesX[0][dataPointIndex]).utc(false).format('MMM DD YYYY - HH:mm');
+          // const mDate2 = moment(w.globals.seriesX[0][dataPointIndex]).utc(true).format('MMM DD YYYY - HH:mm');
+          // const mDate3 = moment.utc(w.globals.seriesX[0][dataPointIndex]).local().format('MMM DD YYYY - HH:mm');
           return `
             <div class="__apexcharts_custom_tooltip">
               <div class="__apexcharts_custom_tooltip_date">${mDate}</div>
@@ -907,13 +932,17 @@ export class DashboardComponent implements OnInit {
 
   private async getTrafficAnomaly(request: HourlyCompanySummaryV5Request) {
     try {
+
       const result = await this.dashboardService.getHourlyCompanySummary(request).toPromise();
 
       if (result) {
         this.trafficAnomaly = result;
 
+
         if (!this.trafficAnomaly.hit) {
+
           this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
+
         }
 
         this.drawChartAnomaly();
@@ -986,14 +1015,17 @@ export class DashboardComponent implements OnInit {
   }
 
   showDetail() {
-    if (this.getDetailButtonDisabled) {
+
+   /*  if (this.getDetailButtonDisabled) {
       this.notificationService.warning(this.translatorService.translate('DateDifferenceWarning'));
-    } else {
+    } else { */
       const url = (`/admin/reports/monitor?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
 
       this.router.navigateByUrl(url);
-    }
+   // }
   }
+
+
 
   convertTimeString(num: number) {
     const month = Math.floor(num / (1440 * 30));
@@ -1035,12 +1067,5 @@ export class DashboardComponent implements OnInit {
     return text;
   }
 
-  get getDetailButtonDisabled(): boolean {
-    const startDate = moment(this.startDate);
-    const endDate = moment(this.endDate);
 
-    const diff = endDate.diff(startDate, 'minutes');
-
-    return diff > 60 * 24 * 7;
-  }
 }

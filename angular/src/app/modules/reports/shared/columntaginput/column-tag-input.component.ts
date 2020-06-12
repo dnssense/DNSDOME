@@ -6,7 +6,6 @@ import * as countryList from 'src/app/core/models/Countries';
 import { Location } from 'src/app/core/models/Location';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { WApplication } from 'src/app/core/models/WApplication';
-import { FastReportService } from 'src/app/core/services/fastReportService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { ReportService } from 'src/app/core/services/reportService';
@@ -50,7 +49,6 @@ export class ColumnTagInputComponent implements OnInit {
   // deleted constructer parameters
   // public roksitTranslateService: RoksitTranslateService,
   public constructor(private renderer: Renderer2,
-    private fastReportService: FastReportService,
     private reportService: ReportService,
     private notificationService: NotificationService) {
     if (!this.tags) {

@@ -317,6 +317,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   }
 
   showEditWizard(id: string) {
+
     this.isNewItemUpdated = true;
     const selectedUpdateIp = this.publicIps.find(p => p.id == Number(id));
 
@@ -347,7 +348,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     }
 
-    if (this.selectedIp.dynamicIpDomain && this.selectedIp.dynamicIpDomain.length > 0) {
+    if (this.selectedIp.dynamicIpDomain) {
       this.ipType = 'dynamicIp';
     } else {
       this.ipType = 'staticIp';
@@ -378,6 +379,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     const file = inputValue.files[0];
 
     if (typeof file === 'undefined' || !file.type.toString().startsWith('image/')) {
+
       return;
     }
 
@@ -392,6 +394,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
           }
         });
       } catch (error) {
+        console.log(error);
       }
     };
 
@@ -430,12 +433,14 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   onSelectionChangeIPType(type: string) {
     if (type === 'dynamicIp') {
       this.ipType = type;
+
       this.publicIpForm.controls['ip0'].clearValidators();
       this.publicIpForm.controls['ip0'].updateValueAndValidity();
       this.publicIpForm.controls['dnsFqdn'].setValidators([Validators.required]);
       this.publicIpForm.controls['dnsFqdn'].updateValueAndValidity();
     } else {
       this.ipType = type;
+      // this.selectedIp.dynamicIpDomain = null;
       this.publicIpForm.controls['dnsFqdn'].clearValidators();
       this.publicIpForm.controls['dnsFqdn'].updateValueAndValidity();
     }
@@ -487,12 +492,15 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     if (selectedProfile) {
       this.selectedIp.rootProfile = this.securityProfiles.find(x => x.id === selectedProfile.value);
     }
+    const cloned = JSON.parse(JSON.stringify(this.selectedIp));
 
     if (this.ipType === 'staticIp') {
-      this.selectedIp.dynamicIpDomain = null;
+      cloned.dynamicIpDomain = null;
+    } else {
+      cloned.staticSubnetIp = null;
     }
 
-    this.agentService.saveAgentLocation(this.selectedIp).subscribe(res => {
+    this.agentService.saveAgentLocation(cloned).subscribe(res => {
 
       this.notification.success(this.staticMessageService.savedAgentLocationMessage);
       this.getPublicIpsDataAndProfiles();
@@ -529,8 +537,6 @@ export class PublicipComponent implements OnInit, AfterViewInit {
           return false;
         }
       }
-    } else {
-      this.selectedIp.staticSubnetIp = null;
     }
 
     return true;

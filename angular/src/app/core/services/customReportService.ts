@@ -17,6 +17,7 @@ import { LogColumn } from '../models/LogColumn';
 export class CustomReportService {
 
   public _dataURL = this.configService.getApiUrl() + '/calculate/customreport/topdomain'; //
+  public _histogramURL = this.configService.getApiUrl() + '/calculate/customreport/logcounthistogram'; // URL to graph api
 
   constructor(private http: HttpClient, private errorService: ErrorService, private configService: ConfigService) {
   //  this.getCategorylist();
@@ -40,4 +41,19 @@ export class CustomReportService {
     };
     return options;
   }
+
+  public loadHistogram(searchSettings: SearchSetting): Observable<Object> {
+    const body = { searchSetting: searchSettings };
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.http
+      .post(this._histogramURL, body, options)
+      .map((res: Response) => res);
+
+  }
+
 }

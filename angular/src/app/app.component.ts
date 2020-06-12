@@ -22,14 +22,16 @@ export class AppComponent {
     private configService: ConfigService,
     private rkUtilityService: RkUtilityService
   ) {
-    this.config.init();
+    const user = this.authenticationService.currentSession?.currentUser;
+    this.config.init(user?.id);
     this.authenticationService.checkSessionIsValid();
     this.host = this.configService.host;
     this.title = this.host.title;
     this.iconImage = this.host.iconImage;
     // authenticationService.checkSessionIsValid();
 
-    const lang = localStorage.getItem('language');
+
+   /*  const lang = localStorage.getItem('language');
 
     if (lang) {
       this.config.setDefaultLanguage(lang);
@@ -39,7 +41,7 @@ export class AppComponent {
 
     if (themeColor) {
       this.rkUtilityService.changeTheme(themeColor === 'dark');
-    }
+    } */
 
   }
 }

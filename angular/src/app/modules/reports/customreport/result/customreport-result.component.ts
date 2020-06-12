@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { CustomReportService } from 'src/app/core/services/customReportService';
 import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js';
-import { FastReportService } from 'src/app/core/services/fastReportService';
 import { ExcelService } from 'src/app/core/services/excelService';
 import { PdfService } from 'src/app/core/services/pdfService';
 import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
@@ -14,6 +13,8 @@ import * as moment from 'moment';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { LOCAL_STORAGE_THEME_COLOR } from 'src/app/modules/theme/theme.component';
+import { ConfigService } from 'src/app/core/services/config.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 export interface TableBadgeOutput {
   name: string;
@@ -29,12 +30,15 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
 
   constructor(
     private customReportService: CustomReportService,
-    private fastReportService: FastReportService,
     private excelService: ExcelService,
     private pdfService: PdfService,
-    private translateService: TranslatorService
+    private translateService: TranslatorService,
+    private configService: ConfigService,
+    private authService: AuthenticationService
   ) {
-    const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+    // const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+    const currentUser = this.authService.currentSession?.currentUser;
+    const theme = this.configService.getThemeColor(currentUser?.id);
 
     if (theme) {
       this.theme = theme;
@@ -191,10 +195,19 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
 
         this.selectedColumns.forEach((selectedCol, index) => {
           rowItem[selectedCol.column.name] = item[index];
+
         });
 
         this.tableConfig.rows.push(rowItem);
       });
+      // action column exits
+     /*  if (this.selectedColumns.find(x => x.column.name == 'action') && this.tableConfig.rows.length > 1) {
+          this.selectedColumns.forEach((x, index) => {
+            if (x.column.name == 'action') {
+              this.tableConfig.rows[this.tableConfig.rows.length - 1][index] = null;
+            }
+          });
+      } */
 
       this.maxHeight = window.innerWidth > 768 ? (window.innerHeight - 218) - (document.body.scrollHeight - document.body.clientHeight) : null;
     });
@@ -215,7 +228,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   }
 
   drawChart(settings: SearchSetting) {
-    this.fastReportService.loadHistogram(settings).subscribe((res: any[]) => {
+    this.customReportService.loadHistogram(settings).subscribe((res: any[]) => {
 
       const data: any[] = res;
 
@@ -234,7 +247,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
 
               // return [new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()).getTime(), x[1]];
 
-              return [moment(d).utc(true), x[1]];
+              return [moment(d).utc(true).toDate().getTime(), x[1]];
 
             }) : []
           }
@@ -298,9 +311,9 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
           tooltip: {
             x: { format: 'dd/MM/yy HH:mm:ss' },
             custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-              const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+              // const date = new Date(w.globals.seriesX[0][dataPointIndex]);
 
-              const mDate = moment(date).format('MMM DD YYYY - HH:mm');
+              const mDate = moment(w.globals.seriesX[0][dataPointIndex]).utc(false).format('MMM DD YYYY - HH:mm');
 
               return `
                 <div class="__apexcharts_custom_tooltip" id="top-domain-tooltip">
@@ -410,11 +423,12 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   // }
 
   columnChanged($event: TableBadgeOutput) {
-    const columnIndex = this.selectedColumns.findIndex(x => x.column.name === $event.name);
+    // const columnIndex = this.selectedColumns.findIndex(x => x.column.name === $event.name);
 
     const selectedColumns = <AggregationItem[]>JSON.parse(JSON.stringify(this.searchSetting.columns.columns));
+    const columnIndex = selectedColumns.findIndex(x => x.column.name === $event.name);
 
-    if ($event.value) {
+    if ($event.value && columnIndex == -1) {
       selectedColumns.push({
         column: {
           name: $event.name,
@@ -449,7 +463,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
         name: columnName,
         isLink: true,
       },
-      value: columnName === 'action' ? (value ? 'Allow' : 'Deny') : value
+      value: columnName === 'action' ? (value ?  'Allow' : 'Deny') : value
     } as LinkClick);
   }
 

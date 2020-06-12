@@ -36,4 +36,5 @@ Pozitif Security : Alan adlarını güvenlik seviyesine göre zararlı, zararsı
 Negatif Security :Alan adlarını güvenlik seviyesine göre zararlı, zararsız ve bilinmeyen ( henüz sınıflandırılmamış) olarak 3 ana sınıfa ayrılır. Negatif security modeli seçerek zero hour ataklarının kaynağı olan "bilinmeyen domainlere" karşı korumasız kalırsınız.
 
 
+ [valueOne]="trafficAnomaly?.total?.allow" [valueTwo]="trafficAnomaly?.total?.block"
 

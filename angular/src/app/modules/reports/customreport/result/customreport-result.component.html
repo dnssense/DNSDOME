@@ -55,7 +55,7 @@
                                                 </ng-container>
 
                                                 <ng-template #elseTimeTemplate>
-                                                    {{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}
+                                                    {{ col.column.name === 'action' ? ( dat[colIndex] ?  ( dat[colIndex]=='true'? 'Allow' : 'Deny'):'' ) : dat[colIndex] }}
                                                 </ng-template>
                                             </button>
                                         </ng-container>

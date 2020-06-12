@@ -5,7 +5,6 @@ import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChil
 import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { LogColumn } from 'src/app/core/models/LogColumn';
-import { FastReportService } from 'src/app/core/services/fastReportService';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { RkFilterOutput } from 'roksit-lib/lib/modules/rk-filter-badge/rk-filter-badge.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
@@ -52,7 +51,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   constructor(
     private staticService: StaticService,
     private reportService: ReportService,
-    private fastReportService: FastReportService,
     private notification: NotificationService,
     private userService: UserService,
     private router: Router,
@@ -299,8 +297,17 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   rkDateChanhed($event: { startDate: Date, endDate: Date }) {
-    const startDate = moment($event.startDate);
-    const endDate = moment($event.endDate);
+    let startDate = moment($event.startDate);
+    let endDate = moment($event.endDate);
+
+    if (startDate > endDate) {
+
+      startDate = moment($event.endDate);
+      endDate = moment($event.startDate);
+      this.date.startDate = $event.endDate;
+      this.date.endDate = $event.startDate;
+
+    }
 
     const diff = endDate.diff(startDate, 'minutes');
 

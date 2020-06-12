@@ -3,7 +3,6 @@ import { CustomReportResultComponent } from './result/customreport-result.compon
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { FastReportService } from 'src/app/core/services/fastReportService';
 import { LinkClick } from '../monitor/result/monitor-result.component';
 import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -29,7 +28,6 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
   private queryParams: CustomReportRouteParams;
   constructor(
-    private fastReportService: FastReportService,
     private activatedRoute: ActivatedRoute,
     private location: Location,
     private reportService: ReportService

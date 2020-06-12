@@ -422,11 +422,11 @@ export class ProfileWizardComponent {
      // advertisement apps
      const adsIds = this.groupedApplications.find(x => x.type == ApplicationTypes.CLEAR_ADS)?.applications.map(x => x.application.id);
      if (!adsIds) { return false; }
- 
+
      const adsApplicatons = this.selectedAgent.rootProfile.applicationProfile.categories.filter(x => adsIds.find(y => x.id == y));
      const filtered = adsApplicatons.filter(x => x.isBlocked);
- 
- 
+
+
      // tslint:disable-next-line: triple-equals
      if (filtered.length == adsIds.length) {
        return true;
