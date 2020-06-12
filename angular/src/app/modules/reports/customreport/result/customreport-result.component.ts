@@ -261,7 +261,12 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
           series: series,
           chart: {
             height: 300, type: 'area', foreColor: '#898ea4',
+            selection: {
+              enabled: false,
+            },
+            zoom: {enabled: false},
             toolbar: {
+              show: false,
               tools: {
                 download: false,
                 pan: false

@@ -531,6 +531,7 @@ export class DashboardComponent implements OnInit {
         foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
         type: 'line',
         height: 280,
+        zoom: {enabled: false},
         toolbar: {
           show: false,
           offsetX: 0,

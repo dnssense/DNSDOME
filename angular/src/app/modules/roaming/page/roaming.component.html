@@ -92,7 +92,7 @@
                       [(ngModel)]="selectedClient.blockMessage">
                   </div>
 
-                  <div class="col-12 mt-3">
+                  <div class="col-12 mt-3" *ngIf="!(selectedClient?.agentGroup?.groupName)">
                     <rk-select [options]="securityProfilesForSelect" (valueChange)="profileSelectChange($event)"
                       [(value)]="selectedClient.rootProfile.id"></rk-select>
                   </div>

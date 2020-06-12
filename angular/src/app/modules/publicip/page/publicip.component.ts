@@ -14,6 +14,7 @@ import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
+import { Observable } from 'rxjs';
 
 declare let $: any;
 
@@ -64,7 +65,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
   currentStep = 1;
 
-  ip = '';
+  detectedPublicIp: string;
+  private publicIpObs: Observable<string>;
 
   constructor(
     private alertService: AlertService,
@@ -77,10 +79,26 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   ) {
     this.roleName = this.authService.currentSession.currentUser.roles.name;
 
-    this.publicIpService.getMyIp().subscribe(result => {
-      this.ip = result;
-    }, (err) => {
-      return err;
+
+    this.publicIpObs = new Observable(subscriber => {
+      if (this.detectedPublicIp) {
+        subscriber.next(this.detectedPublicIp);
+
+
+      } else {
+        this.publicIpService.getMyIp().timeout(2000).subscribe(result => {
+          this.detectedPublicIp = result;
+          subscriber.next(this.detectedPublicIp);
+
+
+        }, (err) => {
+          console.log(err);
+          subscriber.next('');
+
+
+        });
+      }
+
     });
 
     this.getPublicIpsDataAndProfiles();
@@ -95,6 +113,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     });
 
     this.defineNewAgentForProfile();
+
+    this.publicIpObs.subscribe(x => console.log(`public ip is ${x}`));
   }
 
   ngOnInit() { }
@@ -245,7 +265,6 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
   showProfileEditWizard(id: number, t: boolean = true) {
     let agent;
-
     if (t) {
       agent = this.publicIps.find(p => p.id === id);
     } else {
@@ -288,28 +307,35 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.selectedIp.logo = null;
     this.selectedIp.staticSubnetIp = [];
 
+
+
     const ip0 = {} as IpWithMask;
+    // wait for detecting public ip
+    const sub = this.publicIpObs.subscribe(ip => {
 
-    const findedMyPublicIp = this.publicIps.some(x => {
-      if (x.staticSubnetIp) {
-        return x.staticSubnetIp.some(y => y.baseIp === this.ip);
+      const findedMyPublicIp = this.publicIps.some(x => {
+        if (x.staticSubnetIp) {
+          return x.staticSubnetIp.some(y => y.baseIp === ip);
+        }
+      });
+
+      if (!findedMyPublicIp) {
+        ip0.baseIp = ip;
       }
+
+      ip0.mask = 32;
+      this.selectedIp.staticSubnetIp.push(ip0);
+
+      this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
+        return { ...x, selected: false };
+      });
+
+      this.ipType = 'staticIp';
+
+      this.agentModal.toggle();
+
+
     });
-
-    if (!findedMyPublicIp) {
-      ip0.baseIp = this.ip;
-    }
-
-    ip0.mask = 32;
-    this.selectedIp.staticSubnetIp.push(ip0);
-
-    this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
-      return { ...x, selected: false };
-    });
-
-    this.ipType = 'staticIp';
-
-    this.agentModal.toggle();
   }
 
   hideNewWizard() {
@@ -344,7 +370,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     } else {
       this.selectedIp.staticSubnetIp = [];
-      this.selectedIp.staticSubnetIp.push({} as IpWithMask);
+      // this.selectedIp.staticSubnetIp.push({} as IpWithMask);
 
     }
 
@@ -352,6 +378,15 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       this.ipType = 'dynamicIp';
     } else {
       this.ipType = 'staticIp';
+
+
+      if (!this.selectedIp.staticSubnetIp.length) {
+        const sub = this.publicIpObs.subscribe(ip => {
+          if (ip) {
+          this.selectedIp.staticSubnetIp.push({baseIp: ip, mask: 32});
+          }
+        });
+      }
     }
 
     this.fillSecurityProfilesArray();
@@ -443,6 +478,13 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       // this.selectedIp.dynamicIpDomain = null;
       this.publicIpForm.controls['dnsFqdn'].clearValidators();
       this.publicIpForm.controls['dnsFqdn'].updateValueAndValidity();
+      if (!this.selectedIp.staticSubnetIp.length) {
+        const sub = this.publicIpObs.subscribe(ip => {
+          if (ip) {
+          this.selectedIp.staticSubnetIp.push({baseIp: ip, mask: 32});
+          }
+        });
+      }
     }
   }
 

@@ -77,6 +77,7 @@
     "PublicIp": "Public IP",
     "AddNewIp": "Yeni IP Ekle",
     "CreateNewAgent": "Yeni Kaynak Oluştur",
+    "EditAgent": "Kaynak Düzenle",
     "StaticIp": "Statik IP",
     "DynamicIp": "Dinamik IP",
     "BlockPageLogo": "Blok Logo",
