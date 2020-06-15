@@ -44,15 +44,7 @@ export class ToolsService {
 
   }
 
-  /* sendCategoryRequest(domains: string[]): Observable<any> {
-    if (domains && domains.length < 6) {
-      const session = this.auth.getCurrentSession();
 
-      if (session && session.currentUser && session.currentUser.username) {
-        return this.http.post(this._categorizationURL, { domains: domains, emails: [session.currentUser.username] }).map(res => res);
-      }
-    }
-  } */
 
   sendCategoryRequestV2(request: Domain2CategorizeRequestV2): Observable<Domain2CategoriseResponseV2> {
     return this.http.post<Domain2CategoriseResponseV2>(this._categorizationURL, request).map(result => result);

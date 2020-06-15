@@ -16,6 +16,7 @@ export class PublicIPService {
   }
 
   public getMyIp(): Observable<any> {
+
     return geoLocation.getCurrent(this.http).map(res => res.ip);
   }
 

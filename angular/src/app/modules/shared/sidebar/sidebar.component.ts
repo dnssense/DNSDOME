@@ -141,7 +141,7 @@ export class SidebarComponent implements OnInit {
       id: 4, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false,
       subMenu: [
         { id: 4.1, path: 'settings/users', text: 'PageName.Users', icon: 'user', selected: false },
-        /* { id: 4.2, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false }, */
+        { id: 4.2, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false },
         { id: 4.3, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false },
         { id: 4.4, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false },
         { id: 4.5, path: 'settings/change-domain-category', text: 'PageName.RequestChangingDomainCategory', icon: 'request-category', selected: false },
@@ -168,8 +168,10 @@ export class SidebarComponent implements OnInit {
 
   toggleCollapse() {
     this.rkLayout.setSidebarCollapse(!this.collapsed);
+    const currentUser = this.authService.currentSession?.currentUser;
 
-    localStorage.setItem('menuCollapsed', JSON.stringify(!this.collapsed));
+
+    localStorage.setItem(`menuCollapsed_for_user_${currentUser?.id}`, JSON.stringify(!this.collapsed));
   }
 
   getUserName() {
@@ -199,7 +201,9 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit() {
-    const isCollapsed = JSON.parse(localStorage.getItem('menuCollapsed'));
+    const currentUser = this.authService.currentSession?.currentUser;
+
+    const isCollapsed = JSON.parse(localStorage.getItem(`menuCollapsed_for_user_${currentUser?.id}`));
 
     if (isCollapsed) {
       this.rkLayout.setSidebarCollapse(true);

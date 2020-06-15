@@ -42,6 +42,7 @@ export class RoamingComponent implements OnInit {
     clientForm: FormGroup;
     clients: Agent[];
     clientsFiltered: Agent[];
+    clientsUnGroupFiltered: Agent[];
     // clientGroups: Agent[];
     // selectedClients: Agent[] = [];
     // clientListForGroup: Agent[] = [];
@@ -52,6 +53,9 @@ export class RoamingComponent implements OnInit {
     securityProfilesForSelect: RkSelectModel[] = [];
     selectedProfile: number;
     agentGroups;
+
+    selectedProfileRadio: number;
+    selectedProfileRadioBeforeEdit: number;
 
     clientType: string;
     isNewItemUpdated = false;
@@ -66,6 +70,8 @@ export class RoamingComponent implements OnInit {
     isDontDomainsValid = true;
 
     groupedClients: GroupAgentModel[] = [];
+
+    searchKeyUnGroup = '';
 
     domain: string;
 
@@ -111,7 +117,8 @@ export class RoamingComponent implements OnInit {
         this.roamingService.getClients().subscribe(res => {
             this.clients = res;
 
-            this.clientsFiltered = this.clients;
+            this.clientsFiltered = this.clients.filter(x => x.agentGroup);
+            this.clientsUnGroupFiltered = this.clients.filter(x => !x.agentGroup);
 
             this.groupedClients = this.getGroupClients(this.clients);
             this.groupListForSelect = [];
@@ -327,17 +334,11 @@ export class RoamingComponent implements OnInit {
         this.fillSecurityProfilesSelect(this.securityProfiles, -1);
     }
 
-    showHamza() {
-        // burasi simdilik gosterilmesi diye
-        return false;
-    }
-
     profileSelectChange($event: number) {
         this.selectedClient.rootProfile = this.securityProfiles.find(x => x.id === $event);
     }
 
     groupSelectChange($event: string) {
-
         this.selectedGroupName = $event;
     }
 
@@ -359,7 +360,6 @@ export class RoamingComponent implements OnInit {
     }
 
     saveChangedGroup() {
-
         if (!this.selectedAgentsForChangeAddGroup.length) {
             this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
             return;
@@ -370,9 +370,16 @@ export class RoamingComponent implements OnInit {
                 x.agentGroup = new AgentGroup();
                 x.agentGroup.id = 0;
             }
+
             x.agentGroup.groupName = this.selectedGroupName;
 
+            const findedGroup = this.groupedClients.find(group => group.agentGroup.groupName === this.selectedGroupName);
+
+            if (findedGroup) {
+                x.rootProfile = findedGroup.securityProfile;
+            }
         });
+
         this.roamingService.saveClients(this.selectedAgentsForChangeAddGroup).subscribe(
             res => {
 
@@ -391,6 +398,8 @@ export class RoamingComponent implements OnInit {
         this.groupOperation = 'Create New';
         this.groupName = '';
         this.groupNameBeforeEdit = '';
+        this.selectedProfileRadio = -1;
+        this.selectedProfileRadioBeforeEdit = -1;
 
         this.noGroupedClients = this.clients.filter(x => !x.agentGroup).map(x => JSON.parse(JSON.stringify(x)));
         this.groupMembers = [];
@@ -438,7 +447,7 @@ export class RoamingComponent implements OnInit {
 
             selectedItems = selectedItems.concat(removeClients);
 
-            if (this.groupNameBeforeEdit != this.groupName) {// name changed
+            if (this.groupNameBeforeEdit !== this.groupName || this.selectedProfileRadio !== this.selectedProfileRadioBeforeEdit) {// name changed
                 const changedItems = this.groupMembers.filter(x => x.selected).filter(x => x.agentGroup);
                 changedItems.forEach(element => {
                     element.agentGroup.groupName = this.groupName;
@@ -450,13 +459,17 @@ export class RoamingComponent implements OnInit {
                 this.notification.warning(this.staticMessageService.pleaseChangeSomethingMessage);
                 return;
             }
-
-
-
-
         }
 
+        const findedProfile = this.securityProfiles.find(x => x.id === this.selectedProfileRadio);
 
+        console.log('findedProfile => ', findedProfile);
+
+        if (findedProfile) {
+            selectedItems.forEach(elem => {
+                elem.rootProfile = findedProfile;
+            });
+        }
 
         this.roamingService.saveClients(selectedItems).subscribe(
             res => {
@@ -479,6 +492,8 @@ export class RoamingComponent implements OnInit {
         this.groupOperation = 'Edit';
         this.groupName = agents[0].agentGroup.groupName;
         this.groupNameBeforeEdit = this.groupName;
+        this.selectedProfileRadio = agents[0].rootProfile.id;
+        this.selectedProfileRadioBeforeEdit = this.selectedProfileRadio;
         this.noGroupedClients = this.clients.filter(x => !x.agentGroup).map(x => JSON.parse(JSON.stringify(x)));
         this.groupMembers = this.clients.filter(x => x.agentGroup && x.agentGroup.groupName == this.groupName).map(x => JSON.parse(JSON.stringify(x)));
         this.groupMembers.forEach(x => x.selected = true);
@@ -500,6 +515,22 @@ export class RoamingComponent implements OnInit {
                 });
 
         });
+    }
+
+    get getClientsFilteredDisabled() {
+        if (this.clientsFiltered) {
+            return this.clientsFiltered.filter(x => x.selected).length === 0;
+        }
+
+        return true;
+    }
+
+    get getUnGroupClientsFilteredDisabled() {
+        if (this.clientsUnGroupFiltered) {
+            return this.clientsUnGroupFiltered.filter(x => x.selected).length === 0;
+        }
+
+        return true;
     }
 
     saveRoamingClient() {

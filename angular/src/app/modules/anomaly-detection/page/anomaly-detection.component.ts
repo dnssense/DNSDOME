@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LOCAL_STORAGE_THEME_COLOR } from '../../theme/theme.component';
 import * as moment from 'moment';
+import { ConfigService } from 'src/app/core/services/config.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
     templateUrl: 'anomaly-detection.component.html',
@@ -9,12 +11,8 @@ import * as moment from 'moment';
 
 export class AnomalyDetectionComponent implements OnInit {
 
-    constructor() {
-        const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+    constructor(private configService: ConfigService, private authentication: AuthenticationService) {
 
-        if (theme) {
-            this.theme = theme;
-        }
     }
 
     domainQueryChart: any;
@@ -28,6 +26,9 @@ export class AnomalyDetectionComponent implements OnInit {
     }
 
     private drawDomainQueryChart() {
+        const currentUser = this.authentication.currentSession?.currentUser;
+        this.theme = this.configService.getThemeColor(currentUser?.id);
+
         const series = [
             [new Date(2020, 4, 19).toISOString(), 180],
             [new Date(2020, 4, 20).toISOString(), 220],

@@ -92,7 +92,7 @@
                       [(ngModel)]="selectedClient.blockMessage">
                   </div>
 
-                  <div class="col-12 mt-3">
+                  <div class="col-12 mt-3" *ngIf="!(selectedClient?.agentGroup?.groupName)">
                     <rk-select [options]="securityProfilesForSelect" (valueChange)="profileSelectChange($event)"
                       [(value)]="selectedClient.rootProfile.id"></rk-select>
                   </div>
@@ -111,7 +111,7 @@
         <rk-modal #groupModal>
           <rk-modal-header>
             <rk-modal-header-title>
-              <h5>{{ (groupOperation == 'Edit'? 'EditGroup' : 'CreateNewGroup')|translate}}</h5>
+              <h5>{{ (groupOperation == 'Edit'? 'EditGroup' : 'CreateNewGroup') | translate}}</h5>
             </rk-modal-header-title>
 
             <rk-modal-header-close (click)="groupModal.toggle()"></rk-modal-header-close>
@@ -126,6 +126,20 @@
                   <div class="col-12 mt-3">
                     <input type="text" class="rk-input w-100" placeholder="{{ 'GroupName' | translate }}"
                       [(ngModel)]="groupName">
+                  </div>
+                </div>
+              </div>
+
+              <div class="rk-modal-card mt-3">
+                <h6 class="rk-modal-card-title">{{ 'SelectSecurityProfile' | translate }}</h6>
+
+                <div class="row">
+                  <div class="col-12 mt-3" *ngFor="let profile of securityProfiles; let index = index">
+                    <div class="rk-radio my-0">
+                      <input type="radio" id="rd-sec-{{ index }}" name="securityProfileRd"
+                        [(ngModel)]="selectedProfileRadio" [value]="profile.id">
+                      <label for="rd-sec-{{ index }}">{{ profile.name }}</label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -283,7 +297,55 @@
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between">
-                <div class="d-flex align-items-center">
+                <div class="rk-table-title">{{'GroupAgent'|translate}}</div>
+
+                <button class="btn btn-small btn-safe btn-icon" (click)="openCreateGroup()">
+                  <i-feather name="plus"></i-feather>
+                  {{'CreateNewGroup'|translate}}
+                </button>
+              </div>
+            </div>
+
+            <rk-table [showPagination]="false">
+              <ng-template #header>
+                <tr>
+                  <th>{{'GroupName'|translate}}</th>
+                  <th>{{'MemberCount'|translate}}</th>
+                  <th>{{'SecurityProfile'|translate}}</th>
+                  <th colspan="2">{{'Operation'|translate}}</th>
+                </tr>
+              </ng-template>
+
+              <ng-template #body>
+                <tr *ngFor="let item of groupedClients">
+                  <td>{{ item.agentGroup.groupName }}</td>
+                  <td>{{ item.memberCounts }}</td>
+                  <td>{{ item.securityProfile.name }}</td>
+                  <td style="width: 60px">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="openUpdateGroup(item.agents)">
+                      <i-feather name="edit-3"></i-feather>
+                    </button>
+                  </td>
+                  <td style="width: 60px">
+                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deleteGroup(item.agents)">
+                      <i-feather name="trash-2"></i-feather>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr *ngIf="groupedClients?.length === 0">
+                  <td colspan="5">{{'NoData'|translate}}</td>
+                </tr>
+              </ng-template>
+            </rk-table>
+          </rk-table-container>
+        </div>
+
+        <div class="col-12 col-lg-6 pl-lg-0 mt-3">
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content justify-content-between">
+                <div class="d-flex align-items-center flex-wrap">
                   <div class="inf mr-4">
                     <span class="text-primary">{{ clientsFiltered?.length }} </span>
                     {{'QueriesListed'|translate}}
@@ -298,12 +360,9 @@
                 </div>
 
                 <div>
-                  <button class="btn btn-small mr-2" *ngIf='showHamza()' (click)="openChangeGroup()">
+                  <button class="btn btn-small mr-2" [disabled]="getClientsFilteredDisabled"
+                    (click)="openChangeGroup()">
                     {{'ChangeGroup'|translate}}
-                  </button>
-
-                  <button class="btn btn-small" *ngIf='showHamza()' (click)="openChangeGroup()">
-                    {{'AddToGroup'|translate}}
                   </button>
                 </div>
               </div>
@@ -350,47 +409,66 @@
           </rk-table-container>
         </div>
 
-        <div class="col-12 p-0 mt-3" *ngIf='showHamza()'>
+        <div class="col-12 col-lg-6 pr-lg-0 mt-3">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between">
-                <div class="rk-table-title">{{'GroupAgent'|translate}}</div>
+                <div class="d-flex align-items-center flex-wrap">
+                  <div class="inf mr-4">
+                    <span class="text-primary">{{ clientsFiltered?.length }} </span>
+                    {{'QueriesListed'|translate}}
+                  </div>
 
-                <button class="btn btn-small btn-safe btn-icon" (click)="openCreateGroup()">
-                  <i-feather name="plus"></i-feather>
-                  {{'CreateNewGroup'|translate}}
-                </button>
+                  <div class="search ml-5">
+                    <div class="rk-autocomplete-container" style="width: 220px;">
+                      <input type="text" placeholder="Search" [(ngModel)]="searchKeyUnGroup" class="rk-input rk-autocomplete">
+                      <i-feather class="search-icon" name="search"></i-feather>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <button class="btn btn-small" [disabled]="getUnGroupClientsFilteredDisabled" (click)="openChangeGroup()">
+                    {{'AddToGroup'|translate}}
+                  </button>
+                </div>
               </div>
             </div>
 
             <rk-table [showPagination]="false">
               <ng-template #header>
                 <tr>
-                  <th>{{'GroupName'|translate}}</th>
-                  <th>{{'MemberCount'|translate}}</th>
+                  <th>
+                    <rk-checkbox (valueChange)="clientsTableCheckboxChanged($event)"></rk-checkbox>
+                  </th>
+                  <th>{{'DeviceName'|translate}}</th>
                   <th>{{'SecurityProfile'|translate}}</th>
+                  <th>{{'GroupName'|translate}}</th>
                   <th colspan="2">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
 
               <ng-template #body>
-                <tr *ngFor="let item of groupedClients">
-                  <td>{{ item.agentGroup.groupName }}</td>
-                  <td>{{ item.memberCounts }}</td>
-                  <td>{{ item.securityProfile.name }}</td>
+                <tr *ngFor="let c of clientsUnGroupFiltered | filter: searchKeyUnGroup : 'agentAlias'">
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="openUpdateGroup(item.agents)">
+                    <rk-checkbox [(value)]="c.selected"></rk-checkbox>
+                  </td>
+                  <td>{{ c.agentAlias }}</td>
+                  <td>{{ c.rootProfile.name }}</td>
+                  <td>{{ c?.agentGroup?.groupName ? c?.agentGroup?.groupName : ('NoGroup'|translate) }}</td>
+                  <td style="width: 60px">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editClient(c)">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deleteGroup(item.agents)">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>
                 </tr>
 
-                <tr *ngIf="groupedClients?.length === 0">
+                <tr *ngIf="clientsFiltered?.length === 0">
                   <td colspan="5">{{'NoData'|translate}}</td>
                 </tr>
               </ng-template>

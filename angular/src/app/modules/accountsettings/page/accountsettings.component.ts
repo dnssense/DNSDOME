@@ -285,7 +285,7 @@ export class AccountSettingsComponent implements OnInit {
     }
     isValidateButtonDisabled() {
 
-        
+
           if ( (this.user.isGsmVerified && this.phoneNumberTemp && this.phoneNumberTemp === this.user.gsm && this.gsmCodeTemp === this.user.gsmCode)
            || this.phoneNumberTemp?.length < 10 || !this.gsmCodeTemp) {return true; }
           return false;

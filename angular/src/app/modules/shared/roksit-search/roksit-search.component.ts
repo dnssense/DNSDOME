@@ -5,7 +5,6 @@ import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChil
 import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { LogColumn } from 'src/app/core/models/LogColumn';
-import { FastReportService } from 'src/app/core/services/fastReportService';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { RkFilterOutput } from 'roksit-lib/lib/modules/rk-filter-badge/rk-filter-badge.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
@@ -17,7 +16,7 @@ import { User } from 'src/app/core/models/User';
 import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
 import { Router } from '@angular/router';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
-import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import { RkDateTime, RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import * as moment from 'moment';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -52,7 +51,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   constructor(
     private staticService: StaticService,
     private reportService: ReportService,
-    private fastReportService: FastReportService,
     private notification: NotificationService,
     private userService: UserService,
     private router: Router,
@@ -155,6 +153,18 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   dateText: string;
 
   @ViewChild('date') date;
+
+  dateConfig: RkDateConfig = {
+    startHourText: this.translatorService.translate('Date.StartHour'),
+    endHourText: this.translatorService.translate('Date.EndHour'),
+    applyText: this.translatorService.translate('Date.Apply'),
+    cancelText: this.translatorService.translate('Date.Cancel'),
+    customText: this.translatorService.translate('Date.Custom'),
+    selectDateText: this.translatorService.translate('Date.SelectDate'),
+    placeholder: this.translatorService.translate('Date.Placeholder'),
+    startDate: this.translatorService.translate('Date.StartDate'),
+    endDate: this.translatorService.translate('Date.EndDate'),
+  };
 
   ngOnInit() {
     this.reportService.initTableColumns().subscribe(columns => {
@@ -287,8 +297,17 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   rkDateChanhed($event: { startDate: Date, endDate: Date }) {
-    const startDate = moment($event.startDate);
-    const endDate = moment($event.endDate);
+    let startDate = moment($event.startDate);
+    let endDate = moment($event.endDate);
+
+    if (startDate > endDate) {
+
+      startDate = moment($event.endDate);
+      endDate = moment($event.startDate);
+      this.date.startDate = $event.endDate;
+      this.date.endDate = $event.startDate;
+
+    }
 
     const diff = endDate.diff(startDate, 'minutes');
 

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SpinnerService } from '../services/spinner.service';
 import { AuthenticationService } from '../services/authentication.service';
+import { debug } from 'console';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -37,7 +38,7 @@ export class JwtInterceptor implements HttpInterceptor {
                 });
             } */
 
-            if(request.url.indexOf("/token")<0 && request.url.indexOf('/prelogin')<0){
+            if (request.url.indexOf('/token') < 0 && request.url.indexOf('/prelogin') < 0) {
                 request = request.clone({
                     setHeaders: {
                         'Authorization': `Bearer ${currentSession.token}`,

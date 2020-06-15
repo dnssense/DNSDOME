@@ -14,6 +14,7 @@ import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
+import { Observable } from 'rxjs';
 
 declare let $: any;
 
@@ -64,7 +65,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
   currentStep = 1;
 
-  ip = '';
+  detectedPublicIp: string;
+  private publicIpObs: Observable<string>;
 
   constructor(
     private alertService: AlertService,
@@ -77,10 +79,26 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   ) {
     this.roleName = this.authService.currentSession.currentUser.roles.name;
 
-    this.publicIpService.getMyIp().subscribe(result => {
-      this.ip = result;
-    }, (err) => {
-      return err;
+
+    this.publicIpObs = new Observable(subscriber => {
+      if (this.detectedPublicIp) {
+        subscriber.next(this.detectedPublicIp);
+
+
+      } else {
+        this.publicIpService.getMyIp().timeout(2000).subscribe(result => {
+          this.detectedPublicIp = result;
+          subscriber.next(this.detectedPublicIp);
+
+
+        }, (err) => {
+          console.log(err);
+          subscriber.next('');
+
+
+        });
+      }
+
     });
 
     this.getPublicIpsDataAndProfiles();
@@ -95,6 +113,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     });
 
     this.defineNewAgentForProfile();
+
+    this.publicIpObs.subscribe(x => console.log(`public ip is ${x}`));
   }
 
   ngOnInit() { }
@@ -245,7 +265,6 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
   showProfileEditWizard(id: number, t: boolean = true) {
     let agent;
-
     if (t) {
       agent = this.publicIps.find(p => p.id === id);
     } else {
@@ -288,28 +307,35 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.selectedIp.logo = null;
     this.selectedIp.staticSubnetIp = [];
 
+
+
     const ip0 = {} as IpWithMask;
+    // wait for detecting public ip
+    const sub = this.publicIpObs.subscribe(ip => {
 
-    const findedMyPublicIp = this.publicIps.some(x => {
-      if (x.staticSubnetIp) {
-        return x.staticSubnetIp.some(y => y.baseIp === this.ip);
+      const findedMyPublicIp = this.publicIps.some(x => {
+        if (x.staticSubnetIp) {
+          return x.staticSubnetIp.some(y => y.baseIp === ip);
+        }
+      });
+
+      if (!findedMyPublicIp) {
+        ip0.baseIp = ip;
       }
+
+      ip0.mask = 32;
+      this.selectedIp.staticSubnetIp.push(ip0);
+
+      this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
+        return { ...x, selected: false };
+      });
+
+      this.ipType = 'staticIp';
+
+      this.agentModal.toggle();
+
+
     });
-
-    if (!findedMyPublicIp) {
-      ip0.baseIp = this.ip;
-    }
-
-    ip0.mask = 32;
-    this.selectedIp.staticSubnetIp.push(ip0);
-
-    this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
-      return { ...x, selected: false };
-    });
-
-    this.ipType = 'staticIp';
-
-    this.agentModal.toggle();
   }
 
   hideNewWizard() {
@@ -317,6 +343,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   }
 
   showEditWizard(id: string) {
+
     this.isNewItemUpdated = true;
     const selectedUpdateIp = this.publicIps.find(p => p.id == Number(id));
 
@@ -343,14 +370,23 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     } else {
       this.selectedIp.staticSubnetIp = [];
-      this.selectedIp.staticSubnetIp.push({} as IpWithMask);
+      // this.selectedIp.staticSubnetIp.push({} as IpWithMask);
 
     }
 
-    if (this.selectedIp.dynamicIpDomain && this.selectedIp.dynamicIpDomain.length > 0) {
+    if (this.selectedIp.dynamicIpDomain) {
       this.ipType = 'dynamicIp';
     } else {
       this.ipType = 'staticIp';
+
+
+      if (!this.selectedIp.staticSubnetIp.length) {
+        const sub = this.publicIpObs.subscribe(ip => {
+          if (ip) {
+          this.selectedIp.staticSubnetIp.push({baseIp: ip, mask: 32});
+          }
+        });
+      }
     }
 
     this.fillSecurityProfilesArray();
@@ -378,6 +414,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     const file = inputValue.files[0];
 
     if (typeof file === 'undefined' || !file.type.toString().startsWith('image/')) {
+
       return;
     }
 
@@ -392,6 +429,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
           }
         });
       } catch (error) {
+        console.log(error);
       }
     };
 
@@ -430,14 +468,23 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   onSelectionChangeIPType(type: string) {
     if (type === 'dynamicIp') {
       this.ipType = type;
+
       this.publicIpForm.controls['ip0'].clearValidators();
       this.publicIpForm.controls['ip0'].updateValueAndValidity();
       this.publicIpForm.controls['dnsFqdn'].setValidators([Validators.required]);
       this.publicIpForm.controls['dnsFqdn'].updateValueAndValidity();
     } else {
       this.ipType = type;
+      // this.selectedIp.dynamicIpDomain = null;
       this.publicIpForm.controls['dnsFqdn'].clearValidators();
       this.publicIpForm.controls['dnsFqdn'].updateValueAndValidity();
+      if (!this.selectedIp.staticSubnetIp.length) {
+        const sub = this.publicIpObs.subscribe(ip => {
+          if (ip) {
+          this.selectedIp.staticSubnetIp.push({baseIp: ip, mask: 32});
+          }
+        });
+      }
     }
   }
 
@@ -487,12 +534,15 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     if (selectedProfile) {
       this.selectedIp.rootProfile = this.securityProfiles.find(x => x.id === selectedProfile.value);
     }
+    const cloned = JSON.parse(JSON.stringify(this.selectedIp));
 
     if (this.ipType === 'staticIp') {
-      this.selectedIp.dynamicIpDomain = null;
+      cloned.dynamicIpDomain = null;
+    } else {
+      cloned.staticSubnetIp = null;
     }
 
-    this.agentService.saveAgentLocation(this.selectedIp).subscribe(res => {
+    this.agentService.saveAgentLocation(cloned).subscribe(res => {
 
       this.notification.success(this.staticMessageService.savedAgentLocationMessage);
       this.getPublicIpsDataAndProfiles();
@@ -529,8 +579,6 @@ export class PublicipComponent implements OnInit, AfterViewInit {
           return false;
         }
       }
-    } else {
-      this.selectedIp.staticSubnetIp = null;
     }
 
     return true;

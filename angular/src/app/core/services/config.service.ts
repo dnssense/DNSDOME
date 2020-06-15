@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslatorService } from './translator.service';
+import { AuthenticationService } from './authentication.service';
+import { RkUtilityService } from 'roksit-lib';
 
 export class ConfigHost {
   www: string;
@@ -23,7 +25,7 @@ export class ConfigHost {
 })
 export class ConfigService {
   host: ConfigHost;
-  constructor(private translationservice: TranslatorService) {
+  constructor(private translationservice: TranslatorService, private rkUtilityService: RkUtilityService) {
 
     this.host = new ConfigHost();
     if (window.location.host.indexOf('dnssense') >= 0) {
@@ -90,12 +92,17 @@ export class ConfigService {
         this.host.onlineHelpUrl = 'https://dnssense.com';
       }
   }
-  loadLanguage(): string | undefined {
+  loadLanguage(userId: number): string | undefined {
     try {
-      const language = localStorage.getItem('language');
-      if (language) {
-        return language;
+
+
+      if (userId) {
+        const language = localStorage.getItem(`language_for_user_${userId}`);
+        if (language) {
+          return language;
+        }
       }
+
 
     } catch (err) {
       console.log(err);
@@ -103,9 +110,12 @@ export class ConfigService {
     return undefined;
 
   }
-  saveLanguage(lang: string) {
+  saveLanguage(userId: number, lang: string) {
     try {
-      localStorage.setItem('language', lang);
+
+      if (userId) {
+        localStorage.setItem(`language_for_user_${userId}`, lang);
+      }
       this.translationservice.use(lang);
 
 
@@ -115,10 +125,18 @@ export class ConfigService {
 
   }
 
-  init() {
-    const language = this.loadLanguage();
-    this.translationservice.initLanguages(language);
+  init(userId?: number) {
 
+    const language = this.loadLanguage(userId);
+    this.translationservice.initLanguages(language);
+    if (language) {
+      this.translationservice.setDefaultLang(language);
+    this.translationservice.use(language);
+    }
+    const themeColor = this.getThemeColor(userId);
+    if (themeColor) {
+      this.rkUtilityService.changeTheme(themeColor === 'dark');
+    }
 
   }
 
@@ -129,14 +147,29 @@ export class ConfigService {
       + (window.location.port != '' ? (':' + window.location.port) : '') + '/api';
   }
 
-  setDefaultLanguage(lang: string) {
+  setDefaultLanguage(userId: number, lang: string) {
+
     this.translationservice.setDefaultLang(lang);
     this.translationservice.use(lang);
-    this.saveLanguage(lang);
+    this.saveLanguage(userId, lang);
   }
 
   getTranslationLanguage(): string {
     return this.translationservice.getCurrentLang();
+  }
+
+  saveThemeColor(userId: number, color: string) {
+
+    if (userId) {
+      localStorage.setItem(`theme_for_user_${userId}`, color);
+    }
+    this.rkUtilityService.changeTheme(color === 'dark');
+  }
+  getThemeColor(userId: number) {
+    if (userId) {
+      return localStorage.getItem(`theme_for_user_${userId}`);
+    }
+    return null;
   }
 
 }

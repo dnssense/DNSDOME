@@ -69,8 +69,8 @@ $info-colors: (
   "total": #4353ff,
   "safe": #3dd49a,
   "malicious": #f95656,
-  "variable": #a6a6a6,
-  "harmful": #f9df56,
+  "variable": #A0AAB7,
+  "harmful": #EFBB1E,
 );
 
 @each $key, $val in $info-colors {

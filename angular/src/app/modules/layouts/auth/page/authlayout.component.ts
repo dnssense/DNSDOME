@@ -20,9 +20,9 @@ export class AuthLayoutComponent implements OnInit {
     document.body.style.backgroundColor = 'white';
   }
 
-  language(lang: string) {
+/*   language( lang: string) {
     this.config.setDefaultLanguage(lang);
-  }
+  } */
 
   sidebarToggle() {
     // const toggleButton = this.toggleButton;

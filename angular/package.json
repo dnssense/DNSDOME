@@ -1,6 +1,6 @@
 {
   "name": "ui.dnssense",
-  "version": "2.0.12",
+  "version": "2.0.14",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -92,7 +92,7 @@
     "popper.js": "1.14.4",
     "primeng": "^5.2.0",
     "read-chunk": "^3.2.0",
-    "roksit-lib": "file:roksit-lib-0.0.8.tgz",
+    "roksit-lib": "file:roksit-lib-0.0.9.tgz",
     "rxjs": "~6.5.4",
     "rxjs-compat": "6.1.0",
     "select2": "^4.0.5",

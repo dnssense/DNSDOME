@@ -13,12 +13,11 @@ export class CyteLoginComponent {
   reftoken: string;
 
   constructor(private authService: AuthenticationService, private router: Router, private route: ActivatedRoute) {
- 
     this.route.queryParams.subscribe(p => {
       this.token = p['t'];
       this.reftoken = p['r'];
       this.login();
-    })
+    });
 
   }
 
@@ -39,3 +38,9 @@ export class CyteLoginComponent {
 
 
 }
+
+/* ne@cybercyte.com
+Password12345
+ */
+
+ // run tusunu
