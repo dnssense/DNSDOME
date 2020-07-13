@@ -95,13 +95,13 @@
                       <div class="col-12 d-flex mt-3" *ngFor="let row of selectedIp.staticSubnetIp; index as i">
                         <div class="rk-input-container">
                           <span style="flex: 2">
-                            <input type="text" placeholder="{{'IP'|translate}}" maxlength="15" name="'ip'+i"
-                              (keydown)="checkIPNumber($event, selectedIp.staticSubnetIp[i].baseIp)"
+                            <input type="text" placeholder="{{'IP'|translate}}"  name="'ip'+i"
+                              (keydown)="checkIPNumberForAgent($event, selectedIp.staticSubnetIp[i])"
                               [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" [ngModelOptions]="{standalone: true}">
                             /
                           </span>
 
-                          <rk-select [placeholder]="selectedIp.staticSubnetIp[i].mask" [options]="ipRanges"
+                          <rk-select [placeholder]="selectedIp.staticSubnetIp[i].mask" [options]="ipCidr.ipRanges"
                             [(value)]="selectedIp.staticSubnetIp[i].mask">
                           </rk-select>
                         </div>
@@ -137,8 +137,8 @@
                     </div>
 
                     <div class="col-12 mt-3">
-                      <input type="text" class="rk-input w-100" placeholder="{{'SinkHoleIp'|translate}}"
-                        (keydown)="checkIPNumber($event, selectedIp.cyberXRayIp)" [(ngModel)]="selectedIp.cyberXRayIp"
+                      <input type="text" class="rk-input w-100" maxlength="39" placeholder="{{'SinkHoleIp'|translate}}"
+                        (keydown)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)" [(ngModel)]="selectedIp.cyberXRayIp"
                         [ngModelOptions]="{standalone: true}">
                       <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp1' | translate}}</p>
                       <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp2' | translate}}</p>

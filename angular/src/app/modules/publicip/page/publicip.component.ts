@@ -15,6 +15,10 @@ import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { Observable } from 'rxjs';
+import * as isip from 'is-ip';
+import { InputIPService } from 'src/app/core/services/inputIPService';
+
+
 
 declare let $: any;
 
@@ -25,23 +29,57 @@ declare let $: any;
 })
 export class PublicipComponent implements OnInit, AfterViewInit {
 
-  ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
+  // ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
+ // ipv4v6Pattern = '((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))';
   publicIps: Agent[] = [];
   publicIpsFiltered: Agent[] = [];
   publicIpForm: FormGroup;
   startWizard = false;
 
-  ipRanges: RkSelectModel[] = [
-    { value: 32, displayText: '32' },
-    { value: 31, displayText: '31' },
-    { value: 30, displayText: '30' },
-    { value: 29, displayText: '29' },
-    { value: 28, displayText: '28' },
-    { value: 27, displayText: '27' },
-    { value: 26, displayText: '26' },
-    { value: 25, displayText: '25' },
-    { value: 24, displayText: '24' }
-  ];
+  ipCidr = {
+    isIPV4: true,
+    ipRanges: [
+      { value: 32, displayText: '32' },
+      { value: 31, displayText: '31' },
+      { value: 30, displayText: '30' },
+      { value: 29, displayText: '29' },
+      { value: 28, displayText: '28' },
+      { value: 27, displayText: '27' },
+      { value: 26, displayText: '26' },
+      { value: 25, displayText: '25' },
+      { value: 24, displayText: '24' }
+    ],
+    ipRangesV4: [
+      { value: 32, displayText: '32' },
+      { value: 31, displayText: '31' },
+      { value: 30, displayText: '30' },
+      { value: 29, displayText: '29' },
+      { value: 28, displayText: '28' },
+      { value: 27, displayText: '27' },
+      { value: 26, displayText: '26' },
+      { value: 25, displayText: '25' },
+      { value: 24, displayText: '24' }
+    ],
+
+    ipRangesV6: [
+      { value: 128, displayText: '128' },
+      { value: 127, displayText: '127' },
+      { value: 126, displayText: '126' },
+      { value: 125, displayText: '125' },
+      { value: 124, displayText: '124' },
+      { value: 123, displayText: '123' },
+      { value: 122, displayText: '122' },
+      { value: 121, displayText: '121' },
+      { value: 120, displayText: '120' }
+    ]
+
+  };
+
+
+
+
+
+
 
   selectedIp: Agent = new Agent();
   selectedAgent: Agent = new Agent();
@@ -75,7 +113,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     private formBuilder: FormBuilder,
     private agentService: AgentService,
     private publicIpService: PublicIPService,
-    private staticMessageService: StaticMessageService
+    private staticMessageService: StaticMessageService,
+    private inputIpService: InputIPService
   ) {
     this.roleName = this.authService.currentSession.currentUser.roles.name;
 
@@ -102,13 +141,14 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     });
 
     this.getPublicIpsDataAndProfiles();
+    
 
     this.publicIpForm = this.formBuilder.group({
       'agentName': ['', [Validators.required]],
       'ipType': ['', [Validators.required]],
       'blockMessage': ['', []],
       'dnsFqdn': ['', []],
-      'ip0': ['', [Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]],
+      'ip0': ['', [Validators.required, Validators.maxLength(39), Validators.pattern(ValidationService.ipv4v6Pattern)]],
       'cyberXRayIp': ['', []]
     });
 
@@ -220,46 +260,154 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList = [];
   }
 
-  checkIPNumber(event: KeyboardEvent, inputValue: string) {
+  changeIpCidr(isIPV4: boolean) {
+    if (this.ipCidr.isIPV4 != isIPV4) {
 
-    const allowedChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'Backspace', 'ArrowLeft', 'ArrowRight', '.', 'Tab'];
+      this.ipCidr.isIPV4 = isIPV4;
+      this.ipCidr.ipRanges = [];
+      this.ipCidr.ipRanges = this.ipCidr.ipRanges.concat(isIPV4 ? this.ipCidr.ipRangesV4 : this.ipCidr.ipRangesV6);
+      return true;
+    }
+    return false;
+  }
+  checkIPNumberForAgent(event: KeyboardEvent, inputValue: IpWithMask) {
+
+    const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue.baseIp);
+
+    if (isIPV4 != null) {
+    this.checkMask(isIPV4, inputValue);
+    }
+
+  }
+
+/*   hasOneOfChars(input: string, chars: string[]) {
+    for (let ab = 0; ab < input.length; ++ab) {
+      for (let ac = 0; ac < chars.length; ++ac) {
+        if (input[ab] == chars[ac]) {
+          return true;
+        }
+
+      }
+    }
+    return false;
+  } */
+
+/*   checkIPNumber(event: KeyboardEvent, inputValue: string) {
+
+
+    let isIPV4 = true;
+
+    const specialChars = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
+
+    const ipv4Chars = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'];
+
+    const ipv6Chars = ['A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f', ':'];
+    let allowedChars = [];
+    allowedChars = allowedChars.concat(ipv6Chars).concat(ipv4Chars).concat(specialChars);
     let isValid = false;
 
+    for (let i = 0; i < specialChars.length; i++) {
+      if (specialChars[i] == event.key) {
+       return null;
+      }
+    }
+
+    // check keydown char
     for (let i = 0; i < allowedChars.length; i++) {
       if (allowedChars[i] == event.key) {
         isValid = true;
         break;
       }
     }
-    if (inputValue && (event.key !== 'Backspace' && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
-      if (event.key !== '.') {
-        inputValue += event.key;
+
+    if (isValid) {
+      const isSpecialChar = specialChars.find(x => x == event.key);
+      if (!isSpecialChar) {
+        inputValue = (inputValue ? inputValue : '') + event.key;
       }
-      const lastOcletStr = inputValue.substring(inputValue.lastIndexOf('.') + 1);
-      const lastOclet = Number(lastOcletStr);
-      if (isValid && (lastOclet > 255 || lastOclet < 0 || lastOcletStr.length > 3)) {
+      const isipV6 = this.hasOneOfChars(inputValue, ipv6Chars);
+      const isipV4 = this.hasOneOfChars(inputValue, ['.']);
+
+      if (isipV4 && !isipV6) {// ipv4
+         isIPV4 = true;
+        const octets = inputValue.split(/[.]/g);
+        if (octets.length && octets[octets.length - 1] == '') {
+          octets.splice(octets.length - 1, 1);
+        }
+        if (octets.length > 4) {
+          isValid = false;
+        }
+        if (octets.length == 4 && inputValue.endsWith('.')) {
         isValid = false;
-      }
-      if (isValid && event.key === '.') {
-        const oclets: string[] = inputValue.split('.');
-        for (let i = 0; i < oclets.length; i++) {
-          const oclet = oclets[i];
-          if (Number(oclet) < 0 || Number(oclet) > 255) {
+        }
+        octets.forEach(x => {
+          if (x.length > 3 || x.length == 0) {
+            isValid = false;
+          }
+          if (Number(x) < 0 || Number(x) > 255) {
+            isValid = false;
+          }
+        });
+
+
+
+      } else {
+
+        isIPV4 = false;
+        for (let i = 0; i < ipv6Chars.length; i++) {
+          if ('.' == event.key) {
             isValid = false;
             break;
           }
         }
+        const octets = inputValue.split(/[:]/g);
+
+        if (octets.length > 8) {
+          isValid = false;
+        }
+
+        octets.forEach(x => {
+          if (x.length > 4) {
+            isValid = false;
+          }
+        });
+        const len = inputValue.length;
+        if (len - 3 >= 0) {
+          if (inputValue[len - 3] == ':' && inputValue[len - 2] == ':' && inputValue[len - 1] == ':') {
+          isValid = false;
+          }
+        }
+
+
       }
 
-      if (isValid && event.key === '.' && (inputValue.endsWith('.') || inputValue.split('.').length >= 4)) {
-        isValid = false;
-      }
-    } else if (isValid && event.key === '.') {
-      isValid = false;
+
     }
+    console.log(`ipv4:${isIPV4} and isValid:${isValid}`);
 
     if (!isValid) {
       event.preventDefault();
+      return null;
+    }
+    return isIPV4;
+
+  } */
+
+  checkIPNumberForSinkhole(event: KeyboardEvent, inputValue: string) {
+
+    const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue);
+
+
+
+  }
+
+
+  checkMask(isIPV4: boolean, inputValue: IpWithMask) {
+
+    const isIpTypeChanged = this.changeIpCidr(isIPV4);
+    if (isIpTypeChanged) {
+
+      inputValue.mask = isIPV4 ? 32 : 128;
     }
   }
 
@@ -322,8 +470,14 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       if (!findedMyPublicIp) {
         ip0.baseIp = ip;
       }
+      if (isip.v4(ip0.baseIp)) {
+        ip0.mask = 32;
+        this.changeIpCidr(true);
+      } else {
+        ip0.mask = 32;
+        this.changeIpCidr(false);
+      }
 
-      ip0.mask = 32;
       this.selectedIp.staticSubnetIp.push(ip0);
 
       this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
@@ -364,7 +518,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       for (let i = 1; i < this.selectedIp.staticSubnetIp.length; i++) {
         const cname = 'ip' + i;
         this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
-        this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]);
+        this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(39), Validators.pattern(ValidationService.ipv4v6Pattern)]);
         this.publicIpForm.controls[cname].updateValueAndValidity();
       }
 
@@ -383,7 +537,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       if (!this.selectedIp.staticSubnetIp.length) {
         const sub = this.publicIpObs.subscribe(ip => {
           if (ip) {
-          this.selectedIp.staticSubnetIp.push({baseIp: ip, mask: 32});
+            this.selectedIp.staticSubnetIp.push({ baseIp: ip, mask: 32 });
           }
         });
       }
@@ -458,7 +612,6 @@ export class PublicipComponent implements OnInit, AfterViewInit {
             this.notification.success(this.staticMessageService.deletedAgentLocationMessage);
             this.getPublicIpsDataAndProfiles();
 
-
           });
         }
       }
@@ -481,7 +634,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       if (!this.selectedIp.staticSubnetIp.length) {
         const sub = this.publicIpObs.subscribe(ip => {
           if (ip) {
-          this.selectedIp.staticSubnetIp.push({baseIp: ip, mask: 32});
+            this.selectedIp.staticSubnetIp.push({ baseIp: ip, mask: 32 });
           }
         });
       }
@@ -495,7 +648,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       this.selectedIp.staticSubnetIp.push(ip0);
       const cname = 'ip' + (this.selectedIp.staticSubnetIp.length - 1);
       this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
-      this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(15), Validators.pattern(this.ipv4Pattern)]);
+      this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(39), Validators.pattern(ValidationService.ipv4v6Pattern)]);
       this.publicIpForm.controls[cname].updateValueAndValidity();
     }
   }
@@ -562,6 +715,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       this.notification.warning(this.staticMessageService.pleaseFillName);
       return false;
     } else if (this.ipType === 'staticIp' && !this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length < 1) {
+
       this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
       return false;
     } else if (this.ipType === 'dynamicIp' && (!this.selectedIp.dynamicIpDomain || !isDomain)) {
@@ -576,6 +730,14 @@ export class PublicipComponent implements OnInit, AfterViewInit {
         const e = this.selectedIp.staticSubnetIp[i];
         if (e.baseIp == null || e.mask === 0) {
           this.notification.warning(this.staticMessageService.pleaseEnterValidIpAndMask);
+          return false;
+        }
+        if (!isip(e.baseIp)) {
+          this.notification.warning(this.staticMessageService.pleaseEnterValidIpAndMask);
+          return false;
+        }
+        if (this.selectedIp.cyberXRayIp && !isip(this.selectedIp.cyberXRayIp)) {
+          this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
           return false;
         }
       }

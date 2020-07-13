@@ -15,9 +15,15 @@ import { StaticSymbolResolverHost, ThrowStmt } from '@angular/compiler';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
 import { stringify } from 'querystring';
+import * as isip from 'is-ip';
+import { InputIPService } from 'src/app/core/services/inputIPService';
 
 declare let $: any;
-
+export interface BoxConf {
+    donttouchdomains: string;
+    donttouchips: string;
+    localnetips: string;
+}
 
 
 @Component({
@@ -36,7 +42,8 @@ export class RoamingComponent implements OnInit {
         private notification: NotificationService,
         private roamingService: RoamingService,
         private boxService: BoxService,
-        private staticMessageService: StaticMessageService
+        private staticMessageService: StaticMessageService,
+        private inputIpService: InputIPService
     ) { }
 
     clientForm: FormGroup;
@@ -65,6 +72,8 @@ export class RoamingComponent implements OnInit {
     saveMode: string;
     startWizard = false;
     dontDomains: string[] = [];
+    dontIps: string[] = [];
+    localnetIps: string[] = [];
     confParameters: string[] = [];
 
     isDontDomainsValid = true;
@@ -74,6 +83,7 @@ export class RoamingComponent implements OnInit {
     searchKeyUnGroup = '';
 
     domain: string;
+    ip: string;
 
     alwaysActive = true;
     disabledNetwork = false;
@@ -185,10 +195,35 @@ export class RoamingComponent implements OnInit {
         return grouped;
     }
 
+
+    checkIPNumberForDontTouchIps(event: KeyboardEvent, inputValue: string) {
+
+        const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue);
+
+
+
+      }
+
+
     getConfParameters() {
         this.boxService.getVirtualBox().subscribe(res => {
             if (res.conf) {
-                this.dontDomains = res.conf.split(',').map(x => x[0] === '.' ? x.substring(1) : x);
+                try {
+                    const boxConf: BoxConf = JSON.parse(res.conf);
+                    if (boxConf.donttouchdomains) {
+                        this.dontDomains = boxConf.donttouchdomains.split(',').filter(x => x).map(x => x[0] === '.' ? x.substring(1) : x);
+                    }
+                    if (boxConf.donttouchips) {
+                        this.dontIps = boxConf.donttouchips.split(',').filter(x => x);
+                    }
+                    if (boxConf.localnetips) {
+                        this.localnetIps = boxConf.localnetips.split(',').filter(x => x);
+                    }
+
+                } catch (ignore) {
+                    console.log(ignore);
+                }
+
             }
         });
     }
@@ -215,7 +250,8 @@ export class RoamingComponent implements OnInit {
 
     copyLink() {
         const domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',');
-        this.boxService.getProgramLink({ donttouchdomains: domains }).subscribe(res => {
+        const ips = this.dontIps.filter(x => isip(x)).join(',');
+        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips }).subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters();
                 this.fileLink = res.link;
@@ -237,17 +273,13 @@ export class RoamingComponent implements OnInit {
         document.body.removeChild(selBox);
     }
 
-    removeElementFromDomainList(index: number) {
-        this.dontDomains.splice(index, 1);
 
-        this.saveDomainChanges();
-    }
 
     saveDomainChanges() {
         const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
-
+        const ips = this.dontIps.filter(x => isip(x)).join(',');
         if (this.isDontDomainsValid) {
-            this.boxService.getProgramLink({ donttouchdomains: domains }).subscribe(res => {
+            this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips }).subscribe(res => {
                 if (res && res.link) {
                     this.getConfParameters();
                 } else {
@@ -259,8 +291,8 @@ export class RoamingComponent implements OnInit {
 
     downloadFile() {
         const domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',');
-
-        this.boxService.getProgramLink({ donttouchdomains: domains }).subscribe(res => {
+        const ips = this.dontIps.filter(x => isip(x)).join(',');
+        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips }).subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters();
                 this.fileLink = res.link;
@@ -290,6 +322,38 @@ export class RoamingComponent implements OnInit {
         } else {
             this.notification.warning(this.staticMessageService.youReachedMaxDomainsCountMessage);
         }
+    }
+
+    removeElementFromDomainList(index: number) {
+        this.dontDomains.splice(index, 1);
+
+        this.saveDomainChanges();
+    }
+    addIpToList() {
+
+        if (this.dontIps && this.dontIps.length < 10) {
+            const result = isip(this.ip) ? this.ip : null;
+            if (!result) {
+                this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
+                return;
+            }
+
+            this.dontIps.push(result);
+
+
+
+            this.ip = '';
+
+            this.saveDomainChanges();
+        } else {
+            this.notification.warning(this.staticMessageService.youReachedMaxIpsCountMessage);
+        }
+    }
+
+    removeElementFromIpList(index: number) {
+        this.dontIps.splice(index, 1);
+
+        this.saveDomainChanges();
     }
 
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup } from "@angular/forms";
-import { Ip } from "../models/Ip";
+import { FormControl, FormGroup } from '@angular/forms';
+import { Ip } from '../models/Ip';
 import * as validator from 'validator';
-import * as tldjs from "tldjs";
+import * as tldjs from 'tldjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,78 @@ export class ValidationService {
 
   constructor() { }
 
+
+  static ipv4v6Pattern = '((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))';
+
+  /* static checkIp(ips: Ip[], key: string): any {
+    return (group: FormGroup) => {
+      let object = group.controls[key];
+      //ip list is empty
+      if (ips == null || ips.length == 0) {
+        return object.setErrors({ required: true });
+      } else {
+        for (let ip of ips) {
+          for (var i = 0; i <= ips.length; i++) {
+            //ip bos olamaz
+            if (ip[i] == '') {
+              return object.setErrors({ required: true });
+            }
+          }
+          let ipInterval = '';
+          if (ips.length <= 4 || ip[4] == '') {
+            ipInterval = '0';
+          } else {
+            ipInterval = ip[4];
+          }
+          let ipstr = ip[0] + '.' + ip[1] + '.' + ip[2] + '.' + ip[3];
+          let isValid = (ipstr != '255.255.255.255' &&
+            ipstr.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/) &&
+            (+ip[3] < +ipInterval || +ipInterval == 0));
+          if (!isValid) {
+            // ip valid degil
+            return object.setErrors({ invalidIp: true });
+          }
+        }
+      }
+    }
+  } */
+
+ /*  static isValidIpString(ipString: string): any {
+
+    const ips = ipString.split('.');
+    if (ips == null || ips.length == 0) {
+      return false;
+    } else {
+      for (let i = 0; i <= ips.length; i++) {
+        // ip bos olamaz
+        if (ips[i] == '') {
+          return false;
+        }
+      }
+
+      let ipInterval = '';
+      if (ips.length <= 4 || ips[4] == '') {
+        ipInterval = '0';
+      } else {
+        ipInterval = ips[4];
+      }
+      const ipstr = ips[0] + '.' + ips[1] + '.' + ips[2] + '.' + ips[3];
+      const isValid = (ipstr != '255.255.255.255' &&
+        ipstr.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/) &&
+        (+ips[3] < +ipInterval || +ipInterval == 0));
+      if (!isValid) {
+        // ip valid degil
+        return false;
+      }
+
+      return true;
+    }
+
+  } */
+
+
   static getValidatorErrorMessage(validatorName: string, validatorValue?: any) {
-    let config = {
+    const config = {
       'required': 'Required',
       'unsolicitedMailAddress': 'Please enter a reliable e-mail address.',
       'emailAddress': 'Invalid email address',
@@ -126,7 +196,7 @@ export class ValidationService {
   static passwordValidator(control) {
     // {8,100}           - Assert password is between 8 and 100 characters
     // (?=.*[0-9])       - Assert a string has at least one number
-    //(?=.*[A-Z])        - Assert a string has at least one capital letter
+    // (?=.*[A-Z])        - Assert a string has at least one capital letter
     if (control == null || control.value == null) {
       return null;
     } else if (control.value.match(/^(?=.*[0-9])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,100}$/)) {
@@ -138,100 +208,35 @@ export class ValidationService {
 
   static matchingPasswords(passwordKey: string, passwordConfirmationKey: string): any {
     return (group: FormGroup) => {
-      let password = group.controls[passwordKey];
-      let confirmPassword = group.controls[passwordConfirmationKey];
-      //password alanları boşsa null dönmeli
-      if ((password.value == null || password.value == "") && (confirmPassword.value == null || confirmPassword.value == "")) {
+      const password = group.controls[passwordKey];
+      const confirmPassword = group.controls[passwordConfirmationKey];
+      // password alanları boşsa null dönmeli
+      if ((password.value == null || password.value == '') && (confirmPassword.value == null || confirmPassword.value == '')) {
         return null;
       } else if (password.value !== confirmPassword.value) {
         return confirmPassword.setErrors({ mismatchedPasswords: true });
       }
-    }
+    };
   }
 
   static matchingEmail(emailKey: string, emailConfirmationKey: string): any {
     return (group: FormGroup) => {
-      let email = group.controls[emailKey];
-      let confirmEmail = group.controls[emailConfirmationKey];
+      const email = group.controls[emailKey];
+      const confirmEmail = group.controls[emailConfirmationKey];
 
-      if ((email.value == null || email.value == "") && (confirmEmail.value == null || confirmEmail.value == "")) {
+      if ((email.value == null || email.value == '') && (confirmEmail.value == null || confirmEmail.value == '')) {
         return null;
       } else if (email.value !== confirmEmail.value) {
         return confirmEmail.setErrors({ unsolicitedMailAddress: true });
       }
-    }
+    };
   }
-
-  static checkIp(ips: Ip[], key: string): any {
-    return (group: FormGroup) => {
-      let object = group.controls[key];
-      //ip list is empty
-      if (ips == null || ips.length == 0) {
-        return object.setErrors({ required: true });
-      } else {
-        for (let ip of ips) {
-          for (var i = 0; i <= ips.length; i++) {
-            //ip bos olamaz
-            if (ip[i] == '') {
-              return object.setErrors({ required: true });
-            }
-          }
-          let ipInterval = '';
-          if (ips.length <= 4 || ip[4] == '') {
-            ipInterval = '0';
-          } else {
-            ipInterval = ip[4];
-          }
-          let ipstr = ip[0] + '.' + ip[1] + '.' + ip[2] + '.' + ip[3];
-          let isValid = (ipstr != '255.255.255.255' &&
-            ipstr.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/) &&
-            (+ip[3] < +ipInterval || +ipInterval == 0));
-          if (!isValid) {
-            // ip valid degil
-            return object.setErrors({ invalidIp: true });
-          }
-        }
-      }
-    }
-  }
-
-  static isValidIpString(ipString: string): any {
-
-    let ips = ipString.split('.');
-    if (ips == null || ips.length == 0) {
-      return false;
-    } else {
-      for (var i = 0; i <= ips.length; i++) {
-        //ip bos olamaz
-        if (ips[i] == '') {
-          return false;
-        }
-      }
-
-      let ipInterval = '';
-      if (ips.length <= 4 || ips[4] == '') {
-        ipInterval = '0';
-      } else {
-        ipInterval = ips[4];
-      }
-      let ipstr = ips[0] + '.' + ips[1] + '.' + ips[2] + '.' + ips[3];
-      let isValid = (ipstr != '255.255.255.255' &&
-        ipstr.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/) &&
-        (+ips[3] < +ipInterval || +ipInterval == 0));
-      if (!isValid) {
-        // ip valid degil
-        return false;
-      }
-
-      return true;
-    }
-
-  }
-
   static isValidIpWithLocals(ipForCheck: string) {
-    let isValid = ipForCheck.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/);
+    const reg = new RegExp(ValidationService.ipv4v6Pattern);
+
+    const isValid = ipForCheck.match(reg);
     if (isValid) {
-      let a = ipForCheck.split('.');
+      const a = ipForCheck.split('.');
       if (a.length != 4) {
         return false;
       }

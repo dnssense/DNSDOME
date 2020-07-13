@@ -33,7 +33,7 @@ export class BoxService {
     return this.http.get<Box>(this.virtualBoxURL).map(data => data);
   }
 
-  getProgramLink(request: { donttouchdomains: string }): Observable<any> {
+  getProgramLink(request: { donttouchdomains: string, donttouchips: string }): Observable<any> {
     return this.http.post<any>(this.getLinkURL, request).map(data => data);
   }
 

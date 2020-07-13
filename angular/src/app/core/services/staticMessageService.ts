@@ -152,6 +152,9 @@ get savedUserMessage(): string {
   get youReachedMaxDomainsCountMessage(): string {
     return this.translator.translate(`YouReachedMaxDomainsCount`);
   }
+  get youReachedMaxIpsCountMessage(): string {
+    return this.translator.translate(`YouReachedMaxIpsCount`);
+  }
 
   get enterValidDomainMessage(): string {
     return this.translator.translate(`EnterValidDomain`);

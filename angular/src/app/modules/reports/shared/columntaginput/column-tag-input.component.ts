@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild, Renderer2 } from '@angular/core';
+/*import { Component, ElementRef, Input, OnInit, ViewChild, Renderer2 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Category } from 'src/app/core/models/Category';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
@@ -12,7 +12,7 @@ import { ReportService } from 'src/app/core/services/reportService';
 
 declare var jQuery: any;
 
-@Component({
+/*@Component({
   selector: 'app-column-tag-input',
   templateUrl: './column-tag-input.component.html',
   styleUrls: ['./column-tag-input.component.css']
@@ -291,6 +291,7 @@ export class ColumnTagInputComponent implements OnInit {
   }
 
   public checkIp(ipForCheck: string) {
+    debugger;
     const res = ValidationService.isValidIpWithLocals(ipForCheck);
     if (!res) {
       this.notificationService.warning('Invalid IP');
@@ -301,4 +302,4 @@ export class ColumnTagInputComponent implements OnInit {
   public updateColumns(cols: LogColumn[]) {
     this.columns = cols;
   }
-}
+}*/

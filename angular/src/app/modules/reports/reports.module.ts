@@ -16,7 +16,7 @@ import { CustomReportComponent } from './customreport/customreport.component';
 import { MonitorComponent } from './monitor/monitor.component';
 import { MonitorResultComponent } from './monitor/result/monitor-result.component';
 import { ReportsRoutingModule } from './reports-routing.module';
-import { ColumnTagInputComponent } from './shared/columntaginput/column-tag-input.component';
+// import { ColumnTagInputComponent } from './shared/columntaginput/column-tag-input.component';
 import { TextLimitComponent } from './shared/textlimit/text-limit.component';
 import { CustomReportResultComponent } from './customreport/result/customreport-result.component';
 import { CustomReportResultColumnComponent } from './customreport/result/column/customreport-result-column.component';
@@ -32,7 +32,6 @@ import { SharedModule } from '../shared/shared.module';
     CustomReportResultColumnComponent,
     MonitorComponent,
     MonitorResultComponent,
-    ColumnTagInputComponent,
     TextLimitComponent
   ],
   imports: [
