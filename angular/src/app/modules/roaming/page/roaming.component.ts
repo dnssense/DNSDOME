@@ -74,6 +74,7 @@ export class RoamingComponent implements OnInit {
     dontDomains: string[] = [];
     dontIps: string[] = [];
     localnetIps: string[] = [];
+
     confParameters: string[] = [];
 
     isDontDomainsValid = true;
@@ -84,6 +85,7 @@ export class RoamingComponent implements OnInit {
 
     domain: string;
     ip: string;
+    localnetip: string;
 
     alwaysActive = true;
     disabledNetwork = false;
@@ -200,9 +202,12 @@ export class RoamingComponent implements OnInit {
 
         const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue);
 
+    }
+    checkIPNumberForLocalNetIps(event: KeyboardEvent, inputValue: string) {
 
+        const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue);
 
-      }
+    }
 
 
     getConfParameters() {
@@ -251,7 +256,8 @@ export class RoamingComponent implements OnInit {
     copyLink() {
         const domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
-        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips }).subscribe(res => {
+        const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
+        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips }).subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters();
                 this.fileLink = res.link;
@@ -278,8 +284,9 @@ export class RoamingComponent implements OnInit {
     saveDomainChanges() {
         const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
+        const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
         if (this.isDontDomainsValid) {
-            this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips }).subscribe(res => {
+            this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips     }).subscribe(res => {
                 if (res && res.link) {
                     this.getConfParameters();
                 } else {
@@ -292,7 +299,8 @@ export class RoamingComponent implements OnInit {
     downloadFile() {
         const domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
-        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips }).subscribe(res => {
+        const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
+        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips }).subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters();
                 this.fileLink = res.link;
@@ -349,9 +357,34 @@ export class RoamingComponent implements OnInit {
             this.notification.warning(this.staticMessageService.youReachedMaxIpsCountMessage);
         }
     }
+    addIpToLocalNetList() {
+
+        if (this.localnetIps && this.localnetIps.length < 10) {
+            const result = isip(this.localnetip) ? this.localnetip : null;
+            if (!result) {
+                this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
+                return;
+            }
+
+            this.localnetIps.push(result);
+
+
+
+            this.localnetip = '';
+
+            this.saveDomainChanges();
+        } else {
+            this.notification.warning(this.staticMessageService.youReachedMaxIpsCountMessage);
+        }
+    }
 
     removeElementFromIpList(index: number) {
         this.dontIps.splice(index, 1);
+
+        this.saveDomainChanges();
+    }
+    removeElementFromLocalNetIpList(index: number) {
+        this.localnetIps.splice(index, 1);
 
         this.saveDomainChanges();
     }

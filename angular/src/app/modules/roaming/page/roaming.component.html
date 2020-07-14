@@ -102,6 +102,42 @@
               </div>
 
             </div>
+
+            <div class="container-fluid">
+              <div class="rk-modal-card">
+                <h6 class="rk-modal-card-title">{{'LocalNetIps'|translate}}</h6>
+
+                <div class="row mt-2">
+                  <div class="col-12 mt-3">
+                    <p class="rk-description">
+                      {{'LocalNetIpsDescription'|translate}}
+                    </p>
+
+                    <div class="input-container">
+                      <input type="text" placeholder="Ip" class="rk-input w-100"
+                      (keydown)="checkIPNumberForLocalNetIps($event, localnetip)" [(ngModel)]="localnetip"
+                      [ngModelOptions]="{standalone: true}">
+
+                      <button class="btn btn-small ml-1 safe-btn" style="width: 60px" (click)="addIpToLocalNetList()"
+                        [disabled]="localnetip?.length === 0">{{'Add'|translate}}</button>
+                    </div>
+
+                    <div class="cards mt-3">
+                      <div class="card gray-card" *ngFor="let ip of localnetIps; let index = index">
+                        <div class="card-content">
+                          <h6 class="title">{{ ip }}</h6>
+                        </div>
+
+                        <div class="card-close" (click)="removeElementFromLocalNetIpList(index)">
+                          <i-feather name="trash-2"></i-feather>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </rk-modal-body>
         </rk-modal>
 
