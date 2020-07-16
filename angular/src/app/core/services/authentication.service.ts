@@ -15,7 +15,7 @@ import { Role, RestRole, RestRight, RestUserRoleRight } from '../models/Role';
 import { Clearance } from '../models/Clearance';
 import { RestPreloginResponse, RestUser } from '../models/RestServiceModels';
 import { SpinnerService } from './spinner.service';
-
+import { BnNgIdleService } from 'bn-ng-idle';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +41,8 @@ export class AuthenticationService {
     private http: HttpClient,
     private cookieService: CookieService,
     private router: Router,
-    private spinner: SpinnerService
+    private spinner: SpinnerService,
+    private idleService: BnNgIdleService
   ) {
 
     this.currentSession = this.getCurrentSession();
@@ -50,6 +51,7 @@ export class AuthenticationService {
      this.refreshTokenTimer = interval(3 * 60 * 1000);
     // this.refreshTokenTimer = interval(15 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
+    this.startIdleWatching();
   }
 
   saveSession() {
@@ -204,6 +206,15 @@ export class AuthenticationService {
     };
     return httpOptions;
   }
+  private startIdleWatching() {
+
+    this.idleService.startWatching(30 * 60).subscribe((isTimedOut: boolean) => {
+      if (isTimedOut && this.currentSession) {
+        this.logout();
+        console.log('session expired');
+      }
+    });
+  }
 
   login(email: string, pass: string, code?: string): Observable<Session> {
     const httpOptions = {
@@ -228,7 +239,11 @@ export class AuthenticationService {
         this.currentSession = new Session();
         this.currentSession.token = res.accessToken;
         this.currentSession.refreshToken = res.refreshToken;
-        return this.getCurrentUser();
+
+        return this.getCurrentUser().pipe(x => {
+          this.startIdleWatching();
+          return x;
+        });
       }), catchError(err => {
         this.currentSession = null;
         throw err;
@@ -240,7 +255,11 @@ export class AuthenticationService {
       this.currentSession = new Session();
       this.currentSession.token = token;
       this.currentSession.refreshToken = refToken;
-      return this.getCurrentUser();
+
+      return this.getCurrentUser().pipe(x => {
+        this.startIdleWatching();
+        return x;
+      });
     }
 
     return null;
@@ -248,9 +267,11 @@ export class AuthenticationService {
   }
 
   clear() {
+
     this.currentSession = null;
     sessionStorage.removeItem(this.STORAGENAME);
     this.cookieService.clear();
+    this.idleService.stopTimer();
   }
 
   logout() {

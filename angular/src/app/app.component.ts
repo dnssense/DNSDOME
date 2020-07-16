@@ -1,16 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ConfigService, ConfigHost } from './core/services/config.service';
 import { AuthenticationService } from './core/services/authentication.service';
 import { RkUtilityService, ThemeColor } from 'roksit-lib';
 import { LOCAL_STORAGE_THEME_COLOR } from './modules/theme/theme.component';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass'],
-  providers: []
+  providers: [],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   host: ConfigHost;
   title?: string;
@@ -20,7 +21,8 @@ export class AppComponent {
     private config: ConfigService,
     private authenticationService: AuthenticationService,
     private configService: ConfigService,
-    private rkUtilityService: RkUtilityService
+    private rkUtilityService: RkUtilityService,
+
   ) {
     const user = this.authenticationService.currentSession?.currentUser;
     this.config.init(user?.id);
@@ -42,6 +44,9 @@ export class AppComponent {
     if (themeColor) {
       this.rkUtilityService.changeTheme(themeColor === 'dark');
     } */
+
+  }
+  ngOnInit(): void {
 
   }
 }
