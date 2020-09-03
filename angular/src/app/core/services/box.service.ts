@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ConfigService } from './config.service';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Box } from '../models/Box';
-import { OperationResult } from '../models/OperationResult';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +32,7 @@ export class BoxService {
     return this.http.get<Box>(this.virtualBoxURL).map(data => data);
   }
 
-  getProgramLink(request: { donttouchdomains: string, donttouchips: string, localnetips: string }): Observable<any> {
+  getProgramLink(request: { donttouchdomains: string, donttouchips: string, localnetips: string, uninstallPassword: string, disablePassword: string }): Observable<any> {
     return this.http.post<any>(this.getLinkURL, request).map(data => data);
   }
 

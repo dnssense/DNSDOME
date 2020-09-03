@@ -106,7 +106,7 @@
     "DontTouchIps": "Don’t Touch Ips",
     "DontTouchIpsDescription": "Don’t touch ips not encrypt by agent, the packets goes to these ip address's not encrypt by agent",
     "LocalNetIps": "Local Network Dns Servers",
-    "LocalNetIpsDescription": "When one of these servers responses with dns result, agent will disable encryption",
+    "LocalNetIpsDescription": "When one of these servers responses with dns result, agent will disable protection",
     "Add": "Add",
     "RoamingClientsEdit": "Roaming Clients Edit",
     "EditGroup": "Edit Group",
@@ -610,5 +610,9 @@
     "SAFE_LIST": "Safe List",
     "SECURITY": "Security",
     "GRAY_LIST": "Gray List",
-    "HARMFULL_CONTENT": "Restricted Content"
+    "HARMFULL_CONTENT": "Restricted Content",
+    "UninstallPassword": "Uninstall Password",
+    "UninstallPasswordDescription": "Uninstall process asks for this password",
+    "DisablePassword": "Disable Password",
+    "DisablePasswordDescription": "Disable protection asks for this password"
 }

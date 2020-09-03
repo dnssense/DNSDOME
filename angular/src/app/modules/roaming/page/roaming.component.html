@@ -16,7 +16,7 @@
               {{'CopyDownloadLink'|translate}}
             </button>
 
-            <button class="btn btn-icon btn-small" (click)="configureModal.toggle()">
+            <button class="btn btn-icon btn-small" (click)="openConfigureModal()">
               <i-feather name="settings"></i-feather>
               {{'Settings'|translate}}
             </button>
@@ -29,7 +29,7 @@
               <h5>{{'ConfigureRoamingClients'|translate}}</h5>
             </rk-modal-header-title>
 
-            <rk-modal-header-close (click)="configureModal.toggle()"></rk-modal-header-close>
+            <rk-modal-header-close (click)="closeConfigureModal()"></rk-modal-header-close>
           </rk-modal-header>
 
           <rk-modal-body>
@@ -44,7 +44,8 @@
                     </p>
 
                     <div class="input-container">
-                      <input type="text" placeholder="Domain" [(ngModel)]="domain" class="rk-input w-100">
+                      <input type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"
+                        placeholder="Domain" [(ngModel)]="domain" class="rk-input w-100">
 
                       <button class="btn btn-small ml-1 safe-btn" style="width: 60px" (click)="addDomainToList()"
                         [disabled]="domain?.length === 0">{{'Add'|translate}}</button>
@@ -78,9 +79,9 @@
                     </p>
 
                     <div class="input-container">
-                      <input type="text" placeholder="Ip" class="rk-input w-100"
-                      (keydown)="checkIPNumberForDontTouchIps($event, ip)" [(ngModel)]="ip"
-                      [ngModelOptions]="{standalone: true}">
+                      <input type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"
+                        placeholder="Ip" class="rk-input w-100" (keydown)="checkIPNumberForDontTouchIps($event, ip)"
+                        [(ngModel)]="ip" [ngModelOptions]="{standalone: true}">
 
                       <button class="btn btn-small ml-1 safe-btn" style="width: 60px" (click)="addIpToList()"
                         [disabled]="ip?.length === 0">{{'Add'|translate}}</button>
@@ -114,9 +115,10 @@
                     </p>
 
                     <div class="input-container">
-                      <input type="text" placeholder="Ip" class="rk-input w-100"
-                      (keydown)="checkIPNumberForLocalNetIps($event, localnetip)" [(ngModel)]="localnetip"
-                      [ngModelOptions]="{standalone: true}">
+                      <input type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"
+                        placeholder="Ip" class="rk-input w-100"
+                        (keydown)="checkIPNumberForLocalNetIps($event, localnetip)" [(ngModel)]="localnetip"
+                        [ngModelOptions]="{standalone: true}">
 
                       <button class="btn btn-small ml-1 safe-btn" style="width: 60px" (click)="addIpToLocalNetList()"
                         [disabled]="localnetip?.length === 0">{{'Add'|translate}}</button>
@@ -133,6 +135,81 @@
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="container-fluid">
+              <div class="rk-modal-card">
+                <h6 class="rk-modal-card-title">{{'UninstallPassword'|translate}}</h6>
+
+                <div class="row mt-2">
+                  <div class="col-12 mt-3">
+                    <p class="rk-description">
+                      {{'UninstallPasswordDescription'|translate}}
+                    </p>
+
+                    <div class="cards mt-3">
+                      <div class="card">
+                        <div class="card-content">
+                          <input #inputUninstallPassword autocomplete="off" readonly
+                            onfocus="this.removeAttribute('readonly');"
+                            [type]="isUninstallPasswordEyeOff ? 'text' : 'password'" placeholder="Password"
+                            class="rk-input w-100" [(ngModel)]="uninstallPassword"
+                            [ngModelOptions]="{standalone: true}">
+
+                        </div>
+
+                        <div class="card-close m-2" (mousedown)="changeUninstallPasswordEye(true)"
+                          (mouseup)="changeUninstallPasswordEye(false)"
+                          (mouseleave)="changeUninstallPasswordEye(false)">
+                          <i-feather [name]="isUninstallPasswordEyeOff?'eye':'eye-off'"></i-feather>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="container-fluid">
+              <div class="rk-modal-card">
+                <h6 class="rk-modal-card-title">{{'DisablePassword'|translate}}</h6>
+
+                <div class="row mt-2">
+                  <div class="col-12 mt-3">
+                    <p class="rk-description">
+                      {{'DisablePasswordDescription'|translate}}
+                    </p>
+
+                    <div class="cards mt-3">
+                      <div class="card">
+                        <div class="card-content">
+                          <input #inputDisablePassword autocomplete="off" readonly
+                            onfocus="this.removeAttribute('readonly');"
+                            [type]="isDisablePasswordEyeOff ? 'text' : 'password'" placeholder="Password"
+                            class="rk-input w-100" [(ngModel)]="disablePassword" [ngModelOptions]="{standalone: true}">
+
+                        </div>
+
+                        <div class="card-close m-2" (mousedown)="changeDisablePasswordEye(true)"
+                          (mouseup)="changeDisablePasswordEye(false)" (mouseleave)="changeDisablePasswordEye(false)">
+                          <i-feather [name]="isDisablePasswordEyeOff?'eye':'eye-off'"></i-feather>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+
                   </div>
                 </div>
               </div>
@@ -493,14 +570,16 @@
 
                   <div class="search ml-5">
                     <div class="rk-autocomplete-container" style="width: 220px;">
-                      <input type="text" placeholder="Search" [(ngModel)]="searchKeyUnGroup" class="rk-input rk-autocomplete">
+                      <input type="text" placeholder="Search" [(ngModel)]="searchKeyUnGroup"
+                        class="rk-input rk-autocomplete">
                       <i-feather class="search-icon" name="search"></i-feather>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <button class="btn btn-small" [disabled]="getUnGroupClientsFilteredDisabled" (click)="openChangeGroup()">
+                  <button class="btn btn-small" [disabled]="getUnGroupClientsFilteredDisabled"
+                    (click)="openChangeGroup()">
                     {{'AddToGroup'|translate}}
                   </button>
                 </div>

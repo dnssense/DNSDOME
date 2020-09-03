@@ -1,28 +1,29 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Agent } from 'src/app/core/models/Agent';
-import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
-import { AgentService } from 'src/app/core/services/agent.service';
-import * as introJs from 'intro.js/intro.js';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { RoamingService } from 'src/app/core/services/roaming.service';
-import { AlertService } from 'src/app/core/services/alert.service';
-import { BoxService } from 'src/app/core/services/box.service';
-import { GroupAgentModel } from '../../devices/page/devices.component';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as isip from 'is-ip';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { StaticSymbolResolverHost, ThrowStmt } from '@angular/compiler';
-import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { Observable } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { Agent } from 'src/app/core/models/Agent';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
-import { stringify } from 'querystring';
-import * as isip from 'is-ip';
+import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
+import { AgentService } from 'src/app/core/services/agent.service';
+import { AlertService } from 'src/app/core/services/alert.service';
+import { BoxService } from 'src/app/core/services/box.service';
 import { InputIPService } from 'src/app/core/services/inputIPService';
+import { NotificationService } from 'src/app/core/services/notification.service';
+import { RoamingService } from 'src/app/core/services/roaming.service';
+import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { GroupAgentModel } from '../../devices/page/devices.component';
 
 declare let $: any;
 export interface BoxConf {
     donttouchdomains: string;
     donttouchips: string;
     localnetips: string;
+    uninstallPassword: string;
+    disablePassword: string;
 }
 
 
@@ -31,9 +32,8 @@ export interface BoxConf {
     templateUrl: 'roaming.component.html',
     styleUrls: ['roaming.component.sass']
 })
-export class RoamingComponent implements OnInit {
-    grupOperation: string;
-    groupOperation: string;
+export class RoamingComponent implements OnInit, AfterViewInit {
+
 
     constructor(
         private formBuilder: FormBuilder,
@@ -45,6 +45,29 @@ export class RoamingComponent implements OnInit {
         private staticMessageService: StaticMessageService,
         private inputIpService: InputIPService
     ) { }
+
+
+    get isFormValid() {
+        return this.selectedClient.agentAlias.trim().length > 0 && this.selectedClient.rootProfile.id > 0;
+    }
+
+    get getClientsFilteredDisabled() {
+        if (this.clientsFiltered) {
+            return this.clientsFiltered.filter(x => x.selected).length === 0;
+        }
+
+        return true;
+    }
+
+    get getUnGroupClientsFilteredDisabled() {
+        if (this.clientsUnGroupFiltered) {
+            return this.clientsUnGroupFiltered.filter(x => x.selected).length === 0;
+        }
+
+        return true;
+    }
+    grupOperation: string;
+    groupOperation: string;
 
     clientForm: FormGroup;
     clients: Agent[];
@@ -86,6 +109,8 @@ export class RoamingComponent implements OnInit {
     domain: string;
     ip: string;
     localnetip: string;
+    uninstallPassword: string;
+    disablePassword: string;
 
     alwaysActive = true;
     disabledNetwork = false;
@@ -100,9 +125,17 @@ export class RoamingComponent implements OnInit {
 
 
     @ViewChild('groupModal') groupModal: RkModalModel;
+    @ViewChild('configureModal') configureModal: RkModalModel;
 
     @ViewChild('roamingClientModal') roamingClientModal: RkModalModel;
     @ViewChild('changeGroupModal') changeGroupModel: RkModalModel;
+    @ViewChild('inputUninstallPassword') inputUninstallPassword: ElementRef<any>;
+    @ViewChild('inputDisablePassword') inputDisablePassword: ElementRef<any>;
+
+    isUninstallPasswordEyeOff = false;
+    isDisablePasswordEyeOff = false;
+    onUninstallPasswordChange: any;
+    onDisablePasswordChange: any;
 
     ngOnInit(): void {
 
@@ -116,8 +149,51 @@ export class RoamingComponent implements OnInit {
         this.loadClients();
 
         this.getConfParameters();
+
+
         // this.defineNewAgentForProfile();
     }
+
+    ngAfterViewInit() {
+        this.configureModal.close.subscribe(x => {
+
+            if (x.closed) {
+
+                if (this.onUninstallPasswordChange) {
+                    this.onUninstallPasswordChange.unsubscribe();
+                }
+                this.onUninstallPasswordChange = null;
+
+
+                if (this.onDisablePasswordChange) {
+                    this.onDisablePasswordChange.unsubscribe();
+                }
+                this.onDisablePasswordChange = null;
+            }
+        });
+
+    }
+
+
+    openConfigureModal() {
+        this.configureModal.toggle();
+        this.onUninstallPasswordChange = Observable.fromEvent(this.inputUninstallPassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
+            this.saveRoamingGlobalSettings().subscribe();
+        });
+
+        this.onDisablePasswordChange = Observable.fromEvent(this.inputDisablePassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
+            this.saveRoamingGlobalSettings().subscribe();
+        });
+
+
+    }
+
+    closeConfigureModal() {
+        this.configureModal.toggle();
+
+    }
+
+
 
     loadClients() {
         this.agentService.getSecurityProfiles().subscribe(result => {
@@ -211,6 +287,7 @@ export class RoamingComponent implements OnInit {
 
 
     getConfParameters() {
+
         this.boxService.getVirtualBox().subscribe(res => {
             if (res.conf) {
                 try {
@@ -224,18 +301,18 @@ export class RoamingComponent implements OnInit {
                     if (boxConf.localnetips) {
                         this.localnetIps = boxConf.localnetips.split(',').filter(x => x);
                     }
-
+                    if (boxConf.uninstallPassword) {
+                        this.uninstallPassword = boxConf.uninstallPassword;
+                    }
+                    if (boxConf.disablePassword) {
+                        this.disablePassword = boxConf.disablePassword;
+                    }
                 } catch (ignore) {
                     console.log(ignore);
                 }
 
             }
         });
-    }
-
-
-    get isFormValid() {
-        return this.selectedClient.agentAlias.trim().length > 0 && this.selectedClient.rootProfile.id > 0;
     }
 
     showEditWizard(id: number) {
@@ -254,10 +331,11 @@ export class RoamingComponent implements OnInit {
     }
 
     copyLink() {
-        const domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',');
+        /* const domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
-        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips }).subscribe(res => {
+
+        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters();
                 this.fileLink = res.link;
@@ -266,7 +344,19 @@ export class RoamingComponent implements OnInit {
             } else {
                 this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
             }
+        }); */
+        this.saveRoamingGlobalSettings().subscribe(res => {
+            if (res && res.link) {
+
+                this.fileLink = res.link;
+                this.copyToClipBoard(this.fileLink);
+                this.notification.info(this.staticMessageService.downloadLinkCopiedToClipboardMessage);
+            } else {
+                this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
+            }
         });
+
+
     }
 
     copyToClipBoard(input: string) {
@@ -280,19 +370,27 @@ export class RoamingComponent implements OnInit {
     }
 
 
+    saveRoamingGlobalSettings() {
 
-    saveDomainChanges() {
         const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
+        return this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).map(res => {
+            if (res && res.link) {
+                this.getConfParameters();
+
+            } else {
+                this.notification.error(this.staticMessageService.changesCouldNotSavedMessage);
+
+            }
+            return res;
+        });
+    }
+
+    saveDomainChanges() {
+
         if (this.isDontDomainsValid) {
-            this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips     }).subscribe(res => {
-                if (res && res.link) {
-                    this.getConfParameters();
-                } else {
-                    this.notification.error(this.staticMessageService.changesCouldNotSavedMessage);
-                }
-            });
+            this.saveRoamingGlobalSettings().subscribe();
         }
     }
 
@@ -300,7 +398,7 @@ export class RoamingComponent implements OnInit {
         const domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
-        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips }).subscribe(res => {
+        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters();
                 this.fileLink = res.link;
@@ -398,10 +496,6 @@ export class RoamingComponent implements OnInit {
             const f = d[i];
 
             const res = f.match(/^[a-z0-9.-]+$/i); // alpha or num or - or .
-            if (!res) {
-                return null;
-                break;
-            }
         }
         return d;
     }
@@ -614,22 +708,6 @@ export class RoamingComponent implements OnInit {
         });
     }
 
-    get getClientsFilteredDisabled() {
-        if (this.clientsFiltered) {
-            return this.clientsFiltered.filter(x => x.selected).length === 0;
-        }
-
-        return true;
-    }
-
-    get getUnGroupClientsFilteredDisabled() {
-        if (this.clientsUnGroupFiltered) {
-            return this.clientsUnGroupFiltered.filter(x => x.selected).length === 0;
-        }
-
-        return true;
-    }
-
     saveRoamingClient() {
 
         if (this.selectedClient && this.isFormValid) {
@@ -661,6 +739,14 @@ export class RoamingComponent implements OnInit {
     }
     deletedAgentRoamingClientMessage(): void {
         this.notification.info(this.staticMessageService.deletedAgentRoamingClientMessage);
+    }
+    changeUninstallPasswordEye(status: boolean) {
+
+        this.isUninstallPasswordEyeOff = status;
+    }
+    changeDisablePasswordEye(status: boolean) {
+
+        this.isDisablePasswordEyeOff = status;
     }
 
 }

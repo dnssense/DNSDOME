@@ -106,7 +106,7 @@
     "DontTouchIps": "Dont Touch Ips",
     "DontTouchIpsDescription": "Şifrelenmeyecek ip listesidir, bu ip adreslerine giden paketler şifrelenmeyecektir",
     "LocalNetIps": "Local Network Dns Servers",
-    "LocalNetIpsDescription": "Bu dns serverlardan biri cevap verirse, şifreleme pasif hale geçecektir",
+    "LocalNetIpsDescription": "Bu dns serverlardan biri cevap verirse, koruma pasif hale geçecektir",
     "Add": "Ekle",
     "RoamingClientsEdit": "Mobil Cihazları Düzenle",
     "EditGroup": "Grup Düzenle",
@@ -608,5 +608,9 @@
     "SAFE_LIST": "Safe List",
     "SECURITY": "Security",
     "GRAY_LIST": "Gray List",
-    "HARMFULL_CONTENT": "Restricted Content"
+    "HARMFULL_CONTENT": "Restricted Content",
+    "UninstallPassword": "Uninstall Password",
+    "UninstallPasswordDescription": "Uninstall edilebilmesi için gerekli şifre",
+    "DisablePassword": "Disable Password",
+    "DisablePasswordDescription": "Koruma etkisizleştirme için gerekli şifre"
 }
