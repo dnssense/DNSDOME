@@ -47,8 +47,12 @@
                       <input type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"
                         placeholder="Domain" [(ngModel)]="domain" class="rk-input w-100">
 
-                      <button class="btn btn-small ml-1 safe-btn" style="width: 60px" (click)="addDomainToList()"
-                        [disabled]="domain?.length === 0">{{'Add'|translate}}</button>
+
+                      <button class="btn btn-icon p-0 px-2 ml-1 safe-btn" style="height: 35px;"
+                        [ngStyle]="{'background-color':(domain===undefined || domain?.length === 0) ? 'var(--light-blue-grey)' : 'var(--safe)'}"
+                        (click)="addDomainToList()" [disabled]="domain?.length === 0">
+                        <i-feather name="plus" class="mr-0"></i-feather>
+                      </button>
                     </div>
 
                     <div class="cards mt-3">
@@ -83,8 +87,14 @@
                         placeholder="Ip" class="rk-input w-100" (keydown)="checkIPNumberForDontTouchIps($event, ip)"
                         [(ngModel)]="ip" [ngModelOptions]="{standalone: true}">
 
-                      <button class="btn btn-small ml-1 safe-btn" style="width: 60px" (click)="addIpToList()"
-                        [disabled]="ip?.length === 0">{{'Add'|translate}}</button>
+
+                      <button class="btn btn-icon p-0 px-2 ml-1 safe-btn" style="height: 35px;"
+                        [ngStyle]="{'background-color':(ip===undefined || ip?.length === 0) ? 'var(--light-blue-grey)' : 'var(--safe)'}"
+                        (click)="addIpToList()" [disabled]="ip?.length === 0">
+                        <i-feather name="plus" class="mr-0"></i-feather>
+                      </button>
+
+
                     </div>
 
                     <div class="cards mt-3">
@@ -120,8 +130,12 @@
                         (keydown)="checkIPNumberForLocalNetIps($event, localnetip)" [(ngModel)]="localnetip"
                         [ngModelOptions]="{standalone: true}">
 
-                      <button class="btn btn-small ml-1 safe-btn" style="width: 60px" (click)="addIpToLocalNetList()"
-                        [disabled]="localnetip?.length === 0">{{'Add'|translate}}</button>
+
+                      <button class="btn btn-icon p-0 px-2 ml-1 safe-btn" style="height: 35px;"
+                        [ngStyle]="{'background-color':(localnetip===undefined || localnetip?.length === 0) ? 'var(--light-blue-grey)' : 'var(--safe)'}"
+                        (click)="addIpToLocalNetList()" [disabled]="localnetip?.length === 0">
+                        <i-feather name="plus" class="mr-0"></i-feather>
+                      </button>
                     </div>
 
                     <div class="cards mt-3">
@@ -160,6 +174,7 @@
                             [type]="isUninstallPasswordEyeOff ? 'text' : 'password'" placeholder="Password"
                             class="rk-input w-100" [(ngModel)]="uninstallPassword"
                             [ngModelOptions]="{standalone: true}">
+
 
                         </div>
 
