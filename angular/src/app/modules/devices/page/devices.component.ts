@@ -1,25 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { Agent } from 'src/app/core/models/Agent';
+import { AgentType } from 'src/app/core/models/AgentType';
+import { Box } from 'src/app/core/models/Box';
+import { AgentGroup, AgentInfo, DeviceGroup } from 'src/app/core/models/DeviceGroup';
+import { BlackWhiteListProfile, SecurityProfile, SecurityProfileItem } from 'src/app/core/models/SecurityProfile';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AlertService } from 'src/app/core/services/alert.service';
-import { Box } from 'src/app/core/models/Box';
-import { NotificationService } from 'src/app/core/services/notification.service';
-
-import { AgentType } from 'src/app/core/models/AgentType';
-import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
 import { BoxService } from 'src/app/core/services/box.service';
-import { ValidationService } from 'src/app/core/services/validation.service';
-import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
-import { DEVICE_GROUP } from 'src/app/core/constants';
-import { DeviceGroup, AgentInfo, AgentGroup } from 'src/app/core/models/DeviceGroup';
-import { Agent } from 'src/app/core/models/Agent';
-import { RkTableConfigModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { NotificationService } from 'src/app/core/services/notification.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
-import { element } from 'protractor';
-import { group } from '@angular/animations';
-import { JsonPipe } from '@angular/common';
+import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
+
 
 declare var $: any;
 
@@ -31,7 +25,7 @@ export class UnregisteredAgent {
     /**
      * @description For UI
      */
-    selected ?= false;
+    selected?= false;
 }
 
 export function validLength(val: string) {
@@ -42,7 +36,8 @@ export class GroupAgentModel {
     agentGroup: AgentGroup;
     securityProfile: SecurityProfile;
     agents: Agent[];
-    memberCounts ?= 0;
+    memberCounts?= 0;
+    name: string;
 }
 
 @Component({
@@ -159,12 +154,14 @@ export class DevicesComponent implements OnInit {
                     const finded = this.groupList.find(g => g.agentGroup.groupName === r.agentGroup.groupName);
                     if (!finded) {
                         this.groupList.push({
+                            name: r.agentGroup.groupName,
                             agentGroup: r.agentGroup,
                             securityProfile: r.rootProfile,
                             agents: [r]
                         });
 
                         this.groupListForSelect.push({
+                            name: r.agentGroup.groupName,
                             displayText: r.agentGroup.groupName,
                             value: r.agentGroup.id,
                             selected: index === 0
@@ -465,11 +462,11 @@ export class DevicesComponent implements OnInit {
     }
 
     get getEditDisabled() {
-        return this.registereds.filter(x => x.selected).length === 0;
+        return this.registereds.filter(x => x.selected).length === 0;
     }
 
     get getCreateDisabled() {
-        return this.unregistereds.filter(x => x.selected).length === 0;
+        return this.unregistereds.filter(x => x.selected).length === 0;
     }
 
     groupNameKeyup($event) {

@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ConfigService } from './config.service';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Agent } from '../models/Agent';
-import { SecurityProfile } from '../models/SecurityProfile';
-import { OperationResult } from '../models/OperationResult';
-import { DeviceResponse } from '../models/DeviceResponse';
+import { Agent, AgentDetail } from '../models/Agent';
 import { DeviceGroup } from '../models/DeviceGroup';
+import { DeviceResponse } from '../models/DeviceResponse';
+import { SecurityProfile } from '../models/SecurityProfile';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +25,10 @@ export class AgentService {
 
   private saveAgentURL = this.config.getApiUrl() + '/agent/location';
   private deleteAgentURL = this.config.getApiUrl() + '/agent/location';
+
+  private getAgentAliveUrl = this.config.getApiUrl() + '/agent/alive/search';
+  private getAgentInfoUrl = this.config.getApiUrl() + '/agent/info/search';
+
 
 
 
@@ -93,6 +96,15 @@ export class AgentService {
     };
 
     return options;
+  }
+
+  getAgentAlives(uuids: string[]): Observable<string[]> {
+
+    return this.http.post<any>(this.getAgentAliveUrl, { agentSerials: uuids.join(',') }, this.getOptions()).map(res => res);
+  }
+
+  getAgentInfo(uuids: string[]): Observable<AgentDetail[]> {
+    return this.http.post<any>(this.getAgentInfoUrl, { agentSerials: uuids.join(',') }, this.getOptions()).map(res => res);
   }
 
 }

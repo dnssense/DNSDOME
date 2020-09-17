@@ -1,6 +1,6 @@
 import { AgentType } from './AgentType';
-import { SecurityProfile } from './SecurityProfile';
 import { AgentGroup } from './DeviceGroup';
+import { SecurityProfile } from './SecurityProfile';
 
 export class Agent {
     id: number;
@@ -17,14 +17,30 @@ export class Agent {
     agentGroup: AgentGroup;
     logo?: any = null;
     agents: any[];
+    conf?: any;
+    uuid: string;
 
     /**
      * @description For UI
      */
-    selected ?= false;
+    selected?= false;
+    isDisabled = false;
+    isAlive = true;
+    isUserDisabled = false;
 }
 
 export interface IpWithMask {
     baseIp: string;
     mask: number;
+}
+
+export interface AgentDetail {
+    id: number;
+    uuid: string;
+    insertDate: string;
+    isUserDisabled: number;
+    companyId: number;
+    hostname: string;
+    mac: string;
+    os: string;
 }

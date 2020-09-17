@@ -33,12 +33,12 @@
           </rk-modal-header>
 
           <rk-modal-body>
-            <div class="container-fluid">
+            <div class="container-fluid mb-2">
               <div class="rk-modal-card">
                 <h6 class="rk-modal-card-title">{{'DontTouchDomains'|translate}}</h6>
 
-                <div class="row mt-2">
-                  <div class="col-12 mt-3">
+                <div class="row mt-0">
+                  <div class="col-12 mt-0">
                     <p class="rk-description">
                       {{'DontTouchDomainsDescription'|translate}}
                     </p>
@@ -72,12 +72,12 @@
 
             </div>
 
-            <div class="container-fluid">
+            <div class="container-fluid mb-2">
               <div class="rk-modal-card">
                 <h6 class="rk-modal-card-title">{{'DontTouchIps'|translate}}</h6>
 
-                <div class="row mt-2">
-                  <div class="col-12 mt-3">
+                <div class="row mt-0">
+                  <div class="col-12 mt-0">
                     <p class="rk-description">
                       {{'DontTouchIpsDescription'|translate}}
                     </p>
@@ -114,12 +114,12 @@
 
             </div>
 
-            <div class="container-fluid">
+            <div class="container-fluid mb-2">
               <div class="rk-modal-card">
                 <h6 class="rk-modal-card-title">{{'LocalNetIps'|translate}}</h6>
 
-                <div class="row mt-2">
-                  <div class="col-12 mt-3">
+                <div class="row mt-0">
+                  <div class="col-12 mt-0">
                     <p class="rk-description">
                       {{'LocalNetIpsDescription'|translate}}
                     </p>
@@ -156,12 +156,12 @@
             </div>
 
 
-            <div class="container-fluid">
+            <div class="container-fluid mb-2">
               <div class="rk-modal-card">
                 <h6 class="rk-modal-card-title">{{'UninstallPassword'|translate}}</h6>
 
-                <div class="row mt-2">
-                  <div class="col-12 mt-3">
+                <div class="row mt-0">
+                  <div class="col-12 mt-0">
                     <p class="rk-description">
                       {{'UninstallPasswordDescription'|translate}}
                     </p>
@@ -195,12 +195,12 @@
 
             </div>
 
-            <div class="container-fluid">
+            <div class="container-fluid mb-2">
               <div class="rk-modal-card">
                 <h6 class="rk-modal-card-title">{{'DisablePassword'|translate}}</h6>
 
-                <div class="row mt-2">
-                  <div class="col-12 mt-3">
+                <div class="row mt-0">
+                  <div class="col-12 mt-0">
                     <p class="rk-description">
                       {{'DisablePasswordDescription'|translate}}
                     </p>
@@ -457,7 +457,7 @@
           </rk-modal-footer>
         </rk-modal>
 
-        <div class="col-12 p-0 mt-3">
+        <div class="col-12 p-0 mt-3 groupsOfRoamingClients">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between">
@@ -505,142 +505,115 @@
           </rk-table-container>
         </div>
 
-        <div class="col-12 col-lg-6 pl-lg-0 mt-3">
-          <rk-table-container class="m-0">
-            <div class="rk-table-container-header">
-              <div class="top-content justify-content-between">
-                <div class="d-flex align-items-center flex-wrap">
-                  <div class="inf mr-4">
-                    <span class="text-primary">{{ clientsFiltered?.length }} </span>
-                    {{'QueriesListed'|translate}}
-                  </div>
 
-                  <div class="search ml-5">
-                    <div class="rk-autocomplete-container" style="width: 220px;">
-                      <input type="text" placeholder="Search" [(ngModel)]="searchKey" class="rk-input rk-autocomplete">
-                      <i-feather class="search-icon" name="search"></i-feather>
-                    </div>
-                  </div>
+
+      </div>
+
+
+
+
+      <div class="col-12 p-0 mt-3 roamingClients">
+        <rk-table-container class="m-0">
+          <div class="rk-table-container-header">
+            <div class="top-content justify-content-between">
+              <div class="d-flex align-items-center flex-wrap">
+                <div class="inf mr-4">
+                  <span class="text-primary">{{ clientsForShow?.length }} </span>
+                  {{'QueriesListed'|translate}}
                 </div>
+                <div class="groupSelect ml-5">
+                  <rk-radio class="rk-radio-m-0 float-none" [checked]="isGroupedRadioButtonSelected==false"
+                    (valueChange)="showGroupedClients(false)" value="true">
+                    {{'NotGrouped'|translate}}
+                  </rk-radio>
 
-                <div>
-                  <button class="btn btn-small mr-2" [disabled]="getClientsFilteredDisabled"
-                    (click)="openChangeGroup()">
-                    {{'ChangeGroup'|translate}}
-                  </button>
+                </div>
+                <div class="groupSelect ml-5">
+
+                  <rk-radio class="rk-radio-m-0 float-none" [checked]="isGroupedRadioButtonSelected"
+                    (valueChange)="showGroupedClients(true)" value="false">
+                    {{'Grouped'|translate}}
+                  </rk-radio>
+                </div>
+                <div class="search ml-5">
+                  <div class="rk-autocomplete-container" style="width: 220px;">
+                    <input type="text" placeholder="Search" [(ngModel)]="searchKeyUnGroup"
+                      class="rk-input rk-autocomplete">
+                    <i-feather class="search-icon" name="search"></i-feather>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <rk-table [showPagination]="false">
-              <ng-template #header>
-                <tr>
-                  <th>
-                    <rk-checkbox (valueChange)="clientsTableCheckboxChanged($event)"></rk-checkbox>
-                  </th>
-                  <th>{{'DeviceName'|translate}}</th>
-                  <th>{{'SecurityProfile'|translate}}</th>
-                  <th>{{'GroupName'|translate}}</th>
-                  <th colspan="2">{{'Operation'|translate}}</th>
-                </tr>
-              </ng-template>
-
-              <ng-template #body>
-                <tr *ngFor="let c of clientsFiltered | filter: searchKey : 'agentAlias'">
-                  <td style="width: 60px">
-                    <rk-checkbox [(value)]="c.selected"></rk-checkbox>
-                  </td>
-                  <td>{{ c.agentAlias }}</td>
-                  <td>{{ c.rootProfile.name }}</td>
-                  <td>{{ c?.agentGroup?.groupName ? c?.agentGroup?.groupName : ('NoGroup'|translate) }}</td>
-                  <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editClient(c)">
-                      <i-feather name="edit-3"></i-feather>
-                    </button>
-                  </td>
-                  <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)">
-                      <i-feather name="trash-2"></i-feather>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr *ngIf="clientsFiltered?.length === 0">
-                  <td colspan="5">{{'NoData'|translate}}</td>
-                </tr>
-              </ng-template>
-            </rk-table>
-          </rk-table-container>
-        </div>
-
-        <div class="col-12 col-lg-6 pr-lg-0 mt-3">
-          <rk-table-container class="m-0">
-            <div class="rk-table-container-header">
-              <div class="top-content justify-content-between">
-                <div class="d-flex align-items-center flex-wrap">
-                  <div class="inf mr-4">
-                    <span class="text-primary">{{ clientsFiltered?.length }} </span>
-                    {{'QueriesListed'|translate}}
-                  </div>
-
-                  <div class="search ml-5">
-                    <div class="rk-autocomplete-container" style="width: 220px;">
-                      <input type="text" placeholder="Search" [(ngModel)]="searchKeyUnGroup"
-                        class="rk-input rk-autocomplete">
-                      <i-feather class="search-icon" name="search"></i-feather>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <button class="btn btn-small" [disabled]="getUnGroupClientsFilteredDisabled"
-                    (click)="openChangeGroup()">
-                    {{'AddToGroup'|translate}}
-                  </button>
-                </div>
+              <div>
+                <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
+                  [disabled]="getUnGroupClientsGroupedFilteredDisabled" (click)="openChangeGroup()">
+                  {{'AddToGroup'|translate}}
+                </button>
+                <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected"
+                  [disabled]="getClientsGroupedFilteredDisabled" (click)="openChangeGroup()">
+                  {{'ChangeGroup'|translate}}
+                </button>
               </div>
             </div>
+          </div>
 
-            <rk-table [showPagination]="false">
-              <ng-template #header>
-                <tr>
-                  <th>
-                    <rk-checkbox (valueChange)="clientsTableCheckboxChanged($event)"></rk-checkbox>
-                  </th>
-                  <th>{{'DeviceName'|translate}}</th>
-                  <th>{{'SecurityProfile'|translate}}</th>
-                  <th>{{'GroupName'|translate}}</th>
-                  <th colspan="2">{{'Operation'|translate}}</th>
-                </tr>
-              </ng-template>
+          <rk-table [showPagination]="false">
+            <ng-template #header>
+              <tr>
+                <th>
+                  <rk-checkbox (valueChange)="clientsTableCheckboxChanged($event)"></rk-checkbox>
+                </th>
+                <th>{{'DeviceName'|translate}}</th>
+                <th>{{'SecurityProfile'|translate}}</th>
+                <th>{{'GroupName'|translate}}</th>
+                <th>{{'Alive'|translate}}</th>
+                <th>{{'UserDisabled'|translate}}</th>
+                <th> {{'Protection'|translate}}</th>
+                <th colspan="2">{{'Operation'|translate}}</th>
+              </tr>
+            </ng-template>
 
-              <ng-template #body>
-                <tr *ngFor="let c of clientsUnGroupFiltered | filter: searchKeyUnGroup : 'agentAlias'">
-                  <td style="width: 60px">
-                    <rk-checkbox [(value)]="c.selected"></rk-checkbox>
-                  </td>
-                  <td>{{ c.agentAlias }}</td>
-                  <td>{{ c.rootProfile.name }}</td>
-                  <td>{{ c?.agentGroup?.groupName ? c?.agentGroup?.groupName : ('NoGroup'|translate) }}</td>
-                  <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editClient(c)">
-                      <i-feather name="edit-3"></i-feather>
-                    </button>
-                  </td>
-                  <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)">
-                      <i-feather name="trash-2"></i-feather>
-                    </button>
-                  </td>
-                </tr>
+            <ng-template #body>
+              <tr *ngFor="let c of clientsForShow | filter: searchKeyUnGroup : 'agentAlias'">
+                <td style="width: 60px">
+                  <rk-checkbox [(value)]="c.selected"></rk-checkbox>
+                </td>
+                <td>{{ c.agentAlias }}</td>
+                <td>{{ c.rootProfile.name }}</td>
+                <td>{{ c?.agentGroup?.groupName ? c?.agentGroup?.groupName : ('NoGroup'|translate) }}</td>
+                <td class="text-center" style="width: 80px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path [attr.fill]="c.isAlive ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
+                      d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                  </svg>
+                </td>
+                <td class="text-center" style="width: 40px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path [attr.fill]="c.isUserDisabled ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
+                      d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                  </svg>
+                </td>
+                <td class="text-center" style="width: 40px;">
+                  <rk-switch [(value)]="!c.isDisabled" (valueChange)="agentDisableEnable($event, c)"></rk-switch>
+                </td>
+                <td style="width: 60px">
+                  <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editClient(c)">
+                    <i-feather name="edit-3"></i-feather>
+                  </button>
+                </td>
+                <td style="width: 60px">
+                  <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)">
+                    <i-feather name="trash-2"></i-feather>
+                  </button>
+                </td>
+              </tr>
 
-                <tr *ngIf="clientsFiltered?.length === 0">
-                  <td colspan="5">{{'NoData'|translate}}</td>
-                </tr>
-              </ng-template>
-            </rk-table>
-          </rk-table-container>
-        </div>
+              <tr *ngIf="clientsGroupedFiltered?.length === 0">
+                <td colspan="5">{{'NoData'|translate}}</td>
+              </tr>
+            </ng-template>
+          </rk-table>
+        </rk-table-container>
       </div>
     </div>
   </div>

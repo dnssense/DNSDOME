@@ -612,5 +612,9 @@
     "UninstallPassword": "Uninstall Password",
     "UninstallPasswordDescription": "Uninstall edilebilmesi için gerekli şifre",
     "DisablePassword": "Disable Password",
-    "DisablePasswordDescription": "Koruma etkisizleştirme için gerekli şifre"
+    "DisablePasswordDescription": "Koruma etkisizleştirme için gerekli şifre",
+    "Grouped": "Gruplanmış",
+    "NotGrouped": "Gruplanmamış",
+    "UserDisabled": "Kullanıcı Korumayı Kapattımı",
+    "Protection": "Koruma"
 }

@@ -1,5 +1,4 @@
 {
-
   "/api/*": {
     "target": "http://beta.roksit.com",
     "secure": false,

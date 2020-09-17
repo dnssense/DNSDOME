@@ -6,6 +6,7 @@ import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.compon
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Agent } from 'src/app/core/models/Agent';
+import { Box } from 'src/app/core/models/Box';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
 import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
 import { AgentService } from 'src/app/core/services/agent.service';
@@ -26,6 +27,12 @@ export interface BoxConf {
     disablePassword: string;
 }
 
+export interface AgentConf {
+    uninstallPassword: string;
+    disablePassword: string;
+    isDisabled: number;
+}
+
 
 @Component({
     selector: 'app-roaming',
@@ -33,6 +40,7 @@ export interface BoxConf {
     styleUrls: ['roaming.component.sass']
 })
 export class RoamingComponent implements OnInit, AfterViewInit {
+    virtualBox: Box;
 
 
     constructor(
@@ -46,22 +54,23 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         private inputIpService: InputIPService
     ) { }
 
-
+    isGroupedRadioButtonSelected = false;
     get isFormValid() {
         return this.selectedClient.agentAlias.trim().length > 0 && this.selectedClient.rootProfile.id > 0;
     }
 
-    get getClientsFilteredDisabled() {
-        if (this.clientsFiltered) {
-            return this.clientsFiltered.filter(x => x.selected).length === 0;
+    get getClientsGroupedFilteredDisabled() {
+        if (this.clientsGroupedFiltered) {
+            return this.clientsGroupedFiltered.filter(x => x.selected).length === 0;
         }
 
         return true;
     }
 
-    get getUnGroupClientsFilteredDisabled() {
-        if (this.clientsUnGroupFiltered) {
-            return this.clientsUnGroupFiltered.filter(x => x.selected).length === 0;
+
+    get getUnGroupClientsGroupedFilteredDisabled() {
+        if (this.clientsUngroupedFiltered) {
+            return this.clientsUngroupedFiltered.filter(x => x.selected).length === 0;
         }
 
         return true;
@@ -71,8 +80,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     clientForm: FormGroup;
     clients: Agent[];
-    clientsFiltered: Agent[];
-    clientsUnGroupFiltered: Agent[];
+    clientsGroupedFiltered: Agent[];
+    clientsUngroupedFiltered: Agent[];
+    clientsForShow: Agent[];
     // clientGroups: Agent[];
     // selectedClients: Agent[] = [];
     // clientListForGroup: Agent[] = [];
@@ -178,11 +188,11 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     openConfigureModal() {
         this.configureModal.toggle();
         this.onUninstallPasswordChange = Observable.fromEvent(this.inputUninstallPassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
-            this.saveRoamingGlobalSettings().subscribe();
+            this.saveRoamingGlobalSettings();
         });
 
         this.onDisablePasswordChange = Observable.fromEvent(this.inputDisablePassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
-            this.saveRoamingGlobalSettings().subscribe();
+            this.saveRoamingGlobalSettings();
         });
 
 
@@ -198,15 +208,26 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     loadClients() {
         this.agentService.getSecurityProfiles().subscribe(result => {
             this.securityProfiles = result;
-
             this.fillSecurityProfilesSelect(result);
         });
 
         this.roamingService.getClients().subscribe(res => {
             this.clients = res;
+            this.agentService.getAgentAlives(this.clients.map(x => x.uuid)).subscribe(x => {
+                this.clients.forEach(y => {
+                    y.isAlive = x.includes(y.uuid);
+                });
+            });
+            this.agentService.getAgentInfo(this.clients.map(x => x.uuid)).subscribe(x => {
+                this.clients.forEach(y => {
+                    const info = x.find(a => a.uuid == y.uuid);
+                    y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
 
-            this.clientsFiltered = this.clients.filter(x => x.agentGroup);
-            this.clientsUnGroupFiltered = this.clients.filter(x => !x.agentGroup);
+                });
+            });
+
+            this.clientsGroupedFiltered = this.clients.filter(x => x.agentGroup);
+            this.clientsUngroupedFiltered = this.clients.filter(x => !x.agentGroup);
 
             this.groupedClients = this.getGroupClients(this.clients);
             this.groupListForSelect = [];
@@ -225,6 +246,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 this.groupListForSelect[0].selected = true;
                 this.selectedGroupName = this.groupListForSelect[0].displayText;
             }
+            this.clientsForShow = this.isGroupedRadioButtonSelected ? this.clientsGroupedFiltered : this.clientsUngroupedFiltered;
 
 
         });
@@ -250,27 +272,29 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
     private getGroupClients(clients: Agent[]): GroupAgentModel[] {
-        const grouped = [] as GroupAgentModel[];
+        const grouped = new Map<string, GroupAgentModel>(); // [] as GroupAgentModel[];
 
         clients.forEach(elem => {
             if (elem.agentGroup && elem.agentGroup.id > 0) {
-                const finded = grouped.find(x => x.agentGroup.groupName === elem.agentGroup.groupName);
+                const finded = grouped.get(elem.agentGroup.groupName); // .find(x => x.agentGroup.groupName === elem.agentGroup.groupName);
 
                 if (finded) {
                     finded.memberCounts++;
                     finded.agents.push(elem);
                 } else {
-                    grouped.push({
-                        agentGroup: elem.agentGroup,
-                        securityProfile: elem.rootProfile,
-                        agents: [elem],
-                        memberCounts: 1
-                    });
+                    grouped.set(elem.agentGroup?.groupName,
+                        {
+                            name: elem.agentGroup?.groupName,
+                            agentGroup: elem.agentGroup,
+                            securityProfile: elem.rootProfile,
+                            agents: [elem],
+                            memberCounts: 1
+                        });
                 }
             }
         });
 
-        return grouped;
+        return Array.from(grouped.values());
     }
 
 
@@ -289,6 +313,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     getConfParameters() {
 
         this.boxService.getVirtualBox().subscribe(res => {
+            this.virtualBox = res;
             if (res.conf) {
                 try {
                     const boxConf: BoxConf = JSON.parse(res.conf);
@@ -324,9 +349,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     searchByKeyword() {
         if (this.searchKey) {
-            this.clientsFiltered = this.clients.filter(f => f.agentAlias.toLowerCase().includes(this.searchKey.toLowerCase()));
+            this.clientsGroupedFiltered = this.clients.filter(f => f.agentAlias.toLowerCase().includes(this.searchKey.toLowerCase()));
         } else {
-            this.clientsFiltered = this.clients;
+            this.clientsGroupedFiltered = this.clients;
         }
     }
 
@@ -345,7 +370,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
             }
         }); */
-        this.saveRoamingGlobalSettings().subscribe(res => {
+        this.boxService.getProgramLink().subscribe(res => {
             if (res && res.link) {
 
                 this.fileLink = res.link;
@@ -375,22 +400,27 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
-        return this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).map(res => {
-            if (res && res.link) {
-                this.getConfParameters();
+        const request = { box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword };
+        this.boxService.saveBoxConfig(request).subscribe(x => {
 
-            } else {
-                this.notification.error(this.staticMessageService.changesCouldNotSavedMessage);
+            /* this.boxService.getProgramLink().subscribe(res => {
+                if (res && res.link) {
+                    this.getConfParameters();
 
-            }
-            return res;
+                } else {
+                    this.notification.error(this.staticMessageService.changesCouldNotSavedMessage);
+
+                }
+                return res;
+            }); */
         });
+
     }
 
     saveDomainChanges() {
 
         if (this.isDontDomainsValid) {
-            this.saveRoamingGlobalSettings().subscribe();
+            this.saveRoamingGlobalSettings();
         }
     }
 
@@ -398,15 +428,18 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         const domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
-        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).subscribe(res => {
-            if (res && res.link) {
-                this.getConfParameters();
-                this.fileLink = res.link;
-                window.open('http://' + this.fileLink, '_blank');
-            } else {
-                this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
-            }
+        this.boxService.saveBoxConfig({ box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).subscribe(x => {
+            this.boxService.getProgramLink().subscribe(res => {
+                if (res && res.link) {
+                    this.getConfParameters();
+                    this.fileLink = res.link;
+                    window.open('http://' + this.fileLink, '_blank');
+                } else {
+                    this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
+                }
+            });
         });
+
     }
 
     addDomainToList() {
@@ -502,7 +535,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
 
     clientsTableCheckboxChanged($event) {
-        this.clientsFiltered.forEach(elem => elem.selected = $event);
+        this.clients.forEach(x => x.selected = false);
+        this.clientsForShow.forEach(elem => elem.selected = $event);
     }
 
 
@@ -747,6 +781,16 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     changeDisablePasswordEye(status: boolean) {
 
         this.isDisablePasswordEyeOff = status;
+    }
+
+    agentDisableEnable(event: any, agent: Agent) {
+        debugger;
+    }
+    showGroupedClients(val: boolean) {
+
+        this.isGroupedRadioButtonSelected = val;
+        this.clientsForShow = val ? this.clientsGroupedFiltered : this.clientsUngroupedFiltered;
+        this.clients.forEach(x => x.selected = false);
     }
 
 }

@@ -614,5 +614,9 @@
     "UninstallPassword": "Uninstall Password",
     "UninstallPasswordDescription": "Uninstall process asks for this password",
     "DisablePassword": "Disable Password",
-    "DisablePasswordDescription": "Disable protection asks for this password"
+    "DisablePasswordDescription": "Disable protection asks for this password",
+    "Grouped": "Grouped",
+    "NotGrouped": "Not Grouped",
+    "UserDisabled": "Is User Disabled Protection",
+    "Protection": "Protection"
 }

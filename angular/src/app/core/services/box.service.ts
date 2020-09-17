@@ -13,6 +13,7 @@ export class BoxService {
   private deleteBoxURL = this.config.getApiUrl() + '/agent/box';
   private virtualBoxURL = this.config.getApiUrl() + '/box/virtual';
   private getLinkURL = this.config.getApiUrl() + '/box/roamingclientlink';
+  private boxConfURL = this.config.getApiUrl() + '/box/conf';
 
   constructor(private http: HttpClient, private config: ConfigService) { }
 
@@ -32,8 +33,13 @@ export class BoxService {
     return this.http.get<Box>(this.virtualBoxURL).map(data => data);
   }
 
-  getProgramLink(request: { donttouchdomains: string, donttouchips: string, localnetips: string, uninstallPassword: string, disablePassword: string }): Observable<any> {
-    return this.http.post<any>(this.getLinkURL, request).map(data => data);
+  getProgramLink(): Observable<any> {
+    return this.http.get<any>(this.getLinkURL).map(data => data);
+  }
+
+  saveBoxConfig(request: { box: string, uuid: string, donttouchdomains: string, donttouchips: string, localnetips: string, uninstallPassword: string, disablePassword: string }) {
+
+    return this.http.post<any>(this.boxConfURL, request).map(data => data);
   }
 
   private getOptions() {

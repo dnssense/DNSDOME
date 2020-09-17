@@ -1,15 +1,15 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RoamingComponent } from './page/roaming.component';
-import { RoamingRoutingModule } from './roaming-routing.module';
 import { HttpClient } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { IconsModule, RkCheckboxModule, RkModalModule, RkRadioModule, RkSelectModule, RkSwitchModule, RkTableModule, RkToggleButtonModule } from 'roksit-lib';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
-import { IconsModule, RkCheckboxModule, RkModalModule, RkTableModule, RkToggleButtonModule, RkSelectModule } from 'roksit-lib';
 import { PipesModule } from '../shared/pipes/pipes.module';
+import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
+import { RoamingComponent } from './page/roaming.component';
+import { RoamingRoutingModule } from './roaming-routing.module';
 
 @NgModule({
   declarations: [
@@ -34,7 +34,9 @@ import { PipesModule } from '../shared/pipes/pipes.module';
     RkModalModule,
     PipesModule,
     RkToggleButtonModule,
-    RkSelectModule
+    RkSelectModule,
+    RkSwitchModule,
+    RkRadioModule,
   ]
 
 })
