@@ -80,8 +80,8 @@ export class ConfigService {
           this.host.www = 'https://www.cmerp.my';
           this.host.brand = 'CMERP';
           this.host.aboutus = 'https://www.cmerp.my/about-us';
-          this.host.logoImage = 'logo-cmerp.jpg';
-          this.host.logoDarkImage = 'logo-cmerp.jpg';
+          this.host.logoImage = 'logo-cmerp.png';
+          this.host.logoDarkImage = 'logo-cmerp.png';
           this.host.iconImage = 'favicon-cmerp.png';
           this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-cmerp.png';
           this.host.title = 'CMERP';
