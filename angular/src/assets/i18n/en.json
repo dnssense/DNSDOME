@@ -618,5 +618,7 @@
     "Grouped": "Grouped",
     "NotGrouped": "Not Grouped",
     "UserDisabled": "Is User Disabled Protection",
-    "Protection": "Protection"
+    "Protection": "Protection",
+    "Details": "Details",
+    "AgentConfSaved": "Agent conf saved"
 }

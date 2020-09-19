@@ -1,10 +1,11 @@
-import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DateFormatPipe } from './DateFormatPipe';
+import { Injectable, NgModule } from '@angular/core';
 import { CountryPipe } from './CountryPipe';
 import { CustomDecimalPipe } from './CustomDecimalPipe';
-import { MacAddressFormatterPipe } from './MacAddressFormatterPipe';
+import { DateFormatPipe } from './DateFormatPipe';
 import { FilterPipe } from './filter.pipe';
+import { MacAddressFormatterPipe } from './MacAddressFormatterPipe';
+import { MultiFilterPipe } from './multifilter.pipe';
 
 @Injectable()
 @NgModule({
@@ -16,14 +17,16 @@ import { FilterPipe } from './filter.pipe';
       CountryPipe,
       CustomDecimalPipe,
       MacAddressFormatterPipe,
-      FilterPipe
+      FilterPipe,
+      MultiFilterPipe
    ],
    exports: [
       DateFormatPipe,
       CountryPipe,
       CustomDecimalPipe,
       MacAddressFormatterPipe,
-      FilterPipe
+      FilterPipe,
+      MultiFilterPipe
    ]
 })
 export class PipesModule { }

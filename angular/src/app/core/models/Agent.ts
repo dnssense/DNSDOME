@@ -17,7 +17,7 @@ export class Agent {
     agentGroup: AgentGroup;
     logo?: any = null;
     agents: any[];
-    conf?: any;
+    conf?: null;
     uuid: string;
 
     /**
@@ -25,8 +25,13 @@ export class Agent {
      */
     selected?= false;
     isDisabled = false;
+    uninstallPassword?: string;
+    disablePassword?: string;
     isAlive = true;
     isUserDisabled = false;
+    os?: string;
+    hostname?: string;
+
 }
 
 export interface IpWithMask {

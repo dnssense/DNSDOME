@@ -616,5 +616,7 @@
     "Grouped": "Gruplanmış",
     "NotGrouped": "Gruplanmamış",
     "UserDisabled": "Kullanıcı Korumayı Kapattımı",
-    "Protection": "Koruma"
+    "Protection": "Koruma",
+    "Details": "Detaylar",
+    "AgentConfSaved": "Ajan konfigurasyonu kaydedildi"
 }

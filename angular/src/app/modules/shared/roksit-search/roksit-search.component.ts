@@ -1,30 +1,30 @@
-import { StaticService } from 'src/app/core/services/staticService';
-import { CategoryV2 } from 'src/app/core/models/CategoryV2';
-import { ReportService } from 'src/app/core/services/reportService';
-import { Component, OnInit, Input, EventEmitter, Output, AfterViewInit, ViewChild } from '@angular/core';
-import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { LogColumn } from 'src/app/core/models/LogColumn';
-import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import * as moment from 'moment';
+import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
+import { RkDateConfig, RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import { RkFilterOutput } from 'roksit-lib/lib/modules/rk-filter-badge/rk-filter-badge.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { RkRadioOutput } from 'roksit-lib/lib/modules/rk-radio/rk-radio.component';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { CategoryV2 } from 'src/app/core/models/CategoryV2';
+import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
+import { LogColumn } from 'src/app/core/models/LogColumn';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { UserService } from 'src/app/core/services/userService';
+import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
 import { User } from 'src/app/core/models/User';
-import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
-import { Router } from '@angular/router';
+import { NotificationService } from 'src/app/core/services/notification.service';
+import { ReportService } from 'src/app/core/services/reportService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
-import { RkDateTime, RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
-import * as moment from 'moment';
+import { StaticService } from 'src/app/core/services/staticService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
-import { TranslateService } from '@ngx-translate/core';
+import { UserService } from 'src/app/core/services/userService';
 
 export class GroupedCategory {
   type: string;
   name: string;
-  color ?= '#3397c5';
+  color?= '#3397c5';
   items: CategoryV2[];
 }
 
@@ -67,7 +67,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
         if (finded) {
           finded.groupItems.push({ text: elem.name, value: elem.name });
         } else {
-          this.autocompleteItems.push({ text: translatorService.translate(elem.type), value: elem.name, groupItems: [] });
+          this.autocompleteItems.push({ text: translatorService.translate(elem.type), value: elem.name, groupItems: [{ text: elem.name, value: elem.name }] });
         }
       });
 

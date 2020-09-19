@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
-import { HttpClient } from '@angular/common/http';
-import { ConfigService } from './config.service';
-import { CategoryV2 } from '../models/CategoryV2';
-import { ApplicationV2 } from '../models/ApplicationV2';
 import { TranslatorService } from './translator.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StaticMessageService {
+
 
 
 
@@ -74,11 +70,11 @@ export class StaticMessageService {
 
   get needsToFillInRequiredFieldsMessage(): string {
     return this.translator.translate(`PleaseFillInRequirementFields`);
-}
+  }
 
-get savedUserMessage(): string {
-  return this.translator.translate(`UserSaved`);
-}
+  get savedUserMessage(): string {
+    return this.translator.translate(`UserSaved`);
+  }
 
   get areYouSureMessage(): string {
     return this.translator.translate(`AreYouSure`);
@@ -313,16 +309,20 @@ get savedUserMessage(): string {
     return this.translator.translate('PasswordResetLinkSendedPleaseCheckYourEmail');
   }
 
-  get  profileCannotFind(): string {
+  get profileCannotFind(): string {
     return this.translator.translate('ProfileCannotFind');
   }
 
-  get  pleaseEnterValidIp(): string {
+  get pleaseEnterValidIp(): string {
     return this.translator.translate('PleaseEnterValidIp');
   }
 
-  get  pleaseEnterValidIpAndMask(): string {
+  get pleaseEnterValidIpAndMask(): string {
     return this.translator.translate('PleaseEnterValidIpAndMask');
+  }
+
+  get savedAgentConfMessage(): string {
+    return this.translator.translate('AgentConfSaved');
   }
 
 

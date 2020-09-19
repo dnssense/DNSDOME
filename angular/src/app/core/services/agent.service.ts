@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AgentConf } from 'src/app/modules/roaming/page/roaming.component';
 import { Agent, AgentDetail } from '../models/Agent';
 import { DeviceGroup } from '../models/DeviceGroup';
 import { DeviceResponse } from '../models/DeviceResponse';
@@ -11,6 +12,7 @@ import { ConfigService } from './config.service';
   providedIn: 'root'
 })
 export class AgentService {
+
 
   private getRegisteredURL = this.config.getApiUrl() + '/agent/device';
   private getUnregisteredURL = this.config.getApiUrl() + '/device/unregistered';
@@ -28,6 +30,7 @@ export class AgentService {
 
   private getAgentAliveUrl = this.config.getApiUrl() + '/agent/alive/search';
   private getAgentInfoUrl = this.config.getApiUrl() + '/agent/info/search';
+  private agentConfUrl = this.config.getApiUrl() + '/agent/conf';
 
 
 
@@ -98,13 +101,24 @@ export class AgentService {
     return options;
   }
 
-  getAgentAlives(uuids: string[]): Observable<string[]> {
-
+  getAgentAlives(uuids: string[]): Observable<{ clients?: string[] }> {
     return this.http.post<any>(this.getAgentAliveUrl, { agentSerials: uuids.join(',') }, this.getOptions()).map(res => res);
   }
 
-  getAgentInfo(uuids: string[]): Observable<AgentDetail[]> {
+  getAgentInfo(uuids: string[]): Observable<{ infos?: AgentDetail[] }> {
     return this.http.post<any>(this.getAgentInfoUrl, { agentSerials: uuids.join(',') }, this.getOptions()).map(res => res);
+  }
+
+  saveAgentConf(uuid: string, conf: AgentConf) {
+    interface AgentConfItem {
+      agentSerial: string;
+      conf: AgentConf;
+    }
+    interface AgentConfRequest {
+      items: AgentConfItem[];
+    }
+
+    return this.http.post(this.agentConfUrl, { items: [{ agentSerial: uuid, conf: conf }] }).map(res => res);
   }
 
 }

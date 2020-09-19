@@ -147,6 +147,16 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     onUninstallPasswordChange: any;
     onDisablePasswordChange: any;
 
+
+    @ViewChild('inputAgentUninstallPassword') inputAgentUninstallPassword: ElementRef<any>;
+    @ViewChild('inputAgentDisablePassword') inputAgentDisablePassword: ElementRef<any>;
+
+    isAgentUninstallPasswordEyeOff = false;
+    isAgentDisablePasswordEyeOff = false;
+    onAgentUninstallPasswordChange: any;
+    onAgentDisablePasswordChange: any;
+
+
     ngOnInit(): void {
 
         this.clients = [];
@@ -182,6 +192,25 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             }
         });
 
+        this.roamingClientModal.close.subscribe(x => {
+
+            if (x.closed) {
+
+                if (this.onAgentUninstallPasswordChange) {
+                    this.onAgentUninstallPasswordChange.unsubscribe();
+                }
+                this.onAgentUninstallPasswordChange = null;
+
+
+                if (this.onAgentDisablePasswordChange) {
+                    this.onAgentDisablePasswordChange.unsubscribe();
+                }
+                this.onAgentDisablePasswordChange = null;
+            }
+        });
+
+        $('[data-toggle="tooltip"]').tooltip({ html: true, container: 'body' });
+
     }
 
 
@@ -213,15 +242,34 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.roamingService.getClients().subscribe(res => {
             this.clients = res;
+            this.clients.forEach(x => {
+                if (x.conf) {
+                    const agentConf = JSON.parse(x.conf) as AgentConf;
+                    x.isDisabled = agentConf.isDisabled > 0;
+                    x.uninstallPassword = agentConf.uninstallPassword;
+                    x.disablePassword = agentConf.disablePassword;
+
+                }
+
+            });
             this.agentService.getAgentAlives(this.clients.map(x => x.uuid)).subscribe(x => {
-                this.clients.forEach(y => {
-                    y.isAlive = x.includes(y.uuid);
-                });
+
+                if (x?.clients?.includes) {
+                    this.clients.forEach(y => {
+                        y.isAlive = x.clients.includes(y.uuid);
+                    });
+                }
             });
             this.agentService.getAgentInfo(this.clients.map(x => x.uuid)).subscribe(x => {
                 this.clients.forEach(y => {
-                    const info = x.find(a => a.uuid == y.uuid);
-                    y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
+                    if (x?.infos?.find) {
+
+                        const info = x.infos.find(a => a.uuid == y.uuid);
+                        y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
+                        y.os = info?.os;
+                        y.hostname = info?.hostname;
+                        y.mac = info?.mac;
+                    }
 
                 });
             });
@@ -543,12 +591,19 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
 
 
-    editClient(client: Agent) {
+    openRoamingClientModal(client: Agent) {
         this.selectedClient = JSON.parse(JSON.stringify(client));
 
         this.fillSecurityProfilesSelect(this.securityProfiles, client.rootProfile.id);
 
         this.roamingClientModal.toggle();
+        this.onAgentUninstallPasswordChange = Observable.fromEvent(this.inputAgentUninstallPassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
+            this.saveAgentConf(this.selectedAgent);
+        });
+
+        this.onAgentDisablePasswordChange = Observable.fromEvent(this.inputAgentDisablePassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
+            this.saveAgentConf(this.selectedAgent);
+        });
     }
 
     clearRoamingClientForm() {
@@ -783,14 +838,30 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.isDisablePasswordEyeOff = status;
     }
 
-    agentDisableEnable(event: any, agent: Agent) {
-        debugger;
+    agentDisableEnable(state: boolean, agent: Agent) {
+        agent.isDisabled = !state;
+        this.saveAgentConf(agent);
     }
     showGroupedClients(val: boolean) {
 
         this.isGroupedRadioButtonSelected = val;
         this.clientsForShow = val ? this.clientsGroupedFiltered : this.clientsUngroupedFiltered;
         this.clients.forEach(x => x.selected = false);
+    }
+
+    saveAgentConf(agent: Agent) {
+        const conf: AgentConf = { isDisabled: agent.isDisabled ? 1 : 0, disablePassword: agent.disablePassword, uninstallPassword: agent.uninstallPassword };
+        this.agentService.saveAgentConf(agent.uuid, conf).subscribe(x => {
+            this.notification.info(this.staticMessageService.savedAgentConfMessage);
+        });
+    }
+    changeAgentUninstallPasswordEye(status: boolean) {
+
+        this.isAgentUninstallPasswordEyeOff = status;
+    }
+    changeAgentDisablePasswordEye(status: boolean) {
+
+        this.isAgentDisablePasswordEyeOff = status;
     }
 
 }
