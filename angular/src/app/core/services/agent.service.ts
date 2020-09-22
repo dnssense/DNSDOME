@@ -109,7 +109,7 @@ export class AgentService {
     return this.http.post<any>(this.getAgentInfoUrl, { agentSerials: uuids.join(',') }, this.getOptions()).map(res => res);
   }
 
-  saveAgentConf(uuid: string, conf: AgentConf) {
+  saveAgentConf(uuid: string, conf: AgentConf): Observable<any> {
     interface AgentConfItem {
       agentSerial: string;
       conf: AgentConf;
@@ -118,7 +118,7 @@ export class AgentService {
       items: AgentConfItem[];
     }
 
-    return this.http.post(this.agentConfUrl, { items: [{ agentSerial: uuid, conf: conf }] }).map(res => res);
+    return this.http.post(this.agentConfUrl, { items: [{ agentSerial: uuid, conf: conf }] }, this.getOptions()).map(res => res);
   }
 
 }

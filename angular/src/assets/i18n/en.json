@@ -620,5 +620,6 @@
     "UserDisabled": "Is User Disabled Protection",
     "Protection": "Protection",
     "Details": "Details",
-    "AgentConfSaved": "Agent conf saved"
+    "AgentConfSaved": "Agent config saved",
+    "AgentsGlobalConfSaved": "Agents global config saved"
 }

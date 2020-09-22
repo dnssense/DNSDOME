@@ -618,5 +618,6 @@
     "UserDisabled": "Kullanıcı Korumayı Kapattımı",
     "Protection": "Koruma",
     "Details": "Detaylar",
-    "AgentConfSaved": "Ajan konfigurasyonu kaydedildi"
+    "AgentConfSaved": "Ajan konfigurasyonu kaydedildi",
+    "AgentsGlobalConfSaved": "Ajan genel ayarları kaydedildi"
 }

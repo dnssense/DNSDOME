@@ -7,16 +7,6 @@ import { TranslatorService } from './translator.service';
 })
 export class StaticMessageService {
 
-
-
-
-
-
-
-
-
-
-
   constructor(private translator: TranslatorService) {
 
 
@@ -323,6 +313,10 @@ export class StaticMessageService {
 
   get savedAgentConfMessage(): string {
     return this.translator.translate('AgentConfSaved');
+  }
+
+  get agentsGlobalConfSaved(): string {
+    return this.translator.translate('AgentsGlobalConfSaved');
   }
 
 

@@ -101,7 +101,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     isNewItemUpdated = false;
     fileLink: string;
     searchKey: string;
-    selectedAgent: Agent = new Agent();
+    // selectedAgent: Agent = new Agent();
     saveMode: string;
     startWizard = false;
     dontDomains: string[] = [];
@@ -192,7 +192,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             }
         });
 
-        this.roamingClientModal.close.subscribe(x => {
+        /* this.roamingClientModal.close.subscribe(x => {
 
             if (x.closed) {
 
@@ -207,7 +207,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 }
                 this.onAgentDisablePasswordChange = null;
             }
-        });
+        });*/
 
         $('[data-toggle="tooltip"]').tooltip({ html: true, container: 'body' });
 
@@ -265,10 +265,12 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     if (x?.infos?.find) {
 
                         const info = x.infos.find(a => a.uuid == y.uuid);
+
                         y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
                         y.os = info?.os;
                         y.hostname = info?.hostname;
                         y.mac = info?.mac;
+                        y.version = info?.version;
                     }
 
                 });
@@ -450,7 +452,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
         const request = { box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword };
         this.boxService.saveBoxConfig(request).subscribe(x => {
-
+            this.notification.info(this.staticMessageService.agentsGlobalConfSaved);
             /* this.boxService.getProgramLink().subscribe(res => {
                 if (res && res.link) {
                     this.getConfParameters();
@@ -597,19 +599,19 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.fillSecurityProfilesSelect(this.securityProfiles, client.rootProfile.id);
 
         this.roamingClientModal.toggle();
-        this.onAgentUninstallPasswordChange = Observable.fromEvent(this.inputAgentUninstallPassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
-            this.saveAgentConf(this.selectedAgent);
-        });
+        /*  this.onAgentUninstallPasswordChange = Observable.fromEvent(this.inputAgentUninstallPassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
+             this.saveAgentConf(this.selectedAgent);
+         });
 
-        this.onAgentDisablePasswordChange = Observable.fromEvent(this.inputAgentDisablePassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
-            this.saveAgentConf(this.selectedAgent);
-        });
+         this.onAgentDisablePasswordChange = Observable.fromEvent(this.inputAgentDisablePassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
+             this.saveAgentConf(this.selectedAgent);
+         }); */
     }
 
     clearRoamingClientForm() {
 
         this.selectedClient.agentAlias = '';
-        this.selectedAgent.blockMessage = '';
+        // this.selectedAgent.blockMessage = '';
 
         this.fillSecurityProfilesSelect(this.securityProfiles, -1);
     }
@@ -800,12 +802,17 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     saveRoamingClient() {
 
         if (this.selectedClient && this.isFormValid) {
+            const conf: AgentConf = { isDisabled: this.selectedClient.isDisabled ? 1 : 0, disablePassword: this.selectedClient.disablePassword, uninstallPassword: this.selectedClient.uninstallPassword };
+            this.selectedClient.conf = JSON.stringify(conf);
+            debugger;
             this.roamingService.saveClient(this.selectedClient).subscribe(
                 res => {
 
                     this.notification.success(this.staticMessageService.savedAgentRoaminClientMessage);
+
                     this.loadClients();
                     this.roamingClientModal.toggle();
+
 
                 });
         } else {
@@ -840,6 +847,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     agentDisableEnable(state: boolean, agent: Agent) {
         agent.isDisabled = !state;
+
         this.saveAgentConf(agent);
     }
     showGroupedClients(val: boolean) {
@@ -851,8 +859,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     saveAgentConf(agent: Agent) {
         const conf: AgentConf = { isDisabled: agent.isDisabled ? 1 : 0, disablePassword: agent.disablePassword, uninstallPassword: agent.uninstallPassword };
-        this.agentService.saveAgentConf(agent.uuid, conf).subscribe(x => {
-            this.notification.info(this.staticMessageService.savedAgentConfMessage);
+        return this.agentService.saveAgentConf(agent.uuid, conf).subscribe(x => {
+
+            this.notification.success(this.staticMessageService.savedAgentConfMessage);
         });
     }
     changeAgentUninstallPasswordEye(status: boolean) {

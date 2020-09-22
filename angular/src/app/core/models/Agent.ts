@@ -17,7 +17,7 @@ export class Agent {
     agentGroup: AgentGroup;
     logo?: any = null;
     agents: any[];
-    conf?: null;
+    conf?: string;
     uuid: string;
 
     /**
@@ -31,6 +31,7 @@ export class Agent {
     isUserDisabled = false;
     os?: string;
     hostname?: string;
+    version?: string;
 
 }
 
@@ -48,4 +49,5 @@ export interface AgentDetail {
     hostname: string;
     mac: string;
     os: string;
+    version: string;
 }
