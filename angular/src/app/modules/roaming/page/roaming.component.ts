@@ -804,7 +804,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         if (this.selectedClient && this.isFormValid) {
             const conf: AgentConf = { isDisabled: this.selectedClient.isDisabled ? 1 : 0, disablePassword: this.selectedClient.disablePassword, uninstallPassword: this.selectedClient.uninstallPassword };
             this.selectedClient.conf = JSON.stringify(conf);
-            debugger;
+
             this.roamingService.saveClient(this.selectedClient).subscribe(
                 res => {
 
@@ -859,6 +859,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     saveAgentConf(agent: Agent) {
         const conf: AgentConf = { isDisabled: agent.isDisabled ? 1 : 0, disablePassword: agent.disablePassword, uninstallPassword: agent.uninstallPassword };
+
         return this.agentService.saveAgentConf(agent.uuid, conf).subscribe(x => {
 
             this.notification.success(this.staticMessageService.savedAgentConfMessage);
