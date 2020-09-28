@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { TranslatorService } from './translator.service';
-import { AuthenticationService } from './authentication.service';
 import { RkUtilityService } from 'roksit-lib';
+import { TranslatorService } from './translator.service';
 
 export class ConfigHost {
   www: string;
-  brand: 'CyberCyte'|'DNSSense'|'Roksit';
+  brand: 'CyberCyte' | 'DNSSense' | 'Roksit' | 'CMERP';
   aboutus: string;
   logofullUrl: string;
   logoImage: string;
@@ -75,22 +74,39 @@ export class ConfigService {
         this.host.portal = 'https://portal.roksit.com';
         this.host.supportUrl = 'https://roksit.com';
         this.host.onlineHelpUrl = 'https://roksit.com';
-      } else {
-        this.host.www = 'https://www.dnssense.com';
-        this.host.brand = 'DNSSense';
-        this.host.aboutus = 'https://www.dnssense.com/about-us';
-        this.host.logoImage = 'logo-dnssense.png';
-        this.host.logoDarkImage = 'logo-dnssense.png';
-        this.host.iconImage = 'favicon-dnssense.png';
-        this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnssense.png';
-        this.host.title = 'DnsSense';
-        this.host.privacyUrl = 'https://www.dnssense.com/privacy-statement.htm';
-        this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
-        this.host.docUrl = 'https://docs.roksit.com';
-        this.host.portal = 'https://portal.dnssense.com';
-        this.host.supportUrl = 'https://dnssense.com';
-        this.host.onlineHelpUrl = 'https://dnssense.com';
-      }
+
+      } else
+        if (window.location.host.indexOf('cmerp') >= 0) {
+          this.host.www = 'https://www.cmerp.my';
+          this.host.brand = 'CMERP';
+          this.host.aboutus = 'https://www.cmerp.my/about-us';
+          this.host.logoImage = 'logo-cmerp.png';
+          this.host.logoDarkImage = 'logo-cmerp.png';
+          this.host.iconImage = 'favicon-cmerp.png';
+          this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-cmerp.png';
+          this.host.title = 'CMERP';
+          this.host.privacyUrl = 'https://www.cmerp.my/privacy-statement.htm';
+          this.host.captcha_key = '6LfvWs0ZAAAAAPGo7js_t5j2UtXncod_UyZAo_L8';
+          this.host.docUrl = 'https://docs.cmerp.my';
+          this.host.portal = 'https://adf.cmerp.my';
+          this.host.supportUrl = 'https://cmerp.my';
+          this.host.onlineHelpUrl = 'https://cmerp.my';
+        } else {
+          this.host.www = 'https://www.dnssense.com';
+          this.host.brand = 'DNSSense';
+          this.host.aboutus = 'https://www.dnssense.com/about-us';
+          this.host.logoImage = 'logo-dnssense.png';
+          this.host.logoDarkImage = 'logo-dnssense.png';
+          this.host.iconImage = 'favicon-dnssense.png';
+          this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnssense.png';
+          this.host.title = 'DnsSense';
+          this.host.privacyUrl = 'https://www.dnssense.com/privacy-statement.htm';
+          this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
+          this.host.docUrl = 'https://docs.roksit.com';
+          this.host.portal = 'https://portal.dnssense.com';
+          this.host.supportUrl = 'https://dnssense.com';
+          this.host.onlineHelpUrl = 'https://dnssense.com';
+        }
   }
   loadLanguage(userId: number): string | undefined {
     try {
@@ -131,7 +147,7 @@ export class ConfigService {
     this.translationservice.initLanguages(language);
     if (language) {
       this.translationservice.setDefaultLang(language);
-    this.translationservice.use(language);
+      this.translationservice.use(language);
     }
     const themeColor = this.getThemeColor(userId);
     if (themeColor) {

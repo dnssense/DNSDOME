@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfigService, ConfigHost } from './core/services/config.service';
+import { RkUtilityService } from 'roksit-lib';
 import { AuthenticationService } from './core/services/authentication.service';
-import { RkUtilityService, ThemeColor } from 'roksit-lib';
-import { LOCAL_STORAGE_THEME_COLOR } from './modules/theme/theme.component';
+import { ConfigHost, ConfigService } from './core/services/config.service';
 
 
 @Component({
@@ -16,7 +15,7 @@ export class AppComponent implements OnInit {
   host: ConfigHost;
   title?: string;
   iconImage?: string;
-
+  favicon: string;
   constructor(
     private config: ConfigService,
     private authenticationService: AuthenticationService,
@@ -24,29 +23,34 @@ export class AppComponent implements OnInit {
     private rkUtilityService: RkUtilityService,
 
   ) {
+
     const user = this.authenticationService.currentSession?.currentUser;
     this.config.init(user?.id);
     this.authenticationService.checkSessionIsValid();
     this.host = this.configService.host;
     this.title = this.host.title;
     this.iconImage = this.host.iconImage;
+    const element = document.getElementById('appIcon');
+    element.setAttribute('href', `/assets/img/${this.iconImage}`);
+
     // authenticationService.checkSessionIsValid();
 
 
-   /*  const lang = localStorage.getItem('language');
+    /*  const lang = localStorage.getItem('language');
 
-    if (lang) {
-      this.config.setDefaultLanguage(lang);
-    }
+     if (lang) {
+       this.config.setDefaultLanguage(lang);
+     }
 
-    const themeColor = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
+     const themeColor = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
 
-    if (themeColor) {
-      this.rkUtilityService.changeTheme(themeColor === 'dark');
-    } */
+     if (themeColor) {
+       this.rkUtilityService.changeTheme(themeColor === 'dark');
+     } */
 
   }
   ngOnInit(): void {
+
 
   }
 }
