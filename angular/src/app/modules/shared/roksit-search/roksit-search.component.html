@@ -158,7 +158,8 @@
           <h5 class="modal-item title"> {{ 'REPORT.AddFilter' | translate }}</h5>
 
           <div class="d-flex">
-            <rk-select class="mr-2" style="flex: 1" [placeholder]="'Select' | translate" [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
+            <rk-select class="mr-2" style="flex: 1" [placeholder]="'Select' | translate"
+              [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
 
             <div class="rk-tabs toggle-tabs" style="width: 90px;">
               <div class="rk-tab" [ngClass]="{'active': modalIsEqual}" (click)="modalIsEqual = true">
@@ -209,7 +210,8 @@
 
           <div class="d-flex mt-3">
             <!-- (enterPress)="categoryEnterPress($event)"  -->
-            <rk-autocomplete style="flex: 1" class="mr-2" [onSelectClear]="true" [items]="autocompleteItems" [grouped]="true" (onSelect)="categoryEnterPress($event)">
+            <rk-autocomplete style="flex: 1" class="mr-2" [onSelectClear]="true" [items]="autocompleteItems"
+              [grouped]="true" (onSelect)="categoryEnterPress($event)">
             </rk-autocomplete>
 
             <div class="rk-tabs toggle-tabs" style="width: 90px;">
@@ -273,13 +275,14 @@
   </rk-modal-body>
 
   <rk-modal-footer *ngIf="activeTabNumber === 0">
-    <button class="btn w-100 btn-default btn-small" (click)="modal.toggle()">{{ 'Close' | translate }}</button>
+
     <button class="btn w-100 btn-small btn-fill"
       (click)="apply(true); search('', true);">{{ 'Apply' | translate }}</button>
+    <button class="btn w-100 btn-default btn-small" (click)="modal.toggle()">{{ 'Close' | translate }}</button>
   </rk-modal-footer>
 
   <rk-modal-footer *ngIf="activeTabNumber === 1">
-    <button class="btn btn-small btn-fill w-100 ml-0" (click)="search('savedreport')">Apply</button>
+    <button class="btn btn-small btn-fill w-100 ml-0" (click)="search('savedreport')">{{ 'Apply' | translate }}</button>
   </rk-modal-footer>
 </rk-modal>
 
@@ -319,7 +322,8 @@
             *ngFor="let option of dateOptions" (click)="clickedDateOption(option)">{{ option.displayText }}</button>
 
           <div style="min-width: 200px;" class="mt-1 d-flex flex-column justify-content-center align-items-center">
-            <rk-date #date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions" [config]="dateConfig"></rk-date>
+            <rk-date #date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions"
+              [config]="dateConfig"></rk-date>
 
             <span class="date-text mt-1">{{ dateText }}</span>
 
@@ -343,9 +347,11 @@
 
       <div class="d-flex align-items-center flex-wrap">
         <div class="d-flex flex-wrap align-items-center" style="width: calc(100% - 370px); padding-right: 25px;">
-          <span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0" style="cursor: pointer;" (click)="revertReport()">{{ searchSettings?.name }}</span>
-          
-          <span class="filter-text mb-2" *ngIf="filters?.length > 0 && searchSettings?.name?.length === 0">{{ 'REPORT.Filter' | translate }};</span>
+          <span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0" style="cursor: pointer;"
+            (click)="revertReport()">{{ searchSettings?.name }}</span>
+
+          <span class="filter-text mb-2"
+            *ngIf="filters?.length > 0 && searchSettings?.name?.length === 0">{{ 'REPORT.Filter' | translate }};</span>
 
           <span class="filter-text mb-2 ml-2" *ngIf="filters?.length === 0">{{ 'NoFilter' | translate }}</span>
 

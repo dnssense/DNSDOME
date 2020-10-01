@@ -224,6 +224,13 @@
 
             </div>
           </rk-modal-body>
+          <rk-modal-footer>
+
+            <button class="btn btn-small btn-fill w-100 mr-2"
+              (click)="saveRoamingGlobalSettings()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small btn-default w-100"
+              (click)="configureModal.toggle()">{{'Close'|translate}}</button>
+          </rk-modal-footer>
         </rk-modal>
 
         <rk-modal #roamingClientModal>
@@ -426,9 +433,10 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small btn-default w-100" (click)="groupModal.toggle()">{{'Close'|translate}}</button>
+
             <button class="btn btn-small btn-fill w-100 mr-2"
               (click)="saveOrUpdateGroup()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small btn-default w-100" (click)="groupModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -497,10 +505,11 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small btn-default w-100"
-              (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
+
             <button class="btn btn-small btn-fill w-100 mr-2"
               (click)="saveChangedGroup()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small btn-default w-100"
+              (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 

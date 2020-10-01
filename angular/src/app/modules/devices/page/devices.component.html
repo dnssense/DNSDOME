@@ -249,9 +249,10 @@
           </rk-modal-body>
 
           <rk-modal-footer>
+
+            <button class="btn w-100 btn-fill btn-small mr-2" (click)="saveGroupAgent()">{{'Apply'|translate}}</button>
             <button class="btn w-100 btn-default btn-small"
               (click)="groupAgentModal.toggle()">{{'Close'|translate}}</button>
-            <button class="btn w-100 btn-fill btn-small mr-2" (click)="saveGroupAgent()">{{'Apply'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -407,10 +408,11 @@
           </rk-modal-body>
 
           <rk-modal-footer>
-            <button class="btn btn-small btn-default w-100"
-            (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
+
             <button class="btn btn-fill btn-small w-100 mr-2"
               (click)="changeGroupModalApplyClick()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small btn-default w-100"
+              (click)="changeGroupModal.toggle()">{{'Close'|translate}}</button>
           </rk-modal-footer>
         </rk-modal>
 
@@ -431,8 +433,8 @@
                   </div>
                 </div>
 
-                <button class="btn btn-small mt-2"
-                  (click)="changeTableGroup('edit')" [disabled]="getEditDisabled">{{ 'ChangeGroup' | translate }}</button>
+                <button class="btn btn-small mt-2" (click)="changeTableGroup('edit')"
+                  [disabled]="getEditDisabled">{{ 'ChangeGroup' | translate }}</button>
               </div>
             </div>
 
@@ -495,8 +497,8 @@
                   </div>
                 </div>
 
-                <button class="btn btn-small mt-2"
-                  (click)="changeTableGroup('create')" [disabled]="getCreateDisabled">{{ 'AddToGroup' | translate }}</button>
+                <button class="btn btn-small mt-2" (click)="changeTableGroup('create')"
+                  [disabled]="getCreateDisabled">{{ 'AddToGroup' | translate }}</button>
               </div>
             </div>
 

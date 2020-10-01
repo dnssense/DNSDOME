@@ -260,9 +260,11 @@ export class AuthenticationService {
       this.currentSession = new Session();
       this.currentSession.token = token;
       this.currentSession.refreshToken = refToken;
-      debugger;
       const item = decodeJWT(this.currentSession.refreshToken);
-      this.clientId = item.client.id;
+      const clientId = item?.client?.id;
+      if (clientId) {
+        this.clientId = clientId;
+      }
       return this.getCurrentUser().pipe(x => {
         this.startIdleWatching();
         return x;
