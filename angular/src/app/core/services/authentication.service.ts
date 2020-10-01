@@ -1,21 +1,21 @@
-import { Injectable } from '@angular/core';
-import { ConfigService } from './config.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, interval, Subject } from 'rxjs';
-import { User } from '../models/User';
-import { CookieService } from './cookie.service';
-import { map, catchError, mergeMap } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Session } from '../models/Session';
-import { LoggerService } from './logger.service';
 import { JwtHelper } from 'angular2-jwt';
-import { SignupBean } from '../models/SignupBean';
-import { OperationResult } from '../models/OperationResult';
-import { Role, RestRole, RestRight, RestUserRoleRight } from '../models/Role';
-import { Clearance } from '../models/Clearance';
-import { RestPreloginResponse, RestUser } from '../models/RestServiceModels';
-import { SpinnerService } from './spinner.service';
 import { BnNgIdleService } from 'bn-ng-idle';
+import decodeJWT from 'jwt-decode';
+import { interval, Observable, Subject } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { Clearance } from '../models/Clearance';
+import { OperationResult } from '../models/OperationResult';
+import { RestPreloginResponse, RestUser } from '../models/RestServiceModels';
+import { RestRight, RestRole, RestUserRoleRight, Role } from '../models/Role';
+import { Session } from '../models/Session';
+import { SignupBean } from '../models/SignupBean';
+import { User } from '../models/User';
+import { ConfigService } from './config.service';
+import { CookieService } from './cookie.service';
+import { SpinnerService } from './spinner.service';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +35,7 @@ export class AuthenticationService {
   private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
   currentUserPropertiesChanged: Subject<any>;
+  clientId: 'if you see me';
 
   constructor(
     private configuration: ConfigService,
@@ -48,7 +49,7 @@ export class AuthenticationService {
     this.currentSession = this.getCurrentSession();
 
     this.currentUserPropertiesChanged = new Subject();
-     this.refreshTokenTimer = interval(3 * 60 * 1000);
+    this.refreshTokenTimer = interval(3 * 60 * 1000);
     // this.refreshTokenTimer = interval(15 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
     this.startIdleWatching();
@@ -59,7 +60,11 @@ export class AuthenticationService {
     this.currentUserPropertiesChanged.next('changed');
   }
 
-    checkSessionIsValid() {
+  getBasicAuthorization() {
+    return btoa(this.clientId + ':i see you also');
+  }
+
+  checkSessionIsValid() {
     try {
       const sessionString = sessionStorage.getItem(this.STORAGENAME);
       if (sessionString) {
@@ -76,7 +81,7 @@ export class AuthenticationService {
 
   }
 
-   isCurrentSessionValid(): boolean {
+  isCurrentSessionValid(): boolean {
     try {
       const sessionString = sessionStorage.getItem(this.STORAGENAME);
       if (sessionString) {
@@ -98,7 +103,7 @@ export class AuthenticationService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
+        'Authorization': `Basic ${this.getBasicAuthorization()}`
       })
     };
     // const body = encodeURI('grant_type=refresh_token&refresh_token=' + this.currentSession.refreshToken);
@@ -191,7 +196,7 @@ export class AuthenticationService {
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
     return this.http.
-      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass} , this.getHttpOptions())
+      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass }, this.getHttpOptions())
       .map(res => {
         return res;
       });
@@ -220,7 +225,7 @@ export class AuthenticationService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic aWYgeW91IHNlZSBtZTppIHNlZSB5b3UgYWxzbw'
+        'Authorization': `Basic ${this.getBasicAuthorization()}`
       })
     };
 
@@ -230,7 +235,7 @@ export class AuthenticationService {
     body.set('username', email);
     body.set('password', pass);
     if (code) {
-    body.set('code', code);
+      body.set('code', code);
     }
 
     return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
@@ -255,7 +260,9 @@ export class AuthenticationService {
       this.currentSession = new Session();
       this.currentSession.token = token;
       this.currentSession.refreshToken = refToken;
-
+      debugger;
+      const item = decodeJWT(this.currentSession.refreshToken);
+      this.clientId = item.client.id;
       return this.getCurrentUser().pipe(x => {
         this.startIdleWatching();
         return x;
