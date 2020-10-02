@@ -84,7 +84,7 @@
     "IP": "IP",
     "Name": "Name",
     "DNSFQDN": "DNS FQDN",
-    "SelectProfile": "Select PPProfile",
+    "SelectProfile": "Select Profile",
     "SinkHoleIp": "Sinkhole IP",
     "QueriesListed": "Queries listed",
     "IpType": "IP Type",
