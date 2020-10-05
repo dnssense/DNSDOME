@@ -1,13 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
-import PerfectScrollbar from 'perfect-scrollbar';
-import { User } from 'src/app/core/models/User';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { TranslatorService } from 'src/app/core/services/translator.service';
-import { AlertService } from 'src/app/core/services/alert.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { RkLayoutService } from 'roksit-lib';
 import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
+import { User } from 'src/app/core/models/User';
+import { AlertService } from 'src/app/core/services/alert.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
+import { TranslatorService } from 'src/app/core/services/translator.service';
 
 declare const $: any;
 
@@ -188,9 +187,9 @@ export class SidebarComponent implements OnInit {
   }
   private refreshMenus() {
     if (this.authService.currentSession && this.authService.currentSession.currentUser
-      && this.authService.currentSession.currentUser.roles && this.authService.currentSession.currentUser.roles.name) {
+      && this.authService.currentSession.currentUser.role && this.authService.currentSession.currentUser.role.name) {
 
-      const roleName: string = this.authService.currentSession.currentUser.roles.name;
+      const roleName: string = this.authService.currentSession.currentUser.role.name;
 
       this.menuItems = ROUTES.filter(
         menuItem => menuItem.role == null || (menuItem.role != null && menuItem.role.split(',').includes(roleName))

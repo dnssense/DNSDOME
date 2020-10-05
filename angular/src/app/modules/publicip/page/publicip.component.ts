@@ -1,22 +1,22 @@
-import { Component, AfterViewInit, ViewChild, OnInit, AfterContentChecked } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { AlertService } from 'src/app/core/services/alert.service';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { AgentService } from 'src/app/core/services/agent.service';
-import { Agent, IpWithMask } from 'src/app/core/models/Agent';
-import { SecurityProfile, SecurityProfileItem, BlackWhiteListProfile } from 'src/app/core/models/SecurityProfile';
-import { AgentType } from 'src/app/core/models/AgentType';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as introJs from 'intro.js/intro.js';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { PublicIPService } from 'src/app/core/services/publicIPService';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import * as isip from 'is-ip';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { Observable } from 'rxjs';
+import { Agent, IpWithMask } from 'src/app/core/models/Agent';
+import { AgentType } from 'src/app/core/models/AgentType';
+import { BlackWhiteListProfile, SecurityProfile, SecurityProfileItem } from 'src/app/core/models/SecurityProfile';
+import { AgentService } from 'src/app/core/services/agent.service';
+import { AlertService } from 'src/app/core/services/alert.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { InputIPService } from 'src/app/core/services/inputIPService';
+import { NotificationService } from 'src/app/core/services/notification.service';
+import { PublicIPService } from 'src/app/core/services/publicIPService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
-import { Observable } from 'rxjs';
-import * as isip from 'is-ip';
-import { InputIPService } from 'src/app/core/services/inputIPService';
+import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 
 
 
@@ -30,7 +30,7 @@ declare let $: any;
 export class PublicipComponent implements OnInit, AfterViewInit {
 
   // ipv4Pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$';
- // ipv4v6Pattern = '((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))';
+  // ipv4v6Pattern = '((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))';
   publicIps: Agent[] = [];
   publicIpsFiltered: Agent[] = [];
   publicIpForm: FormGroup;
@@ -116,7 +116,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     private staticMessageService: StaticMessageService,
     private inputIpService: InputIPService
   ) {
-    this.roleName = this.authService.currentSession.currentUser.roles.name;
+    this.roleName = this.authService.currentSession.currentUser.role.name;
 
 
     this.publicIpObs = new Observable(subscriber => {
@@ -141,7 +141,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     });
 
     this.getPublicIpsDataAndProfiles();
-    
+
 
     this.publicIpForm = this.formBuilder.group({
       'agentName': ['', [Validators.required]],
@@ -275,123 +275,123 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue.baseIp);
 
     if (isIPV4 != null) {
-    this.checkMask(isIPV4, inputValue);
+      this.checkMask(isIPV4, inputValue);
     }
 
   }
 
-/*   hasOneOfChars(input: string, chars: string[]) {
-    for (let ab = 0; ab < input.length; ++ab) {
-      for (let ac = 0; ac < chars.length; ++ac) {
-        if (input[ab] == chars[ac]) {
-          return true;
+  /*   hasOneOfChars(input: string, chars: string[]) {
+      for (let ab = 0; ab < input.length; ++ab) {
+        for (let ac = 0; ac < chars.length; ++ac) {
+          if (input[ab] == chars[ac]) {
+            return true;
+          }
+  
         }
-
       }
-    }
-    return false;
-  } */
+      return false;
+    } */
 
-/*   checkIPNumber(event: KeyboardEvent, inputValue: string) {
-
-
-    let isIPV4 = true;
-
-    const specialChars = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
-
-    const ipv4Chars = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'];
-
-    const ipv6Chars = ['A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f', ':'];
-    let allowedChars = [];
-    allowedChars = allowedChars.concat(ipv6Chars).concat(ipv4Chars).concat(specialChars);
-    let isValid = false;
-
-    for (let i = 0; i < specialChars.length; i++) {
-      if (specialChars[i] == event.key) {
-       return null;
-      }
-    }
-
-    // check keydown char
-    for (let i = 0; i < allowedChars.length; i++) {
-      if (allowedChars[i] == event.key) {
-        isValid = true;
-        break;
-      }
-    }
-
-    if (isValid) {
-      const isSpecialChar = specialChars.find(x => x == event.key);
-      if (!isSpecialChar) {
-        inputValue = (inputValue ? inputValue : '') + event.key;
-      }
-      const isipV6 = this.hasOneOfChars(inputValue, ipv6Chars);
-      const isipV4 = this.hasOneOfChars(inputValue, ['.']);
-
-      if (isipV4 && !isipV6) {// ipv4
-         isIPV4 = true;
-        const octets = inputValue.split(/[.]/g);
-        if (octets.length && octets[octets.length - 1] == '') {
-          octets.splice(octets.length - 1, 1);
+  /*   checkIPNumber(event: KeyboardEvent, inputValue: string) {
+  
+  
+      let isIPV4 = true;
+  
+      const specialChars = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
+  
+      const ipv4Chars = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'];
+  
+      const ipv6Chars = ['A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f', ':'];
+      let allowedChars = [];
+      allowedChars = allowedChars.concat(ipv6Chars).concat(ipv4Chars).concat(specialChars);
+      let isValid = false;
+  
+      for (let i = 0; i < specialChars.length; i++) {
+        if (specialChars[i] == event.key) {
+         return null;
         }
-        if (octets.length > 4) {
-          isValid = false;
+      }
+  
+      // check keydown char
+      for (let i = 0; i < allowedChars.length; i++) {
+        if (allowedChars[i] == event.key) {
+          isValid = true;
+          break;
         }
-        if (octets.length == 4 && inputValue.endsWith('.')) {
-        isValid = false;
+      }
+  
+      if (isValid) {
+        const isSpecialChar = specialChars.find(x => x == event.key);
+        if (!isSpecialChar) {
+          inputValue = (inputValue ? inputValue : '') + event.key;
         }
-        octets.forEach(x => {
-          if (x.length > 3 || x.length == 0) {
+        const isipV6 = this.hasOneOfChars(inputValue, ipv6Chars);
+        const isipV4 = this.hasOneOfChars(inputValue, ['.']);
+  
+        if (isipV4 && !isipV6) {// ipv4
+           isIPV4 = true;
+          const octets = inputValue.split(/[.]/g);
+          if (octets.length && octets[octets.length - 1] == '') {
+            octets.splice(octets.length - 1, 1);
+          }
+          if (octets.length > 4) {
             isValid = false;
           }
-          if (Number(x) < 0 || Number(x) > 255) {
-            isValid = false;
-          }
-        });
-
-
-
-      } else {
-
-        isIPV4 = false;
-        for (let i = 0; i < ipv6Chars.length; i++) {
-          if ('.' == event.key) {
-            isValid = false;
-            break;
-          }
-        }
-        const octets = inputValue.split(/[:]/g);
-
-        if (octets.length > 8) {
-          isValid = false;
-        }
-
-        octets.forEach(x => {
-          if (x.length > 4) {
-            isValid = false;
-          }
-        });
-        const len = inputValue.length;
-        if (len - 3 >= 0) {
-          if (inputValue[len - 3] == ':' && inputValue[len - 2] == ':' && inputValue[len - 1] == ':') {
+          if (octets.length == 4 && inputValue.endsWith('.')) {
           isValid = false;
           }
+          octets.forEach(x => {
+            if (x.length > 3 || x.length == 0) {
+              isValid = false;
+            }
+            if (Number(x) < 0 || Number(x) > 255) {
+              isValid = false;
+            }
+          });
+  
+  
+  
+        } else {
+  
+          isIPV4 = false;
+          for (let i = 0; i < ipv6Chars.length; i++) {
+            if ('.' == event.key) {
+              isValid = false;
+              break;
+            }
+          }
+          const octets = inputValue.split(/[:]/g);
+  
+          if (octets.length > 8) {
+            isValid = false;
+          }
+  
+          octets.forEach(x => {
+            if (x.length > 4) {
+              isValid = false;
+            }
+          });
+          const len = inputValue.length;
+          if (len - 3 >= 0) {
+            if (inputValue[len - 3] == ':' && inputValue[len - 2] == ':' && inputValue[len - 1] == ':') {
+            isValid = false;
+            }
+          }
+  
+  
         }
-
-
+  
+  
       }
-
-
-    }
-    console.log(`ipv4:${isIPV4} and isValid:${isValid}`);
-
-    if (!isValid) {
-      event.preventDefault();
-      return null;
-    }
-    return isIPV4;
-
-  } */
+      console.log(`ipv4:${isIPV4} and isValid:${isValid}`);
+  
+      if (!isValid) {
+        event.preventDefault();
+        return null;
+      }
+      return isIPV4;
+  
+    } */
 
   checkIPNumberForSinkhole(event: KeyboardEvent, inputValue: string) {
 

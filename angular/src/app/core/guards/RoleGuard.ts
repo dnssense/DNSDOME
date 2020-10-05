@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
 
 
@@ -13,10 +13,10 @@ export class RoleGuard implements CanActivate {
         const ss = this.auth.currentSession;
 
         if (this.auth.isCurrentSessionValid() && ss && ss.currentUser
-            && ss.currentUser.roles && roles.includes(ss.currentUser.roles.name)) {
+            && ss.currentUser.role && roles.includes(ss.currentUser.role.name)) {
             return true;
         } else {
-           // console.log(`roleguard failed ${expectedRole} ${this.auth.isCurrentSessionValid()} ${JSON.stringify(ss)} `);
+            // console.log(`roleguard failed ${expectedRole} ${this.auth.isCurrentSessionValid()} ${JSON.stringify(ss)} `);
             this.router.navigate(['login']);
             return false;
         }

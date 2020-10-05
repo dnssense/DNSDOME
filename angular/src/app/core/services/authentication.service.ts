@@ -56,6 +56,7 @@ export class AuthenticationService {
   }
 
   saveSession() {
+
     sessionStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
     this.currentUserPropertiesChanged.next('changed');
   }
@@ -143,7 +144,7 @@ export class AuthenticationService {
           role.clearences = [];
           role.clearences.push(cleareance);
         });
-        this.currentSession.currentUser.roles = role;
+        this.currentSession.currentUser.role = role;
 
       });
       // sessinStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
@@ -184,10 +185,11 @@ export class AuthenticationService {
           user.gsmCode = res.gsmCode;
           user.gsm = res.gsm;
           user.usageType = 1;
-          const previousRoles = this.currentSession?.currentUser?.roles;
+
+          const previousRoles = this.currentSession?.currentUser?.role;
           this.currentSession.currentUser = user;
           // burasi onemli once roles save edilmeli yoksa senkron sorunu olusur ve login ekrani calisir
-          this.currentSession.currentUser.roles = previousRoles;
+          this.currentSession.currentUser.role = previousRoles;
           this.configuration.init(this.currentSession.currentUser.id);
           return this.getCurrentUserRoles();
         }));

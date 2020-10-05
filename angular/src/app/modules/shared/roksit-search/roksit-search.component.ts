@@ -13,13 +13,11 @@ import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
 import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
-import { User } from 'src/app/core/models/User';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ReportService } from 'src/app/core/services/reportService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { StaticService } from 'src/app/core/services/staticService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
-import { UserService } from 'src/app/core/services/userService';
 
 export class GroupedCategory {
   type: string;
@@ -52,7 +50,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     private staticService: StaticService,
     private reportService: ReportService,
     private notification: NotificationService,
-    private userService: UserService,
     private router: Router,
     private staticmessageService: StaticMessageService,
     private translatorService: TranslatorService,
@@ -76,9 +73,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       });
     });
 
-    this.userService.getUsers().subscribe(result => {
+    /* this.userService.getUsers().subscribe(result => {
       this.users = result.filter(x => x.isActive);
-    });
+    }) */
 
     this.translateService.onLangChange.subscribe(result => {
       this.dateText = this.convertTimeString(Number(this.searchSettings.dateInterval || 5));
@@ -93,7 +90,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   @Output() filtersClearEmitter = new EventEmitter();
 
-  users: User[] = [];
+
 
   dateOptions: RkDateTime[] = [
     { value: 5, displayText: 'Last 5 Minutes' },
@@ -706,9 +703,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  toggleAllUsers($event) {
-    this.users.forEach(user => user.selected = $event);
-  }
+
 
   setShowRunBar(status: boolean) {
     this.isShowRunBar = status;

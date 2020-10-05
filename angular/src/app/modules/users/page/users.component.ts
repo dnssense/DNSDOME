@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { Role } from 'src/app/core/models/Role';
 import { User } from 'src/app/core/models/User';
 import { NotificationService } from 'src/app/core/services/notification.service';
-import { UserService } from 'src/app/core/services/userService';
-import { Role } from 'src/app/core/models/Role';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import * as validator from 'validator';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { UserService } from 'src/app/core/services/userService';
+import * as validator from 'validator';
 
 declare var $: any;
 @Component({
@@ -22,8 +22,9 @@ export class UsersComponent implements OnInit {
         private staticMessageService: StaticMessageService
     ) {
 
-        this.user.roles = new Role();
-        this.user.roles.name = 'ROLE_CUSTOMER';
+        this.user.role = new Role();
+        this.user.role.id = 2;
+        this.user.role.name = 'ROLE_CUSTOMER';
 
         this.userService.getUsers().subscribe(res => {
             this.users = res;
@@ -93,8 +94,9 @@ export class UsersComponent implements OnInit {
 
     newUserClick() {
         this.userModalType = 'create';
+
         this.user = new User();
-        (this.user as any).roles = this.userRoles.filter(x => x.name == 'ROLE_USER');
+        (this.user as any).role = this.userRoles.filter(x => x.name == 'ROLE_USER').find(x => x);
         this.prepareRoleSelect(this.user);
         this.userModal.toggle();
     }
@@ -102,8 +104,12 @@ export class UsersComponent implements OnInit {
 
         this.user = new User();
     }
+    isUpdateUser(user: User) {
+        return Number(user.id) > 0;
+    }
 
     editUserClick(user: User) {
+
         this.user = JSON.parse(JSON.stringify(user));
 
         this.prepareRoleSelect(user);
@@ -114,7 +120,8 @@ export class UsersComponent implements OnInit {
     }
 
     private prepareRoleSelect(user: User) {
-        const role = this.userRoles.find(x => x.name === user.roles[0].name);
+
+        const role = this.userRoles.find(x => x.name === user.role.name);
         this.selectedRoleId = role.id;
 
         this.userRolesForSelect = [];
@@ -134,7 +141,10 @@ export class UsersComponent implements OnInit {
     }
 
     modalClosed($event) {
-        this.user = new User();
+
+        if ($event.closed) {
+            this.user = new User();
+        }
     }
 
     roleChange($event) {
@@ -142,7 +152,8 @@ export class UsersComponent implements OnInit {
         const role = this.userRoles.find(x => x.id === $event);
 
         if (role) {
-            this.user.roles[0] = role.name;
+
+            this.user.role = JSON.parse(JSON.stringify(role));
         }
     }
 
@@ -171,7 +182,7 @@ export class UsersComponent implements OnInit {
             return;
         }
 
-        if (!this.user.roles || !(this.user.roles as any).length) {
+        if (!this.user.role || !(this.user.role.name)) {
             this.notification.warning(this.staticMessageService.pleaseSelectARole);
         }
 
@@ -184,7 +195,10 @@ export class UsersComponent implements OnInit {
 
                     this.notification.success(this.staticMessageService.savedUserMessage);
 
-                    this.userService.getUsers().subscribe(result => this.users = result);
+                    this.userService.getUsers().subscribe(result => {
+
+                        this.users = result;
+                    });
 
                 });
             } else {

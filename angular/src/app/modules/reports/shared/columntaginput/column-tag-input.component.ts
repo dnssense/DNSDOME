@@ -291,7 +291,7 @@ export class ColumnTagInputComponent implements OnInit {
   }
 
   public checkIp(ipForCheck: string) {
-    debugger;
+
     const res = ValidationService.isValidIpWithLocals(ipForCheck);
     if (!res) {
       this.notificationService.warning('Invalid IP');

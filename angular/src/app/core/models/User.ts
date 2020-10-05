@@ -14,16 +14,17 @@ export class User {
     public isLocked: number;
     public active = true;
     public isActive: number;
-    public roles: Role;
+    public role: Role;
     public companyId: number;
     public twoFactorAuthentication = false;
     public usageType: number;
     public isGsmVerified = false;
 
+
     /**
      * @description For UI
      */
-    selected ?= false;
+    selected?= false;
 }
 
 export class UserExtended extends User {

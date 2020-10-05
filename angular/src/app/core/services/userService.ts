@@ -1,10 +1,10 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OperationResult } from '../models/OperationResult';
-import { ConfigService } from './config.service';
-import { User } from '../models/User';
 import { Role } from '../models/Role';
+import { User } from '../models/User';
+import { ConfigService } from './config.service';
 
 export class Roles {
   static ITEMS = [{ id: 1, name: 'ROLE_ADMIN' }, { id: 2, name: 'ROLE_CUSTOMER' }, { id: 5, name: 'ROLE_USER' }];
@@ -26,7 +26,18 @@ export class UserService {
   }
 
   public getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this._childUserListURL).map(res => res);
+    return this.http.get<User[]>(this._childUserListURL).map(res => {
+      // sayfa tek role mantigi ile calisiyor
+      return res.map(x => {
+        if (x['roles'] && Array.isArray(x['roles']) && x['roles'].length) {
+          x['role'] = x['roles'][0];
+          delete x['roles'];
+        }
+
+        return x;
+      });
+
+    });
   }
 
   public getRoles(): Role[] {
@@ -38,11 +49,17 @@ export class UserService {
   }
 
   public save(user: any): Observable<any> {
+    // sayfa tek role mantigi ile calisiyor
     user.id = 0;
+    user.roles = [user.role.name];
+    delete user.role;
     return this.http.post<any>(this._userSaveURL, user, this.getOptions()).map(res => res);
   }
 
   public update(user: any): Observable<any> {
+    // sayfa tek role mantigi ile calisiyor
+    user.roles = [user.role.name];
+    delete user.role;
     return this.http.put<any>(this._userUpdateURL, user, this.getOptions()).map(res => res);
   }
 
