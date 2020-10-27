@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AdminLayoutComponent } from './page/adminlayout.component';
 import { AuthGuard } from 'src/app/core/guards/AuthGuard';
 import { RoleGuard } from 'src/app/core/guards/RoleGuard';
+import { AdminLayoutComponent } from './page/adminlayout.component';
 
 const adminlayoutRoutes: Routes = [
   {

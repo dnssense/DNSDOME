@@ -200,6 +200,10 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (window.location.host.indexOf('cmerp') >= 0) {
+      const deployments = this._menuItems.find(x => x.id == 3);
+      deployments.subMenu = deployments.subMenu?.slice(0, 1);
+    }
     const currentUser = this.authService.currentSession?.currentUser;
 
     const isCollapsed = JSON.parse(localStorage.getItem(`menuCollapsed_for_user_${currentUser?.id}`));
@@ -224,6 +228,7 @@ export class SidebarComponent implements OnInit {
      if (roleName) {
        this.menuItems = ROUTES.filter(m =>m.role == null || m.role == '' || (m.role != null && roleName == m.role));
      } */
+
 
 
   }
