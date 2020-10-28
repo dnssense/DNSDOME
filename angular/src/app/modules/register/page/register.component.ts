@@ -1,20 +1,18 @@
-import { Component, OnInit, ElementRef, OnDestroy, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { FormBuilder } from '@angular/forms';
-import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
-import { SignupBean, RegisterUser } from 'src/app/core/models/SignupBean';
-import { ValidationService } from 'src/app/core/services/validation.service';
-import { Company } from 'src/app/core/models/Company';
-import { CaptchaService } from 'src/app/core/services/captcha.service';
-import { NotificationService } from 'src/app/core/services/notification.service';
-
-import { AccountService } from 'src/app/core/services/accountService';
 import { Router } from '@angular/router';
-import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 import { RecaptchaComponent } from 'ng-recaptcha';
+import { Company } from 'src/app/core/models/Company';
+import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
+import { RegisterUser, SignupBean } from 'src/app/core/models/SignupBean';
+import { AccountService } from 'src/app/core/services/accountService';
+import { CaptchaService } from 'src/app/core/services/captcha.service';
+import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
-import { retryWhen } from 'rxjs/operators';
+import { ValidationService } from 'src/app/core/services/validation.service';
+
 declare var $: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -94,7 +92,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
 
   ngAfterViewInit(): void {
 
-   // this.captchaComponent.ngOnInit();
+    // this.captchaComponent.ngOnInit();
   }
 
   ngAfterContentInit() {
@@ -124,11 +122,16 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       this.user.gsmCode = '+44';
       this.registerForm.controls['gsmCode'].setValue('+44');
       this.registerForm.controls['gsmCode'].updateValueAndValidity();
-    } else {
-      this.user.gsmCode = '+90';
-      this.registerForm.controls['gsmCode'].setValue('+90');
-      this.registerForm.controls['gsmCode'].updateValueAndValidity();
-    }
+    } else
+      if (this.host.brand == 'CMERP') {
+        this.user.gsmCode = '+60';
+        this.registerForm.controls['gsmCode'].setValue('+60');
+        this.registerForm.controls['gsmCode'].updateValueAndValidity();
+      } else {
+        this.user.gsmCode = '+90';
+        this.registerForm.controls['gsmCode'].setValue('+90');
+        this.registerForm.controls['gsmCode'].updateValueAndValidity();
+      }
 
 
   }
@@ -201,11 +204,11 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
 
   isRegisterFormValid() {
     if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.captcha != null && this.capthaService.validCaptcha(this.captcha)) {
-     /*  const ca = '';// this.captchaComponent.getResponse();
-      if (ca == this.captcha) {
-        return true;
-      }
-      return false; */
+      /*  const ca = '';// this.captchaComponent.getResponse();
+       if (ca == this.captcha) {
+         return true;
+       }
+       return false; */
       return true;
     }
     return false;
@@ -242,14 +245,14 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       return;
     }
 
-   /*  if (!this.user.gsmCode) {
-      this.notification.warning(this.staticMessageService.pleaseFillTheGsmCode);
-      return;
-    } */
-   /*  if (this.user.gsm) {
-      this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
-      return;
-    } */
+    /*  if (!this.user.gsmCode) {
+       this.notification.warning(this.staticMessageService.pleaseFillTheGsmCode);
+       return;
+     } */
+    /*  if (this.user.gsm) {
+       this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
+       return;
+     } */
 
     if (!this.user.username) {
       this.notification.warning(this.staticMessageService.pleaseEnterAValidEmail);
