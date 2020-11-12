@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { DEFAULT_INTERRUPTSOURCES, Idle } from '@ng-idle/core';
+import { Keepalive } from '@ng-idle/keepalive';
 import { JwtHelper } from 'angular2-jwt';
-import { BnNgIdleService } from 'bn-ng-idle';
 import decodeJWT from 'jwt-decode';
 import { interval, Observable, Subject } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
@@ -16,7 +17,6 @@ import { User } from '../models/User';
 import { ConfigService } from './config.service';
 import { CookieService } from './cookie.service';
 import { SpinnerService } from './spinner.service';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -36,14 +36,14 @@ export class AuthenticationService {
   private refreshTokenTimer: Observable<any>;
   currentUserPropertiesChanged: Subject<any>;
   clientId: 'if you see me';
-
+  lastPing = new Date();
   constructor(
     private configuration: ConfigService,
     private http: HttpClient,
     private cookieService: CookieService,
     private router: Router,
     private spinner: SpinnerService,
-    private idleService: BnNgIdleService
+    private idle: Idle, private keepalive: Keepalive
   ) {
 
     this.currentSession = this.getCurrentSession();
@@ -52,8 +52,36 @@ export class AuthenticationService {
     this.refreshTokenTimer = interval(3 * 60 * 1000);
     // this.refreshTokenTimer = interval(15 * 1000);
     this.refreshTokenTimer.subscribe(() => { this.refreshToken(); });
-    this.startIdleWatching();
+    this.initIdle();
   }
+
+  initIdle() {
+    // sets an idle timeout of 10 minutes, for testing purposes.
+    this.idle.setIdle(10 * 60);
+    // sets a timeout period of 5 minutes. after 10 minutes of inactivity, the user will be considered timed out.
+    this.idle.setTimeout(5 * 60);
+    // sets the default interrupts, in this case, things like clicks, scrolls, touches to the document
+    this.idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
+
+    // this.idle.onIdleEnd.subscribe(() => console.log('no longer idle.'));
+    this.idle.onTimeout.subscribe(() => {
+
+      if (this.currentSession) {
+        this.logout();
+        console.log('session expired');
+      }
+    });
+    // this.idle.onIdleStart.subscribe(() => console.log('your idle started'));
+    // this.idle.onTimeoutWarning.subscribe((countdown) => this.idleState = 'You will time out in ' + countdown + ' seconds!');
+
+    // sets the ping interval to 15 seconds
+    this.keepalive.interval(15);
+
+    this.keepalive.onPing.subscribe(() => this.lastPing = new Date());
+
+  }
+
+
 
   saveSession() {
 
@@ -213,15 +241,7 @@ export class AuthenticationService {
     };
     return httpOptions;
   }
-  private startIdleWatching() {
 
-    this.idleService.startWatching(30 * 60).subscribe((isTimedOut: boolean) => {
-      if (isTimedOut && this.currentSession) {
-        this.logout();
-        console.log('session expired');
-      }
-    });
-  }
 
   login(email: string, pass: string, code?: string): Observable<Session> {
     const httpOptions = {
@@ -248,7 +268,11 @@ export class AuthenticationService {
         this.currentSession.refreshToken = res.refreshToken;
 
         return this.getCurrentUser().pipe(x => {
-          this.startIdleWatching();
+          if (!this.idle.isRunning()) {
+            console.log('starting idle');
+            this.idle.watch();
+          }
+
           return x;
         });
       }), catchError(err => {
@@ -262,13 +286,15 @@ export class AuthenticationService {
       this.currentSession = new Session();
       this.currentSession.token = token;
       this.currentSession.refreshToken = refToken;
-      const item = decodeJWT(this.currentSession.refreshToken);
+      const item = decodeJWT(this.currentSession.refreshToken) as any;
       const clientId = item?.client?.id;
       if (clientId) {
         this.clientId = clientId;
       }
       return this.getCurrentUser().pipe(x => {
-        this.startIdleWatching();
+        if (!this.idle.isRunning()) {
+          this.idle.watch();
+        }
         return x;
       });
     }
@@ -282,7 +308,7 @@ export class AuthenticationService {
     this.currentSession = null;
     sessionStorage.removeItem(this.STORAGENAME);
     this.cookieService.clear();
-    this.idleService.stopTimer();
+    this.idle.stop();
   }
 
   logout() {

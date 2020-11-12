@@ -1,21 +1,21 @@
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { RecaptchaModule } from 'ng-recaptcha';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-
 import { NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule } from 'ngx-ui-loader';
+import { RoksitModule, ServicesModule } from 'roksit-lib';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './core/guards/AuthGuard';
@@ -27,16 +27,16 @@ import { ConfigService } from './core/services/config.service';
 import { CookieService } from './core/services/cookie.service';
 import { DashBoardService } from './core/services/dashBoardService';
 import { MonitorService } from './core/services/monitorService';
+import { NotificationApiService } from './core/services/notification-api.service';
 import { NotificationService } from './core/services/notification.service';
-
 import { translateHttpLoaderFactory } from './core/translationhelper';
 import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
 import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
 import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
 import { NotificationModule } from './modules/shared/notification/notification.module';
-import { RoksitModule, ServicesModule } from 'roksit-lib';
-import { NotificationApiService } from './core/services/notification-api.service';
-import { RecaptchaModule } from 'ng-recaptcha';
+
+
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -68,7 +68,8 @@ import { RecaptchaModule } from 'ng-recaptcha';
       }
     }),
     RoksitModule.forRoot(),
-    ServicesModule.forRoot()
+    ServicesModule.forRoot(),
+    NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
     AuthGuard,
