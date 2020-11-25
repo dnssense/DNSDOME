@@ -73,10 +73,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 13, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
       { id: 14, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
       { id: 15, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
+      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
+
     ],
     rows: [],
-    selectableRows: true
+    selectableRows: true,
+    url: 'http://beta.cyber-xray.com/#/anonymous-admin/dashboard/'
   };
 
   @Input() public searchSetting: SearchSetting;
@@ -109,6 +111,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       const tempcolumns = [];
 
       for (const data of this.columns) {
+        console.log('data', data);
         if (data['checked']) {
           tempcolumns.push(data);
         }
@@ -118,11 +121,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
       this.selectedColumns.forEach(item => {
         const col = this.tableConfig.columns.find(colItem => colItem.name === item.name);
-
+        console.log('item: ', item);
         if (col) {
           col.selected = true;
         }
       });
+      console.log(this.selectedColumns);
     });
     this.loadGraph(this.searchSetting);
   }
@@ -144,7 +148,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 13, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
       { id: 14, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
       { id: 15, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
+      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
+      { id: 17, name: 'icon', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
     ];
   }
 
@@ -192,6 +197,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
           item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss');
 
           const rowItem: RkTableRowModel = item;
+
+          rowItem.imgOptions = {src:'../../../../../assets/img/question.jpeg', columnName:'domain',isNavigate:true,customClass:'navigate-icon'};
           rowItem.selected = false;
 
           rowItem['action'] = rowItem['action'] === true ? 'Allow' : 'Deny';
@@ -200,7 +207,6 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
           this.tableConfig.rows.push(rowItem);
         });
-
         this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
       });
   }

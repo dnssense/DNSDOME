@@ -262,8 +262,8 @@ export class AuthenticationService {
       this.currentSession = new Session();
       this.currentSession.token = token;
       this.currentSession.refreshToken = refToken;
-      const item = decodeJWT(this.currentSession.refreshToken);
-      const clientId = item?.client?.id;
+      const item :any= decodeJWT(this.currentSession.refreshToken);
+      const clientId:any = item?.client?.id;
       if (clientId) {
         this.clientId = clientId;
       }

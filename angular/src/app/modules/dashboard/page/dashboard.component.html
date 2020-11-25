@@ -283,7 +283,10 @@
                                       (click)="addDomain(domain)" class="rk-c-{{ selectedBox }}">
                                       <td class="idx" style="width: 40px">{{ index + 1 }}</td>
                                       <td class="text">
-                                        <div class="overflowed-text">{{ domain.name }}</div>
+                                        <div class="overflowed-text"
+                                        ><a [href]="['http://beta.cyber-xray.com/#/anonymous-admin/dashboard/'+domain.name]"
+                                        target="_blank" class="Oval"> <img src="../../../../assets/img/question.jpeg" alt="" class="Shape"> </a>
+                                        {{ domain.name }}</div>
                                       </td>
                                       <td class="text">
                                         <div class="overflowed-text">{{domain.category}}</div>
