@@ -48,7 +48,7 @@
                                     </td>
                                     <td *ngFor="let col of selectedColumns; let colIndex = index">
                                         <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
-                                          <a *ngIf="dat[colIndex] !== 'Others'"
+                                          <a *ngIf="dat[colIndex] !== 'Others' && 'domain' === col.column.name"
                                           [href]="['http://beta.cyber-xray.com/#/anonymous-admin/dashboard/'+ dat[colIndex]]"
                                           target="_blank" class="Oval"> <img src="../../../../../assets/img/question.jpeg"
                                            alt="" class="Shape"></a>

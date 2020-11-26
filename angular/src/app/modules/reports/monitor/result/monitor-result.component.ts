@@ -121,7 +121,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
       this.selectedColumns.forEach(item => {
         const col = this.tableConfig.columns.find(colItem => colItem.name === item.name);
-        console.log('item: ', item);
+        // console.log('item: ', item);
         if (col) {
           col.selected = true;
         }
@@ -198,7 +198,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
           const rowItem: RkTableRowModel = item;
 
-          rowItem.imgOptions = {src:'../../../../../assets/img/question.jpeg', columnName:'domain',isNavigate:true,customClass:'navigate-icon'};
+          rowItem.imgOptions = {
+            src: '../../../../../assets/img/question.jpeg',
+            columnName: 'domain',
+            isNavigate: true,
+            customClass: 'navigate-icon'
+          };
           rowItem.selected = false;
 
           rowItem['action'] = rowItem['action'] === true ? 'Allow' : 'Deny';
@@ -206,6 +211,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
           rowItem['category'] = typeof rowItem['category'] === 'object' ? rowItem['category'].join(',') : rowItem['category'];
 
           this.tableConfig.rows.push(rowItem);
+          // console.log('row',rowItem);
         });
         this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
       });
