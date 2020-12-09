@@ -116,8 +116,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
             this.open2FA(val);
           } else {
             this.authService.login(this.email, this.password).subscribe(val => {
-              // this.router.navigateByUrl('/admin/dashboard');
-              this.router.navigateByUrl('admin/deployment/roaming-clients');
+              this.router.navigateByUrl('/admin/dashboard');
+              //this.router.navigateByUrl('admin/deployment/roaming-clients');
             });
           }
         },
