@@ -172,6 +172,7 @@ export class AuthenticationService {
           role.clearences = [];
           role.clearences.push(cleareance);
         });
+
         this.currentSession.currentUser.role = role;
 
       });

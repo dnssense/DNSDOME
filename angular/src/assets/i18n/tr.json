@@ -131,6 +131,7 @@
     "YourPasswordHasToBeAtLeast": "Parolalar en az bir büyük harf, bir küçük harf ve bir rakam içeren en az 8 karakterden oluşmalıdır",
     "IsActive": "Aktif mi",
     "Edit": "Düzenle",
+    "Delete": "Sil",
     "QueryCategory": "Kategori Sorgula",
     "EnterDomain": "Domain Giriniz",
     "Categories": "Kategoriler",
@@ -592,6 +593,7 @@
         "PublicIp": "Gerçek IP",
         "Devices": "Aygıtlar",
         "RoamingClients": "Mobil Cihazlar",
+        "AuditLogs": "Denetim Logları",
         "Settings": "Ayarlar",
         "Users": "Kullanıcılar",
         "SavedReports": "Kayıtlı Raporlar",
@@ -601,6 +603,7 @@
         "ThemeMode": "Tema"
     },
     "MonitorTraffic": "Monitor Trafik",
+    "AuditLogs": "Denetim Logları",
     "QueryCount": "Sorgu Sayısı",
     "LearnedNormalTrafficRange": "Öğrenilmiş Normal Trafik Aralığı",
     "TrafficExcessRate": "Trafik Aşım Oranı",
@@ -616,8 +619,20 @@
     "Grouped": "Gruplanmış",
     "NotGrouped": "Gruplanmamış",
     "UserDisabled": "Kullanıcı Korumayı Kapattımı",
+    "UserDisabledSmartCache": "Kullanıcı SmartCache Kapattımı",
     "Protection": "Koruma",
+    "SmartCache": "Smart Cache",
     "Details": "Detaylar",
     "AgentConfSaved": "Ajan konfigurasyonu kaydedildi",
-    "AgentsGlobalConfSaved": "Ajan genel ayarları kaydedildi"
+    "AgentsGlobalConfSaved": "Ajan genel ayarları kaydedildi",
+    "DeletedSelectedUserMessage": "Kullanıcı silindi",
+    "SelectedUserWillBeDeletedMessage": "Seçilen kullanıcı silinecek",
+    "AuditTableColumn": {
+        "Time": "Zaman",
+        "Username": "Kullanıcı",
+        "Ip": "Kaynak Ip",
+        "Severity": "Öncelik",
+        "Message": "Mesaj",
+        "MessageDetail": "Mesaj Detayı"
+    }
 }

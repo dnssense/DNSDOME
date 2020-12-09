@@ -130,6 +130,7 @@
     "YourPasswordHasToBeAtLeast": "Your password has to be at least 8 characters with at least one upper case, one lower case, and one number",
     "IsActive": "Is Active",
     "Edit": "Edit",
+    "Delete": "Delete",
     "QueryCategory": "Query Category",
     "EnterDomain": "Enter Domain",
     "Categories": "Categories",
@@ -594,6 +595,7 @@
         "PublicIp": "Public IP",
         "Devices": "Devices",
         "RoamingClients": "Roaming Clients",
+        "AuditLogs": "Audit Logs",
         "Settings": "Settings",
         "Users": "Users",
         "SavedReports": "Saved Reports",
@@ -603,6 +605,7 @@
         "ThemeMode": "ThemeMode"
     },
     "MonitorTraffic": "Monitor Traffic",
+    "AuditLogs": "Audit Logs",
     "QueryCount": "Query Count",
     "LearnedNormalTrafficRange": "Learned Normal Traffic Range",
     "TrafficExcessRate": "Traffic Excess Rate",
@@ -618,8 +621,20 @@
     "Grouped": "Grouped",
     "NotGrouped": "Not Grouped",
     "UserDisabled": "Is User Disabled Protection",
+    "UserDisabledSmartCache": "Is User Disabled SmartCache",
     "Protection": "Protection",
+    "SmartCache": "Smart Cache",
     "Details": "Details",
     "AgentConfSaved": "Agent config saved",
-    "AgentsGlobalConfSaved": "Agents global config saved"
+    "AgentsGlobalConfSaved": "Agents global config saved",
+    "DeletedSelectedUserMessage": "User deleted",
+    "SelectedUserWillBeDeletedMessage": "Selected user will delete",
+    "AuditTableColumn": {
+        "Time": "Time",
+        "Username": "Username",
+        "Ip": "Src. Ip",
+        "Severity": "Severity",
+        "Message": "Message",
+        "MessageDetail": "Message Detail"
+    }
 }

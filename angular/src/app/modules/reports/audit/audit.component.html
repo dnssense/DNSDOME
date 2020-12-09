@@ -1,0 +1,21 @@
+<div class="main-content" #component>
+  <div class="rk-base-card">
+    <div class="card-item rk-col px-0 pt-0">
+
+      <app-audit-search (isShowRunBarOutput)="isShowRunBar = $event" (filtersClearEmitter)="clearFilters()"
+        [isShowRunBar]="isShowRunBar" [filters]="filters" [searchSettings]="searchSettings" pageTitle="AuditLogs"
+        (searchSettingEmitter)="search($event)">
+      </app-audit-search>
+
+      <div class="container-fluid">
+        <div class="row mt-1">
+          <div class="col-md-12">
+            <app-audit-result #auditResult [searchSetting]="searchSettings"
+              (addColumnValueEmitter)="addValuesIntoSelected($event)" (linkClickedOutput)="linkClicked($event)">
+            </app-audit-result>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

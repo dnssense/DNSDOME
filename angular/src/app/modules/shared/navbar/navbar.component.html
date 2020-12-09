@@ -4,8 +4,10 @@
       <div class="toolbar mt-1">
         <div class="d-flex align-items-center justify-content-between w-100">
           <div style="width: 200px; overflow: hidden;">
-            <img *ngIf="theme === 'white'" src="/assets/img/{{  host.logoImage }}" alt="logo" height="40px" style="position: relative;">
-            <img *ngIf="theme !== 'white'" src="/assets/img/{{ host.logoDarkImage }}" alt="logo" height="40px" style="position: relative;">
+            <img *ngIf="theme === 'white'" src="/assets/img/{{  host.logoImage }}" alt="logo" height="40px"
+              style="position: relative;">
+            <img *ngIf="theme !== 'white'" src="/assets/img/{{ host.logoDarkImage }}" alt="logo" height="40px"
+              style="position: relative;">
           </div>
 
           <div class="account">
@@ -146,13 +148,13 @@
           </div>
         </div>
       </div>
-      
+
       <div class="row">
         <div class="col-12">
           <div class="sidebar-list">
             <li class="sidebar-list-item" [ngClass]="{'active': menuItem.selected}" *ngFor="let menuItem of _menuItems">
-              <a class="ripple" (click)="setActive(menuItem, null, menuItem?.subMenu?.length > 0)" [routerLink]="!menuItem.subMenu ? [menuItem.path] : []"
-                routerLinkActive="active">
+              <a class="ripple" (click)="setActive(menuItem, null, menuItem?.subMenu?.length > 0)"
+                [routerLink]="!menuItem.subMenu ? [menuItem.path] : []" routerLinkActive="active">
                 <icon-for-menu [type]="menuItem.icon"></icon-for-menu>
                 <span class="text">{{ menuItem.text }}</span>
                 <i-feather name="chevron-down" class="dropdown-icon" *ngIf="menuItem.subMenu"></i-feather>
@@ -161,8 +163,8 @@
               <ul class="dropdown sidebar-list" *ngIf="menuItem.subMenu">
                 <li class="sidebar-list-item" [ngClass]="{'active': subMenuItem.selected}"
                   *ngFor="let subMenuItem of menuItem.subMenu">
-                  <a (click)="setActive(menuItem, subMenuItem, menuItem?.subMenu?.length > 0)" [routerLink]="[menuItem.path + subMenuItem.path]"
-                    routerLinkActive="active">
+                  <a (click)="setActive(menuItem, subMenuItem, menuItem?.subMenu?.length > 0)"
+                    [routerLink]="[menuItem.path + subMenuItem.path]" routerLinkActive="active">
                     <icon-for-menu [type]="subMenuItem.icon"></icon-for-menu>
                     <span class="text">{{ subMenuItem.text }}</span>
                   </a>

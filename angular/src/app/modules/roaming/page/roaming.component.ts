@@ -29,6 +29,7 @@ export interface AgentConf {
     uninstallPassword: string;
     disablePassword: string;
     isDisabled: number;
+    isSmartCacheDisabled: number;
 }
 
 
@@ -246,6 +247,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     x.isDisabled = agentConf.isDisabled > 0;
                     x.uninstallPassword = agentConf.uninstallPassword;
                     x.disablePassword = agentConf.disablePassword;
+                    x.isSmartCacheDisabled = agentConf.isSmartCacheDisabled > 0;
 
                 }
 
@@ -265,6 +267,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                         const info = x.infos.find(a => a.uuid == y.uuid);
 
                         y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
+                        y.isUserDisabledSmartCache = info ? info.isUserDisabledSmartCache > 0 : false;
                         y.os = info?.os;
                         y.hostname = info?.hostname;
                         y.mac = info?.mac;
@@ -801,7 +804,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     saveRoamingClient() {
 
         if (this.selectedClient && this.isFormValid) {
-            const conf: AgentConf = { isDisabled: this.selectedClient.isDisabled ? 1 : 0, disablePassword: this.selectedClient.disablePassword, uninstallPassword: this.selectedClient.uninstallPassword };
+            const conf: AgentConf = { isDisabled: this.selectedClient.isDisabled ? 1 : 0, isSmartCacheDisabled: this.selectedClient.isSmartCacheDisabled ? 1 : 0, disablePassword: this.selectedClient.disablePassword, uninstallPassword: this.selectedClient.uninstallPassword };
             this.selectedClient.conf = JSON.stringify(conf);
 
             this.roamingService.saveClient(this.selectedClient).subscribe(
@@ -849,6 +852,11 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.saveAgentConf(agent);
     }
+    agentDisableEnableSmartCache(state: boolean, agent: Agent) {
+        agent.isSmartCacheDisabled = !state;
+
+        this.saveAgentConf(agent);
+    }
     showGroupedClients(val: boolean) {
 
         this.isGroupedRadioButtonSelected = val;
@@ -857,7 +865,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
     saveAgentConf(agent: Agent) {
-        const conf: AgentConf = { isDisabled: agent.isDisabled ? 1 : 0, disablePassword: agent.disablePassword, uninstallPassword: agent.uninstallPassword };
+        const conf: AgentConf = { isDisabled: agent.isDisabled ? 1 : 0, isSmartCacheDisabled: agent.isSmartCacheDisabled ? 1 : 0, disablePassword: agent.disablePassword, uninstallPassword: agent.uninstallPassword };
 
         return this.agentService.saveAgentConf(agent.uuid, conf).subscribe(x => {
 
