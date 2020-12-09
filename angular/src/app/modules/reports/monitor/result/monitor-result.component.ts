@@ -73,10 +73,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 13, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
       { id: 14, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
       { id: 15, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
+      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
+
     ],
     rows: [],
-    selectableRows: true
+    selectableRows: true,
+    url: 'http://beta.cyber-xray.com/#/anonymous-admin/dashboard/'
   };
 
   @Input() public searchSetting: SearchSetting;
@@ -109,6 +111,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       const tempcolumns = [];
 
       for (const data of this.columns) {
+        // console.log('data', data);
         if (data['checked']) {
           tempcolumns.push(data);
         }
@@ -118,33 +121,35 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
       this.selectedColumns.forEach(item => {
         const col = this.tableConfig.columns.find(colItem => colItem.name === item.name);
-
+        // console.log('item: ', item);
         if (col) {
           col.selected = true;
         }
       });
+      // console.log(this.selectedColumns);
     });
     this.loadGraph(this.searchSetting);
   }
 
   private changeColumnNames() {
     this.tableConfig.columns = [
-      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true },
-      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true },
-      { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), isLink: true },
-      { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), isLink: true },
-      { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
-      { id: 6, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
-      { id: 7, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), isLink: true },
+      { id: 0, name: 'time', displayText: this.translateService.translate('TableColumn.Time'), isLink: true },
+      { id: 1, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), isLink: true },
+      { id: 2, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), isLink: true },
+      { id: 3, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), isLink: true },
+      { id: 4, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
+      { id: 5, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
+      { id: 6, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
+      { id: 7, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
       { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
-      { id: 9, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
-      { id: 10, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
-      { id: 11, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
-      { id: 12, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
-      { id: 13, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
-      { id: 14, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
-      { id: 15, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
+      { id: 9, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true },
+      { id: 10, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true },
+      { id: 11, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
+      { id: 12, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
+      { id: 13, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
+      { id: 14, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
+      { id: 15, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
+      { id: 16, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
     ];
   }
 
@@ -176,6 +181,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
     }
   }
 
+  configColumn;
   public loadGraph(searchSettings: SearchSetting) {
     this.monitorService.getData(searchSettings, this.currentPage).takeUntil(this.ngUnsubscribe)
       .subscribe((res: Response) => {
@@ -185,6 +191,20 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
         }
 
         this.tableConfig.rows = [];
+        // add column headers
+        this.tableConfig.headers = [
+          { name: 'time', displayText: 'Time', columnName: ['time'] },
+          { name: 'source', columnName:
+          ['sourceIp', 'sourceIpCountryCode', 'agentAlias', 'clientLocalIp', 'hostName','clientMacAddress','clientBoxSerial','userId'], displayText: 'Source' },
+          { name: 'destination', columnName:
+          ['domain', 'subdomain','destinationIp','destinationIpCountryCode'], displayText: 'Destination' },
+          { name: 'decision', columnName:
+          ['category', 'applicationName', 'action', 'reasonType'], displayText: 'Decision' }
+        ];
+        this.tableConfig.selectableRows = false;
+        this.configColumn = this.tableConfig.columns;
+        this.changeColumnNames();
+        this.columnSet();
 
         this.tableData.forEach(item => {
           // burasi degisirse fillSearchSettingsByFilters bu fonksiyon icindeki yere bak
@@ -192,17 +212,34 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
           item.time = moment(item.time).format('YYYY-MM-DD HH:mm:ss');
 
           const rowItem: RkTableRowModel = item;
+
+          rowItem.imgOptions = {
+            src: '../../../../../assets/img/question.jpeg',
+            columnName: 'domain',
+            isNavigate: true,
+            customClass: 'navigate-icon'
+          };
           rowItem.selected = false;
 
           rowItem['action'] = rowItem['action'] === true ? 'Allow' : 'Deny';
 
           rowItem['category'] = typeof rowItem['category'] === 'object' ? rowItem['category'].join(',') : rowItem['category'];
-
           this.tableConfig.rows.push(rowItem);
         });
-
         this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
       });
+  }
+
+  columnSet(){
+    for(let column of this.configColumn){
+      if(column.selected){
+        this.tableConfig.columns.forEach(col => {
+          if(col.name === column.name){
+            col.selected = true;
+          }
+        });
+      }
+    }
   }
 
   public checkUncheckColumn(col: LogColumn) {
