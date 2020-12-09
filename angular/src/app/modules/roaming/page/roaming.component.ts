@@ -167,7 +167,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.loadClients();
 
-        this.getConfParameters();
+        this.getConfParameters().subscribe();
 
 
         // this.defineNewAgentForProfile();
@@ -363,7 +363,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     getConfParameters() {
 
-        this.boxService.getVirtualBox().subscribe(res => {
+        return this.boxService.getVirtualBox().map(res => {
             this.virtualBox = res;
             if (res.conf) {
                 try {
@@ -454,7 +454,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         const request = { box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword };
         this.boxService.saveBoxConfig(request).subscribe(x => {
             this.notification.info(this.staticMessageService.agentsGlobalConfSaved);
-            this.configureModal.toggle();
+            this.getConfParameters().subscribe(x => {
+                this.configureModal.toggle();
+            })
+
             /* this.boxService.getProgramLink().subscribe(res => {
                 if (res && res.link) {
                     this.getConfParameters();
@@ -483,9 +486,13 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.boxService.saveBoxConfig({ box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).subscribe(x => {
             this.boxService.getProgramLink().subscribe(res => {
                 if (res && res.link) {
-                    this.getConfParameters();
-                    this.fileLink = res.link;
-                    window.open('http://' + this.fileLink, '_blank');
+                    this.getConfParameters().subscribe(x => {
+                        this.fileLink = res.link;
+                        window.open(window.location.protocol + '//' + this.fileLink, '_blank');
+
+                    })
+
+                    //
                 } else {
                     this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
                 }
