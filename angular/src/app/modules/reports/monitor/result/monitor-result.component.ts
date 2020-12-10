@@ -13,6 +13,7 @@ import * as moment from 'moment';
 import { ReportService } from 'src/app/core/services/reportService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 export interface LinkClick {
   columnModel: RkTableColumnModel;
@@ -33,12 +34,20 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
     private pdfService: PdfService,
     private reportService: ReportService,
     private translateService: TranslatorService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private authService :AuthenticationService
   ) {
     _translateService.onLangChange.subscribe(result => {
       this.changeColumnNames();
     });
+
+    const currentSession = this.authService.currentSession;
+    this.token = currentSession.token;
+    this.refreshToken = currentSession.refreshToken;
   }
+
+  token;
+  refreshToken;
 
   columns: LogColumn[];
   selectedColumns: LogColumn[];
@@ -78,7 +87,6 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
     ],
     rows: [],
     selectableRows: true,
-    url: 'http://beta.cyber-xray.com/#/anonymous-admin/dashboard/'
   };
 
   @Input() public searchSetting: SearchSetting;
@@ -201,7 +209,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
           { name: 'decision', columnName:
           ['category', 'applicationName', 'action', 'reasonType'], displayText: 'Decision' }
         ];
+
         this.tableConfig.selectableRows = false;
+        this.tableConfig.url= 'http://beta.cyber-xray.com/#/admin/dashboard/';
+        this.tableConfig.urlParams = `?t=${this.token}&r=${this.refreshToken}`;
+        this.tableConfig.arrowVisible = true;
+
         this.configColumn = this.tableConfig.columns;
         this.changeColumnNames();
         this.columnSet();

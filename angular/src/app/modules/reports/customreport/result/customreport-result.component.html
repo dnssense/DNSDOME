@@ -49,9 +49,10 @@
                                     <td *ngFor="let col of selectedColumns; let colIndex = index">
                                         <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
                                           <a *ngIf="dat[colIndex] !== 'Others' && 'domain' === col.column.name"
-                                          [href]="['http://beta.cyber-xray.com/#/anonymous-admin/dashboard/'+ dat[colIndex]]"
+                                          [href]="['http://beta.cyber-xray.com/#/admin/dashboard/'+ dat[colIndex] + '?t='+
+                                          token+'&r='+refreshToken]"
                                           target="_blank" class="Oval"> <img src="../../../../../assets/img/question.jpeg"
-                                           alt="" class="Shape"></a>
+                                           alt="" class="Shape" style="margin-right: 3px;"></a>
                                             <button class="btn btn-link table-link-button"
                                                 (click)="linkClicked(col.column.name, dat[colIndex])">
                                                 <ng-container *ngIf="col.column.name === 'time'; else elseTimeTemplate">

@@ -58,7 +58,11 @@ export class DashboardComponent implements OnInit {
     private staticMesssageService: StaticMessageService,
     private translatorService: TranslatorService,
     private authService: AuthenticationService
-  ) { }
+  ) {
+    const currentSession = this.authService.currentSession;
+    this.token = currentSession.token;
+    this.refreshToken = currentSession.refreshToken;
+  }
 
   host: ConfigHost;
   trafficAnomaly: HourlyCompanySummaryV5Response;
@@ -80,6 +84,9 @@ export class DashboardComponent implements OnInit {
   agentCounts: AgentCountModel[] = [];
   timeRangeButtons: DateParamModel[] = [];
   totalCategoryHits = 0;
+
+  token;
+  refreshToken;
 
   infoBoxes = {
     total: true,

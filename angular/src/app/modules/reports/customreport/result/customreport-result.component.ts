@@ -40,10 +40,17 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     const currentUser = this.authService.currentSession?.currentUser;
     const theme = this.configService.getThemeColor(currentUser?.id);
 
+    const currentSession = this.authService.currentSession;
+    this.token = currentSession.token;
+    this.refreshToken = currentSession.refreshToken;
+
     if (theme) {
       this.theme = theme;
     }
   }
+
+  token;
+  refreshToken;
 
   elementRef: ElementRef;
   public date = new Date();
@@ -101,7 +108,8 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
       { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
     ],
     rows: [],
-    selectableRows: true
+    selectableRows: true,
+    arrowVisible:true
   };
 
   paginationOptions: RkSelectModel[] = [
