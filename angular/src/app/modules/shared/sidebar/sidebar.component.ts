@@ -125,16 +125,16 @@ export class SidebarComponent implements OnInit {
   host: ConfigHost;
 
   _menuItems: RkMenuItem[] = [
-    { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false },
-    { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false },
-    { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false, },
+    { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false, hasSub: false },
+    { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false, hasSub: false },
+    { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false, hasSub: false },
     {
       id: 3, path: '/admin/', text: 'PageName.Deployment', icon: 'dashboard', selected: false,
       subMenu: [
         { id: 3.1, path: 'deployment/public-ip', text: 'PageName.PublicIp', icon: 'public-ip', selected: false },
         { id: 3.2, path: 'deployment/devices', text: 'PageName.Devices', icon: 'device', selected: false },
         { id: 3.3, path: 'deployment/roaming-clients', text: 'PageName.RoamingClients', icon: 'roaming-clients', selected: false },
-      ]
+      ], hasSub: true
     },
     {
       id: 4, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false,
@@ -145,14 +145,25 @@ export class SidebarComponent implements OnInit {
         { id: 4.4, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false },
         { id: 4.5, path: 'settings/change-domain-category', text: 'PageName.RequestChangingDomainCategory', icon: 'request-category', selected: false },
         { id: 4.6, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false },
-      ]
+      ], hasSub: true
     }
   ];
 
-  setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem) {
-    this._menuItems.forEach(elem => elem.selected = false);
+  setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, hasSub?: RkMenuItem) {
 
-    menuItem.selected = true;
+    // Butonları toggle yapmak için
+    if (menuItem.hasSub == true) {
+      if (menuItem.selected == true) {
+        this._menuItems.forEach(elem => elem.selected = false);
+        menuItem.selected = false;
+      } else {
+        this._menuItems.forEach(elem => elem.selected = false);
+        menuItem.selected = true;
+      }
+    } else {
+      this._menuItems.forEach(elem => elem.selected = false);
+      menuItem.selected = true;
+    }
 
     this._menuItems.forEach(elem => {
       if (elem.subMenu) {
