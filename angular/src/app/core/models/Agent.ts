@@ -25,7 +25,7 @@ export class Agent {
      */
     selected?= false;
     isDisabled = false;
-    isSmartCacheDisabled = false;
+    isSmartCacheEnabled = false;
     uninstallPassword?: string;
     disablePassword?: string;
     isAlive = true;
