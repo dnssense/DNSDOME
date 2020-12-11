@@ -125,9 +125,9 @@ export class SidebarComponent implements OnInit {
   host: ConfigHost;
 
   _menuItems: RkMenuItem[] = [
-    { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false },
-    { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false },
-    { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false, },
+    { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false},
+    { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false},
+    { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false},
     {
       id: 3, path: '/admin/', text: 'PageName.Deployment', icon: 'dashboard', selected: false,
       subMenu: [
@@ -150,10 +150,21 @@ export class SidebarComponent implements OnInit {
     }
   ];
 
-  setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem) {
-    this._menuItems.forEach(elem => elem.selected = false);
+  setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, hasSub?: RkMenuItem) {
 
-    menuItem.selected = true;
+    // Butonları toggle yapmak için
+    if (menuItem.subMenu !== undefined) {
+      if (menuItem.selected == true) {
+        this._menuItems.forEach(elem => elem.selected = false);
+        menuItem.selected = false;
+      } else {
+        this._menuItems.forEach(elem => elem.selected = false);
+        menuItem.selected = true;
+      }
+    } else {
+      this._menuItems.forEach(elem => elem.selected = false);
+      menuItem.selected = true;
+    }
 
     this._menuItems.forEach(elem => {
       if (elem.subMenu) {
@@ -169,7 +180,7 @@ export class SidebarComponent implements OnInit {
   toggleCollapse() {
     this.rkLayout.setSidebarCollapse(!this.collapsed);
     const currentUser = this.authService.currentSession?.currentUser;
-
+    window.dispatchEvent(new Event('resize'));
 
     localStorage.setItem(`menuCollapsed_for_user_${currentUser?.id}`, JSON.stringify(!this.collapsed));
   }
