@@ -179,7 +179,7 @@ export class SidebarComponent implements OnInit {
   toggleCollapse() {
     this.rkLayout.setSidebarCollapse(!this.collapsed);
     const currentUser = this.authService.currentSession?.currentUser;
-
+    window.dispatchEvent(new Event('resize'));
 
     localStorage.setItem(`menuCollapsed_for_user_${currentUser?.id}`, JSON.stringify(!this.collapsed));
   }

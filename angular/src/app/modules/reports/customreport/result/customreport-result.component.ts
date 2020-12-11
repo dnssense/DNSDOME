@@ -198,6 +198,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
       });
 
       this.tableConfig.rows = [];
+      this.tableConfig.arrowVisible = true;
 
       this.data.forEach(item => {
         const rowItem: RkTableRowModel = { selected: false };
