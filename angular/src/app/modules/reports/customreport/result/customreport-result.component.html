@@ -53,7 +53,7 @@
                                           token+'&r='+refreshToken]"
                                           target="_blank" class="Oval"> <img src="../../../../../assets/img/question.jpeg"
                                            alt="" class="Shape" style="margin-right: 3px;"></a>
-                                            <button class="btn btn-link table-link-button"
+                                            <button class="btn btn-link table-link-button" style="background: transparent;"
                                                 (click)="linkClicked(col.column.name, dat[colIndex])">
                                                 <ng-container *ngIf="col.column.name === 'time'; else elseTimeTemplate">
                                                     {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
