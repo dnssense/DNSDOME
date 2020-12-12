@@ -126,12 +126,12 @@
                     <ng-template #elseTemplate2>-</ng-template>
                   </td>
                   <td style="width: 60px">
-                    <button class=" btn btn-link btn-icon p-0 hover-gray" (click)="editBox(b)">
+                    <button class=" btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editBox(b)">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
                   <td style=" width: 60px" (click)="deleteBox(b.id)">
-                    <button class=" btn btn-link btn-icon p-0 hover-gray">
+                    <button class=" btn btn-link btn-icon p-0 hover-gray bg-transparent">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>
@@ -299,12 +299,12 @@
                     {{ device?.securityProfile?.name }}
                   </td>
                   <td style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray" (click)="editGroupAgentModal(device)">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editGroupAgentModal(device)">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray"
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
                       (click)="deleteDeviceGroup(device.agentGroup.groupName)">
                       <i-feather name="trash-2"></i-feather>
                     </button>
