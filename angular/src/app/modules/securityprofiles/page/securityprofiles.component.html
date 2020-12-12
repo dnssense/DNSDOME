@@ -86,19 +86,19 @@
                   </td>
                   <td class="text-center" style="width: 60px;">
                     <button class="btn btn-link btn-icon p-0 hover-gray no-animation" data-tooltip="You can view the profile."
-                      data-tooltip-location="left" *ngIf="profile.isSystem" (click)="viewProfile(profile)">
+                      data-tooltip-location="left" *ngIf="profile.isSystem" (click)="viewProfile(profile)" style="background: transparent;">
                       <i-feather name="eye" class="mr-0"></i-feather>
                     </button>
 
                     <button class="btn btn-link btn-icon p-0 hover-gray no-animation" data-tooltip="You can edit the profile."
-                      data-tooltip-location="left" *ngIf="!profile.isSystem" (click)="editProfile(profile)">
+                      data-tooltip-location="left" *ngIf="!profile.isSystem" (click)="editProfile(profile)" style="background: transparent;">
                       <i-feather name="edit-3" class="mr-0"></i-feather>
                     </button>
                   </td>
                   <td class="text-center" style="width: 60px;">
                     <button class="btn btn-link btn-icon p-0 hover-gray no-animation" *ngIf="!profile.isSystem"
                       (click)="deleteProfile(profile.id)" data-tooltip="You can remove the profile."
-                      data-tooltip-location="left">
+                      data-tooltip-location="left" style="background: transparent;">
                       <i-feather name="trash-2" class="mr-0"></i-feather>
                     </button>
                   </td>
