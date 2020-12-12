@@ -39,6 +39,7 @@
                           <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal>
 
                           <div class="d-flex flex-column text-center">
+
                             <rk-date #date [startDate]="startDate" [endDate]="endDate"
                               (complete)="dateChanged($event, true)" [alignment]="'right'" [config]="dateConfig">
                             </rk-date>
@@ -284,10 +285,10 @@
                                       <td class="idx" style="width: 40px">{{ index + 1 }}</td>
                                       <td class="text">
                                         <div class="overflowed-text"
-                                        ><a [href]="['http://beta.cyber-xray.com/#/admin/dashboard/'+domain.name + '?t='+
+                                        ><a [href]="['http://www.cyber-xray.com /#/admin/dashboard/'+domain.name + '?t='+
                                         token+'&r='+refreshToken]"
-                                        target="_blank" class="Oval"> <img src="../../../../assets/img/question.jpeg" alt=""
-                                        style="margin-right: 3px;width: 15px;border-radius: 50%;"> </a>
+                                        target="_blank" class="rounded-circle" style="background-color: #fdf0cc; width: 16px; height: 16px; font-size: 16px;"> <img src="../../../../assets/img/CyberxIcon.svg" alt=""
+                                        style="margin-right: 2px;width: 16px;border-radius: 50%;"> </a>
                                         {{ domain.name }}</div>
                                       </td>
                                       <td class="text">
