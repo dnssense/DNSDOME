@@ -262,14 +262,14 @@ export class UsersComponent implements OnInit {
             res => {
                 if (res) {
 
-                    /* this.userService.delete(user).subscribe(res => {
+                    this.userService.delete(user).subscribe(res => {
 
                         this.notification.success(this.staticMessageService.deletedSelectedUserMessage);
                         this.userService.getUsers().subscribe(res => {
                             this.users = res;
                         });
 
-                    }); */
+                    });
                 }
             }
         );

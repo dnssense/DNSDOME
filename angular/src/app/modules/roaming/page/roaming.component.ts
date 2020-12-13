@@ -860,7 +860,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.saveAgentConf(agent);
     }
     agentDisableEnableSmartCache(state: boolean, agent: Agent) {
-        agent.isSmartCacheEnabled = !state;
+
+        agent.isSmartCacheEnabled = state;
 
         this.saveAgentConf(agent);
     }
