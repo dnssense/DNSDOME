@@ -14,6 +14,7 @@ import { ReportService } from 'src/app/core/services/reportService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { environment } from 'src/environments/environment';
 
 export interface LinkClick {
   columnModel: RkTableColumnModel;
@@ -57,6 +58,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
   maxSize = 10;
   private ngUnsubscribe: Subject<any> = new Subject<any>();
   columnListLength = 12;
+
+  navigationUrl = environment.navigationUrl;
 
   pageViewCount = 10;
 
@@ -211,7 +214,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
         ];
 
         this.tableConfig.selectableRows = false;
-        this.tableConfig.url= 'http://beta.cyber-xray.com/#/admin/dashboard/';
+        this.tableConfig.url= this.navigationUrl;
         this.tableConfig.urlParams = `?t=${this.token}&r=${this.refreshToken}`;
         this.tableConfig.arrowVisible = true;
 
@@ -227,7 +230,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
           const rowItem: RkTableRowModel = item;
 
           rowItem.imgOptions = {
-            src: '../../../../../assets/img/question.jpeg',
+            src: '../../../../../assets/img/CyberxIcon.svg',
             columnName: 'domain',
             isNavigate: true,
             customClass: 'navigate-icon'

@@ -23,6 +23,7 @@ import { TranslatorService } from 'src/app/core/services/translator.service';
 import { RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import * as numeral from 'numeral';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { environment } from 'src/environments/environment';
 
 interface TagInputValue {
   value: string;
@@ -87,6 +88,7 @@ export class DashboardComponent implements OnInit {
 
   token;
   refreshToken;
+  navigationUrl = environment.navigationUrl;
 
   infoBoxes = {
     total: true,
