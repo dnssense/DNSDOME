@@ -14,8 +14,7 @@
 
                         <rk-table (pageChange)="onPageChange($event)" [totalCount]="100"
                             [pageViewCount]="searchSetting.topNumber" [paginationOptions]="paginationOptions"
-                            (pageViewCountChange)="onPageViewCountChange($event)"
-                            [paginationSelectDirection]="'up'">
+                            (pageViewCountChange)="onPageViewCountChange($event)" [paginationSelectDirection]="'up'">
                             <ng-template #header>
                                 <tr>
                                     <th style="width: 60px;">
@@ -48,12 +47,13 @@
                                     </td>
                                     <td *ngFor="let col of selectedColumns; let colIndex = index">
                                         <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
-                                          <a *ngIf="dat[colIndex] !== 'Others' && 'domain' === col.column.name"
-                                          [href]="['http://beta.cyber-xray.com/#/admin/dashboard/'+ dat[colIndex] + '?t='+
-                                          token+'&r='+refreshToken]"
-                                          target="_blank" class="Oval"> <img src="../../../../../assets/img/question.jpeg"
-                                           alt="" class="Shape" style="margin-right: 3px;"></a>
-                                            <button class="btn btn-link table-link-button" style="background: transparent;"
+                                            <a *ngIf="dat[colIndex] !== 'Others' && 'domain' === col.column.name"
+                                                [href]="['http://www.cyber-xray.com/#/admin/dashboard/'+ dat[colIndex] + '?t='+
+                                          token+'&r='+refreshToken]" target="_blank" class="Oval"> <img
+                                                    src="../../../../../assets/img/question.jpeg" alt="" class="Shape"
+                                                    style="margin-right: 3px;"></a>
+                                            <button class="btn btn-link table-link-button"
+                                                style="background: transparent;"
                                                 (click)="linkClicked(col.column.name, dat[colIndex])">
                                                 <ng-container *ngIf="col.column.name === 'time'; else elseTimeTemplate">
                                                     {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
