@@ -39,6 +39,7 @@
                           <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal>
 
                           <div class="d-flex flex-column text-center">
+
                             <rk-date #date [startDate]="startDate" [endDate]="endDate"
                               (complete)="dateChanged($event, true)" [alignment]="'right'" [config]="dateConfig">
                             </rk-date>
@@ -52,8 +53,8 @@
                     </div>
                   </div>
 
-                  <div class="row">
-                    <div class="col-12 col-lg-6 col-xl mt-3">
+                  <div class="row mx-auto">
+                    <div class="col-2 col-lg-6 col-xl mt-3 dBox">
                       <rk-infobox [active]="infoBoxes.total" (change)="infoboxChanged($event, 'total', 'Total')"
                         [title]="translate('Total')" [color]="'#4353ff'" className="blue" [type]="1"
                         [valueOne]="trafficAnomaly?.total?.allow" [valueTwo]="trafficAnomaly?.total?.block"
@@ -61,7 +62,7 @@
                       </rk-infobox>
                     </div>
 
-                    <div class="col-12 col-lg-6 col-xl mt-3">
+                    <div class="col-2 col-lg-6 col-xl mt-3 dBox">
                       <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe', 'Safe')"
                         [title]="translate('Safe')" [color]="'#3dd49a'" className="green"
                         [valueOne]="trafficAnomaly?.safe?.hit" [valueTwo]="trafficAnomaly?.safe?.hit_ratio"
@@ -69,7 +70,7 @@
                       </rk-infobox>
                     </div>
 
-                    <div class="col-12 col-lg-6 col-xl mt-3">
+                    <div class="col-2 col-lg-6 col-xl mt-3 dBox">
                       <rk-infobox [active]="infoBoxes.malicious"
                          (change)="infoboxChanged($event, 'malicious', 'Malicious')" [type]="2"
                         [title]="translate('Malicious')" className="red" [color]="'#f95656'"
@@ -78,7 +79,7 @@
                       </rk-infobox>
                     </div>
 
-                    <div class="col-12 col-lg-6 col-xl mt-3">
+                    <div class="col-2 col-lg-6 col-xl mt-3 dBox">
                       <rk-infobox [active]="infoBoxes.variable"
                         (change)="infoboxChanged($event, 'variable', 'Variable')" [type]="2"
                         [title]="translate('Variable')" className="gray" [color]="'#A0AAB7'"
@@ -87,7 +88,7 @@
                       </rk-infobox>
                     </div>
 
-                    <div class="col-12 col-lg-6 col-xl mt-3">
+                    <div class="col-2 col-lg-6 col-xl mt-3 dBox pr-0">
                       <rk-infobox [active]="infoBoxes.harmful"
                          (change)="infoboxChanged($event, 'harmful', 'HarmfullContent')" [type]="2"
                         [title]="translate('HarmfullContent')" className="yellow" [color]="'#EFBB1E'"
@@ -284,10 +285,10 @@
                                       <td class="idx" style="width: 40px">{{ index + 1 }}</td>
                                       <td class="text">
                                         <div class="overflowed-text"
-                                        ><a [href]="['http://beta.cyber-xray.com/#/admin/dashboard/'+domain.name + '?t='+
+                                        ><a [href]="['http://www.cyber-xray.com/#/admin/dashboard/'+domain.name + '?t='+
                                         token+'&r='+refreshToken]"
-                                        target="_blank" class="Oval"> <img src="../../../../assets/img/question.jpeg" alt=""
-                                        style="margin-right: 3px;width: 15px;border-radius: 50%;"> </a>
+                                        target="_blank" class="rounded-circle" style="background-color: #fdf0cc; width: 16px; height: 16px; font-size: 16px;"> <img src="../../../../assets/img/CyberxIcon.svg" alt=""
+                                        style="margin-right: 3px;width: 16px;border-radius: 50%;"> </a>
                                         {{ domain.name }}</div>
                                       </td>
                                       <td class="text">
