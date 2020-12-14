@@ -48,10 +48,10 @@
                                     <td *ngFor="let col of selectedColumns; let colIndex = index">
                                         <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
                                             <a *ngIf="dat[colIndex] !== 'Others' && 'domain' === col.column.name"
-                                                [href]="['http://www.cyber-xray.com/#/admin/dashboard/'+ dat[colIndex] + '?t='+
-                                          token+'&r='+refreshToken]" target="_blank" class="Oval"> <img
-                                                    src="../../../../../assets/img/question.jpeg" alt="" class="Shape"
-                                                    style="margin-right: 3px;"></a>
+                                                [href]="[navigationUrl+ dat[colIndex] + '?t='+
+                                          token+'&r='+refreshToken]" target="_blank" class="Oval">
+                                                <img src="../../../../../assets/img/CyberxIcon.svg" alt=""
+                                                    class="Shape"></a>
                                             <button class="btn btn-link table-link-button"
                                                 style="background: transparent;"
                                                 (click)="linkClicked(col.column.name, dat[colIndex])">
@@ -60,7 +60,8 @@
                                                 </ng-container>
 
                                                 <ng-template #elseTimeTemplate>
-                                                    {{ col.column.name === 'action' ? ( dat[colIndex] ?  ( dat[colIndex]=='true'? 'Allow' : 'Deny'):'' ) : dat[colIndex] }}
+                                                    {{ col.column.name === 'action' ? ( dat[colIndex] ? (
+                                                    dat[colIndex]=='true'? 'Allow' : 'Deny'):'' ) : dat[colIndex] }}
                                                 </ng-template>
                                             </button>
                                         </ng-container>
@@ -71,7 +72,8 @@
                                             </ng-container>
 
                                             <ng-template #elseTimeTemplate2>
-                                                {{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) : dat[colIndex] }}
+                                                {{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) :
+                                                dat[colIndex] }}
                                             </ng-template>
                                         </ng-template>
                                     </td>

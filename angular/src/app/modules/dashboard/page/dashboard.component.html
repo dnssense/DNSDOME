@@ -285,7 +285,7 @@
                                       (click)="addDomain(domain)" class="rk-c-{{ selectedBox }}">
                                       <td class="idx" style="width: 40px">{{ index + 1 }}</td>
                                       <td class="text">
-                                        <div class="overflowed-text"><a [href]="['http://www.cyber-xray.com/#/admin/dashboard/'+domain.name + '?t='+
+                                        <div class="overflowed-text"><a [href]="[navigationUrl+domain.name + '?t='+
                                         token+'&r='+refreshToken]" target="_blank" class="rounded-circle"
                                             style="background-color: #fdf0cc; width: 16px; height: 16px; font-size: 16px;">
                                             <img src="../../../../assets/img/CyberxIcon.svg" alt=""

@@ -15,6 +15,7 @@ import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.compon
 import { LOCAL_STORAGE_THEME_COLOR } from 'src/app/modules/theme/theme.component';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { environment } from 'src/environments/environment';
 
 export interface TableBadgeOutput {
   name: string;
@@ -51,6 +52,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
 
   token;
   refreshToken;
+  navigationUrl = environment.navigationUrl;
 
   elementRef: ElementRef;
   public date = new Date();
