@@ -25,10 +25,12 @@ export class Agent {
      */
     selected?= false;
     isDisabled = false;
+    isSmartCacheEnabled = false;
     uninstallPassword?: string;
     disablePassword?: string;
     isAlive = true;
     isUserDisabled = false;
+    isUserDisabledSmartCache = false;
     os?: string;
     hostname?: string;
     version?: string;
@@ -45,6 +47,7 @@ export interface AgentDetail {
     uuid: string;
     insertDate: string;
     isUserDisabled: number;
+    isUserDisabledSmartCache: number;
     companyId: number;
     hostname: string;
     mac: string;

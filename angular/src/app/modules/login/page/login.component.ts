@@ -1,22 +1,19 @@
-import { Component, OnInit, ElementRef, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { FormBuilder } from '@angular/forms';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { Router } from '@angular/router';
-import { SignupBean } from 'src/app/core/models/SignupBean';
-
-import { CaptchaService } from 'src/app/core/services/captcha.service';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { environment } from 'src/environments/environment';
-import { Session } from 'src/app/core/models/Session';
-import { SmsService } from 'src/app/core/services/smsService';
-import { SmsType } from 'src/app/core/models/SmsType';
+import { RecaptchaComponent } from 'ng-recaptcha';
 // import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { RestPreloginResponse, RestPreloginSmsResponse } from 'src/app/core/models/RestServiceModels';
+import { SignupBean } from 'src/app/core/models/SignupBean';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
-import { RecaptchaComponent } from 'ng-recaptcha';
+import { NotificationService } from 'src/app/core/services/notification.service';
+import { SmsService } from 'src/app/core/services/smsService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { environment } from 'src/environments/environment';
+
 
 declare var $: any;
 
@@ -120,6 +117,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           } else {
             this.authService.login(this.email, this.password).subscribe(val => {
               this.router.navigateByUrl('/admin/dashboard');
+              //this.router.navigateByUrl('admin/deployment/roaming-clients');
             });
           }
         },

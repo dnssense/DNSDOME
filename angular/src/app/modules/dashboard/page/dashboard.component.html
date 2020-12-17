@@ -32,8 +32,8 @@
                         <div class="rk-title-2">{{'DASHBOARD.TrafficBasedAnomaly'|translate}}</div>
 
                         <div class="d-flex align-items-start justify-content-end">
-                          <button class="btn btn-small mr-2 d-none d-xl-flex dashboard-date-btn" *ngFor="let dateButton of dateButtons"
-                            (click)="setDateByDateButton(dateButton)"
+                          <button class="btn btn-small mr-2 d-none d-xl-flex dashboard-date-btn"
+                            *ngFor="let dateButton of dateButtons" (click)="setDateByDateButton(dateButton)"
                             [ngClass]="{'active': dateButton?.active}">{{ dateButton.displayText }}</button>
 
                           <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal>
@@ -92,7 +92,8 @@
                       <rk-infobox [active]="infoBoxes.harmful"
                          (change)="infoboxChanged($event, 'harmful', 'HarmfullContent')" [type]="2"
                         [title]="translate('HarmfullContent')" className="yellow" [color]="'#EFBB1E'"
-                        [valueOne]="trafficAnomaly?.harmful?.hit || 0" [valueTwo]="trafficAnomaly?.harmful?.hit_ratio ||  0.001"
+                        [valueOne]="trafficAnomaly?.harmful?.hit || 0"
+                        [valueTwo]="trafficAnomaly?.harmful?.hit_ratio ||  0.001"
                         description="{{'HarmfulDescription'|translate}}">
                       </rk-infobox>
                     </div>
@@ -177,8 +178,8 @@
                                     <i-feather name="arrow-right"></i-feather>
                                   </button>
 
-                                  <button class="btn btn-small btn-outline"
-                                    (click)="showDetail()"  *ngIf="showDetailButton" >{{'DASHBOARD.ShowDetail'|translate}}</button>
+                                  <button class="btn btn-small btn-outline" (click)="showDetail()"
+                                    *ngIf="showDetailButton">{{'DASHBOARD.ShowDetail'|translate}}</button>
                                 </div>
                               </div>
 
@@ -284,12 +285,12 @@
                                       (click)="addDomain(domain)" class="rk-c-{{ selectedBox }}">
                                       <td class="idx" style="width: 40px">{{ index + 1 }}</td>
                                       <td class="text">
-                                        <div class="overflowed-text"
-                                        ><a [href]="[navigationUrl+domain.name + '?t='+
-                                        token+'&r='+refreshToken]"
-                                        target="_blank" class="rounded-circle" style="background-color: #fdf0cc; width: 16px; height: 16px; font-size: 16px;"> <img src="../../../../assets/img/CyberxIcon.svg" alt=""
-                                        style="margin-right: 3px;width: 16px;border-radius: 50%;"> </a>
-                                        {{ domain.name }}</div>
+                                        <div class="overflowed-text"><a [href]="[navigationUrl+domain.name + '?t='+
+                                        token+'&r='+refreshToken]" target="_blank" class="rounded-circle"
+                                            style="background-color: #fdf0cc; width: 16px; height: 16px; font-size: 16px;">
+                                            <img src="../../../../assets/img/CyberxIcon.svg" alt=""
+                                              style="margin-right: 3px;width: 16px;border-radius: 50%;"> </a>
+                                          {{ domain.name }}</div>
                                       </td>
                                       <td class="text">
                                         <div class="overflowed-text">{{domain.category}}</div>

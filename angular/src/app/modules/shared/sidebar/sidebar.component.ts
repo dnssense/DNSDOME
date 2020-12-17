@@ -136,6 +136,7 @@ export class SidebarComponent implements OnInit {
         { id: 3.3, path: 'deployment/roaming-clients', text: 'PageName.RoamingClients', icon: 'roaming-clients', selected: false },
       ]
     },
+    //{ id: 4, path: '/admin/reports/audit', text: 'PageName.AuditLogs', icon: 'audit', selected: false },
     {
       id: 4, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false,
       subMenu: [

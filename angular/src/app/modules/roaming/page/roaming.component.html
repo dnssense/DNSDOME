@@ -664,6 +664,8 @@
                   <th>{{'Alive'|translate}}</th>
                   <th>{{'UserDisabled'|translate}}</th>
                   <th> {{'Protection'|translate}}</th>
+                  <th> {{'UserDisabledSmartCache'|translate}}</th>
+                  <th> {{'SmartCache'|translate}}</th>
                   <th> {{'Details'|translate}}</th>
                   <th colspan="2">{{'Operation'|translate}}</th>
                 </tr>
@@ -692,6 +694,17 @@
                   </td>
                   <td class="text-center" style="width: 20px;">
                     <rk-switch [(value)]="!c.isDisabled" (valueChange)="agentDisableEnable($event, c)">
+                    </rk-switch>
+                  </td>
+                  <td class="text-center" style="width: 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <path [attr.fill]="c.isUserDisabledSmartCache ? '#d20b0b' : '#97A5BB'" fill-rule="evenodd"
+                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                    </svg>
+                  </td>
+                  <td class="text-center" style="width: 20px;">
+                    <rk-switch [(value)]="c.isSmartCacheEnabled"
+                      (valueChange)="agentDisableEnableSmartCache($event, c)">
                     </rk-switch>
                   </td>
                   <td class="text-left" style="width: 100px;">

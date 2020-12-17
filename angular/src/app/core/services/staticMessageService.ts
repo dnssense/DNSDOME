@@ -7,6 +7,7 @@ import { TranslatorService } from './translator.service';
 })
 export class StaticMessageService {
 
+
   constructor(private translator: TranslatorService) {
 
 
@@ -318,7 +319,12 @@ export class StaticMessageService {
   get agentsGlobalConfSaved(): string {
     return this.translator.translate('AgentsGlobalConfSaved');
   }
-
+  get deletedSelectedUserMessage() {
+    return this.translator.translate('DeletedSelectedUserMessage');
+  }
+  get selectedUserWillBeDeletedMessage() {
+    return this.translator.translate('SelectedUserWillBeDeletedMessage');
+  }
 
 
 

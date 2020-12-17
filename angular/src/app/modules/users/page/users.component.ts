@@ -3,6 +3,8 @@ import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { Role } from 'src/app/core/models/Role';
 import { User } from 'src/app/core/models/User';
+import { AlertService } from 'src/app/core/services/alert.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { UserService } from 'src/app/core/services/userService';
@@ -19,7 +21,9 @@ export class UsersComponent implements OnInit {
     constructor(
         private notification: NotificationService,
         private userService: UserService,
-        private staticMessageService: StaticMessageService
+        private staticMessageService: StaticMessageService,
+        private authenticatonService: AuthenticationService,
+        private alertService: AlertService
     ) {
 
         this.user.role = new Role();
@@ -90,6 +94,22 @@ export class UsersComponent implements OnInit {
         if (this.user.password && this.user.password.length > 7) {
             this.passwordStrength++;
         }
+    }
+
+    get isCurrentUserAdmin() {
+        const role = this.authenticatonService.currentSession?.currentUser?.role;
+        if (role && role.name == 'ROLE_CUSTOMER') {
+            return true;
+        }
+        return false;
+    }
+
+    canDeleteThisRow(user: User) {
+
+        if (this.isCurrentUserAdmin && user.id != this.authenticatonService.currentSession?.currentUser?.id) {
+            return true;
+        }
+        return false;
     }
 
     newUserClick() {
@@ -235,5 +255,23 @@ export class UsersComponent implements OnInit {
 
     isLockedChanged($event: boolean) {
         this.user.isActive = $event ? 0 : 1;
+    }
+
+    deleteUser(user: User) {
+        this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.selectedUserWillBeDeletedMessage}!`).subscribe(
+            res => {
+                if (res) {
+
+                    this.userService.delete(user).subscribe(res => {
+
+                        this.notification.success(this.staticMessageService.deletedSelectedUserMessage);
+                        this.userService.getUsers().subscribe(res => {
+                            this.users = res;
+                        });
+
+                    });
+                }
+            }
+        );
     }
 }

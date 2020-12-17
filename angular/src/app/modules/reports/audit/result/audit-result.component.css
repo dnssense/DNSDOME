@@ -1,0 +1,21 @@
+.table-scroll {
+  display: block;
+  overflow-x: auto;
+}
+
+.baseTableRow{
+  background-color: #181818;
+}
+
+a {
+   cursor: pointer; 
+   text-decoration: none;
+}
+
+a :hover {
+  text-decoration: underline;
+}
+
+::ng-deep .page-link{
+  color: #fefefe;
+}

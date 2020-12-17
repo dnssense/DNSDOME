@@ -36,7 +36,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
     private reportService: ReportService,
     private translateService: TranslatorService,
     private _translateService: TranslateService,
-    private authService :AuthenticationService
+    private authService: AuthenticationService
   ) {
     _translateService.onLangChange.subscribe(result => {
       this.changeColumnNames();
@@ -205,16 +205,22 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
         // add column headers
         this.tableConfig.headers = [
           { name: 'time', displayText: 'Time', columnName: ['time'] },
-          { name: 'source', columnName:
-          ['sourceIp', 'sourceIpCountryCode', 'agentAlias', 'clientLocalIp', 'hostName','clientMacAddress','clientBoxSerial','userId'], displayText: 'Source' },
-          { name: 'destination', columnName:
-          ['domain', 'subdomain','destinationIp','destinationIpCountryCode'], displayText: 'Destination' },
-          { name: 'decision', columnName:
-          ['category', 'applicationName', 'action', 'reasonType'], displayText: 'Decision' }
+          {
+            name: 'source', columnName:
+              ['sourceIp', 'sourceIpCountryCode', 'agentAlias', 'clientLocalIp', 'hostName', 'clientMacAddress', 'clientBoxSerial', 'userId'], displayText: 'Source'
+          },
+          {
+            name: 'destination', columnName:
+              ['domain', 'subdomain', 'destinationIp', 'destinationIpCountryCode'], displayText: 'Destination'
+          },
+          {
+            name: 'decision', columnName:
+              ['category', 'applicationName', 'action', 'reasonType'], displayText: 'Decision'
+          }
         ];
 
         this.tableConfig.selectableRows = false;
-        this.tableConfig.url= this.navigationUrl;
+        this.tableConfig.url = this.navigationUrl;
         this.tableConfig.urlParams = `?t=${this.token}&r=${this.refreshToken}`;
         this.tableConfig.arrowVisible = true;
 
@@ -246,11 +252,11 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       });
   }
 
-  columnSet(){
-    for(let column of this.configColumn){
-      if(column.selected){
+  columnSet() {
+    for (let column of this.configColumn) {
+      if (column.selected) {
         this.tableConfig.columns.forEach(col => {
-          if(col.name === column.name){
+          if (col.name === column.name) {
             col.selected = true;
           }
         });

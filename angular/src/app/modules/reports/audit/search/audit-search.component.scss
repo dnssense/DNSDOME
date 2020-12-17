@@ -1,0 +1,50 @@
+.audit-traffic-search {
+  display: flex;
+  align-items: center;
+
+  .filter-left {
+    flex-grow: 1;
+
+    display: flex;
+    align-items: center;
+  }
+
+  .filter-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .audit-title {
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: var(--text-dark);
+    margin-right: 36px;
+  }
+
+  .traffic-types {
+    display: flex;
+  }
+}
+
+.rk-modal-item.title {
+  font-weight: 400 !important;
+}
+
+.btn {
+  &.btn-icon {
+    svg {
+      fill: var(--primary);
+    }
+  }
+
+  &:focus  {
+    svg {
+      fill: #fff;
+    }
+  }
+}

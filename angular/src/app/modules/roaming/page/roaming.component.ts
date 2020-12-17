@@ -29,6 +29,7 @@ export interface AgentConf {
     uninstallPassword: string;
     disablePassword: string;
     isDisabled: number;
+    isSmartCacheEnabled: number;
 }
 
 
@@ -166,7 +167,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.loadClients();
 
-        this.getConfParameters();
+        this.getConfParameters().subscribe();
 
 
         // this.defineNewAgentForProfile();
@@ -246,6 +247,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     x.isDisabled = agentConf.isDisabled > 0;
                     x.uninstallPassword = agentConf.uninstallPassword;
                     x.disablePassword = agentConf.disablePassword;
+                    x.isSmartCacheEnabled = agentConf.isSmartCacheEnabled > 0;
 
                 }
 
@@ -265,6 +267,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                         const info = x.infos.find(a => a.uuid == y.uuid);
 
                         y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
+                        y.isUserDisabledSmartCache = info ? info.isUserDisabledSmartCache > 0 : false;
                         y.os = info?.os;
                         y.hostname = info?.hostname;
                         y.mac = info?.mac;
@@ -360,7 +363,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     getConfParameters() {
 
-        this.boxService.getVirtualBox().subscribe(res => {
+        return this.boxService.getVirtualBox().map(res => {
             this.virtualBox = res;
             if (res.conf) {
                 try {
@@ -451,7 +454,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         const request = { box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword };
         this.boxService.saveBoxConfig(request).subscribe(x => {
             this.notification.info(this.staticMessageService.agentsGlobalConfSaved);
-            this.configureModal.toggle();
+            this.getConfParameters().subscribe(x => {
+                this.configureModal.toggle();
+            })
+
             /* this.boxService.getProgramLink().subscribe(res => {
                 if (res && res.link) {
                     this.getConfParameters();
@@ -480,9 +486,13 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.boxService.saveBoxConfig({ box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).subscribe(x => {
             this.boxService.getProgramLink().subscribe(res => {
                 if (res && res.link) {
-                    this.getConfParameters();
-                    this.fileLink = res.link;
-                    window.open('http://' + this.fileLink, '_blank');
+                    this.getConfParameters().subscribe(x => {
+                        this.fileLink = res.link;
+                        window.open(window.location.protocol + '//' + this.fileLink, '_blank');
+
+                    })
+
+                    //
                 } else {
                     this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
                 }
@@ -801,7 +811,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     saveRoamingClient() {
 
         if (this.selectedClient && this.isFormValid) {
-            const conf: AgentConf = { isDisabled: this.selectedClient.isDisabled ? 1 : 0, disablePassword: this.selectedClient.disablePassword, uninstallPassword: this.selectedClient.uninstallPassword };
+            const conf: AgentConf = { isDisabled: this.selectedClient.isDisabled ? 1 : 0, isSmartCacheEnabled: this.selectedClient.isSmartCacheEnabled ? 1 : 0, disablePassword: this.selectedClient.disablePassword, uninstallPassword: this.selectedClient.uninstallPassword };
             this.selectedClient.conf = JSON.stringify(conf);
 
             this.roamingService.saveClient(this.selectedClient).subscribe(
@@ -849,6 +859,12 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.saveAgentConf(agent);
     }
+    agentDisableEnableSmartCache(state: boolean, agent: Agent) {
+
+        agent.isSmartCacheEnabled = state;
+
+        this.saveAgentConf(agent);
+    }
     showGroupedClients(val: boolean) {
 
         this.isGroupedRadioButtonSelected = val;
@@ -857,7 +873,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
     saveAgentConf(agent: Agent) {
-        const conf: AgentConf = { isDisabled: agent.isDisabled ? 1 : 0, disablePassword: agent.disablePassword, uninstallPassword: agent.uninstallPassword };
+        const conf: AgentConf = { isDisabled: agent.isDisabled ? 1 : 0, isSmartCacheEnabled: agent.isSmartCacheEnabled ? 1 : 0, disablePassword: agent.disablePassword, uninstallPassword: agent.uninstallPassword };
 
         return this.agentService.saveAgentConf(agent.uuid, conf).subscribe(x => {
 
