@@ -159,6 +159,7 @@ export class AuthenticationService {
 
   }
 
+
   getCurrentUserRoles(): Observable<Session> {
 
     return this.http.get<RestUserRoleRight>(this.userRoleUrl).pipe(map((x: RestUserRoleRight) => {

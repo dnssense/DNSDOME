@@ -15,7 +15,7 @@
                 <tr>
                   <th>#</th>
                   <th>Report Name</th>
-                  <th colspan="3">Schedule Interval</th>
+                  <th colspan="4">Schedule Interval</th>
                   <th>Delete</th>
                 </tr>
               </ng-template>
@@ -25,31 +25,40 @@
                   <td style="width: 32px;">{{ index + 1 }}</td>
                   <td>{{ report.name }}</td>
                   <td class="rk-radio-for-table" style="width: 230px;">
-                    <rk-radio class="rk-radio-m-0" [checked]="report.scheduledReport?.status && report.scheduledReport?.period === 'd'"
-                      (valueChange)="changeScheduledPeriodAndStatus(report.id, 'd')" [name]="'report-' + index" value="d">
+                    <rk-radio class="rk-radio-m-0"
+                      [checked]="report.scheduledReport?.status && report.scheduledReport?.period === 'd'"
+                      (valueChange)="changeScheduledPeriodAndStatus(report.id, 'd')" [name]="'report-' + index"
+                      value="d">
                       Schedule Daily report email
                     </rk-radio>
                   </td>
                   <td class="rk-radio-for-table" style="width: 230px;">
-                    <rk-radio class="rk-radio-m-0" [checked]="report.scheduledReport?.status && report.scheduledReport?.period === 'w'"
-                      (valueChange)="changeScheduledPeriodAndStatus(report.id, 'w')" [name]="'report-' + index" value="w">
+                    <rk-radio class="rk-radio-m-0"
+                      [checked]="report.scheduledReport?.status && report.scheduledReport?.period === 'w'"
+                      (valueChange)="changeScheduledPeriodAndStatus(report.id, 'w')" [name]="'report-' + index"
+                      value="w">
                       Schedule Weekly report email
                     </rk-radio>
                   </td>
                   <td class="rk-radio-for-table" style="width: 230px;">
-                    <rk-radio class="rk-radio-m-0" [checked]="report.scheduledReport?.status && report.scheduledReport?.period === 'm'"
-                      (valueChange)="changeScheduledPeriodAndStatus(report.id, 'm')" [name]="'report-' + index" value="m">
+                    <rk-radio class="rk-radio-m-0"
+                      [checked]="report.scheduledReport?.status && report.scheduledReport?.period === 'm'"
+                      (valueChange)="changeScheduledPeriodAndStatus(report.id, 'm')" [name]="'report-' + index"
+                      value="m">
                       Schedule Monthly report email
                     </rk-radio>
                   </td>
                   <td class="rk-radio-for-table" style="width: 230px;">
-                    <rk-radio class="rk-radio-m-0" [checked]="!report.scheduledReport || report.scheduledReport.status===0"
-                      (valueChange)="changeScheduledPeriodAndStatus(report.id, null)" [name]="'report-' + index" value="m">
+                    <rk-radio class="rk-radio-m-0"
+                      [checked]="!report.scheduledReport || report.scheduledReport.status===0"
+                      (valueChange)="changeScheduledPeriodAndStatus(report.id, null)" [name]="'report-' + index"
+                      value="m">
                       Disabled
                     </rk-radio>
                   </td>
                   <td style="width: 60px;">
-                    <button class="btn btn-icon btn-link p-0 hover-gray" (click)="deleteReport(report.id)" style="background: transparent;">
+                    <button class="btn btn-icon btn-link p-0 hover-gray" (click)="deleteReport(report.id)"
+                      style="background: transparent;">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>
@@ -59,7 +68,7 @@
           </rk-table-container>
         </div>
 
-   <!-- d
+        <!-- d
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content">

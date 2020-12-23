@@ -123,9 +123,9 @@
                   <th
                     style="border-top: 1px solid var(--base-border-color) !important;background: rgba(137, 142, 164, 0.05) !important;">
                     {{'Edit'|translate}}</th>
-                  <!-- <th *ngIf="isCurrentUserAdmin"
+                  <th *ngIf="isCurrentUserAdmin"
                     style="border-top: 1px solid var(--base-border-color) !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    {{'Delete'|translate}}</th> -->
+                    {{'Delete'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -158,11 +158,11 @@
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
-                  <!--  <td class="text-center" style="width: 55px" *ngIf="canDeleteThisRow(user)">
+                  <td class="text-center" style="width: 55px" *ngIf="canDeleteThisRow(user)">
                     <button class="btn btn-link btn-icon p-0 hover-gray" (click)="deleteUser(user)">
                       <i-feather name="trash-2" class="mr-0"></i-feather>
                     </button>
-                  </td> -->
+                  </td>
                 </tr>
 
                 <tr *ngIf="users.length === 0">

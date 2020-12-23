@@ -11,7 +11,7 @@ import { TranslatorService } from 'src/app/core/services/translator.service';
 declare const $: any;
 
 // Metadata
-export interface RouteInfo {
+/*export interface RouteInfo {
   path: string;
   title: string;
   type: string;
@@ -96,6 +96,7 @@ export const ROUTES: RouteInfo[] = [
     role: null
   }
 ];
+*/
 
 @Component({
   selector: 'app-sidebar-cmp',
@@ -120,32 +121,32 @@ export class SidebarComponent implements OnInit {
   @Input() collapsed: boolean;
 
   public menuItems: any[];
-  public profileMenuItems: any[];
+  //public profileMenuItems: any[];
   currentUser: User;
   host: ConfigHost;
 
   _menuItems: RkMenuItem[] = [
-    { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false},
-    { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false},
-    { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false},
+    { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+    { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+    { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
     {
-      id: 3, path: '/admin/', text: 'PageName.Deployment', icon: 'dashboard', selected: false,
+      id: 3, path: '/admin/', text: 'PageName.Deployment', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER'],
       subMenu: [
-        { id: 3.1, path: 'deployment/public-ip', text: 'PageName.PublicIp', icon: 'public-ip', selected: false },
-        { id: 3.2, path: 'deployment/devices', text: 'PageName.Devices', icon: 'device', selected: false },
-        { id: 3.3, path: 'deployment/roaming-clients', text: 'PageName.RoamingClients', icon: 'roaming-clients', selected: false },
+        { id: 3.1, path: 'deployment/public-ip', text: 'PageName.PublicIp', icon: 'public-ip', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 3.2, path: 'deployment/devices', text: 'PageName.Devices', icon: 'device', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 3.3, path: 'deployment/roaming-clients', text: 'PageName.RoamingClients', icon: 'roaming-clients', selected: false, roles: ['ROLE_CUSTOMER'] },
       ]
     },
-    //{ id: 4, path: '/admin/reports/audit', text: 'PageName.AuditLogs', icon: 'audit', selected: false },
+    { id: 4, path: '/admin/reports/audit', text: 'PageName.AuditLogs', icon: 'audit', selected: false, roles: ['ROLE_ULTRA'] },
     {
-      id: 4, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false,
+      id: 5, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'],
       subMenu: [
-        { id: 4.1, path: 'settings/users', text: 'PageName.Users', icon: 'user', selected: false },
-        { id: 4.2, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false },
-        { id: 4.3, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false },
-        { id: 4.4, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false },
-        { id: 4.5, path: 'settings/change-domain-category', text: 'PageName.RequestChangingDomainCategory', icon: 'request-category', selected: false },
-        { id: 4.6, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false },
+        { id: 5.1, path: 'settings/users', text: 'PageName.Users', icon: 'user', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 5.2, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        { id: 5.3, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 5.4, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        { id: 5.5, path: 'settings/change-domain-category', text: 'PageName.RequestChangingDomainCategory', icon: 'request-category', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        { id: 5.6, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
       ]
     }
   ];
@@ -202,13 +203,15 @@ export class SidebarComponent implements OnInit {
       && this.authService.currentSession.currentUser.role && this.authService.currentSession.currentUser.role.name) {
 
       const roleName: string = this.authService.currentSession.currentUser.role.name;
+      this.menuItems = this._menuItems.filter(x => !x.roles || x.roles.includes(roleName));
+      for (const menu of this.menuItems) {
+        if (menu.subMenu)
+          menu.subMenu = menu.subMenu.filter(y => !y.roles || y.roles.includes(roleName));
+      }
 
-      this.menuItems = ROUTES.filter(
-        menuItem => menuItem.role == null || (menuItem.role != null && menuItem.role.split(',').includes(roleName))
-      );
     }
 
-    this.profileMenuItems = ProfileRoutes;
+    // this.profileMenuItems = ProfileRoutes;
   }
 
   ngOnInit() {
@@ -289,10 +292,7 @@ export class SidebarComponent implements OnInit {
       const elemSidebar = <HTMLElement>(
         document.querySelector('.sidebar .sidebar-wrapper')
       );
-      // let ps = new PerfectScrollbar(elemSidebar, {
-      //   wheelSpeed: 2,
-      //   suppressScrollX: true
-      // });
+
     }
   }
 
