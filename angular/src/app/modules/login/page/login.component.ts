@@ -122,7 +122,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
           }
         },
         (err) => {
-          this.isFailed = true;
+          if (err.status == 401)
+            this.isFailed = true;
+          else
+            throw err;
         }
       );
     } else {

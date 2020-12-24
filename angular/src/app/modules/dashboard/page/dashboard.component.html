@@ -113,7 +113,7 @@
                               </h6>
 
                               <div class="rk-selectable-container mb-2" style="max-height: 320px;">
-                                <table class="rk-selectable-table w-100">
+                                <table class="rk-selectable-table w-100" style="cursor: pointer;">
                                   <tr *ngFor="let cat of categoryListFiltered; let index = index"
                                     class="rk-c-{{ selectedBox }}"
                                     [ngClass]="{ 'active' : selectedCategory?.name == cat.name }"

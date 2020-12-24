@@ -261,18 +261,29 @@ export class DashboardComponent implements OnInit {
 
     this.getTheme();
 
-    this.startDashboardOperations();
+    this.startDashboardOperations().subscribe(x => {
 
-    const request: TopDomainsRequestV5 = { duration: 7 * 24, type: 'total' } as TopDomainsRequestV5;
 
-    this.getTopDomains(request);
-    this.getAgents();
-    this.agentCounts.push({ name: 'PublicIp', activeCount: 0, passiveCount: 0 });
-    this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0 });
-    this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0 });
+      const request: TopDomainsRequestV5 = { duration: 7 * 24, type: 'total' } as TopDomainsRequestV5;
+
+      this.getTopDomains(request).subscribe(x => {
+        this.agentCounts = [];
+        this.agentCounts.push({ name: 'PublicIp', activeCount: 0, passiveCount: 0 });
+        this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0 });
+        this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0 });
+        this.getAgents().subscribe(x => {
+
+
+        });
+
+
+      });
+    });
+
+
   }
 
-  private async getTheme() {
+  private getTheme() {
     const currentUser = this.authService.currentSession?.currentUser;
     const theme = this.config.getThemeColor(currentUser?.id);
     // const theme = localStorage.getItem('themeColor') as 'light' | 'dark';
@@ -302,7 +313,7 @@ export class DashboardComponent implements OnInit {
     const distinctBoxs: DistinctBoxResponse = { items: [] };
 
     // wait all requests to finish
-    forkJoin(
+    return forkJoin(
       this.agentService.getAgentLocation().map(x => {
         x.forEach(y => agentsLocation.push(y));
       }),
@@ -325,7 +336,7 @@ export class DashboardComponent implements OnInit {
       this.dashboardService.getDistinctBox({ duration: 24 }).map(x => {
         x.items.forEach(y => distinctBoxs.items.push(y));
       })
-    ).subscribe(() => {
+    ).map(() => {
 
       const publicip: AgentCountModel = { name: 'PageName.PublicIp', activeCount: 0, passiveCount: 0 };
       const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0 };
@@ -336,14 +347,14 @@ export class DashboardComponent implements OnInit {
 
       // add box serials that are not in distinctagents
       // registered clientlardan gelen verinin box bilgileride distinct agents olarak ekleniyor
-     /*  serials.forEach(x => {
-        const box = boxes.find(y => (y).serial === x);
-        if (!box) { return; }
-        const foundedBox = distinctBoxs.items.find(y => y.serial === x);
-        if (!foundedBox) { return; }
-        if (distinctAgents.items.find(y => y.id === box.id)) { return; }
-        distinctAgents.items.push({ id: box.agent.id, count: 1 });
-      }); */
+      /*  serials.forEach(x => {
+         const box = boxes.find(y => (y).serial === x);
+         if (!box) { return; }
+         const foundedBox = distinctBoxs.items.find(y => y.serial === x);
+         if (!foundedBox) { return; }
+         if (distinctAgents.items.find(y => y.id === box.id)) { return; }
+         distinctAgents.items.push({ id: box.agent.id, count: 1 });
+       }); */
 
       // calcuate location agents
       distinctAgents.items.forEach(x => {
@@ -372,7 +383,7 @@ export class DashboardComponent implements OnInit {
 
       dnsrelay.passiveCount = agentsBox.length - dnsrelay.activeCount;
 
-
+      this.agentCounts = [];
       this.agentCounts = [publicip, roamingclient, dnsrelay];
     });
   }
@@ -393,11 +404,11 @@ export class DashboardComponent implements OnInit {
   }
 
   getTopDomains(request: TopDomainsRequestV5) {
-    this.dashboardService.getTopDomains(request).subscribe(result => {
+    return this.dashboardService.getTopDomains(request).map(result => {
       // reset everything
       this.topDomains = [];
       this.items = [];
-      this.drawTopDomainChart({items: []});
+      this.drawTopDomainChart({ items: [] });
       if (result.items.length) {
         this.toolService.searchCategories(result.items.map(x => x.name)).subscribe(cats => {
           cats.forEach(cat => {
@@ -433,7 +444,7 @@ export class DashboardComponent implements OnInit {
     this.infoBoxes[type] = true;
     this.drawChartAnomaly();
 
-    this.refreshTopDomains();
+    this.refreshTopDomains().subscribe();
   }
 
   calculateDateDiff(): number {
@@ -471,7 +482,7 @@ export class DashboardComponent implements OnInit {
   }
   calculateShowDetailButton() {
     console.log(`${moment(this.startDate).toISOString()}-${moment().add(-7, 'days').toISOString()}`);
-    const startDate =  moment(this.startDate).toDate().getTime();
+    const startDate = moment(this.startDate).toDate().getTime();
     const endDate = moment(this.endDate).toDate().getTime();
 
     const lastWeek = moment().add(-7, 'days').startOf('day').toDate().getTime();
@@ -482,7 +493,7 @@ export class DashboardComponent implements OnInit {
     this.showDetailButton = (lastWeek <= startDate && endDate <= today);
   }
 
-  async dateChanged(ev: { startDate: Date, endDate: Date }, isDateComponent = false, isToday = false) {
+  dateChanged(ev: { startDate: Date, endDate: Date }, isDateComponent = false, isToday = false) {
 
     this.dateButtons.forEach(elem => elem.active = false);
 
@@ -514,9 +525,11 @@ export class DashboardComponent implements OnInit {
 
     this.calculateShowDetailButton();
 
-    await this.getTrafficAnomaly(request);
+    this.getTrafficAnomaly(request).subscribe(x => {
+      this.refreshTopDomains().subscribe();
+    })
 
-    this.refreshTopDomains();
+
   }
 
   drawTopDomainChart(response: TopDomainValuesResponseV4) {
@@ -540,7 +553,7 @@ export class DashboardComponent implements OnInit {
         foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
         type: 'line',
         height: 280,
-        zoom: {enabled: false},
+        zoom: { enabled: false },
         toolbar: {
           show: false,
           offsetX: 0,
@@ -574,7 +587,7 @@ export class DashboardComponent implements OnInit {
         shared: true,
         theme: 'dark',
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-         // const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+          // const date = new Date(w.globals.seriesX[0][dataPointIndex]);
 
           const mDate = moment(w.globals.seriesX[0][dataPointIndex]).utc(false).format('MMM DD YYYY - HH:mm');
 
@@ -926,13 +939,13 @@ export class DashboardComponent implements OnInit {
       this.categoryList = res;
     }); */
 
-    this.getTrafficAnomaly({ duration: 7 * 24 });
+    return this.getTrafficAnomaly({ duration: 7 * 24 });
   }
 
   private refreshTopDomains() {
     const request = { startDate: this.startDate.toISOString(), endDate: this.endDate.toISOString() } as TopDomainsRequestV5;
     request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedBox;
-    this.getTopDomains(request);
+    return this.getTopDomains(request);
   }
 
   getRoundedNumber(value: number) {
@@ -940,11 +953,9 @@ export class DashboardComponent implements OnInit {
     // return Math.abs(value) > 999 ? (Math.sign(value) * (Math.abs(value) / 1000)).toFixed(1) + 'K' : (Math.sign(value) * Math.abs(value)).toFixed(1);
   }
 
-  private async getTrafficAnomaly(request: HourlyCompanySummaryV5Request) {
-    try {
+  private getTrafficAnomaly(request: HourlyCompanySummaryV5Request) {
 
-      const result = await this.dashboardService.getHourlyCompanySummary(request).toPromise();
-
+    return this.dashboardService.getHourlyCompanySummary(request).map(result => {
       if (result) {
         this.trafficAnomaly = result;
 
@@ -957,9 +968,11 @@ export class DashboardComponent implements OnInit {
 
         this.drawChartAnomaly();
       }
-    } catch (error) {
-      throw error;
-    }
+
+    })
+
+
+
   }
 
   selectCategory(cat: CategoryV2) {
@@ -1026,13 +1039,13 @@ export class DashboardComponent implements OnInit {
 
   showDetail() {
 
-   /*  if (this.getDetailButtonDisabled) {
-      this.notificationService.warning(this.translatorService.translate('DateDifferenceWarning'));
-    } else { */
-      const url = (`/admin/reports/monitor?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
+    /*  if (this.getDetailButtonDisabled) {
+       this.notificationService.warning(this.translatorService.translate('DateDifferenceWarning'));
+     } else { */
+    const url = (`/admin/reports/monitor?category=${this.selectedCategory?.name || this.selectedBox}&startDate=${moment(this.startDate).toISOString()}&endDate=${moment(this.endDate).toISOString()}`);
 
-      this.router.navigateByUrl(url);
-   // }
+    this.router.navigateByUrl(url);
+    // }
   }
 
 

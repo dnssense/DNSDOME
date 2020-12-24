@@ -19,9 +19,9 @@ export class ErrorInterceptor implements ErrorHandler {
     spinnerService.hide();
     const translatorService = this.injector.get(TranslatorService);
 
-     // throw error;
+    // throw error;
 
-     if (error instanceof HttpErrorResponse) {
+    if (error instanceof HttpErrorResponse) {
       // Server or connection error happened
       if (!navigator.onLine) {
         notificationService.danger('No Internet Connection');
@@ -35,16 +35,16 @@ export class ErrorInterceptor implements ErrorHandler {
             notificationService.error(`${message}`);
           }
         } else
-        if (error.statusText == 'Service Temporarily Unavailable') {
-          const message = translatorService.translate(error.statusText);
-          notificationService.error(translatorService.translate(message));
-          console.log(`${status} - ${message}`);
-        } else {
+          if (error.statusText == 'Service Temporarily Unavailable') {
+            const message = translatorService.translate(error.statusText);
+            notificationService.error(translatorService.translate(message));
+            console.log(`${status} - ${message}`);
+          } else {
 
-          const message = translatorService.translate(error.statusText);
-          notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
-          console.log(`${status} - ${message}`);
-        }
+            const message = translatorService.translate(error.statusText);
+            notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
+            console.log(`${status} - ${message}`);
+          }
       }
     } else {
 
