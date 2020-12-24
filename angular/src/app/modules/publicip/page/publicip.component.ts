@@ -185,8 +185,10 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.agentService.getAgentLocation().subscribe(res => {
 
       if ((res == null || res.length < 1) && this.roleName !== 'ROLE_USER' && this.tooltipGuideCounter < 1) {
-        this.showNewIpForm();
-        this.openTooltipGuide();
+        this.showNewIpForm().subscribe(x => {
+          this.openTooltipGuide();
+        });
+
       } else {
         res.forEach(r => {
           if (r.agentType && r.agentType.toString() === AgentType.LOCATION.toString()) {
@@ -448,8 +450,11 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       return agentAlias || ipType || ipAdresses || profile;
     });
   }
+  openPublicForm() {
+    this.showNewIpForm().subscribe();
+  }
 
-  async showNewIpForm() {
+  showNewIpForm() {
     this.isNewItemUpdated = false;
     this.selectedIp = new Agent();
     this.selectedIp.logo = null;
@@ -459,7 +464,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     const ip0 = {} as IpWithMask;
     // wait for detecting public ip
-    const sub = this.publicIpObs.subscribe(ip => {
+    return this.publicIpObs.map(ip => {
 
       const findedMyPublicIp = this.publicIps.some(x => {
         if (x.staticSubnetIp) {

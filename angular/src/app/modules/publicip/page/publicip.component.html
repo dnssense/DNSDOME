@@ -5,7 +5,7 @@
         <div class="col-12 p-0 d-flex align-items-center justify-content-between">
           <h5 class="page-title">{{'PageName.PublicIp'|translate}}</h5>
 
-          <button class="btn btn-icon btn-safe btn-small ml-2" (click)="showNewIpForm()">
+          <button class="btn btn-icon btn-safe btn-small ml-2" (click)="openPublicForm()">
             <i-feather name="plus"></i-feather>
             {{'AddNewIp'|translate}}
           </button>
@@ -95,7 +95,7 @@
                       <div class="col-12 d-flex mt-3" *ngFor="let row of selectedIp.staticSubnetIp; index as i">
                         <div class="rk-input-container">
                           <span style="flex: 2">
-                            <input type="text" placeholder="{{'IP'|translate}}"  name="'ip'+i"
+                            <input type="text" placeholder="{{'IP'|translate}}" name="'ip'+i"
                               (keydown)="checkIPNumberForAgent($event, selectedIp.staticSubnetIp[i])"
                               [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" [ngModelOptions]="{standalone: true}">
                             /
@@ -138,8 +138,8 @@
 
                     <div class="col-12 mt-3">
                       <input type="text" class="rk-input w-100" maxlength="39" placeholder="{{'SinkHoleIp'|translate}}"
-                        (keydown)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)" [(ngModel)]="selectedIp.cyberXRayIp"
-                        [ngModelOptions]="{standalone: true}">
+                        (keydown)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)"
+                        [(ngModel)]="selectedIp.cyberXRayIp" [ngModelOptions]="{standalone: true}">
                       <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp1' | translate}}</p>
                       <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp2' | translate}}</p>
                     </div>
@@ -235,7 +235,8 @@
                   </td>
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
-                      <span class="link-text" style="cursor: pointer;" (click)="showProfileEditWizard(pi.id)">{{ pi.rootProfile?pi.rootProfile.name: 'No Profile!' }}</span>
+                      <span class="link-text" style="cursor: pointer;" (click)="showProfileEditWizard(pi.id)">{{
+                        pi.rootProfile?pi.rootProfile.name: 'No Profile!' }}</span>
                     </div>
                   </td>
                   <td class="text-center" style="width: 55px">
