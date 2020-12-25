@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { interval, Observable, of, throwError } from 'rxjs';
 import { catchError, map, finalize, retryWhen, take, delay, concatMap } from 'rxjs/operators';
 import { AuthenticationService } from '../services/authentication.service';
 
@@ -23,8 +23,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 return event;
             }),
             retryWhen(error => {
-                return error.delay(1000).scan((count, currentErr) => {
-                    if (count >= 2) {
+
+                return error.delayWhen(err => (err.status >= 501 || !err.status == undefined) ? interval(1000) : of(err)).scan((count, currentErr) => {
+                    if (count >= 2 || (currentErr.status && currentErr.status < 501)) {
                         throw currentErr;
                     } else {
                         return count += 1;
