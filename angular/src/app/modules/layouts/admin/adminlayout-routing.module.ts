@@ -62,7 +62,7 @@ const adminlayoutRoutes: Routes = [
         path: 'settings/scheduled-reports',
         canActivate: [RoleGuard],
         data: {
-          expectedRole: 'ROLE_CUSTOMER'
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
         loadChildren:
           '../../scheduledreports/scheduledreports.module#ScheduledReportsModule'

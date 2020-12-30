@@ -77,15 +77,15 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
       { id: 6, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
       { id: 7, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), isLink: true },
-      { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
-      { id: 9, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
-      { id: 10, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
-      { id: 11, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
-      { id: 12, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
-      { id: 13, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
-      { id: 14, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
-      { id: 15, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
+      // { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
+      { id: 8, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
+      { id: 9, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
+      { id: 10, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
+      { id: 11, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
+      { id: 12, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
+      { id: 13, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
+      { id: 14, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
+      { id: 15, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
 
     ],
     rows: [],
@@ -152,15 +152,15 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 5, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
       { id: 6, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
       { id: 7, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
-      { id: 9, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true },
-      { id: 10, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true },
-      { id: 11, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
-      { id: 12, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
-      { id: 13, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
-      { id: 14, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
-      { id: 15, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
-      { id: 16, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
+      // { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
+      { id: 8, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true },
+      { id: 9, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true },
+      { id: 10, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
+      { id: 11, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
+      { id: 12, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
+      { id: 13, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
+      { id: 14, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
+      { id: 15, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
     ];
   }
 
@@ -207,7 +207,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
           { name: 'time', displayText: 'Time', columnName: ['time'] },
           {
             name: 'source', columnName:
-              ['sourceIp', 'sourceIpCountryCode', 'agentAlias', 'clientLocalIp', 'hostName', 'clientMacAddress', 'clientBoxSerial', 'userId'], displayText: 'Source'
+              ['sourceIp', 'sourceIpCountryCode', 'agentAlias', 'clientLocalIp', 'hostName', 'clientMacAddress', 'clientBoxSerial'], displayText: 'Source'
           },
           {
             name: 'destination', columnName:

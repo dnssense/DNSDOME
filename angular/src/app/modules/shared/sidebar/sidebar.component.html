@@ -6,7 +6,7 @@
         </a>
     </li>
 
-    <li class="sidebar-list-item" [ngClass]="{'active': menuItem.selected}" *ngFor="let menuItem of _menuItems">
+    <li class="sidebar-list-item" [ngClass]="{'active': menuItem.selected}" *ngFor="let menuItem of menuItems">
         <a class="ripple" (click)="setActive(menuItem)" [routerLink]="!menuItem.subMenu ? [menuItem.path] : []"
             routerLinkActive="active">
             <icon-for-menu [type]="menuItem.icon"></icon-for-menu>

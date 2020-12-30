@@ -1,1 +1,1 @@
-docker run -p 9000:80 ui.dnssense.kodiks
+docker run -p 9000:80 ui.dnssense.stage

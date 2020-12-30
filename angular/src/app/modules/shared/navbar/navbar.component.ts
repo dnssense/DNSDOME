@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@an
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Location } from '@angular/common';
-import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
+//import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
@@ -99,7 +99,7 @@ export class NavbarComponent implements OnInit {
             this.theme = theme;
         }
 
-       this.rkUtilityService.themeColor.subscribe(result => {
+        this.rkUtilityService.themeColor.subscribe(result => {
             this.theme = result === 'light' ? 'white' : 'dark';
         });
 
@@ -116,39 +116,40 @@ export class NavbarComponent implements OnInit {
 
     @ViewChild('sidebar') sidebar: RkModalModel;
 
-    _menuItems: RkMenuItem[] = [
-        { id: 0, path: '/admin/dashboard', text: 'Dashboard', icon: 'dashboard', selected: false },
-        { id: 1, path: '/admin/reports/monitor', text: 'Monitor', icon: 'monitor', selected: false },
-        { id: 2, path: '/admin/reports/custom-reports', text: 'Custom Reports', icon: 'custom-reports', selected: false, },
-        {
-            id: 3, path: '/admin/', text: 'Deployment', icon: 'dashboard', selected: false,
-            subMenu: [
-                { id: 3.1, path: 'deployment/public-ip', text: 'Public IP', icon: 'public-ip', selected: false },
-                { id: 3.2, path: 'deployment/devices', text: 'Devices', icon: 'device', selected: false },
-                { id: 3.3, path: 'deployment/roaming-clients', text: 'Roaming Clients', icon: 'roaming-clients', selected: false },
-            ]
-        },
-        {
-            id: 4, path: '/admin/', text: 'Settings', icon: 'settings', selected: false,
-            subMenu: [
-                { id: 4.1, path: 'settings/users', text: 'User', icon: 'user', selected: false },
-                { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false },
-                { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false },
-                { id: 4.4, path: 'settings/query-category', text: 'Query Category', icon: 'tools', selected: false },
-                { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-category', selected: false },
-                { id: 4.6, path: 'settings/theme-mode', text: 'Theme Mode', icon: 'theme-mode', selected: false },
-            ]
-        }
-    ];
+    //_menuItems: RkMenuItem[] = [];
+    /*     [
+           { id: 0, path: '/admin/dashboard', text: 'Dashboard', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+           { id: 1, path: '/admin/reports/monitor', text: 'Monitor', icon: 'monitor', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+           { id: 2, path: '/admin/reports/custom-reports', text: 'Custom Reports', icon: 'custom-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+           {
+               id: 3, path: '/admin/', text: 'Deployment', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER'],
+               subMenu: [
+                   { id: 3.1, path: 'deployment/public-ip', text: 'Public IP', icon: 'public-ip', selected: false, roles: ['ROLE_CUSTOMER'] },
+                   { id: 3.2, path: 'deployment/devices', text: 'Devices', icon: 'device', selected: false, roles: ['ROLE_CUSTOMER'] },
+                   { id: 3.3, path: 'deployment/roaming-clients', text: 'Roaming Clients', icon: 'roaming-clients', selected: false, roles: ['ROLE_CUSTOMER'] },
+               ]
+           },
+           {
+               id: 4, path: '/admin/', text: 'Settings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'],
+               subMenu: [
+                   { id: 4.1, path: 'settings/users', text: 'User', icon: 'user', selected: false, roles: ['ROLE_CUSTOMER'] },
+                   { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+                   { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false, roles: ['ROLE_CUSTOMER'] },
+                   { id: 4.4, path: 'settings/query-category', text: 'Query Category', icon: 'tools', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+                   { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-category', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+                   { id: 4.6, path: 'settings/theme-mode', text: 'Theme Mode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+               ]
+           }
+       ]; */
 
     ngOnInit() {
-        this.listTitles = ROUTES.filter(listTitle => listTitle);
+        //this.listTitles = ROUTES.filter(listTitle => listTitle);
 
         this.getNotifications();
 
 
 
-            this.currentUser = this.auth.currentSession?.currentUser;
+        this.currentUser = this.auth.currentSession?.currentUser;
 
 
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
@@ -243,7 +244,7 @@ export class NavbarComponent implements OnInit {
     }
 
     setLanguage(lang: string) {
-        this.config.setDefaultLanguage(this.auth.currentSession?.currentUser?.id,  lang);
+        this.config.setDefaultLanguage(this.auth.currentSession?.currentUser?.id, lang);
         this.notification.success(this.translator.translate('LanguageChanged'));
 
         this.helpUrlChanged(this.router.url, lang);
@@ -272,24 +273,24 @@ export class NavbarComponent implements OnInit {
     }
 
     setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, existsSubMenu = false) {
-        this._menuItems.forEach(elem => elem.selected = false);
-
-        menuItem.selected = true;
-
-        this._menuItems.forEach(elem => {
-            if (elem.subMenu) {
-                elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
-            }
-        });
-
-        if (!existsSubMenu) {
-            this.sidebar.toggle();
-        }
-
-        if (subMenuItem) {
-            subMenuItem.selected = true;
-
-            this.sidebar.toggle();
-        }
+        /*    this._menuItems.forEach(elem => elem.selected = false);
+   
+           menuItem.selected = true;
+   
+           this._menuItems.forEach(elem => {
+               if (elem.subMenu) {
+                   elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
+               }
+           });
+   
+           if (!existsSubMenu) {
+               this.sidebar.toggle();
+           }
+   
+           if (subMenuItem) {
+               subMenuItem.selected = true;
+   
+               this.sidebar.toggle();
+           } */
     }
 }

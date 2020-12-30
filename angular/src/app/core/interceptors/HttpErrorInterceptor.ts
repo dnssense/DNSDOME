@@ -1,11 +1,12 @@
 import { Injectable, Injector } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map, finalize } from 'rxjs/operators';
+import { interval, Observable, of, throwError } from 'rxjs';
+import { catchError, map, finalize, retryWhen, take, delay, concatMap } from 'rxjs/operators';
 import { AuthenticationService } from '../services/authentication.service';
 
 import { SpinnerService } from '../services/spinner.service';
 import { NotificationService } from '../services/notification.service';
+import { concat } from 'rxjs-compat/operator/concat';
 
 
 @Injectable()
@@ -20,6 +21,16 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     // console.log('event--->>>', event);
                 }
                 return event;
+            }),
+            retryWhen(error => {
+
+                return error.delayWhen(err => (err.status >= 501 || !err.status == undefined) ? interval(1000) : of(err)).scan((count, currentErr) => {
+                    if (count >= 2 || (currentErr.status && currentErr.status < 501)) {
+                        throw currentErr;
+                    } else {
+                        return count += 1;
+                    }
+                }, 0);
             }),
             catchError(err => {
 
@@ -39,9 +50,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
                 }
 
-                throw err;
+                //throw err;
                 // const error = err.error.message || err.statusText;
-                // return throwError(error);
+                return throwError(err);
             }), finalize(() => {
 
 

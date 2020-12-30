@@ -538,8 +538,8 @@ export class DevicesComponent implements OnInit {
         deviceGroup.agents = selectedGroupAgentsAdded.map(x => x.agentInfo);
         selectedGroupAgentsExits.forEach(x => deviceGroup.agents.push(x));
 
-        selectedGroupAgentsRemoved.forEach(async (elem) => {
-            await this.agentService.deleteAgentDevice([elem.id]).toPromise();
+        selectedGroupAgentsRemoved.forEach((elem) => {
+            this.agentService.deleteAgentDevice([elem.id]).subscribe();
 
         });
 
