@@ -435,6 +435,23 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     }
 
+    copyMagicLink() {
+
+        this.boxService.getMagicLink().subscribe(res => {
+            if (res && res.magic) {
+
+
+                this.copyToClipBoard(res.magic);
+                this.notification.info(this.staticMessageService.magicLinkCopiedToClipboardMessage);
+            } else {
+                this.notification.error(this.staticMessageService.couldNotCreateMagicLinkMessage);
+            }
+        });
+
+
+    }
+
+
     copyToClipBoard(input: string) {
         const selBox = document.createElement('textarea');
         selBox.value = input;

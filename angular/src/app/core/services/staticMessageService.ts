@@ -154,6 +154,13 @@ export class StaticMessageService {
   get downloadLinkCopiedToClipboardMessage(): string {
     return this.translator.translate(`DownloadLinkCopiedToClipboard`);
   }
+  get couldNotCreateMagicLinkMessage(): string {
+    return this.translator.translate(`CouldNotCreateMagicLink`);
+  }
+
+  get magicLinkCopiedToClipboardMessage(): string {
+    return this.translator.translate(`MagicLinkCopiedToClipboard`);
+  }
 
   get changesCouldNotSavedMessage(): string {
     return this.translator.translate(`ChangesCouldNotSaved`);
