@@ -1,6 +1,16 @@
 
 import { Role } from './Role';
 
+export interface ApiKey {
+    id: number;
+    key: string;
+    description: string;
+    who: string;
+    companyId: number;
+    userId: number;
+    profile?: string
+
+}
 export class User {
     public id = -1;
     public username: string;
@@ -19,6 +29,7 @@ export class User {
     public twoFactorAuthentication = false;
     public usageType: number;
     public isGsmVerified = false;
+    public apikey?: ApiKey;
 
 
     /**

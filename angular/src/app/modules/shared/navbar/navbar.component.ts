@@ -38,6 +38,7 @@ const helpRoutes: HelpRoute[] = [
     { appRoute: '/admin/deployment/roaming-clients', helpRouteEn: 'roaming-client/roaming-client', helpRouteTr: 'roaming-client/genel-bakis', dnscyteRoute: 'deployment/roaming-clients' },
     { appRoute: '/admin/settings/profiles', helpRouteEn: 'kurulum/guvenlik-profilleri', helpRouteTr: 'kurulum/guevenlik-profilleri', dnscyteRoute: 'settings/profiles' },
     { appRoute: '/admin/settings/users', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari', dnscyteRoute: 'settings/users' },
+    { appRoute: '/admin/settings/apikeys', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari', dnscyteRoute: 'settings/users' },
     { appRoute: '/admin/settings/scheduled-reports', helpRouteEn: 'ayarlar/saved-reports', helpRouteTr: 'ayarlar/saved-reports', dnscyteRoute: 'settings/scheduled-reports' },
     { appRoute: '/admin/settings/query-category', helpRouteEn: 'kurulum/query-category', helpRouteTr: 'ayarlar/query-category-araci', dnscyteRoute: 'settings/query-category' },
     { appRoute: '/admin/settings/change-domain-category', helpRouteEn: 'kurulum/request-changing-domain-category', helpRouteTr: 'ayarlar/request-changing-domain-category', dnscyteRoute: 'settings/change-domain-category' },

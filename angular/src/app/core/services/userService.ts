@@ -25,8 +25,9 @@ export class UserService {
 
   }
 
-  public getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this._childUserListURL).map(res => {
+  public getUsers(isApiKey = false): Observable<User[]> {
+    let users = this.http.get<User[]>(this._childUserListURL).map(res => {
+
       // sayfa tek role mantigi ile calisiyor
       return res.map(x => {
         if (x['roles'] && Array.isArray(x['roles']) && x['roles'].length) {
@@ -35,32 +36,49 @@ export class UserService {
         }
 
         return x;
+      }).filter(x => {
+        if (isApiKey && x.apikey)
+          return true;
+        else
+          if (!isApiKey && !x.apikey)
+            return true;
+        return false;
       });
 
     });
+
+    return users;
   }
 
-  public getRoles(): Role[] {
-    const roles: Role[] = [
-      { id: 2, name: 'ROLE_CUSTOMER', description: 'Admin', clearences: null },
-      { id: 5, name: 'ROLE_USER', description: 'User', clearences: null }];
-
-    return roles;
+  public getRoles(isApiKey = false): Role[] {
+    if (!isApiKey) {
+      const roles: Role[] = [
+        { id: 2, name: 'ROLE_CUSTOMER', description: 'Admin', clearences: null },
+        { id: 5, name: 'ROLE_USER', description: 'User', clearences: null }];
+      return roles;
+    } else {
+      const roles: Role[] = [
+        { id: 8, name: 'ROLE_APIADMIN', description: 'Admin', clearences: null },
+        { id: 7, name: 'ROLE_API', description: 'User', clearences: null }];
+      return roles;
+    }
   }
 
   public save(user: any): Observable<any> {
     // sayfa tek role mantigi ile calisiyor
-    user.id = 0;
-    user.roles = [user.role.name];
-    delete user.role;
-    return this.http.post<any>(this._userSaveURL, user, this.getOptions()).map(res => res);
+    const temp = JSON.parse(JSON.stringify(user));
+    temp.id = 0;
+    temp.roles = [user.role.name];
+    delete temp.role;
+    return this.http.post<any>(this._userSaveURL, temp, this.getOptions()).map(res => res);
   }
 
   public update(user: any): Observable<any> {
     // sayfa tek role mantigi ile calisiyor
-    user.roles = [user.role.name];
-    delete user.role;
-    return this.http.put<any>(this._userUpdateURL, user, this.getOptions()).map(res => res);
+    const temp = JSON.parse(JSON.stringify(user));
+    temp.roles = [user.role.name];
+    delete temp.role;
+    return this.http.put<any>(this._userUpdateURL, temp, this.getOptions()).map(res => res);
   }
 
   public delete(user: User): Observable<OperationResult> {

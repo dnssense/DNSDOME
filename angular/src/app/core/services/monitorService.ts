@@ -11,37 +11,12 @@ import { LogColumn } from '../models/LogColumn';
 @Injectable({ providedIn: 'root' })
 export class MonitorService {
   // public _initContentURL = this.configService.getApiUrl() + '/monitor/init'; // URL to subcategories api
-   public _initTableColumnsURL = this.configService.getApiUrl() + '/monitor/tableColumns'; // URL to subcategories api
+  public _initTableColumnsURL = this.configService.getApiUrl() + '/monitor/tableColumns'; // URL to subcategories api
   public _monitor = this.configService.getApiUrl() + '/calculate/monitor'; // URL to graph api
 
   constructor(private http: HttpClient, public errorService: ErrorService, private configService: ConfigService) { }
 
-  // public initFormData() {
-  //   return this.http
-  //     .get(this._initContentURL)
-  //     .map((res: Response) => res.json())
-  //     .catch((response: any, caught: any) => {
-  //       this.errorService.handleAuthenticatedError(response);
-  //       return Observable.throw(response);
-  //     });
-  // }
 
-
-
- /*  public initTableColumns(): Observable<LogColumn[]> {
-    return this.http.post<LogColumn[]>(this._initTableColumnsURL, this.getOptions()).map(res => res);
-  } */
-
-  // public getGraphData(searchSettings: SearchSetting, page: number): Observable<Object> {
-  //   let body = JSON.stringify({ searchSetting: searchSettings, page: page });
-  //   return this.http
-  //     .post(this._graphURL, body, this.getOptions)
-  //     .map((res: Response) => res.json())
-  //     .catch((response: any, caught: any) => {
-  //       this.errorService.handleAuthenticatedError(response);
-  //       return Observable.throw(response);
-  //     });
-  // }
 
   public getData(searchSettings: SearchSetting, page: number): Observable<Object> {
     const body = { searchSetting: searchSettings, page: page };
@@ -49,27 +24,9 @@ export class MonitorService {
     return this.http
       .post(this._monitor, body, this.getOptions())
       .map((res: Response) => res);
-      /* .catch((response: any, caught: any) => {
-        this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      }); */
+
   }
 
- /*  save(content: SearchSetting): Observable<Object> {
-    const body = JSON.stringify(content);
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    const options = { headers: headers };
-
-    return this.http
-      .post(this._initContentURL, body, options)
-      .map((res: Response) => res.json())
-      .catch((response: any, caught: any) => {
-        this.errorService.handleAuthenticatedError(response);
-        return Observable.throw(response);
-      });
-  } */
 
   private getOptions() {
     const options = {

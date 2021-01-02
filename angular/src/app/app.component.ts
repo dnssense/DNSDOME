@@ -33,20 +33,8 @@ export class AppComponent implements OnInit {
     const element = document.getElementById('appIcon');
     element.setAttribute('href', `/assets/img/${this.iconImage}`);
 
-    // authenticationService.checkSessionIsValid();
 
 
-    /*  const lang = localStorage.getItem('language');
-
-     if (lang) {
-       this.config.setDefaultLanguage(lang);
-     }
-
-     const themeColor = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
-
-     if (themeColor) {
-       this.rkUtilityService.changeTheme(themeColor === 'dark');
-     } */
 
   }
   ngOnInit(): void {

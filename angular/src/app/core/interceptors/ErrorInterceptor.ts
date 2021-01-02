@@ -39,12 +39,23 @@ export class ErrorInterceptor implements ErrorHandler {
             const message = translatorService.translate(error.statusText);
             notificationService.error(translatorService.translate(message));
             console.log(`${status} - ${message}`);
-          } else {
 
-            const message = translatorService.translate(error.statusText);
-            notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
-            console.log(`${status} - ${message}`);
-          }
+          } else
+            if (error.statusText == 'Bad Gateway') {
+              const message = translatorService.translate(error.statusText);
+              notificationService.error(translatorService.translate(message));
+              console.log(`${status} - ${message}`);
+            } else
+              if (error.statusText == 'Gateway Timeout') {
+                const message = translatorService.translate(error.statusText);
+                notificationService.error(translatorService.translate(message));
+                console.log(`${status} - ${message}`);
+              } else {
+
+                const message = translatorService.translate(error.statusText);
+                notificationService.error(translatorService.translate('ErrOAuthUnknownError'));
+                console.log(`${status} - ${message}`);
+              }
       }
     } else {
 
@@ -58,6 +69,7 @@ export class ErrorInterceptor implements ErrorHandler {
 
 
     // Log the error anyway
-    console.error(error.name);
+    if (error && error.name)
+      console.log(error.name);
   }
 }

@@ -8,7 +8,6 @@ import { ConfigService } from './config.service';
   providedIn: 'root'
 })
 export class BoxService {
-
   private getBoxesURL = this.config.getApiUrl() + '/agent/box';
   private saveBoxURL = this.config.getApiUrl() + '/agent/box';
   private deleteBoxURL = this.config.getApiUrl() + '/agent/box';
@@ -45,6 +44,7 @@ export class BoxService {
       return data;
     });
   }
+
 
   saveBoxConfig(request: { box: string, uuid: string, donttouchdomains: string, donttouchips: string, localnetips: string, uninstallPassword: string, disablePassword: string }) {
 

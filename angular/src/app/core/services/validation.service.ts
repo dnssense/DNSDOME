@@ -47,38 +47,38 @@ export class ValidationService {
     }
   } */
 
- /*  static isValidIpString(ipString: string): any {
-
-    const ips = ipString.split('.');
-    if (ips == null || ips.length == 0) {
-      return false;
-    } else {
-      for (let i = 0; i <= ips.length; i++) {
-        // ip bos olamaz
-        if (ips[i] == '') {
-          return false;
-        }
-      }
-
-      let ipInterval = '';
-      if (ips.length <= 4 || ips[4] == '') {
-        ipInterval = '0';
-      } else {
-        ipInterval = ips[4];
-      }
-      const ipstr = ips[0] + '.' + ips[1] + '.' + ips[2] + '.' + ips[3];
-      const isValid = (ipstr != '255.255.255.255' &&
-        ipstr.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/) &&
-        (+ips[3] < +ipInterval || +ipInterval == 0));
-      if (!isValid) {
-        // ip valid degil
-        return false;
-      }
-
-      return true;
-    }
-
-  } */
+  /*  static isValidIpString(ipString: string): any {
+ 
+     const ips = ipString.split('.');
+     if (ips == null || ips.length == 0) {
+       return false;
+     } else {
+       for (let i = 0; i <= ips.length; i++) {
+         // ip bos olamaz
+         if (ips[i] == '') {
+           return false;
+         }
+       }
+ 
+       let ipInterval = '';
+       if (ips.length <= 4 || ips[4] == '') {
+         ipInterval = '0';
+       } else {
+         ipInterval = ips[4];
+       }
+       const ipstr = ips[0] + '.' + ips[1] + '.' + ips[2] + '.' + ips[3];
+       const isValid = (ipstr != '255.255.255.255' &&
+         ipstr.match(/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/) &&
+         (+ips[3] < +ipInterval || +ipInterval == 0));
+       if (!isValid) {
+         // ip valid degil
+         return false;
+       }
+ 
+       return true;
+     }
+ 
+   } */
 
 
   static getValidatorErrorMessage(validatorName: string, validatorValue?: any) {

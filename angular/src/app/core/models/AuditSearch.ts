@@ -23,10 +23,13 @@ export interface AuditData {
   username: string;
   insertDate: string;
   message: string;
+  isApiKey: number;
   ip: string;
   severity: string;
   detail: string;
   messageDetail?: string;
+  popoverRows?: string[];
+  popoverClass?: string;
 }
 
 export class AuditResponse {

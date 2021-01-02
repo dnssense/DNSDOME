@@ -76,6 +76,14 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../users/users.module#UsersModule'
       },
       {
+        path: 'settings/apikeys',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER'
+        },
+        loadChildren: '../../apikeys/apikeys.module#ApiKeysModule'
+      },
+      {
         path: 'deployment/roaming-clients',
         canActivate: [RoleGuard],
         data: {

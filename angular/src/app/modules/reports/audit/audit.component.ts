@@ -17,7 +17,7 @@ import { AuditResultComponent, LinkClick } from './result/audit-result.component
 @Component({
   selector: 'app-audit',
   templateUrl: 'audit.component.html',
-  styleUrls: ['audit.component.sass'],
+  styleUrls: ['audit.component.scss'],
   providers: [DateFormatPipe]
 })
 export class AuditComponent implements OnInit, AfterViewInit {
