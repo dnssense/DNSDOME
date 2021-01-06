@@ -39,7 +39,8 @@ export class ScheduledReportsComponent {
 
         if (report) {
             if (p === 'd' || p === 'w' || p === 'm') {
-                report.scheduledReport = new ScheduledReport();
+                if (!report.scheduledReport)
+                    report.scheduledReport = new ScheduledReport();
                 report.scheduledReport.period = p;
                 report.scheduledReport.status = 1;
                 this.saveReport(report);
@@ -56,7 +57,7 @@ export class ScheduledReportsComponent {
         this.reportService.saveReport(report).subscribe(res => {
 
 
-                this.loadReports();
+            this.loadReports();
 
         });
     }
@@ -69,8 +70,8 @@ export class ScheduledReportsComponent {
                 if (res) {
                     this.reportService.deleteReport(report).subscribe(result => {
 
-                            this.notification.success(result.message);
-                            this.loadReports();
+                        this.notification.success(result.message);
+                        this.loadReports();
 
                     });
                 }

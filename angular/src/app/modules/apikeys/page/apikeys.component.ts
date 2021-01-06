@@ -79,6 +79,9 @@ export class ApiKeysComponent implements OnInit {
             return 'Admin';
         } else if (role === 'ROLE_API') {
             return 'User';
+        }
+        else if (role === 'ROLE_INTEGRATION') {
+            return 'Integration';
         } else {
             return 'Not Defined';
         }

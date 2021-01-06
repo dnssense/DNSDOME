@@ -54,12 +54,15 @@ export class UserService {
     if (!isApiKey) {
       const roles: Role[] = [
         { id: 2, name: 'ROLE_CUSTOMER', description: 'Admin', clearences: null },
-        { id: 5, name: 'ROLE_USER', description: 'User', clearences: null }];
+        { id: 5, name: 'ROLE_USER', description: 'User', clearences: null }]
+
       return roles;
     } else {
       const roles: Role[] = [
         { id: 8, name: 'ROLE_APIADMIN', description: 'Admin', clearences: null },
-        { id: 7, name: 'ROLE_API', description: 'User', clearences: null }];
+        { id: 7, name: 'ROLE_API', description: 'User', clearences: null },
+        { id: 6, name: 'ROLE_INTEGRATION', description: 'Integration', clearences: null },
+        { id: 9, name: 'ROLE_REPUTATION', description: 'Reputation', clearences: null }];
       return roles;
     }
   }

@@ -41,7 +41,7 @@ export class AuditService {
         res.result.map(x => {
           const items = this.tryParse(x.messageDetail);
           x.messageDetail = items[0];
-          x.popoverRows = items.length > 0 ? items : undefined;
+          x.popoverRows = items.length > 1 ? items : undefined;
           x.popoverClass = theme == 'dark' ? 'auditDetailDark' : "auditDetailWhite";
           return x;
         });
