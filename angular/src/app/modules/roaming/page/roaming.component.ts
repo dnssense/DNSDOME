@@ -155,6 +155,19 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     onAgentUninstallPasswordChange: any;
     onAgentDisablePasswordChange: any;
 
+    activeTabNumber = 0;
+
+    categoryOptions: RkSelectModel[] = [
+      {
+        displayText: 'Not Grouped',
+        value: 'notgrouped',
+        selected: true
+      },
+      {
+        displayText: 'Grouped',
+        value: 'grouped',
+      }
+    ];
 
     ngOnInit(): void {
 
@@ -889,4 +902,21 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.isAgentDisablePasswordEyeOff = status;
     }
 
+  getOSImg(os: string) {
+    if (os){
+      let ostype = os.toLowerCase();
+      return ostype.includes('windows') ? '../../../../assets/img/windows.png' : (ostype.includes('mac') ? '../../../../assets/img/Ios.png':'');
+    }
+    return null;
+  }
+
+  clickedSelect(event) {
+    if (event === 'grouped') {
+      this.isGroupedRadioButtonSelected = true;
+      this.showGroupedClients(true);
+    } else {
+      this.isGroupedRadioButtonSelected = false;
+      this.showGroupedClients(false);
+    }
+  }
 }

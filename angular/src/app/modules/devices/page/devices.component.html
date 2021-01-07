@@ -2,8 +2,32 @@
   <div class="card-item">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-12 p-0">
-          <h5 class="page-title">{{'Device'|translate}}</h5>
+        <div class="row-tabs">
+          <div class="col-12 p-0 single-row">
+            <h5 class="page-title single-row">{{'DnsRelay'|translate}}</h5>
+          </div>
+
+
+          <div class="col-12 d-flex align-items-center justify-content-center py-3 mb-2 single-row"
+            style="padding-top: 0 !important;padding-bottom: 0 !important;">
+            <div class="rk-tabs" style="width: 420px;">
+                <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">{{'Relay Servers'}}</div>
+                <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">{{'Groups'}}</div>
+                <div class="rk-tab" (click)="activeTabNumber = 2" [ngClass]="{'active': activeTabNumber === 2}">{{'Clients'}}</div>
+            </div>
+          </div>
+
+
+          <div style="display: inline-block;opacity: 0;">
+            <button class="btn btn-icon btn-small mr-2" >
+              <i-feather name="arrow-down"></i-feather>
+              {{'Download'|translate}}
+            </button>
+            <button class="btn btn-icon btn-small"  >
+              <i-feather name="settings"></i-feather>
+              {{'Settings'|translate}}
+            </button>
+          </div>
         </div>
 
         <rk-modal #selectedBoxModal>
@@ -76,12 +100,12 @@
           </rk-modal-footer>
         </rk-modal>
 
-        <div class="col-12 p-0 mt-3">
+        <div class="col-12 p-0 mt-3" *ngIf="activeTabNumber === 0">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-start flex-wrap">
                 <div class="rk-table-title mr-5">Local DNS Relay Servers</div>
-
+                <!--
                 <div class="search mt-2 ml-5">
                   <div class="rk-autocomplete-container" style="width: 220px;">
                     <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="localDNSRelaySearch"
@@ -89,6 +113,7 @@
                     <i-feather class="search-icon" name="search"></i-feather>
                   </div>
                 </div>
+                -->
               </div>
             </div>
 
@@ -97,8 +122,8 @@
                 <tr>
                   <th>{{'Profile'|translate}}</th>
                   <th>{{'SecurityProfile'|translate}}</th>
-                  <th>{{'IsCpEnabled'|translate}}</th>
-                  <th>{{'CaptivePortalIP'|translate}}</th>
+                  <!-- <th>{{'IsCpEnabled'|translate}}</th>
+                  <th>{{'CaptivePortalIP'|translate}}</th> -->
                   <th colspan="2">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
@@ -117,14 +142,14 @@
                     </ng-container>
                     <ng-template #elseTemplate221>{{'NoAgent'|translate}}</ng-template>
                   </td>
-                  <td>
+              <!--<td>
                     <i-feather [name]="b.agent?.isCpEnabled ? 'check' : 'x'"></i-feather>
                   </td>
-                  <td>
+                   <td>
                     <ng-container *ngIf="b.agent?.isCpEnabled; else elseTemplate2">{{b.agent?.captivePortalIp}}
                     </ng-container>
                     <ng-template #elseTemplate2>-</ng-template>
-                  </td>
+                  </td>-->
                   <td style="width: 60px">
                     <button class=" btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editBox(b)">
                       <i-feather name="edit-3"></i-feather>
@@ -164,15 +189,17 @@
                 </div>
 
                 <div class="rk-modal-card-title my-2">{{ 'SelectSecurityProfile' | translate }}</div>
-
-                <div class="row mt-2">
-                  <div class="col-12 mt-3" *ngFor="let profile of securityProfiles; let index = index">
+                <div class="w-100">
+                  <!-- <div class="col-12 mt-3" *ngFor="let profile of securityProfiles; let index = index">
                     <div class="rk-radio my-0">
                       <input type="radio" id="rd-sec-{{ index }}" name="securityProfileRd"
                         [(ngModel)]="selectedProfileRadio" [value]="profile.id">
                       <label for="rd-sec-{{ index }}">{{ profile.name }}</label>
                     </div>
-                  </div>
+                  </div> -->
+                  <rk-select [options]="securityProfilesForSelect" [isSearchable]="false"
+                   (valueChange)="editGroupAgentSelectProfile($event)" >
+                  </rk-select>
                 </div>
 
               </div>
@@ -256,13 +283,13 @@
           </rk-modal-footer>
         </rk-modal>
 
-        <div class="col-12 p-0 mt-3">
+        <div class="col-12 p-0 mt-3" *ngIf="activeTabNumber === 1">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between flex-wrap">
                 <div class="d-flex align-items-center">
                   <div class="rk-table-title mr-4">{{'GroupAgent'|translate}}</div>
-
+                <!--
                   <div class="search ml-5 mt-2">
                     <div class="rk-autocomplete-container" style="width: 220px;">
                       <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="groupAgentSearch"
@@ -270,6 +297,7 @@
                       <i-feather class="search-icon" name="search"></i-feather>
                     </div>
                   </div>
+                -->
                 </div>
 
                 <button class="btn btn-small btn-safe btn-icon mt-2" (click)="createNewGroup()">
@@ -278,7 +306,6 @@
                 </button>
               </div>
             </div>
-
             <rk-table [showPagination]="false">
               <ng-template #header>
                 <tr>
@@ -343,7 +370,7 @@
                       style="min-width: 36px; height: 36px;" (click)="showGB = true">
                       <i-feather name="plus" class="mr-0"></i-feather>
                     </button>
-  
+
                     <input type="text" class="rk-input w-100" placeholder="Group Name" [(ngModel)]="newGroupName"
                       (keyup)="groupNameKeyup($event)" *ngIf="showGB"> -->
                   </div>
@@ -416,15 +443,99 @@
           </rk-modal-footer>
         </rk-modal>
 
-        <div class="col-12 col-lg-6 px-0 pr-lg-2 mt-3">
+        <rk-modal #editClientDeviceModal>
+          <rk-modal-header>
+            <rk-modal-header-title><h5>Edit Local Device</h5></rk-modal-header-title>
+            <rk-modal-header-close (click)="editClientDeviceModal.toggle()" ></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+            <div class="container-fluid">
+              <div class="rk-modal-card">
+                <div class="col-12">
+                  <div class="rk-modal-card-title">{{'DeviceName'|translate}}</div>
+                  <input type="text" class="rk-input w-100  mt-2"  placeholder="{{'DeviceName'|translate}}"
+                  [(ngModel)]="editClientDeviceName" >
+                </div>
+              </div>
+              <div class="rk-modal-card mt-3">
+                <div class="rk-modal-card-title ml-3">{{'Group'|translate}}</div>
+                <div style="display:flex; margin:1rem 0 .5rem 1rem;">
+                  <div class="groupSelect mr-5">
+                    <rk-radio name="deviceType" class="rk-radio-m-0 float-none" [checked]="editSelectedType === 'group'"
+                      (valueChange)="showSelectedListForType('group')" value="true">
+                      {{'Member'|translate}}
+                    </rk-radio>
+
+                  </div>
+                  <div class="groupSelect ">
+                    <rk-radio name="deviceType" class="rk-radio-m-0 float-none" [checked]="editSelectedType === 'securityProfile'"
+                      (valueChange)="showSelectedListForType('securityProfile')" value="false">
+                      {{'Unmember'|translate}}
+                    </rk-radio>
+                  </div>
+                </div>
+                <div class="col-12" *ngIf="editSelectedType === 'group'">
+                  <div class="rk-modal-card-title mb-2">{{'DefaultGroup'|translate}}</div>
+                  <rk-select [options]="groupListForSelect" [isSearchable]="false" (valueChange)="selectedListElementId($event)" >
+                  </rk-select>
+                </div>
+                <div class="col-12" *ngIf="editSelectedType === 'securityProfile'">
+                  <div class="rk-modal-card-title mb-2">{{'SecurityProfile'|translate}}</div>
+                  <rk-select [options]="securityProfilesForSelect" [isSearchable]="false" (valueChange)="selectedListElementId($event)"
+                   class="w-100">
+                  </rk-select>
+                </div>
+              </div>
+              <div class="rk-modal-card mt-3">
+                <div class="col-12">
+                  <div class="rk-modal-card-title">{{'MacAddress'|translate}}</div>
+                    <input type="text" class="rk-input w-100 mt-2" placeholder="{{'REPORT.ReportName' | translate}}"
+                     [(ngModel)]="editClientDeviceMacAdress" >
+                </div>
+              </div>
+            </div>
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn btn-fill btn-small w-100 mr-2"
+              (click)="editClientDeviceChanges()">{{'Save'|translate}}</button>
+            <button class="btn btn-small btn-default w-100"
+              (click)="editClientDeviceModal.toggle()">{{'Close'|translate}}</button>
+          </rk-modal-footer>
+        </rk-modal>
+
+        <div class="col-12 px-0 pr-lg-2 mt-3" *ngIf="activeTabNumber === 2 ">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between flex-wrap">
-                <div>
+                <div *ngIf="selectedGroup === 'all'">
+                  <div class="rk-table-title">{{'RoamingClients' | translate}}</div>
+                  <p class="rk-table-description">( {{'GroupPolicyApplies' | translate}} )</p>
+                </div>
+                <div *ngIf="selectedGroup === 'group'">
                   <div class="rk-table-title">{{'GroupMembers' | translate}}</div>
                   <p class="rk-table-description">( {{'GroupPolicyApplies' | translate}} )</p>
                 </div>
+                <div *ngIf="selectedGroup === 'ungroup'">
+                  <div class="rk-table-title">{{ 'UngroupMembers' | translate }}</div>
+                  <p class="rk-table-description">( {{'DnsRelayServerSecurityProfileApplied' | translate}} )
+                  </p>
+                </div>
 
+                <div class="col-12 col-md-6 mt-3 mt-md-0" style="max-width: 15%;min-width: 140px;">
+                  <rk-select   [options]="categoryOptions" (valueChange)="clickedSelect($event)"
+                      [(value)]="category" [isSearchable]="false"></rk-select>
+                </div>
+
+                <div class="search mt-2">
+                  <div class="rk-autocomplete-container" style="width: 160px;">
+                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="memberSearch"
+                      class="rk-input rk-autocomplete" (ngModelChange)="memberSearchChanged()">
+                    <i-feather class="search-icon" name="search"></i-feather>
+                  </div>
+                </div>
+<!--
                 <div class="search mt-2">
                   <div class="rk-autocomplete-container" style="width: 160px;">
                     <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="groupMemberSearch"
@@ -432,108 +543,95 @@
                     <i-feather class="search-icon" name="search"></i-feather>
                   </div>
                 </div>
-
-                <button class="btn btn-small mt-2" (click)="changeTableGroup('edit')"
-                  [disabled]="getEditDisabled">{{ 'ChangeGroup' | translate }}</button>
-              </div>
-            </div>
-
-            <rk-table [showPagination]="false">
-              <ng-template #header>
-                <tr>
-                  <th>
-                    <rk-checkbox size="sm" (valueChange)="groupMembersTableCheckboxChanged($event)"></rk-checkbox>
-                  </th>
-                  <th>{{'HostName'|translate}}</th>
-                  <th>{{'MacAddress'|translate}}</th>
-                  <th>{{'GroupName'|translate}}</th>
-                </tr>
-              </ng-template>
-
-              <ng-template #body>
-                <tr *ngFor="let device of registereds" [ngClass]="{'selected': device?.selected}">
-                  <td style="width: 40px;">
-                    <rk-checkbox size="sm" [(value)]="device.selected"></rk-checkbox>
-                  </td>
-                  <td>{{ device.agentAlias }}</td>
-                  <td>{{ device.mac | MacAddressFormatterPipe }}</td>
-                  <td>
-                    <div class="d-flex align-items-center justify-content-between">
-                      <span>{{ device.agentGroup ? device.agentGroup.groupName : '--' }}</span>
-
-                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                        (click)="removeDeviceFromRegistereds(device.id)">
-                        <i-feather name="trash-2"></i-feather>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr *ngIf="registereds.length == 0">
-                  <td colspan="4">
-                    {{'DataNotFound'|translate}}
-                  </td>
-                </tr>
-              </ng-template>
-            </rk-table>
-          </rk-table-container>
-        </div>
-
-        <div class="col-12 col-lg-6 px-0 pl-lg-2 mt-3">
-          <rk-table-container class="m-0">
-            <div class="rk-table-container-header">
-              <div class="top-content justify-content-between flex-wrap">
-                <div>
-                  <div class="rk-table-title">{{ 'UngroupMembers' | translate }}</div>
-                  <p class="rk-table-description">( {{'DnsRelayServerSecurityProfileApplied' | translate}} )
-                  </p>
-                </div>
-
-                <div class="search mt-2">
+                <div class="search mt-2" *ngIf="selectedGroup === 'ungroup'">
                   <div class="rk-autocomplete-container" style="width: 160px;">
                     <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="ungroupMemberSearch"
                       class="rk-input rk-autocomplete" (ngModelChange)="ungroupMemberSearchChanged()">
                     <i-feather class="search-icon" name="search"></i-feather>
                   </div>
                 </div>
-
-                <button class="btn btn-small mt-2" (click)="changeTableGroup('create')"
+-->
+                <button class="btn btn-small mt-2" (click)="changeTableGroup('edit')"
+                  [disabled]="getEditDisabled">{{ 'ChangeGroup' | translate }}</button>
+                  <button class="btn btn-small mt-2" (click)="changeTableGroup('create')"
                   [disabled]="getCreateDisabled">{{ 'AddToGroup' | translate }}</button>
               </div>
             </div>
-
             <rk-table [showPagination]="false">
               <ng-template #header>
                 <tr>
                   <th>
-                    <rk-checkbox size="sm" (valueChange)="ungroupMemberTableCheckboxChanged($event)"></rk-checkbox>
+                    <rk-checkbox size="sm" (valueChange)="tableCheckboxChanged($event)"></rk-checkbox>
                   </th>
                   <th>{{'HostName'|translate}}</th>
                   <th>{{'MacAddress'|translate}}</th>
                   <th>{{'GroupName'|translate}}</th>
+                  <th colspan="2">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
 
               <ng-template #body>
-                <tr *ngFor="let device of unregistereds" [ngClass]="{'selected': device?.selected}">
-                  <td style="width: 40px;">
-                    <rk-checkbox size="sm" [(value)]="device.selected"></rk-checkbox>
-                  </td>
-                  <td>{{ device.agentInfo.agentAlias }}</td>
-                  <td>{{ device.agentInfo.mac | MacAddressFormatterPipe }}</td>
-                  <td>
-                    <div class="d-flex align-items-center justify-content-between">
-                      <span>{{'NoGroup' | translate}}</span>
-
-                      <!-- <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                        (click)="deleteUngroupDevice(device)">
+                <ng-container  *ngIf="selectedGroup === 'group' || selectedGroup === 'all'">
+                  <tr *ngFor="let device of registereds" [ngClass]="{'selected': device?.selected}">
+                    <td style="width: 40px;">
+                      <rk-checkbox size="sm" [(value)]="device.selected"></rk-checkbox>
+                    </td>
+                    <td>{{ device.agentAlias }}</td>
+                    <td>{{ device.mac | MacAddressFormatterPipe }}</td>
+                    <td>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <span>{{ device.agentGroup ? device.agentGroup.groupName : '--' }}</span></div>
+                    </td>
+                    <td style="width: 60px;">
+                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editClientDevice(device,'group')">
+                        <i-feather name="edit-3"></i-feather>
+                      </button>
+                    </td>
+                    <td style=" width: 60px" >
+                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
+                        (click)="removeDeviceFromRegistereds(device.id)">
                         <i-feather name="trash-2"></i-feather>
-                      </button> -->
-                    </div>
+                      </button>
+                  </td>
+                  </tr>
+                </ng-container>
+                <ng-container  *ngIf="selectedGroup === 'ungroup' || selectedGroup === 'all'">
+                  <tr *ngFor="let device of unregistereds" [ngClass]="{'selected': device?.selected}">
+                    <td style="width: 40px;">
+                      <rk-checkbox size="sm" [(value)]="device.selected"></rk-checkbox>
+                    </td>
+                    <td>{{ device.agentInfo.agentAlias }}</td>
+                    <td>{{ device.agentInfo.mac | MacAddressFormatterPipe }}</td>
+                    <td>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <span>{{'NoGroup' | translate}}</span>
+                      </div>
+                    </td>
+                    <td style="width: 60px;">
+                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"  (click)="editClientDevice(device,'nogroup')">
+                        <i-feather name="edit-3"></i-feather>
+                      </button>
+                    </td>
+                    <td style="width: 60px;">
+                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="removeDeviceFromUnregistereds()">
+                        <i-feather name="trash-2"></i-feather>
+                      </button>
+                    </td>
+                  </tr>
+                </ng-container>
+
+                <tr *ngIf="unregistereds.length == 0 && selectedGroup === 'ungroup'">
+                  <td colspan="6">
+                    {{'DataNotFound'|translate}}
                   </td>
                 </tr>
-                <tr *ngIf="unregistereds.length == 0">
-                  <td colspan="4">
+                <tr *ngIf="registereds.length == 0 && selectedGroup === 'group'">
+                  <td colspan="6">
+                    {{'DataNotFound'|translate}}
+                  </td>
+                </tr>
+                <tr *ngIf="registereds.length == 0 && unregistereds.length === 0 && selectedGroup === 'all'">
+                  <td colspan="6">
                     {{'DataNotFound'|translate}}
                   </td>
                 </tr>
@@ -541,6 +639,8 @@
             </rk-table>
           </rk-table-container>
         </div>
+
+
       </div>
     </div>
   </div>

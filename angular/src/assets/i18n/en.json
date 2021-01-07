@@ -94,6 +94,7 @@
     "NoData": "No Data",
     "Next": "Next",
     "RoamingClients": "Roaming Clients",
+    "OS":"OS",
     "RoamingClient": "Roaming Client",
     "DnsRelay": "DNS Relay",
     "DnsRelays": "DNS Relays",
@@ -101,6 +102,7 @@
     "CopyDownloadLink": "Copy Download Link",
     "Settings": "Settings",
     "ConfigureRoamingClients": "Configure Roaming Clients",
+    "RoamingClientsGlobalSettings":"Roaming Clients Global Settings",
     "DontTouchDomains": "Don’t Touch Domains",
     "DontTouchDomainsDescription": "Don’t touch domains not encrypt by agent, add your Local Active Directory domains",
     "DontTouchIps": "Don’t Touch Ips",
@@ -109,6 +111,8 @@
     "LocalNetIpsDescription": "When one of these servers responses with dns result, agent will disable protection",
     "Add": "Add",
     "RoamingClientsEdit": "Roaming Clients Edit",
+    "DefaultGroup":"Default Group",
+    "DefaultGroupsDescription":"Roaming clientler kurulduğu zaman dahil olacağı ön tanımlı grubu seçin",
     "EditGroup": "Edit Group",
     "SelectDevicesToJoinGroup": "Select Devices to Join Group",
     "OtherGroupMembers": "Other Group Members",
@@ -618,6 +622,7 @@
     "UninstallPasswordDescription": "Uninstall process asks for this password",
     "DisablePassword": "Disable Password",
     "DisablePasswordDescription": "Disable protection asks for this password",
+    "ServiceStopProtectionPassword":"Service Stop Protection Password",
     "Grouped": "Grouped",
     "NotGrouped": "Not Grouped",
     "UserDisabled": "Is User Disabled Protection",
@@ -636,5 +641,7 @@
         "Severity": "Severity",
         "Message": "Message",
         "MessageDetail": "Message Detail"
-    }
+    },
+    "Member":"Member",
+    "Unmember":"Unmember"
 }

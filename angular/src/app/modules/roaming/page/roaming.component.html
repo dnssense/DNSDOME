@@ -5,16 +5,25 @@
         <div class="col-12 p-0 d-flex align-items-center justify-content-between">
           <h5 class="page-title">{{'RoamingClients'|translate}}</h5>
 
+          <div class="col-12 d-flex align-items-center justify-content-center py-3 mb-2 single-row"
+            style="padding-top: 0 !important;padding-bottom: 0 !important;">
+            <div class="rk-tabs" style="width: 420px;">
+                <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">{{'Roaming Clients'}}</div>
+                <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">{{'Groups'}}</div>
+            </div>
+          </div>
+
           <div>
             <button class="btn btn-icon btn-small mr-2" (click)="downloadFile()">
               <i-feather name="arrow-down"></i-feather>
               {{'Download'|translate}}
             </button>
 
-            <button class="btn btn-icon btn-small mr-2" (click)="copyLink()">
+            <!-- Geçici olarak kaldırıldı -->
+            <!-- <button class="btn btn-icon btn-small mr-2" (click)="copyLink()">
               <i-feather name="arrow-down"></i-feather>
               {{'CopyDownloadLink'|translate}}
-            </button>
+            </button> -->
 
             <button class="btn btn-icon btn-small" (click)="openConfigureModal()">
               <i-feather name="settings"></i-feather>
@@ -27,45 +36,35 @@
         <rk-modal #configureModal>
           <rk-modal-header>
             <rk-modal-header-title>
-              <h5>{{'ConfigureRoamingClients'|translate}}</h5>
+              <h5>{{'RoamingClientsGlobalSettings'|translate}}</h5>
             </rk-modal-header-title>
 
             <rk-modal-header-close (click)="closeConfigureModal()"></rk-modal-header-close>
           </rk-modal-header>
 
           <rk-modal-body>
-            <!-- Default Group Bu Alanı(Yeni tasarım üzerine çalışılıyor) -->
+          <!-- Default Group Bu Alanı(Yeni tasarım üzerine çalışılıyor) -->
 
-            <!-- <div class="container-fluid mb-2">
+            <div class="container-fluid mb-2">
               <div class="rk-modal-card">
                 <h6 class="rk-modal-card-title">
-                  Default Group -->
-            <!-- {{'DefaultGroup'|translate}} -->
-            <!-- </h6>
+                  <!-- Default Group  -->
+                      {{'DefaultGroup'|translate}}
+                </h6>
 
-                <div class="row mt-0">
+                 <div class="row mt-0">
                   <div class="col-12 mt-0">
                     <p class="rk-description">
-                      <!-- {{'DefaultGroupsDescription'|translate}} -->
-            <!-- Reoming clientler kurulduğu zaman dahil olacağı ön tanımlı grubu seçin
+                      {{'DefaultGroupsDescription'|translate}}
                     </p>
 
-                    <div class="btn-group">
-                      <button class="btn btn-lg dropdown-toggle bg-white rk-input" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: 1px solid #ccd4e0;">
-                        Default Group
-                      </button>
-                      <div class="dropdown-menu " style="width: 100%;">
-                        <a class="dropdown-item rk-input" href="#">Default Group</a>
-                        <a class="dropdown-item rk-input" href="#">Grouped</a>
-                        <a class="dropdown-item rk-input" href="#">Ungrouped</a>
-                      </div>
-                    </div>
-                   
+                    <rk-select>
 
+                    </rk-select>
                   </div>
                 </div>
               </div>
-            </div> -->
+            </div>
 
             <!-- Default Group Bu Alanı -->
 
@@ -195,14 +194,10 @@
 
             <div class="container-fluid mb-2">
               <div class="rk-modal-card">
-                <h6 class="rk-modal-card-title">{{'UninstallPassword'|translate}}</h6>
+                <h6 class="rk-modal-card-title">{{'DisablePassword'|translate}}</h6>
 
                 <div class="row mt-0">
                   <div class="col-12 mt-0">
-                    <p class="rk-description">
-                      {{'UninstallPasswordDescription'|translate}}
-                    </p>
-
                     <div class="cards mt-3">
                       <div class="card">
                         <div class="card-content">
@@ -231,14 +226,10 @@
 
             <div class="container-fluid mb-2">
               <div class="rk-modal-card">
-                <h6 class="rk-modal-card-title">{{'DisablePassword'|translate}}</h6>
+                <h6 class="rk-modal-card-title">{{'ServiceStopProtectionPassword'|translate}}</h6>
 
                 <div class="row mt-0">
                   <div class="col-12 mt-0">
-                    <p class="rk-description">
-                      {{'DisablePasswordDescription'|translate}}
-                    </p>
-
                     <div class="cards mt-3">
                       <div class="card">
                         <div class="card-content">
@@ -550,7 +541,7 @@
           </rk-modal-footer>
         </rk-modal>
 
-        <div class="col-12 p-0 mt-3 groupsOfRoamingClients">
+        <div class="col-12 p-0 mt-3 groupsOfRoamingClients" *ngIf="activeTabNumber === 0">
 
           <rk-table-container class="m-0 mx-auto">
             <div class="rk-table-container-header">
@@ -580,14 +571,12 @@
                   <td>{{ item.memberCounts }}</td>
                   <td>{{ item.securityProfile.name }}</td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                      (click)="openUpdateGroup(item.agents)">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="openUpdateGroup(item.agents)">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                      (click)="deleteGroup(item.agents)">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteGroup(item.agents)">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>
@@ -607,7 +596,7 @@
 
 
 
-      <div class="row">
+      <div class="row" *ngIf="activeTabNumber === 1">
         <div class="col-12 p-0 mt-3 roamingClients">
           <rk-table-container class="m-0 mx-auto">
             <div class="rk-table-container-header">
@@ -617,7 +606,11 @@
                     <span class="text-primary">{{ clientsForShow?.length }} </span>
                     {{'QueriesListed'|translate}}
                   </div>
-                  <div class="groupSelect ml-5">
+                  <div  style="min-width: 150px;">
+                    <rk-select   [options]="categoryOptions" (valueChange)="clickedSelect($event)"
+                     [isSearchable]="false"></rk-select>
+                  </div>
+                  <!-- <div class="groupSelect ml-5">
                     <rk-radio class="rk-radio-m-0 float-none" [checked]="isGroupedRadioButtonSelected==false"
                       (valueChange)="showGroupedClients(false)" value="true">
                       {{'NotGrouped'|translate}}
@@ -630,7 +623,7 @@
                       (valueChange)="showGroupedClients(true)" value="false">
                       {{'Grouped'|translate}}
                     </rk-radio>
-                  </div>
+                  </div> -->
                   <div class="search ml-5">
                     <div class="rk-autocomplete-container" style="width: 220px;">
                       <input type="text" placeholder="Search" [(ngModel)]="searchKeyUnGroup"
@@ -667,7 +660,7 @@
                   <th> {{'Protection'|translate}}</th>
                   <th> {{'UserDisabledSmartCache'|translate}}</th>
                   <th> {{'SmartCache'|translate}}</th>
-                  <th> {{'Details'|translate}}</th>
+                  <th> {{'OS'|translate}}</th>
                   <th colspan="2">{{'Operation'|translate}}</th>
                 </tr>
               </ng-template>
@@ -714,7 +707,7 @@ Hostname:{{c.hostname}}
 Os:{{c.os}}
 Mac:{{c.mac}}
 Version:{{c.version}}">
-                      {{c.mac}}<br />
+<img *ngIf="c.os" [src]="getOSImg(c.os)" alt=""><br />
                     </div>
 
                   </td>
@@ -725,8 +718,7 @@ Version:{{c.version}}">
                     </button>
                   </td>
                   <td style="width: 30px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)"
-                      style="background: transparent;">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)" style="background: transparent;">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>
