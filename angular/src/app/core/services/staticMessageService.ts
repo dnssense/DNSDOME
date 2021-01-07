@@ -66,6 +66,9 @@ export class StaticMessageService {
   get savedUserMessage(): string {
     return this.translator.translate(`UserSaved`);
   }
+  get savedApiKeyMessage(): string {
+    return this.translator.translate(`ApiKeySaved`);
+  }
 
   get areYouSureMessage(): string {
     return this.translator.translate(`AreYouSure`);
@@ -153,6 +156,17 @@ export class StaticMessageService {
 
   get downloadLinkCopiedToClipboardMessage(): string {
     return this.translator.translate(`DownloadLinkCopiedToClipboard`);
+  }
+  get couldNotCreateMagicLinkMessage(): string {
+    return this.translator.translate(`CouldNotCreateMagicLink`);
+  }
+
+  get magicLinkCopiedToClipboardMessage(): string {
+    return this.translator.translate(`MagicLinkCopiedToClipboard`);
+  }
+
+  get apikeyCopiedToClipboardMessage(): string {
+    return this.translator.translate(`ApiKeyCopiedToClipboard`);
   }
 
   get changesCouldNotSavedMessage(): string {
@@ -324,6 +338,12 @@ export class StaticMessageService {
   }
   get selectedUserWillBeDeletedMessage() {
     return this.translator.translate('SelectedUserWillBeDeletedMessage');
+  }
+  get deletedSelectedApiKeyMessage() {
+    return this.translator.translate('DeletedSelectedApiKeyMessage');
+  }
+  get selectedApiKeyWillBeDeletedMessage() {
+    return this.translator.translate('SelectedApiKeyWillBeDeletedMessage');
   }
 
 

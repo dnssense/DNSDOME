@@ -14,6 +14,7 @@ export class BoxService {
   private virtualBoxURL = this.config.getApiUrl() + '/box/virtual';
   private getLinkURL = this.config.getApiUrl() + '/box/roamingclientlink';
   private boxConfURL = this.config.getApiUrl() + '/box/conf';
+  private boxMagicURL = this.config.getApiUrl() + '/box/roamingclientconfig/magic';
 
   constructor(private http: HttpClient, private config: ConfigService) { }
 
@@ -36,6 +37,14 @@ export class BoxService {
   getProgramLink(): Observable<any> {
     return this.http.get<any>(this.getLinkURL).map(data => data);
   }
+
+  getMagicLink(): Observable<any> {
+    return this.http.get<any>(this.boxMagicURL).map(data => {
+      data.magic = this.config.getApiUrl() + data.magic;
+      return data;
+    });
+  }
+
 
   saveBoxConfig(request: { box: string, uuid: string, donttouchdomains: string, donttouchips: string, localnetips: string, uninstallPassword: string, disablePassword: string }) {
 

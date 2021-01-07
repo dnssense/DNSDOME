@@ -3,11 +3,11 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12 p-0 d-flex align-items-center justify-content-between">
-          <h5 class="page-title">{{'Users'|translate}}</h5>
+          <h5 class="page-title">{{'ApiKeys'|translate}}</h5>
 
           <button class="btn btn-icon btn-small" (click)="newUserClick()">
-            <i-feather name="user"></i-feather>
-            {{'CreateNewUser'|translate}}
+            <i-feather name="key"></i-feather>
+            {{'CreateNewApiKey'|translate}}
           </button>
         </div>
       </div>
@@ -15,7 +15,7 @@
       <rk-modal #userModal (close)="modalClosed($event)">
         <rk-modal-header icon="plus">
           <rk-modal-header-title>
-            <h5>{{ (isUpdateUser(user) ? 'EditUser' : 'CreateNewUser')|translate }} </h5>
+            <h5>{{ (isUpdateUser(user) ? 'EditApiKey' : 'CreateNewApiKey')|translate }} </h5>
           </rk-modal-header-title>
 
           <rk-modal-header-close (click)="userModal.toggle()"></rk-modal-header-close>
@@ -25,37 +25,26 @@
           <div class="container-fluid">
 
             <div class="rk-modal-card">
-              <h6 class="rk-modal-card-title mb-2">{{ 'UserInformation' | translate }}</h6>
+              <h6 class="rk-modal-card-title mb-2">{{ 'ApiKeyInformation' | translate }}</h6>
 
               <div class="row">
                 <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder=" {{'FullName'|translate}}" minlength="2"
-                    [(ngModel)]="user.name">
+                  <input type="text" class="rk-input w-100" placeholder=" {{'Name'|translate}}" minlength="2"
+                    [(ngModel)]="user.apikey.who">
                 </div>
 
-                <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder=" {{'Email'|translate}}"
-                    [(ngModel)]="user.username">
-                </div>
 
                 <div class="col-12 mt-3">
                   <rk-select [options]="userRolesForSelect" placeholder=" {{'Role'|translate}}" [value]="selectedRoleId"
                     (valueChange)="roleChange($event)"></rk-select>
                 </div>
-
                 <div class="col-12 mt-3">
-                  <input type="password" class="rk-input w-100" placeholder=" {{'Password'|translate}}" minlength="8"
-                    [(ngModel)]="user.password" (ngModelChange)="checkPasswordStrength()">
-
-                  <div class="password-strength justify-content-end mt-3">
-                    <div [ngClass]="{ active: passwordStrength > 0 }"></div>
-                    <div [ngClass]="{ active: passwordStrength > 1 }"></div>
-                    <div [ngClass]="{ active: passwordStrength > 2 }"></div>
-                    <div [ngClass]="{ active: passwordStrength > 3 }"></div>
-                  </div>
-
-                  <p class="password-text mt-2"> {{'YourPasswordHasToBeAtLeast'|translate}}</p>
+                  <input type="text" class="rk-input w-100" placeholder=" {{'Description'|translate}}"
+                    [(ngModel)]="user.apikey.description">
                 </div>
+
+
+
 
                 <div class="col-12 mt-3" *ngIf="user.id > 0">
                   <rk-checkbox class="rk-checkbox-font" [(value)]="user.isActive"
@@ -104,10 +93,10 @@
                 <tr>
                   <th
                     style="border-top: 1px solid var(--base-border-color) !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    {{'User'|translate}}</th>
+                    {{'Name'|translate}}</th>
                   <th
                     style="border-top: 1px solid var(--base-border-color) !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    {{'Email'|translate}}</th>
+                    {{'Key'|translate}}</th>
                   <th
                     style="border-top: 1px solid var(--base-border-color) !important;background: rgba(137, 142, 164, 0.05) !important;">
                     {{'Role'|translate}}</th>
@@ -116,10 +105,10 @@
                     {{'IsActive'|translate}}</th>
                   <th class="text-center"
                     style="border-top: 1px solid var(--base-border-color) !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    {{'IsVerified'|translate}}</th>
+                    {{'IsLocked'|translate}}</th>
                   <th class="text-center"
                     style="border-top: 1px solid var(--base-border-color) !important;background: rgba(137, 142, 164, 0.05) !important;">
-                    {{'IsLocked'|translate}}</th>
+                    {{'Description'|translate}}</th>
                   <th
                     style="border-top: 1px solid var(--base-border-color) !important;background: rgba(137, 142, 164, 0.05) !important;">
                     {{'Edit'|translate}}</th>
@@ -130,19 +119,17 @@
               </ng-template>
 
               <ng-template #body>
-                <tr *ngFor="let user of users | filter: searchKey: 'username'">
-                  <td>{{ user?.name }}</td>
-                  <td>{{ user.username }}</td>
+                <tr *ngFor="let user of users | filter: searchKey: 'apikey.who'">
+                  <td>{{ user.apikey.who }}</td>
+                  <td>{{ user.apikey.key }} <span class="pl-2 ">
+                      <a (click)="copyApiKey(user.apikey.key)" title="{{'Copy'|translate}}" style="cursor: pointer;">
+                        <i-feather name="copy"></i-feather>
+                      </a>
+                    </span></td>
                   <td>{{ userFriendlyRoleName(user.role.name) }}</td>
                   <td class="text-center" style="width: 80px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                       <path [attr.fill]="user.isActive ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
-                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
-                    </svg>
-                  </td>
-                  <td class="text-center" style="width: 110px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                      <path [attr.fill]="user.isVerified === 1 ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
                         d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
                     </svg>
                   </td>
@@ -152,7 +139,8 @@
                         d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
                     </svg>
                   </td>
-                  <td style="width: 60px">
+                  <td class="text-center" style="width: 100px;">{{ user.apikey.description }}</td>
+                  <td style=" width: 60px">
                     <button class="btn btn-link btn-icon p-0 hover-gray" (click)="editUserClick(user)"
                       style="background: transparent;">
                       <i-feather name="edit-3"></i-feather>

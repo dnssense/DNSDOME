@@ -10,93 +10,6 @@ import { TranslatorService } from 'src/app/core/services/translator.service';
 
 declare const $: any;
 
-// Metadata
-/*export interface RouteInfo {
-  path: string;
-  title: string;
-  type: string;
-  icontype: string;
-  collapse?: string;
-  children?: ChildrenItems[];
-  role?: string;
-}
-
-export interface ChildrenItems {
-  path: string;
-  title: string;
-  ab: string;
-  type?: string;
-}
-
-export const ProfileRoutes: RouteInfo[] = [
-  {
-    path: '/admin/accountsettings',
-    title: 'Account Settings',
-    type: 'link',
-    icontype: 'settings',
-    role: 'ROLE_CUSTOMER'
-  }
-];
-
-// Menu Items
-export const ROUTES: RouteInfo[] = [
-  {
-    path: '/admin/dashboard',
-    title: 'Dashboard',
-    type: 'link',
-    icontype: 'dashboard',
-    role: 'ROLE_CUSTOMER,ROLE_USER'
-  },
-  {
-    path: '/admin/reports/monitor',
-    title: ' Monitor',
-    type: 'link',
-    icontype: 'av_timer',
-    role: 'ROLE_CUSTOMER,ROLE_USER'
-  },
-  {
-    path: '/admin/reports/custom-reports',
-    title: 'Custom Reports',
-    type: 'link',
-    icontype: 'timeline',
-    role: 'ROLE_CUSTOMER,ROLE_USER'
-  },
-  {
-    path: '/admin',
-    title: 'Deployment',
-    type: 'sub',
-    icontype: 'wifi_tethering',
-    role: 'ROLE_CUSTOMER',
-    collapse: 'network',
-    children: [
-      { path: 'publicip', title: 'Public IP', ab: 'PI' },
-      { path: 'deployments/devices', title: 'Devices', ab: 'LD' },
-      { path: 'roaming-clients', title: 'Roaming Clients', ab: 'RC' }
-    ]
-  },
-  {
-    path: '/admin',
-    title: 'Settings',
-    type: 'sub',
-    icontype: 'settings',
-    role: 'ROLE_CUSTOMER',
-    collapse: 'settings',
-    children: [
-      { path: 'users', title: 'Users', ab: 'U' },
-      { path: 'scheduled-reports', title: 'Saved Reports', ab: 'SP' },
-      { path: 'profiles', title: 'Security Profiles', ab: 'SP' },
-      { path: 'tools', title: 'Tools', ab: 'T' }
-    ]
-  },
-  {
-    path: '/admin/help',
-    title: 'Help',
-    type: 'link',
-    icontype: 'live_help',
-    role: null
-  }
-];
-*/
 
 @Component({
   selector: 'app-sidebar-cmp',
@@ -137,16 +50,17 @@ export class SidebarComponent implements OnInit {
         { id: 3.3, path: 'deployment/roaming-clients', text: 'PageName.RoamingClients', icon: 'roaming-clients', selected: false, roles: ['ROLE_CUSTOMER'] },
       ]
     },
-    { id: 4, path: '/admin/reports/audit', text: 'PageName.AuditLogs', icon: 'audit', selected: false, roles: ['ROLE_ULTRA'] },
+    { id: 4, path: '/admin/reports/audit', text: 'PageName.AuditLogs', icon: 'audit', selected: false, roles: ['ROLE_CUSTOMER'] },
     {
       id: 5, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'],
       subMenu: [
         { id: 5.1, path: 'settings/users', text: 'PageName.Users', icon: 'user', selected: false, roles: ['ROLE_CUSTOMER'] },
-        { id: 5.2, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-        { id: 5.3, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false, roles: ['ROLE_CUSTOMER'] },
-        { id: 5.4, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-        { id: 5.5, path: 'settings/change-domain-category', text: 'PageName.RequestChangingDomainCategory', icon: 'request-category', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-        { id: 5.6, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        { id: 5.2, path: 'settings/apikeys', text: 'PageName.ApiKeys', icon: 'apikey', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 5.3, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        { id: 5.4, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 5.5, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        { id: 5.6, path: 'settings/change-domain-category', text: 'PageName.RequestChangingDomainCategory', icon: 'request-category', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        { id: 5.7, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
       ]
     }
   ];

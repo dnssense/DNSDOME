@@ -15,6 +15,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { GroupAgentModel } from '../../devices/page/devices.component';
+import { ClipboardService } from 'ngx-clipboard'
 
 declare let $: any;
 export interface BoxConf {
@@ -50,7 +51,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         private roamingService: RoamingService,
         private boxService: BoxService,
         private staticMessageService: StaticMessageService,
-        private inputIpService: InputIPService
+        private inputIpService: InputIPService,
+        private clipboardService: ClipboardService
     ) { }
 
     isGroupedRadioButtonSelected = false;
@@ -420,20 +422,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
     copyLink() {
-        /* const domains = this.dontDomains.map(d => { d = '.'.concat(d); return d; }).join(',');
-        const ips = this.dontIps.filter(x => isip(x)).join(',');
-        const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
 
-        this.boxService.getProgramLink({ donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).subscribe(res => {
-            if (res && res.link) {
-                this.getConfParameters();
-                this.fileLink = res.link;
-                this.copyToClipBoard(this.fileLink);
-                this.notification.info(this.staticMessageService.downloadLinkCopiedToClipboardMessage);
-            } else {
-                this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
-            }
-        }); */
         this.boxService.getProgramLink().subscribe(res => {
             if (res && res.link) {
 
@@ -447,15 +436,25 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
 
     }
+    copyMagicLink() {
+
+        this.boxService.getMagicLink().subscribe(res => {
+            if (res && res.magic) {
+
+
+                this.copyToClipBoard(res.magic);
+                this.notification.info(this.staticMessageService.magicLinkCopiedToClipboardMessage);
+            } else {
+                this.notification.error(this.staticMessageService.couldNotCreateMagicLinkMessage);
+            }
+        });
+
+
+    }
+
 
     copyToClipBoard(input: string) {
-        const selBox = document.createElement('textarea');
-        selBox.value = input;
-        document.body.appendChild(selBox);
-        selBox.focus();
-        selBox.select();
-        document.execCommand('copy');
-        document.body.removeChild(selBox);
+        this.clipboardService.copy(input);
     }
 
 

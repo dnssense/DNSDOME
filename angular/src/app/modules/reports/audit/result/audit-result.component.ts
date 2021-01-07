@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 import { RkTableColumnModel, RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { Subject } from 'rxjs';
-import { AuditResponse } from 'src/app/core/models/AuditSearch';
+import { AuditData, AuditResponse } from 'src/app/core/models/AuditSearch';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { AuditService } from 'src/app/core/services/auditService';
@@ -60,10 +60,11 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
     columns: [
       { id: 0, name: 'time', displayText: this.translateService.translate('AuditTableColumn.Time'), isLink: true },
       { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), isLink: true },
+      { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), isLink: true },
       { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), isLink: true },
       { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), isLink: true },
       { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), isLink: true },
-      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), isLink: false },
+      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), isLink: false, isPopover: true },
     ],
     rows: [],
     selectableRows: true
@@ -121,10 +122,11 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
   private changeColumnNames() {
     this.tableConfig.columns = [
       { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), isLink: true },
-      { id: 2, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), isLink: true },
-      { id: 3, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), isLink: true },
-      { id: 4, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), isLink: true },
-      { id: 5, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), isLink: false },
+      { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), isLink: true },
+      { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), isLink: true },
+      { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), isLink: true },
+      { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), isLink: true },
+      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), isLink: false },
     ];
   }
 
@@ -155,6 +157,7 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
       }
     }
   }
+
 
   public loadGraph(searchSettings: SearchSetting) {
     this.auditService.getData(searchSettings, this.currentPage).takeUntil(this.ngUnsubscribe)

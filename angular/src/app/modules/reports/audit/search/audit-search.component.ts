@@ -310,23 +310,6 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
   }
 
   apply(close = false) {
-    /** Seçilen Kategoriler */
-    /*  (this.__deepCopy(this.categoryFilters) as FilterBadgeModel[]).forEach(elem => {
-       const filter = this.filters.find(x => x.name === elem.name && elem.equal === x.equal);
-
-       if (filter) {
-         elem.values.forEach(value => {
-           const findedValue = filter.values.some(x => x === value);
-
-           if (!findedValue) {
-             filter.values.unshift(value);
-           }
-         });
-       } else {
-         this.addFilterBadge(elem);
-       }
-     }); */
-
 
     this.setShowRunBar(false);
     if (close) {
@@ -470,48 +453,6 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
     this.filters.push(filter);
   }
 
-  /* savedReportValueChange() {
-    this.filters.splice(0);
-
-    const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
-
-    this.dateText = this.convertTimeString(report.dateInterval);
-
-    const finded = this.dateOptions.find(x => x.value === Number(report.dateInterval));
-
-    if (finded) {
-      this.date.selectTime(finded);
-    }
-
-    this.setDateOptionBySearchSettings(Number(report.dateInterval));
-
-    this.searchSettings = JSON.parse(JSON.stringify({ ...report, dateInterval: report.dateInterval }));
-
-    const should = this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
-    const mustnot = this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value]));
-
-    const newArr = [] as FilterBadgeModel[];
-
-    should.concat(mustnot).forEach(filter => {
-      const finded = newArr.find(x => x.name === filter.name);
-
-      if (finded) {
-        finded.values.push(filter.values[0]);
-      } else {
-        newArr.push(filter);
-      }
-    });
-
-    newArr.forEach(elem => {
-      this.filters.push(elem);
-    });
-
-    this.setShowRunBar(true);
-  } */
-
-  /*   changeSavedReportType($event: RkRadioOutput) {
-      this.newSavedReport.scheduledReport = { period: $event.value } as ScheduledReport;
-    } */
 
 
 
@@ -520,22 +461,6 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
 
     this.newSavedReport.id = 0;
   }
-
-  /*  savedReportSelectChanged($event: number) {
-     const savedReport = this.allSavedReports.find(x => x.id === $event);
-
-     if (savedReport) {
-       // this.fillSearchSettingsByFilters();
-
-       this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
-
-       this.newSavedReport.name = savedReport.name;
-
-       this.newSavedReport.id = savedReport.id;
-
-     }
-   } */
-
 
 
   setShowRunBar(status: boolean) {
