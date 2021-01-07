@@ -168,6 +168,7 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
         }
 
         this.tableConfig.rows = [];
+        this.tableConfig.arrowVisible = true;
 
         this.tableData.forEach(item => {
           // burasi degisirse fillSearchSettingsByFilters bu fonksiyon icindeki yere bak
