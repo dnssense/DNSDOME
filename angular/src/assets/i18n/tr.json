@@ -655,16 +655,10 @@
         "Ip": "Kaynak Ip",
         "Severity": "Öncelik",
         "Message": "Mesaj",
-<<<<<<< HEAD
-        "MessageDetail": "Mesaj Detayı"
-    },
-    "Member":"Üye",
-    "Unmember":"Üye Değil"
-}
-=======
         "MessageDetail": "Mesaj Detayı",
         "IsApiKey": "Api Key"
     },
-    "Key": "Anahtar"
+    "Key": "Anahtar",
+    "Member":"Üye",
+    "Unmember":"Üye Değil"
 }
->>>>>>> 052fe9447f68aac1b250b5b146f3abcb94f566c1

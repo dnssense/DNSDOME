@@ -657,16 +657,10 @@
         "Ip": "Src. Ip",
         "Severity": "Severity",
         "Message": "Message",
-<<<<<<< HEAD
-        "MessageDetail": "Message Detail"
-    },
-    "Member":"Member",
-    "Unmember":"Unmember"
-}
-=======
         "MessageDetail": "Message Detail",
         "IsApiKey": "Api Key"
     },
-    "Key": "Key"
+    "Key": "Key",
+    "Member":"Member",
+    "Unmember":"Unmember"
 }
->>>>>>> 052fe9447f68aac1b250b5b146f3abcb94f566c1
