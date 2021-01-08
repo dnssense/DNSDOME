@@ -42,9 +42,6 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       this.changeColumnNames();
     });
 
-    const currentSession = this.authService.currentSession;
-    this.token = currentSession.token;
-    this.refreshToken = currentSession.refreshToken;
   }
 
   token;
@@ -220,8 +217,6 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
         ];
 
         this.tableConfig.selectableRows = false;
-        this.tableConfig.url = this.navigationUrl;
-        this.tableConfig.urlParams = `?t=${this.token}&r=${this.refreshToken}`;
         this.tableConfig.arrowVisible = true;
 
         this.configColumn = this.tableConfig.columns;
@@ -250,6 +245,14 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
         });
         this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
       });
+  }
+
+  getNavigateByClickedDomain(domain) {
+    const currentSession = this.authService.currentSession;
+    this.token = currentSession.token;
+    this.refreshToken = currentSession.refreshToken;
+
+    window.open(`${this.navigationUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank");
   }
 
   columnSet() {
