@@ -8,8 +8,10 @@
           <div class="col-12 d-flex align-items-center justify-content-center py-3 mb-2 single-row"
             style="padding-top: 0 !important;padding-bottom: 0 !important;">
             <div class="rk-tabs" style="width: 420px;">
-                <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">{{'Roaming Clients'}}</div>
-                <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">{{'Groups'}}</div>
+              <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">{{'Roaming
+                Clients'}}</div>
+              <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">
+                {{'Groups'}}</div>
             </div>
           </div>
 
@@ -19,11 +21,11 @@
               {{'Download'|translate}}
             </button>
 
-            <!-- Geçici olarak kaldırıldı -->
-            <!-- <button class="btn btn-icon btn-small mr-2" (click)="copyLink()">
+
+            <button class="btn btn-icon btn-small mr-2" (click)="copyLink()">
               <i-feather name="arrow-down"></i-feather>
               {{'CopyDownloadLink'|translate}}
-            </button> -->
+            </button>
 
             <button class="btn btn-icon btn-small mr-2" (click)="copyMagicLink()">
               <i-feather name="arrow-down"></i-feather>
@@ -49,16 +51,16 @@
           </rk-modal-header>
 
           <rk-modal-body>
-          <!-- Default Group Bu Alanı(Yeni tasarım üzerine çalışılıyor) -->
+            <!-- Default Group Bu Alanı(Yeni tasarım üzerine çalışılıyor) -->
 
             <div class="container-fluid mb-2">
               <div class="rk-modal-card">
                 <h6 class="rk-modal-card-title">
-                  <!-- Default Group  -->
-                      {{'DefaultGroup'|translate}}
+
+                  {{'DefaultGroup'|translate}}
                 </h6>
 
-                 <div class="row mt-0">
+                <div class="row mt-0">
                   <div class="col-12 mt-0">
                     <p class="rk-description">
                       {{'DefaultGroupsDescription'|translate}}
@@ -200,10 +202,14 @@
 
             <div class="container-fluid mb-2">
               <div class="rk-modal-card">
-                <h6 class="rk-modal-card-title">{{'DisablePassword'|translate}}</h6>
+                <h6 class="rk-modal-card-title">{{'UninstallPassword'|translate}}</h6>
 
                 <div class="row mt-0">
                   <div class="col-12 mt-0">
+                    <p class="rk-description">
+                      {{'UninstallPasswordDescription'|translate}}
+                    </p>
+
                     <div class="cards mt-3">
                       <div class="card">
                         <div class="card-content">
@@ -232,10 +238,14 @@
 
             <div class="container-fluid mb-2">
               <div class="rk-modal-card">
-                <h6 class="rk-modal-card-title">{{'ServiceStopProtectionPassword'|translate}}</h6>
+                <h6 class="rk-modal-card-title">{{'DisablePassword'|translate}}</h6>
 
                 <div class="row mt-0">
                   <div class="col-12 mt-0">
+                    <p class="rk-description">
+                      {{'DisablePasswordDescription'|translate}}
+                    </p>
+
                     <div class="cards mt-3">
                       <div class="card">
                         <div class="card-content">
@@ -577,12 +587,14 @@
                   <td>{{ item.memberCounts }}</td>
                   <td>{{ item.securityProfile.name }}</td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="openUpdateGroup(item.agents)">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
+                      (click)="openUpdateGroup(item.agents)">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
                   <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteGroup(item.agents)">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
+                      (click)="deleteGroup(item.agents)">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>
@@ -612,9 +624,9 @@
                     <span class="text-primary">{{ clientsForShow?.length }} </span>
                     {{'QueriesListed'|translate}}
                   </div>
-                  <div  style="min-width: 150px;">
-                    <rk-select   [options]="categoryOptions" (valueChange)="clickedSelect($event)"
-                     [isSearchable]="false"></rk-select>
+                  <div style="min-width: 150px;">
+                    <rk-select [options]="categoryOptions" (valueChange)="clickedSelect($event)" [isSearchable]="false">
+                    </rk-select>
                   </div>
                   <!-- <div class="groupSelect ml-5">
                     <rk-radio class="rk-radio-m-0 float-none" [checked]="isGroupedRadioButtonSelected==false"
@@ -713,7 +725,7 @@ Hostname:{{c.hostname}}
 Os:{{c.os}}
 Mac:{{c.mac}}
 Version:{{c.version}}">
-<img *ngIf="c.os" [src]="getOSImg(c.os)" alt=""><br />
+                      <img *ngIf="c.os" [src]="getOSImg(c.os)" alt=""><br />
                     </div>
 
                   </td>
@@ -724,7 +736,8 @@ Version:{{c.version}}">
                     </button>
                   </td>
                   <td style="width: 30px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)" style="background: transparent;">
+                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)"
+                      style="background: transparent;">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>

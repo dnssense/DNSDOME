@@ -1,22 +1,4 @@
 {
-  "/api/agent/*": {
-    "target": "http://localhost:9030",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
-  "/api/box/*": {
-    "target": "http://localhost:9030",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
-  "/api/profile/*": {
-    "target": "http://localhost:9030",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
   "/api/*": {
     "target": "http://beta.roksit.com",
     "secure": false,

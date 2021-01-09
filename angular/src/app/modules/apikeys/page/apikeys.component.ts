@@ -82,6 +82,9 @@ export class ApiKeysComponent implements OnInit {
         }
         else if (role === 'ROLE_INTEGRATION') {
             return 'Integration';
+        }
+        else if (role === 'ROLE_REPUTATION') {
+            return 'Reputation';
         } else {
             return 'Not Defined';
         }

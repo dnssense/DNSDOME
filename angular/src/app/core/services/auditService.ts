@@ -43,6 +43,7 @@ export class AuditService {
           x.messageDetail = items[0];
           x.popoverRows = items.length > 1 ? items : undefined;
           x.popoverClass = theme == 'dark' ? 'auditDetailDark' : "auditDetailWhite";
+          (x as any).json = JSON.stringify(items);
           return x;
         });
         return res;
