@@ -57,22 +57,24 @@
               <div class="rk-modal-card">
                 <h6 class="rk-modal-card-title">
 
-                  {{'DefaultGroup'|translate}}
+                  {{'DefaultSecurityProfile'|translate}}
                 </h6>
 
                 <div class="row mt-0">
                   <div class="col-12 mt-0">
                     <p class="rk-description">
-                      {{'DefaultGroupsDescription'|translate}}
+                      {{'DefaultSecurityProfileDescription'|translate}}
                     </p>
 
-                    <rk-select>
+                    <rk-select [options]="securityProfilesForSelectDefaultSettings"
+                      [(value)]="selectedDefaultRomainProfileId" (valueChange)="defaultRoamingProfileChanged($event)">
 
                     </rk-select>
                   </div>
                 </div>
               </div>
             </div>
+
 
             <!-- Default Group Bu Alanı -->
 

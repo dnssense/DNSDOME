@@ -2,12 +2,13 @@ import { SecurityProfile } from './SecurityProfile';
 import { AgentType } from './AgentType';
 
 export class AgentGroup {
-    id =  -1;
+    id = 0;
     groupName: string;
+
 }
 
 export class DeviceGroup {
-    agentGroup: AgentGroup = new AgentGroup();
+    agentGroup?: AgentGroup = null;
     agents: AgentInfo[] = [];
     rootProfile: SecurityProfile = new SecurityProfile();
 }
@@ -20,4 +21,7 @@ export class AgentInfo {
     mac: string;
     agentGroup?: AgentGroup;
     rootProfile: SecurityProfile = new SecurityProfile();
+
+    //ui
+    selected?= false;
 }

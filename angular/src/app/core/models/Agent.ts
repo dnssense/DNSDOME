@@ -54,3 +54,5 @@ export interface AgentDetail {
     os: string;
     version: string;
 }
+
+

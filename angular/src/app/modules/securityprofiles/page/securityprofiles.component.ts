@@ -8,6 +8,8 @@ import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.compon
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { BoxService } from 'src/app/core/services/box.service';
+import { BoxConf } from '../../roaming/page/roaming.component';
 
 @Component({
     selector: 'app-securityprofiles',
@@ -20,7 +22,8 @@ export class SecurityProfilesComponent {
         private agentService: AgentService,
         private notification: NotificationService,
         private alertService: AlertService,
-        private staticMessageService: StaticMessageService
+        private staticMessageService: StaticMessageService,
+        private boxService: BoxService
     ) {
         this.getProfiles();
     }
@@ -66,7 +69,7 @@ export class SecurityProfilesComponent {
 
 
 
-       // this.profileWizard.updateModels();
+        // this.profileWizard.updateModels();
         this.profileModal.toggle();
     }
 
@@ -82,8 +85,8 @@ export class SecurityProfilesComponent {
         this.selectedAgent.rootProfile = JSON.parse(JSON.stringify(profile));
         this.profileWizard.selectedAgent = this.selectedAgent;
 
-         // this.profileWizard.updateModels();
-         this.profileModal.toggle();
+        // this.profileWizard.updateModels();
+        this.profileModal.toggle();
     }
     viewProfile(profile: SecurityProfile) {
         this.selectedAgent = new Agent();
@@ -99,24 +102,32 @@ export class SecurityProfilesComponent {
 
     deleteProfile(id: number) {
         const profile = this.securityProfiles.find(p => p.id === id);
+        this.boxService.getVirtualBox().subscribe(virtualBox => {
+            let conf = virtualBox.conf ? JSON.parse(virtualBox.conf) as BoxConf : null;
 
-        if (profile.numberOfUsage > 0) {
-            this.alertService.alertTitleAndText(this.staticMessageService.canNotDeleteMessage, this.staticMessageService.thisSecurityProfileIsUsingBySomeAgentsMessage);
-        } else {
-            this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.itWillBeDeletedMessage).subscribe(
-                res => {
-                    if (res) {
-                        this.agentService.deleteSecurityProfile(id).subscribe(delRes => {
+            if (conf?.defaultRoamingSecurityProfile == id) {
 
-                            this.notification.success(this.staticMessageService.deletedProfileMessage);
+                this.alertService.alertTitleAndText(this.staticMessageService.canNotDeleteMessage, this.staticMessageService.thisSecurityProfileIsUsingByDefaultRoamingSettingsMessage);
 
-                            this.getProfiles();
+            } else if (profile.numberOfUsage > 0) {
+                this.alertService.alertTitleAndText(this.staticMessageService.canNotDeleteMessage, this.staticMessageService.thisSecurityProfileIsUsingBySomeAgentsMessage);
+            }
+            else {
+                this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.itWillBeDeletedMessage).subscribe(
+                    res => {
+                        if (res) {
+                            this.agentService.deleteSecurityProfile(id).subscribe(delRes => {
 
-                        });
+                                this.notification.success(this.staticMessageService.deletedProfileMessage);
+
+                                this.getProfiles();
+
+                            });
+                        }
                     }
-                }
-            );
-        }
+                );
+            }
+        })
     }
 
     changeProfileSelect(id: number) {

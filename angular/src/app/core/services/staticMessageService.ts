@@ -131,6 +131,9 @@ export class StaticMessageService {
     return this.translator.translate(`ThisSecurityProfileIsUsingBySomeAgents`);
   }
 
+  get thisSecurityProfileIsUsingByDefaultRoamingSettingsMessage(): string {
+    return this.translator.translate(`ThisSecurityProfileIsUsingByDefaultRoamingSettingsMessage`);
+  }
   get itWillBeDeletedMessage(): string {
     return this.translator.translate(`ItWillBeDeleted`);
   }

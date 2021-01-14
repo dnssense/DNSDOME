@@ -24,6 +24,7 @@ export interface BoxConf {
     localnetips: string;
     uninstallPassword: string;
     disablePassword: string;
+    defaultRoamingSecurityProfile: number;
 }
 
 export interface AgentConf {
@@ -52,8 +53,13 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         private boxService: BoxService,
         private staticMessageService: StaticMessageService,
         private inputIpService: InputIPService,
-        private clipboardService: ClipboardService
-    ) { }
+        private clipboardService: ClipboardService,
+
+    ) {
+
+    }
+
+
 
     isGroupedRadioButtonSelected = false;
     get isFormValid() {
@@ -90,8 +96,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     selectedClient: Agent = new Agent();
 
-    securityProfiles: SecurityProfile[];
+    securityProfiles: SecurityProfile[] = [];
     securityProfilesForSelect: RkSelectModel[] = [];
+    securityProfilesForSelectDefaultSettings: RkSelectModel[] = [];
+    selectedDefaultRomainProfileId = 41;
     selectedProfile: number;
     agentGroups;
 
@@ -160,15 +168,15 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     activeTabNumber = 0;
 
     categoryOptions: RkSelectModel[] = [
-      {
-        displayText: 'Not Grouped',
-        value: 'notgrouped',
-        selected: true
-      },
-      {
-        displayText: 'Grouped',
-        value: 'grouped',
-      }
+        {
+            displayText: 'Not Grouped',
+            value: 'notgrouped',
+            selected: true
+        },
+        {
+            displayText: 'Grouped',
+            value: 'grouped',
+        }
     ];
 
     ngOnInit(): void {
@@ -188,57 +196,19 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         // this.defineNewAgentForProfile();
     }
 
+
+
     ngAfterViewInit() {
         this.configureModal.close.subscribe(x => {
-
-            /*  if (x.closed) {
-
-                 if (this.onUninstallPasswordChange) {
-                     this.onUninstallPasswordChange.unsubscribe();
-                 }
-                 this.onUninstallPasswordChange = null;
-
-
-                 if (this.onDisablePasswordChange) {
-                     this.onDisablePasswordChange.unsubscribe();
-                 }
-                 this.onDisablePasswordChange = null;
-             } */
         });
-
-        /* this.roamingClientModal.close.subscribe(x => {
-
-            if (x.closed) {
-
-                if (this.onAgentUninstallPasswordChange) {
-                    this.onAgentUninstallPasswordChange.unsubscribe();
-                }
-                this.onAgentUninstallPasswordChange = null;
-
-
-                if (this.onAgentDisablePasswordChange) {
-                    this.onAgentDisablePasswordChange.unsubscribe();
-                }
-                this.onAgentDisablePasswordChange = null;
-            }
-        });*/
-
         $('[data-toggle="tooltip"]').tooltip({ html: true, container: 'body' });
 
     }
 
 
     openConfigureModal() {
+
         this.configureModal.toggle();
-        /*  this.onUninstallPasswordChange = Observable.fromEvent(this.inputUninstallPassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
-             this.saveRoamingGlobalSettings();
-         });
-
-         this.onDisablePasswordChange = Observable.fromEvent(this.inputDisablePassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
-             this.saveRoamingGlobalSettings();
-         }); */
-
-
     }
 
     closeConfigureModal() {
@@ -247,11 +217,17 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
 
+    defaultRoamingProfileChanged(event: any) {
+        this.selectedDefaultRomainProfileId = event;
+    }
+
+
 
     loadClients() {
         this.agentService.getSecurityProfiles().subscribe(result => {
             this.securityProfiles = result;
             this.fillSecurityProfilesSelect(result);
+            this.fillSecurityProfilesSelectForDefaultSettings(result, this.selectedDefaultRomainProfileId);
         });
 
         this.roamingService.getClients().subscribe(res => {
@@ -315,6 +291,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             this.clientsForShow = this.isGroupedRadioButtonSelected ? this.clientsGroupedFiltered : this.clientsUngroupedFiltered;
 
 
+
+
         });
     }
 
@@ -335,6 +313,24 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         });
 
         this.securityProfilesForSelect = _profiles;
+    }
+    private fillSecurityProfilesSelectForDefaultSettings(profiles: SecurityProfile[], id?: number) {
+        const _profiles = [];
+
+        profiles.forEach(elem => {
+            const obj = {
+                displayText: elem.name,
+                value: elem.id,
+            } as RkSelectModel;
+
+            if (id) {
+                obj.selected = elem.id === id;
+            }
+
+            _profiles.push(obj);
+        });
+
+        this.securityProfilesForSelectDefaultSettings = _profiles;
     }
 
     private getGroupClients(clients: Agent[]): GroupAgentModel[] {
@@ -398,6 +394,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     if (boxConf.disablePassword) {
                         this.disablePassword = boxConf.disablePassword;
                     }
+
+                    this.selectedDefaultRomainProfileId = boxConf.defaultRoamingSecurityProfile || 41;
+                    this.fillSecurityProfilesSelectForDefaultSettings(this.securityProfiles, this.selectedDefaultRomainProfileId);
+
                 } catch (ignore) {
                     console.log(ignore);
                 }
@@ -463,7 +463,12 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
-        const request = { box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword };
+        const request = {
+            box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains,
+            donttouchips: ips,
+            localnetips: localnetworkips, uninstallPassword: this.uninstallPassword,
+            disablePassword: this.disablePassword, defaultRoamingSecurityProfile: this.selectedDefaultRomainProfileId
+        };
         this.boxService.saveBoxConfig(request).subscribe(x => {
             this.notification.info(this.staticMessageService.agentsGlobalConfSaved);
             this.getConfParameters().subscribe(x => {
@@ -618,6 +623,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.selectedClient = JSON.parse(JSON.stringify(client));
 
         this.fillSecurityProfilesSelect(this.securityProfiles, client.rootProfile.id);
+
 
         this.roamingClientModal.toggle();
         /*  this.onAgentUninstallPasswordChange = Observable.fromEvent(this.inputAgentUninstallPassword.nativeElement, 'input').pipe(debounceTime(1500)).subscribe((x: Event) => {
@@ -901,21 +907,21 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.isAgentDisablePasswordEyeOff = status;
     }
 
-  getOSImg(os: string) {
-    if (os){
-      let ostype = os.toLowerCase();
-      return ostype.includes('windows') ? '../../../../assets/img/windows.png' : (ostype.includes('mac') ? '../../../../assets/img/Ios.png':'');
+    getOSImg(os: string) {
+        if (os) {
+            let ostype = os.toLowerCase();
+            return ostype.includes('windows') ? '../../../../assets/img/windows.png' : (ostype.includes('mac') ? '../../../../assets/img/Ios.png' : '');
+        }
+        return null;
     }
-    return null;
-  }
 
-  clickedSelect(event) {
-    if (event === 'grouped') {
-      this.isGroupedRadioButtonSelected = true;
-      this.showGroupedClients(true);
-    } else {
-      this.isGroupedRadioButtonSelected = false;
-      this.showGroupedClients(false);
+    clickedSelect(event) {
+        if (event === 'grouped') {
+            this.isGroupedRadioButtonSelected = true;
+            this.showGroupedClients(true);
+        } else {
+            this.isGroupedRadioButtonSelected = false;
+            this.showGroupedClients(false);
+        }
     }
-  }
 }

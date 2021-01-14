@@ -16,6 +16,7 @@ export class AgentService {
 
   private getRegisteredURL = this.config.getApiUrl() + '/agent/device';
   private getUnregisteredURL = this.config.getApiUrl() + '/device/unregistered';
+  private deleteUnregisteredURL = this.config.getApiUrl() + '/device/unregistered/byMac';
   private getAgentsURL = this.config.getApiUrl() + '/agent/location';
 
   private getSecurityProfilesURL = this.config.getApiUrl() + '/profile';
@@ -46,12 +47,15 @@ export class AgentService {
 
     return this.http.get<DeviceResponse[]>(this.getUnregisteredURL).map(data => data);
   }
+  deleteUnregisteredDevices(mac: string): Observable<DeviceResponse[]> {
 
+    return this.http.delete<DeviceResponse[]>(this.deleteUnregisteredURL + '/' + mac.replace(`:`, ``).toLowerCase()).map(data => data);
+  }
   saveAgentDevice(devices: DeviceGroup): Observable<Agent> {
 
     return Observable.from(devices.agents).concatMap(x => {
 
-      x.agentGroup = { id: x.agentGroup ? x.agentGroup.id : 0, groupName: devices.agentGroup.groupName };
+      x.agentGroup = devices.agentGroup;
       x.rootProfile = devices.rootProfile;
 
       return this.http.post<Agent>(this.saveDeviceURL, x, this.getOptions()).map(data => data);
