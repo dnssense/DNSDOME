@@ -596,7 +596,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   savedReportValueChange() {
-    debugger;
+
     this.filters.splice(0);
 
     const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
@@ -642,7 +642,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   saveFilterClick() {
-    debugger;
+
     if (this.searchSettings.name.length > 0) {
       this.reportActiveTabNumber = 1;
 
@@ -688,7 +688,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   saveReport() {
-    debugger;
+
     if (this.newSavedReport.name.trim().length > 0) {
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
 
