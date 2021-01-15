@@ -596,6 +596,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   savedReportValueChange() {
+    debugger;
     this.filters.splice(0);
 
     const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
@@ -631,6 +632,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       this.filters.push(elem);
     });
 
+
+
     this.setShowRunBar(true);
   }
 
@@ -639,20 +642,20 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   saveFilterClick() {
+    debugger;
     if (this.searchSettings.name.length > 0) {
       this.reportActiveTabNumber = 1;
 
       this.savedReportOptions = this.savedReportOptions.map(x => {
         return { ...x, selected: x.value === this.searchSettings.id };
       });
-
+      this.fillSearchSettingsByFilters();
       this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
-
       this.newSavedReport.name = this.searchSettings.name;
 
       this.newSavedReport.id = this.searchSettings.id;
 
-      this.fillSearchSettingsByFilters();
+
     } else {
       this.fillSearchSettingsByFilters();
 
@@ -678,23 +681,19 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       // this.fillSearchSettingsByFilters();
 
       this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
-
       this.newSavedReport.name = savedReport.name;
-
       this.newSavedReport.id = savedReport.id;
 
     }
   }
 
   saveReport() {
-
+    debugger;
     if (this.newSavedReport.name.trim().length > 0) {
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
 
         this.notification.success(res.message);
-
         this.getSavedReports();
-
         this.saveModal.toggle();
 
       });
@@ -707,15 +706,12 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   setShowRunBar(status: boolean) {
     this.isShowRunBar = status;
-
     this.isShowRunBarOutput.emit(status);
   }
 
   filterBadgeChange(filter: FilterBadgeModel) {
     filter.equal = !filter.equal;
-
     this.setShowRunBar(true);
-
     this.fillSearchSettingsByFilters();
   }
 

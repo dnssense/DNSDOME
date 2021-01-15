@@ -38,12 +38,7 @@
 
         <div class="row">
           <div class="col-12">
-            <!-- <div class="mt-2">
-              <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
-                value="all">
-                {{ 'All' | translate }}
-              </rk-radio>
-            </div> -->
+
             <div class="mt-2">
               <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event)" name="savedReportFilter"
                 value="d">
@@ -85,8 +80,9 @@
   </rk-modal-body>
 
   <rk-modal-footer>
-    <button class="btn btn-small btn-default w-100" (click)="saveModal.toggle()"> {{ 'Close' | translate }}</button>
     <button class="btn btn-small btn-fill w-100" (click)="saveReport()"> {{ 'Save' | translate }}</button>
+    <button class="btn btn-small btn-default w-100" (click)="saveModal.toggle()"> {{ 'Close' | translate }}</button>
+
   </rk-modal-footer>
 </rk-modal>
 
@@ -257,8 +253,8 @@
 
   <rk-modal-footer *ngIf="activeTabNumber === 0">
 
-    <button class="btn w-100 btn-small btn-fill"
-      (click)="apply(true); search('', true);">{{ 'Apply' | translate }}</button>
+    <button class="btn w-100 btn-small btn-fill" (click)="apply(true); search('', true);">{{ 'Apply' | translate
+      }}</button>
     <button class="btn w-100 btn-default btn-small" (click)="modal.toggle()">{{ 'Close' | translate }}</button>
   </rk-modal-footer>
 
@@ -331,8 +327,8 @@
           <span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0" style="cursor: pointer;"
             (click)="revertReport()">{{ searchSettings?.name }}</span>
 
-          <span class="filter-text mb-2"
-            *ngIf="filters?.length > 0 && searchSettings?.name?.length === 0">{{ 'REPORT.Filter' | translate }};</span>
+          <span class="filter-text mb-2" *ngIf="filters?.length > 0 && searchSettings?.name?.length === 0">{{
+            'REPORT.Filter' | translate }};</span>
 
           <span class="filter-text mb-2 ml-2" *ngIf="filters?.length === 0">{{ 'NoFilter' | translate }}</span>
 
