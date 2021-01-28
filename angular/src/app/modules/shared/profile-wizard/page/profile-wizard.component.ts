@@ -305,7 +305,6 @@ export class ProfileWizardComponent {
 
   updateModels() {
 
-    console.log('UPDATE MODEL', this.saveMode, this.selectedAgent.rootProfile.domainProfile.categories.length);
     if (this.saveMode === 'NewProfile') {
       this.categoryList.forEach(c => {
         if (c.category.isVisible && !this.selectedAgent.rootProfile.domainProfile.categories.find(dc => c.category.id === dc.id)) {
