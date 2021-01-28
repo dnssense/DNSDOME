@@ -666,5 +666,6 @@
     "Key": "Key",
     "Member": "Member",
     "Unmember": "Unmember",
-    "EditLocalDevice": "Edit Local Device"
+    "EditLocalDevice": "Edit Local Device",
+    "DoH Bypass Protection": "DoH Bypass Protection"
 }

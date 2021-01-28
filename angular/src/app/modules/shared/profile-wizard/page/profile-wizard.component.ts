@@ -5,7 +5,14 @@ import { StaticService } from 'src/app/core/services/staticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { Agent } from 'src/app/core/models/Agent';
 import { ApplicationV2 } from 'src/app/core/models/ApplicationV2';
-import { SecurityProfile, BlackWhiteListProfile, SecurityProfileItem, ListItem, FIRSTLY_SEEN } from 'src/app/core/models/SecurityProfile';
+import {
+  SecurityProfile,
+  BlackWhiteListProfile,
+  SecurityProfileItem,
+  ListItem,
+  FIRSTLY_SEEN,
+  DOH_BYPASS
+} from 'src/app/core/models/SecurityProfile';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AlertService } from 'src/app/core/services/alert.service';
@@ -212,7 +219,7 @@ export class ProfileWizardComponent {
     this.staticService.getCategoryList().subscribe(res => {
       res.forEach(r => {
 
-        this.categoryList.push(new categoryItem(r, this.translatorService.translateCategoryName(r.name), false));
+        this.categoryList.push(new categoryItem(r, this.translatorService.translateCategoryName(r.name), r.id === DOH_BYPASS));
       });
 
       this.categoryList = this.categoryList.sort((x, y) => x.category.name > y.category.name ? 1 : -1);
@@ -298,11 +305,12 @@ export class ProfileWizardComponent {
 
   updateModels() {
 
+    console.log('UPDATE MODEL', this.saveMode, this.selectedAgent.rootProfile.domainProfile.categories.length);
     if (this.saveMode === 'NewProfile') {
       this.categoryList.forEach(c => {
-        if (c.category.isVisible) {
-          c.isBlocked = false;
-          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: false });
+        if (c.category.isVisible && !this.selectedAgent.rootProfile.domainProfile.categories.find(dc => c.category.id === dc.id)) {
+          c.isBlocked = c.category.id === DOH_BYPASS;
+          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: c.isBlocked });
         }
       });
       this.applicationList.forEach(a => {
@@ -327,9 +335,9 @@ export class ProfileWizardComponent {
     } else {
 
       this.categoryList.forEach(c => {
-        if (c.category.isVisible) {
-          c.isBlocked = false;
-          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: false });
+        if (c.category.isVisible && !this.selectedAgent.rootProfile.domainProfile.categories.find(dc => c.category.id === dc.id)) {
+          c.isBlocked = c.category.id === DOH_BYPASS;
+          this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: c.isBlocked });
         }
       });
       this.applicationList.forEach(a => {
@@ -451,6 +459,25 @@ export class ProfileWizardComponent {
       this.applicationChanged(x);
     }); */
 
+  }
+
+  bypassDOH(): boolean {
+    const dohCat = { id: DOH_BYPASS, name: 'DOH' };
+    const founded = this.categoryList.find(x => x.category?.id == dohCat.id);
+    if (!founded) { return false; }
+    return founded.isBlocked;
+  }
+
+  changebypassDOH() {
+    if (this.saveMode == 'NotEditable') {
+      this.notification.warning(this.staticMessageService.notEditableSystemProfile);
+      return;
+    }
+    const dohCat = { id: DOH_BYPASS, name: 'DOH' };
+    const founded = this.categoryList.find(x => x.category?.id == dohCat.id);
+    if (founded) {
+      this.categoryChanged(founded);
+    }
   }
 
   saveProfile() {

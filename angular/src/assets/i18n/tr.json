@@ -664,5 +664,6 @@
     "Key": "Anahtar",
     "Member": "Üye",
     "Unmember": "Üye Değil",
-    "EditLocalDevice": "Lokal Cihaz Düzenle"
+    "EditLocalDevice": "Lokal Cihaz Düzenle",
+    "DoH Bypass Protection": "DoH Atlatma Koruması"
 }

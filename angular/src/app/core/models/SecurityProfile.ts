@@ -21,6 +21,7 @@ export class Category {
     // timeProfile: TimeProfile;
 }
 export const FIRSTLY_SEEN = 62;
+export const DOH_BYPASS = 70;
 export class SecurityProfile {
     id: number;
     name: string;
