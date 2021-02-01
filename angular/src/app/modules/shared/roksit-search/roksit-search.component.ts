@@ -484,7 +484,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       this.actionType = null;
     }
 
-    const findedIndex = this.filters.findIndex(x => x.name === filterName && x.equal === filter.equal);
+    const findedIndex = this.filters.findIndex(x => x.name === filter.name && x.equal === filter.equal);
 
     if (findedIndex > -1) {
       this.filters.splice(findedIndex, 1);
