@@ -349,10 +349,17 @@ export class StaticMessageService {
     return this.translator.translate('SelectedApiKeyWillBeDeletedMessage');
   }
 
+  get reportWillBeDeleted(): string {
+    return this.translator.translate('ReportWillBeDeleted');
+  }
 
+  get reportDeleted(): string {
+    return this.translator.translate('ReportDeleted');
+  }
 
-
-
+  get filterIncludesInvalidChar(): string {
+    return this.translator.translate('FilterIncludesInvalidChar');
+  }
 
 
 

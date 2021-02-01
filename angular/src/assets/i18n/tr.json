@@ -665,5 +665,8 @@
     "Member": "Üye",
     "Unmember": "Üye Değil",
     "EditLocalDevice": "Lokal Cihaz Düzenle",
-    "DoH Bypass Protection": "DoH Atlatma Koruması"
+    "DoH Bypass Protection": "DoH Atlatma Koruması",
+    "ReportWillBeDeleted": "Raporla ilgili tüm ayarlar kalıcı bir şekilde silinecek!",
+    "ReportDeleted": "Rapor Silindi",
+    "FilterIncludesInvalidChar": "Filtre Metni Geçersiz Karakter İçeriyor"
 }

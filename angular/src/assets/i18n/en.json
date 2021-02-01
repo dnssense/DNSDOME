@@ -667,5 +667,8 @@
     "Member": "Member",
     "Unmember": "Unmember",
     "EditLocalDevice": "Edit Local Device",
-    "DoH Bypass Protection": "DoH Bypass Protection"
+    "DoH Bypass Protection": "DoH Bypass Protection",
+    "ReportWillBeDeleted": "Settings for this report will be deleted!",
+    "ReportDeleted": "Report Deleted",
+    "FilterIncludesInvalidChar": "Filter Text Contains Invalid Character"
 }

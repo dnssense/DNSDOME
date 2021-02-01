@@ -7,4 +7,11 @@ export class LogColumn {
   public hrType: string;
   public aggsType: string;
   public checked: boolean;
+
+  public inputPattern?: RegExp;
+  /**
+   * hide in manual filter...
+   */
+  public hide?: boolean;
+  public placeholder?: string;
 }

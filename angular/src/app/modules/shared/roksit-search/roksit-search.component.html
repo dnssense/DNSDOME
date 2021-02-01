@@ -1,5 +1,5 @@
 <rk-modal #saveModal>
-  <rk-modal-header>
+  <rk-modal-header icon="save">
     <rk-modal-header-title>
       <h5>{{ 'REPORT.SaveReport' | translate }}</h5>
     </rk-modal-header-title>
@@ -9,20 +9,7 @@
 
   <rk-modal-body>
 
-    <div class="container-fluid mb-2">
-      <div class="row">
-        <div class="col-12">
-          <div class="rk-tabs">
-            <div class="rk-tab" (click)="setReportActiveTabNumber(0); prepareNewSaveFilter()"
-              [ngClass]="{'active': reportActiveTabNumber === 0}">{{ 'REPORT.NewReport' | translate }}</div>
-            <div class="rk-tab" (click)="setReportActiveTabNumber(1)"
-              [ngClass]="{'active': reportActiveTabNumber === 1}">{{ 'REPORT.UpdateReport' | translate }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container-fluid" *ngIf="reportActiveTabNumber === 0">
+    <div class="container-fluid">
       <div class="rk-modal-card mt-1">
         <h6 class="rk-modal-card-title">{{ 'REPORT.ReportName' | translate }}</h6>
 
@@ -60,23 +47,8 @@
           </div>
         </div>
       </div>
-
-      <div class="row">
-
-      </div>
     </div>
 
-    <div class="container-fluid" *ngIf="reportActiveTabNumber === 1">
-      <div class="rk-modal-card">
-        <h6 class="rk-modal-card-title">{{ 'REPORT.UserReports' | translate }}</h6>
-
-        <div class="row mt-2">
-          <div class="col-12">
-            <rk-select [options]="savedReportOptions" (valueChange)="savedReportSelectChanged($event)"></rk-select>
-          </div>
-        </div>
-      </div>
-    </div>
   </rk-modal-body>
 
   <rk-modal-footer>
@@ -86,147 +58,31 @@
   </rk-modal-footer>
 </rk-modal>
 
-<rk-modal #modal [isLightBlueBg]="true">
-  <rk-modal-header icon="filter">
+<rk-modal #modal [isLightBlueBg]="true" (close)="savedReportModalClosed($event)">
+  <rk-modal-header icon="file-text">
     <rk-modal-header-title>
-      <h5> {{ 'REPORT.Filters' | translate }}</h5>
+      <h5> {{ 'REPORT.SavedReports' | translate }}</h5>
     </rk-modal-header-title>
     <rk-modal-header-close (click)="modal.toggle()"></rk-modal-header-close>
   </rk-modal-header>
 
   <rk-modal-body>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <div class="rk-tabs">
-            <div class="rk-tab" (click)="setActiveTabNumber(0)" [ngClass]="{'active': activeTabNumber === 0}">
-              {{ 'REPORT.NewReports' | translate }}</div>
-            <div class="rk-tab" (click)="setActiveTabNumber(1)" [ngClass]="{'active': activeTabNumber === 1}">
-              {{ 'REPORT.SavedReports' | translate }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="activeTabNumber === 0">
-      <div class="rk-modal-item pb-0" style="border-bottom: none;">
-        <div class="section-card p-2 py-3">
-          <h5 class="modal-item title"> {{ 'REPORT.Action' | translate }}</h5>
-
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-12 col-md-6">
-                <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'allow'" value="allow"
-                  (valueChange)="actionChanged($event)"> {{ 'REPORT.Allow' | translate }}</rk-radio>
-              </div>
-              <div class="col-12 col-md-6">
-                <rk-radio name="actionType" class="rk-radio-m-0" [checked]="actionType === 'deny'" value="deny"
-                  (valueChange)="actionChanged($event)"> {{ 'REPORT.Deny' | translate }}</rk-radio>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="rk-modal-item pb-0" style="border-bottom: none;">
-
-        <div class="section-card p-2 py-3">
-          <h5 class="modal-item title"> {{ 'REPORT.AddFilter' | translate }}</h5>
-
-          <div class="d-flex">
-            <rk-select class="mr-2" style="flex: 1" [placeholder]="'Select' | translate"
-              [(value)]="selectedColumnFilter" [options]="columnsOptions"></rk-select>
-
-            <div class="rk-tabs toggle-tabs" style="width: 90px;">
-              <div class="rk-tab" [ngClass]="{'active': modalIsEqual}" (click)="modalIsEqual = true">
-                <icon-equal></icon-equal>
-              </div>
-              <div class="rk-tab" [ngClass]="{'active': !modalIsEqual}" (click)="modalIsEqual = false">
-                <icon-not-equal></icon-not-equal>
-              </div>
-            </div>
-          </div>
-
-          <!-- <div class="d-flex mt-2">
-            <button class="btn btn-icon btn-small w-100 filter-btn-outline mr-2"
-              [ngClass]="{'btn-outline-active': modalIsEqual}" (click)="modalIsEqual = true">
-            </button>
-
-            <button class="btn btn-icon btn-small w-100 filter-btn-outline"
-              [ngClass]="{'btn-outline-active': !modalIsEqual}" (click)="modalIsEqual = false">
-            </button>
-          </div> -->
-
-          <div class="d-flex align-items-center justify-content-between mt-2">
-            <input type="text" class="rk-input w-100 mr-2" [(ngModel)]="filterText" (keydown.enter)="addManuelFilter()"
-              placeholder="...">
-
-            <button class="btn btn-icon p-0 px-2 safe-btn" style="height: 35px; background-color: var(--safe)"
-              (click)="addManuelFilter()" [disabled]="filterText?.trim().length === 0">
-              <i-feather name="plus" class="mr-0"></i-feather>
-            </button>
-          </div>
-
-          <div class="mt-3" *ngFor="let filter of getFiltersByColumn(selectedColumnFilter); let filterIndex = index">
-            <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
-              *ngFor="let value of filter.values; let valueIndex = index">
-              {{ value }}
-
-              <i-feather name="x" class="hover-gray"
-                (click)="removeManuelFilter(filter, filterIndex, valueIndex, selectedColumnFilter)"></i-feather>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="rk-modal-item pb-0" style="height: 1px; border-bottom: none;">
-
-        <div class="section-card p-2 py-3">
-          <h5 class="modal-item title"> {{ 'Category' | translate }}</h5>
-
-          <div class="d-flex mt-3">
-            <!-- (enterPress)="categoryEnterPress($event)"  -->
-            <rk-autocomplete style="flex: 1" class="mr-2" [onSelectClear]="true" [items]="autocompleteItems"
-              [grouped]="true" (onSelect)="categoryEnterPress($event)">
-            </rk-autocomplete>
-
-            <div class="rk-tabs toggle-tabs" style="width: 90px;">
-              <div class="rk-tab" [ngClass]="{'active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
-                <icon-equal></icon-equal>
-              </div>
-              <div class="rk-tab" [ngClass]="{'active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
-                <icon-not-equal></icon-not-equal>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-3" *ngFor="let filter of getCategoryFilters; let index = index">
-            <div class="domain-label mt-3" [ngClass]="{'danger': !filter.equal}"
-              *ngFor="let value of filter.values; let valueIndex = index">
-              {{ value }}
-
-              <i-feather name="x" class="hover-gray" (click)="removeCategoryFilter(filter, index, valueIndex)">
-              </i-feather>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="activeTabNumber === 1">
       <div class="container-fluid">
         <div class="rk-modal-card mt-3">
           <h6 class="rk-modal-card-title">{{ 'REPORT.UserReports' | translate }}</h6>
 
           <div class="row">
             <div class="col-12">
-              <div *ngFor="let report of savedReports; let index = index" class="mt-3">
+              <div *ngFor="let report of savedReports; let index = index" class="mt-3 d-flex justify-content-between">
                 <div class="rk-radio my-0">
-                  <input type="radio" id="savedReport-{{ index }}" [(ngModel)]="savedReportValue" name="savedReport"
-                    [value]="report.id" (change)="savedReportValueChange($event)">
+                  <input type="radio" id="savedReport-{{ index }}" [(ngModel)]="savedReportValue"
+                         name="savedReport" [value]="report.id" (change)="savedReportValueChange()">
                   <label for="savedReport-{{ index }}">{{ report.name }}</label>
                 </div>
+                <button class="btn btn-icon p-0 px-2 ml-1 border-0" (click)="deleteSavedReport(report)">
+                  <i-feather name="trash-2" class="mr-0" style="color:var(--gray-2); width: 23px"></i-feather>
+                </button>
               </div>
             </div>
           </div>
@@ -240,44 +96,55 @@
               <div *ngFor="let report of systemSavedReports; let index = index" class="mt-3">
                 <div class="rk-radio my-0">
                   <input type="radio" id="savedReportSystem-{{ index }}" [(ngModel)]="savedReportValue"
-                    name="savedReport" [value]="report.id" (change)="savedReportValueChange($event)">
+                    name="savedReport" [value]="report.id" (change)="savedReportValueChange()">
                   <label for="savedReportSystem-{{ index }}">{{ report.name }}</label>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div class="rk-modal-card mt-3">
+          <h6 class="rk-modal-card-title">{{ 'REPORT.ScheduleReportSendToEmail' | translate }}</h6>
+
+          <div class="row">
+            <div class="col-12">
+
+              <div class="mt-2">
+                <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event, true)" name="savedReportFilter"
+                          value="d" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.period === 'd'">
+                  {{ 'REPORT.ScheduleDailyReportEmail' | translate }}
+                </rk-radio>
+              </div>
+              <div class="mt-2">
+                <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event, true)" name="savedReportFilter"
+                          value="w" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.period === 'w'">
+                  {{ 'REPORT.ScheduleWeeklyReportEmail' | translate }}
+                </rk-radio>
+              </div>
+              <div class="mt-2">
+                <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event, true)" name="savedReportFilter"
+                          value="m" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.period === 'm'">
+                  {{ 'REPORT.ScheduleMontlyReportEmail' | translate }}
+                </rk-radio>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
   </rk-modal-body>
 
-  <rk-modal-footer *ngIf="activeTabNumber === 0">
-
-    <button class="btn w-100 btn-small btn-fill" (click)="apply(true); search('', true);">{{ 'Apply' | translate
-      }}</button>
-    <button class="btn w-100 btn-default btn-small" (click)="modal.toggle()">{{ 'Close' | translate }}</button>
-  </rk-modal-footer>
-
-  <rk-modal-footer *ngIf="activeTabNumber === 1">
+  <rk-modal-footer>
     <button class="btn btn-small btn-fill w-100 ml-0" (click)="search('savedreport')">{{ 'Apply' | translate }}</button>
   </rk-modal-footer>
 </rk-modal>
 
-
-<div class="run-bar animated fadeIn" [hidden]="!isShowRunBar">
-  <p class="run-bar-text">{{ 'REPORT.ApplyChangedSettings' | translate }}</p>
-
-  <div class="run-bar-buttons">
-    <button (click)="search('', true)">{{ 'Run' | translate }}</button>
-  </div>
-</div>
-
-<div class="container-fluid mt-2">
+<div class="container-fluid bg-white">
   <div class="row">
     <div class="col-12">
       <div class="monitor-traffic-search flex-wrap justify-content-start align-items-start">
         <div class="filter-left flex-wrap">
-          <span class="monitor-title">{{ pageTitle | translate }}</span>
+          <span class="monitor-title">{{ pageTitle | translate }}</span>
 
           <div class="traffic-types">
             <rk-radio class="rd-m-10" name="trafficType" checked="true" (valueChange)="onTypeValueChange('roksit')">
@@ -298,57 +165,121 @@
           <button class="btn btn-small mr-2 mt-1" [ngClass]="{'active': option.selected}"
             *ngFor="let option of dateOptions" (click)="clickedDateOption(option)">{{ option.displayText }}</button>
 
+          <icon-equal style="margin: 10px 5px 0 0"></icon-equal>
+
           <div style="min-width: 200px;" class="mt-1 d-flex flex-column justify-content-center align-items-center">
             <rk-date #date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions"
               [config]="dateConfig"></rk-date>
 
-            <span class="date-text mt-1">{{ dateText }}</span>
+            <!-- <span class="date-text mt-1">{{ dateText }}</span> -->
 
             <!-- <rk-select [(value)]="searchSettings.dateInterval" (valueChange)="onSelectedDateChange($event)"
               [options]="dateOptions" [placeholder]="'Date selection'"></rk-select> -->
           </div>
-
-          <button class="btn btn-icon btn-small px-2 ml-2 mt-1" (click)="search('', true)">
-            <svg id="Solid" height="18" viewBox="0 0 512 512" width="20" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="m462.447 223.118a24.007 24.007 0 0 1 -29.565-16.671 185.51 185.51 0 0 0 -64.919-96.331 183.5 183.5 0 0 0 -223.925 0 184.189 184.189 0 0 0 -31.973 31.7l-18.928 5.567-2.962-53.331a231.385 231.385 0 0 1 307.125-21.924 233.815 233.815 0 0 1 81.814 121.425 24 24 0 0 1 -16.667 29.565zm-51.585 141.5-18.927 5.567a184.184 184.184 0 0 1 -31.972 31.7 183.5 183.5 0 0 1 -223.925 0 185.505 185.505 0 0 1 -64.92-96.331 24 24 0 1 0 -46.236 12.894 233.817 233.817 0 0 0 81.818 121.424 230.981 230.981 0 0 0 307.129-21.924zm-348.091-141.594 136-40a24 24 0 1 0 -13.543-46.048l-106.946 31.454-6.32-113.761a24 24 0 1 0 -47.924 2.662l8 144a24 24 0 0 0 30.734 21.693zm394.56 256.938a24 24 0 0 0 22.631-25.294l-8-144a24 24 0 0 0 -30.735-21.693l-135.995 40a24 24 0 0 0 13.544 46.049l106.942-31.454 6.32 113.76a24 24 0 0 0 23.941 22.67q.672 0 1.352-.038z" />
-            </svg>
-          </button>
-
-          <button class="btn btn-small btn-icon ml-2 mt-1" (click)="modal.toggle()">
-            <i-feather name="filter"></i-feather>
-            {{ 'REPORT.Filters' | translate }}
-          </button>
         </div>
       </div>
-
-      <div class="d-flex align-items-center flex-wrap">
-        <div class="d-flex flex-wrap align-items-center" style="width: calc(100% - 370px); padding-right: 25px;">
-          <span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0" style="cursor: pointer;"
-            (click)="revertReport()">{{ searchSettings?.name }}</span>
-
-          <span class="filter-text mb-2" *ngIf="filters?.length > 0 && searchSettings?.name?.length === 0">{{
-            'REPORT.Filter' | translate }};</span>
-
-          <span class="filter-text mb-2 ml-2" *ngIf="filters?.length === 0">{{ 'NoFilter' | translate }}</span>
-
-          <rk-filter-badge class="ml-2 mb-2" *ngFor="let filter of filters; let index = index" [name]="filter.name"
-            [equal]="filter.equal" [values]="filter.values" (deleted)="onDeletedFilterBadge($event, index)"
-            (edited)="onEditedFilterBadge(filter)" (onChange)="filterBadgeChange(filter)"></rk-filter-badge>
+    </div>
+  </div>
+  <div class="monitor-filter-container">
+    <div style="position: relative">
+      <div class="row" style="margin: 0 144px 0 10px; max-width: 1055px;">
+        <div class="select-container col-12 col-lg-3">
+          <rk-select class="w-100" [placeholder]="'Select' | translate" [(value)]="selectedColumnFilter" [options]="columnsOptions" (valueChange)="filterColumnChanged()"></rk-select>
         </div>
 
-        <div style="width: 370px; min-width: 370px;" class="text-right">
-          <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
-            (click)="routeReportPage(pageTitle === 'MonitorTraffic' ? 'custom-reports' : 'monitor')">
-            <i-feather name="external-link"></i-feather>
-            {{ pageTitle === 'MonitorTraffic' ? 'Custom Reports View' : 'Monitor Traffics View' }}
+        <div class="select-container col-12 col-lg-2" style="min-width: 155px; max-width: 155px">
+          <div class="rk-tabs toggle-tabs w-100">
+            <div class="rk-tab" [ngClass]="{'active': searchType === 'equal'}" (click)="searchType = 'equal'">
+              <icon-equal></icon-equal>
+            </div>
+            <div class="rk-tab" [ngClass]="{'active': searchType === 'not-equal'}" (click)="searchType = 'not-equal'">
+              <icon-not-equal></icon-not-equal>
+            </div>
+            <div class="rk-tab" [ngClass]="{'active': searchType === 'contain'}" (click)="searchType = 'contain'" style="font-size: 10px;padding: 0 5px">{{'Contains' | translate}}</div>
+          </div>
+        </div>
+
+        <div class="select-container col-12 col-lg-4" style="position: relative; border-right: solid 1px var(--blue-grey)">
+          <input type="text" class="rk-input w-100" [(ngModel)]="filterText" (keydown.enter)="addManuelFilter()" (keydown)="checkInput($event)" [ngClass]="{'input-error' : inputError?.trim()}"
+                 [placeholder]="selectedColumn?.placeholder || (selectedColumn?.beautyName | translate) || '...'" [disabled]="!selectedColumnFilter">
+
+          <button class="btn btn-input" [ngClass]="{'btn-enabled': filterText?.trim().length > 0}"
+                  (click)="addManuelFilter()" [disabled]="filterText?.trim().length === 0">
+            <i-feather name="plus" class="mr-0"></i-feather>
           </button>
-          <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"
-            (click)="filtersClear()">{{ 'REPORT.CleanFilters' | translate }}</button>
-          <button class="btn btn-small report-lb bg-transparent btn-link p-0" *ngIf="filters?.length > 0"
-            (click)="saveFilterClick()">{{ 'REPORT.SaveFilter' | translate }}</button>
+
+          <span class="text-security" style="position: absolute; bottom: -16px; left: 20px; font-size: 10px">{{ inputError | translate}}</span>
         </div>
+
+        <div class="select-container col-12 col-lg-3">
+          <rk-select class="w-100" grouped="true" groupTitleBorder="true" multiSelection="true" [options]="autocompleteItems" [customContentTemplate]="categoryEquality"
+                     expandableGroups="true" [placeholder]="'Category' | translate" isSearchable="true" [searchPlaceholder]="'Search' | translate"
+                     isShowButton="true" [buttonText]="'Apply' | translate" (selectionChanged)="categoryEnterPress($event)" buttonClass="bg-primary"></rk-select>
+        </div>
+
+        <ng-template #categoryEquality>
+          <div class="rk-tabs toggle-tabs mb-2">
+            <div class="rk-tab" [ngClass]="{'active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
+              <icon-equal></icon-equal>
+            </div>
+            <div class="rk-tab" [ngClass]="{'active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
+              <icon-not-equal></icon-not-equal>
+            </div>
+          </div>
+        </ng-template>
       </div>
+
+      <button class="btn btn-small btn-fill btn-icon px-2 justify-content-center" (click)="search('', true)" style="height: 36px; position: absolute; width: 134px; bottom: 10px; right: 15px" [ngStyle]="{'background-color': isShowRunBar ? '#FFB300' : 'var(--primary)'}" [ngClass]="{'pulse-animation': isShowPulseAnimation}">
+        <svg class="mr-3" id="Solid" height="18" viewBox="0 0 512 512" width="20" xmlns="http://www.w3.org/2000/svg">
+          <path d="m462.447 223.118a24.007 24.007 0 0 1 -29.565-16.671 185.51 185.51 0 0 0 -64.919-96.331 183.5 183.5 0 0 0 -223.925 0 184.189 184.189 0 0 0 -31.973 31.7l-18.928 5.567-2.962-53.331a231.385 231.385 0 0 1 307.125-21.924 233.815 233.815 0 0 1 81.814 121.425 24 24 0 0 1 -16.667 29.565zm-51.585 141.5-18.927 5.567a184.184 184.184 0 0 1 -31.972 31.7 183.5 183.5 0 0 1 -223.925 0 185.505 185.505 0 0 1 -64.92-96.331 24 24 0 1 0 -46.236 12.894 233.817 233.817 0 0 0 81.818 121.424 230.981 230.981 0 0 0 307.129-21.924zm-348.091-141.594 136-40a24 24 0 1 0 -13.543-46.048l-106.946 31.454-6.32-113.761a24 24 0 1 0 -47.924 2.662l8 144a24 24 0 0 0 30.734 21.693zm394.56 256.938a24 24 0 0 0 22.631-25.294l-8-144a24 24 0 0 0 -30.735-21.693l-135.995 40a24 24 0 0 0 13.544 46.049l106.942-31.454 6.32 113.76a24 24 0 0 0 23.941 22.67q.672 0 1.352-.038z"/>
+        </svg>
+        {{'Apply Filter' | translate}}
+
+        <div class="btn-animation"></div>
+      </button>
+    </div>
+
+    <div class="d-flex align-items-center flex-wrap ml-3" style="position: relative; min-height: 46px">
+      <div class="d-flex flex-wrap align-items-center badge-container" style="padding-right: 25px;">
+        <!--span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0"
+              style="cursor: pointer;" (click)="revertReport()">{{ searchSettings?.name }}</span-->
+
+        <rk-filter-badge class="mr-2 mb-2" *ngFor="let filter of filters"
+                         [name]="getDisplayText(filter) | translate"
+                         [equal]="filter.equal" [values]="filter.values"
+                         (deleted)="onDeletedFilterBadge($event, filter)"
+                         (edited)="onEditedFilterBadge(filter)"
+                         (removeValueClicked)="removeManuelFilter(filter, $event.filterIndex, $event.valueIndex, filter.name)"
+                         (onChange)="filterBadgeChange(filter)"
+                         [doneText]="'Done' | translate"
+                         removableValues="true" [(editMode)]="filter.editMode"></rk-filter-badge>
+      </div>
+
+      <div style="width: 320px; min-width: 320px; position: absolute; right: 0; bottom: 0; text-align: right">
+        <!--                <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"-->
+        <!--                        (click)="filtersClear()">{{ 'REPORT.CleanFilters' | translate }}</button>-->
+        <button *ngIf="filters?.length > 0"
+                class="btn btn-small mr-3 mb-2 border-primary" (click)="saveFilterClick()" style="width: 134px; padding: 9px 8px">
+
+          <i-feather name="save"></i-feather>
+          {{ 'REPORT.SaveFilter' | translate }}
+        </button>
+
+        <button class="btn btn-small mr-3 mb-2 border-primary" (click)="openFilters()" style="width: 134px; padding: 9px 8px">
+          <i-feather name="file-text"></i-feather>
+          {{ 'REPORT.SavedReports' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div style="position: absolute; z-index: 1; width: 180px; margin-left: 50%; left: -90px" *ngIf="filters?.length > 0"
+         [ngStyle]="{'margin-top': pageTitle === 'MonitorTraffic' ? '26px' : '-8px'}">
+
+      <button class="btn btn-small bg-transparent btn-link p-0 mr-3"
+              (click)="routeReportPage(pageTitle === 'MonitorTraffic' ? 'custom-reports' : 'monitor')">
+        <i-feather name="external-link"></i-feather>
+        {{ pageTitle === 'MonitorTraffic' ? 'Custom Reports View' : 'Monitor Traffics View' }}
+      </button>
     </div>
   </div>
 </div>

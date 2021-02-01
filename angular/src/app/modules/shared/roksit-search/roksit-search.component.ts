@@ -18,6 +18,7 @@ import { ReportService } from 'src/app/core/services/reportService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { StaticService } from 'src/app/core/services/staticService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
+import {AlertService} from "../../../core/services/alert.service";
 
 export class GroupedCategory {
   type: string;
@@ -29,9 +30,11 @@ export class GroupedCategory {
 export class FilterBadgeModel {
   name: string;
   equal = false;
-  values: string[] = [];
+  contain = false;
+  values: any[] = [];
+  editMode? = false;
 
-  constructor(name: string, equal: boolean, values: string[]) {
+  constructor(name: string, equal: boolean, values: any[]) {
     this.name = name;
     this.equal = equal;
     this.values = values;
@@ -53,25 +56,10 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     private router: Router,
     private staticmessageService: StaticMessageService,
     private translatorService: TranslatorService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private alertService: AlertService
   ) {
     this.getSavedReports();
-
-    this.staticService.getCategoryList().subscribe(result => {
-      result.forEach(elem => {
-        const finded = this.autocompleteItems.find(x => x.text === translatorService.translate(elem.type));
-
-        if (finded) {
-          finded.groupItems.push({ text: elem.name, value: elem.name });
-        } else {
-          this.autocompleteItems.push({ text: translatorService.translate(elem.type), value: elem.name, groupItems: [{ text: elem.name, value: elem.name }] });
-        }
-      });
-
-      this.autocompleteItems.forEach(elem => {
-        elem.groupItems.sort((a, b) => a.text > b.text ? 1 : -1);
-      });
-    });
 
     /* this.userService.getUsers().subscribe(result => {
       this.users = result.filter(x => x.isActive);
@@ -92,11 +80,13 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
 
 
+  private dateNow = new Date();
   dateOptions: RkDateTime[] = [
-    { value: 5, displayText: 'Last 5 Minutes' },
-    { value: 60 * 6, displayText: '6 hour' },
-    { value: 60 * 24, displayText: 'Last 1 day' },
-    { value: 60 * 24 * 7, displayText: 'Last 1 week' },
+    {value: 5, displayText: '5 Minutes'},
+    {value: 60 * 6, displayText: '6 Hours'},
+    {value: 60 * 24, displayText: 'Last Day'},
+    {value: 60 * 24 * 7, displayText: 'Last Week'},
+    {value: 60 * this.dateNow.getHours() + this.dateNow.getMinutes(), displayText: `Today (00:00 - ${this.dateNow.getHours().toLocaleString('tr', {minimumIntegerDigits: 2})}:${this.dateNow.getMinutes().toLocaleString('tr', {minimumIntegerDigits: 2})})`},
   ];
 
   groupedCategories: GroupedCategory[] = [];
@@ -106,16 +96,21 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   savedReports: SearchSetting[] = [];
   systemSavedReports: SearchSetting[] = [];
   savedReportValue: number;
+  selectedSavedReport: SearchSetting;
 
   @Input() filters: FilterBadgeModel[] = [];
 
   columns: LogColumn[] = [];
   columnsOptions: RkSelectModel[] = [];
 
-  modalIsEqual = true;
+  searchType: 'equal'|'not-equal'|'contain' = 'equal';
+  // modalIsEqual = true;
   filterText = '';
 
-  selectedColumnFilter;
+  selectedColumnFilter: string;
+  selectedColumn: LogColumn;
+
+  selectedFilter: FilterBadgeModel;
 
   actionType: 'allow' | 'deny';
 
@@ -129,25 +124,32 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   @Input()
   get isShowRunBar() { return this._isShowRunBar; }
-  set isShowRunBar(val) { this._isShowRunBar = val; }
+  set isShowRunBar(val) {
+    this._isShowRunBar = val;
 
-  @Output() isShowRunBarOutput = new EventEmitter();
+    if (val) {
+      this.isShowPulseAnimation = true;
+      setTimeout(() => this.isShowPulseAnimation = false, 2000);
+    } else if (this.selectedFilter)
+      this.selectedFilter.editMode = false;
+  }
+  isShowPulseAnimation = false;
+
+  @Output() isShowRunBarChange = new EventEmitter();
 
   modalCategoryIsEqual = true;
 
   categoryAutoComplate;
 
-  autocompleteItems: RkAutoCompleteModel[] = [];
+  autocompleteItems: RkSelectModel[] = [];
 
   categoryFilters: FilterBadgeModel[] = [];
-
-  activeTabNumber = 0;
-
-  reportActiveTabNumber = 0;
 
   savedReportOptions: RkSelectModel[] = [];
 
   dateText: string;
+
+  inputError: string;
 
   @ViewChild('date') date;
 
@@ -169,19 +171,38 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       if (!!columns) {
         this.columns = columns;
 
-        this.columnsOptions = columns.map(x => {
+        this.columnsOptions = columns.filter(c => !c.hide).map(x => {
           return {
-            displayText: x.beautyName,
+            displayText: this.translatorService.translate(x.beautyName),
             value: x.name
           } as RkSelectModel;
-        }).filter(x => x.value !== 'action' && x.value !== 'category');
+        });
       }
     });
 
-    this.filters.concat(this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value])));
-    this.filters.concat(this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value])));
+    this.filters.concat(this.searchSettings.should.map(x => this.createBadge(x, true)));
+    this.filters.concat(this.searchSettings.mustnot.map(x => this.createBadge(x, false)));
 
     this.dateText = this.convertTimeString(Number(this.searchSettings.dateInterval || 5));
+
+    this.staticService.getCategoryList().subscribe(result => {
+      result.forEach(elem => {
+        const finded = this.autocompleteItems.find(x => x.displayText === this.translatorService.translate(elem.type));
+
+        if (finded) {
+          finded.groupItems.push({ displayText: elem.name, value: elem.name });
+        } else {
+          this.autocompleteItems.push({
+            displayText: this.translatorService.translate(elem.type),
+            value: elem.type.split('_')[0].toLowerCase(),
+            groupItems: [{ displayText: elem.name, value: elem.name }] });
+        }
+      });
+
+      this.autocompleteItems.forEach(elem => {
+        elem.groupItems.sort((a, b) => a.displayText > b.displayText ? 1 : -1);
+      });
+    });
   }
 
   private getSavedReports() {
@@ -200,14 +221,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.clickedDateOption(this.dateOptions[0], true);
-  }
-
-  setActiveTabNumber(val: number) {
-    this.activeTabNumber = val;
-  }
-
-  setReportActiveTabNumber(val: number) {
-    this.reportActiveTabNumber = val;
   }
 
   private get getRandomColor() {
@@ -272,7 +285,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     return text;
   }
 
-  clickedDateOption(option: RkDateTime, init: boolean) {
+  clickedDateOption(option: RkDateTime, init?: boolean) {
     this.searchSettings.dateInterval = option.value;
 
     this.searchSettings.startDate = null;
@@ -338,34 +351,58 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.searchSettings = searchSetting;
   }
 
-  addManuelFilter() {
-    if (this.selectedColumnFilter && this.filterText) {
-      const obj = {
-        name: this.selectedColumnFilter,
-        equal: this.modalIsEqual,
-        values: [this.filterText]
-      } as FilterBadgeModel;
+  addManuelFilter(field?: string, type?: 'equal'|'not-equal'|'contain') {
+    let column = this.selectedColumn;
+    if (field)
+      column = this.columns.find(c => c.name === field);
+    if (column.inputPattern && !column.inputPattern.test(this.filterText))
+      return this.inputError = this.staticmessageService.filterIncludesInvalidChar;
 
-      const findedColumn = this.filters.find(x => x.name === obj.name && x.equal === obj.equal);
+    this.inputError = '';
 
+    field = field || this.selectedColumnFilter;
+    if (field && this.filterText) {
+      type = type || this.searchType;
+      const findedColumn = this.filters.find(x => x.name === field && x.equal === (type !== 'not-equal'));
+      const valtxt = field === 'action'
+          ? (this.filterText.toLowerCase() === 'allow' ? 'Allow' : 'Deny')
+          : `${type === 'contain' ? '*' : ''}${this.filterText}${type === 'contain' ? '*' : ''}`;
       if (findedColumn) {
-        findedColumn.values.push(this.filterText);
+        if (!findedColumn.values.includes(valtxt))
+          findedColumn.values.push(valtxt);
       } else {
+        const obj = {
+          name: field,
+          equal: type !== 'not-equal',
+          values: [valtxt],
+          contain: type === 'contain' && field !== 'action'
+        } as FilterBadgeModel;
+
         this.filters.push(obj);
       }
 
       this.filterText = '';
+      this.setShowRunBar(true);
     }
   }
 
   removeManuelFilter(filter: FilterBadgeModel, filterIndex: number, valueIndex: number, selectedColumn: string) {
+    const val = filter.values[valueIndex];
     filter.values.splice(valueIndex, 1);
 
     if (filter.values.length === 0) {
-      const findIndex = this.filters.findIndex(x => x.name === selectedColumn);
+      const findIndex = this.filters.findIndex(x => x.name === selectedColumn && x.equal === filter.equal);
 
       this.filters.splice(findIndex, 1);
     }
+
+    if (filter.name.toLowerCase() === 'category') {
+      const removedVal = this.autocompleteItems.find(g => g.value === val.type)?.groupItems.find(v => v.value === val.name);
+      if (removedVal)
+        removedVal.selected = false;
+    }
+
+    this.setShowRunBar(true);
   }
 
   private __deepCopy(obj: any) {
@@ -429,28 +466,25 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   onEditedFilterBadge(filter: FilterBadgeModel) {
-
-    this.selectedColumnFilter = filter.name;
-
-    this.columnsOptions = this.columnsOptions.map(x => {
-      if (x.value === filter.name) {
-        x.selected = true;
-      }
-
-      return x;
-    });
-
-    this.filterModal.toggle();
+    if (this.selectedFilter)
+      this.selectedFilter.editMode = false;
+    this.selectedFilter = filter;
   }
 
-  onDeletedFilterBadge($event: RkFilterOutput, index: number) {
-    if ($event.name === 'category') {
+  onDeletedFilterBadge($event: RkFilterOutput, filter: FilterBadgeModel) {
+    const filterName = filter.name.toLowerCase();
+    if (filterName === 'category') {
       this.categoryFilters = [];
-    } else if ($event.name === 'action') {
+      filter.values.forEach(val => {
+        const removedVal = this.autocompleteItems.find(g => g.value === val.type)?.groupItems.find(v => v.value === val.name);
+        if (removedVal)
+          removedVal.selected = false;
+      });
+    } else if (filterName === 'action') {
       this.actionType = null;
     }
 
-    const findedIndex = this.filters.findIndex(x => x.name === $event.name);
+    const findedIndex = this.filters.findIndex(x => x.name === filterName && x.equal === filter.equal);
 
     if (findedIndex > -1) {
       this.filters.splice(findedIndex, 1);
@@ -479,6 +513,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       this.filterModal.toggle();
 
       this.setShowRunBar(false);
+
+      if (this.newSavedReport?.name)
+        this.saveReport();
 
       return;
     }
@@ -527,7 +564,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
                 this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
               }
             } else {
-              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', value));
+              this.searchSettings.should.push(new ColumnTagInput(filter.name, filter.contain ? 'contain' : '=', value.name || value));
             }
         });
       } else {
@@ -550,7 +587,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
                 this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
               }
             } else {
-              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', value));
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, filter.contain ? 'contain' : '=', value.name || value));
             }
         });
       }
@@ -595,31 +632,47 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.filters.push(filter);
   }
 
+  private createBadge(x: ColumnTagInput, equal: boolean) {
+    if (x.field.toLowerCase() === 'category') {
+      const categoryType = this.autocompleteItems.find(i => i.groupItems.some(gi => {
+        if (gi.displayText === x.value) {
+          gi.selected = true;
+          return true;
+        }
+      }))?.value || 'primary';
+      return new FilterBadgeModel(x.field, equal, [{type: categoryType, name: x.value}]);
+    } else
+      return new FilterBadgeModel(x.field, equal, [x.value]);
+  }
+
   savedReportValueChange() {
 
     this.filters.splice(0);
+    this.autocompleteItems.forEach(i => {
+      i.groupItems.forEach(_i => _i.selected = false);
+    });
 
-    const report = this.allSavedReports.find(x => x.id === this.savedReportValue);
+    this.selectedSavedReport = this.allSavedReports.find(x => x.id === this.savedReportValue);
 
-    this.dateText = this.convertTimeString(report.dateInterval);
+    this.dateText = this.convertTimeString(this.selectedSavedReport.dateInterval);
 
-    const finded = this.dateOptions.find(x => x.value === Number(report.dateInterval));
+    const finded = this.dateOptions.find(x => x.value === Number(this.selectedSavedReport.dateInterval));
 
     if (finded) {
       this.date.selectTime(finded);
     }
 
-    this.setDateOptionBySearchSettings(Number(report.dateInterval));
+    this.setDateOptionBySearchSettings(Number(this.selectedSavedReport.dateInterval));
 
-    this.searchSettings = JSON.parse(JSON.stringify({ ...report, dateInterval: report.dateInterval }));
+    this.searchSettings = JSON.parse(JSON.stringify({ ...this.selectedSavedReport, dateInterval: this.selectedSavedReport.dateInterval }));
 
-    const should = this.searchSettings.should.map(x => new FilterBadgeModel(x.field, true, [x.value]));
-    const mustnot = this.searchSettings.mustnot.map(x => new FilterBadgeModel(x.field, false, [x.value]));
+    const should = this.searchSettings.should.map(x => this.createBadge(x, true));
+    const mustnot = this.searchSettings.mustnot.map(x => this.createBadge(x, false));
 
     const newArr = [] as FilterBadgeModel[];
 
     should.concat(mustnot).forEach(filter => {
-      const finded = newArr.find(x => x.name === filter.name);
+      const finded = newArr.find(x => x.name === filter.name && x.equal === filter.equal);
 
       if (finded) {
         finded.values.push(filter.values[0]);
@@ -637,14 +690,29 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.setShowRunBar(true);
   }
 
-  changeSavedReportType($event: RkRadioOutput) {
+  deleteSavedReport(report: SearchSetting) {
+    this.alertService.alertWarningAndCancel(this.staticmessageService.areYouSureMessage, this.staticmessageService.reportWillBeDeleted).subscribe(res => {
+      if (res) {
+        this.reportService.deleteReport(report).subscribe(ret => {
+          this.notification.success(this.staticmessageService.reportDeleted);
+          this.getSavedReports();
+        });
+      }
+    });
+  }
+
+  changeSavedReportType($event: RkRadioOutput, update?: boolean) {
+    if (update) {
+      if (this.selectedSavedReport || (this.savedReportValue && (this.selectedSavedReport = this.allSavedReports.find(r => r.id === this.savedReportValue))))
+        this.newSavedReport = this.selectedSavedReport;
+    }
+
     this.newSavedReport.scheduledReport = { period: $event.value } as ScheduledReport;
   }
 
   saveFilterClick() {
 
     if (this.searchSettings.name.length > 0) {
-      this.reportActiveTabNumber = 1;
 
       this.savedReportOptions = this.savedReportOptions.map(x => {
         return { ...x, selected: x.value === this.searchSettings.id };
@@ -689,9 +757,10 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   saveReport() {
 
-    if (this.newSavedReport.name.trim().length > 0) {
+    if (this.newSavedReport && this.newSavedReport.name.trim().length > 0) {
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
 
+        this.newSavedReport = null;
         this.notification.success(res.message);
         this.getSavedReports();
         this.saveModal.toggle();
@@ -706,7 +775,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   setShowRunBar(status: boolean) {
     this.isShowRunBar = status;
-    this.isShowRunBarOutput.emit(status);
+    this.isShowRunBarChange.emit(status);
   }
 
   filterBadgeChange(filter: FilterBadgeModel) {
@@ -715,20 +784,39 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.fillSearchSettingsByFilters();
   }
 
-  categoryEnterPress($event: { value: string }) {
+  categoryEnterPress($event: { value: string, selected: boolean }, equal?: boolean) {
     if ($event.value.trim().length === 0) { return; }
 
-    const findedCategory = this.filters.find(x => x.name.toLocaleLowerCase() === 'category' && x.equal === this.modalCategoryIsEqual);
+    if (!$event.selected) {
+      const filterIndex = this.filters.findIndex(f => f.name.toLocaleLowerCase() === 'category');
+      const valueIndex = this.filters[filterIndex]?.values?.findIndex(v => v.name === $event.value);
+      return this.removeCategoryFilter(this.filters[filterIndex], filterIndex, valueIndex);
+    }
+
+    if (equal == null)
+      equal = this.modalCategoryIsEqual;
+
+    let categoryType = this.autocompleteItems.find(i => i.selected)?.value;
+    if (!categoryType)
+      categoryType = this.autocompleteItems.find(i => i.groupItems.some(gi => {
+        if (gi.displayText === $event.value) {
+          gi.selected = true;
+          return true;
+        }
+      }))?.value || 'primary';
+
+    const findedCategory = this.filters.find(x => x.name.toLocaleLowerCase() === 'category' && x.equal === equal);
 
     if (findedCategory) {
       const findedValue = findedCategory.values.some(x => x === $event.value);
 
       if (!findedValue) {
-        findedCategory.values.unshift($event.value);
+        findedCategory.values.unshift({name: $event.value, type: categoryType});
       }
     } else {
-      this.filters.push(new FilterBadgeModel('category', this.modalCategoryIsEqual, [$event.value]));
+      this.filters.push(new FilterBadgeModel('category', equal, [{name: $event.value, type: categoryType}]));
     }
+    this.setShowRunBar(true);
   }
 
   removeCategoryFilter(filter: FilterBadgeModel, filterIndex: number, valueIndex: number) {
@@ -743,6 +831,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     if (categoryFilterIndex > -1) {
       this.filters[categoryFilterIndex] = filter;
     }
+
+    this.setShowRunBar(true);
   }
 
   routeReportPage(pageName: 'monitor' | 'custom-reports') {
@@ -768,5 +858,36 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   revertReport() {
     this.savedReportValueChange();
+  }
+
+  openFilters() {
+    this.filterModal.toggle();
+  }
+
+  savedReportModalClosed(event) {
+    this.selectedSavedReport = null;
+  }
+
+  getDisplayText(filter: FilterBadgeModel) {
+    return this.columns.find(c => c.name === filter.name)?.beautyName || filter.name;
+  }
+
+  filterColumnChanged() {
+    this.selectedColumn = this.columns.find(c => c.name === this.selectedColumnFilter);
+    this.filterText = '';
+    this.inputError = '';
+  }
+
+  checkInput(keyEvent: KeyboardEvent) {
+    if (keyEvent.key === 'Backspace' || keyEvent.key === 'ArrowLeft' || keyEvent.key === 'ArrowRight' ||
+        keyEvent.key === 'Delete' || keyEvent.key === 'Home' || keyEvent.key === 'End' || keyEvent.key === 'Control' ||
+        keyEvent.key === 'Shift' || /F\d{1,2}/.test(keyEvent.key) || keyEvent.ctrlKey || keyEvent.key === 'Enter')
+      return;
+
+    if (this.selectedColumn?.inputPattern && !this.selectedColumn?.inputPattern.test((this.filterText || '') + keyEvent.key)) {
+      keyEvent.preventDefault();
+      this.inputError = 'Invalid Character'
+    } else
+      this.inputError = '';
   }
 }
