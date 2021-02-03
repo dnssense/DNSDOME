@@ -104,7 +104,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   columnsOptions: RkSelectModel[] = [];
 
   searchType: 'equal'|'not-equal'|'contain' = 'equal';
-  // modalIsEqual = true;
   filterText = '';
 
   selectedColumnFilter: string;

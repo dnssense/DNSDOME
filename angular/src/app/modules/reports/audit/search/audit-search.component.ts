@@ -54,14 +54,14 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
   @ViewChild('modal') filterModal: RkModalModel;
 
 
+  private dateNow = new Date();
   dateOptions: RkDateTime[] = [
-    { value: 5, displayText: 'Last 5 Minutes' },
-    { value: 60 * 6, displayText: '6 hour' },
-    { value: 60 * 24, displayText: 'Last 1 day' },
-    { value: 60 * 24 * 7, displayText: 'Last 1 week' },
+    {value: 5, displayText: '5 Minutes'},
+    {value: 60 * 6, displayText: '6 Hours'},
+    {value: 60 * 24, displayText: 'Last Day'},
+    {value: 60 * 24 * 7, displayText: 'Last Week'},
+    {value: 60 * this.dateNow.getHours() + this.dateNow.getMinutes(), displayText: `Today (00:00 - ${this.dateNow.getHours().toLocaleString('tr', {minimumIntegerDigits: 2})}:${this.dateNow.getMinutes().toLocaleString('tr', {minimumIntegerDigits: 2})})`},
   ];
-
-
 
   private allSavedReports: SearchSetting[] = [];
 
@@ -74,18 +74,31 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
   columns: LogColumn[] = [];
   columnsOptions: RkSelectModel[] = [];
 
-  modalIsEqual = true;
+  searchType: 'equal'|'not-equal'|'contain' = 'equal';
   filterText = '';
 
   selectedColumnFilter;
+  selectedColumn: LogColumn;
+
+  selectedFilter: FilterBadgeModel;
 
   newSavedReport: SearchSetting = new SearchSetting();
 
   private _isShowRunBar = false;
 
   @Input()
+  @Input()
   get isShowRunBar() { return this._isShowRunBar; }
-  set isShowRunBar(val) { this._isShowRunBar = val; }
+  set isShowRunBar(val) {
+    this._isShowRunBar = val;
+
+    if (val) {
+      this.isShowPulseAnimation = true;
+      setTimeout(() => this.isShowPulseAnimation = false, 2000);
+    } else if (this.selectedFilter)
+      this.selectedFilter.editMode = false;
+  }
+  isShowPulseAnimation = false;
 
   @Output() isShowRunBarOutput = new EventEmitter();
 
@@ -102,6 +115,7 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
   savedReportOptions: RkSelectModel[] = [];
 
   dateText: string;
+  inputError: string;
 
   @ViewChild('date') date;
 
@@ -124,9 +138,9 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
 
         this.columns = columns;
 
-        this.columnsOptions = columns.map(x => {
+        this.columnsOptions = columns.filter(c => !c.hide).map(x => {
           return {
-            displayText: x.beautyName,
+            displayText: this.translatorService.translate(x.beautyName),
             value: x.name
           } as RkSelectModel;
         });
@@ -213,7 +227,7 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
     return text;
   }
 
-  clickedDateOption(option: RkDateTime, init: boolean) {
+  clickedDateOption(option: RkDateTime, init?: boolean) {
     this.searchSettings.dateInterval = option.value;
 
     this.searchSettings.startDate = null;
@@ -275,23 +289,36 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
     this.searchSettings = searchSetting;
   }
 
-  addManuelFilter() {
-    if (this.selectedColumnFilter && this.filterText) {
-      const obj = {
-        name: this.selectedColumnFilter,
-        equal: this.modalIsEqual,
-        values: [this.filterText]
-      } as FilterBadgeModel;
+  addManuelFilter(field?: string, type?: 'equal'|'not-equal'|'contain') {
+    let column = this.selectedColumn;
+    if (field)
+      column = this.columns.find(c => c.name === field);
+    if (column.inputPattern && !column.inputPattern.test(this.filterText))
+      return this.inputError = this.staticmessageService.filterIncludesInvalidChar;
 
-      const findedColumn = this.filters.find(x => x.name === obj.name && x.equal === obj.equal);
+    this.inputError = '';
 
+    field = field || this.selectedColumnFilter;
+    if (field && this.filterText) {
+      type = type || this.searchType;
+      const findedColumn = this.filters.find(x => x.name === field && x.equal === (type !== 'not-equal'));
+      const valtxt = `${type === 'contain' ? '*' : ''}${this.filterText}${type === 'contain' ? '*' : ''}`;
       if (findedColumn) {
-        findedColumn.values.push(this.filterText);
+        if (!findedColumn.values.includes(valtxt))
+          findedColumn.values.push(valtxt);
       } else {
+        const obj = {
+          name: field,
+          equal: type !== 'not-equal',
+          values: [valtxt],
+          contain: type === 'contain' && field !== 'action'
+        } as FilterBadgeModel;
+
         this.filters.push(obj);
       }
 
       this.filterText = '';
+      this.setShowRunBar(true);
     }
   }
 
@@ -303,6 +330,8 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
 
       this.filters.splice(findIndex, 1);
     }
+
+    this.setShowRunBar(true);
   }
 
   private __deepCopy(obj: any) {
@@ -312,33 +341,20 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
   apply(close = false) {
 
     this.setShowRunBar(false);
-    if (close) {
-      this.filterModal.toggle();
-    }
 
   }
 
 
 
   onEditedFilterBadge(filter: FilterBadgeModel) {
-
-    this.selectedColumnFilter = filter.name;
-
-    this.columnsOptions = this.columnsOptions.map(x => {
-      if (x.value === filter.name) {
-        x.selected = true;
-      }
-
-      return x;
-    });
-
-    this.filterModal.toggle();
+    if (this.selectedFilter)
+      this.selectedFilter.editMode = false;
+    this.selectedFilter = filter;
   }
 
-  onDeletedFilterBadge($event: RkFilterOutput, index: number) {
+  onDeletedFilterBadge($event: RkFilterOutput, filter: FilterBadgeModel) {
 
-
-    const findedIndex = this.filters.findIndex(x => x.name === $event.name);
+    const findedIndex = this.filters.findIndex(x => x.name === filter.name);
 
     if (findedIndex > -1) {
       this.filters.splice(findedIndex, 1);
@@ -372,10 +388,6 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
     if (this.searchSettings.dateInterval) {
       this.dateText = this.convertTimeString(this.searchSettings.dateInterval);
     }
-    if (showFilterModal) {
-      this.filterModal.toggle();
-    }
-
 
   }
 
@@ -486,5 +498,27 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
     return self.indexOf(value) === index;
   }
 
+  getDisplayText(filter: FilterBadgeModel) {
+    return this.columns.find(c => c.name === filter.name)?.beautyName || filter.name;
+  }
+
+  filterColumnChanged() {
+    this.selectedColumn = this.columns.find(c => c.name === this.selectedColumnFilter);
+    this.filterText = '';
+    this.inputError = '';
+  }
+
+  checkInput(keyEvent: KeyboardEvent) {
+    if (keyEvent.key === 'Backspace' || keyEvent.key === 'ArrowLeft' || keyEvent.key === 'ArrowRight' ||
+        keyEvent.key === 'Delete' || keyEvent.key === 'Home' || keyEvent.key === 'End' || keyEvent.key === 'Control' ||
+        keyEvent.key === 'Shift' || /F\d{1,2}/.test(keyEvent.key) || keyEvent.ctrlKey || keyEvent.key === 'Enter')
+      return;
+
+    if (this.selectedColumn?.inputPattern && !this.selectedColumn?.inputPattern.test((this.filterText || '') + keyEvent.key)) {
+      keyEvent.preventDefault();
+      this.inputError = 'Invalid Character'
+    } else
+      this.inputError = '';
+  }
 
 }

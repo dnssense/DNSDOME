@@ -7,6 +7,7 @@ import { SearchSetting } from '../models/SearchSetting';
 import { AuthenticationService } from './authentication.service';
 import { ConfigService } from './config.service';
 import { ErrorService } from './errorService';
+import {LogColumn} from "../models/LogColumn";
 
 @Injectable({ providedIn: 'root' })
 export class AuditService {
@@ -69,15 +70,15 @@ export class AuditService {
     return options;
   }
 
-  public initTableColumns() {
+  public initTableColumns(): Observable<LogColumn[]> {
     return Observable.of([
-      { 'name': 'time', 'beautyName': 'Time', 'hrType': 'DNS_DATETIME', 'aggsType': '', 'checked': true },
-      { 'name': 'username', 'beautyName': 'Username', 'hrType': '', 'aggsType': 'TERM', 'checked': true },
-      { 'name': 'isApiKey', 'beautyName': 'Is Api Key', 'hrType': '', 'aggsType': 'TERM', 'checked': true },
-      { 'name': 'ip', 'beautyName': 'Src.Ip', 'hrType': '', 'aggsType': 'TERM', 'checked': true },
-      { 'name': 'severity', 'beautyName': 'Severity', 'hrType': '', 'aggsType': 'TERM', 'checked': true },
-      { 'name': 'message', 'beautyName': 'Message', 'hrType': '', 'aggsType': 'TERM', 'checked': true },
-      { 'name': 'messageDetail', 'beautyName': 'Message Detail', 'hrType': '', 'aggsType': 'TERM', 'checked': true }]
+      { 'name': 'time', 'beautyName': 'AuditTableColumn.Time', 'hrType': 'DNS_DATETIME', 'aggsType': '', 'checked': true, hide: true },
+      { 'name': 'username', 'beautyName': 'AuditTableColumn.Username', 'hrType': '', 'aggsType': 'TERM', 'checked': true, inputPattern: /^[a-z0-9@_*?-]*$/i },
+      { 'name': 'isApiKey', 'beautyName': 'AuditTableColumn.IsApiKey', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '1 or 0', inputPattern: /^[01]$/ },
+      { 'name': 'ip', 'beautyName': 'AuditTableColumn.Ip', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?)$/ },
+      { 'name': 'severity', 'beautyName': 'AuditTableColumn.Severity', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: 'info / warn / alert / critical', inputPattern: /^(in?f?o?|wa?r?n?|cr?i?t?i?c?a?l?|al?e?r?t?)$/},
+      { 'name': 'message', 'beautyName': 'AuditTableColumn.Message', 'hrType': '', 'aggsType': 'TERM', 'checked': true },
+      { 'name': 'messageDetail', 'beautyName': 'AuditTableColumn.MessageDetail', 'hrType': '', 'aggsType': 'TERM', 'checked': true }] as LogColumn[]
     );
   }
 }
