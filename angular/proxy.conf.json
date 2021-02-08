@@ -1,6 +1,6 @@
 {
   "/api/*": {
-    "target": "https://beta.roksit.com",
+    "target": "http://beta.roksit.com",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
