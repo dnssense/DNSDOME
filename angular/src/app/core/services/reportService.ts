@@ -45,11 +45,11 @@ export class ReportService {
   public initTableColumns(): Observable<LogColumn[]> {
     return Observable.of([
       { 'name': 'time', 'beautyName': 'Time', 'hrType': 'DNS_DATETIME', 'aggsType': '', 'checked': true, hide: true },
-      { 'name': 'domain', 'beautyName': 'TableColumn.Domain', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?([.-]?\w+[.-]?)+\*?)$/ },
-      { 'name': 'subdomain', 'beautyName': 'TableColumn.Subdomain', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?([.-]?\w+[.-]?)+\*?)$/ },
-      { 'name': 'sourceIp', 'beautyName': 'TableColumn.SourceIp', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?)$/ },
+      { 'name': 'domain', 'beautyName': 'TableColumn.Domain', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?([.-]?\w+[.-]?)+\*?)$/i },
+      { 'name': 'subdomain', 'beautyName': 'TableColumn.Subdomain', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?([.-]?\w+[.-]?)+\*?)$/i },
+      { 'name': 'sourceIp', 'beautyName': 'TableColumn.SourceIp', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?)$/i },
       { 'name': 'sourceIpCountryCode', 'beautyName': 'TableColumn.SourceCountry', 'hrType': 'COUNTRY_FLAG', 'aggsType': 'TERM', 'checked': false, inputPattern: /^([A-Z]*|N\/?A?)$/i },
-      { 'name': 'destinationIp', 'beautyName': 'TableColumn.DestinationIp', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?|N\/?A?)$/ },
+      { 'name': 'destinationIp', 'beautyName': 'TableColumn.DestinationIp', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?|N\/?A?)$/i },
       { 'name': 'destinationIpCountryCode', 'beautyName': 'TableColumn.DestinationCountry', 'hrType': 'COUNTRY_FLAG', 'aggsType': 'TERM', 'checked': false, inputPattern: /^([A-Z]*|N\/?A?)$/i },
       { 'name': 'agentAlias', 'beautyName': 'TableColumn.AgentAlias', 'hrType': '', 'aggsType': 'TERM', 'checked': false },
       { 'name': 'userId', 'beautyName': 'TableColumn.UserId', 'hrType': '', 'aggsType': 'TERM', 'checked': false, hide: true },
@@ -57,8 +57,8 @@ export class ReportService {
       { 'name': 'applicationName', 'beautyName': 'TableColumn.ApplicationName', 'hrType': '', 'aggsType': 'TERM', 'checked': false, inputPattern: /^[*a-zA-Z0-9_ \/]{0,32}$/i },
       { 'name': 'category', 'beautyName': 'TableColumn.Category', 'hrType': '', 'aggsType': 'TERM', 'checked': false, hide: true },
       { 'name': 'reasonType', 'beautyName': 'TableColumn.ReasonType', 'hrType': '', 'aggsType': 'TERM', 'checked': false },
-      { 'name': 'clientLocalIp', 'beautyName': 'TableColumn.ClientLocalIp', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?|N\/?A?)$/ },
-      { 'name': 'clientMacAddress', 'beautyName': 'TableColumn.ClientMacAddress', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: '00:11:22:33:44:55 or 00:11:*', inputPattern: /^(\*?([0-9a-f]{1,2}?-?:?){1,6}\*?|N\/?A?)$/ },
+      { 'name': 'clientLocalIp', 'beautyName': 'TableColumn.ClientLocalIp', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?|N\/?A?)$/i },
+      { 'name': 'clientMacAddress', 'beautyName': 'TableColumn.ClientMacAddress', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: '00:11:22:33:44:55 or 00:11:*', inputPattern: /^(\*?([0-9a-f]{1,2}?-?:?){1,6}\*?|N\/?A?)$/i },
       { 'name': 'clientBoxSerial', 'beautyName': 'TableColumn.ClientBoxSerial', 'hrType': '', 'aggsType': 'TERM', 'checked': false },
       { 'name': 'hostName', 'beautyName': 'TableColumn.HostName', 'hrType': '', 'aggsType': 'TERM', 'checked': false, inputPattern: /^(\*?|\*?([.-]?\w+[.-]?)+\*?|N\/?A?)$/ }
     ]);
