@@ -117,8 +117,10 @@ export class SidebarComponent implements OnInit {
       && this.authService.currentSession.currentUser.role && this.authService.currentSession.currentUser.role.name) {
 
       const roleName: string = this.authService.currentSession.currentUser.role.name;
+
       this.menuItems = this._menuItems.filter(x => !x.roles || x.roles.includes(roleName));
       for (const menu of this.menuItems) {
+
         if (menu.subMenu)
           menu.subMenu = menu.subMenu.filter(y => !y.roles || y.roles.includes(roleName));
       }
@@ -129,10 +131,10 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (window.location.host.indexOf('cmerp') >= 0) {
+    /* if (this.host.brand == "CMERP") {
       const deployments = this._menuItems.find(x => x.id == 3);
       deployments.subMenu = deployments.subMenu?.slice(0, 1);
-    }
+    } */
     const currentUser = this.authService.currentSession?.currentUser;
 
     const isCollapsed = JSON.parse(localStorage.getItem(`menuCollapsed_for_user_${currentUser?.id}`));

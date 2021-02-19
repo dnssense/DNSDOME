@@ -511,7 +511,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.selectedIp.agentType = selectedUpdateIp.agentType;
     this.selectedIp.blockMessage = selectedUpdateIp.blockMessage;
     this.selectedIp.captivePortalIp = selectedUpdateIp.captivePortalIp;
-    this.selectedIp.dynamicIpDomain = selectedUpdateIp.dynamicIpDomain;
+    this.selectedIp.dynamicIpDomain = selectedUpdateIp.dynamicIpDomain?.trim();
     this.selectedIp.cyberXRayIp = selectedUpdateIp.cyberXRayIp;
     this.selectedIp.rootProfile = selectedUpdateIp.rootProfile;
     this.selectedIp.staticSubnetIp = selectedUpdateIp.staticSubnetIp;
@@ -692,12 +692,13 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     if (selectedProfile) {
       this.selectedIp.rootProfile = this.securityProfiles.find(x => x.id === selectedProfile.value);
     }
-    const cloned = JSON.parse(JSON.stringify(this.selectedIp));
+    const cloned = JSON.parse(JSON.stringify(this.selectedIp)) as Agent;
 
     if (this.ipType === 'staticIp') {
       cloned.dynamicIpDomain = null;
     } else {
       cloned.staticSubnetIp = null;
+      cloned.dynamicIpDomain = cloned.dynamicIpDomain?.trim();
     }
 
     this.agentService.saveAgentLocation(cloned).subscribe(res => {

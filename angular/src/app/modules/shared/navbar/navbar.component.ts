@@ -165,6 +165,10 @@ export class NavbarComponent implements OnInit {
             }
         });
     }
+    isCmerp() {
+        return this.host.brand == "CMERP"
+    }
+
 
     getBaseHelpPage(lang?: string) {
         let url = this.host.docUrl + '/';

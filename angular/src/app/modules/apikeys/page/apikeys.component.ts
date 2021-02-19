@@ -136,7 +136,8 @@ export class ApiKeysComponent implements OnInit {
 
     private prepareRoleSelect(user: User) {
         const role = this.userRoles.find(x => x.name === user.role.name);
-        this.selectedRoleId = role.id;
+
+        this.selectedRoleId = role?.id || 8;
 
         this.userRolesForSelect = [];
 
@@ -146,7 +147,7 @@ export class ApiKeysComponent implements OnInit {
                 value: elem.id
             } as RkSelectModel;
 
-            if (elem.id === role.id) {
+            if (elem.id === role?.id) {
                 obj.selected = true;
             }
 
