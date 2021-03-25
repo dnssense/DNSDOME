@@ -341,7 +341,15 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   onTypeValueChange(type: SearchSettingsType) {
-    this.searchSettings.type = type;
+    // this.searchSettings.type = type;
+    if (type === 'roksit') {
+      const ind = this.filters.findIndex(f => f.name === 'action');
+      if (ind > -1)
+        this.filters.splice(ind, 1);
+    } else if (type === 'roksitblock') {
+      this.filterText = 'Deny';
+      this.addManuelFilter('action', 'equal');
+    }
 
     this.searchSettingEmitter.emit(this.searchSettings);
   }
@@ -396,6 +404,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     }
 
     if (filter.name.toLowerCase() === 'category') {
+      const ind = this.categoryFilters?.findIndex(f => f.values.includes(val));
+      if (ind > -1)
+        this.categoryFilters.splice(ind, 1);
       const removedVal = this.autocompleteItems.find(g => g.value === val.type)?.groupItems.find(v => v.value === val.name);
       if (removedVal)
         removedVal.selected = false;

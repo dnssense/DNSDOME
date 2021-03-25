@@ -231,6 +231,7 @@
         "ApplyChangedSettings": "Apply changed settings",
         "TotalTraffic": "Total Traffic",
         "BlockPage": "Block Page",
+        "BlockedTraffic": "Blocked Traffic",
         "CleanFilters": "Clean Filters",
         "SaveFilter": "Save Filter"
     },
