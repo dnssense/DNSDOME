@@ -47,6 +47,8 @@ export class AuthenticationService {
   ) {
 
     this.currentSession = this.getCurrentSession();
+    if (this.currentSession?.clientId)
+      this.clientId = this.currentSession.clientId;
 
     this.currentUserPropertiesChanged = new Subject();
     this.refreshTokenTimer = interval(3 * 60 * 1000);
@@ -292,6 +294,7 @@ export class AuthenticationService {
       const clientId: any = item?.client?.id;
       if (clientId) {
         this.clientId = clientId;
+        this.currentSession.clientId = clientId;
       }
       return this.getCurrentUser().pipe(x => {
         if (!this.idle.isRunning()) {
