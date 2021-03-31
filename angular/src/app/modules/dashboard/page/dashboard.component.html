@@ -72,7 +72,7 @@
 
                     <div class="col-2 col-lg-6 col-xl mt-3 dBox">
                       <rk-infobox [active]="infoBoxes.malicious"
-                         (change)="infoboxChanged($event, 'malicious', 'Malicious')" [type]="2"
+                        (change)="infoboxChanged($event, 'malicious', 'Malicious')" [type]="2"
                         [title]="translate('Malicious')" className="red" [color]="'#f95656'"
                         [valueOne]="trafficAnomaly?.malicious?.hit " [valueTwo]="trafficAnomaly?.malicious?.hit_ratio "
                         description="{{'MaliciousDescription'|translate}}">
@@ -90,7 +90,7 @@
 
                     <div class="col-2 col-lg-6 col-xl mt-3 dBox pr-0">
                       <rk-infobox [active]="infoBoxes.harmful"
-                         (change)="infoboxChanged($event, 'harmful', 'HarmfullContent')" [type]="2"
+                        (change)="infoboxChanged($event, 'harmful', 'HarmfullContent')" [type]="2"
                         [title]="translate('HarmfullContent')" className="yellow" [color]="'#EFBB1E'"
                         [valueOne]="trafficAnomaly?.harmful?.hit || 0"
                         [valueTwo]="trafficAnomaly?.harmful?.hit_ratio ||  0.001"
@@ -108,8 +108,8 @@
                             <div class="categories-column mt-3 d-flex flex-column justify-content-between"
                               style="border-right: 1px solid var(--infobox-border);">
                               <h6 class="rk-title-1">
-                                {{ selectedCategoryName | translate }}
-                                <span *ngIf="selectedBox !== 'total'">{{ 'Categories' | translate }}</span>
+                                {{ selectedCategoryName | translate }}
+                                <span *ngIf="selectedBox !== 'total'">{{ 'Categories' | translate }}</span>
                               </h6>
 
                               <div class="rk-selectable-container mb-2" style="max-height: 320px;">
@@ -140,13 +140,13 @@
                                   <button class="btn btn-link btn-icon py-0 bg-transparent"
                                     *ngIf="calculateDateDiff() <= 7" (click)="getDataByTime('prev', 7)">
                                     <i-feather name="arrow-left"></i-feather>
-                                    {{ 'PreviousWeek' | translate }}
+                                    {{ 'PreviousWeek' | translate }}
                                   </button>
 
                                   <button class="btn btn-link btn-icon py-0 bg-transparent"
                                     *ngIf="calculateDateDiff() <= 7" [disabled]="getDisabledNextButton('week')"
                                     (click)="getDataByTime('next', 7)">
-                                    {{ 'NextWeek' | translate }}
+                                    {{ 'NextWeek' | translate }}
                                     <i-feather name="arrow-right"></i-feather>
                                   </button>
 
@@ -154,13 +154,13 @@
                                     *ngIf="calculateDateDiff() >= 30 && calculateDateDiff() < 90"
                                     (click)="getDataByTime('prev', 30)">
                                     <i-feather name="arrow-left"></i-feather>
-                                    {{ 'PreviousMonth' | translate }}
+                                    {{ 'PreviousMonth' | translate }}
                                   </button>
 
                                   <button class="btn btn-link btn-icon py-0 bg-transparent"
                                     *ngIf="calculateDateDiff() >= 30 && calculateDateDiff() < 90"
                                     (click)="getDataByTime('next', 30)">
-                                    {{ 'NextMonth' | translate }}
+                                    {{ 'NextMonth' | translate }}
                                     <i-feather name="arrow-right"></i-feather>
                                   </button>
 
@@ -168,13 +168,13 @@
                                     *ngIf="calculateDateDiff() >= 90" [disabled]="calculateDateDiff() >= 365"
                                     (click)="getDataByTime('prev', 90)">
                                     <i-feather name="arrow-left"></i-feather>
-                                    {{ 'Previous3Month' | translate }}
+                                    {{ 'Previous3Month' | translate }}
                                   </button>
 
                                   <button class="btn btn-link btn-icon py-0 bg-transparent"
                                     *ngIf="calculateDateDiff() >= 90" [disabled]="calculateDateDiff() >= 365"
                                     (click)="getDataByTime('next', 90)">
-                                    {{ 'Next3Month' | translate }}
+                                    {{ 'Next3Month' | translate }}
                                     <i-feather name="arrow-right"></i-feather>
                                   </button>
 
@@ -223,7 +223,7 @@
                                 </div>
 
                                 <div>
-                                  <span>{{ 'TrafficExcessRate' | translate }}:</span>
+                                  <span>{{ 'TrafficExcessRate' | translate }}:</span>
 
                                   <span>
                                     <div class="color" style="background: #507df3;"></div> %20
@@ -260,7 +260,7 @@
                         <div class="container-fluid">
                           <div class="row">
                             <div class="col-12 mt-3" style="border-bottom: 1px solid var(--infobox-border);">
-                              <h6 class="rk-title-1">{{ selectedCategoryName | translate }}
+                              <h6 class="rk-title-1">{{ selectedCategoryName | translate }}
                                 {{ 'TopDomainList' | translate }}
                               </h6>
                             </div>
@@ -297,11 +297,11 @@
                                       </td>
                                       <td class="value">{{ getRoundedNumber(domain.hit) }}</td>
                                       <!-- <td>
-                                        <rk-progressbar-n [value]="100 * domain.hit / topDomainsCountTotal | number">
+                                        <rk-progressbar-n [value]="100 * domain.hit / topDomainsCountTotal | number">
                                         </rk-progressbar-n>
                                       </td> -->
                                       <td class="percent">
-                                        %{{100 * domain.hit / topDomainsCountTotal | number}}</td>
+                                        %{{100 * domain.hit / topDomainsCountTotal | number}}</td>
                                     </tr>
                                   </tbody>
                                 </table>

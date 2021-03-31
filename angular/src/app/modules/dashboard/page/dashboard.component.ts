@@ -986,7 +986,7 @@ export class DashboardComponent implements OnInit {
 
     this.drawChartAnomaly();
 
-    this.refreshTopDomains();
+    this.refreshTopDomains().subscribe();
   }
 
   flatten(list) {
