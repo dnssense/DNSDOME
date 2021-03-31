@@ -147,10 +147,10 @@
           <span class="monitor-title">{{ pageTitle | translate }}</span>
 
           <div class="traffic-types">
-            <rk-radio class="rd-m-10" name="trafficType" checked="true" (valueChange)="onTypeValueChange('roksit')">
+            <rk-radio class="rd-m-10" name="actionType" [checked]="actionType == null" [value]="null" (valueChange)="actionChanged($event)">
               {{ 'REPORT.TotalTraffic' | translate }}
             </rk-radio>
-            <rk-radio class="rd-m-10 m-l-10" name="trafficType" (valueChange)="onTypeValueChange('roksitblock')">
+            <rk-radio class="rd-m-10 m-l-10" name="actionType" [checked]="actionType === 'deny'" value="deny" (valueChange)="actionChanged($event)">
               {{ 'REPORT.BlockedTraffic' | translate }}
             </rk-radio>
           </div>

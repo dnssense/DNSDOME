@@ -341,15 +341,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   onTypeValueChange(type: SearchSettingsType) {
-    // this.searchSettings.type = type;
-    if (type === 'roksit') {
-      const ind = this.filters.findIndex(f => f.name === 'action');
-      if (ind > -1)
-        this.filters.splice(ind, 1);
-    } else if (type === 'roksitblock') {
-      this.filterText = 'Deny';
-      this.addManuelFilter('action', 'equal');
-    }
+    this.searchSettings.type = type;
 
     this.searchSettingEmitter.emit(this.searchSettings);
   }
@@ -564,8 +556,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
               this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', 'true'));
               this.actionType = 'allow';
             }
-          } else
-            if (filter.name === 'time') {
+          } else if (filter.name === 'time') {
               const date = moment(Date.parse(value));
 
               if (date.isValid()) {
@@ -587,8 +578,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
               this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', 'true'));
               this.actionType = 'deny';
             }
-          } else
-            if (filter.name === 'time') {
+          } else if (filter.name === 'time') {
               const date = moment(Date.parse(value));
 
               if (date.isValid()) {
@@ -635,6 +625,15 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   actionChanged($event: RkRadioOutput) {
     this.actionType = $event.value;
+    if (!$event.value) {
+      const ind = this.filters.findIndex(f => f.name === 'action');
+      if (ind > -1)
+        this.onDeletedFilterBadge(this.filters[ind], this.filters[ind]);
+    } else if ($event.value === 'deny') {
+      this.filterText = 'Deny';
+      this.addManuelFilter('action', 'equal');
+    }
+    this.setShowRunBar(true);
   }
 
   addFilterBadge(filter: FilterBadgeModel) {
@@ -770,7 +769,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     if (this.newSavedReport && this.newSavedReport.name.trim().length > 0) {
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
 
-        this.newSavedReport = null;
+        this.newSavedReport = new SearchSetting();
         this.notification.success(res.message);
         this.getSavedReports();
         this.saveModal.toggle();
