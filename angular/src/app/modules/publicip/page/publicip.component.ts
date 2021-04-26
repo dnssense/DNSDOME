@@ -79,7 +79,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
 
 
-
+  ipValidations: boolean[] = [];
+  sinkHoleValidation: boolean[] = [];
 
   selectedIp: Agent = new Agent();
   selectedAgent: Agent = new Agent();
@@ -272,9 +273,9 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     }
     return false;
   }
-  checkIPNumberForAgent(event: KeyboardEvent, inputValue: IpWithMask) {
+  checkIPNumberForAgent(event: KeyboardEvent|FocusEvent, inputValue: IpWithMask, index: number) {
 
-    const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue.baseIp);
+    const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue.baseIp, this.ipValidations, index);
 
     if (isIPV4 != null) {
       this.checkMask(isIPV4, inputValue);
@@ -288,32 +289,32 @@ export class PublicipComponent implements OnInit, AfterViewInit {
           if (input[ab] == chars[ac]) {
             return true;
           }
-  
+
         }
       }
       return false;
     } */
 
   /*   checkIPNumber(event: KeyboardEvent, inputValue: string) {
-  
-  
+
+
       let isIPV4 = true;
-  
+
       const specialChars = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
-  
+
       const ipv4Chars = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'];
-  
+
       const ipv6Chars = ['A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f', ':'];
       let allowedChars = [];
       allowedChars = allowedChars.concat(ipv6Chars).concat(ipv4Chars).concat(specialChars);
       let isValid = false;
-  
+
       for (let i = 0; i < specialChars.length; i++) {
         if (specialChars[i] == event.key) {
          return null;
         }
       }
-  
+
       // check keydown char
       for (let i = 0; i < allowedChars.length; i++) {
         if (allowedChars[i] == event.key) {
@@ -321,7 +322,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
           break;
         }
       }
-  
+
       if (isValid) {
         const isSpecialChar = specialChars.find(x => x == event.key);
         if (!isSpecialChar) {
@@ -329,7 +330,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
         }
         const isipV6 = this.hasOneOfChars(inputValue, ipv6Chars);
         const isipV4 = this.hasOneOfChars(inputValue, ['.']);
-  
+
         if (isipV4 && !isipV6) {// ipv4
            isIPV4 = true;
           const octets = inputValue.split(/[.]/g);
@@ -350,11 +351,11 @@ export class PublicipComponent implements OnInit, AfterViewInit {
               isValid = false;
             }
           });
-  
-  
-  
+
+
+
         } else {
-  
+
           isIPV4 = false;
           for (let i = 0; i < ipv6Chars.length; i++) {
             if ('.' == event.key) {
@@ -363,11 +364,11 @@ export class PublicipComponent implements OnInit, AfterViewInit {
             }
           }
           const octets = inputValue.split(/[:]/g);
-  
+
           if (octets.length > 8) {
             isValid = false;
           }
-  
+
           octets.forEach(x => {
             if (x.length > 4) {
               isValid = false;
@@ -379,25 +380,25 @@ export class PublicipComponent implements OnInit, AfterViewInit {
             isValid = false;
             }
           }
-  
-  
+
+
         }
-  
-  
+
+
       }
       console.log(`ipv4:${isIPV4} and isValid:${isValid}`);
-  
+
       if (!isValid) {
         event.preventDefault();
         return null;
       }
       return isIPV4;
-  
+
     } */
 
-  checkIPNumberForSinkhole(event: KeyboardEvent, inputValue: string) {
+  checkIPNumberForSinkhole(event: KeyboardEvent|FocusEvent, inputValue: string) {
 
-    const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue);
+    const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue, this.sinkHoleValidation, 0);
 
 
 
@@ -501,7 +502,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.getPublicIpsDataAndProfiles();
   }
 
-  showEditWizard(id: string) {
+  showEditWizard(id: string|number) {
 
     this.isNewItemUpdated = true;
     const selectedUpdateIp = this.publicIps.find(p => p.id == Number(id));
@@ -663,6 +664,9 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.selectedIp.staticSubnetIp.splice(index, 1);
     this.publicIpForm.controls[cname].clearValidators();
     this.publicIpForm.controls[cname].updateValueAndValidity();
+    if (this.ipValidations.length > index) {
+      this.ipValidations.splice(index, 1);
+    }
   }
 
   searchByKeyword(e: any) {
@@ -742,10 +746,10 @@ export class PublicipComponent implements OnInit, AfterViewInit {
           this.notification.warning(this.staticMessageService.pleaseEnterValidIpAndMask);
           return false;
         }
-        if (this.selectedIp.cyberXRayIp && !isip(this.selectedIp.cyberXRayIp)) {
-          this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
-          return false;
-        }
+      }
+      if (this.selectedIp.cyberXRayIp && !isip(this.selectedIp.cyberXRayIp)) {
+        this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
+        return false;
       }
     }
 
@@ -756,5 +760,9 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.saveMode = 'NewProfile';
 
     this.profileModal.toggle();
+  }
+
+  getIPDetail(ip: IpWithMask) {
+    return this.inputIpService.getIPDetails(ip);
   }
 }

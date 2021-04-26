@@ -3,6 +3,7 @@ export class CategoryV2 {
     name: string;
     type: string;
     isVisible = 0;
+    group: string;
 
     /**
      * For UI

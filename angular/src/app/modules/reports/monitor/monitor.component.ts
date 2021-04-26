@@ -6,10 +6,10 @@ import { RoksitSearchComponent, FilterBadgeModel } from '../../shared/roksit-sea
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
-import { categoryMappings } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { ReportService } from 'src/app/core/services/reportService';
 import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import {StaticService} from '../../../core/services/staticService';
 
 export interface MonitorReportRouteParams {
   startDate?: string;
@@ -30,7 +30,8 @@ export class MonitorComponent implements OnInit, AfterViewInit {
   constructor(
     private location: Location,
     private activatedRoute: ActivatedRoute,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private staticService: StaticService
   ) {
     activatedRoute.queryParams.subscribe((params: MonitorReportRouteParams) => {
       this.queryParams = params;
@@ -48,10 +49,14 @@ export class MonitorComponent implements OnInit, AfterViewInit {
   private monitorResultComponent: MonitorResultComponent;
 
   isShowRunBar = false;
+  categoryMappings;
 
   ngOnInit() { }
   ngAfterViewInit() {
-    this.init();
+    this.staticService.getCategoryMapping().subscribe(mapping => {
+      this.categoryMappings = mapping;
+      this.init();
+    });
   }
   // bu kod customreport.component.ts icindede var
   init() {
@@ -73,8 +78,8 @@ export class MonitorComponent implements OnInit, AfterViewInit {
       this.roksitSearchComponent.searchSettings.mustnot = [];
 
       if (this.queryParams.category && this.queryParams.category != 'total') {
-        if (categoryMappings[this.queryParams.category]) {
-          categoryMappings[this.queryParams.category]?.forEach(x => {
+        if (this.categoryMappings[this.queryParams.category]) {
+          this.categoryMappings[this.queryParams.category]?.forEach(x => {
             this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', x));
           });
         } else if (this.queryParams.category != 'total') {

@@ -68,6 +68,7 @@ export interface HourlyCompanySummaryV5Response {
   malicious: Summary;
   variable: Summary;
   harmful: Summary;
+  restricted?: Summary;
   hit: number;
 
 }

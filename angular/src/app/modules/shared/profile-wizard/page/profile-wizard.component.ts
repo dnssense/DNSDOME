@@ -48,87 +48,6 @@ export const ApplicationTypes = {
 };
 
 
-export const categoryMappings = {
-  'variable': [
-    'Unknown',
-    'Undecided Not Safe',
-    'Undecided Safe',
-    'Domain Parking',
-    'Newly Register',
-    'Newly Up',
-    'Dead Sites',
-    // 'Firstly Seen' //burasi positive security model kapsaminda yonetiliyor
-  ],
-  'harmful': [
-    'Illegal Drugs',
-    'Adult',
-    'Pornography',
-    'Hate/Violance/illegal',
-    'Gambling',
-    'Games',
-    'Swimsuits and Underwear',
-    'Dating',
-    'Alcohol'
-  ],
-  'safe': [
-    'Cooking',
-    'Online Video',
-    'Sport',
-    'Advertisements',
-    'Shopping',
-    'Software Downloads',
-    'Reference',
-    'Financial Services',
-    'Health',
-    'Society',
-    'Webmail',
-    'Vehicles',
-    'Government and Organization',
-    'Search Engines',
-    'Online Storage',
-    'Business Services',
-    'Entertainment',
-    'Tobacco',
-    'Blogs',
-    'Content Delivery Networks (CDN)',
-    'Social Networks',
-    'Real Estate',
-    'Forums',
-    'Arts and Culture',
-    'Kids',
-    'Job Search',
-    'Clothing and Fashion',
-    'Chats',
-    'Education',
-    'Technology and Computer',
-    'Infrastructure Service',
-    'Music',
-    'Weapon and Military',
-    'News',
-    'Religion',
-    'Vacation and Travel',
-    'Local IP',
-    'WhiteList'
-  ],
-  'malicious': [
-    'Phishing',
-    'Spam Sites',
-    'Proxy',
-    'Warez',
-    'Hacking',
-    'Potentially Dangerous',
-    'Malware/Virus',
-    'Dynamic DNS',
-    'Botnet CC',
-    'DGA Domain',
-    'BlackList',
-    'Malformed Query',
-    'Bad-IP',
-    'NX Domain'
-  ]
-};
-
-
 @Component({
   selector: 'app-profile-wizard',
   templateUrl: './profile-wizard.component.html',
@@ -154,6 +73,7 @@ export class ProfileWizardComponent {
     });
   }
 
+  categoryMappings;
   isSafeSearchEnabled: boolean;
   isYoutubeStrictModeEnabled: boolean;
   profileName: string;
@@ -233,6 +153,10 @@ export class ProfileWizardComponent {
 
       this.fillGroupedApplications();
     });
+
+    this.staticService.getCategoryMapping().subscribe(mapping => {
+      this.categoryMappings = mapping;
+    });
   }
 
   setActiveNumber(val: number) {
@@ -241,8 +165,8 @@ export class ProfileWizardComponent {
 
   isInCategoryType(type: string, cat: categoryItem) {
 
-    if (cat.category.isVisible && categoryMappings[type]) {
-      return categoryMappings[type].find(x => x === cat.category.name);
+    if (cat.category.isVisible && this.categoryMappings[type]) {
+      return this.categoryMappings[type].find(x => x === cat.category.name);
     }
     return false;
   }

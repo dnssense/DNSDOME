@@ -90,10 +90,10 @@
 
                     <div class="col-2 col-lg-6 col-xl mt-3 dBox pr-0">
                       <rk-infobox [active]="infoBoxes.harmful"
-                        (change)="infoboxChanged($event, 'harmful', 'HarmfullContent')" [type]="2"
+                        (change)="infoboxChanged($event, 'restricted', 'HarmfullContent')" [type]="2"
                         [title]="translate('HarmfullContent')" className="yellow" [color]="'#EFBB1E'"
-                        [valueOne]="trafficAnomaly?.harmful?.hit || 0"
-                        [valueTwo]="trafficAnomaly?.harmful?.hit_ratio ||  0.001"
+                        [valueOne]="trafficAnomaly?.restricted?.hit || trafficAnomaly?.harmful?.hit || 0"
+                        [valueTwo]="trafficAnomaly?.restricted?.hit_ratio || trafficAnomaly?.harmful?.hit_ratio ||  0.001"
                         description="{{'HarmfulDescription'|translate}}">
                       </rk-infobox>
                     </div>

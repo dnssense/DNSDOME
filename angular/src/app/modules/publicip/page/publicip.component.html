@@ -93,10 +93,10 @@
 
                     <ng-template #elseTemplateIpType>
                       <div class="col-12 d-flex mt-3" *ngFor="let row of selectedIp.staticSubnetIp; index as i">
-                        <div class="rk-input-container">
+                        <div class="rk-input-container" [ngClass]="{'input-error': ipValidations[i] === false}">
                           <span style="flex: 2">
                             <input type="text" placeholder="{{'IP'|translate}}" name="'ip'+i"
-                              (keydown)="checkIPNumberForAgent($event, selectedIp.staticSubnetIp[i])"
+                              (keydown)="checkIPNumberForAgent($event, selectedIp.staticSubnetIp[i], i)" (blur)="checkIPNumberForAgent($event, selectedIp.staticSubnetIp[i], i)"
                               [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" [ngModelOptions]="{standalone: true}">
                             /
                           </span>
@@ -138,8 +138,9 @@
 
                     <div class="col-12 mt-3">
                       <input type="text" class="rk-input w-100" maxlength="39" placeholder="{{'SinkHoleIp'|translate}}"
-                        (keydown)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)"
-                        [(ngModel)]="selectedIp.cyberXRayIp" [ngModelOptions]="{standalone: true}">
+                        (keydown)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)" (blur)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)"
+                        [(ngModel)]="selectedIp.cyberXRayIp" [ngModelOptions]="{standalone: true}"
+                        [ngClass]="{'input-error': sinkHoleValidation[0] === false}">
                       <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp1' | translate}}</p>
                       <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp2' | translate}}</p>
                     </div>
@@ -205,7 +206,7 @@
                   <th>{{'IpType'|translate}}</th>
                   <th>{{'IpAddressDomain'|translate}}</th>
                   <th>{{'SecurityProfile'|translate}}</th>
-                  <th colspan="2" style="width: 110px;">{{'Operation'|translate}}</th>
+                  <th style="width: 110px;">{{'Delete'|translate}}</th>
                 </tr>
               </ng-template>
 
@@ -214,7 +215,9 @@
                   <td class=" index">{{ i+1 }}</td>
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
-                      <span>{{ pi.agentAlias }}</span>
+                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="showEditWizard(pi.id)" style="text-decoration: underline;font-size: 12px">
+                        {{ pi.agentAlias }}
+                      </button>
                     </div>
                   </td>
                   <td>
@@ -227,10 +230,13 @@
                   </td>
                   <td>
                     <div *ngIf="pi.staticSubnetIp && pi.staticSubnetIp.length > 0">
-                      <div *ngFor="let pis of pi.staticSubnetIp">[{{pis.baseIp}}]/[{{pis.mask}}] </div>
+                      <div *ngFor="let pis of pi.staticSubnetIp">
+                        {{pis.baseIp}}<span *ngIf="pis.mask !== 32">/{{pis.mask}}</span>
+                        <div class="ip-detail" *ngIf="pis.mask !== 32">{{getIPDetail(pis)}}</div>
+                      </div>
                     </div>
                     <div *ngIf="!pi.staticSubnetIp && pi.dynamicIpDomain">
-                      [{{pi.dynamicIpDomain}}]
+                      {{pi.dynamicIpDomain}}
                     </div>
                   </td>
                   <td>
@@ -238,11 +244,6 @@
                       <span class="link-text" style="cursor: pointer;" (click)="showProfileEditWizard(pi.id)">{{
                         pi.rootProfile?pi.rootProfile.name: 'No Profile!' }}</span>
                     </div>
-                  </td>
-                  <td class="text-center" style="width: 55px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="showEditWizard(pi.id)">
-                      <i-feather name="edit-3" class="mr-0"></i-feather>
-                    </button>
                   </td>
                   <td class="text-center" style="width: 55px">
                     <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deletePublicIp(pi.id)">

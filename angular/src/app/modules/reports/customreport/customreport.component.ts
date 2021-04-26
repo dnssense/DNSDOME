@@ -8,10 +8,10 @@ import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-sea
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { Location } from '@angular/common';
-import { categoryMappings } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { ColumnTagInput } from '../../../core/models/ColumnTagInput';
 import { ReportService } from 'src/app/core/services/reportService';
 import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import {StaticService} from '../../../core/services/staticService';
 
 export interface CustomReportRouteParams {
   startDate?: string;
@@ -30,7 +30,8 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private location: Location,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private staticService: StaticService
   ) {
     activatedRoute.queryParams.subscribe((params: CustomReportRouteParams) => {
       this.queryParams = params;
@@ -46,6 +47,7 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   public data: any[];
 
   isShowRunBar = false;
+  categoryMappings;
 
   @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
 
@@ -62,7 +64,10 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.init();
+    this.staticService.getCategoryMapping().subscribe(mapping => {
+      this.categoryMappings = mapping;
+      this.init();
+    });
   }
 
   // bu kod monitor component .ts  icindede aynen var
@@ -85,8 +90,8 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
       this.customReportSearchComponent.searchSettings.mustnot = [];
 
       if (this.queryParams.category && this.queryParams.category != 'total') {
-        if (categoryMappings[this.queryParams.category]) {
-          categoryMappings[this.queryParams.category]?.forEach(x => {
+        if (this.categoryMappings[this.queryParams.category]) {
+          this.categoryMappings[this.queryParams.category]?.forEach(x => {
             this.customReportSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', x));
           });
         } else if (this.queryParams.category != 'total') {

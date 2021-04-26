@@ -186,14 +186,14 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     this.staticService.getCategoryList().subscribe(result => {
       result.forEach(elem => {
-        const finded = this.autocompleteItems.find(x => x.displayText === this.translatorService.translate(elem.type));
+        const finded = this.autocompleteItems.find(x => x.displayText === this.translatorService.translate(elem.group));
 
         if (finded) {
           finded.groupItems.push({ displayText: elem.name, value: elem.name });
         } else {
           this.autocompleteItems.push({
-            displayText: this.translatorService.translate(elem.type),
-            value: elem.type.split('_')[0].toLowerCase(),
+            displayText: this.translatorService.translate(elem.group),
+            value: elem.group,
             groupItems: [{ displayText: elem.name, value: elem.name }] });
         }
       });

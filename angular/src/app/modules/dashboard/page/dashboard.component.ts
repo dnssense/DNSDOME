@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit {
   // categoryList = [];
   categoryListFiltered: Category[] = [];
 
-  selectedCategory: CategoryV2 | null = null;
+  selectedCategory: CategoryV2 | Category = null;
   trafficChart: any;
   timeLineChart: any;
 
@@ -95,12 +95,13 @@ export class DashboardComponent implements OnInit {
     safe: false,
     malicious: false,
     variable: false,
-    harmful: false
+    harmful: false,
+    restricted: false
   };
 
   selectedCategoryName = 'Total';
 
-  selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful' = 'total';
+  selectedBox: 'total' | 'safe' | 'malicious' | 'variable' | 'restricted' | 'harmful' = 'total';
 
   private now: Date = new Date();
 
@@ -158,86 +159,6 @@ export class DashboardComponent implements OnInit {
   };
 
   items: TagInputValue[] = [];
-
-  categoryMappings = {
-    'variable': [
-      'Unknown',
-      'Undecided Not Safe',
-      'Undecided Safe',
-      'Domain Parking',
-      'Newly Register',
-      'Newly Up',
-      'Dead Sites',
-      'Firstly Seen'
-    ],
-    'harmful': [
-      'Illegal Drugs',
-      'Adult',
-      'Pornography',
-      'Hate/Violance/illegal',
-      'Gambling',
-      'Games',
-      'Swimsuits and Underwear',
-      'Dating',
-      'Alcohol'
-    ],
-    'safe': [
-      'Cooking',
-      'Online Video',
-      'Sport',
-      'Advertisements',
-      'Shopping',
-      'Software Downloads',
-      'Reference',
-      'Financial Services',
-      'Health',
-      'Society',
-      'Webmail',
-      'Vehicles',
-      'Government and Organization',
-      'Search Engines',
-      'Online Storage',
-      'Business Services',
-      'Entertainment',
-      'Tobacco',
-      'Blogs',
-      'Content Delivery Networks (CDN)',
-      'Social Networks',
-      'Real Estate',
-      'Forums',
-      'Arts and Culture',
-      'Kids',
-      'Job Search',
-      'Clothing and Fashion',
-      'Chats',
-      'Education',
-      'Technology and Computer',
-      'Infrastructure Service',
-      'Music',
-      'Weapon and Military',
-      'News',
-      'Religion',
-      'Vacation and Travel',
-      'Local IP',
-      'WhiteList'
-    ],
-    'malicious': [
-      'Phishing',
-      'Spam Sites',
-      'Proxy',
-      'Warez',
-      'Hacking',
-      'Potentially Dangerous',
-      'Malware/Virus',
-      'Dynamic DNS',
-      'Botnet CC',
-      'DGA Domain',
-      'BlackList',
-      'Malformed Query',
-      'Bad-IP',
-      'NX Domain'
-    ]
-  };
 
   private today: Date = new Date();
 
@@ -430,7 +351,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'harmful', selectedCategoryName: string) {
+  infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'restricted', selectedCategoryName: string) {
     this.selectedCategoryName = selectedCategoryName;
 
     this.selectedCategory = null;
@@ -527,7 +448,7 @@ export class DashboardComponent implements OnInit {
 
     this.getTrafficAnomaly(request).subscribe(x => {
       this.refreshTopDomains().subscribe();
-    })
+    });
 
 
   }
@@ -683,7 +604,7 @@ export class DashboardComponent implements OnInit {
     const istatistic = { averages: [], std_deviations: [], hits: [] };
 
     // calculate chart
-    const whichBox = this.trafficAnomaly[this.selectedBox];
+    const whichBox = this.selectedBox === 'harmful' ? this.trafficAnomaly[this.selectedBox] || this.trafficAnomaly['restricted'] : this.trafficAnomaly[this.selectedBox];
     const buckets: Bucket[] = this.selectedCategory ? this.trafficAnomaly.categories.find(x => x.name === this.selectedCategory.name)?.buckets : whichBox.buckets;
     istatistic.std_deviations = buckets.map(x => x.std);
     istatistic.averages = buckets.map(x => x.avg);
@@ -969,13 +890,13 @@ export class DashboardComponent implements OnInit {
         this.drawChartAnomaly();
       }
 
-    })
+    });
 
 
 
   }
 
-  selectCategory(cat: CategoryV2) {
+  selectCategory(cat: CategoryV2 | Category) {
     if (cat.name === this.selectedCategory?.name) {
 
       this.selectedCategory = null;
