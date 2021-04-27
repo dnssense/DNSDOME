@@ -165,7 +165,7 @@ export class ProfileWizardComponent {
 
   isInCategoryType(type: string, cat: categoryItem) {
 
-    if (cat.category.isVisible && this.categoryMappings[type]) {
+    if (this.categoryMappings && cat.category.isVisible && this.categoryMappings[type]) {
       return this.categoryMappings[type].find(x => x === cat.category.name);
     }
     return false;

@@ -230,7 +230,7 @@
                   </td>
                   <td>
                     <div *ngIf="pi.staticSubnetIp && pi.staticSubnetIp.length > 0">
-                      <div *ngFor="let pis of pi.staticSubnetIp">
+                      <div *ngFor="let pis of pi.staticSubnetIp" style="margin-bottom: 5px">
                         {{pis.baseIp}}<span *ngIf="pis.mask !== 32">/{{pis.mask}}</span>
                         <div class="ip-detail" *ngIf="pis.mask !== 32">{{getIPDetail(pis)}}</div>
                       </div>

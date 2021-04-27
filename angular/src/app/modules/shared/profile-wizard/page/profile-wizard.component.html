@@ -99,7 +99,7 @@
 
           <rk-collapse-body>
             <ng-container *ngFor="let cat of categoryList">
-              <ng-container *ngIf="isInCategoryType('harmful', cat)">
+              <ng-container *ngIf="isInCategoryType('harmful', cat) || isInCategoryType('restricted', cat)">
                 <div class="d-flex align-items-center justify-content-between mt-2 pb-2"
                   style="border-bottom: 1px solid var(--infobox-border);">
                   <div class="accordion-label">{{ cat.name }}</div>
