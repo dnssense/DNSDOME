@@ -94,6 +94,7 @@ export class NavbarComponent implements OnInit {
 
         const currentUser = this.authService.currentSession?.currentUser;
         const theme = this.config.getThemeColor(currentUser?.id);
+
         // const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
         if (theme) {
 

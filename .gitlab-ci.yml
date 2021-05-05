@@ -5,22 +5,13 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   IMAGE: ui.dnssense.stage
   NS: dnssense
-  REGISTRY_DEV: registry.sea.net
-  REGISTRY_PROD: registry.canakkale.net
-  YES2ALL: 'y'
-  K8_DEV: k8dev
-  K8_PROD: k8prod
+  REGISTRY_DEV: registry.roksit.org
+  YES2ALL: "y"
   K8_FILE: ui.dnssense.yaml
-
 
 before_script:
   - export VERSION=$(cat ./angular/package.json |grep version|cut -d ':' -f 2|tr -d ,|tr -d \"|sed -e 's/^[[:space:]]*//')
   - echo $VERSION
-
-
-
-
-
 
 stages:
   - build
@@ -34,8 +25,9 @@ cache:
 build_building:
   image: node:12.14.1
   tags:
-    - builder-runner
+    - build-runner
   stage: build
+  cache: {}
   script:
     - cd angular
     - npm run install:clean
@@ -48,14 +40,10 @@ build_building:
     refs:
       - dev
 
-
-
-
-
 package_docker_dev:
   image: node:12.14.1
   tags:
-    - packager-runner
+    - package-runner
   stage: package
   script:
     - docker build -t $IMAGE .
@@ -66,27 +54,23 @@ package_docker_dev:
       - master
       - dev
 
-
-
-
-
-
 deploy_k8_dev:
   tags:
-    - deployer-runner
+    - deploy-runner
   stage: deploy
   script:
-    - git clone git@gitlab:kube_conf/conf_test.git
-    - cd conf_test
-    - export CURRENTIMAGE=$(cat dnssense/$K8_FILE|grep "$REGISTRY_DEV/$NS/$IMAGE")
+    - git clone git@gitlab:kube_dep/dep.dnssense.git
+    - cd dep.dnssense
+    - export CURRENTIMAGE=$(cat templates/dnssense/$K8_FILE|grep "{{public_registry}}/$NS/$IMAGE")
     - echo  "current  $CURRENTIMAGE"
-    - export CURRENTVERSION=$(echo $CURRENTIMAGE|cut -d ":" -f 3)
+    - export CURRENTVERSION=$(echo $CURRENTIMAGE|cut -d '"' -f2|cut -d ":" -f2)
     - export NEWIMAGE="${CURRENTIMAGE//$CURRENTVERSION/$VERSION}"
     - echo "new $NEWIMAGE"
-    - sed -i "s/${CURRENTIMAGE//\//\\/}/${NEWIMAGE//\//\\/}/g" dnssense/$K8_FILE
-    - scp dnssense/$K8_FILE root@$K8_DEV:/tmp
-    - ssh root@$K8_DEV "K8_FILE=$K8_FILE kubectl delete -f /tmp/$K8_FILE" || exit_code=$?
-    - ssh root@$K8_DEV "K8_FILE=$K8_FILE kubectl apply -f /tmp/$K8_FILE"
+    - sed -i "s/${CURRENTIMAGE//\//\\/}/${NEWIMAGE//\//\\/}/g" templates/dnssense/$K8_FILE
+    - ansible-playbook 01.preinit.playbook.yaml
+    - ansible-playbook 02.init.playbook.yaml
+    - ansible-playbook 03.postinit.playbook.yaml
+    - ansible-playbook 191.ui.dnssense.playbook.yaml
     - git add . || exit_code=$?
     - git commit -m 'rest.calculate updated' || exit_code=$?
     - git push
@@ -94,10 +78,3 @@ deploy_k8_dev:
     refs:
       - master
       - dev
-
-
-
-
-
-
-

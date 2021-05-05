@@ -31,8 +31,8 @@ export class ConfigService {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';
       this.host.aboutus = 'https://www.dnssense.com/about-us';
-      this.host.logoImage = 'logo-dnssense.png';
-      this.host.logoDarkImage = 'logo-dnssense.png';
+      this.host.logoImage = 'logo-dnssense.svg';
+      this.host.logoDarkImage = 'logo-dnssense-dark.svg';
       this.host.iconImage = 'favicon-dnssense.png';
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnssense.png';
       this.host.title = 'DnsSense';
