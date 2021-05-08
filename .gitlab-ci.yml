@@ -30,7 +30,7 @@ build_building:
   cache: {}
   script:
     - cd angular
-    - npm run install:clean --strict-ssl=false
+    - npm run install:clean
     - npm run build-prod
   artifacts:
     paths:
