@@ -604,7 +604,7 @@ export class DashboardComponent implements OnInit {
     const istatistic = { averages: [], std_deviations: [], hits: [] };
 
     // calculate chart
-    const whichBox = this.selectedBox === 'harmful' ? this.trafficAnomaly[this.selectedBox] || this.trafficAnomaly['restricted'] : this.trafficAnomaly[this.selectedBox];
+    const whichBox = this.selectedBox === 'harmful' || this.selectedBox === 'restricted' ? this.trafficAnomaly['harmful'] || this.trafficAnomaly['restricted'] : this.trafficAnomaly[this.selectedBox];
     const buckets: Bucket[] = this.selectedCategory ? this.trafficAnomaly.categories.find(x => x.name === this.selectedCategory.name)?.buckets : whichBox.buckets;
     istatistic.std_deviations = buckets.map(x => x.std);
     istatistic.averages = buckets.map(x => x.avg);

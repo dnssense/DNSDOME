@@ -89,7 +89,7 @@
                     </div>
 
                     <div class="col-2 col-lg-6 col-xl mt-3 dBox pr-0">
-                      <rk-infobox [active]="infoBoxes.harmful"
+                      <rk-infobox [active]="infoBoxes.harmful || infoBoxes.restricted"
                         (change)="infoboxChanged($event, 'restricted', 'HarmfullContent')" [type]="2"
                         [title]="translate('HarmfullContent')" className="yellow" [color]="'#EFBB1E'"
                         [valueOne]="trafficAnomaly?.restricted?.hit || trafficAnomaly?.harmful?.hit || 0"
