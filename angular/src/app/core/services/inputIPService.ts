@@ -30,10 +30,9 @@ export class InputIPService {
 
   checkIPNumber(event: KeyboardEvent|FocusEvent, inputValue: string, ipValidations?: boolean[], index?: number) {
 
-
     let isIPV4 = true;
 
-    const specialChars = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', 'Home', 'End', 'Control', 'Shift', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'];
+    const specialChars = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', 'Home', 'End', 'Control', 'Shift', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'Meta', 'OS'];
 
     const ipv4Chars = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'];
 
@@ -43,7 +42,7 @@ export class InputIPService {
     let isValid = false;
 
     if (event instanceof KeyboardEvent) {
-      if (event.ctrlKey) {
+      if (event.ctrlKey || event.metaKey) {
         return null;
       }
 
