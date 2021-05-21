@@ -512,12 +512,12 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     if (type === 'savedreport') {
       this.searchSettingEmitter.emit(this.searchSettings);
 
-      this.filterModal.toggle();
-
       this.setShowRunBar(false);
 
-      if (this.newSavedReport?.name)
+      if (this.newSavedReport?.updated && this.newSavedReport?.name)
         this.saveReport();
+
+      this.filterModal.toggle();
 
       return;
     }
@@ -712,8 +712,10 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   changeSavedReportType($event: RkRadioOutput, update?: boolean) {
     if (update) {
-      if (this.selectedSavedReport || (this.savedReportValue && (this.selectedSavedReport = this.allSavedReports.find(r => r.id === this.savedReportValue))))
-        this.newSavedReport = this.selectedSavedReport;
+      if (this.selectedSavedReport || (this.savedReportValue && (this.selectedSavedReport = this.allSavedReports.find(r => r.id === this.savedReportValue)))) {
+        this.newSavedReport = JSON.parse(JSON.stringify(this.selectedSavedReport));
+        this.newSavedReport.updated = true;
+      }
     }
 
     this.newSavedReport.scheduledReport = { period: $event.value } as ScheduledReport;
@@ -769,10 +771,11 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     if (this.newSavedReport && this.newSavedReport.name.trim().length > 0) {
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
 
-        this.newSavedReport = new SearchSetting();
+        // this.newSavedReport = new SearchSetting();
         this.notification.success(res.message);
         this.getSavedReports();
-        this.saveModal.toggle();
+        if (!this.newSavedReport?.updated)
+          this.saveModal.toggle();
 
       });
     } else {
@@ -874,7 +877,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   savedReportModalClosed(event) {
-    this.selectedSavedReport = null;
+    this.newSavedReport = new SearchSetting();
   }
 
   getDisplayText(filter: FilterBadgeModel) {

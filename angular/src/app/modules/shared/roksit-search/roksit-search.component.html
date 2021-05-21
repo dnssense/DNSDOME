@@ -1,4 +1,4 @@
-<rk-modal #saveModal>
+<rk-modal #saveModal  (close)="savedReportModalClosed($event)">
   <rk-modal-header icon="save">
     <rk-modal-header-title>
       <h5>{{ 'REPORT.SaveReport' | translate }}</h5>
@@ -58,7 +58,7 @@
   </rk-modal-footer>
 </rk-modal>
 
-<rk-modal #modal [isLightBlueBg]="true" (close)="savedReportModalClosed($event)">
+<rk-modal #modal [isLightBlueBg]="true">
   <rk-modal-header icon="file-text">
     <rk-modal-header-title>
       <h5> {{ 'REPORT.SavedReports' | translate }}</h5>
@@ -112,19 +112,19 @@
 
               <div class="mt-2">
                 <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event, true)" name="savedReportFilter"
-                          value="d" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.period === 'd'">
+                          value="d" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.status && selectedSavedReport?.scheduledReport?.period === 'd'">
                   {{ 'REPORT.ScheduleDailyReportEmail' | translate }}
                 </rk-radio>
               </div>
               <div class="mt-2">
                 <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event, true)" name="savedReportFilter"
-                          value="w" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.period === 'w'">
+                          value="w" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.status && selectedSavedReport?.scheduledReport?.period === 'w'">
                   {{ 'REPORT.ScheduleWeeklyReportEmail' | translate }}
                 </rk-radio>
               </div>
               <div class="mt-2">
                 <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event, true)" name="savedReportFilter"
-                          value="m" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.period === 'm'">
+                          value="m" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.status && selectedSavedReport?.scheduledReport?.period === 'm'">
                   {{ 'REPORT.ScheduleMontlyReportEmail' | translate }}
                 </rk-radio>
               </div>

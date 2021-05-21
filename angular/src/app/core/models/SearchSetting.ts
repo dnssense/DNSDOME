@@ -31,4 +31,6 @@ export class SearchSetting {
   startDate?: string;
   endDate?: string;
 
+  // ui extention
+  updated ? = false;
 }
