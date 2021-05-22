@@ -405,6 +405,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     }
 
     this.setShowRunBar(true);
+    if (this.filters.length === 0)
+      this.clear();
   }
 
   private __deepCopy(obj: any) {
@@ -495,6 +497,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     // this.filters.splice(index, 1);
 
     this.setShowRunBar(true);
+    if (this.filters.length === 0)
+      this.clear();
   }
 
   setDateOptionBySearchSettings(dateInterval?: number) {
@@ -603,6 +607,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   clear() {
     this.searchSettings = new SearchSetting();
+    this.selectedSavedReport = new SearchSetting();
+    this.savedReportValue = 0;
 
     this.searchSettings.must = [];
     this.searchSettings.mustnot = [];
@@ -769,6 +775,9 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   saveReport() {
 
     if (this.newSavedReport && this.newSavedReport.name.trim().length > 0) {
+      if (this.newSavedReport.name !== this.searchSettings.name)
+        this.newSavedReport.id = 0;
+
       this.reportService.saveReport(this.newSavedReport).subscribe(res => {
 
         // this.newSavedReport = new SearchSetting();
@@ -877,7 +886,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   savedReportModalClosed(event) {
-    this.newSavedReport = new SearchSetting();
+    if (event.closed)
+      this.newSavedReport = new SearchSetting();
   }
 
   getDisplayText(filter: FilterBadgeModel) {
