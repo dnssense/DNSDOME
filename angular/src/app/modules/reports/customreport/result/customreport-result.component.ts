@@ -111,7 +111,8 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     ],
     rows: [],
     selectableRows: true,
-    arrowVisible:true
+    arrowVisible: true,
+    isSelectedAll: false
   };
 
   paginationOptions: RkSelectModel[] = [
@@ -156,7 +157,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   }
 
   public search(searchSetting: SearchSetting) {
-    this.firstDate = searchSetting.dateInterval ;
+    this.firstDate = searchSetting.dateInterval;
     this.fillResultTable(searchSetting);
   }
 
@@ -213,13 +214,13 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
         this.tableConfig.rows.push(rowItem);
       });
       // action column exits
-     /*  if (this.selectedColumns.find(x => x.column.name == 'action') && this.tableConfig.rows.length > 1) {
-          this.selectedColumns.forEach((x, index) => {
-            if (x.column.name == 'action') {
-              this.tableConfig.rows[this.tableConfig.rows.length - 1][index] = null;
-            }
-          });
-      } */
+      /*  if (this.selectedColumns.find(x => x.column.name == 'action') && this.tableConfig.rows.length > 1) {
+           this.selectedColumns.forEach((x, index) => {
+             if (x.column.name == 'action') {
+               this.tableConfig.rows[this.tableConfig.rows.length - 1][index] = null;
+             }
+           });
+       } */
 
       this.maxHeight = window.innerWidth > 768 ? (window.innerHeight - 218) - (document.body.scrollHeight - document.body.clientHeight) : null;
     });
@@ -276,7 +277,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
             selection: {
               enabled: false,
             },
-            zoom: {enabled: false},
+            zoom: { enabled: false },
             toolbar: {
               show: false,
               tools: {
@@ -480,7 +481,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
         name: columnName,
         isLink: true,
       },
-      value: columnName === 'action' ? (value ?  'Allow' : 'Deny') : value
+      value: columnName === 'action' ? (value ? 'Allow' : 'Deny') : value
     } as LinkClick);
   }
 

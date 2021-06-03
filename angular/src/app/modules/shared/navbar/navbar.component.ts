@@ -40,6 +40,7 @@ const helpRoutes: HelpRoute[] = [
     { appRoute: '/admin/settings/users', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari', dnscyteRoute: 'settings/users' },
     { appRoute: '/admin/settings/apikeys', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari', dnscyteRoute: 'settings/users' },
     { appRoute: '/admin/settings/scheduled-reports', helpRouteEn: 'ayarlar/saved-reports', helpRouteTr: 'ayarlar/saved-reports', dnscyteRoute: 'settings/scheduled-reports' },
+    { appRoute: '/admin/settings/common-bwlist', helpRouteEn: 'ayarlar/common-bwlist', helpRouteTr: 'ayarlar/common-bwlist', dnscyteRoute: 'settings/common-bwlist' },
     { appRoute: '/admin/settings/query-category', helpRouteEn: 'kurulum/query-category', helpRouteTr: 'ayarlar/query-category-araci', dnscyteRoute: 'settings/query-category' },
     { appRoute: '/admin/settings/change-domain-category', helpRouteEn: 'kurulum/request-changing-domain-category', helpRouteTr: 'ayarlar/request-changing-domain-category', dnscyteRoute: 'settings/change-domain-category' },
     { appRoute: '/admin/settings/theme-mode', helpRouteEn: 'kurulum/theme-mode', helpRouteTr: 'ayarlar/theme-mode', dnscyteRoute: 'settings/theme-mode' },

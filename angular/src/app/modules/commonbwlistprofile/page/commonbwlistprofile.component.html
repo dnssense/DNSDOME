@@ -1,0 +1,115 @@
+<div class="rk-base-card">
+  <div class="card-item">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 p-0">
+          <h5 class="page-title">{{'CommonBWListProfile'|translate}}</h5>
+        </div>
+      </div>
+
+      <rk-modal #bwlistModal>
+        <rk-modal-header>
+          <rk-modal-header-title>
+            <h5>{{'CommonBWListProfile'|translate}}</h5>
+          </rk-modal-header-title>
+
+          <rk-modal-header-close (click)="bwlistModal.toggle()"></rk-modal-header-close>
+        </rk-modal-header>
+
+        <rk-modal-body>
+
+
+          <div class="container-fluid ">
+            <div class="rk-modal-card mt-3">
+              <div class="d-flex w-100">
+                <div class='commonbwlistmodal'>
+                  <rk-checkbox [value]="isBlocked" alignment="right" size="sm" (valueChange)="isBWChanged($event)">
+                    {{'IsBlocked' | translate}}</rk-checkbox>
+                </div>
+              </div>
+            </div>
+
+            <div class="rk-modal-card mt-3">
+              <h6 class="rk-modal-card-title">{{ 'DomainList' | translate }} ( {{'MaxCount' | translate}} 100 )
+              </h6>
+
+
+              <div class="row mt-3 mb-1">
+                <div class="col-12 d-flex justify-content-center">
+                  <textarea class="w-100" style="min-height: 500px; font-size: 12px!important;" [(ngModel)]="bwdomains">
+                    </textarea>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </rk-modal-body>
+
+        <rk-modal-footer *ngIf="saveMode !== 'NotEditable'">
+          <button class="btn btn-small w-100 mr-2" (click)="saveCommonBWList()">{{'Save'|translate}}</button>
+          <button class="btn btn-small w-100" (click)="bwlistModal.toggle()">{{'Close'|translate}}</button>
+        </rk-modal-footer>
+      </rk-modal>
+
+      <div class="row">
+        <div class="col-12 p-0 mt-3">
+          <rk-table-container class="m-0">
+
+            <div class="rk-table-container-header">
+              <div class="top-content justify-content-between">
+                <div class="d-flex align-items-center">
+                  <div class="inf mr-4">
+                    <span class="text-primary">{{ bwlist?.length }}</span> {{'QueriesListed'|translate}}
+                  </div>
+
+                  <div class="search ml-5">
+                    <div class="rk-autocomplete-container" style="width: 220px;">
+                      <input type="text" placeholder="Search" #searchbox [(ngModel)]="searchKey"
+                        class="rk-input rk-autocomplete">
+                      <i-feather class="search-icon" name="search"></i-feather>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="float-right">
+
+                  <button class="mr-2 btn btn-small btn-safe btn-icon " (click)="addToList()">
+                    <i-feather name="plus"></i-feather>
+                    {{'AddToList'|translate}}
+                  </button>
+                  <button class="mr-2 btn btn-small btn-safe btn-icon " (click)="deleteFromList()">
+                    <i-feather name="trash-2"></i-feather>
+                    {{'DeleteFromList'|translate}}
+                  </button>
+
+
+
+                  <rk-table-export (event)="exportAs($event)" [showTypes]="{ excel: true, pdf: false }"
+                    style="display: flex; float: right;align-items: center;flex:1;justify-content: center;">
+                  </rk-table-export>
+
+
+
+
+
+
+                </div>
+
+
+
+              </div>
+            </div>
+
+            <rk-table [config]="tableConfig" [tableHeight]="tableHeight + 'px'" (pageChange)="onPageChange($event)"
+              [maxSize]="5" [totalCount]="totalCount > 10000 ? 10000 : totalCount" [totalCountPlaceholder]="totalCount"
+              [pageViewCount]="pageSize" [currentPage]="page" (pageViewCountChange)="onPageViewCountChange($event)"
+              [showPagination]="true" [paginationSelectDirection]="'up'" class="fixed-headerss">
+
+            </rk-table>
+          </rk-table-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

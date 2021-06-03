@@ -627,6 +627,7 @@
         "ApiKeys": "Api Keys",
         "SavedReports": "Saved Reports",
         "SecurityProfiles": "Security Profiles",
+        "CommonBWListProfile": "Black White List",
         "QueryCategory": "Query Category",
         "RequestChangingDomainCategory": "Request Changing Domain Category",
         "ThemeMode": "ThemeMode"
@@ -675,5 +676,16 @@
     "DoH Bypass Protection": "DoH Bypass Protection",
     "ReportWillBeDeleted": "Settings for this report will be deleted!",
     "ReportDeleted": "Report Deleted",
-    "FilterIncludesInvalidChar": "Filter Text Contains Invalid Character"
+    "FilterIncludesInvalidChar": "Filter Text Contains Invalid Character",
+    "IsBlocked": "Block",
+    "CommonBWListProfile": "Black White List",
+    "PleaseSelectAtLeastOneItem": "Please select at least one item",
+    "MaxCount": "Max",
+    "DomainList": "Domain List",
+    "AddToList": "Add To List",
+    "DeleteFromList": "Delete From List",
+    "PleaseEnterSomeDomains": "Please enter at least one domain",
+    "InsertDate": "Insert Date",
+    "Comment": "Comment",
+    "SelectedDomainsWillBeDeleted": "Selected domains will be deleted"
 }

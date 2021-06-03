@@ -100,6 +100,10 @@ export class StaticMessageService {
     return this.translator.translate(`SelectedPublicIpAndItsSettingsWillBeDeleted`);
   }
 
+  get selectedDomainsWillBeDeletedMessage(): string {
+    return this.translator.translate(`SelectedDomainsWillBeDeleted`);
+  }
+
   get pleaseEnterAValidPublicIpAddressMessage(): string {
     return this.translator.translate(`PleaseEnterAValiePublicIpAddress`);
   }
@@ -359,6 +363,13 @@ export class StaticMessageService {
 
   get filterIncludesInvalidChar(): string {
     return this.translator.translate('FilterIncludesInvalidChar');
+  }
+
+  get pleaseSelectAtLeastOneItem(): string {
+    return this.translator.translate('PleaseSelectAtLeastOneItem');
+  }
+  get pleaseEnterSomeDomains(): string {
+    return this.translator.translate('PleaseEnterSomeDomains');
   }
 
 

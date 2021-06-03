@@ -106,6 +106,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
     this.ngUnsubscribe.complete();
   }
 
+  calculateAfterData() {
+
+    this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 480) - (document.body.scrollHeight - document.body.clientHeight) : null;
+
+  }
+
   ngAfterViewChecked() {
 
   }
@@ -243,7 +249,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
           rowItem['category'] = typeof rowItem['category'] === 'object' ? rowItem['category'].join(',') : rowItem['category'];
           this.tableConfig.rows.push(rowItem);
         });
-        this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
+        this.calculateAfterData();
       });
   }
 

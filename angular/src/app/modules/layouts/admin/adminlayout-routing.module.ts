@@ -108,6 +108,14 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../category-request/category-request.module#CategoryRequestModule'
       },
       {
+        path: 'settings/common-bwlist',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
+        loadChildren: '../../commonbwlistprofile/commonbwlistprofile.module#CommonBWListProfileModule'
+      },
+      {
         path: 'settings/theme-mode',
         canActivate: [RoleGuard],
         data: {

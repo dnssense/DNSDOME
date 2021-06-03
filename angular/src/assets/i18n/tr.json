@@ -625,6 +625,7 @@
         "ApiKeys": "Api Anahtarları",
         "SavedReports": "Kayıtlı Raporlar",
         "SecurityProfiles": "Güvenlik Profilleri",
+        "CommonBWListProfile": "Black White Listesi",
         "QueryCategory": "Kategory Sorgulama",
         "RequestChangingDomainCategory": "Alan Adı Kategorisi Değiştirme",
         "ThemeMode": "Tema"
@@ -673,5 +674,16 @@
     "DoH Bypass Protection": "DoH Atlatma Koruması",
     "ReportWillBeDeleted": "Raporla ilgili tüm ayarlar kalıcı bir şekilde silinecek!",
     "ReportDeleted": "Rapor Silindi",
-    "FilterIncludesInvalidChar": "Filtre Metni Geçersiz Karakter İçeriyor"
+    "FilterIncludesInvalidChar": "Filtre Metni Geçersiz Karakter İçeriyor",
+    "IsBlocked": "Blokla",
+    "CommonBWListProfile": "Black White Listesi",
+    "PleaseSelectAtLeastOneItem": "Lütfen en az bir seçim yapınız",
+    "MaxCount": "Maksimum",
+    "DomainList": "Domain Listesi",
+    "AddToList": "Listeye Ekle",
+    "DeleteFromList": "Listeden Sil",
+    "PleaseEnterSomeDomains": "Lütfen en azından bir domain giriniz",
+    "InsertDate": "Ekleme Zamanı",
+    "Comment": "Açıklama",
+    "SelectedDomainsWillBeDeleted": "Seçilen domainler silinecek"
 }

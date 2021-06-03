@@ -4,7 +4,7 @@ cd angular
 call npm run build-prod
 cd..
 docker build -t ui.dnssense.kodiks .
-docker tag ui.dnssense.kodiks registry.sea.net/dnssense/ui.dnssense.kodiks:%version%
+docker tag ui.dnssense.kodiks registry.roksit.org/dnssense/ui.dnssense.kodiks:%version%
 :start
 SET choice=
 SET /p choice=Do you want to push? [Y/N]: 
