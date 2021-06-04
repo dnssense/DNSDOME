@@ -398,6 +398,7 @@
     "ErrUserBadArgumentEmailAndPassword": "Email and passwords are wrong.",
     "ErrUserAllreadyExitsUser": " Email already exists, please reset your password.",
     "ErrUserTooManyRequests": "You created too many requests!",
+    "ErrTooManyRequests": "You created too many requests!",
     "ErrUserPasswordPolicy": "Password is not appropriate for security policy!",
     "ErrUserMaxLimitReached": "Maximum limit of requests exceeded!",
     "ErrDashboardInternalError": "Dashboard data could not be retrieved.",

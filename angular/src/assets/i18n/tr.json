@@ -396,6 +396,7 @@
     "ErrUserNotFoundUser": "Kullanıcı bulunamadı",
     "ErrUserBadArgumentEmail": "Hatalı email",
     "ErrUserTooManyRequests": "Aşırı istek oluşturuldu!",
+    "ErrTooManyRequests": "Aşırı istek oluşturuldu!",
     "ErrUserMaxLimitReached": "Maksimum istek sınırı aşıldı!",
     "ErrUserPasswordPolicy": "Parola güvenlik politikasına uygun değil!",
     "ErrDashboardInternalError": "Kontrol paneli verileri alınamadı",
