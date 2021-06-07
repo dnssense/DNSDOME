@@ -485,7 +485,9 @@
         "BlackList": "Kara liste",
         "Malformed Query": "Bozuk istek",
         "Bad-IP": "Bad-IP",
-        "NX Domain": "NX Domain"
+        "NX Domain": "NX Domain",
+        "Empty Site": "Boş Site",
+        "DOH": "DoH"
     },
     "DeviceSaved": "Cihaz kaydedildi",
     "DevicesSaved": "Cihazlar kaydedildi",

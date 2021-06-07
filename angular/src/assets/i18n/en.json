@@ -487,7 +487,9 @@
         "BlackList": "BlackList",
         "Malformed Query": "Malformed Query",
         "Bad-IP": "Bad-IP",
-        "NX Domain": "NX Domain"
+        "NX Domain": "NX Domain",
+        "Empty Site": "Empty Site",
+        "DOH": "DoH"
     },
     "DeviceSaved": "Device saved",
     "DevicesSaved": "Devices saved",

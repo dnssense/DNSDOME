@@ -1,28 +1,4 @@
 {
-  "/api/agent": {
-    "target": "http://192.168.10.106:9030",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
-  "/api/device": {
-    "target": "http://192.168.10.106:9030",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
-  "/api/profile": {
-    "target": "http://192.168.10.106:9030",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
-  "/api/commonbwlistprofile": {
-    "target": "http://192.168.10.106:9030",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
   "/api/*": {
     "target": "http://beta.roksit.com",
     "secure": false,
