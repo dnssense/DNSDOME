@@ -16,6 +16,7 @@ import { LOCAL_STORAGE_THEME_COLOR } from 'src/app/modules/theme/theme.component
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { environment } from 'src/environments/environment';
+import * as punycode from 'punycode';
 
 export interface TableBadgeOutput {
   name: string;
@@ -92,8 +93,8 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   tableConfig: RkTableConfigModel = {
     columns: [
       /* { id: 0, name: 'time', displayText: 'Time', isLink: true }, */
-      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true },
-      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true },
+      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
+      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
       { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), isLink: true },
       { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), isLink: true },
       { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
@@ -210,6 +211,11 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
           rowItem[selectedCol.column.name] = item[index];
 
         });
+
+        if (rowItem['domain'] !== punycode.toUnicode(rowItem['domain']) || rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))
+          rowItem.popoverRows = [{domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain'])}];
+        else
+          rowItem.popoverClass = 'none';
 
         this.tableConfig.rows.push(rowItem);
       });

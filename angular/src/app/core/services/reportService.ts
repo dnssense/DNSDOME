@@ -45,8 +45,8 @@ export class ReportService {
   public initTableColumns(): Observable<LogColumn[]> {
     return Observable.of([
       { 'name': 'time', 'beautyName': 'Time', 'hrType': 'DNS_DATETIME', 'aggsType': '', 'checked': true, hide: true },
-      { 'name': 'domain', 'beautyName': 'TableColumn.Domain', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?([.-]?\w+[.-]?)+\*?)$/i },
-      { 'name': 'subdomain', 'beautyName': 'TableColumn.Subdomain', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?([.-]?\w+[.-]?)+\*?)$/i },
+      { 'name': 'domain', 'beautyName': 'TableColumn.Domain', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?(\.?-*\w+\.?-*)+\*?)$/i },
+      { 'name': 'subdomain', 'beautyName': 'TableColumn.Subdomain', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?(\.?-*\w+\.?-*)+\*?)$/i },
       { 'name': 'sourceIp', 'beautyName': 'TableColumn.SourceIp', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?)$/i },
       { 'name': 'sourceIpCountryCode', 'beautyName': 'TableColumn.SourceCountry', 'hrType': 'COUNTRY_FLAG', 'aggsType': 'TERM', 'checked': false, inputPattern: /^([A-Z]*|N\/?A?)$/i },
       { 'name': 'destinationIp', 'beautyName': 'TableColumn.DestinationIp', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?|N\/?A?)$/i },

@@ -15,6 +15,7 @@ import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { environment } from 'src/environments/environment';
+import * as punycode from 'punycode';
 
 export interface LinkClick {
   columnModel: RkTableColumnModel;
@@ -67,8 +68,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
   tableConfig: RkTableConfigModel = {
     columns: [
       { id: 0, name: 'time', displayText: this.translateService.translate('TableColumn.Time'), isLink: true },
-      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true },
-      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true },
+      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
+      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
       { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), isLink: true },
       { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), isLink: true },
       { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
@@ -156,8 +157,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 6, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
       { id: 7, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
       // { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
-      { id: 8, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true },
-      { id: 9, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true },
+      { id: 8, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
+      { id: 9, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
       { id: 10, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
       { id: 11, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
       { id: 12, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
@@ -247,6 +248,12 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
           rowItem['action'] = rowItem['action'] === true ? 'Allow' : 'Deny';
 
           rowItem['category'] = typeof rowItem['category'] === 'object' ? rowItem['category'].join(',') : rowItem['category'];
+
+          if (rowItem['domain'] !== punycode.toUnicode(rowItem['domain']) || rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))
+            rowItem.popoverRows = [{domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain'])}];
+          else
+            rowItem.popoverClass = 'none';
+
           this.tableConfig.rows.push(rowItem);
         });
         this.calculateAfterData();

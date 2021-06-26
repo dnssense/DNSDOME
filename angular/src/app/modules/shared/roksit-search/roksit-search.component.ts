@@ -18,7 +18,7 @@ import { ReportService } from 'src/app/core/services/reportService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { StaticService } from 'src/app/core/services/staticService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
-import {AlertService} from "../../../core/services/alert.service";
+import {AlertService} from '../../../core/services/alert.service';
 
 export class GroupedCategory {
   type: string;
@@ -186,6 +186,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     this.staticService.getCategoryList().subscribe(result => {
       result.forEach(elem => {
+        if (!elem.group)
+          return;
         const finded = this.autocompleteItems.find(x => x.displayText === this.translatorService.translate(elem.group));
 
         if (finded) {
