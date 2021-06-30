@@ -212,10 +212,12 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
 
         });
 
-        if (rowItem['domain'] !== punycode.toUnicode(rowItem['domain']) || rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))
+        if ((rowItem['domain'] && rowItem['domain'] !== punycode.toUnicode(rowItem['domain'])) ||
+            (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))) {
           rowItem.popoverRows = [{domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain'])}];
-        else
+        } else {
           rowItem.popoverClass = 'none';
+        }
 
         this.tableConfig.rows.push(rowItem);
       });

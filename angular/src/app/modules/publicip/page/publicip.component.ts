@@ -476,11 +476,11 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       if (!findedMyPublicIp) {
         ip0.baseIp = ip;
       }
-      if (isip.v4(ip0.baseIp)) {
+      if (!ip0.baseIp || isip.v4(ip0.baseIp)) {
         ip0.mask = 32;
         this.changeIpCidr(true);
       } else {
-        ip0.mask = 32;
+        ip0.mask = 128;
         this.changeIpCidr(false);
       }
 

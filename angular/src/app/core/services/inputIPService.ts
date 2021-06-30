@@ -71,7 +71,7 @@ export class InputIPService {
         }
       }
       const isipV6 = this.hasOneOfChars(inputValue, ipv6Chars);
-      const isipV4 = this.hasOneOfChars(inputValue, ['.']);
+      const isipV4 = !inputValue || this.hasOneOfChars(inputValue, ['.']);
 
       if (isipV4 && !isipV6) {// ipv4
          isIPV4 = true;

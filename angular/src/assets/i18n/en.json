@@ -489,6 +489,7 @@
         "Bad-IP": "Bad-IP",
         "NX Domain": "NX Domain",
         "Empty Site": "Empty Site",
+        "Empty Sites": "Empty Sites",
         "DOH": "DoH"
     },
     "DeviceSaved": "Device saved",
