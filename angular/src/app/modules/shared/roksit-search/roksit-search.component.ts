@@ -144,8 +144,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   categoryFilters: FilterBadgeModel[] = [];
 
-  savedReportOptions: RkSelectModel[] = [];
-
   dateText: string;
 
   inputError: string;
@@ -214,9 +212,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
       this.savedReports = res.filter(x => !x.system);
       this.systemSavedReports = res.filter(x => x.system);
-      this.savedReportOptions = this.savedReports.map(x => {
-        return { displayText: x.name, value: x.id } as RkSelectModel;
-      });
     });
   }
 
@@ -733,14 +728,18 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     if (this.searchSettings.name.length > 0) {
 
-      this.savedReportOptions = this.savedReportOptions.map(x => {
-        return { ...x, selected: x.value === this.searchSettings.id };
-      });
       this.fillSearchSettingsByFilters();
       this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
-      this.newSavedReport.name = this.searchSettings.name;
 
-      this.newSavedReport.id = this.searchSettings.id;
+      if (this.newSavedReport.system) {
+        this.newSavedReport.name = this.searchSettings.name + ' (copy)';
+        let cnt = 0;
+        while (this.savedReports.filter(r => r.name === this.newSavedReport.name).length > 0) {
+          this.newSavedReport.name = this.searchSettings.name + ` (copy ${++cnt})`;
+        }
+        this.newSavedReport.id = 0;
+        this.searchSettings.system = false;
+      }
 
 
     } else {
@@ -748,7 +747,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
       this.newSavedReport = JSON.parse(JSON.stringify(this.searchSettings));
 
-      this.searchSettings.system = false;
+      this.newSavedReport.system = false;
       this.prepareNewSaveFilter();
     }
 

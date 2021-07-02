@@ -112,19 +112,19 @@
 
               <div class="mt-2">
                 <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event, true)" name="savedReportFilter"
-                          value="d" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.status && selectedSavedReport?.scheduledReport?.period === 'd'">
+                          value="d" [disabled]="!savedReportValue || selectedSavedReport?.system" [checked]="selectedSavedReport?.scheduledReport?.status && selectedSavedReport?.scheduledReport?.period === 'd'">
                   {{ 'REPORT.ScheduleDailyReportEmail' | translate }}
                 </rk-radio>
               </div>
               <div class="mt-2">
                 <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event, true)" name="savedReportFilter"
-                          value="w" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.status && selectedSavedReport?.scheduledReport?.period === 'w'">
+                          value="w" [disabled]="!savedReportValue || selectedSavedReport?.system" [checked]="selectedSavedReport?.scheduledReport?.status && selectedSavedReport?.scheduledReport?.period === 'w'">
                   {{ 'REPORT.ScheduleWeeklyReportEmail' | translate }}
                 </rk-radio>
               </div>
               <div class="mt-2">
                 <rk-radio class="rk-radio-m-0" (valueChange)="changeSavedReportType($event, true)" name="savedReportFilter"
-                          value="m" [disabled]="!savedReportValue" [checked]="selectedSavedReport?.scheduledReport?.status && selectedSavedReport?.scheduledReport?.period === 'm'">
+                          value="m" [disabled]="!savedReportValue || selectedSavedReport?.system" [checked]="selectedSavedReport?.scheduledReport?.status && selectedSavedReport?.scheduledReport?.period === 'm'">
                   {{ 'REPORT.ScheduleMontlyReportEmail' | translate }}
                 </rk-radio>
               </div>
