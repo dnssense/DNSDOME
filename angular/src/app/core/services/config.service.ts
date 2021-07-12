@@ -18,7 +18,7 @@ export class ConfigHost {
   captcha_key: string;
   docUrl: string;
   portal: string;
-  hidenMenus?: string[];
+  hiddenMenus?: string[];
 }
 
 @Injectable({
@@ -72,7 +72,7 @@ export class ConfigService {
       this.host.supportUrl = 'https://dnssense.com';
       this.host.onlineHelpUrl = 'https://dnssense.com';
       this.host.portal = 'https://portal.dnssense.com';
-      this.host.hidenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients'];
+      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
     } else if (window.location.host.indexOf('cyte') >= 0) {
       this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'CyberCyte';
@@ -89,7 +89,7 @@ export class ConfigService {
       this.host.portal = 'https://portal.dnscyte.com';
       this.host.supportUrl = 'https://support.cybercyte.com/portal/home';
       this.host.onlineHelpUrl = 'https://docs.dnscyte.com';
-      this.host.hidenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients'];
+      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
     } else if (window.location.host.indexOf('roksit') >= 0) {
         this.host.www = 'https://www.roksit.com';
         this.host.brand = 'Roksit';
@@ -105,7 +105,7 @@ export class ConfigService {
         this.host.portal = 'https://portal.roksit.com';
         this.host.supportUrl = 'https://roksit.com';
         this.host.onlineHelpUrl = 'https://roksit.com';
-        this.host.hidenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients'];
+        this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       } else if (window.location.host.indexOf('cmerp') >= 0) {
           this.host.www = 'https://www.cmerp.my';
           this.host.brand = 'CMERP';
@@ -121,7 +121,7 @@ export class ConfigService {
           this.host.portal = 'https://adf.cmerp.my';
           this.host.supportUrl = 'https://cmerp.my';
           this.host.onlineHelpUrl = 'https://cmerp.my';
-          this.host.hidenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients'];
+          this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
         } else {
           this.host.www = 'https://www.dnssense.com';
           this.host.brand = 'DNSSense';
@@ -137,7 +137,7 @@ export class ConfigService {
           this.host.portal = 'https://portal.dnssense.com';
           this.host.supportUrl = 'https://dnssense.com';
           this.host.onlineHelpUrl = 'https://dnssense.com';
-          this.host.hidenMenus = []; // put paths to hide menu  exp: ['settings/query-category', 'deployment/roaming-clients'];
+          this.host.hiddenMenus = []; // put paths to hide menu  exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
         }
   }
   loadLanguage(userId: number): string | undefined {

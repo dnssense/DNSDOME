@@ -17,12 +17,12 @@ export class RoleGuard implements CanActivate {
         const ss = this.auth.currentSession;
         if (this.auth.isCurrentSessionValid() && ss && ss.currentUser
             && ss.currentUser.role && roles.includes(ss.currentUser.role.name)
-            && !this.configService.host.hidenMenus.includes(route.routeConfig.path)) {
+            && !this.configService.host.hiddenMenus.includes(route.routeConfig.path)) {
             return true;
         } else {
             this.auth.logout();
             // console.log(`roleguard failed ${expectedRole} ${this.auth.isCurrentSessionValid()} ${JSON.stringify(ss)} `);
-            //this.router.navigate(['login']);
+            // this.router.navigate(['login']);
             return false;
         }
 
