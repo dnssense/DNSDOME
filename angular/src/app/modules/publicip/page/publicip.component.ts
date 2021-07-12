@@ -207,7 +207,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     });
   }
 
-  changeProfile($event) {
+  changbeProfile($event) {
     this.showProfileEditWizard($event, false);
   }
 
@@ -264,7 +264,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   }
 
   changeIpCidr(isIPV4: boolean) {
-    if (this.ipCidr.isIPV4 != isIPV4) {
+    if (this.ipCidr.isIPV4 !== isIPV4) {
 
       this.ipCidr.isIPV4 = isIPV4;
       this.ipCidr.ipRanges = [];
@@ -415,6 +415,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   }
 
   showProfileEditWizard(id: number, t: boolean = true) {
+    this.currentStep = 1;
     let agent;
     if (t) {
       agent = this.publicIps.find(p => p.id === id);
@@ -505,7 +506,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   showEditWizard(id: string|number) {
 
     this.isNewItemUpdated = true;
-    const selectedUpdateIp = this.publicIps.find(p => p.id == Number(id));
+    const selectedUpdateIp = this.publicIps.find(p => p.id === Number(id));
 
     this.selectedIp.id = selectedUpdateIp.id;
     this.selectedIp.agentAlias = selectedUpdateIp.agentAlias;
@@ -613,7 +614,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.alertService.alertWarningAndCancel(`${this.staticMessageService.areYouSureMessage}?`, `${this.staticMessageService.selectedPublicIpAndItsSettingsWillBeDeletedMessage}!`).subscribe(
       res => {
         if (res) {
-          this.agentService.deleteAgent(id).subscribe(res => {
+          this.agentService.deleteAgent(id).subscribe(res2 => {
 
             this.notification.success(this.staticMessageService.deletedAgentLocationMessage);
             this.getPublicIpsDataAndProfiles();
@@ -758,11 +759,19 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
   rkSelectButtonClicked($event: { clicked: boolean }) {
     this.saveMode = 'NewProfile';
+    this.selectedAgent = JSON.parse(JSON.stringify(this.selectedIp));
+    this.currentStep = 1;
 
     this.profileModal.toggle();
   }
 
   getIPDetail(ip: IpWithMask) {
     return this.inputIpService.getIPDetails(ip);
+  }
+
+  profileModalClosed(event) {
+    if (event.closed) {
+      this.securityProfileChanged(this.selectedAgent.rootProfile.id);
+    }
   }
 }

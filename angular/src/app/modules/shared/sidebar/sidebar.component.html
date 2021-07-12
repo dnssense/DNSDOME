@@ -7,8 +7,8 @@
     </li>
 
     <li class="sidebar-list-item" [ngClass]="{'active': menuItem.selected}" *ngFor="let menuItem of menuItems">
-        <a class="ripple" (click)="setActive(menuItem)" [routerLink]="!menuItem.subMenu ? [menuItem.path] : []"
-            routerLinkActive="active">
+        <a class="ripple" (click)="setActive(menuItem)" [routerLink]="!menuItem.subMenu ? [menuItem.path] : []"
+            routerLinkActive="active" *ngIf="!configService.host.hidenMenus.includes(menuItem.path)">
             <icon-for-menu [type]="menuItem.icon"></icon-for-menu>
             <span class="text">{{ menuItem.text | translate}}</span>
             <i-feather name="chevron-down" class="dropdown-icon" *ngIf="menuItem.subMenu"></i-feather>
@@ -18,7 +18,7 @@
             <li class="sidebar-list-item" [ngClass]="{'active': subMenuItem.selected}"
                 *ngFor="let subMenuItem of menuItem.subMenu">
                 <a (click)="setActive(menuItem, subMenuItem)" [routerLink]="[menuItem.path + subMenuItem.path]"
-                    routerLinkActive="active">
+                    routerLinkActive="active" *ngIf="!configService.host.hidenMenus.includes(subMenuItem.path)">
                     <icon-for-menu [type]="subMenuItem.icon"></icon-for-menu>
                     <span class="text">{{ subMenuItem.text | translate }}</span>
                 </a>

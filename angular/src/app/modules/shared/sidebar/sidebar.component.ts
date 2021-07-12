@@ -22,7 +22,7 @@ export class SidebarComponent implements OnInit {
     private router: Router,
     private translator: TranslatorService,
     private alert: AlertService,
-    private configService: ConfigService,
+    public configService: ConfigService,
     private rkLayout: RkLayoutService
   ) {
     this.host = this.configService.host;
@@ -38,33 +38,7 @@ export class SidebarComponent implements OnInit {
   currentUser: User;
   host: ConfigHost;
 
-  _menuItems: RkMenuItem[] = [
-    { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-    { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-    { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-    {
-      id: 3, path: '/admin/', text: 'PageName.Deployment', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER'],
-      subMenu: [
-        { id: 3.1, path: 'deployment/public-ip', text: 'PageName.PublicIp', icon: 'public-ip', selected: false, roles: ['ROLE_CUSTOMER'] },
-        { id: 3.2, path: 'deployment/devices', text: 'PageName.Devices', icon: 'device', selected: false, roles: ['ROLE_CUSTOMER'] },
-        { id: 3.3, path: 'deployment/roaming-clients', text: 'PageName.RoamingClients', icon: 'roaming-clients', selected: false, roles: ['ROLE_CUSTOMER'] },
-      ]
-    },
-    { id: 4, path: '/admin/reports/audit', text: 'PageName.AuditLogs', icon: 'audit', selected: false, roles: ['ROLE_CUSTOMER'] },
-    {
-      id: 5, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'],
-      subMenu: [
-        { id: 5.1, path: 'settings/users', text: 'PageName.Users', icon: 'user', selected: false, roles: ['ROLE_CUSTOMER'] },
-        { id: 5.2, path: 'settings/apikeys', text: 'PageName.ApiKeys', icon: 'apikey', selected: false, roles: ['ROLE_CUSTOMER'] },
-        { id: 5.3, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-        { id: 5.4, path: 'settings/common-bwlist', text: 'PageName.CommonBWListProfile', icon: 'bwlist', selected: false, roles: ['ROLE_CUSTOMER'] },
-        { id: 5.5, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false, roles: ['ROLE_CUSTOMER'] },
-        { id: 5.6, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-        { id: 5.7, path: 'settings/change-domain-category', text: 'PageName.RequestChangingDomainCategory', icon: 'request-category', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-        { id: 5.8, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-      ]
-    }
-  ];
+  _menuItems = ConfigService.menuItems;
 
   setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, hasSub?: RkMenuItem) {
 

@@ -8,8 +8,7 @@
           <div class="col-12 d-flex align-items-center justify-content-center py-3 mb-2 single-row"
             style="padding-top: 0 !important;padding-bottom: 0 !important;">
             <div class="rk-tabs" style="width: 420px;">
-              <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">{{'Roaming
-                Clients'}}</div>
+              <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">{{'Roaming Clients'}}</div>
               <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">
                 {{'Groups'}}</div>
             </div>
@@ -66,8 +65,9 @@
                       {{'DefaultSecurityProfileDescription'|translate}}
                     </p>
 
-                    <rk-select [options]="securityProfilesForSelectDefaultSettings"
-                      [(value)]="selectedDefaultRomainProfileId" (valueChange)="defaultRoamingProfileChanged($event)">
+                    <rk-select [options]="securityProfilesForSelectDefaultSettings" [(value)]="selectedDefaultRomainProfileId"
+                               (valueChange)="defaultRoamingProfileChanged($event)" [isShowButton]="true" buttonIcon="plus"
+                               buttonText="Create new profile" (buttonClickEmitter)="rkSelectButtonClicked($event)">
 
                     </rk-select>
                   </div>
@@ -295,19 +295,20 @@
                   <div class="col-12">
                     <input type="text" class="rk-input w-100" placeholder="Name"
                       [(ngModel)]="selectedClient.agentAlias">
-                    <p class="rk-description m-0">{{'PublicIpDescriptions.AgentAlias' | translate}}</p>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.AgentAlias' | translate}}</p>
                   </div>
 
                   <div class="col-12 mt-3">
                     <input type="text" class="rk-input w-100" placeholder="Block Message"
                       [(ngModel)]="selectedClient.blockMessage">
-                    <p class="rk-description m-0">{{'PublicIpDescriptions.BlockMessage' | translate}}</p>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.BlockMessage' | translate}}</p>
                   </div>
 
                   <div class="col-12 mt-3" *ngIf="!(selectedClient?.agentGroup?.groupName)">
                     <rk-select [options]="securityProfilesForSelect" (valueChange)="profileSelectChange($event)"
-                      [(value)]="selectedClient.rootProfile.id"></rk-select>
-                    <p class="rk-description m-0">{{'PublicIpDescriptions.Profile' | translate}}</p>
+                      [(value)]="selectedClient.rootProfile.id" [isShowButton]="true" buttonIcon="plus"
+                      buttonText="Create new profile" (buttonClickEmitter)="rkSelectButtonClicked($event)"></rk-select>
+                    <p class="rk-description m-0">{{'PublicIpDescriptions.Profile' | translate}}</p>
                   </div>
 
 
@@ -559,6 +560,27 @@
           </rk-modal-footer>
         </rk-modal>
 
+        <rk-modal #profileModal>
+          <rk-modal-header>
+            <rk-modal-header-title>
+              <h5>{{'SecurityProfile'|translate}}</h5>
+            </rk-modal-header-title>
+            <rk-modal-header-close (click)="profileModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+
+            <app-profile-wizard #profileWizard [selectedAgent]="profileClient" [currentStep]="currentStep"
+                                [saveMode]="saveMode" (saveEmitter)="saveProfileEmit()"></app-profile-wizard>
+
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn w-100 btn-small mr-2" (click)="saveProfile()">{{'Save'|translate}}</button>
+            <button class="btn w-100 btn-small" (click)="nextStep()">{{'Next'|translate}}</button>
+          </rk-modal-footer>
+        </rk-modal>
+
         <div class="col-12 p-0 mt-3 groupsOfRoamingClients" *ngIf="activeTabNumber === 1">
 
           <rk-table-container class="m-0 mx-auto">
@@ -681,18 +703,29 @@
                   <th> {{'UserDisabledSmartCache'|translate}}</th>
                   <th> {{'SmartCache'|translate}}</th>
                   <th> {{'OS'|translate}}</th>
-                  <th colspan="2">{{'Operation'|translate}}</th>
+                  <th>{{'Delete'|translate}}</th>
                 </tr>
               </ng-template>
 
               <ng-template #body>
                 <tr
-                  *ngFor="let c of clientsForShow | multifilter: searchKeyUnGroup : 'agentAlias,mac,rootProfile.name,agentGroup.groupName,os,hostname'">
+                  *ngFor="let c of clientsForShow | multifilter: searchKeyUnGroup : 'agentAlias,mac,rootProfile.name,agentGroup.groupName,os,hostname'">
                   <td style="width: 60px">
                     <rk-checkbox [(value)]="c.selected"></rk-checkbox>
                   </td>
-                  <td>{{ c.agentAlias }}</td>
-                  <td>{{ c.rootProfile.name }}</td>
+                  <td>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="openRoamingClientModal(c)" style="text-decoration: underline;font-size: 12px">
+                        {{ c.agentAlias }}
+                      </button>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <span class="link-text" style="cursor: pointer;" (click)="showProfileEditWizard(c.id)">{{
+                        c.rootProfile ? c.rootProfile.name : 'No Profile!' }}</span>
+                    </div>
+                  </td>
                   <td>{{ c?.agentGroup?.groupName ? c?.agentGroup?.groupName : ('NoGroup'|translate) }}</td>
                   <td class="text-center" style="width: 60px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -732,12 +765,6 @@ Version:{{c.version}}">
 
                   </td>
                   <td style="width: 30px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" style="background: transparent;"
-                      (click)="openRoamingClientModal(c)">
-                      <i-feather name="edit-3"></i-feather>
-                    </button>
-                  </td>
-                  <td style="width: 30px">
                     <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)"
                       style="background: transparent;">
                       <i-feather name="trash-2"></i-feather>
@@ -745,7 +772,7 @@ Version:{{c.version}}">
                   </td>
                 </tr>
 
-                <tr *ngIf="clientsGroupedFiltered?.length === 0">
+                <tr *ngIf="(isGroupedRadioButtonSelected ? clientsGroupedFiltered : clientsUngroupedFiltered)?.length === 0">
                   <td colspan="5">{{'NoData'|translate}}</td>
                 </tr>
               </ng-template>

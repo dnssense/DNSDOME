@@ -25,7 +25,7 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="rk-modal-card d-flex flex-column align-items-center justify-content-between">
-                      <h6 class="rk-modal-card-title w-100 mb-2">{{ 'IpType' | translate }}</h6>
+                      <h6 class="rk-modal-card-title w-100 mb-2">{{ 'IpType' | translate }}</h6>
 
                       <div class="d-flex w-100">
                         <div style="flex: 1">
@@ -126,14 +126,14 @@
                         (valueChange)="securityProfileChanged($event)" [isShowButton]="true" buttonIcon="plus"
                         buttonText="Create new profile" (buttonClickEmitter)="rkSelectButtonClicked($event)">
                       </rk-select>
-                      <p class="rk-description m-0">{{'PublicIpDescriptions.Profile' | translate}}</p>
+                      <p class="rk-description m-0">{{'PublicIpDescriptions.Profile' | translate}}</p>
                     </div>
 
                     <div class="col-12 mt-3">
                       <textarea class="rk-input textarea w-100 resize:none" name="blockMessage" id="blockMessage"
                         [(ngModel)]="selectedIp.blockMessage" placeholder="{{'BlockMessage'|translate}}" rows="4"
                         [ngModelOptions]="{standalone: true}"></textarea>
-                      <p class="rk-description m-0">{{'PublicIpDescriptions.BlockMessage' | translate}}</p>
+                      <p class="rk-description m-0">{{'PublicIpDescriptions.BlockMessage' | translate}}</p>
                     </div>
 
                     <div class="col-12 mt-3">
@@ -141,8 +141,8 @@
                         (keydown)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)" (blur)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)"
                         [(ngModel)]="selectedIp.cyberXRayIp" [ngModelOptions]="{standalone: true}"
                         [ngClass]="{'input-error': sinkHoleValidation[0] === false}">
-                      <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp1' | translate}}</p>
-                      <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp2' | translate}}</p>
+                      <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp1' | translate}}</p>
+                      <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp2' | translate}}</p>
                     </div>
                   </div>
 
@@ -159,7 +159,7 @@
           </rk-modal-footer>
         </rk-modal>
 
-        <rk-modal #profileModal>
+        <rk-modal #profileModal (close)="profileModalClosed($event)">
           <rk-modal-header>
             <rk-modal-header-title>
               <h5>{{'SecurityProfile'|translate}}</h5>

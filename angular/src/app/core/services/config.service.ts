@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RkUtilityService } from 'roksit-lib';
 import { TranslatorService } from './translator.service';
+import {RkMenuItem} from 'roksit-lib/lib/models/rk-menu.model';
 
 export class ConfigHost {
   www: string;
@@ -17,12 +18,41 @@ export class ConfigHost {
   captcha_key: string;
   docUrl: string;
   portal: string;
+  hidenMenus?: string[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
+
+  static menuItems: RkMenuItem[] = [
+    { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+    { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+    { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+    {
+      id: 3, path: '/admin/', text: 'PageName.Deployment', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER'],
+      subMenu: [
+        { id: 3.1, path: 'deployment/public-ip', text: 'PageName.PublicIp', icon: 'public-ip', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 3.2, path: 'deployment/devices', text: 'PageName.Devices', icon: 'device', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 3.3, path: 'deployment/roaming-clients', text: 'PageName.RoamingClients', icon: 'roaming-clients', selected: false, roles: ['ROLE_CUSTOMER'] },
+      ]
+    },
+    { id: 4, path: '/admin/reports/audit', text: 'PageName.AuditLogs', icon: 'audit', selected: false, roles: ['ROLE_CUSTOMER'] },
+    {
+      id: 5, path: '/admin/', text: 'PageName.Settings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'],
+      subMenu: [
+        { id: 5.1, path: 'settings/users', text: 'PageName.Users', icon: 'user', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 5.2, path: 'settings/apikeys', text: 'PageName.ApiKeys', icon: 'apikey', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 5.3, path: 'settings/scheduled-reports', text: 'PageName.SavedReports', icon: 'saved-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        { id: 5.4, path: 'settings/common-bwlist', text: 'PageName.CommonBWListProfile', icon: 'bwlist', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 5.5, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 5.6, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        { id: 5.8, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+      ]
+    }
+  ];
+
   host: ConfigHost;
   constructor(private translationservice: TranslatorService, private rkUtilityService: RkUtilityService) {
 
@@ -42,6 +72,7 @@ export class ConfigService {
       this.host.supportUrl = 'https://dnssense.com';
       this.host.onlineHelpUrl = 'https://dnssense.com';
       this.host.portal = 'https://portal.dnssense.com';
+      this.host.hidenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients'];
     } else if (window.location.host.indexOf('cyte') >= 0) {
       this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'CyberCyte';
@@ -58,8 +89,8 @@ export class ConfigService {
       this.host.portal = 'https://portal.dnscyte.com';
       this.host.supportUrl = 'https://support.cybercyte.com/portal/home';
       this.host.onlineHelpUrl = 'https://docs.dnscyte.com';
-    } else
-      if (window.location.host.indexOf('roksit') >= 0) {
+      this.host.hidenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients'];
+    } else if (window.location.host.indexOf('roksit') >= 0) {
         this.host.www = 'https://www.roksit.com';
         this.host.brand = 'Roksit';
         this.host.aboutus = 'https://www.roksit.com/about-us';
@@ -74,9 +105,8 @@ export class ConfigService {
         this.host.portal = 'https://portal.roksit.com';
         this.host.supportUrl = 'https://roksit.com';
         this.host.onlineHelpUrl = 'https://roksit.com';
-
-      } else
-        if (window.location.host.indexOf('cmerp') >= 0) {
+        this.host.hidenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients'];
+      } else if (window.location.host.indexOf('cmerp') >= 0) {
           this.host.www = 'https://www.cmerp.my';
           this.host.brand = 'CMERP';
           this.host.aboutus = 'https://www.cmerp.my/about-us';
@@ -91,6 +121,7 @@ export class ConfigService {
           this.host.portal = 'https://adf.cmerp.my';
           this.host.supportUrl = 'https://cmerp.my';
           this.host.onlineHelpUrl = 'https://cmerp.my';
+          this.host.hidenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients'];
         } else {
           this.host.www = 'https://www.dnssense.com';
           this.host.brand = 'DNSSense';
@@ -106,6 +137,7 @@ export class ConfigService {
           this.host.portal = 'https://portal.dnssense.com';
           this.host.supportUrl = 'https://dnssense.com';
           this.host.onlineHelpUrl = 'https://dnssense.com';
+          this.host.hidenMenus = []; // put paths to hide menu  exp: ['settings/query-category', 'deployment/roaming-clients'];
         }
   }
   loadLanguage(userId: number): string | undefined {
@@ -187,5 +219,4 @@ export class ConfigService {
     }
     return null;
   }
-
 }

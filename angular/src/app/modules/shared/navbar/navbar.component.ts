@@ -82,7 +82,7 @@ export class NavbarComponent implements OnInit {
         private notification: NotificationService,
         private alert: AlertService,
         private auth: AuthenticationService,
-        private config: ConfigService,
+        public config: ConfigService,
         private translator: TranslatorService,
         private notificationApiService: NotificationApiService,
         private activatedRoute: ActivatedRoute,
@@ -119,31 +119,7 @@ export class NavbarComponent implements OnInit {
 
     @ViewChild('sidebar') sidebar: RkModalModel;
 
-    //_menuItems: RkMenuItem[] = [];
-    /*     [
-           { id: 0, path: '/admin/dashboard', text: 'Dashboard', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-           { id: 1, path: '/admin/reports/monitor', text: 'Monitor', icon: 'monitor', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-           { id: 2, path: '/admin/reports/custom-reports', text: 'Custom Reports', icon: 'custom-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-           {
-               id: 3, path: '/admin/', text: 'Deployment', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER'],
-               subMenu: [
-                   { id: 3.1, path: 'deployment/public-ip', text: 'Public IP', icon: 'public-ip', selected: false, roles: ['ROLE_CUSTOMER'] },
-                   { id: 3.2, path: 'deployment/devices', text: 'Devices', icon: 'device', selected: false, roles: ['ROLE_CUSTOMER'] },
-                   { id: 3.3, path: 'deployment/roaming-clients', text: 'Roaming Clients', icon: 'roaming-clients', selected: false, roles: ['ROLE_CUSTOMER'] },
-               ]
-           },
-           {
-               id: 4, path: '/admin/', text: 'Settings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'],
-               subMenu: [
-                   { id: 4.1, path: 'settings/users', text: 'User', icon: 'user', selected: false, roles: ['ROLE_CUSTOMER'] },
-                   { id: 4.2, path: 'settings/scheduled-reports', text: 'Saved Reports', icon: 'saved-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-                   { id: 4.3, path: 'settings/profiles', text: 'Security Profiles', icon: 'security-profiles', selected: false, roles: ['ROLE_CUSTOMER'] },
-                   { id: 4.4, path: 'settings/query-category', text: 'Query Category', icon: 'tools', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-                   { id: 4.5, path: 'settings/change-domain-category', text: 'Request Changing Domain Category', icon: 'request-category', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-                   { id: 4.6, path: 'settings/theme-mode', text: 'Theme Mode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-               ]
-           }
-       ]; */
+    _menuItems: RkMenuItem[] = ConfigService.menuItems;
 
     ngOnInit() {
         //this.listTitles = ROUTES.filter(listTitle => listTitle);
@@ -280,24 +256,24 @@ export class NavbarComponent implements OnInit {
     }
 
     setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, existsSubMenu = false) {
-        /*    this._menuItems.forEach(elem => elem.selected = false);
-   
+            this._menuItems.forEach(elem => elem.selected = false);
+
            menuItem.selected = true;
-   
+
            this._menuItems.forEach(elem => {
                if (elem.subMenu) {
                    elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
                }
            });
-   
+
            if (!existsSubMenu) {
                this.sidebar.toggle();
            }
-   
+
            if (subMenuItem) {
                subMenuItem.selected = true;
-   
+
                this.sidebar.toggle();
-           } */
+           }
     }
 }

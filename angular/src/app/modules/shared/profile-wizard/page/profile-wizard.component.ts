@@ -230,12 +230,18 @@ export class ProfileWizardComponent {
   updateModels() {
 
     if (this.saveMode === 'NewProfile') {
+      this.selectedAgent.rootProfile.name = '';
       this.categoryList.forEach(c => {
-        if (c.category.isVisible && !this.selectedAgent.rootProfile.domainProfile.categories.find(dc => c.category.id === dc.id)) {
+        let curCat;
+        if (c.category.isVisible && !(curCat = this.selectedAgent.rootProfile.domainProfile.categories.find(dc => c.category.id === dc.id))) {
           c.isBlocked = c.category.id === DOH_BYPASS;
           this.selectedAgent.rootProfile.domainProfile.categories.push({ id: c.category.id, isBlocked: c.isBlocked });
+        } else if (c.category.isVisible) {
+          c.isBlocked = c.category.id === DOH_BYPASS;
+          curCat.isBlocked = c.isBlocked;
         }
       });
+      this.selectedAgent.rootProfile.applicationProfile.categories = [];
       this.applicationList.forEach(a => {
         if (a.application.isVisible) {
           a.isBlocked = false;

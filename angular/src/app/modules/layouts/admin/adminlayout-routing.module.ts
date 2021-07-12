@@ -100,14 +100,6 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../tools/tools.module#ToolsModule'
       },
       {
-        path: 'settings/change-domain-category',
-        canActivate: [RoleGuard],
-        data: {
-          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
-        },
-        loadChildren: '../../category-request/category-request.module#CategoryRequestModule'
-      },
-      {
         path: 'settings/common-bwlist',
         canActivate: [RoleGuard],
         data: {

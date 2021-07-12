@@ -6,7 +6,7 @@ import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.compon
 import { Agent } from 'src/app/core/models/Agent';
 import { Box } from 'src/app/core/models/Box';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
-import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
+import {BlackWhiteListProfile, SecurityProfile, SecurityProfileItem} from 'src/app/core/models/SecurityProfile';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { BoxService } from 'src/app/core/services/box.service';
@@ -15,7 +15,8 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { GroupAgentModel } from '../../devices/page/devices.component';
-import { ClipboardService } from 'ngx-clipboard'
+import { ClipboardService } from 'ngx-clipboard';
+import {ProfileWizardComponent} from '../../shared/profile-wizard/page/profile-wizard.component';
 
 declare let $: any;
 export interface BoxConf {
@@ -95,6 +96,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     // clientListForGroup: Agent[] = [];
 
     selectedClient: Agent = new Agent();
+    profileClient: Agent = new Agent();
+    currentStep = 1;
 
     securityProfiles: SecurityProfile[] = [];
     securityProfilesForSelect: RkSelectModel[] = [];
@@ -166,6 +169,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     onAgentDisablePasswordChange: any;
 
     activeTabNumber = 0;
+
+    @ViewChild('profileModal') profileModal: RkModalModel;
+    @ViewChild('profileWizard') profileWizard: ProfileWizardComponent;
 
     categoryOptions: RkSelectModel[] = [
         {
@@ -923,5 +929,82 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             this.isGroupedRadioButtonSelected = false;
             this.showGroupedClients(false);
         }
+    }
+
+    rkSelectButtonClicked($event: { clicked: boolean }) {
+        this.saveMode = 'NewProfile';
+        this.profileClient = JSON.parse(JSON.stringify(this.selectedClient));
+        this.currentStep = 1;
+
+        this.profileModal.toggle();
+    }
+
+    saveProfileEmit() {
+        this.profileModal.toggle();
+
+        this.loadClients();
+    }
+
+    saveProfile() {
+        this.profileWizard.saveProfile();
+    }
+
+    nextStep() {
+        if (this.currentStep < 3) {
+            this.currentStep++;
+        }
+    }
+
+    showProfileEditWizard(id: number, t: boolean = true) {
+        this.currentStep = 1;
+        let agent;
+        if (t) {
+            agent = this.clients.find(p => p.id === id);
+        } else {
+            agent = this.clients.find(p => p.rootProfile.id === id);
+        }
+
+        if (agent) {
+            if (agent.rootProfile && agent.rootProfile.id > 0) {
+                this.selectedClient = JSON.parse(JSON.stringify(agent));
+
+                // this.fillSecurityProfilesArray(agent);
+
+                this.saveMode = 'ProfileUpdate';
+                this.profileClient = JSON.parse(JSON.stringify(agent));
+
+                this.startWizard = true;
+
+                this.profileModal.toggle();
+            } else {
+                this.notification.warning(this.staticMessageService.profileCannotFind);
+            }
+        }
+    }
+
+    fillSecurityProfilesArray(agent?: Agent) {
+        this.securityProfilesForSelect = this.securityProfiles.map((elem, index) => {
+            const obj = {
+                displayText: elem.name,
+                value: elem.id,
+            } as RkSelectModel;
+
+            if (this.saveMode === 'NewProfile') {
+                if (index === this.securityProfiles.length - 1) {
+                    obj.selected = true;
+                }
+            } else if (agent) {
+                // tslint:disable-next-line: triple-equals
+                if (elem.id == agent.rootProfile.id) {
+                    obj.selected = true;
+                }
+            } else {
+                if ((this.selectedClient.rootProfile && this.selectedClient.rootProfile.name) && this.selectedClient.rootProfile.id === elem.id) {
+                    obj.selected = true;
+                }
+            }
+
+            return obj;
+        });
     }
 }
