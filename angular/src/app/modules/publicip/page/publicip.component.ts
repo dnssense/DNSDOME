@@ -508,17 +508,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.isNewItemUpdated = true;
     const selectedUpdateIp = this.publicIps.find(p => p.id === Number(id));
 
-    this.selectedIp.id = selectedUpdateIp.id;
-    this.selectedIp.agentAlias = selectedUpdateIp.agentAlias;
-    this.selectedIp.agentType = selectedUpdateIp.agentType;
-    this.selectedIp.blockMessage = selectedUpdateIp.blockMessage;
-    this.selectedIp.captivePortalIp = selectedUpdateIp.captivePortalIp;
-    this.selectedIp.dynamicIpDomain = selectedUpdateIp.dynamicIpDomain?.trim();
-    this.selectedIp.cyberXRayIp = selectedUpdateIp.cyberXRayIp;
-    this.selectedIp.rootProfile = selectedUpdateIp.rootProfile;
-    this.selectedIp.staticSubnetIp = selectedUpdateIp.staticSubnetIp;
-    this.selectedIp.isCpEnabled = selectedUpdateIp.isCpEnabled;
-    this.selectedIp.logo = selectedUpdateIp.logo;
+    this.selectedIp = JSON.parse(JSON.stringify(selectedUpdateIp));
 
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
 
