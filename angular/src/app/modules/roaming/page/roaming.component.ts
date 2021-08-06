@@ -6,7 +6,7 @@ import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.compon
 import { Agent } from 'src/app/core/models/Agent';
 import { Box } from 'src/app/core/models/Box';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
-import {BlackWhiteListProfile, SecurityProfile, SecurityProfileItem} from 'src/app/core/models/SecurityProfile';
+import { BlackWhiteListProfile, SecurityProfile, SecurityProfileItem } from 'src/app/core/models/SecurityProfile';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { BoxService } from 'src/app/core/services/box.service';
@@ -16,7 +16,7 @@ import { RoamingService } from 'src/app/core/services/roaming.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { GroupAgentModel } from '../../devices/page/devices.component';
 import { ClipboardService } from 'ngx-clipboard';
-import {ProfileWizardComponent} from '../../shared/profile-wizard/page/profile-wizard.component';
+import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 
 declare let $: any;
 export interface BoxConf {
@@ -198,8 +198,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.getConfParameters().subscribe();
 
-
-        // this.defineNewAgentForProfile();
     }
 
 
@@ -213,7 +211,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
 
     openConfigureModal() {
-
+        this.fillBoxDefaultSettings(this.virtualBox);
         this.configureModal.toggle();
     }
 
@@ -377,38 +375,48 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     }
 
+    fillBoxDefaultSettings(virtualBox: Box) {
+        this.dontDomains = [];
+        this.dontIps = [];
+        this.localnetIps = [];
+        this.uninstallPassword = ''
+        this.disablePassword = '';
+        this.selectedDefaultRomainProfileId = 41;
 
+        if (virtualBox?.conf) {
+            try {
+                const boxConf: BoxConf = JSON.parse(virtualBox.conf);
+                if (boxConf.donttouchdomains) {
+                    this.dontDomains = boxConf.donttouchdomains.split(',').filter(x => x).map(x => x[0] === '.' ? x.substring(1) : x);
+                }
+                if (boxConf.donttouchips) {
+                    this.dontIps = boxConf.donttouchips.split(',').filter(x => x);
+                }
+                if (boxConf.localnetips) {
+                    this.localnetIps = boxConf.localnetips.split(',').filter(x => x);
+                }
+                if (boxConf.uninstallPassword) {
+                    this.uninstallPassword = boxConf.uninstallPassword;
+                }
+                if (boxConf.disablePassword) {
+                    this.disablePassword = boxConf.disablePassword;
+                }
+
+                this.selectedDefaultRomainProfileId = boxConf.defaultRoamingSecurityProfile || 41;
+                this.fillSecurityProfilesSelectForDefaultSettings(this.securityProfiles, this.selectedDefaultRomainProfileId);
+
+            } catch (ignore) {
+                console.log(ignore);
+            }
+
+        }
+
+    }
     getConfParameters() {
 
         return this.boxService.getVirtualBox().map(res => {
             this.virtualBox = res;
-            if (res.conf) {
-                try {
-                    const boxConf: BoxConf = JSON.parse(res.conf);
-                    if (boxConf.donttouchdomains) {
-                        this.dontDomains = boxConf.donttouchdomains.split(',').filter(x => x).map(x => x[0] === '.' ? x.substring(1) : x);
-                    }
-                    if (boxConf.donttouchips) {
-                        this.dontIps = boxConf.donttouchips.split(',').filter(x => x);
-                    }
-                    if (boxConf.localnetips) {
-                        this.localnetIps = boxConf.localnetips.split(',').filter(x => x);
-                    }
-                    if (boxConf.uninstallPassword) {
-                        this.uninstallPassword = boxConf.uninstallPassword;
-                    }
-                    if (boxConf.disablePassword) {
-                        this.disablePassword = boxConf.disablePassword;
-                    }
-
-                    this.selectedDefaultRomainProfileId = boxConf.defaultRoamingSecurityProfile || 41;
-                    this.fillSecurityProfilesSelectForDefaultSettings(this.securityProfiles, this.selectedDefaultRomainProfileId);
-
-                } catch (ignore) {
-                    console.log(ignore);
-                }
-
-            }
+            this.fillBoxDefaultSettings(this.virtualBox);
         });
     }
 
@@ -481,46 +489,30 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 this.configureModal.toggle();
             })
 
-            /* this.boxService.getProgramLink().subscribe(res => {
-                if (res && res.link) {
-                    this.getConfParameters();
-
-                } else {
-                    this.notification.error(this.staticMessageService.changesCouldNotSavedMessage);
-
-                }
-                return res;
-            }); */
         });
 
     }
 
-    /*  saveDomainChanges() {
-
-         if (this.isDontDomainsValid) {
-             this.saveRoamingGlobalSettings();
-         }
-     } */
 
     downloadFile() {
         const domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
-        this.boxService.saveBoxConfig({ box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains, donttouchips: ips, localnetips: localnetworkips, uninstallPassword: this.uninstallPassword, disablePassword: this.disablePassword }).subscribe(x => {
-            this.boxService.getProgramLink().subscribe(res => {
-                if (res && res.link) {
-                    this.getConfParameters().subscribe(x => {
-                        this.fileLink = res.link;
-                        window.open(window.location.protocol + '//' + this.fileLink, '_blank');
 
-                    })
+        this.boxService.getProgramLink().subscribe(res => {
+            if (res && res.link) {
+                this.getConfParameters().subscribe(x => {
+                    this.fileLink = res.link;
+                    window.open(window.location.protocol + '//' + this.fileLink, '_blank');
 
-                    //
-                } else {
-                    this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
-                }
-            });
+                })
+
+                //
+            } else {
+                this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
+            }
         });
+
 
     }
 
