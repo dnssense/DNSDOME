@@ -61,9 +61,9 @@ export class ConfigService {
     this.host = new ConfigHost();
     this.host.cyberXRayUrl = `https://www.cyber-xray.com/#/admin/dashboard/`;
     if (window.location.host.startsWith('beta.'))
-      this.host.cyberXRayUrl = `http://beta.cyber-xray.com/#/admin/dashboard/`;
+      this.host.cyberXRayUrl = window.location.protocol + `//beta.cyber-xray.com/#/admin/dashboard/`;
     if (window.location.host.startsWith('localhost'))
-      this.host.cyberXRayUrl = `http://localhost:4202/#/admin/dashboard/`;
+      this.host.cyberXRayUrl = window.location.protocol + `//localhost:4202/#/admin/dashboard/`;
 
     if (window.location.host.indexOf('dnssense') >= 0) {
       this.host.www = 'https://www.dnssense.com';
