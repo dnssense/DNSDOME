@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { RkUtilityService } from 'roksit-lib';
 import { TranslatorService } from './translator.service';
 import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
+import { WindowInterruptSource } from '@ng-idle/core';
 
 export class ConfigHost {
   www: string;
@@ -19,6 +20,7 @@ export class ConfigHost {
   docUrl: string;
   portal: string;
   hiddenMenus?: string[];
+  cyberXRayUrl: string;
 }
 
 @Injectable({
@@ -57,6 +59,12 @@ export class ConfigService {
   constructor(private translationservice: TranslatorService, private rkUtilityService: RkUtilityService) {
 
     this.host = new ConfigHost();
+    this.host.cyberXRayUrl = `https://www.cyber-xray.com/#/admin/dashboard/`;
+    if (window.location.host.startsWith('beta.'))
+      this.host.cyberXRayUrl = `http://beta.cyber-xray.com/#/admin/dashboard/`;
+    if (window.location.host.startsWith('localhost'))
+      this.host.cyberXRayUrl = `http://localhost:4202/#/admin/dashboard/`;
+
     if (window.location.host.indexOf('dnssense') >= 0) {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';

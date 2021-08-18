@@ -17,6 +17,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { environment } from 'src/environments/environment';
 import * as punycode from 'punycode';
+import { CyberXRayService } from '../../../../core/services/cyberxray.service';
 
 export interface TableBadgeOutput {
   name: string;
@@ -36,7 +37,8 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     private pdfService: PdfService,
     private translateService: TranslatorService,
     private configService: ConfigService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private cyberxrayService: CyberXRayService
   ) {
     // const theme = localStorage.getItem(LOCAL_STORAGE_THEME_COLOR);
     const currentUser = this.authService.currentSession?.currentUser;
@@ -53,7 +55,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
 
   token;
   refreshToken;
-  navigationUrl = environment.navigationUrl;
+
 
   elementRef: ElementRef;
   public date = new Date();
@@ -213,8 +215,8 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
         });
 
         if ((rowItem['domain'] && rowItem['domain'] !== punycode.toUnicode(rowItem['domain'])) ||
-            (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))) {
-          rowItem.popoverRows = [{domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain'])}];
+          (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))) {
+          rowItem.popoverRows = [{ domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain']) }];
         } else {
           rowItem.popoverClass = 'none';
         }
@@ -503,5 +505,16 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     }
 
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  }
+
+  cyberxray(domain: string) {
+    /* const currentSession = this.authService.currentSession;
+    this.token = currentSession.token;
+    this.refreshToken = currentSession.refreshToken;
+    console.log(`${this.configService.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`)
+    window.open(`${this.configService.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank"); 
+    */
+    this.cyberxrayService.open(domain);
+
   }
 }

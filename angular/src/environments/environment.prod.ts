@@ -3,8 +3,8 @@ export const environment = {
   useMock: false,
   environment: 'prod',
   version: '20200327130000',
-  navigationUrl: 'http://www.cyber-xray.com/#/admin/dashboard/'
- // API_CAPTCHA_KEY: '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58',
+  //navigationUrl: 'http://localhost:4202/#/admin/dashboard/'
+  // API_CAPTCHA_KEY: '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58',
 
 };
 

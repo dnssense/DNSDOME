@@ -24,6 +24,7 @@ import { RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import * as numeral from 'numeral';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { environment } from 'src/environments/environment';
+import { CyberXRayService } from '../../../core/services/cyberxray.service';
 
 interface TagInputValue {
   value: string;
@@ -58,7 +59,8 @@ export class DashboardComponent implements OnInit {
     private notificationService: NotificationService,
     private staticMesssageService: StaticMessageService,
     private translatorService: TranslatorService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private cyberxrayService: CyberXRayService
   ) {
     const currentSession = this.authService.currentSession;
     this.token = currentSession.token;
@@ -88,7 +90,7 @@ export class DashboardComponent implements OnInit {
 
   token;
   refreshToken;
-  navigationUrl = environment.navigationUrl;
+
 
   infoBoxes = {
     total: true,
@@ -1009,6 +1011,16 @@ export class DashboardComponent implements OnInit {
     }
 
     return text;
+  }
+
+  cyberxray(domain: string) {
+    /* const currentSession = this.authService.currentSession;
+    this.token = currentSession.token;
+    this.refreshToken = currentSession.refreshToken;
+    console.log(`${this.config.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`)
+    window.open(`${this.config.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank"); 
+    */
+    this.cyberxrayService.open(domain);
   }
 
 

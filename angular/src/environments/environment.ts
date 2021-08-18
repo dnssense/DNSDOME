@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   useMock: false,
-  environment:'dev',
+  environment: 'dev',
   version: 'test',
-  navigationUrl: 'http://www.cyber-xray.com/#/admin/dashboard/'
+  //navigationUrl: 'http://localhost:4202/#/admin/dashboard/'
 
   // API_CAPTCHA_KEY:'6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58',// '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
 

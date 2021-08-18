@@ -16,6 +16,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { environment } from 'src/environments/environment';
 import * as punycode from 'punycode';
+import { ConfigHost, ConfigService } from '../../../../core/services/config.service';
+import { CyberXRayService } from '../../../../core/services/cyberxray.service';
 
 export interface LinkClick {
   columnModel: RkTableColumnModel;
@@ -37,7 +39,9 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
     private reportService: ReportService,
     private translateService: TranslatorService,
     private _translateService: TranslateService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private configService: ConfigService,
+    private cyberxrayService: CyberXRayService
   ) {
     _translateService.onLangChange.subscribe(result => {
       this.changeColumnNames();
@@ -57,7 +61,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
   private ngUnsubscribe: Subject<any> = new Subject<any>();
   columnListLength = 12;
 
-  navigationUrl = environment.navigationUrl;
+
 
   pageViewCount = 10;
 
@@ -250,8 +254,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
           rowItem['category'] = typeof rowItem['category'] === 'object' ? rowItem['category'].join(',') : rowItem['category'];
 
           if ((rowItem['domain'] && rowItem['domain'] !== punycode.toUnicode(rowItem['domain'])) ||
-              (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))) {
-            rowItem.popoverRows = [{domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain'])}];
+            (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))) {
+            rowItem.popoverRows = [{ domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain']) }];
           } else {
             rowItem.popoverClass = 'none';
           }
@@ -263,11 +267,13 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
   }
 
   getNavigateByClickedDomain(domain) {
-    const currentSession = this.authService.currentSession;
+    /* const currentSession = this.authService.currentSession;
     this.token = currentSession.token;
     this.refreshToken = currentSession.refreshToken;
-
-    window.open(`${this.navigationUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank");
+    console.log(`${this.configService.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`)
+    window.open(`${this.configService.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank"); 
+    */
+    this.cyberxrayService.open(domain);
   }
 
   columnSet() {
