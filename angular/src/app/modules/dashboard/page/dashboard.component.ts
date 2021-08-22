@@ -1013,7 +1013,7 @@ export class DashboardComponent implements OnInit {
     return text;
   }
 
-  cyberxray(domain: string) {
+  cyberxray(event: any, domain: string) {
     /* const currentSession = this.authService.currentSession;
     this.token = currentSession.token;
     this.refreshToken = currentSession.refreshToken;
@@ -1021,6 +1021,7 @@ export class DashboardComponent implements OnInit {
     window.open(`${this.config.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank"); 
     */
     this.cyberxrayService.open(domain);
+    event.stopPropagation();
   }
 
 

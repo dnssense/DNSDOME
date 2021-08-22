@@ -5,7 +5,7 @@ import { DEFAULT_INTERRUPTSOURCES, Idle } from '@ng-idle/core';
 import { Keepalive } from '@ng-idle/keepalive';
 import { JwtHelper } from 'angular2-jwt';
 import decodeJWT from 'jwt-decode';
-import { interval, Observable, Subject } from 'rxjs';
+import { interval, Observable, Subject, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { Clearance } from '../models/Clearance';
 import { OperationResult } from '../models/OperationResult';
@@ -304,7 +304,7 @@ export class AuthenticationService {
       });
     }
 
-    return null;
+    return of(null);
 
   }
 

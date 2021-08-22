@@ -507,7 +507,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
   }
 
-  cyberxray(domain: string) {
+  cyberxray(event: any, domain: string) {
     /* const currentSession = this.authService.currentSession;
     this.token = currentSession.token;
     this.refreshToken = currentSession.refreshToken;
@@ -515,6 +515,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     window.open(`${this.configService.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank"); 
     */
     this.cyberxrayService.open(domain);
+    event.stopPropagation();
 
   }
 }

@@ -48,7 +48,7 @@
                                     <td *ngFor="let col of selectedColumns; let colIndex = index">
                                         <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
                                             <a *ngIf="dat[colIndex] !== 'Others' && 'domain' === col.column.name"
-                                                (click)="cyberxray(dat[colIndex])" target="_blank" class="Oval">
+                                                (click)="cyberxray($event,dat[colIndex])" target="_blank" class="Oval">
                                                 <img src="../../../../../assets/img/CyberxIcon.svg" alt=""
                                                     class="Shape"></a>
                                             <button class="btn btn-link table-link-button"
