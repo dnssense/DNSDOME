@@ -1,5 +1,5 @@
 .dashboardIcon {
-  padding: 0px !important;
+  padding: 0 !important;
   margin-top: -10px !important;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .subHeader {
-  font-size: 14x;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .dBox{
-  padding-left: 0px;
+  padding-left: 0;
   padding-right: 15px;
 }
 
@@ -293,6 +293,10 @@ $info-colors: (
     margin-top: 15px;
     width: 100%;
   }
+
+  .col-xl {
+    flex: 0 0 50% !important;
+  }
 }
 
 .chart-marker-info {
@@ -308,5 +312,17 @@ $info-colors: (
     background: #fdfdfd;
     border-radius: 10px;
     margin-right: 5px;
+  }
+}
+
+@media (min-width: 1300px) {
+  rk-infobox.too-big {
+    .info-allow-block {
+      .info-allow, .info-block {
+        span.allow, span.block {
+          font-size: 0.8em !important;
+        }
+      }
+    }
   }
 }

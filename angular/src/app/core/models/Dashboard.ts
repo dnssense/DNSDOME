@@ -18,6 +18,7 @@ export class Dashboard {
 
 export class AgentCountModel {
   name: string;
+  link?: string;
   activeCount: number;
   passiveCount: number;
 }

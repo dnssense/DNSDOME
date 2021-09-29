@@ -6,7 +6,9 @@
           <div class="row infos">
             <div class="col-12 col-lg-4 d-flex justify-content-lg-around justify-content-md-between"
               *ngFor="let data of agentCounts">
-              <h5 class="title">{{ data.name | translate }}</h5>
+              <a href="#{{data.link}}">
+                <h5 class="title">{{ data.name | translate }}</h5>
+              </a>
 
               <div class="values">
                 <div class="active">
@@ -54,15 +56,16 @@
                   </div>
 
                   <div class="row mx-auto">
-                    <div class="col-2 col-lg-6 col-xl mt-3 dBox">
+                    <div class="col-12 col-lg-6 col-xl mt-3 dBox">
                       <rk-infobox [active]="infoBoxes.total" (change)="infoboxChanged($event, 'total', 'Total')"
                         [title]="translate('Total')" [color]="'#4353ff'" className="blue" [type]="1"
                         [valueOne]="trafficAnomaly?.total?.allow" [valueTwo]="trafficAnomaly?.total?.block"
-                        [description]="translate('DASHBOARD.TotalDnsRequestCount')">
+                        [description]="translate('DASHBOARD.TotalDnsRequestCount')"
+                        [ngClass]="{'too-big': trafficAnomaly?.total?.allow > 9999999 || trafficAnomaly?.total?.block > 9999999}">
                       </rk-infobox>
                     </div>
 
-                    <div class="col-2 col-lg-6 col-xl mt-3 dBox">
+                    <div class="col-12 col-lg-6 col-xl mt-3 dBox">
                       <rk-infobox [active]="infoBoxes.safe" [type]="2" (change)="infoboxChanged($event, 'safe', 'Safe')"
                         [title]="translate('Safe')" [color]="'#3dd49a'" className="green"
                         [valueOne]="trafficAnomaly?.safe?.hit" [valueTwo]="trafficAnomaly?.safe?.hit_ratio"
@@ -70,7 +73,7 @@
                       </rk-infobox>
                     </div>
 
-                    <div class="col-2 col-lg-6 col-xl mt-3 dBox">
+                    <div class="col-12 col-lg-6 col-xl mt-3 dBox">
                       <rk-infobox [active]="infoBoxes.malicious"
                         (change)="infoboxChanged($event, 'malicious', 'Malicious')" [type]="2"
                         [title]="translate('Malicious')" className="red" [color]="'#f95656'"
@@ -79,7 +82,7 @@
                       </rk-infobox>
                     </div>
 
-                    <div class="col-2 col-lg-6 col-xl mt-3 dBox">
+                    <div class="col-12 col-lg-6 col-xl mt-3 dBox">
                       <rk-infobox [active]="infoBoxes.variable"
                         (change)="infoboxChanged($event, 'variable', 'Variable')" [type]="2"
                         [title]="translate('Variable')" className="gray" [color]="'#A0AAB7'"
@@ -88,7 +91,7 @@
                       </rk-infobox>
                     </div>
 
-                    <div class="col-2 col-lg-6 col-xl mt-3 dBox pr-0">
+                    <div class="col-12 col-lg-6 col-xl mt-3 dBox pr-0">
                       <rk-infobox [active]="infoBoxes.harmful || infoBoxes.restricted"
                         (change)="infoboxChanged($event, 'restricted', 'HarmfullContent')" [type]="2"
                         [title]="translate('HarmfullContent')" className="yellow" [color]="'#EFBB1E'"
@@ -311,7 +314,7 @@
                             <div class="top-domain-chart pt-2 d-flex flex-column justify-content-between">
                               <div class="search d-flex justify-content-between">
                                 <div class="tag-input-container w-100">
-                                  <tag-input [(ngModel)]="items" (onAdd)="onItemAdded($event)" [maxItems]="1">
+                                  <tag-input [(ngModel)]="items" (onAdd)="onItemAdded($event)" [maxItems]="1" (onSelect)="copyItem($event)">
                                   </tag-input>
                                 </div>
 

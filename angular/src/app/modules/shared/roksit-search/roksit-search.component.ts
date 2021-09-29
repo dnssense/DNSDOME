@@ -287,6 +287,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.searchSettings.startDate = null;
     this.searchSettings.endDate = null;
 
+    this.fillSearchSettingsByFilters();
+
     if (!init) {
       this.searchSettingEmitter.emit(this.searchSettings);
     }
@@ -333,6 +335,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.searchSettings.endDate = $event.endDate.toISOString();
 
     this.setDateOptionBySearchSettings();
+    this.fillSearchSettingsByFilters();
 
     this.searchSettingEmitter.emit(this.searchSettings);
   }
@@ -351,6 +354,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     let column = this.selectedColumn;
     if (field)
       column = this.columns.find(c => c.name === field);
+    this.filterText = this.filterText.trim();
     if (column.inputPattern && !column.inputPattern.test(this.filterText))
       return this.inputError = this.staticmessageService.filterIncludesInvalidChar;
 

@@ -691,5 +691,6 @@
     "PleaseEnterSomeDomains": "Please enter at least one domain",
     "InsertDate": "Insert Date",
     "Comment": "Comment",
-    "SelectedDomainsWillBeDeleted": "Selected domains will be deleted"
+    "SelectedDomainsWillBeDeleted": "Selected domains will be deleted",
+    "DomainCopiedToClipboard": "Domain name copied"
 }

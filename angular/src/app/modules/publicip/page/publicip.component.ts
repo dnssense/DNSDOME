@@ -17,6 +17,7 @@ import { PublicIPService } from 'src/app/core/services/publicIPService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
+import {DashBoardService, DistinctAgentResponse} from '../../../core/services/dashBoardService';
 
 
 
@@ -107,6 +108,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   detectedPublicIp: string;
   private publicIpObs: Observable<string>;
 
+  activeAgents: DistinctAgentResponse = { items: [] };
+
   constructor(
     private alertService: AlertService,
     private notification: NotificationService,
@@ -115,7 +118,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     private agentService: AgentService,
     private publicIpService: PublicIPService,
     private staticMessageService: StaticMessageService,
-    private inputIpService: InputIPService
+    private inputIpService: InputIPService,
+    private dashboardService: DashBoardService
   ) {
     this.roleName = this.authService.currentSession.currentUser.role.name;
 
@@ -197,6 +201,10 @@ export class PublicipComponent implements OnInit, AfterViewInit {
           }
         });
         this.publicIpsFiltered = this.publicIps;
+
+        this.dashboardService.getDistinctAgent({ duration: 24 }).subscribe(x => {
+          x.items.forEach(y => this.activeAgents.items.push(y));
+        });
       }
     });
 
@@ -263,12 +271,24 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.selectedAgent.rootProfile.blackWhiteListProfile.whiteList = [];
   }
 
+  private fillCIDR(mask: number) {
+    const isIPV4 = mask <= 32;
+    this.ipCidr.isIPV4 = isIPV4;
+    return isIPV4 ? this.ipCidr.ipRangesV4.map(i => ({
+      value: i.value,
+      displayText: i.displayText,
+      selected: i.value === mask
+    })) : this.ipCidr.ipRangesV6.map(i => ({
+      value: i.value,
+      displayText: i.displayText,
+      selected: i.value === mask
+    }));
+  }
+
   changeIpCidr(isIPV4: boolean) {
     if (this.ipCidr.isIPV4 !== isIPV4) {
 
-      this.ipCidr.isIPV4 = isIPV4;
-      this.ipCidr.ipRanges = [];
-      this.ipCidr.ipRanges = this.ipCidr.ipRanges.concat(isIPV4 ? this.ipCidr.ipRangesV4 : this.ipCidr.ipRangesV6);
+      this.fillCIDR(isIPV4 ? 32 : 128);
       return true;
     }
     return false;
@@ -479,10 +499,10 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       }
       if (!ip0.baseIp || isip.v4(ip0.baseIp)) {
         ip0.mask = 32;
-        this.changeIpCidr(true);
+        ip0.ranges = this.fillCIDR(32);
       } else {
         ip0.mask = 128;
-        this.changeIpCidr(false);
+        ip0.ranges = this.fillCIDR(128);
       }
 
       this.selectedIp.staticSubnetIp.push(ip0);
@@ -513,6 +533,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
 
       for (let i = 1; i < this.selectedIp.staticSubnetIp.length; i++) {
+        this.selectedIp.staticSubnetIp[i].ranges = this.fillCIDR(this.selectedIp.staticSubnetIp[i].mask);
         const cname = 'ip' + i;
         this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
         this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(39), Validators.pattern(ValidationService.ipv4v6Pattern)]);
@@ -534,7 +555,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       if (!this.selectedIp.staticSubnetIp.length) {
         const sub = this.publicIpObs.subscribe(ip => {
           if (ip) {
-            this.selectedIp.staticSubnetIp.push({ baseIp: ip, mask: 32 });
+            this.selectedIp.staticSubnetIp.push({ baseIp: ip, mask: 32, ranges: this.fillCIDR(32) });
           }
         });
       }
@@ -631,7 +652,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       if (!this.selectedIp.staticSubnetIp.length) {
         const sub = this.publicIpObs.subscribe(ip => {
           if (ip) {
-            this.selectedIp.staticSubnetIp.push({ baseIp: ip, mask: 32 });
+            this.selectedIp.staticSubnetIp.push({ baseIp: ip, mask: 32, ranges: this.fillCIDR(32) });
           }
         });
       }
@@ -642,6 +663,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     if (this.selectedIp.staticSubnetIp.length < 10) {
       const ip0 = {} as IpWithMask;
       ip0.mask = 32;
+      ip0.ranges = this.fillCIDR(32);
       this.selectedIp.staticSubnetIp.push(ip0);
       const cname = 'ip' + (this.selectedIp.staticSubnetIp.length - 1);
       this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
@@ -763,5 +785,9 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     if (event.closed) {
       this.securityProfileChanged(this.selectedAgent.rootProfile.id);
     }
+  }
+
+  isActive(id: number) {
+    return this.activeAgents.items.some(a => a.id === id);
   }
 }

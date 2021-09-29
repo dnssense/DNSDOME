@@ -1,30 +1,38 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { DashBoardService, DistinctAgentResponse, DistinctBoxResponse } from 'src/app/core/services/dashBoardService';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {DashBoardService, DistinctAgentResponse, DistinctBoxResponse} from 'src/app/core/services/dashBoardService';
 
-import { CategoryV2 } from 'src/app/core/models/CategoryV2';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { Router } from '@angular/router';
-import { AgentService } from 'src/app/core/services/agent.service';
-import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
-import { BoxService } from 'src/app/core/services/box.service';
-import { RoamingService } from 'src/app/core/services/roaming.service';
+import {CategoryV2} from 'src/app/core/models/CategoryV2';
+import {NotificationService} from 'src/app/core/services/notification.service';
+import {Router} from '@angular/router';
+import {AgentService} from 'src/app/core/services/agent.service';
+import {ConfigHost, ConfigService} from 'src/app/core/services/config.service';
+import {BoxService} from 'src/app/core/services/box.service';
+import {RoamingService} from 'src/app/core/services/roaming.service';
 import {
-  AgentCountModel, DateParamModel, HourlyCompanySummaryV5Response, Domain, TopDomainsRequestV5, TopDomainValuesResponseV4, Category, Bucket, HourlyCompanySummaryV5Request
+  AgentCountModel,
+  Bucket,
+  Category,
+  DateParamModel,
+  Domain,
+  HourlyCompanySummaryV5Request,
+  HourlyCompanySummaryV5Response,
+  TopDomainsRequestV5,
+  TopDomainValuesResponseV4
 } from 'src/app/core/models/Dashboard';
-import { ValidationService } from 'src/app/core/services/validation.service';
-import { TranslateService } from '@ngx-translate/core';
-import { Agent } from 'src/app/core/models/Agent';
-import { forkJoin } from 'rxjs';
-import { Box } from 'src/app/core/models/Box';
+import {ValidationService} from 'src/app/core/services/validation.service';
+import {TranslateService} from '@ngx-translate/core';
+import {Agent} from 'src/app/core/models/Agent';
+import {forkJoin} from 'rxjs';
+import {Box} from 'src/app/core/models/Box';
 import * as moment from 'moment';
-import { ToolsService } from 'src/app/core/services/toolsService';
-import { StaticMessageService } from 'src/app/core/services/staticMessageService';
-import { TranslatorService } from 'src/app/core/services/translator.service';
-import { RkDateConfig } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import {ToolsService} from 'src/app/core/services/toolsService';
+import {StaticMessageService} from 'src/app/core/services/staticMessageService';
+import {TranslatorService} from 'src/app/core/services/translator.service';
+import {RkDateConfig} from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import * as numeral from 'numeral';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { environment } from 'src/environments/environment';
-import { CyberXRayService } from '../../../core/services/cyberxray.service';
+import {AuthenticationService} from 'src/app/core/services/authentication.service';
+import {CyberXRayService} from '../../../core/services/cyberxray.service';
+import {ClipboardService} from 'ngx-clipboard';
 
 interface TagInputValue {
   value: string;
@@ -42,7 +50,8 @@ export interface RkDateButton {
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
-  styleUrls: ['dashboard.component.scss']
+  styleUrls: ['dashboard.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit {
 
@@ -60,7 +69,8 @@ export class DashboardComponent implements OnInit {
     private staticMesssageService: StaticMessageService,
     private translatorService: TranslatorService,
     private authService: AuthenticationService,
-    private cyberxrayService: CyberXRayService
+    private cyberxrayService: CyberXRayService,
+    private clipboardService: ClipboardService
   ) {
     const currentSession = this.authService.currentSession;
     this.token = currentSession.token;
@@ -191,9 +201,9 @@ export class DashboardComponent implements OnInit {
 
       this.getTopDomains(request).subscribe(x => {
         this.agentCounts = [];
-        this.agentCounts.push({ name: 'PublicIp', activeCount: 0, passiveCount: 0 });
-        this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0 });
-        this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0 });
+        this.agentCounts.push({ name: 'PublicIp', activeCount: 0, passiveCount: 0, link: '/admin/deployment/public-ip' });
+        this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0, link: '/admin/deployment/roaming-clients' });
+        this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/devices' });
         this.getAgents().subscribe(x => {
 
 
@@ -260,11 +270,10 @@ export class DashboardComponent implements OnInit {
         x.items.forEach(y => distinctBoxs.items.push(y));
       })
     ).map(() => {
+      const publicip: AgentCountModel = { name: 'PageName.PublicIp', activeCount: 0, passiveCount: 0, link: '/admin/deployment/public-ip' };
+      const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0, link: '/admin/deployment/roaming-clients'};
 
-      const publicip: AgentCountModel = { name: 'PageName.PublicIp', activeCount: 0, passiveCount: 0 };
-      const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0 };
-
-      const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0 };
+      const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/devices' };
 
       const serials = boxes.filter(x => (x).serial).map(x => (x).serial);
 
@@ -930,6 +939,11 @@ export class DashboardComponent implements OnInit {
     if (!isDomain) {
       this.items = [];
     }
+  }
+
+  copyItem($event: TagInputValue) {
+    this.clipboardService.copy($event.value);
+    this.notificationService.info(this.staticMesssageService.domainCopiedToClipboardMessage);
   }
 
   search() {

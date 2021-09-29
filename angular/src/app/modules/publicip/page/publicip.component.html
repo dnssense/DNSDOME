@@ -101,7 +101,7 @@
                             /
                           </span>
 
-                          <rk-select [placeholder]="selectedIp.staticSubnetIp[i].mask" [options]="ipCidr.ipRanges"
+                          <rk-select [placeholder]="selectedIp.staticSubnetIp[i].mask.toString()" [options]="selectedIp.staticSubnetIp[i].ranges"
                             [(value)]="selectedIp.staticSubnetIp[i].mask">
                           </rk-select>
                         </div>
@@ -206,6 +206,7 @@
                   <th>{{'IpType'|translate}}</th>
                   <th>{{'IpAddressDomain'|translate}}</th>
                   <th>{{'SecurityProfile'|translate}}</th>
+                  <th>{{'Active'|translate}}</th>
                   <th style="width: 110px;">{{'Delete'|translate}}</th>
                 </tr>
               </ng-template>
@@ -244,6 +245,12 @@
                       <span class="link-text" style="cursor: pointer;" (click)="showProfileEditWizard(pi.id)">{{
                         pi.rootProfile?pi.rootProfile.name: 'No Profile!' }}</span>
                     </div>
+                  </td>
+                  <td [title]="(isActive(pi.id) ? 'Active' : 'Passive')|translate">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <path [attr.fill]="isActive(pi.id) ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
+                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                    </svg>
                   </td>
                   <td class="text-center" style="width: 55px">
                     <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deletePublicIp(pi.id)">

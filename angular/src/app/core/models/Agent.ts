@@ -40,6 +40,7 @@ export class Agent {
 export interface IpWithMask {
     baseIp: string;
     mask: number;
+    ranges: any;
 }
 
 export interface AgentDetail {

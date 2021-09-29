@@ -372,6 +372,9 @@ export class StaticMessageService {
     return this.translator.translate('PleaseEnterSomeDomains');
   }
 
+  get domainCopiedToClipboardMessage(): string {
+    return this.translator.translate('DomainCopiedToClipboard');
+  }
 
 
 }

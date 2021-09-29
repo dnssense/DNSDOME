@@ -233,6 +233,8 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
     this.searchSettings.startDate = null;
     this.searchSettings.endDate = null;
 
+    this.fillSearchSettingsByFilters();
+
     if (!init) {
       this.searchSettingEmitter.emit(this.searchSettings);
     }
@@ -275,6 +277,7 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
     this.searchSettings.endDate = $event.endDate.toISOString();
 
     this.setDateOptionBySearchSettings();
+    this.fillSearchSettingsByFilters();
 
     this.searchSettingEmitter.emit(this.searchSettings);
   }

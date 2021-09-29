@@ -688,5 +688,6 @@
     "PleaseEnterSomeDomains": "Lütfen en azından bir domain giriniz",
     "InsertDate": "Ekleme Zamanı",
     "Comment": "Açıklama",
-    "SelectedDomainsWillBeDeleted": "Seçilen domainler silinecek"
+    "SelectedDomainsWillBeDeleted": "Seçilen domainler silinecek",
+    "DomainCopiedToClipboard": "Alan adı kopyalandı"
 }
