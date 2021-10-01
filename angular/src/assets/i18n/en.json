@@ -557,13 +557,13 @@
         "ShinkholeIp2": "If you use Local DNS Visibility, you must enter the IP address of the DNS Visibility product."
     },
     "InstantMessaging": "Instant Messaging",
-    "InstantMessagingDesc": "Contains domains such as Newly Registered, Newly Up, Domain Parking, Dead Sites that may vary in content and security risk.",
+    "InstantMessagingDesc": "Contains online chat applications allowing real-time text, video, audio transmission over the Internet.",
     "OnlineVideo": "Online Video",
-    "OnlineVideoDesc": "Contains unwanted domains such as Pornography, Adult, Gambling.",
+    "OnlineVideoDesc": "Contains applications allowing to stream video over the Internet",
     "RemoteAccessTools": "Remote Access Tools",
-    "RemoteAccessToolsDesc": "Contains domains such as Newly Register, Newly Up, Domain Parking, Dead Sites, which may vary in content and security risk.",
+    "RemoteAccessToolsDesc": "Contains applications allowing to control systems over the Internet.",
     "SocialMedia": "Social Media",
-    "SocialMediaDesc": "Contains domains such as Newly Registered, Newly Up, Domain Parking, Dead Sites that may vary in content and security risk.",
+    "SocialMediaDesc": "Contains applications allowing to interact with social media platforms.",
     "TableColumn": {
         "Time": "Time",
         "Domain": "Domain",
