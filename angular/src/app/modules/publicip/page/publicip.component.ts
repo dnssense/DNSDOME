@@ -561,6 +561,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       }
     }
 
+    this.saveMode = '';
     this.fillSecurityProfilesArray();
 
     this.agentModal.toggle();
@@ -772,6 +773,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   rkSelectButtonClicked($event: { clicked: boolean }) {
     this.saveMode = 'NewProfile';
     this.selectedAgent = JSON.parse(JSON.stringify(this.selectedIp));
+    this.selectedAgent.rootProfile = new SecurityProfile();
     this.currentStep = 1;
 
     this.profileModal.toggle();

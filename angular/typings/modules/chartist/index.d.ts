@@ -33,6 +33,8 @@ namespace Chartist {
 
     noop: Function;
 
+    plugins: any;
+
     alphaNumerate(n: number): string;
     extend(target: Object, ...sources: Object[]): Object;
 
@@ -54,8 +56,6 @@ namespace Chartist {
     deserialize(data: string): Object | string | number;
 
     createSvg(container: Node, width: string, height: string, className: string): Object; // TODO: Figure out if this is returning a ChartistSVGWrapper or an actual SVGElement
-
-    plugins: any;
   }
 
   interface IChartistEscapeMap {
@@ -71,8 +71,11 @@ namespace Chartist {
   // a line chart axisX
   // in the actual chartist library these are classes that project their options onto
   // the parent class
+  // tslint:disable-next-line:no-empty-interface
   interface IFixedScaleAxisStatic { }
+  // tslint:disable-next-line:no-empty-interface
   interface IAutoScaleAxisStatic { }
+  // tslint:disable-next-line:no-empty-interface
   interface IStepAxisStatic { }
 
   // data formats are not well documented on all the ways they can be passed to the constructors
@@ -114,8 +117,8 @@ namespace Chartist {
      * Use this function to register event handlers. The handler callbacks are synchronous and will run in the main thread rather than the event loop.
      *
      * @method on
-     * @param event {string} Name of the event. Check the examples for supported events.
-     * @param handler {Function} The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
+     * @param event Name of the event. Check the examples for supported events.
+     * @param handler The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
      */
     on(event: string, handler: Function): IChartistBase<T>;
 
@@ -123,21 +126,24 @@ namespace Chartist {
      * Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.
      *
      * @method off
-     * @param event {string} Name of the event for which a handler should be removed
-     * @param handler {Function} The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
+     * @param event Name of the event for which a handler should be removed
+     * @param handler The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
      */
     off(event: string, handler?: Function): IChartistBase<T>;
   }
 
   interface IChartistPieChart extends IChartistBase<IPieChartOptions> {
+    // tslint:disable-next-line:no-misused-new
     new (target: any, data: IChartistData, options?: IPieChartOptions, responsiveOptions?: Array<IResponsiveOptionTuple<IPieChartOptions>>): IChartistPieChart;
   }
 
   interface IChartistLineChart extends IChartistBase<ILineChartOptions> {
+    // tslint:disable-next-line:no-misused-new
     new (target: any, data: IChartistData, options?: ILineChartOptions, responsiveOptions?: Array<IResponsiveOptionTuple<ILineChartOptions>>): IChartistLineChart;
   }
 
   interface IChartistBarChart extends IChartistBase<IBarChartOptions> {
+    // tslint:disable-next-line:no-misused-new
     new (target: any, data: IChartistData, options?: IBarChartOptions, responsiveOptions?: Array<IResponsiveOptionTuple<IBarChartOptions>>): IChartistBarChart;
   }
 
@@ -437,7 +443,7 @@ namespace Chartist {
      * Adds one or a space separated list of classes to the current element and ensures the classes are only existing once.
      *
      * @method addClass
-     * @param names {string} A white space separated list of class names
+     * @param names A white space separated list of class names
      */
     addClass(names: string): IChartistSvg;
 
@@ -445,7 +451,7 @@ namespace Chartist {
      * Removes one or a space separated list of classes from the current element.
      *
      * @method removeClass
-     * @param names {string} A white space separated list of class names
+     * @param names A white space separated list of class names
      */
     removeClass(names: string): IChartistSvg;
 
@@ -559,8 +565,9 @@ namespace Chartist {
   }
 }
 
-var Chartist: Chartist.ChartistStatic;
+let Chartist: Chartist.ChartistStatic;
 
 export = Chartist;
+// @ts-ignore
 export as namespace Chartist;
 }
