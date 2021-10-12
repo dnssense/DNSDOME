@@ -85,8 +85,8 @@ export class AccountService {
       }));
   }
 
-  activateAccount(accountActivateId: string): Observable<any> {
-    return this.http.post<any>(this._accountActiveURL, { key: accountActivateId }, this.getOptions());
+  activateAccount(accountActivateId: string, pass?: { password: string, passwordAgain: string }): Observable<any> {
+    return this.http.post<any>(this._accountActiveURL, { key: accountActivateId, ...pass }, this.getOptions());
   }
 
   private getOptions() {

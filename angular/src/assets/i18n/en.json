@@ -305,7 +305,8 @@
         "PasswordRequirements1": "one upper case",
         "PasswordRequirements2": "one lower case",
         "PasswordRequirements3": "one number",
-        "PasswordRequirements4": "8 characters"
+        "PasswordRequirements4": "8 characters",
+        "DefineYourPassword": "Define your password"
     },
     "ACCOUNTSETTINGS": {
         "UserInformation": "User Information",

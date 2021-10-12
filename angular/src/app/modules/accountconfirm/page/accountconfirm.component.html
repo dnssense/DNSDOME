@@ -12,12 +12,70 @@
           </a>
         </div>
       </div>
-      <div class="row">
+      <div class="row" *ngIf="passwordMustChange">
+        <div class="col-md-12 signUpHeader text-center" style="font-weight: 500; font-size: 20px;">{{'REGISTER.DefineYourPassword' | translate}}
+        </div>
+        <div class="col-md-12 mt-4 mb-3" style="border: 0.5px solid #eeeeee"></div>
+      </div>
+      <div class="row" *ngIf="passwordMustChange">
+        <div class="col-lg-6 col-md-6 col-sm-8 ml-auto mr-auto" style="max-width: 450px;">
+          <p style="font-weight: normal; font-size: medium;">{{'REGISTER.DefineYourNewPasswordAccordingToPasswordPolicy'|translate}}</p>
+          <div id="loginDiv">
+            <form [formGroup]="passwordConfirmForm" (ngSubmit)="activateWithPass()" class="form-horizontal">
+              <div class="row">
+                <div class="card-body w-100">
+                  <div class="form-group-sm has-default">
+                    <input type="password" class="formInput" placeholder="{{'REGISTER.Password' | translate}}"
+                           (keyup)="checkPasswordStrength()" [(ngModel)]="model.password" formControlName="password">
+                    <div class="password-length mt-2">
+                      <div [ngClass]="{'active': passStrength>0}"></div>
+                      <div [ngClass]="{'active': passStrength>1}"></div>
+                      <div [ngClass]="{'active': passStrength>2}"></div>
+                      <div [ngClass]="{'active': passStrength>3}"></div>
+                    </div>
+                    <div class="form-group-sm has-default color-9d9d9d" style="font-size: 12px; color: #9d9d9d;" id="passDetails">
+                      {{'REGISTER.PasswordRequirements0'|translate}}
+                      <div class="row">
+                        <div class="col-md-6">
+                          <i class="d-flex fa" [ngClass]="upStrength ? 'fa-check greenCheck':'fa-check redCheck'"> {{'REGISTER.PasswordRequirements1'|translate}}</i>
+                          <i class="d-flex fa" [ngClass]="lowStrength ? 'fa-check greenCheck':'fa-check redCheck'"> {{'REGISTER.PasswordRequirements2'|translate}}</i>
+                        </div>
+                        <div class="col-md-6">
+                          <i class="d-flex fa" [ngClass]="numStrength ? 'fa-check greenCheck':'fa-check redCheck'"> {{'REGISTER.PasswordRequirements3'|translate}}</i>
+                          <i class="d-flex fa" [ngClass]="lengthStrength ? 'fa-check greenCheck':'fa-check redCheck'">{{'REGISTER.PasswordRequirements4'|translate}}</i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group-sm has-default">
+                      <input type="password" class="formInput mt-2 mb-3"
+                             placeholder="{{'REGISTER.ConfirmPassword' | translate}}" [(ngModel)]="model.passwordAgain"
+                             formControlName="passwordAgain">
+                    </div>
+                    <div class="form-group-sm has-default text-center">
+                      <re-captcha [siteKey]="captcha_key" (resolved)="handleCaptcha($event)"></re-captcha>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 text-center">
+                  <button type="submit" class="btns login-btns mt-4 mb-3" [disabled]="!isFormValid()">{{'ACCOUNTSETTINGS.ChangePassword'|translate}}</button>
+                  <br />
+                  <a [routerLink]="['/login']" style="color: #4353ff; font-weight: 500; font-size: 14px; text-decoration: none;">
+                    {{'Cancel'|translate}}
+                  </a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="!passwordMustChange">
 
         <div class="col-lg-8 col-md-8 col-sm-8 ml-auto mr-auto">
           <div class="card card-signup text-center flex-column" style="padding: 50px">
             <h5 class="card-title text-center" style="font-weight: 600;">
-              {{'REGISTER.ThankYouForRegistering' | translate}}</h5>
+              {{'REGISTER.ThankYouForRegistering' | translate}}</h5>
             <div *ngIf="activated==0" class="card-body">
               <p class="card-text">{{ 'REGISTER.ActivationProcessInProgress' | translate}}</p>
               <i>

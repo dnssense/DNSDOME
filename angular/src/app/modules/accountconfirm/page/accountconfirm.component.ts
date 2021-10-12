@@ -7,13 +7,15 @@ import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { SmsService } from 'src/app/core/services/smsService';
 import { AccountService } from 'src/app/core/services/accountService';
 import { of } from 'rxjs';
+import {FormBuilder, Validators} from '@angular/forms';
+import {ValidationService} from '../../../core/services/validation.service';
 
-
-
+declare var $: any;
 
 @Component({
   selector: 'app-accountconfirm',
-  templateUrl: 'accountconfirm.component.html'
+  templateUrl: 'accountconfirm.component.html',
+  styleUrls: ['accountconfirm.component.sass']
 })
 
 export class AccountConfirmComponent implements OnInit, OnDestroy {
@@ -21,13 +23,35 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
   toggleButton: any;
   activated = 0;
   accountActivateId: string;
+  passwordMustChange: string;
+  model: {password: string, passwordAgain: string} = {password: '', passwordAgain: ''};
+  passwordConfirmForm: any;
+  passStrength = 0;
+  numStrength = false;
+  upStrength = false;
+  lowStrength = false;
+  lengthStrength = false;
+  captcha_key: string;
+  private captcha: string;
   /**
    *
    */
-  constructor(private accountService: AccountService, private router: Router,
-    private route: ActivatedRoute, private configService: ConfigService) {
+  constructor(
+      private accountService: AccountService,
+      private router: Router,
+      private route: ActivatedRoute,
+      private configService: ConfigService,
+      private formBuilder: FormBuilder,
+      private captchaService: CaptchaService) {
     this.host = configService.host;
-
+    this.captcha_key = this.host.captcha_key;
+    this.passwordConfirmForm =
+        this.formBuilder.group({
+              'password': ['', [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]],
+              'passwordAgain': ['', [Validators.required, Validators.minLength(8), Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}')]]
+            }
+            , { validator: Validators.compose([ValidationService.matchingPasswords('password', 'passwordAgain')]) }
+        );
 
   }
   ngOnDestroy(): void {
@@ -46,9 +70,31 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
     //   card.classList.remove('card-hidden');
     // }, 700);
     this.accountActivateId = this.route.snapshot.queryParams.key;
+    this.passwordMustChange = this.route.snapshot.queryParams.p;
 
-    this.accountService.activateAccount(this.accountActivateId).subscribe(() => {
+    if (this.passwordMustChange !== '1') {
+      this.accountService.activateAccount(this.accountActivateId).subscribe(() => {
+        this.activated = 1;
+        // this.notification.success('Account activated');
+        of(null).delay(2000).subscribe(() => {
+          this.router.navigateByUrl('/login');
+        });
+      }, err => {
+        this.activated = -1;
+        throw err;
+      });
+    }
+  }
+
+
+
+  activateWithPass() {
+    if (!this.captchaService.validCaptcha(this.captcha)) {
+      return;
+    }
+    this.accountService.activateAccount(this.accountActivateId, this.model).subscribe(() => {
       this.activated = 1;
+      this.passwordMustChange = '';
       // this.notification.success('Account activated');
       of(null).delay(2000).subscribe(() => {
         this.router.navigateByUrl('/login');
@@ -57,19 +103,48 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
       this.activated = -1;
       throw err;
     });
-
   }
 
+  checkPasswordStrength() {
+    this.passStrength = 0;
+    this.numStrength = false;
+    this.upStrength = false;
+    this.lowStrength = false;
+    this.lengthStrength = false;
 
+    if (this.model.password) {
+      if (this.model.password.length > 7) {
+        this.passStrength++;
+        this.lengthStrength = true;
+      }
+      if (/[a-z]/.test(this.model.password)) {
+        this.passStrength++;
+        this.lowStrength = true;
+      }
+      if (/[A-Z]/.test(this.model.password)) {
+        this.passStrength++;
+        this.upStrength = true;
+      }
+      if (/[0-9]/.test(this.model.password)) {
+        this.passStrength++;
+        this.numStrength = true;
+      }
 
+      if (this.passStrength > 3) {
+        $('#passDetails').hide(300);
+      } else {
+        $('#passDetails').show(300);
+      }
+    }
+  }
 
+  handleCaptcha($event) {
+    this.captcha = $event;
+  }
 
-
-
-
-
-
-
-
-
+  isFormValid() {
+    return this.model != null && this.passwordConfirmForm.dirty
+        && this.passwordConfirmForm.valid
+        && this.captcha != null;
+  }
 }

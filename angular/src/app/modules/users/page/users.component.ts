@@ -222,15 +222,15 @@ export class UsersComponent implements OnInit {
 
                 });
             } else {
-                if (!this.user.password) {
-                    this.notification.warning(this.staticMessageService.pleaseFillThePassword);
-                    return;
-                }
-                if (this.passwordStrength != 4) {
-                    this.notification.warning(this.staticMessageService.passwordComplexityMustBe);
-                    return;
-                }
-                if (this.passwordStrength > 3) {
+                // if (!this.user.password) {
+                //     this.notification.warning(this.staticMessageService.pleaseFillThePassword);
+                //     return;
+                // }
+                // if (this.passwordStrength != 4) {
+                //     this.notification.warning(this.staticMessageService.passwordComplexityMustBe);
+                //     return;
+                // }
+                // if (this.passwordStrength > 3) {
                     this.userService.save(this.user).subscribe(res => {
                         if (res.key) {
                             this.userModal.toggle();
@@ -242,7 +242,7 @@ export class UsersComponent implements OnInit {
                             this.notification.error(res.message);
                         }
                     });
-                }
+                // }
             }
         } else {
             this.notification.warning(this.staticMessageService.needsToFillInRequiredFieldsMessage);

@@ -306,7 +306,8 @@
         "PasswordRequirements1": "en az 1 büyük harf",
         "PasswordRequirements2": "en az 1 küçük harf",
         "PasswordRequirements3": "en az 1 sayı",
-        "PasswordRequirements4": "en az 8 karakter"
+        "PasswordRequirements4": "en az 8 karakter",
+        "DefineYourPassword": "Parolanızı belirleyin"
     },
     "DASHBOARD": {
         "SETTING_EXISTS": "Mevcut paneliniz bu raporu zaten içeriyor. Lütfen başka bir rapor seçiniz.",

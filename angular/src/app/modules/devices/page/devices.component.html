@@ -11,8 +11,8 @@
           <div class="col-12 d-flex align-items-center justify-content-center py-3 mb-2 single-row"
             style="padding-top: 0 !important;padding-bottom: 0 !important;">
             <div class="rk-tabs" style="width: 420px;">
-              <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">{{'Relay
-                Servers'}}</div>
+              <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">
+                {{'Relay Servers'}}</div>
               <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">
                 {{'Groups'}}</div>
               <div class="rk-tab" (click)="activeTabNumber = 2" [ngClass]="{'active': activeTabNumber === 2}">
@@ -154,12 +154,12 @@
                     </ng-container>
                     <ng-template #elseTemplate2>-</ng-template>
                   </td>-->
-                  <td style="width: 60px">
+                  <td style="width: 60px">
                     <button class=" btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editBox(b)">
                       <i-feather name="edit-3"></i-feather>
                     </button>
                   </td>
-                  <td style=" width: 60px" (click)="deleteBox(b.id)">
+                  <td style=" width: 60px" (click)="deleteBox(b.id)">
                     <button class=" btn btn-link btn-icon p-0 hover-gray bg-transparent">
                       <i-feather name="trash-2"></i-feather>
                     </button>

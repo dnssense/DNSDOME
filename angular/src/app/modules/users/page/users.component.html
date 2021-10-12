@@ -25,7 +25,7 @@
           <div class="container-fluid">
 
             <div class="rk-modal-card">
-              <h6 class="rk-modal-card-title mb-2">{{ 'UserInformation' | translate }}</h6>
+              <h6 class="rk-modal-card-title mb-2">{{ 'UserInformation' | translate }}</h6>
 
               <div class="row">
                 <div class="col-12 mt-3">
@@ -43,19 +43,19 @@
                     (valueChange)="roleChange($event)"></rk-select>
                 </div>
 
-                <div class="col-12 mt-3">
-                  <input type="password" class="rk-input w-100" placeholder=" {{'Password'|translate}}" minlength="8"
-                    [(ngModel)]="user.password" (ngModelChange)="checkPasswordStrength()">
+<!--                <div class="col-12 mt-3">-->
+<!--                  <input type="password" class="rk-input w-100" placeholder=" {{'Password'|translate}}" minlength="8"-->
+<!--                    [(ngModel)]="user.password" (ngModelChange)="checkPasswordStrength()">-->
 
-                  <div class="password-strength justify-content-end mt-3">
-                    <div [ngClass]="{ active: passwordStrength > 0 }"></div>
-                    <div [ngClass]="{ active: passwordStrength > 1 }"></div>
-                    <div [ngClass]="{ active: passwordStrength > 2 }"></div>
-                    <div [ngClass]="{ active: passwordStrength > 3 }"></div>
-                  </div>
+<!--                  <div class="password-strength justify-content-end mt-3">-->
+<!--                    <div [ngClass]="{ active: passwordStrength > 0 }"></div>-->
+<!--                    <div [ngClass]="{ active: passwordStrength > 1 }"></div>-->
+<!--                    <div [ngClass]="{ active: passwordStrength > 2 }"></div>-->
+<!--                    <div [ngClass]="{ active: passwordStrength > 3 }"></div>-->
+<!--                  </div>-->
 
-                  <p class="password-text mt-2"> {{'YourPasswordHasToBeAtLeast'|translate}}</p>
-                </div>
+<!--                  <p class="password-text mt-2"> {{'YourPasswordHasToBeAtLeast'|translate}}</p>-->
+<!--                </div>-->
 
                 <div class="col-12 mt-3" *ngIf="user.id > 0">
                   <rk-checkbox class="rk-checkbox-font" [(value)]="user.isActive"
@@ -65,7 +65,7 @@
 
                 <div class="col-12 mt-3" *ngIf="user.id > 0">
                   <rk-checkbox class="rk-checkbox-font" [(value)]="user.isLocked"
-                    (valueChange)="isLockedChanged($event)" alignment="right">{{ 'IsLocked' | translate }}</rk-checkbox>
+                    (valueChange)="isLockedChanged($event)" alignment="right">{{ 'IsLocked' | translate }}</rk-checkbox>
                 </div>
 
               </div>
