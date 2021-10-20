@@ -117,23 +117,9 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       }, { validator: Validators.compose([ValidationService.matchingPasswords('password', 'passwordAgain')]) }
       );
 
-
-    if (this.host.brand == 'CyberCyte') {
-      this.user.gsmCode = '+44';
-      this.registerForm.controls['gsmCode'].setValue('+44');
-      this.registerForm.controls['gsmCode'].updateValueAndValidity();
-    } else
-      if (this.host.brand == 'CMERP') {
-        this.user.gsmCode = '+60';
-        this.registerForm.controls['gsmCode'].setValue('+60');
-        this.registerForm.controls['gsmCode'].updateValueAndValidity();
-      } else {
-        this.user.gsmCode = '+90';
-        this.registerForm.controls['gsmCode'].setValue('+90');
-        this.registerForm.controls['gsmCode'].updateValueAndValidity();
-      }
-
-
+    this.user.gsmCode = this.host.defaultGSMCode;
+    this.registerForm.controls['gsmCode'].setValue(this.host.defaultGSMCode);
+    this.registerForm.controls['gsmCode'].updateValueAndValidity();
   }
 
   sidebarToggle() {
