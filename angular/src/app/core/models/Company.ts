@@ -8,3 +8,18 @@ export class Company {
     public industry: string;
     public personnelCount: string;
 }
+
+export class CompanyUpdaterDTO {
+  id: number
+  parentRoleLevel?: string
+  parentIsLocked?: number
+  parentId?: number
+  companyType?: COMPANY_TYPE
+  audit?: {
+    userId: number;
+    username: string;
+    ip: string;
+  }
+}
+
+export type COMPANY_TYPE = "ROKSIT" | "EONSCOPE" | "DNSSENSE" | "DNSCYTE" | "INVESTIGATE" | "CMERP" | "ROOT" | "DISTRIBUTOR" | "MSP"

@@ -89,20 +89,29 @@ export class SidebarComponent implements OnInit {
   }
   private refreshMenus() {
     if (this.authService.currentSession && this.authService.currentSession.currentUser
-      && this.authService.currentSession.currentUser.role && this.authService.currentSession.currentUser.role.name) {
+      && this.authService.currentSession.currentUser.role && this.authService.currentSession.currentUser.role.length > 0) {
 
-      const roleName: string = this.authService.currentSession.currentUser.role.name;
+      //const roleName: string = this.authService.currentSession.currentUser.role.name;
 
-      this.menuItems = this._menuItems.filter(x => !x.roles || x.roles.includes(roleName));
+      this.menuItems = this._menuItems.filter(x => !x.roles || this.checkExistRole(x.roles));
       for (const menu of this.menuItems) {
 
         if (menu.subMenu)
-          menu.subMenu = menu.subMenu.filter(y => !y.roles || y.roles.includes(roleName));
+          menu.subMenu = menu.subMenu.filter(y => !y.roles || this.checkExistRole(y.roles));
       }
 
     }
 
     // this.profileMenuItems = ProfileRoutes;
+  }
+
+  private checkExistRole(arr: string[]): boolean {
+    if (this.authService.currentSession && this.authService.currentSession.currentUser
+      && this.authService.currentSession.currentUser.role && this.authService.currentSession.currentUser.role.length > 0) {
+      let role = this.authService.currentSession.currentUser.role.find(s=>arr.includes(s.name));
+      return role != null
+    }
+    return false
   }
 
   ngOnInit() {

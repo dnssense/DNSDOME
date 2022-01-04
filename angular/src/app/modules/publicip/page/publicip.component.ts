@@ -1,24 +1,23 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import * as introJs from 'intro.js/intro.js';
 import * as isip from 'is-ip';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { Observable } from 'rxjs';
-import { Agent, IpWithMask } from 'src/app/core/models/Agent';
-import { AgentType } from 'src/app/core/models/AgentType';
-import { BlackWhiteListProfile, SecurityProfile, SecurityProfileItem } from 'src/app/core/models/SecurityProfile';
-import { AgentService } from 'src/app/core/services/agent.service';
-import { AlertService } from 'src/app/core/services/alert.service';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { InputIPService } from 'src/app/core/services/inputIPService';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { PublicIPService } from 'src/app/core/services/publicIPService';
-import { StaticMessageService } from 'src/app/core/services/staticMessageService';
-import { ValidationService } from 'src/app/core/services/validation.service';
-import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
+import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import {Observable} from 'rxjs';
+import {Agent, IpWithMask} from 'src/app/core/models/Agent';
+import {AgentType} from 'src/app/core/models/AgentType';
+import {BlackWhiteListProfile, SecurityProfile, SecurityProfileItem} from 'src/app/core/models/SecurityProfile';
+import {AgentService} from 'src/app/core/services/agent.service';
+import {AlertService} from 'src/app/core/services/alert.service';
+import {AuthenticationService} from 'src/app/core/services/authentication.service';
+import {InputIPService} from 'src/app/core/services/inputIPService';
+import {NotificationService} from 'src/app/core/services/notification.service';
+import {PublicIPService} from 'src/app/core/services/publicIPService';
+import {StaticMessageService} from 'src/app/core/services/staticMessageService';
+import {ValidationService} from 'src/app/core/services/validation.service';
+import {ProfileWizardComponent} from '../../shared/profile-wizard/page/profile-wizard.component';
 import {DashBoardService, DistinctAgentResponse} from '../../../core/services/dashBoardService';
-
 
 
 declare let $: any;
@@ -40,44 +39,41 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   ipCidr = {
     isIPV4: true,
     ipRanges: [
-      { value: 32, displayText: '32' },
-      { value: 31, displayText: '31' },
-      { value: 30, displayText: '30' },
-      { value: 29, displayText: '29' },
-      { value: 28, displayText: '28' },
-      { value: 27, displayText: '27' },
-      { value: 26, displayText: '26' },
-      { value: 25, displayText: '25' },
-      { value: 24, displayText: '24' }
+      {value: 32, displayText: '32'},
+      {value: 31, displayText: '31'},
+      {value: 30, displayText: '30'},
+      {value: 29, displayText: '29'},
+      {value: 28, displayText: '28'},
+      {value: 27, displayText: '27'},
+      {value: 26, displayText: '26'},
+      {value: 25, displayText: '25'},
+      {value: 24, displayText: '24'}
     ],
     ipRangesV4: [
-      { value: 32, displayText: '32' },
-      { value: 31, displayText: '31' },
-      { value: 30, displayText: '30' },
-      { value: 29, displayText: '29' },
-      { value: 28, displayText: '28' },
-      { value: 27, displayText: '27' },
-      { value: 26, displayText: '26' },
-      { value: 25, displayText: '25' },
-      { value: 24, displayText: '24' }
+      {value: 32, displayText: '32'},
+      {value: 31, displayText: '31'},
+      {value: 30, displayText: '30'},
+      {value: 29, displayText: '29'},
+      {value: 28, displayText: '28'},
+      {value: 27, displayText: '27'},
+      {value: 26, displayText: '26'},
+      {value: 25, displayText: '25'},
+      {value: 24, displayText: '24'}
     ],
 
     ipRangesV6: [
-      { value: 128, displayText: '128' },
-      { value: 127, displayText: '127' },
-      { value: 126, displayText: '126' },
-      { value: 125, displayText: '125' },
-      { value: 124, displayText: '124' },
-      { value: 123, displayText: '123' },
-      { value: 122, displayText: '122' },
-      { value: 121, displayText: '121' },
-      { value: 120, displayText: '120' }
+      {value: 128, displayText: '128'},
+      {value: 127, displayText: '127'},
+      {value: 126, displayText: '126'},
+      {value: 125, displayText: '125'},
+      {value: 124, displayText: '124'},
+      {value: 123, displayText: '123'},
+      {value: 122, displayText: '122'},
+      {value: 121, displayText: '121'},
+      {value: 120, displayText: '120'}
     ]
 
   };
-
-
-
 
 
   ipValidations: boolean[] = [];
@@ -108,7 +104,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   detectedPublicIp: string;
   private publicIpObs: Observable<string>;
 
-  activeAgents: DistinctAgentResponse = { items: [] };
+  activeAgents: DistinctAgentResponse = {items: []};
 
   constructor(
     private alertService: AlertService,
@@ -121,8 +117,9 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     private inputIpService: InputIPService,
     private dashboardService: DashBoardService
   ) {
-    this.roleName = this.authService.currentSession.currentUser.role.name;
-
+    let role = this.authService.currentSession.currentUser.role;
+    if (role.length)
+      this.roleName = role[0].name
 
     this.publicIpObs = new Observable(subscriber => {
       if (this.detectedPublicIp) {
@@ -162,7 +159,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.publicIpObs.subscribe(x => console.log(`public ip is ${x}`));
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   saveProfile() {
     this.profileWizard.saveProfile();
@@ -180,7 +178,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit() { }
+  ngAfterViewInit() {
+  }
 
   getPublicIpsDataAndProfiles(type?: string) {
 
@@ -202,7 +201,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
         });
         this.publicIpsFiltered = this.publicIps;
 
-        this.dashboardService.getDistinctAgent({ duration: 24 }).subscribe(x => {
+        this.dashboardService.getDistinctAgent({duration: 24}).subscribe(x => {
           x.items.forEach(y => this.activeAgents.items.push(y));
         });
       }
@@ -293,7 +292,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     }
     return false;
   }
-  checkIPNumberForAgent(event: KeyboardEvent|FocusEvent, inputValue: IpWithMask, index: number) {
+
+  checkIPNumberForAgent(event: KeyboardEvent | FocusEvent, inputValue: IpWithMask, index: number) {
 
     const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue.baseIp, this.ipValidations, index);
 
@@ -416,10 +416,9 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     } */
 
-  checkIPNumberForSinkhole(event: KeyboardEvent|FocusEvent, inputValue: string) {
+  checkIPNumberForSinkhole(event: KeyboardEvent | FocusEvent, inputValue: string) {
 
     const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue, this.sinkHoleValidation, 0);
-
 
 
   }
@@ -472,6 +471,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       return agentAlias || ipType || ipAdresses || profile;
     });
   }
+
   openPublicForm() {
     this.showNewIpForm().subscribe();
   }
@@ -481,7 +481,6 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.selectedIp = new Agent();
     this.selectedIp.logo = null;
     this.selectedIp.staticSubnetIp = [];
-
 
 
     const ip0 = {} as IpWithMask;
@@ -508,7 +507,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       this.selectedIp.staticSubnetIp.push(ip0);
 
       this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
-        return { ...x, selected: false };
+        return {...x, selected: false};
       });
 
       this.ipType = 'staticIp';
@@ -523,7 +522,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.getPublicIpsDataAndProfiles();
   }
 
-  showEditWizard(id: string|number) {
+  showEditWizard(id: string | number) {
 
     this.isNewItemUpdated = true;
     const selectedUpdateIp = this.publicIps.find(p => p.id === Number(id));
@@ -555,7 +554,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       if (!this.selectedIp.staticSubnetIp.length) {
         const sub = this.publicIpObs.subscribe(ip => {
           if (ip) {
-            this.selectedIp.staticSubnetIp.push({ baseIp: ip, mask: 32, ranges: this.fillCIDR(32) });
+            this.selectedIp.staticSubnetIp.push({baseIp: ip, mask: 32, ranges: this.fillCIDR(32)});
           }
         });
       }
@@ -612,8 +611,12 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     function imageExists(url, callback) {
       const img = new Image();
-      img.onload = function () { callback(true); };
-      img.onerror = function () { callback(false); };
+      img.onload = function () {
+        callback(true);
+      };
+      img.onerror = function () {
+        callback(false);
+      };
       img.src = url;
     }
   }
@@ -653,7 +656,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       if (!this.selectedIp.staticSubnetIp.length) {
         const sub = this.publicIpObs.subscribe(ip => {
           if (ip) {
-            this.selectedIp.staticSubnetIp.push({ baseIp: ip, mask: 32, ranges: this.fillCIDR(32) });
+            this.selectedIp.staticSubnetIp.push({baseIp: ip, mask: 32, ranges: this.fillCIDR(32)});
           }
         });
       }
@@ -696,7 +699,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     this.selectedIp.rootProfile = this.securityProfiles.find(p => p.id === id);
 
     this.securityProfilesForRkSelect = this.securityProfilesForRkSelect.map(x => {
-      return { ...x, selected: x.value === id };
+      return {...x, selected: x.value === id};
     });
   }
 

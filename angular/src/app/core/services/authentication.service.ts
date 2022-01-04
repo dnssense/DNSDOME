@@ -25,6 +25,7 @@ export class AuthenticationService {
   private STORAGENAME = 'currentSession';
   private _forgotPasswordSendURL = this.configuration.getApiUrl() + '/user/forgot/password';
   private _forgotPasswordChangeURL = this.configuration.getApiUrl() + '/user/forgot/password/confirm';
+  private _confirmAccountByParentURL = this.configuration.getApiUrl() + '/user/parent/password/set'
   private loginUrl = this.configuration.getApiUrl() + '/oauth/token';
   private refreshTokenUrl = this.loginUrl; // this.configuration.getApiUrl() + '/oauth/refresh_token';
   private userInfoUrl = this.configuration.getApiUrl() + '/user/current'; // buranin sonuna bilerek / eklendi,spinner service ekraninda gozukmesin diye
@@ -165,7 +166,9 @@ export class AuthenticationService {
   getCurrentUserRoles(): Observable<Session> {
 
     return this.http.get<RestUserRoleRight>(this.userRoleUrl).pipe(map((x: RestUserRoleRight) => {
-
+      if (!x.roles || x.roles.length <= 0)
+        return
+      this.currentSession.currentUser.role = []
       x.roles.forEach((y: RestRole) => {
         const role = new Role();
         role.name = y.name;
@@ -175,8 +178,7 @@ export class AuthenticationService {
           role.clearences = [];
           role.clearences.push(cleareance);
         });
-
-        this.currentSession.currentUser.role = role;
+        this.currentSession.currentUser.role.push(role);
 
       });
       // sessinStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
@@ -329,7 +331,10 @@ export class AuthenticationService {
   forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {
     return this.http.post<any>(this._forgotPasswordChangeURL,
       JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions());
+  }
 
+  confirmAccountCreatedByParent(key: string, password: string, passwordAgain: string): Observable<any> {
+    return this.http.post<any>(this._confirmAccountByParentURL, JSON.stringify( {key: key, password: password, passwordAgain: passwordAgain}))
   }
 
 

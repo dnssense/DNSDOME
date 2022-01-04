@@ -184,7 +184,9 @@
     <div style="position: relative">
       <div class="row" style="margin: 0 144px 0 10px; max-width: 1055px;">
         <div class="select-container col-12 col-lg-3">
-          <rk-select class="w-100" [placeholder]="'Select' | translate" [(value)]="selectedColumnFilter" [options]="columnsOptions" (valueChange)="filterColumnChanged()"></rk-select>
+          <rk-select class="w-100" [placeholder]="'Select' | translate" [(value)]="selectedColumnFilter"
+                     [options]="columnsOptions" (valueChange)="filterColumnChanged()">
+          </rk-select>
         </div>
 
         <div class="select-container col-12 col-lg-2" style="min-width: 155px; max-width: 155px">

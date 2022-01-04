@@ -1,0 +1,154 @@
+<div class="wrapper wrapper-full-page flex-column" style="background-color: white;">
+  <div class="row ml-1 mr-1" style="min-height: 92vh;">
+    <div class="col-md-8 ml-auto mr-auto">
+      <div class="row mt-4 mb-4">
+        <div class="col-md-3 text-left">
+          <img src="/assets/img/{{host.logoImage}}" style="max-height: 40px;" />
+        </div>
+        <div class="col-md-9 d-flex align-items-center justify-content-end">
+          <a class="nav-link pull-right" [routerLink]="['/login']"
+             style="color: #868e96; font-weight: 500; font-size: 16px;">
+            {{'LOGIN.Login' | translate}}
+          </a>
+        </div>
+      </div>
+      <div *ngIf="whichPage=='password'">
+        <div class="row">
+          <div class="col-md-12 signUpHeader text-center" style="font-weight: 500; font-size: 20px;">{{'MSP.EnterPassword' |translate}}
+          </div>
+          <div class="col-md-12 mt-4 mb-3" style="border: 0.5px solid #eeeeee"></div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-8 ml-auto mr-auto" style="max-width: 450px;">
+            <p style="font-weight: normal; font-size: medium;">{{'REGISTER.DefineYourNewPasswordAccordingToPasswordPolicy'|translate}}</p>
+            <div id = "activateDiv">
+              <form [formGroup]="confirmForm" (ngSubmit)="submitPassword()" class="form-horizontal">
+                <div class="row">
+                  <div class="card-body w-100">
+                    <div class="form-group-sm has-default">
+                      <input type="password" class="formInput" placeholder="{{'REGISTER.Password' | translate}}"
+                             (keyup)="checkPasswordStrength()" [(ngModel)]="model.password" formControlName="password">
+                      <div class="password-length mt-2">
+                        <div [ngClass]="{'active': passStrength>0}"></div>
+                        <div [ngClass]="{'active': passStrength>1}"></div>
+                        <div [ngClass]="{'active': passStrength>2}"></div>
+                        <div [ngClass]="{'active': passStrength>3}"></div>
+                      </div>
+                      <div class="form-group-sm has-default color-9d9d9d" style="font-size: 12px; color: #9d9d9d;" id="passDetails">
+                        {{'REGISTER.PasswordRequirements0'|translate}}
+                        <div class="row">
+                          <div class="col-md-6">
+                            <i class="d-flex fa" [ngClass]="upStrength ? 'fa-check greenCheck':'fa-check redCheck'"> {{'REGISTER.PasswordRequirements1'|translate}}</i>
+                            <i class="d-flex fa" [ngClass]="lowStrength ? 'fa-check greenCheck':'fa-check redCheck'"> {{'REGISTER.PasswordRequirements2'|translate}}</i>
+                          </div>
+                          <div class="col-md-6">
+                            <i class="d-flex fa" [ngClass]="numStrength ? 'fa-check greenCheck':'fa-check redCheck'"> {{'REGISTER.PasswordRequirements3'|translate}}</i>
+                            <i class="d-flex fa" [ngClass]="lengthStrength ? 'fa-check greenCheck':'fa-check redCheck'">{{'REGISTER.PasswordRequirements4'|translate}}</i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group-sm has-default">
+                        <input type="password" class="formInput mt-2 mb-3"
+                               placeholder="{{'REGISTER.ConfirmPassword' | translate}}" [(ngModel)]="model.passwordAgain"
+                               formControlName="passwordAgain">
+                      </div>
+                      <div class="form-group-sm has-default text-center">
+                        <re-captcha [siteKey]="captcha_key" (resolved)="handleCaptcha($event)"></re-captcha>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12 text-center">
+                    <button type="submit" class="btns login-btns mt-4 mb-3" [disabled]="!isFormValid()">{{'MSP.Continue'|translate}}</button>
+                    <br />
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="whichPage=='login'">
+        <div class="row">
+          <div class="col-md-12 signUpHeader text-center" style="font-weight: 500; font-size: 20px;">{{'LOGIN.Login' |translate}}</div>
+          <div class="col-md-12 mt-4 mb-3" style="border: 0.5px solid #eeeeee"></div>
+        </div>
+        <div class="d-flex justify-content-center">
+          <div  id="loginDiv">
+            <form [formGroup]="loginForm" ng-submit="loginform.$valid && loginForm.submit()">
+              <input type="email" class="formInput" placeholder="E-mail" [(ngModel)]="email"
+                     [ngClass]="{'formInputHasError': isFailed}" (ngModelChange)="emailValidationLogin($event)"
+                     formControlName="email">
+
+              <input type="password" class="formInput mt-3" placeholder="{{'LOGIN.Password' | translate}}"
+                     [ngClass]="{'formInputHasError': isFailed}" [(ngModel)]="password" formControlName="password">
+              <div class="form-group text-center d-flex align-items-center flex-column">
+                <br />
+                <p style="color: red;" *ngIf="isFailed">{{ 'LOGIN.WrongEmailOrPassword' | translate }} </p>
+                <button class="btns login-btns" (click)="loginAndToSecurity()">
+                  {{'LOGIN.Login'|translate}}
+                </button>
+                <!--<a class="nav-link mt-1" [routerLink]="['/register']" style="color: #4353ff; font-weight: 500;">
+                  {{'LOGIN.SignupForFreeTrial'|translate}}
+                </a>-->
+                <div class="row">
+                  <div *ngIf="isIEOrEdge" class="col-12 text-center" style="color: gray; font-size: 12px;">
+                    {{'UseChromeFirefoxOpera'|translate}}
+                  </div>
+                  <div class="col-12 text-center" style="color: white">
+                    version:{{environment.version}}
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="whichPage=='security'">
+        <div class="row">
+          <div class="col-md-12 signUpHeader text-center" style="font-weight: 500; font-size: 20px;">{{getAccountStrInfo()}}</div>
+          <div class="col-md-12 mt-4 mb-3" style="border: 0.5px solid #eeeeee"></div>
+        </div>
+        <div class="d-flex justify-content-center">
+          <div class="col-12 col-lg-5">
+            <div class="select-container">
+              <!--<rk-select class="w-100" [placeholder]="'Select' | translate" [(value)]="selectedColumnFilter"
+                         [options]="columnsOptions" (valueChange)="filterColumnChanged()">
+              </rk-select>-->
+              <rk-select class="w-100" [placeholder]="'MSP.SelectPermission' | translate" [(value)]="selectedRoleLevel"
+                         [options]="columnsOptions" (selectionChanged)="filterColumnChanged($event)">
+              </rk-select>
+            </div>
+            <div class="col mt-4 ml-1" *ngIf="!selectedRoleLevel">
+              <div class="mt-0">
+                <p style="font-size: 21px; color: #212529; font-weight: bold">Admin</p>
+                <p style="font-size: 16px; color: #212529">{{'MSP.AdminInfo'|translate}}</p>
+                <div class="col-md-12 mt-2 mb-3" style="border: 0.3px solid #eeeeee"></div>
+              </div>
+              <div class="mt-0">
+                <p style="font-size: 21px; color: #212529; font-weight: bold">Read only</p>
+                <p style="font-size: 16px; color: #212529">{{'MSP.ReadOnlyInfo'|translate}}</p>
+                <div class="col-md-12 mt-2 mb-3" style="border: 0.3px solid #eeeeee"></div>
+              </div>
+              <div class="mt-0">
+                <p style="font-size: 21px; color: #212529; font-weight: bold">No access</p>
+                <p style="font-size: 16px; color: #212529">{{'MSP.NoAccessInfo'|translate}}</p>
+                <div class="col-md-12 mt-2 mb-3" style="border: 0.3px solid #eeeeee"></div>
+              </div>
+            </div>
+            <div class="mt-4" style="text-align: center !important;" *ngIf="selectedRoleLevel">
+              <button class="btns login-btns" (click)="login()">
+                {{'LOGIN.Login'|translate}}
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-footer-cmp></app-footer-cmp>
+</div>

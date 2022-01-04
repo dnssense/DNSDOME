@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthLayoutComponent } from './page/authlayout.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {AuthLayoutComponent} from './page/authlayout.component';
 
 const authlayoutRoutes: Routes = [
   {
@@ -22,9 +22,13 @@ const authlayoutRoutes: Routes = [
       path: 'account-confirm',
       loadChildren: '../../accountconfirm/accountconfirm.module#AccountConfirmModule'
     }, {
+      path: 'account-created-parent',
+      loadChildren: '../../createdparentconfirm/createtparentconfirm.module#CreatetparentconfirmModule'
+    }, {
       path: '',
       loadChildren: '../../login/login.module#LoginModule'
-    }]
+    }
+    ]
   }
 ];
 
@@ -37,4 +41,5 @@ const authlayoutRoutes: Routes = [
 
   ]
 })
-export class AuthLayoutRoutingModule { }
+export class AuthLayoutRoutingModule {
+}
