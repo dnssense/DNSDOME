@@ -1,4 +1,16 @@
 {
+  "burasidevredisi/api/user/parent/*": {
+    "target": "http://localhost:9002",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin":true
+  },
+  "burasidevredisi/api/company/parent/*": {
+    "target": "http://localhost:9050",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin":true
+  },
   "/api/*": {
     "target": "http://beta.roksit.com",
     "secure": false,

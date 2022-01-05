@@ -14,7 +14,7 @@ import {RkSelectModel} from "roksit-lib/lib/modules/rk-select/rk-select.componen
 import {RoleConstant} from "../../../../core/models/Role";
 import {NotificationService} from "../../../../core/services/notification.service";
 import {StaticMessageService} from "../../../../core/services/staticMessageService";
-import {CompanyUpdaterDTO} from "../../../../core/models/Company";
+import {Company, CompanyUpdaterDTO} from "../../../../core/models/Company";
 import {CompanyService} from "../../../../core/services/companyService";
 
 declare var $: any;
@@ -63,7 +63,8 @@ export class CreatetparentconfirmComponent implements OnInit {
   validEmailLogin: true | false;
   isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
   environment = environment;
-
+  currentCompany: Company
+  parentCompany: Company
   selectedRoleLevel: RkSelectModel
   columnsOptions: RkSelectModel[] = [{name: RoleConstant.ADMIN, displayText: "Admin"}, {name: RoleConstant.USER, displayText: "Read only"},
     {name: undefined, displayText: "No Access"}];
@@ -129,7 +130,7 @@ export class CreatetparentconfirmComponent implements OnInit {
   }
 
   getAccountStrInfo() {
-    let localStr = this.translateservice.translate('MSP.AccountParentCreated').format("sait")
+    let localStr = this.translateservice.translate('MSP.AccountParentCreated').format(this.parentCompany ? this.parentCompany.name : "")
     return localStr
   }
 
@@ -149,8 +150,19 @@ export class CreatetparentconfirmComponent implements OnInit {
     if (this.loginForm.valid) {
       this.isFailed = false;
       this.authService.login(this.email, this.password).subscribe(val => {
-        this.whichPage = "security"
-        //this.router.navigateByUrl('admin/deployment/roaming-clients');
+        if (this.authService.currentSession && this.authService.currentSession.currentUser) {
+          this.companyService.getCompanyById(this.authService.currentSession.currentUser.companyId).subscribe(res => {
+            this.currentCompany = res
+            if (res.parentId) {
+              this.companyService.getCompanyById(res.parentId).subscribe(pres => {
+                this.parentCompany = pres
+                this.whichPage = "security"
+              })
+            } else {
+              this.whichPage = "security"
+            }
+          })
+        }
       });
 
     } else {

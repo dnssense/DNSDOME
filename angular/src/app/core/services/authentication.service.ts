@@ -334,7 +334,7 @@ export class AuthenticationService {
   }
 
   confirmAccountCreatedByParent(key: string, password: string, passwordAgain: string): Observable<any> {
-    return this.http.post<any>(this._confirmAccountByParentURL, JSON.stringify( {key: key, password: password, passwordAgain: passwordAgain}))
+    return this.http.post<any>(this._confirmAccountByParentURL, {key: key, password: password, passwordAgain: passwordAgain}, this.getHttpOptions())
   }
 
 
