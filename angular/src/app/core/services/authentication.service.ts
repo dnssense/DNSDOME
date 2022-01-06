@@ -266,13 +266,17 @@ export class AuthenticationService {
       body.set('code', code);
     }
 
+    return this.oauth(body, httpOptions);
+  }
+
+  private oauth(body: URLSearchParams, httpOptions: { headers: HttpHeaders }) {
     return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
       .pipe(mergeMap((res: any) => {
         // this.logger.console(res);
         this.currentSession = new Session();
         this.currentSession.token = res.accessToken;
         this.currentSession.refreshToken = res.refreshToken;
-
+        console.log(res.accessToken)
         return this.getCurrentUser().pipe(x => {
           if (!this.idle.isRunning()) {
             console.log('starting idle');
@@ -285,6 +289,20 @@ export class AuthenticationService {
         this.currentSession = null;
         throw err;
       }));
+  }
+
+  loginOauthCode(code: string) : Observable<Session> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
+    }
+    const body = new URLSearchParams();
+    body.set('grant_type', 'authorization_code');
+    body.set('code',code)
+    body.set('client_id', 'bla')
+    body.set('client_secret', 'hd')
+    return this.oauth(body, httpOptions)
   }
 
   loginWithToken(token: string, refToken: string): Observable<Session> {
