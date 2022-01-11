@@ -1,6 +1,12 @@
 {
-  "burasidevredisi/api/user/*": {
+  "/api/user/*": {
     "target": "http://localhost:9002",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin":true
+  },
+  "burasidevredisi/calculate/*": {
+    "target": "http://localhost:9040",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin":true

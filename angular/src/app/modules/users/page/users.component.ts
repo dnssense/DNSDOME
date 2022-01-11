@@ -210,6 +210,9 @@ export class UsersComponent implements OnInit {
   }
   //region ui methodes
   userFriendlyRoleName(role: Role[]) {
+    if(!role || role.length) {
+      return 'Not Defined'
+    }
     if (role.find(r=>r.name === 'ROLE_CUSTOMER')) {
       return 'Admin';
     } else if (role.find(r => r.name === 'ROLE_USER')) {
