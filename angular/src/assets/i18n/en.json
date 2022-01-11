@@ -701,6 +701,8 @@
       "SelectPermission": "Select Permission",
       "AdminInfo": "MSP can create and change security policy, can see reports.",
       "ReadOnlyInfo": "MSP can only see reports. Can create new report template.",
-      "NoAccessInfo": "MSP Does not have any access."
+      "NoAccessInfo": "MSP Does not have any access.",
+      "Info": "MSP Informatıon",
+      "Edit": "Edit MSP"
     }
 }

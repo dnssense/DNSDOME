@@ -22,7 +22,7 @@ export class CompanyUpdaterDTO {
   audit?: {
     userId: number;
     username: string;
-    ip: string;
+    ip?: string;
   }
 }
 

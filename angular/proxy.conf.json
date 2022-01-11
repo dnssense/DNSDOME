@@ -1,5 +1,5 @@
 {
-  "burasidevredisi/api/user/parent/*": {
+  "burasidevredisi/api/user/*": {
     "target": "http://localhost:9002",
     "secure": false,
     "logLevel": "debug",
