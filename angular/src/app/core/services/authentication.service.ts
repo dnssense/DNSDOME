@@ -219,7 +219,7 @@ export class AuthenticationService {
           user.gsmCode = res.gsmCode;
           user.gsm = res.gsm;
           user.usageType = 1;
-
+          user.parentId = res.parentId || 0
           const previousRoles = this.currentSession?.currentUser?.role;
           this.currentSession.currentUser = user;
           // burasi onemli once roles save edilmeli yoksa senkron sorunu olusur ve login ekrani calisir

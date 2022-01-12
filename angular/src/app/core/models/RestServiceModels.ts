@@ -14,6 +14,7 @@ export interface RestUser {
     gsmCode?: string;
     language?: string;
     companyId: number;
+    parentId?: number
 }
 
 export interface RestPreloginResponse {
