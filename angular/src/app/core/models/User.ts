@@ -30,6 +30,7 @@ export class User {
     public usageType: number;
     public isGsmVerified = false;
     public apikey?: ApiKey;
+    public parentId: number = 0
 
 
     /**

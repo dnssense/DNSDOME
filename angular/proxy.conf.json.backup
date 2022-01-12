@@ -40,5 +40,26 @@
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
-  }
+  },
+  "/api/user/*": {
+     "target": "http://localhost:9002",
+     "secure": false,
+     "logLevel": "debug",
+     "changeOrigin":true
+  },
+  "/calculate/*": {
+     "target": "http://localhost:9040",
+     "secure": false,
+     "logLevel": "debug",
+     "changeOrigin":true
+  },
+  "/api/company/*": {
+     "target": "http://localhost:9050",
+     "secure": false,
+     "logLevel": "debug",
+     "pathRewrite": {
+       "^/api" : ""
+     },
+     "changeOrigin":true
+  },
 }

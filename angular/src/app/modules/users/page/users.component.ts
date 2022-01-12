@@ -37,7 +37,7 @@ export class UsersComponent implements OnInit {
       this.user.role = []
     this.user.role.push(role)
     this.userService.getUsers().subscribe(res => {
-      this.users = res;
+      this.users = res.filter(u=>u.parentId < 1);
     });
 
     this.userRoles = this.userService.getRoles();
@@ -210,12 +210,12 @@ export class UsersComponent implements OnInit {
   }
   //region ui methodes
   userFriendlyRoleName(role: Role[]) {
-    if(!role || role.length) {
+    if(!role || !role.length) {
       return 'Not Defined'
     }
-    if (role.find(r=>r.name === 'ROLE_CUSTOMER')) {
+    if (role.find(r=>r.name == 'ROLE_CUSTOMER')) {
       return 'Admin';
-    } else if (role.find(r => r.name === 'ROLE_USER')) {
+    } else if (role.find(r => r.name == 'ROLE_USER')) {
       return 'User';
     } else {
       return 'Not Defined';
