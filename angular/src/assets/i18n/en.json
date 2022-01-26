@@ -98,6 +98,7 @@
     "Next": "Next",
     "RoamingClients": "Roaming Clients",
     "OS": "OS",
+    "Version": "Version",
     "RoamingClient": "Roaming Client",
     "DnsRelay": "DNS Relay",
     "DnsRelays": "DNS Relays",
@@ -695,14 +696,14 @@
     "SelectedDomainsWillBeDeleted": "Selected domains will be deleted",
     "DomainCopiedToClipboard": "Domain name copied",
     "MSP": {
-      "EnterPassword": "Enter your password",
-      "Continue": "Continue",
-      "AccountParentCreated": "Your account was created by {0}. \n Set permission for {0} to access your account.",
-      "SelectPermission": "Select Permission",
-      "AdminInfo": "MSP can create and change security policy, can see reports.",
-      "ReadOnlyInfo": "MSP can only see reports. Can create new report template.",
-      "NoAccessInfo": "MSP Does not have any access.",
-      "Info": "MSP Informatıon",
-      "Edit": "Edit MSP"
+        "EnterPassword": "Enter your password",
+        "Continue": "Continue",
+        "AccountParentCreated": "Your account was created by {0}. \n Set permission for {0} to access your account.",
+        "SelectPermission": "Select Permission",
+        "AdminInfo": "MSP can create and change security policy, can see reports.",
+        "ReadOnlyInfo": "MSP can only see reports. Can create new report template.",
+        "NoAccessInfo": "MSP Does not have any access.",
+        "Info": "MSP Informatıon",
+        "Edit": "Edit MSP"
     }
 }

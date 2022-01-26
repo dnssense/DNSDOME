@@ -97,6 +97,7 @@
     "Next": "Sıradaki",
     "RoamingClients": "Mobil Cihazlar",
     "OS": "İşletim Sistemi",
+    "Version": "Versiyon",
     "RoamingClient": "Mobil Cihaz",
     "DnsRelay": "Dns Relay",
     "DnsRelays": "Dns Relays",
@@ -691,13 +692,13 @@
     "Comment": "Açıklama",
     "SelectedDomainsWillBeDeleted": "Seçilen domainler silinecek",
     "DomainCopiedToClipboard": "Alan adı kopyalandı",
-  "MSP": {
-    "EnterPassword": "Enter your password",
-    "Continue": "Continue",
-    "AccountParentCreated": "Your account was created by {0}. \n Set permission for {0} to access your account.",
-    "SelectPermission": "Select Permission",
-    "AdminInfo": "Güvenlik politikası oluşturabilir, değiştirebilir, raporları görebilir.",
-    "ReadOnlyInfo": "Sadece raporları görebilir. Yeni rapor şablonu olusturabilir.",
-    "NoAccessInfo": "Hiçbir erişime sahip değildir."
-  }
+    "MSP": {
+        "EnterPassword": "Enter your password",
+        "Continue": "Continue",
+        "AccountParentCreated": "Your account was created by {0}. \n Set permission for {0} to access your account.",
+        "SelectPermission": "Select Permission",
+        "AdminInfo": "Güvenlik politikası oluşturabilir, değiştirebilir, raporları görebilir.",
+        "ReadOnlyInfo": "Sadece raporları görebilir. Yeni rapor şablonu olusturabilir.",
+        "NoAccessInfo": "Hiçbir erişime sahip değildir."
+    }
 }

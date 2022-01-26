@@ -429,7 +429,16 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     searchByKeyword() {
         if (this.searchKey) {
-            this.clientsGroupedFiltered = this.clients.filter(f => f.agentAlias.toLowerCase().includes(this.searchKey.toLowerCase()));
+            let key = this.searchKey.toLowerCase();
+            this.clientsGroupedFiltered = this.clients.filter(f => {
+                return f.agentAlias.toLowerCase().includes(key)
+                    || f.agentGroup?.groupName.toLowerCase().includes(key)
+                    || f.hostname?.toLocaleLowerCase().includes(key)
+                    || f.mac?.toLocaleLowerCase().includes(key)
+                    || f.os?.toLocaleLowerCase().includes(key)
+                    || f.version?.toLocaleLowerCase().includes(key)
+                    || f.rootProfile?.name.toLocaleLowerCase().includes(key)
+            });
         } else {
             this.clientsGroupedFiltered = this.clients;
         }
@@ -875,6 +884,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.saveAgentConf(agent);
     }
+    agentUserDisableEnable(state: boolean, agent: Agent) {
+        //burasi
+    }
     agentDisableEnableSmartCache(state: boolean, agent: Agent) {
 
         agent.isSmartCacheEnabled = state;
@@ -999,4 +1011,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             return obj;
         });
     }
+
+    get roamingClientVersion() {
+        return '1.0.6';
+    }
+
 }
