@@ -30,7 +30,7 @@ build_building:
   cache: {}
   script:
     - cd angular
-    - npm run install:clean
+    - npm run install:clean --strict-ssl=false
     - npm run build-prod
   artifacts:
     paths:
@@ -72,7 +72,7 @@ deploy_k8_dev:
     - ansible-playbook 03.postinit.playbook.yaml
     - ansible-playbook 191.ui.dnssense.playbook.yaml
     - git add . || exit_code=$?
-    - git commit -m 'rest.calculate updated' || exit_code=$?
+    - git commit -m 'ui.dnssense updated' || exit_code=$?
     - git push
   except:
     refs:
