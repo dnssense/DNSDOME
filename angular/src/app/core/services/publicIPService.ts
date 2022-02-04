@@ -5,19 +5,20 @@ import { ConfigService } from './config.service';
 import { PublicIP } from '../models/PublicIP';
 import { WAgentIpGroup } from '../models/WAgentIpGroup';
 import { OperationResult } from '../models/OperationResult';
-import { geoLocation } from 'src/app/core/services/geoLocation';
+import { GeoLocationService } from './geoLocationService';
+
 
 @Injectable({ providedIn: 'root' })
 export class PublicIPService {
 
 
-  constructor(private http: HttpClient, private config: ConfigService) {
+  constructor(private http: HttpClient, private config: ConfigService, private geoLocation: GeoLocationService) {
 
   }
 
   public getMyIp(): Observable<any> {
 
-    return geoLocation.getCurrent(this.http).map(res => res.ip);
+    return this.geoLocation.getCurrent().map(res => res.ip);
   }
 
 
