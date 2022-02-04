@@ -147,6 +147,10 @@ export class NavbarComponent implements OnInit {
         return this.host.brand == "CMERP"
     }
 
+    isDnssense() {
+        return this.host.brand == 'DNSSense';
+    }
+
 
     getBaseHelpPage(lang?: string) {
         let url = this.host.docUrl + '/';
@@ -256,24 +260,24 @@ export class NavbarComponent implements OnInit {
     }
 
     setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, existsSubMenu = false) {
-            this._menuItems.forEach(elem => elem.selected = false);
+        this._menuItems.forEach(elem => elem.selected = false);
 
-           menuItem.selected = true;
+        menuItem.selected = true;
 
-           this._menuItems.forEach(elem => {
-               if (elem.subMenu) {
-                   elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
-               }
-           });
+        this._menuItems.forEach(elem => {
+            if (elem.subMenu) {
+                elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
+            }
+        });
 
-           if (!existsSubMenu) {
-               this.sidebar.toggle();
-           }
+        if (!existsSubMenu) {
+            this.sidebar.toggle();
+        }
 
-           if (subMenuItem) {
-               subMenuItem.selected = true;
+        if (subMenuItem) {
+            subMenuItem.selected = true;
 
-               this.sidebar.toggle();
-           }
+            this.sidebar.toggle();
+        }
     }
 }
