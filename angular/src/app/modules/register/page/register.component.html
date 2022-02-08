@@ -64,7 +64,8 @@
               <form [formGroup]="registerForm" class="form-horizontal mt-3">
                 <div class="row">
                   <div class="col-md-12" style="max-width: 450px;">
-                    <p style="font-size: 12px; margin-top: -15px; margin-bottom: 0px;">All fields are required except phone number</p>
+                    <p style="font-size: 12px; margin-top: -15px; margin-bottom: 0px;">All fields are required except
+                      phone number</p>
 
                     <input type="text" class="formInput" placeholder="Company Name" [(ngModel)]="user.company.name"
                       formControlName="company" [ngClass]="{'formInputHasError':(registerForm.get('company').dirty|| registerForm.get('company').touched) 
@@ -106,7 +107,7 @@
                           </div>
 
                           <input type="tel" class="formInput ml-2 mt-2" name="gsm" (keydown)="checkisTelNumber($event)"
-                            placeholder="{{'REGISTER.GSM' | translate}}" maxlength="10" minlength="10"
+                            placeholder="{{'REGISTER.GSM' | translate}}" maxlength="10" minlength="9"
                             [(ngModel)]="user.gsm" formControlName="gsm" title="5XX1234567" [ngClass]="{'formInputHasError':(registerForm.get('gsm').dirty|| registerForm.get('gsm').touched) 
                                         && !registerForm.get('gsm').valid }">
 
@@ -145,7 +146,8 @@
                         <div class="col-md-6">
                           <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': numStrength}">one number</i>
                           <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': lengthStrength}">8
-                            characters</i></div>
+                            characters</i>
+                        </div>
                       </div>
                     </div>
 
@@ -219,7 +221,8 @@
                 style="font-weight: normal; background-color: rgba(67, 83, 255, 0.08)">
                 <p class="mt-2">A verification email has been sent</p>
                 <p> to: <b>{{user.username}}</b></p>
-                <p>Please click the activation link sent to your e-mail address.<p>
+                <p>Please click the activation link sent to your e-mail address.
+                <p>
               </div>
               <div class="col-md-12 mr-auto ml-auto mt-3" style="font-weight: normal;">
                 <!-- <p>To re-send the verification e-mail please click <a href="#">here </a></p> -->

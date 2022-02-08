@@ -125,4 +125,5 @@ export class AgentService {
     return this.http.post(this.agentConfUrl, { items: [{ agentSerial: uuid, conf: conf }] }, this.getOptions()).map(res => res);
   }
 
+
 }

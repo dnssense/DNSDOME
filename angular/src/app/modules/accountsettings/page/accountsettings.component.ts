@@ -21,6 +21,7 @@ import { countries } from 'src/app/core/models/Countries';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { TranslateService } from '@ngx-translate/core';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
+import { ConfigService } from '../../../core/services/config.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -45,7 +46,8 @@ export class AccountSettingsComponent implements OnInit {
         private alert: AlertService,
         private companyService: CompanyService,
         private smsService: SmsService,
-        private staticMessageService: StaticMessageService
+        private staticMessageService: StaticMessageService,
+        private configService: ConfigService
     ) {
         this.signupUser = new SignupBean();
         this.signupUser.company = new Company();
@@ -136,7 +138,7 @@ export class AccountSettingsComponent implements OnInit {
 
             this.user = this.authService.currentSession.currentUser;
             this.current2FAPreference = this.user.twoFactorAuthentication;
-            this.gsmCodeTemp = this.user.gsmCode;
+            this.gsmCodeTemp = this.user.gsmCode || this.configService.host.defaultGSMCode;
             this.phoneNumberTemp = this.user.gsm;
             this.currentGsm = this.user.gsm;
 
@@ -144,7 +146,7 @@ export class AccountSettingsComponent implements OnInit {
                 return {
                     value: x.dial_code,
                     displayText: x.name,
-                    selected: this.user.gsmCode === x.dial_code
+                    selected: this.gsmCodeTemp === x.dial_code
                 } as RkSelectModel;
             });
         }
@@ -158,7 +160,7 @@ export class AccountSettingsComponent implements OnInit {
         this.userPhoneForm =
             this.formBuilder.group({
                 'gsmCode': ['', [Validators.required]],
-                'gsm': ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(number)]],
+                'gsm': ['', [Validators.required, Validators.minLength(9), Validators.maxLength(10), Validators.pattern(number)]],
                 'smsCode': ['']
             });
 
@@ -286,9 +288,9 @@ export class AccountSettingsComponent implements OnInit {
     isValidateButtonDisabled() {
 
 
-          if ( (this.user.isGsmVerified && this.phoneNumberTemp && this.phoneNumberTemp === this.user.gsm && this.gsmCodeTemp === this.user.gsmCode)
-           || this.phoneNumberTemp?.length < 10 || !this.gsmCodeTemp) {return true; }
-          return false;
+        if ((this.user.isGsmVerified && this.phoneNumberTemp && this.phoneNumberTemp === this.user.gsm && this.gsmCodeTemp === this.user.gsmCode)
+            || this.phoneNumberTemp?.length < 9 || !this.gsmCodeTemp) { return true; }
+        return false;
     }
 
     changePasswordFormSubmit() {
@@ -369,7 +371,7 @@ export class AccountSettingsComponent implements OnInit {
             this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
             return;
         }
-        if (this.phoneNumberTemp && this.phoneNumberTemp.length === 10) {
+        if (this.phoneNumberTemp && this.phoneNumberTemp.length === 9) {
             this.user.gsm = this.phoneNumberTemp;
             this.user.gsmCode = this.gsmCodeTemp;
 
@@ -417,8 +419,8 @@ export class AccountSettingsComponent implements OnInit {
                         this.authService.saveSession();
 
                         $('#validateButton').show(300);
-                    $('#smsValidationDiv').hide(200);
-                    this.isSmsConfirming = false;
+                        $('#smsValidationDiv').hide(200);
+                        this.isSmsConfirming = false;
                     });
 
 

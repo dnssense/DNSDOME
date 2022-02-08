@@ -1,4 +1,4 @@
-image: node:12.14.1
+image: node:14.18.3
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -23,14 +23,14 @@ cache:
     - node_modules/
 
 build_building:
-  image: node:12.14.1
+  image: node:14.18.3
   tags:
     - build-runner
   stage: build
   cache: {}
   script:
     - cd angular
-    - npm run install:clean
+    - npm run install:clean --strict-ssl=false
     - npm run build-prod
   artifacts:
     paths:
@@ -41,7 +41,7 @@ build_building:
       - dev
 
 package_docker_dev:
-  image: node:12.14.1
+  image: node:14.18.3
   tags:
     - package-runner
   stage: package
@@ -72,7 +72,7 @@ deploy_k8_dev:
     - ansible-playbook 03.postinit.playbook.yaml
     - ansible-playbook 191.ui.dnssense.playbook.yaml
     - git add . || exit_code=$?
-    - git commit -m 'rest.calculate updated' || exit_code=$?
+    - git commit -m 'ui.dnssense updated' || exit_code=$?
     - git push
   except:
     refs:

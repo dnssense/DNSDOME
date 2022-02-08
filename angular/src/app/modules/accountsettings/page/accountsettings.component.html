@@ -52,7 +52,8 @@
               <span class="text-accent">*</span> {{'ACCOUNTSETTINGS.TwoFactorAuthMessage' | translate}}
             </p>
 
-            <ng-container *ngIf="isValidateButtonDisabled() && !isSmsConfirming &&  user.gsmCode && user.gsm?.length > 0; else elseTemplate2FA">
+            <ng-container
+              *ngIf="isValidateButtonDisabled() && !isSmsConfirming &&  user.gsmCode && user.gsm?.length > 0; else elseTemplate2FA">
               <div class="category-item">
                 <rk-checkbox [value]="user.twoFactorAuthentication" alignment="right" size="sm"
                   (valueChange)="change2FASubmit()">{{'ACCOUNTSETTINGS.EnableTwoFactorAuth' | translate}}</rk-checkbox>
@@ -75,7 +76,7 @@
               </div>
             </ng-container> -->
 
-            <ng-container >
+            <ng-container>
               <div class="mt-4">
                 <label class="rk-label">{{'ACCOUNTSETTINGS.GSMCode' | translate}}</label>
                 <rk-select [options]="countryOptions" [(value)]="gsmCodeTemp" (valueChange)="gsmCodeChange()"
@@ -91,7 +92,7 @@
 
             </ng-container>
 
-            <div id="smsValidationDiv"   style="display:none;">
+            <div id="smsValidationDiv" style="display:none;">
               <div class="mt-3">
                 <countdown-timer (zeroTrigger)="timeEnd()" [end]="endTime"></countdown-timer>
               </div>
@@ -102,13 +103,13 @@
               </div>
 
               <div class="mt-3 d-flex justify-content-end">
-                <button class="btn btn-small" style="min-width: 100px;"
-                  (click)="confirmGsm()">{{'Confirm' | translate}}</button>
+                <button class="btn btn-small" style="min-width: 100px;" (click)="confirmGsm()">{{'Confirm' |
+                  translate}}</button>
               </div>
 
             </div>
 
-            <div class="mt-3 mb-2 d-flex justify-content-end" *ngIf="!isSmsConfirming"  id="validateButton">
+            <div class="mt-3 mb-2 d-flex justify-content-end" *ngIf="!isSmsConfirming" id="validateButton">
               <button [disabled]="isValidateButtonDisabled()" class="btn  btn-small" style="min-width: 100px;"
                 (click)="changePhoneNumber()">{{'Validate' | translate}}</button>
             </div>
@@ -152,8 +153,8 @@
             </div>
 
             <div class="d-flex justify-content-end mt-3 mb-2">
-              <button class="btn btn-small btn-accent" style="min-width: 100px;"
-                (click)="companyFormSubmit()">{{'Save' | translate}}</button>
+              <button class="btn btn-small btn-accent" style="min-width: 100px;" (click)="companyFormSubmit()">{{'Save'
+                | translate}}</button>
             </div>
           </form>
         </div>
@@ -171,13 +172,13 @@
             <div class="mt-3">
               <label class="rk-label" for="new-password">{{'ACCOUNTSETTINGS.NewPassword' | translate}}</label>
               <input type="password" class="rk-input w-100" id="new-password"
-                placeholder="{{'ACCOUNTSETTINGS.NewPassword' | translate}}" [(ngModel)]="signupUser.password" (ngModelChange)="checkPasswordStrength()"
-                formControlName="password">
+                placeholder="{{'ACCOUNTSETTINGS.NewPassword' | translate}}" [(ngModel)]="signupUser.password"
+                (ngModelChange)="checkPasswordStrength()" formControlName="password">
             </div>
 
             <div class="mt-3">
-              <label class="rk-label"
-                for="confirm-password">{{'ACCOUNTSETTINGS.ConfirmNewPassword' | translate}}</label>
+              <label class="rk-label" for="confirm-password">{{'ACCOUNTSETTINGS.ConfirmNewPassword' |
+                translate}}</label>
               <input type="password" class="rk-input w-100" id="confirm-password"
                 placeholder="{{'ACCOUNTSETTINGS.ConfirmNewPassword' | translate}}"
                 [(ngModel)]="signupUser.passwordAgain" formControlName="passwordAgain">
@@ -193,8 +194,8 @@
             </div>
 
             <div class="d-flex justify-content-end mt-3 mb-2" (click)="changePasswordFormSubmit()">
-              <button class="btn btn-small btn-accent"
-                style="min-width: 100px;">{{'ACCOUNTSETTINGS.Save' | translate}}</button>
+              <button class="btn btn-small btn-accent" style="min-width: 100px;">{{'ACCOUNTSETTINGS.Save' |
+                translate}}</button>
             </div>
           </form>
         </div>
