@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Valida
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { RecaptchaComponent } from 'ng-recaptcha';
+
 import { Company } from 'src/app/core/models/Company';
 import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 import { RegisterUser, SignupBean } from 'src/app/core/models/SignupBean';
@@ -12,6 +13,12 @@ import { ConfigHost, ConfigService } from 'src/app/core/services/config.service'
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
+import { GeoLocation, GeoLocationService } from '../../../core/services/geoLocationService';
+import 'rxjs/add/operator/map';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { ArrayType } from '@angular/compiler';
+import { Observable, of } from 'rxjs';
+
 
 declare var $: any;
 
@@ -37,7 +44,8 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     private configService: ConfigService,
     private router: Router,
     private staticMessageService: StaticMessageService,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private geolocation: GeoLocationService
   ) { }
 
   private toggleButton: any;
@@ -77,16 +85,6 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     this.captcha_key = this.host.captcha_key;
     this.createRegisterForm();
 
-    // const navbar: HTMLElement = this.element.nativeElement;
-    // this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
-    // const body = document.getElementsByTagName('body')[0];
-    // body.classList.add('register-page');
-    // body.classList.add('off-canvas-sidebar');
-    // const card = document.getElementsByClassName('card')[0];
-    // setTimeout(function () {
-    //   // after 1000 ms we add the class animated to the login/register card
-    //   card.classList.remove('card-hidden');
-    // }, 700);
 
   }
 
@@ -116,10 +114,27 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
         'surname': ['', [Validators.required]]
       }, { validator: Validators.compose([ValidationService.matchingPasswords('password', 'passwordAgain')]) }
       );
+    this.detectGSMCode().subscribe();
 
-    this.user.gsmCode = this.host.defaultGSMCode;
-    this.registerForm.controls['gsmCode'].setValue(this.host.defaultGSMCode);
-    this.registerForm.controls['gsmCode'].updateValueAndValidity();
+  }
+  detectGSMCode() {
+    return this.geolocation.getCurrent().timeout(2000).pipe(
+      catchError(() => {
+        this.user.gsmCode = this.host.defaultGSMCode;
+        this.registerForm.controls['gsmCode'].setValue(this.user.gsmCode);
+        this.registerForm.controls['gsmCode'].updateValueAndValidity();
+        return of(null);
+      }),
+      map((value: GeoLocation) => {
+
+
+        this.user.gsmCode = value.country_calling_code || this.host.defaultGSMCode;
+        this.registerForm.controls['gsmCode'].setValue(this.user.gsmCode);
+        this.registerForm.controls['gsmCode'].updateValueAndValidity();
+        return of(null);
+      }))
+
+
   }
 
   sidebarToggle() {
@@ -190,11 +205,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
 
   isRegisterFormValid() {
     if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.captcha != null && this.capthaService.validCaptcha(this.captcha)) {
-      /*  const ca = '';// this.captchaComponent.getResponse();
-       if (ca == this.captcha) {
-         return true;
-       }
-       return false; */
+
       return true;
     }
     return false;
@@ -231,14 +242,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       return;
     }
 
-    /*  if (!this.user.gsmCode) {
-       this.notification.warning(this.staticMessageService.pleaseFillTheGsmCode);
-       return;
-     } */
-    /*  if (this.user.gsm) {
-       this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
-       return;
-     } */
+
 
     if (!this.user.username) {
       this.notification.warning(this.staticMessageService.pleaseEnterAValidEmail);

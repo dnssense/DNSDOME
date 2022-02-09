@@ -9,7 +9,7 @@ import { RestUserUpdateRequest, RestEmptyResponse } from '../models/RestServiceM
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { countries } from 'countries-list';
-import { geoLocation, GeoLocation } from 'src/app/core/services/geoLocation';
+import { GeoLocation, GeoLocationService } from 'src/app/core/services/geoLocationService';
 
 
 @Injectable({
@@ -25,7 +25,7 @@ export class AccountService {
     private _currentUserRightsURL = this.config.getApiUrl() + '/user/current/role'; */
 
 
-  constructor(private http: HttpClient, private config: ConfigService) {
+  constructor(private http: HttpClient, private config: ConfigService, private geoLocation: GeoLocationService) {
   }
 
   public update(user: RestUserUpdateRequest): Observable<RestEmptyResponse> {
@@ -56,7 +56,7 @@ export class AccountService {
       user.language = user.language.slice(0, user.language.indexOf('-'));
     }
 
-    return geoLocation.getCurrent(this.http).timeout(2000).pipe(
+    return this.geoLocation.getCurrent().timeout(2000).pipe(
       catchError(() => {
         return of(null);
       }),

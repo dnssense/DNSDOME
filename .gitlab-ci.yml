@@ -1,4 +1,4 @@
-image: node:12.14.1
+image: node:14.18.3
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -23,7 +23,7 @@ cache:
     - node_modules/
 
 build_building:
-  image: node:12.14.1
+  image: node:14.18.3
   tags:
     - build-runner
   stage: build
@@ -41,7 +41,7 @@ build_building:
       - dev
 
 package_docker_dev:
-  image: node:12.14.1
+  image: node:14.18.3
   tags:
     - package-runner
   stage: package
