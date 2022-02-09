@@ -24,12 +24,13 @@ export class User {
     public isLocked: number;
     public active = true;
     public isActive: number;
-    public role: Role;
+    public role: Role[];
     public companyId: number;
     public twoFactorAuthentication = false;
     public usageType: number;
     public isGsmVerified = false;
     public apikey?: ApiKey;
+    public parentId: number = 0
 
 
     /**

@@ -16,7 +16,7 @@ export class RoleGuard implements CanActivate {
         const roles: string[] = expectedRole.split(',');
         const ss = this.auth.currentSession;
         if (this.auth.isCurrentSessionValid() && ss && ss.currentUser
-            && ss.currentUser.role && roles.includes(ss.currentUser.role.name)
+            && ss.currentUser.role && ss.currentUser.role.find(ur=>roles.includes(ur.name))//roles.includes(ss.currentUser.role.name)
             && !this.configService.host.hiddenMenus.includes(route.routeConfig.path)) {
             return true;
         } else {

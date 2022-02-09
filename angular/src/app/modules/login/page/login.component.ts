@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { RecaptchaComponent } from 'ng-recaptcha';
 // import { SmsInformation } from 'src/app/core/models/SmsInformation';
 import { RestPreloginResponse, RestPreloginSmsResponse } from 'src/app/core/models/RestServiceModels';
@@ -41,17 +41,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private smsService: SmsService,
     private capthaService: CaptchaService,
     private configService: ConfigService,
-    private staticMessageService: StaticMessageService
+    private staticMessageService: StaticMessageService,
+    private route: ActivatedRoute
   ) {
     this.isFailed = false;
 
     if (element) {
       this.nativeElement = element.nativeElement;
     }
-
     this.sidebarVisible = false;
     this.host = this.configService.host;
     this.captcha_key = this.host.captcha_key;
+    this.jumpKey = this.route.snapshot.queryParams.code
   }
 
   environment = environment;
@@ -85,6 +86,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   isConfirmTimeEnded = true;
   maxRequest = 3;
   host: ConfigHost;
+  jumpKey: string
   isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
 
   private smsInformation: RestPreloginSmsResponse;
@@ -96,6 +98,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
       'email': [null, [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')]],
       'password': ['', [Validators.required, Validators.minLength(5)]]
     });
+
+    if (this.jumpKey) {
+      this.authService.loginOauthCode(this.jumpKey).subscribe(value => {
+        this.router.navigateByUrl('/admin/dashboard');
+      })
+    }
   }
 
 

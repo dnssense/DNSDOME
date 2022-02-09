@@ -25,6 +25,7 @@ export class AuthenticationService {
   private STORAGENAME = 'currentSession';
   private _forgotPasswordSendURL = this.configuration.getApiUrl() + '/user/forgot/password';
   private _forgotPasswordChangeURL = this.configuration.getApiUrl() + '/user/forgot/password/confirm';
+  private _confirmAccountByParentURL = this.configuration.getApiUrl() + '/user/parent/password/set'
   private loginUrl = this.configuration.getApiUrl() + '/oauth/token';
   private refreshTokenUrl = this.loginUrl; // this.configuration.getApiUrl() + '/oauth/refresh_token';
   private userInfoUrl = this.configuration.getApiUrl() + '/user/current'; // buranin sonuna bilerek / eklendi,spinner service ekraninda gozukmesin diye
@@ -165,7 +166,9 @@ export class AuthenticationService {
   getCurrentUserRoles(): Observable<Session> {
 
     return this.http.get<RestUserRoleRight>(this.userRoleUrl).pipe(map((x: RestUserRoleRight) => {
-
+      if (!x.roles || x.roles.length <= 0)
+        return
+      this.currentSession.currentUser.role = []
       x.roles.forEach((y: RestRole) => {
         const role = new Role();
         role.name = y.name;
@@ -175,8 +178,7 @@ export class AuthenticationService {
           role.clearences = [];
           role.clearences.push(cleareance);
         });
-
-        this.currentSession.currentUser.role = role;
+        this.currentSession.currentUser.role.push(role);
 
       });
       // sessinStorage.setItem(this.STORAGENAME, JSON.stringify(this.currentSession));
@@ -217,7 +219,7 @@ export class AuthenticationService {
           user.gsmCode = res.gsmCode;
           user.gsm = res.gsm;
           user.usageType = 1;
-
+          user.parentId = res.parentId || 0
           const previousRoles = this.currentSession?.currentUser?.role;
           this.currentSession.currentUser = user;
           // burasi onemli once roles save edilmeli yoksa senkron sorunu olusur ve login ekrani calisir
@@ -264,13 +266,17 @@ export class AuthenticationService {
       body.set('code', code);
     }
 
+    return this.oauth(body, httpOptions);
+  }
+
+  private oauth(body: URLSearchParams, httpOptions: { headers: HttpHeaders }) {
     return this.http.post<Session>(this.loginUrl, body.toString(), httpOptions)
       .pipe(mergeMap((res: any) => {
         // this.logger.console(res);
         this.currentSession = new Session();
         this.currentSession.token = res.accessToken;
         this.currentSession.refreshToken = res.refreshToken;
-
+        console.log(res.accessToken)
         return this.getCurrentUser().pipe(x => {
           if (!this.idle.isRunning()) {
             console.log('starting idle');
@@ -283,6 +289,20 @@ export class AuthenticationService {
         this.currentSession = null;
         throw err;
       }));
+  }
+
+  loginOauthCode(code: string) : Observable<Session> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
+    }
+    const body = new URLSearchParams();
+    body.set('grant_type', 'authorization_code');
+    body.set('code',code)
+    body.set('client_id', 'bla')
+    body.set('client_secret', 'hd')
+    return this.oauth(body, httpOptions)
   }
 
   loginWithToken(token: string, refToken: string): Observable<Session> {
@@ -329,7 +349,10 @@ export class AuthenticationService {
   forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {
     return this.http.post<any>(this._forgotPasswordChangeURL,
       JSON.stringify({ key: key, password: password, passwordAgain: passwordAgain }), this.getHttpOptions());
+  }
 
+  confirmAccountCreatedByParent(key: string, password: string, passwordAgain: string): Observable<any> {
+    return this.http.post<any>(this._confirmAccountByParentURL, {key: key, password: password, passwordAgain: passwordAgain}, this.getHttpOptions())
   }
 
 

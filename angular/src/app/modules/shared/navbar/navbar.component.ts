@@ -126,10 +126,10 @@ export class NavbarComponent implements OnInit {
 
         this.getNotifications();
 
-
-
         this.currentUser = this.auth.currentSession?.currentUser;
 
+        console.log(this.currentUser.parentId)
+        console.log(this.currentUser.id)
 
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
 

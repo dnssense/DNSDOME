@@ -76,12 +76,12 @@
                 <div class="rk-img">
                   <img src="/assets/img/default-avatar.png" alt="" />
                 </div>
-                <div class="rk-text" style="text-transform: capitalize;">
+                <div class="rk-text" style="text-transform: capitalize;" *ngIf="currentUser.parentId < 1">
                   {{ currentUser?.name }}
                 </div>
                 <div class="rk-dropdown">
                   <div class="rk-dropdown-title">Account</div>
-                  <li>
+                  <li *ngIf="currentUser.parentId < 1">
                     <a [routerLink]="['/admin/account-settings']" routerLinkActive="router-link-active"
                       class="dropdown-item">
                       <i-feather name="settings"></i-feather>

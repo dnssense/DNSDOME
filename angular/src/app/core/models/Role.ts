@@ -19,3 +19,8 @@ export interface RestRole {
 export interface RestRight {
     name: string;
 }
+
+export enum RoleConstant {
+  USER="ROLE_USER",
+  ADMIN="ROLE_CUSTOMER",
+}

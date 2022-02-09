@@ -26,12 +26,12 @@ export class UserService {
   }
 
   public getUsers(isApiKey = false): Observable<User[]> {
-    let users = this.http.get<User[]>(this._childUserListURL).map(res => {
+    return this.http.get<User[]>(this._childUserListURL).map(res => {
 
       // sayfa tek role mantigi ile calisiyor
       return res.map(x => {
         if (x['roles'] && Array.isArray(x['roles']) && x['roles'].length) {
-          x['role'] = x['roles'][0];
+          x['role'] = x['roles']//[0];
           delete x['roles'];
         }
 
@@ -47,7 +47,6 @@ export class UserService {
 
     });
 
-    return users;
   }
 
   public getRoles(isApiKey = false): Role[] {
@@ -71,7 +70,10 @@ export class UserService {
     // sayfa tek role mantigi ile calisiyor
     const temp = JSON.parse(JSON.stringify(user));
     temp.id = 0;
-    temp.roles = [user.role.name];
+    temp.roles = [];
+    for (let rol of user.role) {
+      temp.roles.push(rol.name)
+    }
     delete temp.role;
     return this.http.post<any>(this._userSaveURL, temp, this.getOptions()).map(res => res);
   }
@@ -79,7 +81,10 @@ export class UserService {
   public update(user: any): Observable<any> {
     // sayfa tek role mantigi ile calisiyor
     const temp = JSON.parse(JSON.stringify(user));
-    temp.roles = [user.role.name];
+    temp.roles = [];
+    for (let rol of user.role) {
+      temp.roles.push(rol.name)
+    }
     delete temp.role;
     return this.http.put<any>(this._userUpdateURL, temp, this.getOptions()).map(res => res);
   }
