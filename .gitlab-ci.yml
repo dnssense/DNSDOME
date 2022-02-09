@@ -78,3 +78,4 @@ deploy_k8_dev:
     refs:
       - master
       - dev
+      - dev-ad

@@ -580,7 +580,22 @@
         "ClientLocalIp": "İstemci Yerel Ip",
         "ClientMacAddress": "İstemci Mac Adresi",
         "ClientBoxSerial": "İstemci Makine Serisi",
-        "HostName": "Ana Bilgisayar Adı"
+        "HostName": "Ana Bilgisayar Adı",
+        "LocalIP": "Yerel IP",
+        "Delete": "Sil",
+        "LastValidTime": "Son Geçerlilik",
+        "LastSyncTime": "Son Eşitleme",
+        "ADDomain": "AD Domain",
+        "ADUser": "AD Kullanıcısı",
+        "SecurityProfile": "Güvenlik Profili",
+        "MemberCount": "AD Grup Üye Sayısı",
+        "RuleNumber": "Rule Number",
+        "GroupName": "Grup Adı",
+        "ServerName": "Sunucu Adı",
+        "RuleBy": "Rule By",
+        "ADGroups": "AD Grupları",
+        "DNSServerName": "DNS Sunucu Adı",
+        "ClientCount": "İstemci Sayısı"
     },
     "Month": "Ay",
     "Week": "Hafta",
@@ -633,7 +648,8 @@
         "CommonBWListProfile": "Black White Listesi",
         "QueryCategory": "Kategory Sorgulama",
         "RequestChangingDomainCategory": "Alan Adı Kategorisi Değiştirme",
-        "ThemeMode": "Tema"
+        "ThemeMode": "Tema",
+        "ADIntegration": "Active Directory Integration"
     },
     "MonitorTraffic": "Monitor Trafik",
     "AuditLogs": "Denetim Logları",
@@ -700,5 +716,35 @@
         "AdminInfo": "Güvenlik politikası oluşturabilir, değiştirebilir, raporları görebilir.",
         "ReadOnlyInfo": "Sadece raporları görebilir. Yeni rapor şablonu olusturabilir.",
         "NoAccessInfo": "Hiçbir erişime sahip değildir."
-    }
+    },
+    "RuleBy": {
+        "01ADUSR": "AD Kullanıcısı",
+        "02ADGRP": "AD Grubu",
+        "03MAC": "Makina Adı",
+        "04LOCIP": "Yerel IP",
+        "05BOX": "DNS Sunucu",
+        "N/A": "N/A"
+    },
+    "RuleDeleted": "Kular Silindi",
+    "RuleSaved": "Kural Kaydedildi",
+    "LocalDNSDefaultRule": "Yerel DNS Sunucusu Varsayılan Kuralları",
+    "Computers":"Bilgisayarlar",
+    "LocalIPs": "Yerel IPler",
+    "UserIpHostMatch": "User-Ip-Host Eşleşmeleri",
+    "ADGroups": "Active Directory Grupları",
+    "RuleDetail": "Kural Detayı",
+    "DNSRelay": "DNS Relay",
+    "Rules": "Kuralları",
+    "RegisteredDevices": "Kayıtlı Aygıtlar",
+    "RuleOrder": "Kural Sıralaması",
+    "Keyword": "Anahtar Kelime",
+    "ADUsers": "Active Directory Kullanıcıları",
+    "SearchADUser": "Active Directory Kullanıcısı Ara",
+    "SearchADGroup": "Active Directory Grubu Ara",
+    "AddRule": "Kural Ekle",
+    "SearchDNSRelay": "DNS Relay Sunucusu Ara",
+    "DeleteRule": "Kural Sil",
+    "FillRuleKeyword": "Kural Anahtar Kelimesi Giriniz",
+    "FillRuleBy": "Kural Uygulama Kriteri Seçiniz"
+
 }
