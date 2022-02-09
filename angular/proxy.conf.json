@@ -1,16 +1,4 @@
 {
-  "/api/agent": {
-    "target": "http://127.0.0.1:9030",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
-  "/api/adintegration": {
-    "target": "http://127.0.0.1:9030",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
   "/api/*": {
     "target": "http://beta.roksit.com",
     "secure": false,
