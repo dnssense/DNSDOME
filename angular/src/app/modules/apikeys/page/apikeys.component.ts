@@ -173,7 +173,7 @@ export class ApiKeysComponent implements OnInit {
 
     if (role) {
 
-      this.user.role = JSON.parse(JSON.stringify(role));
+      this.user.role = [JSON.parse(JSON.stringify(role))];
     }
   }
 
