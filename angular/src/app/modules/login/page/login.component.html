@@ -44,7 +44,7 @@
                       </div>
                     </form>
                   </div>
-                  
+
                   <div id="forgotPasswordDiv" style="display:none">
                     <input type="email" class="formInput mb-3" placeholder="{{'LOGIN.Email' | translate}} *"
                       [(ngModel)]="forgoterEmail" (ngModelChange)="emailValidationLogin($event)">
@@ -58,14 +58,14 @@
                       <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()"> {{'REGISTER.SendActivationCode'|translate}}</button>
                     </div>
                   </div>
-                  
-                  <div id="twoFactorDiv" class="text-success text-center" style="display:none;">
+
+                  <div id="twoFactorDiv" class="text-success text-center" style="display:none;" (keydown)="checkInput($event)">
                     <countdown-timer style="font-size: 25px; font-weight: 500;" (zeroTrigger)="timeEnd()"
                       [end]="endTime"></countdown-timer>
                       <input class="formInput w-100 mb-2" [(ngModel)]="twoFactorPhoneClone" readonly >
-                    
+
                       <input type="text" class="formInput w-100 mb-2"  placeholder="SMS Code" [(ngModel)]="smsCode">
-                      
+
                     <div class="text-center">
                       <button class="btns login-btns" (click)="confirm2FACode()">{{'REGISTER.ConfirmSMS' | translate}}</button>
                     </div>
