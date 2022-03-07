@@ -51,7 +51,6 @@ package_docker_dev:
     - docker push $REGISTRY_DEV/$NS/$IMAGE:$VERSION
   except:
     refs:
-      - master
       - dev
 
 deploy_k8_dev:
