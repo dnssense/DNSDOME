@@ -74,7 +74,3 @@ deploy_k8_dev:
     - git add . || exit_code=$?
     - git commit -m 'ui.dnssense updated' || exit_code=$?
     - git push
-  except:
-    refs:
-      - master
-      - dev
