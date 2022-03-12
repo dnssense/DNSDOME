@@ -33,6 +33,7 @@ import * as numeral from 'numeral';
 import {AuthenticationService} from 'src/app/core/services/authentication.service';
 import {CyberXRayService} from '../../../core/services/cyberxray.service';
 import {ClipboardService} from 'ngx-clipboard';
+import {LiveReportRequest} from "../../../core/models/report";
 
 interface TagInputValue {
   value: string;
@@ -145,6 +146,13 @@ export class DashboardComponent implements OnInit {
       startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
       endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
       displayText: 'Last Week',
+      active: false,
+      isToday: false
+    },
+    {
+      startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours() - 1, this.now.getMinutes()),
+      endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours(), this.now.getMinutes()),
+      displayText: 'Last Hour',
       active: true,
       isToday: false
     },
@@ -154,7 +162,8 @@ export class DashboardComponent implements OnInit {
       displayText: `Today (00:00-${this.now.getHours()}:${this.now.getMinutes()})`,
       active: false,
       isToday: true
-    },
+    }
+
   ];
   topDomainsCountTotal: number;
 
@@ -186,7 +195,7 @@ export class DashboardComponent implements OnInit {
   showDetailButton = true;
 
   ngOnInit() {
-    this.startDate.setDate(this.today.getDate() - 7);
+    this.startDate = new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours() - 1, this.now.getMinutes())
     this.endDate = new Date();
     this.host = this.config.host;
 
@@ -205,11 +214,7 @@ export class DashboardComponent implements OnInit {
         this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0, link: '/admin/deployment/roaming-clients' });
         this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/devices' });
         this.getAgents().subscribe(x => {
-
-
         });
-
-
       });
     });
 
@@ -278,7 +283,7 @@ export class DashboardComponent implements OnInit {
       const serials = boxes.filter(x => (x).serial).map(x => (x).serial);
 
       // add box serials that are not in distinctagents
-      // registered clientlardan gelen verinin box bilgileride distinct agents olarak ekleniyor
+      // registered clientlardan gelen verinin box bilgileride distinct childpages olarak ekleniyor
       /*  serials.forEach(x => {
          const box = boxes.find(y => (y).serial === x);
          if (!box) { return; }
@@ -288,7 +293,7 @@ export class DashboardComponent implements OnInit {
          distinctAgents.items.push({ id: box.agent.id, count: 1 });
        }); */
 
-      // calcuate location agents
+      // calcuate location childpages
       distinctAgents.items.forEach(x => {
         if (agentsLocation.find(y => y.id === x.id)) {
           publicip.activeCount++;
@@ -360,6 +365,10 @@ export class DashboardComponent implements OnInit {
         });
       }
     });
+  }
+
+  getLiveReport(request: LiveReportRequest) {
+
   }
 
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'restricted', selectedCategoryName: string) {
@@ -1032,7 +1041,7 @@ export class DashboardComponent implements OnInit {
     this.token = currentSession.token;
     this.refreshToken = currentSession.refreshToken;
     console.log(`${this.config.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`)
-    window.open(`${this.config.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank"); 
+    window.open(`${this.config.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank");
     */
     this.cyberxrayService.open(domain);
     event.stopPropagation();

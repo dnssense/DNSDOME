@@ -1,0 +1,77 @@
+<div class="row">
+  <div class="categories-column mt-3 d-flex flex-column justify-content-between"
+       style="border-right: 1px solid var(--infobox-border);">
+    <h6 class="rk-title-1">{{selectedCategory}}</h6>
+    <div class="rk-selectable-container mb-2" style="max-height: 320px">
+      <table class="rk-selectable-table w-100" style="cursor: pointer;">
+
+      </table>
+    </div>
+  </div>
+
+  <div class="anomaly-chart mt-3">
+    <div class="d-flex flex-wrap justify-content-end align-items-center">
+      <div class="d-flex align-items-center justify-content-end">
+        <!-- Todo nex prev buttons-->
+      </div>
+    </div>
+    <div class="chart" id="chart" style="cursor: pointer;"></div>
+    <div class="chart-legends pb-2">
+      <div>
+        <svg width="32px" height="18px" viewBox="0 0 32 18" version="1.1"
+             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <title>Path 11</title>
+          <g id="news-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="Dashboard_NewsV3_2-1" transform="translate(-531.000000, -366.000000)"
+               fill="#0084FF" fill-rule="nonzero">
+              <g id="Group-5" transform="translate(531.000000, 366.000000)">
+                <path
+                  d="M8.925,13.069 L13.4547287,0.048300992 L17.919,13.063 L21.7923731,8.4397043 L25.669,13.117 L30.0789897,2.69339894 C30.2787589,2.22107187 30.7989526,1.98216467 31.2795083,2.12269488 L31.3895383,2.16192696 C31.8618654,2.36169616 32.1007726,2.8818898 31.9602424,3.36244556 L31.9210103,3.47247553 L26.2300552,16.9279642 L21.784,11.564 L17.1771197,17.0648397 L13.441,6.173 L9.642422,17.0945481 L5.178,11.658 L1.75959065,15.6504014 C1.42801515,16.0376418 0.864618246,16.1090835 0.449947545,15.8352573 L0.349598556,15.7595907 C-0.0376417523,15.4280151 -0.109083535,14.8646182 0.16474266,14.4499475 L0.240409346,14.3495986 L5.20998618,8.54573057 L8.925,13.069 Z"
+                  id="Path-11"></path>
+              </g>
+            </g>
+          </g>
+        </svg>
+        <span>{{ 'QueryCount' | translate }}</span>
+        <svg width="35px" height="11px" viewBox="0 0 35 11" version="1.1"
+             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <title>Path 9</title>
+          <g id="news-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="Dashboard_NewsV3_2-1" transform="translate(-646.000000, -371.000000)"
+               [attr.fill]="theme === 'white' ? '#DEEFFF' : '#004175'" fill-rule="nonzero">
+              <g id="Group-2" transform="translate(648.000000, 362.000000)">
+                <path
+                  d="M0.735672893,11.6412016 L0.890363413,11.5735766 C4.72858588,9.90252752 8.20363703,9.187797 11.7533089,9.91607336 C13.4948769,10.273386 15.1382127,10.9843312 16.6494134,12.0681477 L16.995791,12.324887 C20.6369275,15.1126316 24.3336031,14.3432983 27.4250808,10.4257824 L27.6098379,10.1869569 L32.3901621,13.8130431 C27.3826984,20.4144582 19.9102401,22.1128833 13.3483285,17.0889207 C12.4689657,16.4156587 11.5433597,15.9979778 10.547424,15.7936444 C8.55469623,15.384802 6.30901217,15.8094692 3.66576666,16.9126215 L3.28544004,17.0748135 C2.9676553,17.2131677 2.71703039,17.3261453 2.39272302,17.4787711 L1.30769393,17.9995735 L-1.30769393,12.599597 L0.0205316787,11.9642288 C0.265164101,11.8504263 0.484836486,11.7513512 0.735672893,11.6412016 Z"
+                  id="Path-9"></path>
+              </g>
+            </g>
+          </g>
+        </svg>
+        <span>{{ 'LearnedNormalTrafficRange' | translate }}</span>
+      </div>
+      <div>
+        <span>{{ 'TrafficExcessRate' | translate }}:</span>
+
+        <span>
+                                    <div class="color" style="background: #507df3;"></div> %20
+                                  </span>
+
+        <span>
+                                    <div class="color" style="background: #6158ca;"></div> %40
+                                  </span>
+
+        <span>
+                                    <div class="color" style="background: #7c26bd;"></div> %60
+                                  </span>
+
+        <span>
+                                    <div class="color" style="background: #9c1e6c;"></div> %80
+                                  </span>
+
+        <span>
+                                    <div class="color" style="background: #c41505;"></div> %100
+                                  </span>
+      </div>
+    </div>
+  </div>
+</div>

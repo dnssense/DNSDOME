@@ -9,6 +9,12 @@ import { MaterialModule } from 'src/app/material.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RkProgressBarModule, RkDateModule, RkTableModule, RkInfoBoxModule, IconsModule } from 'roksit-lib';
 import { TagInputModule } from 'ngx-chips';
+import {Dashboardv2Component} from "./page/dashboardv2.component";
+import {AgentsComponent} from "./page/childpages/agents.component";
+import {TopdateComponent} from "./page/childpages/topdate.component";
+import {GroupItemComponent} from "./page/childpages/group-item.component";
+import {GroupComponent} from "./page/childpages/group.component";
+import {CategoryComponent} from "./page/childpages/category.component";
 
 TagInputModule.withDefaults({
   tagInput: {
@@ -17,7 +23,8 @@ TagInputModule.withDefaults({
 });
 
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [DashboardComponent, Dashboardv2Component, AgentsComponent,
+    TopdateComponent, GroupItemComponent, GroupComponent, CategoryComponent],
   providers: [DatePipe],
   imports: [
     FormsModule,

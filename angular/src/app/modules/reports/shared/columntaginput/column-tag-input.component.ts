@@ -30,7 +30,7 @@ export class ColumnTagInputComponent implements OnInit {
   @Input() public mainApplications: WApplication[];
   @Input() public applicationsMap = new Map<number, WApplication[]>();
   @Input() public mainCategories: Category[];
-  @Input() public agents: Location[];
+  @Input() public childpages: Location[];
 
   public inputCollapsed = true;
   public inputSelected = false;

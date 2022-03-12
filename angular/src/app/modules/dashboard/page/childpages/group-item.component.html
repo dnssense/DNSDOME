@@ -1,0 +1,6 @@
+<rk-infobox [active]="group.active" (change)="onClick()"
+            [title]="translate(group.name)" [color]="group.color" [className]="getClassName()"
+            [type]="group.uitype" [valueOne]="group.val1" [valueTwo]="group.val2"
+            [description]="translate(group.description)" [ngClass]="{'too-big': group.val1 > 9999999 || group.val2 > 9999999}">
+
+</rk-infobox>

@@ -1,0 +1,5 @@
+<div class="row mx-auto">
+  <div class= "col-12 col-lg-6 col-xl mt-3 dBox" *ngFor="let group of groups">
+    <app-dashboard-groupitem [group]="group" (onGroupClick)="onChangeVal($event)"></app-dashboard-groupitem>
+  </div>
+</div>

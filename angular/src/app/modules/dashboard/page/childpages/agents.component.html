@@ -1,0 +1,24 @@
+<div class="row infos">
+  <div class="col-12 col-lg-4 d-flex justify-content-lg-around justify-content-md-between"
+       *ngFor="let data of agentCounts">
+    <a href="#{{data.link}}">
+      <h5 class="title">{{ data.name | translate }}</h5>
+    </a>
+
+    <div class="values">
+      <div class="active">
+        <span class="name">{{'Active' | translate}}</span>
+        <span class="value">{{ data.activeCount }}</span>
+      </div>
+
+      <div class="passive">
+        <span class="name">{{'Passive'|translate}}</span>
+        <span class="value">{{ data.passiveCount }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

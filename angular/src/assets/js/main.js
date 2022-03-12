@@ -1,5 +1,5 @@
 // $(function () {
- 
+
 //   $(document).click(function () {
 //     $('.dropdown-menu').removeClass('show');
 //   });
@@ -101,7 +101,7 @@
 //     $('#pi_card_btn').removeClass('d-none');
 //   });
 
-//   var agentsTable = $('#agents-table'),
+//   var agentsTable = $('#childpages-table'),
 //     closeNewAgentBtn = $('#closeNewAgentBtn');
 
 //   $('#newAgentBtn').click(function () {
