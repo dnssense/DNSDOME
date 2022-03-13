@@ -101,7 +101,7 @@
 //     $('#pi_card_btn').removeClass('d-none');
 //   });
 
-//   var agentsTable = $('#childpages-table'),
+//   var agentsTable = $('#childcomponents-table'),
 //     closeNewAgentBtn = $('#closeNewAgentBtn');
 
 //   $('#newAgentBtn').click(function () {

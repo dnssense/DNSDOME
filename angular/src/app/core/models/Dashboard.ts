@@ -1,5 +1,6 @@
-import { SearchSetting } from '../models/SearchSetting';
-import { KeyValueModel, TimeRangeEnum } from './Utility';
+import {SearchSetting} from '../models/SearchSetting';
+import {KeyValueModel, TimeRangeEnum} from './Utility';
+
 /**
  * Created by fatih on 02.09.2016.
  */
@@ -34,7 +35,6 @@ export interface HourlyCompanySummaryV5Request {
 }
 
 
-
 export interface Bucket {
   date: string;
   count: number;
@@ -50,6 +50,7 @@ export interface Category {
   hit?: number; // bunlar servisten gelmiyor
   hit_ratio?: number; // bunlar servisten gelmiyor
 }
+
 export interface Total {
   hit: number;
   allow: number;
@@ -62,6 +63,7 @@ export interface Summary {
   hit_ratio: number;
   buckets: Bucket[];
 }
+
 export interface HourlyCompanySummaryV5Response {
   categories: Category[];
   total: Total;
@@ -75,14 +77,18 @@ export interface HourlyCompanySummaryV5Response {
 }
 
 
-
+export interface CategoryDom {
+  name: string,
+  hit: number,
+  hit_ratio: number
+}
 
 
 export interface TopDomainsRequestV5 {
   duration?: number; // last hours
   startDate?: string; // utc
   endDate?: string;
-  type: 'total'|'safe'| 'malicious' | 'new' | 'harmful'|string;
+  type: 'total' | 'safe' | 'malicious' | 'new' | 'harmful' | string;
 
 }
 
@@ -91,11 +97,10 @@ export interface Domain {
   hit: number;
   category?: string; // bunlar servisten gelmiyor
 }
+
 export interface TopDomainsResponseV5 {
   items: Domain[];
 }
-
-
 
 
 export interface TopDomainValuesRequestV4 {
@@ -110,6 +115,7 @@ export interface Result {
   date: string;
   hit: number;
 }
+
 export interface TopDomainValuesResponseV4 {
   items: Result[];
 }

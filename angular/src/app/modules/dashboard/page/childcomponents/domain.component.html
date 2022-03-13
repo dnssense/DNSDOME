@@ -1,0 +1,56 @@
+<div class="row">
+  <div class="col-12 mt-3" style="border-bottom: 1px solid var(--infobox-border);">
+    <h6 class="rk-title-1">{{ getGroupName() }}
+      {{ 'TopDomainList' | translate }}
+    </h6>
+  </div>
+
+  <div class="top-domain-list-column d-flex flex-column"
+       style="border-right: 1px solid var(--infobox-border);">
+    <div class="rk-selectable-container" style="max-height: 340px;">
+      <table class="rk-selectable-table">
+        <thead>
+        <tr>
+          <th style="width: 30px">#</th>
+          <th style="width: 100px">{{'Domain'|translate}}</th>
+          <th style="width: 120px">{{'Categories'|translate}}</th>
+          <th>{{'Count'|translate}}</th>
+          <th style="width: 60px;">{{'Percent'|translate}}</th>
+        </tr>
+        </thead>
+        <tbody class="rk-selectable-table-body">
+          <tr *ngFor="let domain of topDomains; let index = index"
+              [ngClass]="{'active': selectedDomains[0]?.name === domain.name}"
+              (click)="addDomain(domain)" class="rk-c-{{ currentGroup.datatype }}">
+            <td class="idx" style="width: 40px">{{ index + 1 }}</td>
+            <td class="text">
+              <div class="overflowed-text"><a (click)="cyberxray($event,domain.name)"
+                                              target="_blank" class="rounded-circle"
+                                              style="background-color: #fdf0cc; width: 16px; height: 16px; font-size: 16px;">
+                <img src="../../../../assets/img/CyberxIcon.svg" alt=""
+                     style="margin-right: 3px;width: 16px;border-radius: 50%;"> </a>
+                {{ domain.name }}</div>
+            </td>
+            <td class="text">
+              <div class="overflowed-text">{{domain.category}}</div>
+            </td>
+            <td class="value">{{ getRoundedNumber(domain.hit) }}</td>
+            <td class="percent">
+              %{{100 * domain.hit / topDomainsCountTotal | number}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="top-domain-chart pt-2 d-flex flex-column justify-content-between">
+    <div class="search d-flex justify-content-between">
+      <div class="tag-input-container w-100">
+        <tag-input [(ngModel)]="selectedDomains" (onAdd)="onItemAdded($event)" [maxItems]="1" (onSelect)="copyItem($event)">
+        </tag-input>
+      </div>
+      <button class="btn btn-accent ml-3" (click)="search()">{{'Search'|translate}}</button>
+    </div>
+    <app-dashboard-chart #chartComponent></app-dashboard-chart>
+  </div>
+</div>

@@ -175,7 +175,7 @@ var DashboardComponent = /** @class */ (function () {
             var dnsrelay = { name: 'DnsRelay', activeCount: 0, passiveCount: 0 };
             var serials = boxes.filter(function (x) { return (x).serial; }).map(function (x) { return (x).serial; });
             // add box serials that are not in distinctagents
-            // registered clientlardan gelen verinin box bilgileride distinct childpages olarak ekleniyor
+            // registered clientlardan gelen verinin box bilgileride distinct childcomponents olarak ekleniyor
             /*  serials.forEach(x => {
                const box = boxes.find(y => (y).serial === x);
                if (!box) { return; }
@@ -184,7 +184,7 @@ var DashboardComponent = /** @class */ (function () {
                if (distinctAgents.items.find(y => y.id === box.id)) { return; }
                distinctAgents.items.push({ id: box.agent.id, count: 1 });
              }); */
-            // calcuate location childpages
+            // calcuate location childcomponents
             distinctAgents.items.forEach(function (x) {
                 if (agentsLocation.find(function (y) { return y.id === x.id; })) {
                     publicip.activeCount++;

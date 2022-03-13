@@ -1,3 +1,5 @@
+import {Domain} from "./Dashboard";
+
 export interface GraphDto {
   datestr: string
   timestemp: number
@@ -17,7 +19,7 @@ export interface LiveReportRequest {
 
 export interface LiveReportResponse {
   hitstotal: number
-  domains: {items: Aggregation[]}
+  domains: {items: Domain[]}
   cats: {items: Aggregation[]}
   groups: {items: Aggregation[]}
   graphs: {items: GraphDto[]}

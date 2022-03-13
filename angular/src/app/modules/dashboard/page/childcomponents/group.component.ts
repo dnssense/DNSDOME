@@ -10,7 +10,7 @@ import {Aggregation} from "../../../../core/models/report";
 export class GroupComponent implements OnInit{
   constructor() {
   }
-  @Input() public groups:GroupItemDom[]
+  public groups:GroupItemDom[]
   @Output() public onGroupChange = new EventEmitter<GroupItemDom>()
   ngOnInit() {
     this.initFillData()
@@ -65,7 +65,7 @@ export class GroupComponent implements OnInit{
       },
       {
         active: false,
-        datatype: 'restricted',
+        datatype: 'harmful',
         name: 'HarmfullContent',
         color: '#EFBB1E',
         className: 'yellow',
@@ -98,9 +98,6 @@ export class GroupComponent implements OnInit{
       }
     })
     groups.items.forEach(g=> {
-      if (g.name == "harmful") {
-        g.name = 'restricted'
-      }
       let item = this.groups.find(it=>it.datatype == g.name)
       if (item) {
         let ratio = Math.floor((100 * g.hit) / totalHit)
