@@ -1,14 +1,14 @@
-import {Component, ViewChild} from "@angular/core";
+import {Component, Input, ViewChild} from "@angular/core";
 import {GroupItemDom} from "./group-item.component";
 import {TranslateService} from "@ngx-translate/core";
 import * as numeral from 'numeral';
-import {Domain} from "../../../../core/models/Dashboard";
+import {Domain, TopDomainValuesResponseV4} from "../../../../core/models/Dashboard";
 import {CyberXRayService} from "../../../../core/services/cyberxray.service";
 import {ValidationService} from "../../../../core/services/validation.service";
 import {ClipboardService} from "ngx-clipboard";
 import {NotificationService} from "../../../../core/services/notification.service";
 import {StaticMessageService} from "../../../../core/services/staticMessageService";
-import {Aggregation, GraphDto, LiveReportRequest} from "../../../../core/models/report";
+import {GraphDto, LiveReportRequest} from "../../../../core/models/report";
 import {DashBoardService} from "../../../../core/services/dashBoardService";
 import {ChartDomain, ChartDomainItem, DashboardChartComponent} from "./dashboard-chart.component";
 
@@ -27,6 +27,7 @@ export class DomainComponent {
               private clipboardService: ClipboardService, private notificationService: NotificationService,
               private staticMesssageService: StaticMessageService, private dashboardService: DashBoardService) {
   }
+
   @ViewChild('chartComponent') chartComponent: DashboardChartComponent
   currentGroup: GroupItemDom = {
     active: true,
@@ -39,11 +40,13 @@ export class DomainComponent {
     description: 'DASHBOARD.TotalDnsRequestCount',
     uitype: 1
   }
+  @Input() reportType: 'livereport' | 'nolivereport' = 'livereport'
+  @Input() selectedDate: { startDate: Date, endDate: Date, duration: number }
   theme: any = 'light';
   topDomains: Domain[] = [];
   selectedDomains: TagInputValue[] = [];
   topDomainsCountTotal: number;
-  reportType: 'livereport' | 'nolivereport' = 'livereport'
+
   //region direct ui methodes
   getGroupName(): string {
     if (this.currentGroup) {
@@ -60,6 +63,7 @@ export class DomainComponent {
     this.selectedDomains = [{display: domain.name, value: domain.name}]
     this.search()
   }
+
   onItemAdded($event: TagInputValue) {
     const isDomain = ValidationService.isDomainValid($event.value);
     if (!isDomain) {
@@ -74,62 +78,97 @@ export class DomainComponent {
 
   search() {
     let domain = ''
-    this.selectedDomains.forEach(el=>{
+    this.selectedDomains.forEach(el => {
       domain = el.value
     })
-    if (domain.trim().length === 0) {return}
+    if (domain.trim().length === 0) {
+      return
+    }
     if (this.reportType == 'livereport') {
       this.loadGraphLive(domain)
     } else {
       this.loadGraphNoLive(domain)
     }
   }
-  drawChart(graphs: {items: GraphDto[]}) {
+
+  drawChart(graphs: { items: GraphDto[] }) {
     let chartDomain: ChartDomain = {chartType: 'line', items: []}
-    chartDomain.items = graphs.items.map(graph=>{
-      let item: ChartDomainItem = {date: graph.datestr, hit: graph.hit, max:0, min: 0}
+    chartDomain.items = graphs.items.map(graph => {
+      let item: ChartDomainItem = {date: graph.datestr, hit: graph.hit, max: 0, min: 0}
       return item
     })
     this.chartComponent.drawChart(chartDomain)
   }
+
   //endregion
   //region utils methode
-  setDomains(domains: {items: Domain[]}, total:{allow: number, block: number}) {
-    this.topDomains = domains.items
+  setDomains(domains: Domain[], total: { allow: number, block: number }) {
     this.topDomainsCountTotal = total.allow + total.block
-    if (domains.items.length) {
-      this.addDomain(domains.items[0])
+    if (domains) {
+      this.topDomains = domains
+      if (domains.length) {
+        this.addDomain(domains[0])
+      }
     }
 
+
   }
+
   setTheme(theme) {
     this.theme = theme
     this.chartComponent.setTheme(theme)
   }
+
   setGroup(group: GroupItemDom) {
     this.currentGroup = group
   }
+
   cyberxray(event: any, domain: string) {
     this.cyberxrayService.open(domain);
     event.stopPropagation();
   }
+
   translate(data: string): string {
     return this.translateService.instant(data)
   }
+
   getRoundedNumber(value: number) {
     return numeral(value).format('0.0a').replace('.0', '');
   }
+
+  private getGraph(result: TopDomainValuesResponseV4) {
+    return result.items.map(x => {
+      let graph: GraphDto = {datestr: x.date, hit: x.hit, max: 0, min: 0, timestemp: 0}
+      return graph
+    });
+  }
+
   //endregion
 
   //region network service
   loadGraphLive(domain: string) {
     let req: LiveReportRequest = {domain: domain}
-    this.dashboardService.getLiveReport(req).subscribe(res=>{
+    this.dashboardService.getLiveReport(req).subscribe(res => {
       this.drawChart(res.graphs)
     })
   }
-  loadGraphNoLive(domain: string) {
 
+  loadGraphNoLive(domain: string) {
+    let req = {
+      domain: domain,
+      startDate: this.selectedDate.startDate.toISOString(),
+      endDate: this.selectedDate.endDate.toISOString()
+    }
+    this.dashboardService.getTopDomainValue(req).subscribe(result => {
+      let res:{items: GraphDto[]} = {items:[]}
+      res.items = this.getGraph(result)
+      res.items.sort((x,y) => {
+        const x1 = Date.parse(x.datestr);
+        const y1 = Date.parse(y.datestr);
+        return x1 - y1
+      })
+      this.drawChart(res)
+    })
   }
-  //endregion
+//endregion
 }

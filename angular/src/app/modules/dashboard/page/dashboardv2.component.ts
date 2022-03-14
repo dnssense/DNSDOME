@@ -2,9 +2,9 @@ import {AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation} from "@a
 import {
   Bucket,
   Category,
-  CategoryDom,
+  CategoryDom, Domain,
   HourlyCompanySummaryV5Request,
-  HourlyCompanySummaryV5Response
+  HourlyCompanySummaryV5Response, TopDomainsRequestV5
 } from "../../../core/models/Dashboard";
 import {GroupItemDom} from "./childcomponents/group-item.component";
 import {DashBoardService} from "../../../core/services/dashBoardService";
@@ -16,6 +16,7 @@ import {ConfigService} from "../../../core/services/config.service";
 import {DomainComponent} from "./childcomponents/domain.component";
 import {NotificationService} from "../../../core/services/notification.service";
 import {StaticMessageService} from "../../../core/services/staticMessageService";
+import {ToolsService} from "../../../core/services/toolsService";
 
 @Component({
   selector: 'app-dashboardv2',
@@ -25,8 +26,9 @@ import {StaticMessageService} from "../../../core/services/staticMessageService"
 })
 export class Dashboardv2Component implements OnInit, AfterViewInit {
   constructor(private dashboardService: DashBoardService,
-              private authService: AuthenticationService, private config: ConfigService, private notificationService: NotificationService,
-              private staticMesssageService: StaticMessageService,) {
+              private authService: AuthenticationService, private config: ConfigService,
+              private notificationService: NotificationService,
+              private staticMesssageService: StaticMessageService,private toolService: ToolsService) {
   }
 
   @ViewChild("groupComponent") groupComponent: GroupComponent
@@ -56,7 +58,8 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
       if (!req.group) {
         this.setUiGroupData(res)
       }
-      this.setUiCategoriesDomainsData(res)
+      this.setUiCategoriesData(res)
+      this.setUiDomainsDomain(res.domains.items, res.actions)
     }.bind(this))
   }
 
@@ -64,18 +67,23 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
 
   //region direct ui methodes
 
-  setUiCategoriesDomainsData(res: LiveReportResponse) {
+  private setUiCategoriesData(res: LiveReportResponse) {
     let isAllowchange = true
     if (this.selectedCategory && this.selectedCategory.name.length > 0) {
       isAllowchange = false
     }
     this.categoryComponent.setCategories(res.cats, res.graphs, res.actions, isAllowchange)
-    this.domainComponent.setDomains(res.domains, res.actions)
+
   }
 
-  setUiGroupData(res: LiveReportResponse) {
+  private setUiGroupData(res: LiveReportResponse) {
     this.groupComponent.setDataGroup(res.groups, res.actions)
   }
+
+  private setUiDomainsDomain(domains: Domain[], actions: {allow: number, block: number}) {
+    this.domainComponent.setDomains(domains as Domain[], actions)
+  }
+
 
   onDateChanged(date: { startDate: Date, endDate: Date, duration: number, name: string }) {
     this.selectedCategory = null
@@ -133,8 +141,23 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
   private setNoLiveReportData() {
     let res = this.getLiveResFromAnomaly()
     this.setUiGroupData(res)
-    this.setUiCategoriesDomainsData(res)
+    this.setUiCategoriesData(res)
+    this.refreshTopDomains()
   }
+
+  private refreshTopDomains() {
+    const request = {
+      startDate: this.selectedDate.startDate.toISOString(),
+      endDate: this.selectedDate.endDate.toISOString()
+    } as TopDomainsRequestV5
+    request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedGroup?.datatype
+    this.setUiDomainsDomain([],{allow: 0, block: 0})
+    this.getTopDomains(request, function (res) {
+      this.setUiDomainsDomain(res.domains,{allow: res.hit, block: 0})
+    }.bind(this))
+  }
+
+
 
   //region anomaly data to ui object
   private getLiveResFromAnomaly(): LiveReportResponse {
@@ -219,7 +242,12 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     let categoryFilter: Category[] = []
     if (this.selectedGroup && this.selectedGroup.datatype != 'total') {
       if (this.trafficAnomaly?.categories) {
-        categoryFilter = this.trafficAnomaly.categories.filter(c => c.type == this.selectedGroup.datatype)
+        if (this.selectedGroup.datatype == 'harmful' || this.selectedGroup.datatype == 'restricted') {
+          categoryFilter = this.trafficAnomaly.categories.filter(c => c.type == 'harmful' || c.type == 'restricted')
+        } else {
+          categoryFilter = this.trafficAnomaly.categories.filter(c => c.type == this.selectedGroup.datatype)
+        }
+
       }
     } else {
       if (this.trafficAnomaly?.categories) {
@@ -308,5 +336,23 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     })
   }
 
+  private getTopDomains(request: TopDomainsRequestV5, callback: Function) {
+    let res:{domains: Domain[], hit: number} = {domains:[], hit: 0}
+    this.dashboardService.getTopDomains(request).subscribe(result => {
+      if (result.items.length) {
+        this.toolService.searchCategories(result.items.map(x=>x.name)).subscribe(cats => {
+          cats.forEach(cat => {
+            const finded = result.items.find(domain=>domain.name == cat.domain)
+            if (finded) {
+              finded.category = cat.categoryList.join(',')
+            }
+          })
+          res.domains = result.items
+          res.hit = result.items.reduce((prev, cur) => prev + cur.hit, 0)
+          callback(res)
+        })
+      }
+    })
+  }
   //endregion
 }
