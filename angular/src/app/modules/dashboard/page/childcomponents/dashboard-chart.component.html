@@ -1,1 +1,2 @@
-<div [ngClass]="chartDomain.chartType == 'line'? 'unique-chart': 'chart'" [style.cursor]="chartDomain.chartType == 'line' ? 'pointer' :''" id="chart"></div>
+<div [ngClass]="chartDomain.chartType == 'line'? 'unique-chart': 'chart'"
+     [style.cursor]="chartDomain.chartType == 'line' ? 'pointer' :''" [id]="getChartContainerId()"></div>

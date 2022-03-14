@@ -20,7 +20,7 @@
         </thead>
         <tbody class="rk-selectable-table-body">
           <tr *ngFor="let domain of topDomains; let index = index"
-              [ngClass]="{'active': selectedDomains[0]?.name === domain.name}"
+              [ngClass]="{'active': selectedDomains[0]?.value === domain.name}"
               (click)="addDomain(domain)" class="rk-c-{{ currentGroup.datatype }}">
             <td class="idx" style="width: 40px">{{ index + 1 }}</td>
             <td class="text">

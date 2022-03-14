@@ -1,10 +1,11 @@
-import {Component, ViewChild} from "@angular/core";
+import {Component, EventEmitter, Output, ViewChild} from "@angular/core";
 import {GroupItemDom} from "./group-item.component";
 import {TranslateService} from "@ngx-translate/core";
 import {Aggregation, GraphDto} from "../../../../core/models/report";
 import {CategoryDom} from "../../../../core/models/Dashboard";
 import * as numeral from 'numeral';
 import {ChartDomain, ChartDomainItem, DashboardChartComponent} from "./dashboard-chart.component";
+import {networkInterfaces} from "os";
 
 @Component({
   selector: 'app-dashboard-category',
@@ -14,7 +15,7 @@ import {ChartDomain, ChartDomainItem, DashboardChartComponent} from "./dashboard
 export class CategoryComponent {
   constructor(private translateService: TranslateService) {
   }
-
+  @Output() public onCategoryChanged = new EventEmitter<CategoryDom>()
   @ViewChild('chartComponent') chartComponent: DashboardChartComponent
   currentGroup: GroupItemDom = {
     active: true,
@@ -43,8 +44,9 @@ export class CategoryComponent {
     return "Total"
   }
 
-  onClickCategory(cat: CategoryDom) {
+  private onClickCategory(cat: CategoryDom) {
     this.selectedCategory = cat
+    this.onCategoryChanged.emit(cat)
   }
 
   //endregion
@@ -52,24 +54,34 @@ export class CategoryComponent {
   //region inderect ui methode
   setTheme(theme) {
     this.theme = theme
+    //this.chartComponent.setIcontainerId('container_river')
     this.chartComponent.setTheme(theme)
   }
   setGroup(group: GroupItemDom) {
-    this.currentGroup = group
-  }
-  setCategories(cats: {items: Aggregation[]}, graphs: {items: GraphDto[]}, total:{allow: number, block: number}){
-    let totalHit = total.allow + total.block
-    this.categories = cats.items.map(cat => {
-      return {name: cat.name, hit: cat.hit, hit_ratio: Math.floor((100 * cat.hit) / totalHit)}
-    })
-    if (graphs.items.length) {
-      this.drawChart(graphs)
+    if (group){
+      this.currentGroup = group
     }
+    this.selectedCategory = null
   }
-  drawChart(graphs: {items: GraphDto[]}){
+  setCategories(cats: {items: Aggregation[]}, graphs: {items: GraphDto[]}, total:{allow: number, block: number}, isAllowChangeTableContent: boolean = true){
+    let totalHit = total.allow + total.block
+    if (isAllowChangeTableContent || this.categories.length <= 0) {
+      this.categories = cats.items.map(cat => {
+        return {name: cat.name, hit: cat.hit, hit_ratio: Math.floor((100 * cat.hit) / totalHit)}
+      })
+    }
+    this.drawChart(graphs)
+  }
+  private drawChart(graphs: {items: GraphDto[]}){
     let chartDomain: ChartDomain = {chartType: 'line-river', items: []}
     chartDomain.items = graphs.items.map(graph => {
-      let item: ChartDomainItem = {date: graph.datestr, hit: graph.hit, max: graph.hit, min: 0}
+      if (graph.max == undefined) {
+        graph.max = 0
+      }
+      if (graph.min == undefined) {
+        graph.min = 0
+      }
+      let item: ChartDomainItem = {date: graph.datestr, hit: graph.hit, max: graph.max, min: graph.min }
       return item
     })
     this.chartComponent.drawChart(chartDomain)

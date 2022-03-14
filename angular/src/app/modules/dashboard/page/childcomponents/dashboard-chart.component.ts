@@ -25,6 +25,7 @@ export class DashboardChartComponent {
 
   theme: any = 'light';
   chartId: string
+  containerId: string
   trafficChart: ApexCharts
   chartDomain: ChartDomain = {
     items: [],
@@ -48,6 +49,19 @@ export class DashboardChartComponent {
   drawChartAnomaly() {
     const chartBg = this.theme === 'white' ? '#ffffff' : '#232328';
     let seriesMaxVal = this.getSeries()
+    if (!seriesMaxVal.series.length && this.trafficChart) {
+      this.trafficChart.updateSeries([
+        { name: 'Min', type: 'area', data: [] },
+        { name: 'Max', type: 'area', data: [] },
+        { name: 'Hit', type: 'line', data: [] }
+      ])
+      this.trafficChart.updateOptions({
+        annotations: {
+          points: []
+        }
+      })
+      return
+    }
     let series = seriesMaxVal.series
     let yMax = seriesMaxVal.maxVal
     let points = this.getAnnotations(series)
@@ -55,7 +69,7 @@ export class DashboardChartComponent {
       this.trafficChart.destroy()
     }
 
-    this.trafficChart = new ApexCharts(document.querySelector('#chart'), {
+    this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
       series: series,
       chart: {
         id: `${this.getChartId()}`,
@@ -257,6 +271,93 @@ export class DashboardChartComponent {
   }
 
   drawChartTopDomain() {
+    let seriesMaxVal = this.getSeries()
+    let series = seriesMaxVal.series
+    if (this.trafficChart) {
+      this.trafficChart.updateSeries(series)
+      return
+    }
+    this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
+      series: series,
+      chart: {
+        id: 'unique-chart2',
+        foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
+        type: 'line',
+        height: 280,
+        zoom: { enabled: false },
+        toolbar: {
+          show: false,
+          offsetX: 0,
+          offsetY: 0,
+          tools: {
+            download: true,
+            selection: false,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            customIcons: []
+          },
+          autoSelected: 'zoom'
+        }
+      },
+      colors: ['#ff6c40', '#ff6c40'],
+      stroke: {
+        width: 4,
+        curve: ['smooth']
+      },
+      dataLabels: {
+        enabled: false
+      },
+      fill: {
+        opacity: 1,
+      },
+      tooltip: {
+        enabled: true,
+        shared: true,
+        theme: 'dark',
+        custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+          // const date = new Date(w.globals.seriesX[0][dataPointIndex]);
+
+          const mDate = moment(w.globals.seriesX[0][dataPointIndex]).utc(false).format('MMM DD YYYY - HH:mm');
+
+          return `
+            <div class="__apexcharts_custom_tooltip" id="top-domain-tooltip">
+              <div class="__apexcharts_custom_tooltip_date">${mDate}</div>
+
+              <div class="__apexcharts_custom_tooltip_content">
+                <span class="__apexcharts_custom_tooltip_row">
+                  <span class="color" style="background: #ff6c40"></span> Hit: <b>${series[0][dataPointIndex]}</b>
+                </span>
+              </div>
+            </div>
+          `;
+        }
+      },
+      xaxis: {
+        type: 'datetime',
+        labels: {
+          show: true,
+          trim: true,
+          showDuplicates: false,
+          datetimeFormatter: {
+            year: 'yyyy',
+            month: 'MMM \'yy',
+            day: 'dd MMM',
+            hour: 'HH:mm'
+          }
+        },
+        tickAmount: 8,
+        tooltip: {
+          enabled: false
+        }
+      },
+      grid: {
+        borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
+      },
+    });
+    this.trafficChart.render();
 
   }
 
@@ -301,6 +402,12 @@ export class DashboardChartComponent {
       this.chartId = `${this.chartDomain.chartType}_${this.getRandomInt(100)}`
     }
     return this.chartId
+  }
+  getChartContainerId() : string {
+    if (!this.containerId) {
+      this.containerId = `container_${this.chartDomain.chartType}_${this.getRandomInt(100)}`
+    }
+    return this.containerId
   }
   getRoundedNumber(value: number) {
     return numeral(value).format('0.0a').replace('.0', '');

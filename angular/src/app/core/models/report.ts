@@ -4,6 +4,8 @@ export interface GraphDto {
   datestr: string
   timestemp: number
   hit: number
+  max?: number
+  min?: number
 }
 
 export interface Aggregation {

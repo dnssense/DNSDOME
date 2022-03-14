@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {GroupItemDom} from "./group-item.component";
 import {Aggregation} from "../../../../core/models/report";
-
+import * as numeral from 'numeral';
 @Component({
   selector: 'app-dashboard-group',
   templateUrl: 'group.component.html',
@@ -100,11 +100,14 @@ export class GroupComponent implements OnInit{
     groups.items.forEach(g=> {
       let item = this.groups.find(it=>it.datatype == g.name)
       if (item) {
-        let ratio = Math.floor((100 * g.hit) / totalHit)
+        let ratio = this.getRoundedNumber((100 * g.hit) / totalHit)
         item.val1 = g.hit
         item.val2 = ratio
       }
     })
+  }
+  getRoundedNumber(value: number) {
+    return numeral(value).format('0.0a').replace('.0', '');
   }
 }
 

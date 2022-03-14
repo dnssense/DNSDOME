@@ -13,7 +13,7 @@ export class TopdateComponent implements OnInit {
   constructor(private translatorService: TranslatorService) {
   }
   @ViewChild('date') date;
-  @Output() public onDateChanged = new EventEmitter<{startDate:Date,endDate:Date, name: string}>()
+  @Output() public onDateChanged = new EventEmitter<{startDate:Date,endDate:Date, duration:number, name: string}>()
   private now: Date = new Date();
   startDate: Date = new Date();
   endDate: Date = new Date();
@@ -126,7 +126,12 @@ export class TopdateComponent implements OnInit {
       this.date.endDate = this.endDate;
     }
     this.setDateTextByDates()
-    this.onDateChanged.emit({startDate: this.startDate, endDate: this.endDate, name: ev.nameDis})
+    let duration = 0
+    if (!(isDateComponent || isToday)) {
+      const diff = this.calculateDateDiff();
+      duration = diff * 24
+    }
+    this.onDateChanged.emit({startDate: this.startDate, endDate: this.endDate, duration: duration, name: ev.nameDis})
   }
 
   //region utils function
@@ -168,6 +173,14 @@ export class TopdateComponent implements OnInit {
     }
 
     return text;
+  }
+
+  calculateDateDiff(): number {
+    const startDate = moment([this.startDate.getFullYear(), this.startDate.getMonth(), this.startDate.getDate()]);
+    const endDate = moment([this.endDate.getFullYear(), this.endDate.getMonth(), this.endDate.getDate()]);
+
+    const diff = endDate.diff(startDate, 'days');
+    return diff;
   }
   //endregion
 }

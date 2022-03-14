@@ -14,7 +14,7 @@
                     <div class="col-12">
                       <div class="section-card">
                         <div class="container-fluid">
-                          <app-dashboard-category #categoryComponent ></app-dashboard-category>
+                          <app-dashboard-category #categoryComponent (onCategoryChanged)="onCategoryChanged($event)"></app-dashboard-category>
                         </div>
                       </div>
                     </div>

@@ -1,5 +1,5 @@
 {
-  "/api/calculate/*": {
+  "/api/calculate/livereport/*": {
     "target": "http://localhost:9040",
     "secure": false,
     "logLevel": "debug",
