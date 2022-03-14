@@ -55,19 +55,22 @@
                     <div class="mt-2"><a class="login-link" (click)="openLogin()"> {{'LOGIN.Login'|translate}}</a></div>
                     <div class="text-center">
                       <br />
-                      <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()"> {{'REGISTER.SendActivationCode'|translate}}</button>
+                      <button class="btns btn-info login-btns" (click)="sendPasswordActivationCode()">
+                        {{'REGISTER.SendActivationCode'|translate}}</button>
                     </div>
                   </div>
 
-                  <div id="twoFactorDiv" class="text-success text-center" style="display:none;" (keydown)="checkInput($event)">
+                  <div id="twoFactorDiv" class="text-success text-center" style="display:none;"
+                    (keydown)="checkInput($event)">
                     <countdown-timer style="font-size: 25px; font-weight: 500;" (zeroTrigger)="timeEnd()"
                       [end]="endTime"></countdown-timer>
-                      <input class="formInput w-100 mb-2" [(ngModel)]="twoFactorPhoneClone" readonly >
+                    <input class="formInput w-100 mb-2" [(ngModel)]="twoFactorPhoneClone" readonly>
 
-                      <input type="text" class="formInput w-100 mb-2"  placeholder="SMS Code" [(ngModel)]="smsCode">
+                    <input type="text" class="formInput w-100 mb-2" placeholder="SMS Code" [(ngModel)]="smsCode">
 
                     <div class="text-center">
-                      <button class="btns login-btns" (click)="confirm2FACode()">{{'REGISTER.ConfirmSMS' | translate}}</button>
+                      <button class="btns login-btns" (click)="confirm2FACode()">{{'REGISTER.ConfirmSMS' |
+                        translate}}</button>
                     </div>
                   </div>
                 </div>
