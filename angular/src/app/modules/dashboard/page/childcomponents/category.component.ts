@@ -86,7 +86,7 @@ export class CategoryComponent {
 
   onChangeSelectedDate() {
     this.fillprevNextInf()
-    this.calculateDateDiff()
+    this.calculateShowDetailButton()
   }
 
   getDataByTime(type: 'prev' | 'next') {
@@ -172,7 +172,7 @@ export class CategoryComponent {
         this.prevNextInterval = {prevNme: 'PreviousWeek', nextName: 'NextWeek', interval: 7}
       } else if (diff >= 30 && diff < 90) {
         this.prevNextInterval = {prevNme: 'PreviousMonth', nextName: 'NextMonth', interval: 30}
-      } else if (diff >= 90) {
+      } else if (diff >= 90 && diff < 365) {
         this.prevNextInterval = {prevNme: 'Previous3Month', nextName: 'Next3Month', interval: 90}
       } else {
         this.prevNextInterval = null
