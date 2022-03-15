@@ -19,9 +19,16 @@
   </div>
 
   <div class="anomaly-chart mt-3">
-    <div class="d-flex flex-wrap justify-content-end align-items-center">
+    <div class="d-flex flex-wrap justify-content-end align-items-center" *ngIf="prevNextInterval">
       <div class="d-flex align-items-center justify-content-end">
-        <!-- Todo nex prev buttons-->
+        <button class="btn btn-link btn-icon py-0 bg-transparent" (click)="getDataByTime('prev')">
+          <i-feather name="arrow-left"></i-feather>
+          {{prevNextInterval.prevNme | translate}}
+        </button>
+        <button class="btn btn-link btn-icon py-0 bg-transparent" (click)="getDataByTime('next')">
+          {{prevNextInterval.nextName | translate}}
+          <i-feather name="arrow-right"></i-feather>
+        </button>
       </div>
     </div>
     <app-dashboard-chart #chartComponent></app-dashboard-chart>

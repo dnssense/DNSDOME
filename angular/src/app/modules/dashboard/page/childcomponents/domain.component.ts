@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, Input, ViewChild} from "@angular/core";
 import {GroupItemDom} from "./group-item.component";
 import {TranslateService} from "@ngx-translate/core";
 import * as numeral from 'numeral';
@@ -22,7 +22,7 @@ interface TagInputValue {
   templateUrl: 'domain.component.html',
   styleUrls: ['../dashboard.component.scss']
 })
-export class DomainComponent {
+export class DomainComponent implements AfterViewInit {
   constructor(private translateService: TranslateService, private cyberxrayService: CyberXRayService,
               private clipboardService: ClipboardService, private notificationService: NotificationService,
               private staticMesssageService: StaticMessageService, private dashboardService: DashBoardService) {
@@ -46,6 +46,10 @@ export class DomainComponent {
   topDomains: Domain[] = [];
   selectedDomains: TagInputValue[] = [];
   topDomainsCountTotal: number;
+
+  ngAfterViewInit() {
+
+  }
 
   //region direct ui methodes
   getGroupName(): string {
@@ -117,6 +121,7 @@ export class DomainComponent {
   setTheme(theme) {
     this.theme = theme
     this.chartComponent.setTheme(theme)
+    this.drawChart({items:[]})
   }
 
   setGroup(group: GroupItemDom) {

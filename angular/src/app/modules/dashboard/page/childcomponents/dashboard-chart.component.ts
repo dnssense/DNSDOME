@@ -35,6 +35,7 @@ export class DashboardChartComponent {
   //region direct ui methodes
   setTheme(theme) {
     this.theme = theme
+    console.log(`theme ${this.theme} ${this.theme === 'white'}`)
   }
 
   drawChart(chart: ChartDomain) {
@@ -226,7 +227,9 @@ export class DashboardChartComponent {
 
   getAnnotations(data: { name: string, type: string, data: any[][]}[]) {
     const points = [];
-
+    if (!data.length){
+      return points
+    }
     for (let i = 0; i < data[0].data.length; i++) {
       const min = data[0].data[i][1];
       const max = data[1].data[i][1];
@@ -280,7 +283,7 @@ export class DashboardChartComponent {
     this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
       series: series,
       chart: {
-        id: 'unique-chart2',
+        id: `${this.getChartId()}`,
         foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
         type: 'line',
         height: 280,
@@ -354,7 +357,7 @@ export class DashboardChartComponent {
         }
       },
       grid: {
-        borderColor: this.theme === 'white' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.07)',
+        borderColor: this.theme === 'white' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.07)',
       },
     });
     this.trafficChart.render();
@@ -364,8 +367,6 @@ export class DashboardChartComponent {
   //endregion
   getSeries(): { series: any[], maxVal: number } {
     let result = {series: [], maxVal: 0}
-    if (!(this.chartDomain.items && this.chartDomain.items.length))
-      return result
     if (this.chartDomain.chartType == 'line-river') {
       let minWithDate = []
       let maxWithDate = []
