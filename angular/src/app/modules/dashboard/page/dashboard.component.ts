@@ -415,9 +415,6 @@ export class DashboardComponent implements OnInit {
 
     const lastWeek = moment().add(-7, 'days').startOf('day').toDate().getTime();
     const today = moment().toDate().getTime();
-
-
-
     this.showDetailButton = (lastWeek <= startDate && endDate <= today);
   }
 

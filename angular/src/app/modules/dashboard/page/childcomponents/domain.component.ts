@@ -112,6 +112,9 @@ export class DomainComponent implements AfterViewInit {
       this.topDomains = domains
       if (domains.length) {
         this.addDomain(domains[0])
+      } else {
+        this.selectedDomains = [];
+        this.drawChart({items:[]})
       }
     }
 

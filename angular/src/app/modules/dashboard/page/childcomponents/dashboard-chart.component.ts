@@ -35,7 +35,6 @@ export class DashboardChartComponent {
   //region direct ui methodes
   setTheme(theme) {
     this.theme = theme
-    console.log(`theme ${this.theme} ${this.theme === 'white'}`)
   }
 
   drawChart(chart: ChartDomain) {

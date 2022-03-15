@@ -17,6 +17,7 @@ import {DomainComponent} from "./childcomponents/domain.component";
 import {NotificationService} from "../../../core/services/notification.service";
 import {StaticMessageService} from "../../../core/services/staticMessageService";
 import {ToolsService} from "../../../core/services/toolsService";
+import {TopdateComponent} from "./childcomponents/topdate.component";
 
 @Component({
   selector: 'app-dashboardv2',
@@ -34,6 +35,7 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
   @ViewChild("groupComponent") groupComponent: GroupComponent
   @ViewChild("categoryComponent") categoryComponent: CategoryComponent
   @ViewChild("domainComponent") domainComponent: DomainComponent
+  @ViewChild("topdateComponent") topdateComponent: TopdateComponent
   trafficAnomaly: HourlyCompanySummaryV5Response;
   theme: any = 'light';
   selectedDate: { startDate: Date, endDate: Date, duration: number }
@@ -44,6 +46,9 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
   ngOnInit() {
     this.loadIntiLiveReport()
     this.getTheme()
+    const now = new Date()
+    let startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() - 1, now.getMinutes())
+    this.selectedDate = {startDate:startDate, endDate: now, duration: 0}
   }
 
   ngAfterViewInit() {
@@ -94,6 +99,9 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
       this.reportType = 'nolivereport'
     }
     this.selectedDate = {startDate: date.startDate, endDate: date.endDate, duration: date.duration}
+    if (date.name == "fromcomponent") {
+      this.topdateComponent.setDateComponent(this.selectedDate)
+    }
     this.categoryComponent.setGroup(this.selectedGroup)
     this.reloadData(true)
   }
@@ -157,7 +165,12 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }.bind(this))
   }
 
-
+  onEmptyData() {
+    let res = this.getEmptyLiveReportRes()
+    this.setUiGroupData(res)
+    this.setUiCategoriesData(res)
+    this.setUiDomainsDomain(res.domains.items, res.actions)
+  }
 
   //region anomaly data to ui object
   private getLiveResFromAnomaly(): LiveReportResponse {
@@ -328,6 +341,7 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     this.dashboardService.getHourlyCompanySummary(request).subscribe(result => {
       if (result) {
         if (!result.hit) {
+          this.onEmptyData()
           this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
         } else {
           calback(result)

@@ -131,9 +131,15 @@ export class TopdateComponent implements OnInit {
       const diff = this.calculateDateDiff();
       duration = diff * 24
     }
+
     this.onDateChanged.emit({startDate: this.startDate, endDate: this.endDate, duration: duration, name: ev.nameDis})
   }
-
+  setDateComponent(selected:{ startDate: Date, endDate: Date, duration: number }) {
+    this.startDate = new Date(selected.startDate)
+    this.endDate = new Date(selected.endDate)
+    this.dateButtons.forEach(elem => elem.active = false)
+    this.setDateTextByDates()
+  }
   //region utils function
   convertTimeString(num: number) {
     const month = Math.floor(num / (1440 * 30));
