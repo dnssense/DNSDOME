@@ -5,8 +5,9 @@
     <div class="rk-selectable-container mb-2" style="max-height: 320px">
       <table class="rk-selectable-table w-100" style="cursor: pointer;">
         <tr *ngFor="let cat of categories let i = index" class="rk-c-{{currentGroup.datatype}}"
-            [ngClass]="{'active': selectedCategory?.name == cat.name}" (click)="onClickCategory(cat)" [title]="cat.name">
-          <td class="idx pr-1">{{ i +1 }}</td>
+            [ngClass]="{'active': selectedCategory?.name == cat.name}" (click)="onClickCategory(cat)"
+            [title]="cat.name">
+          <td class="idx pr-1">{{ i + 1 }}</td>
           <td class="text">
             <div class="overflowed-text">{{ cat.name}}</div>
           </td>
@@ -60,25 +61,15 @@
       <div>
         <span>{{ 'TrafficExcessRate' | translate }}:</span>
 
-        <span>
-                                    <div class="color" style="background: #507df3;"></div> %20
-                                  </span>
+        <span> <div class="color" style="background: #507df3;"></div> %20 </span>
 
-        <span>
-                                    <div class="color" style="background: #6158ca;"></div> %40
-                                  </span>
+        <span> <div class="color" style="background: #6158ca;"></div> %40 </span>
 
-        <span>
-                                    <div class="color" style="background: #7c26bd;"></div> %60
-                                  </span>
+        <span> <div class="color" style="background: #7c26bd;"></div> %60  </span>
 
-        <span>
-                                    <div class="color" style="background: #9c1e6c;"></div> %80
-                                  </span>
+        <span> <div class="color" style="background: #9c1e6c;"></div> %80 </span>
 
-        <span>
-                                    <div class="color" style="background: #c41505;"></div> %100
-                                  </span>
+        <span> <div class="color" style="background: #c41505;"></div> %100 </span>
       </div>
     </div>
   </div>
