@@ -88,6 +88,9 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 13, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
       { id: 14, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
       { id: 15, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
+      { id: 16, name: 'ruleNumber', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
+      { id: 17, name: 'ruleBy', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true, format: d => d.substring(2) },
+      { id: 18, name: 'ruleKeyword', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
 
     ],
     rows: [],
@@ -169,6 +172,9 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 13, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
       { id: 14, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
       { id: 15, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
+      { id: 16, name: 'ruleNumber', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
+      { id: 17, name: 'ruleBy', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true, format: d => d.substring(2) },
+      { id: 18, name: 'ruleKeyword', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
     ];
   }
 
