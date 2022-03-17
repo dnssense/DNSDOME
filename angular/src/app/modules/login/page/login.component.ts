@@ -183,6 +183,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
     });
 
   }
+  checkInput(keyEvent: KeyboardEvent) {
+    if (keyEvent.key === 'Enter') {
+      this.confirm2FACode()
+    }
+  }
 
   private replaceStar(val: string): string {
     let letter = '';

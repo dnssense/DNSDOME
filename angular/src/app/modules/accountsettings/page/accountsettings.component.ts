@@ -371,7 +371,7 @@ export class AccountSettingsComponent implements OnInit {
             this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
             return;
         }
-        if (this.phoneNumberTemp && this.phoneNumberTemp.length === 9) {
+        if (this.phoneNumberTemp && this.phoneNumberTemp.length === 10) {
             this.user.gsm = this.phoneNumberTemp;
             this.user.gsmCode = this.gsmCodeTemp;
 
