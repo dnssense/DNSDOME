@@ -954,15 +954,57 @@ export class DevicesComponent implements OnInit {
   }
 
   onPageChange(pageNumber: number, table: string) {
-    if (table === 'ruleUser')
-      this.ruleUserTableCurrentPage = pageNumber;
+    switch (table) {
+      case 'ruleUser':
+        this.ruleUserTableCurrentPage = pageNumber;
+        break;
+      case 'adClient':
+        this.adClientTableCurrentPage = pageNumber;
+        break;
+      case 'ruleBox':
+        this.ruleBoxTableCurrentPage = pageNumber;
+        break;
+      case 'adGroup':
+        this.adGroupTableCurrentPage = pageNumber;
+        break;
+      case 'ruleGroup':
+        this.ruleGroupTableCurrentPage = pageNumber;
+        break;
+      case 'ruleHost':
+        this.ruleHostTableCurrentPage = pageNumber;
+        break;
+      case 'ruleLocIp':
+        this.ruleLocIpTableCurrentPage = pageNumber;
+        break;
+    }
 
     this.filterTableData(table);
   }
 
   onPageViewCountChange(cnt: number, table: string) {
-    if (table === 'ruleUser')
-      this.ruleUserTableViewCnt = cnt;
+    switch (table) {
+      case 'ruleUser':
+        this.ruleUserTableViewCnt = cnt;
+        break;
+      case 'adClient':
+        this.adClientTableViewCnt = cnt;
+        break;
+      case 'ruleBox':
+        this.ruleBoxTableViewCnt = cnt;
+        break;
+      case 'adGroup':
+        this.adGroupTableViewCnt = cnt;
+        break;
+      case 'ruleGroup':
+        this.ruleGroupTableViewCnt = cnt;
+        break;
+      case 'ruleHost':
+        this.ruleHostTableViewCnt = cnt;
+        break;
+      case 'ruleLocIp':
+        this.ruleLocIpTableViewCnt = cnt;
+        break;
+    }
 
     this.filterTableData(table);
   }
