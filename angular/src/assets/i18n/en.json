@@ -598,7 +598,8 @@
         "RuleBy": "Rule By",
         "ADGroups": "AD Groups",
         "DNSServerName": "DNS Server Name",
-        "ClientCount": "Client Count"
+        "ClientCount": "Client Count",
+        "RuleKeyword": "Rule Keyword"
     },
     "Month": "Months",
     "Week": "Weeks",
