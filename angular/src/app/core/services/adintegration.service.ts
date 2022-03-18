@@ -9,7 +9,7 @@ import {AgentRule} from '../models/AgentRule';
     providedIn: 'root'
 })
 export class ADIntegrationService {
-    private adIntegrationUrl = this.config.getApiUrl() + '/adintegration';
+    private adIntegrationUrl = this.config.getApiUrl() + '/dnsrelay';
 
 
     constructor(private http: HttpClient, private config: ConfigService) { }
