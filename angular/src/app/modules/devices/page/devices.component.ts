@@ -1241,7 +1241,20 @@ export class DevicesComponent implements OnInit {
     if (!this.selectedRule.agent?.rootProfile?.id)
       return this.notification.warning(this.staticMessageService.needsToSelectSecurityProfileMessage);
 
-    this.selectedRule.agent.agentAlias = `${this.selectedRule.ruledBy}-${this.selectedRule.keyword}`;
+    this.selectedRule.agent.agentAlias = this.boxes.find(b => b.boxSerial === this.adClients.find(c => {
+      switch (this.selectedRule.ruledBy) {
+        case AgentRuledBy.ADUSR:
+          return c.adUser === this.selectedRule.keyword;
+        case AgentRuledBy.ADGRP:
+          return !!c.groups.find(g => g.groupName === this.selectedRule.keyword);
+        case AgentRuledBy.MAC:
+          return c.mac === this.selectedRule.keyword || c.host === this.selectedRule.keyword;
+        case AgentRuledBy.LOCIP:
+          return c.ip === this.selectedRule.keyword;
+        case AgentRuledBy.BOX:
+          return c.boxSerial === this.selectedRule.keyword;
+      }
+    })?.boxSerial)?.host || `${this.selectedRule.ruledBy}-${this.selectedRule.keyword}`;
 
     this.adIntegrationService.setRule(this.selectedRule).subscribe(r => {
       this.notification.success(this.staticMessageService.ruleSaved);
