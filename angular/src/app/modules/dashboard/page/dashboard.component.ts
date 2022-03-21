@@ -203,7 +203,7 @@ export class DashboardComponent implements OnInit {
         this.agentCounts = [];
         this.agentCounts.push({ name: 'PublicIp', activeCount: 0, passiveCount: 0, link: '/admin/deployment/public-ip' });
         this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0, link: '/admin/deployment/roaming-clients' });
-        this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/devices' });
+        this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/dns-relay' });
         this.getAgents().subscribe(x => {
 
 

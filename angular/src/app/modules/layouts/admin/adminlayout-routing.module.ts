@@ -27,7 +27,7 @@ const adminlayoutRoutes: Routes = [
         loadChildren: '../../reports/reports.module#ReportsModule'
       },
       {
-        path: 'deployment/ad-integration',
+        path: 'deployment/dns-relay',
         canActivate: [RoleGuard],
         data: {
           expectedRole: 'ROLE_CUSTOMER'
