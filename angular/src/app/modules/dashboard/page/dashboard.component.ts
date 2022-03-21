@@ -273,7 +273,7 @@ export class DashboardComponent implements OnInit {
       const publicip: AgentCountModel = { name: 'PageName.PublicIp', activeCount: 0, passiveCount: 0, link: '/admin/deployment/public-ip' };
       const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0, link: '/admin/deployment/roaming-clients'};
 
-      const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/devices' };
+      const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/dns-relay' };
 
       const serials = boxes.filter(x => (x).serial).map(x => (x).serial);
 
