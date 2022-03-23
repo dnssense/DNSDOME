@@ -1032,16 +1032,20 @@ export class DevicesComponent implements OnInit {
       });
       this.ruleGroups = rules.filter(r => r.rules?.find(_r => _r.ruledBy === AgentRuledBy.ADGRP)).map(g => {
         const grp = this.adGroups.find(_g => _g.groupName === g.groupName);
-        g.lastSyncTime = grp.lastSyncTime;
-        g.memberCount = grp.memberCount;
+        if (grp) {
+          g.lastSyncTime = grp.lastSyncTime;
+          g.memberCount = grp.memberCount;
+        }
         return g;
-      });
+      }).filter(r => r);
       this.ruleBox = rules.filter(r => r.rules?.find(_r => _r.ruledBy === AgentRuledBy.BOX)).map(b => {
         const bx = this.boxes.find(_b => _b.boxSerial === b.boxSerial);
-        b.lastSyncTime = bx.lastSyncTime;
-        b.clientCount = bx.clientCount;
+        if (bx) {
+          b.lastSyncTime = bx.lastSyncTime;
+          b.clientCount = bx.clientCount;
+        }
         return b;
-      });
+      }).filter(r => r);
 
       this.filterTableData('ruleUser');
       this.filterTableData('ruleGroup');
