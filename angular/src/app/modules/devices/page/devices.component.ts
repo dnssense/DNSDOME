@@ -1275,6 +1275,8 @@ export class DevicesComponent implements OnInit {
       }
     })?.boxSerial)?.host || `${this.selectedRule.ruledBy}-${this.selectedRule.keyword}`;
 
+    this.selectedRule.agent.agentType = this.selectedRule.ruledBy === AgentRuledBy.BOX ? AgentType.BOX : AgentType.DEVICE;
+
     this.adIntegrationService.setRule(this.selectedRule).subscribe(r => {
       this.notification.success(this.staticMessageService.ruleSaved);
       this.loadClients();
