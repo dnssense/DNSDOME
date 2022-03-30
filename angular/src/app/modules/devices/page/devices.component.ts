@@ -1205,6 +1205,21 @@ export class DevicesComponent implements OnInit {
       this.selectedRule.agentId = 0;
     }
 
+    if (!this.selectedRule.agent.rootProfile.domainProfile)
+      this.selectedRule.agent.rootProfile.domainProfile = {} as SecurityProfileItem;
+    if (!this.selectedRule.agent.rootProfile.applicationProfile)
+      this.selectedRule.agent.rootProfile.applicationProfile = {} as SecurityProfileItem;
+    if (!this.selectedRule.agent.rootProfile.blackWhiteListProfile)
+      this.selectedRule.agent.rootProfile.blackWhiteListProfile = {} as BlackWhiteListProfile;
+    if (!this.selectedRule.agent.rootProfile.domainProfile.categories)
+      this.selectedRule.agent.rootProfile.domainProfile.categories = [];
+    if (!this.selectedRule.agent.rootProfile.applicationProfile.categories)
+      this.selectedRule.agent.rootProfile.applicationProfile.categories = [];
+    if (!this.selectedRule.agent.rootProfile.blackWhiteListProfile.blackList)
+      this.selectedRule.agent.rootProfile.blackWhiteListProfile.blackList = [];
+    if (!this.selectedRule.agent.rootProfile.blackWhiteListProfile.whiteList)
+      this.selectedRule.agent.rootProfile.blackWhiteListProfile.whiteList = [];
+
     this.ruledByForSelect = DevicesComponent.RULEDBY_LIST.map(r => ({
       selected: r === this.selectedRule.ruledBy,
       value: r,
