@@ -173,7 +173,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 14, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
       { id: 15, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
       { id: 16, name: 'ruleNumber', displayText: this.translateService.translate('TableColumn.RuleNumber'), isLink: true },
-      { id: 17, name: 'ruleBy', displayText: this.translateService.translate('TableColumn.RuleBy'), isLink: true, format: d => d.substring(2) },
+      { id: 17, name: 'ruleBy', displayText: this.translateService.translate('TableColumn.RuleBy'), isLink: true, format: d => d ? d.substring(2) : d },
       { id: 18, name: 'ruleKeyword', displayText: this.translateService.translate('TableColumn.RuleKeyword'), isLink: true },
     ];
   }
