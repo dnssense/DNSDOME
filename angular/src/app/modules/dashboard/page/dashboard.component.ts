@@ -45,7 +45,6 @@ export interface RkDateButton {
   displayText: string;
   active: boolean;
   isToday: boolean;
-
 }
 
 @Component({

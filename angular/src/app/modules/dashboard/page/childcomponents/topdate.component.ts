@@ -86,7 +86,7 @@ export class TopdateComponent implements OnInit {
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours() - 1, this.now.getMinutes()),
         endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours(), this.now.getMinutes()),
-        displayText: 'Last Hour',
+        displayText: 'Live Report',
         active: true,
         isToday: false
       },
