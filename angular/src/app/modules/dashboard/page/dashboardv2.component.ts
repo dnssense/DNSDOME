@@ -92,7 +92,7 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
 
   onDateChanged(date: { startDate: Date, endDate: Date, duration: number, name: string }) {
     this.selectedCategory = null
-    if (date.name == "Last Hour") {
+    if (date.name == "Live Report") {
       this.reportType = 'livereport'
       this.trafficAnomaly = null
     } else {

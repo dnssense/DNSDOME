@@ -104,7 +104,7 @@ export class TopdateComponent implements OnInit {
 
   //region direct ui methodes
   setDateByDateButton(it: RkDateButton) {
-    if (it.displayText == 'Last Hour') {
+    if (it.displayText == 'Live Report') {
       it.startDate = new Date()
       it.startDate.setHours(it.startDate.getHours() - 1)
       it.endDate = new Date()
