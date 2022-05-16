@@ -1,40 +1,45 @@
 <div class="main-content">
-  <div class="container-fluid mt-3 mb-3">
-    <div class="row mx-0">
-      <div class="col-12 p-0">
-        <div class="container-fluid dashboard">
-          <app-dashboard-agents></app-dashboard-agents>
-          <div class="row mt-2">
-            <div class="rk-base-card p-0">
-              <div class="card-item content" style="padding: 20px 0;">
-                <div class="container-fluid">
-                  <app-dashboard-topdate #topdateComponent (onDateChanged)="onDateChanged($event)"></app-dashboard-topdate>
-                  <app-dashboard-group #groupComponent (onGroupChange)="onGroupChanged($event)"></app-dashboard-group>
-                  <div class="row mt-3">
-                    <div class="col-12">
-                      <div class="section-card">
-                        <div class="container-fluid">
-                          <app-dashboard-category #categoryComponent (onCategoryChanged)="onCategoryChanged($event)"
-                                                  [selectedDate]="selectedDate" (selectedDateChange)="onDateChanged($event)"></app-dashboard-category>
+    <div class="container-fluid mt-3 mb-3">
+        <div class="row mx-0">
+            <div class="col-12 p-0">
+                <div class="container-fluid dashboard">
+                    <app-dashboard-agents></app-dashboard-agents>
+                    <div class="row mt-2">
+                        <div class="rk-base-card p-0">
+                            <div class="card-item content" style="padding: 20px 0;">
+                                <div class="container-fluid">
+                                    <app-dashboard-topdate #topdateComponent
+                                                           (onDateChanged)="onDateChanged($event)"></app-dashboard-topdate>
+                                    <app-dashboard-group #groupComponent
+                                                         (onGroupChange)="onGroupChanged($event)"></app-dashboard-group>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="section-card">
+                                                <div class="container-fluid">
+                                                    <app-dashboard-category #categoryComponent
+                                                                            (onCategoryChanged)="onCategoryChanged($event)"
+                                                                            [selectedDate]="selectedDate"
+                                                                            (selectedDateChange)="onDateChanged($event)"></app-dashboard-category>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="section-card">
+                                                <div class="container-fluid">
+                                                    <app-dashboard-domain #domainComponent [reportType]="reportType"
+                                                                          [selectedDate]="selectedDate"></app-dashboard-domain>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
-                  <div class="row mt-3">
-                    <div class="col-12">
-                      <div class="section-card">
-                        <div class="container-fluid">
-                          <app-dashboard-domain #domainComponent [reportType]="reportType" [selectedDate]="selectedDate"></app-dashboard-domain>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>

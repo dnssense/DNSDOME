@@ -1,24 +1,25 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from "@angular/core";
-import {RkDateButton} from "../dashboard.component";
-import {RkDateConfig} from "roksit-lib/lib/modules/rk-date/rk-date.component";
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {RkDateButton} from '../dashboard.component';
+import {RkDateConfig} from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import {TranslatorService} from 'src/app/core/services/translator.service';
-import * as moment from "moment";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-dashboard-topdate',
   templateUrl: 'topdate.component.html',
-  styleUrls:['../dashboard.component.scss']
+  styleUrls: ['../dashboard.component.scss']
 })
 export class TopdateComponent implements OnInit {
   constructor(private translatorService: TranslatorService) {
   }
   @ViewChild('date') date;
-  @Output() public onDateChanged = new EventEmitter<{startDate:Date,endDate:Date, duration:number, name: string}>()
+  // tslint:disable-next-line:no-output-on-prefix
+  @Output() public onDateChanged = new EventEmitter<{startDate: Date, endDate: Date, duration: number, name: string}>();
   private now: Date = new Date();
   startDate: Date = new Date();
   endDate: Date = new Date();
   dateText: string;
-  dateButtons: RkDateButton[]
+  dateButtons: RkDateButton[];
 
   dateConfig: RkDateConfig = {
     startHourText: this.translatorService.translate('Date.StartHour'),
@@ -33,15 +34,15 @@ export class TopdateComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.initDateDisplay()
-    this.setDateButtons()
+    this.initDateDisplay();
+    this.setDateButtons();
   }
 
-  //region initialization
+  // region initialization
   initDateDisplay() {
-    this.startDate = new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours() - 1, this.now.getMinutes())
+    this.startDate = new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours() - 1, this.now.getMinutes());
     this.endDate = new Date();
-    this.setDateTextByDates()
+    this.setDateTextByDates();
   }
 
   setDateTextByDates() {
@@ -86,7 +87,7 @@ export class TopdateComponent implements OnInit {
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours() - 1, this.now.getMinutes()),
         endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours(), this.now.getMinutes()),
-        displayText: 'Live Report',
+        displayText: 'Last Hour',
         active: true,
         isToday: false
       },
@@ -100,47 +101,47 @@ export class TopdateComponent implements OnInit {
 
     ];
   }
-  //endregion
+  // endregion
 
-  //region direct ui methodes
+  // region direct ui methodes
   setDateByDateButton(it: RkDateButton) {
-    if (it.displayText == 'Live Report') {
-      it.startDate = new Date()
-      it.startDate.setHours(it.startDate.getHours() - 1)
-      it.endDate = new Date()
+    if (it.displayText === 'Live Report') {
+      it.startDate = new Date();
+      it.startDate.setHours(it.startDate.getHours() - 1);
+      it.endDate = new Date();
     }
-    this.dateChanged({startDate:it.startDate, endDate: it.endDate, nameDis:it.displayText}, false, it.isToday)
-    it.active = true
+    this.dateChanged({startDate: it.startDate, endDate: it.endDate, nameDis: it.displayText}, false, it.isToday);
+    it.active = true;
   }
-  //endregion
+  // endregion
 
-  //region indirect ui methode
+  // region indirect ui methode
   dateChanged(ev: { startDate: Date, endDate: Date, nameDis: string }, isDateComponent = false, isToday = false) {
-    this.dateButtons.forEach(elem => elem.active = false)
+    this.dateButtons.forEach(elem => elem.active = false);
     this.startDate = ev.startDate;
     this.endDate = ev.endDate;
     if (moment(this.startDate) > moment(this.endDate)) {
-      this.endDate = ev.startDate
-      this.startDate = ev.endDate
+      this.endDate = ev.startDate;
+      this.startDate = ev.endDate;
       this.date.startDate = this.startDate;
       this.date.endDate = this.endDate;
     }
-    this.setDateTextByDates()
-    let duration = 0
+    this.setDateTextByDates();
+    let duration = 0;
     if (!(isDateComponent || isToday)) {
       const diff = this.calculateDateDiff();
-      duration = diff * 24
+      duration = diff * 24;
     }
 
-    this.onDateChanged.emit({startDate: this.startDate, endDate: this.endDate, duration: duration, name: ev.nameDis})
+    this.onDateChanged.emit({startDate: this.startDate, endDate: this.endDate, duration: duration, name: ev.nameDis});
   }
   setDateComponent(selected:{ startDate: Date, endDate: Date, duration: number }) {
-    this.startDate = new Date(selected.startDate)
-    this.endDate = new Date(selected.endDate)
-    this.dateButtons.forEach(elem => elem.active = false)
-    this.setDateTextByDates()
+    this.startDate = new Date(selected.startDate);
+    this.endDate = new Date(selected.endDate);
+    this.dateButtons.forEach(elem => elem.active = false);
+    this.setDateTextByDates();
   }
-  //region utils function
+  // region utils function
   convertTimeString(num: number) {
     const month = Math.floor(num / (1440 * 30));
     const w = Math.floor((num - (month * 1440 * 30)) / (1440 * 7));
@@ -188,5 +189,5 @@ export class TopdateComponent implements OnInit {
     const diff = endDate.diff(startDate, 'days');
     return diff;
   }
-  //endregion
+  // endregion
 }

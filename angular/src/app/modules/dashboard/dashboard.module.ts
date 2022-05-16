@@ -9,14 +9,14 @@ import { MaterialModule } from 'src/app/material.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RkProgressBarModule, RkDateModule, RkTableModule, RkInfoBoxModule, IconsModule } from 'roksit-lib';
 import { TagInputModule } from 'ngx-chips';
-import {Dashboardv2Component} from "./page/dashboardv2.component";
-import {AgentsComponent} from "./page/childcomponents/agents.component";
-import {TopdateComponent} from "./page/childcomponents/topdate.component";
-import {GroupItemComponent} from "./page/childcomponents/group-item.component";
-import {GroupComponent} from "./page/childcomponents/group.component";
-import {CategoryComponent} from "./page/childcomponents/category.component";
-import {DashboardChartComponent} from "./page/childcomponents/dashboard-chart.component";
-import {DomainComponent} from "./page/childcomponents/domain.component";
+import {Dashboardv2Component} from './page/dashboardv2.component';
+import {AgentsComponent} from './page/childcomponents/agents.component';
+import {TopdateComponent} from './page/childcomponents/topdate.component';
+import {GroupItemComponent} from './page/childcomponents/group-item.component';
+import {GroupComponent} from './page/childcomponents/group.component';
+import {CategoryComponent} from './page/childcomponents/category.component';
+import {DashboardChartComponent} from './page/childcomponents/dashboard-chart.component';
+import {DomainComponent} from './page/childcomponents/domain.component';
 
 TagInputModule.withDefaults({
   tagInput: {

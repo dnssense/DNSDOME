@@ -78,9 +78,9 @@ export interface HourlyCompanySummaryV5Response {
 
 
 export interface CategoryDom {
-  name: string,
-  hit: number,
-  hit_ratio: number
+  name: string;
+  hit: number;
+  hit_ratio: number;
 }
 
 

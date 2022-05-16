@@ -1,72 +1,72 @@
-import {Component} from "@angular/core";
-import * as moment from "moment";
-import {TranslateService} from "@ngx-translate/core";
+import {Component} from '@angular/core';
+import * as moment from 'moment';
+import {TranslateService} from '@ngx-translate/core';
 import * as numeral from 'numeral';
 export interface ChartDomainItem {
-  max: number,
-  min: number,
-  hit: number,
-  date: string
+  max: number;
+  min: number;
+  hit: number;
+  date: string;
 }
 
 export interface ChartDomain {
-  items: ChartDomainItem[]
-  chartType: 'line' | 'line-river'
+  items: ChartDomainItem[];
+  chartType: 'line' | 'line-river';
 }
 
 @Component({
-  selector: "app-dashboard-chart",
-  templateUrl: "dashboard-chart.component.html",
-  styleUrls: ["../dashboard.component.scss"]
+  selector: 'app-dashboard-chart',
+  templateUrl: 'dashboard-chart.component.html',
+  styleUrls: ['../dashboard.component.scss']
 })
 export class DashboardChartComponent {
   constructor(private translateService: TranslateService) {
   }
 
   theme: any = 'light';
-  chartId: string
-  containerId: string
-  trafficChart: ApexCharts
+  chartId: string;
+  containerId: string;
+  trafficChart: ApexCharts;
   chartDomain: ChartDomain = {
     items: [],
     chartType: 'line'
-  }
+  };
 
-  //region direct ui methodes
+  // region direct ui methodes
   setTheme(theme) {
-    this.theme = theme
+    this.theme = theme;
   }
 
   drawChart(chart: ChartDomain) {
-    this.chartDomain = chart
-    if (chart.chartType == 'line') {
-      this.drawChartTopDomain()
+    this.chartDomain = chart;
+    if (chart.chartType === 'line') {
+      this.drawChartTopDomain();
     } else {
-      this.drawChartAnomaly()
+      this.drawChartAnomaly();
     }
   }
 
   drawChartAnomaly() {
     const chartBg = this.theme === 'white' ? '#ffffff' : '#232328';
-    let seriesMaxVal = this.getSeries()
+    const seriesMaxVal = this.getSeries();
     if (!seriesMaxVal.series.length && this.trafficChart) {
       this.trafficChart.updateSeries([
         { name: 'Min', type: 'area', data: [] },
         { name: 'Max', type: 'area', data: [] },
         { name: 'Hit', type: 'line', data: [] }
-      ])
+      ]);
       this.trafficChart.updateOptions({
         annotations: {
           points: []
         }
-      })
-      return
+      });
+      return;
     }
-    let series = seriesMaxVal.series
-    let yMax = seriesMaxVal.maxVal
-    let points = this.getAnnotations(series)
+    const series = seriesMaxVal.series;
+    const yMax = seriesMaxVal.maxVal;
+    const points = this.getAnnotations(series);
     if (this.trafficChart) {
-      this.trafficChart.destroy()
+      this.trafficChart.destroy();
     }
 
     this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
@@ -126,6 +126,7 @@ export class DashboardChartComponent {
         },
         // fillSeriesColor: true,
         theme: 'dark',
+        // tslint:disable-next-line:no-shadowed-variable
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
           // const date = new Date(w.globals.seriesX[0][dataPointIndex]);
 
@@ -226,8 +227,8 @@ export class DashboardChartComponent {
 
   getAnnotations(data: { name: string, type: string, data: any[][]}[]) {
     const points = [];
-    if (!data.length){
-      return points
+    if (!data.length) {
+      return points;
     }
     for (let i = 0; i < data[0].data.length; i++) {
       const min = data[0].data[i][1];
@@ -273,11 +274,11 @@ export class DashboardChartComponent {
   }
 
   drawChartTopDomain() {
-    let seriesMaxVal = this.getSeries()
-    let series = seriesMaxVal.series
+    const seriesMaxVal = this.getSeries();
+    const series = seriesMaxVal.series;
     if (this.trafficChart) {
-      this.trafficChart.updateSeries(series)
-      return
+      this.trafficChart.updateSeries(series);
+      return;
     }
     this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
       series: series,
@@ -319,6 +320,7 @@ export class DashboardChartComponent {
         enabled: true,
         shared: true,
         theme: 'dark',
+        // tslint:disable-next-line:no-shadowed-variable
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
           // const date = new Date(w.globals.seriesX[0][dataPointIndex]);
 
@@ -362,57 +364,57 @@ export class DashboardChartComponent {
     this.trafficChart.render();
 
   }
+  // endregion
 
-  //endregion
   getSeries(): { series: any[], maxVal: number } {
-    let result = {series: [], maxVal: 0}
-    if (this.chartDomain.chartType == 'line-river') {
-      let minWithDate = []
-      let maxWithDate = []
-      let hitWithDate = []
+    const result = {series: [], maxVal: 0};
+    if (this.chartDomain.chartType === 'line-river') {
+      const minWithDate = [];
+      const maxWithDate = [];
+      const hitWithDate = [];
       this.chartDomain.items.forEach(it => {
-        let date = moment(it.date).utc(true).toDate().getTime()
-        let max = Math.max(it.max, it.min, it.hit)
+        const date = moment(it.date).utc(true).toDate().getTime();
+        const max = Math.max(it.max, it.min, it.hit);
         if (max > result.maxVal) {
-          result.maxVal = max
+          result.maxVal = max;
         }
-        minWithDate.push([date, it.min])
-        maxWithDate.push([date, it.max])
-        hitWithDate.push([date, it.hit])
-      })
+        minWithDate.push([date, it.min]);
+        maxWithDate.push([date, it.max]);
+        hitWithDate.push([date, it.hit]);
+      });
       result.series = [
         {name: 'Min', type: 'area', data: minWithDate},
         {name: 'Max', type: 'area', data: maxWithDate},
         {name: 'Hit', type: 'line', data: hitWithDate}
-      ]
+      ];
     } else {
       result.series = [{
         name: 'Hits',
         type: 'line',
         data: this.chartDomain.items.map(x => [moment(x.date).utc(true).toDate().getTime(), x.hit])
-      }]
+      }];
     }
-    return result
+    return result;
   }
   translate(data: string): string {
-    return this.translateService.instant(data)
+    return this.translateService.instant(data);
   }
-  getChartId() : string {
+  getChartId(): string {
     if (!this.chartId) {
-      this.chartId = `${this.chartDomain.chartType}_${this.getRandomInt(100)}`
+      this.chartId = `${this.chartDomain.chartType}_${this.getRandomInt(100)}`;
     }
-    return this.chartId
+    return this.chartId;
   }
-  getChartContainerId() : string {
+  getChartContainerId(): string {
     if (!this.containerId) {
-      this.containerId = `container_${this.chartDomain.chartType}_${this.getRandomInt(100)}`
+      this.containerId = `container_${this.chartDomain.chartType}_${this.getRandomInt(100)}`;
     }
-    return this.containerId
+    return this.containerId;
   }
   getRoundedNumber(value: number) {
     return numeral(value).format('0.0a').replace('.0', '');
   }
   getRandomInt(max) {
-    return Math.floor(Math.random() * max)
+    return Math.floor(Math.random() * max);
   }
 }

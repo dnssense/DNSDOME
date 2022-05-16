@@ -1,22 +1,23 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {GroupItemDom} from "./group-item.component";
-import {Aggregation} from "../../../../core/models/report";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {GroupItemDom} from './group-item.component';
+import {Aggregation} from '../../../../core/models/report';
 import * as numeral from 'numeral';
 @Component({
   selector: 'app-dashboard-group',
   templateUrl: 'group.component.html',
   styleUrls: ['../dashboard.component.scss']
 })
-export class GroupComponent implements OnInit{
+export class GroupComponent implements OnInit {
   constructor() {
   }
-  public groups:GroupItemDom[]
-  @Output() public onGroupChange = new EventEmitter<GroupItemDom>()
+  public groups: GroupItemDom[];
+  // tslint:disable-next-line:no-output-on-prefix
+  @Output() public onGroupChange = new EventEmitter<GroupItemDom>();
   ngOnInit() {
-    this.initFillData()
+    this.initFillData();
   }
 
-  //region initialization
+  // region initialization
   initFillData() {
     this.groups = [
       {
@@ -74,37 +75,37 @@ export class GroupComponent implements OnInit{
         description: 'HarmfulDescription',
         uitype: 2
       }
-    ]
+    ];
   }
-  //endregion
-  //region direct ui methodes
+  // endregion
+  // region direct ui methodes
   onChangeVal(it: GroupItemDom) {
-    this.onGroupChange.emit(it)
-    this.groups.forEach(group=> {
-      group.active = false
-    })
-    it.active = true
+    this.onGroupChange.emit(it);
+    this.groups.forEach(group => {
+      group.active = false;
+    });
+    it.active = true;
   }
-  //endregion
+  // endregion
 
-  setDataGroup(groups: {items: Aggregation[]},total:{allow: number, block: number}) {
-    let totalHit = total.allow + total.block
-    this.groups.forEach(g=>{
-      g.val1 = 0
-      g.val2 = 0
-      if (g.datatype == 'total') {
-        g.val1= total.allow
-        g.val2 = total.block
+  setDataGroup(groups: {items: Aggregation[]}, total: {allow: number, block: number}) {
+    const totalHit = total.allow + total.block;
+    this.groups.forEach(g => {
+      g.val1 = 0;
+      g.val2 = 0;
+      if (g.datatype === 'total') {
+        g.val1 = total.allow;
+        g.val2 = total.block;
       }
-    })
-    groups.items.forEach(g=> {
-      let item = this.groups.find(it=>it.datatype == g.name)
+    });
+    groups.items.forEach( g => {
+      const item = this.groups.find(it => it.datatype === g.name);
       if (item) {
-        let ratio = this.getRoundedNumber((100 * g.hit) / totalHit)
-        item.val1 = g.hit
-        item.val2 = ratio
+        const ratio = this.getRoundedNumber((100 * g.hit) / totalHit);
+        item.val1 = g.hit;
+        item.val2 = ratio;
       }
-    })
+    });
   }
   getRoundedNumber(value: number) {
     return numeral(value).format('0.0a').replace('.0', '');

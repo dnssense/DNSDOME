@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Rx';
 import { Dashboard, TopDomainValuesRequestV4, TopDomainValuesResponseV4, TopDomainsResponseV5, TopDomainsRequestV5 } from '../models/Dashboard';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
-import {LiveReportRequest, LiveReportResponse} from "../models/report";
+import {LiveReportRequest, LiveReportResponse} from '../models/report';
 
 
 export interface DurationRequest {
@@ -48,7 +48,7 @@ export class DashBoardService {
   // ES urls
   private _hourlyCompanySummaryURL = this.configuration.getApiUrl() + '/calculate/hourlyCompanySummaryV5';
   private _topDomainURL = this.configuration.getApiUrl() + '/calculate/topDomainV5';
-  private _liveReportURL = this.configuration.getApiUrl() + '/calculate/livereport'
+  private _liveReportURL = this.configuration.getApiUrl() + '/calculate/livereport';
   private _topDomainValueURL = this.configuration.getApiUrl() + '/calculate/topDomainValueV5';
   private _distinctAgentURL = this.configuration.getApiUrl() + '/calculate/distinctAgent';
   private _distinctBoxURL = this.configuration.getApiUrl() + '/calculate/distinctBox';
@@ -63,7 +63,7 @@ export class DashBoardService {
   }
 
   public getLiveReport(req: LiveReportRequest): Observable<LiveReportResponse> {
-    return this.http.post<LiveReportResponse>(this._liveReportURL, req).map(res => res)
+    return this.http.post<LiveReportResponse>(this._liveReportURL, req).map(res => res);
   }
 
   public getTopDomains(request: TopDomainsRequestV5): Observable<TopDomainsResponseV5> {

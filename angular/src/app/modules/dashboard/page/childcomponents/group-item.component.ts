@@ -1,16 +1,16 @@
-import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {TranslateService} from "@ngx-translate/core";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 
 export interface GroupItemDom {
-  active: boolean
-  datatype: 'total' | 'safe' | 'malicious' | 'variable' | 'restricted' | 'harmful'
-  name: string
-  color: string
-  className: string
-  val1: number
-  val2: number
-  description: string
-  uitype: number
+  active: boolean;
+  datatype: 'total' | 'safe' | 'malicious' | 'variable' | 'restricted' | 'harmful';
+  name: string;
+  color: string;
+  className: string;
+  val1: number;
+  val2: number;
+  description: string;
+  uitype: number;
 }
 
 @Component({
@@ -22,17 +22,18 @@ export class GroupItemComponent {
   constructor(private translateService: TranslateService) {
   }
 
-  @Input() public group: GroupItemDom
-  @Output() public onGroupClick = new EventEmitter<GroupItemDom>()
-  //region direct ui methodes
+  @Input() public group: GroupItemDom;
+  // tslint:disable-next-line:no-output-on-prefix
+  @Output() public onGroupClick = new EventEmitter<GroupItemDom>();
+  // region direct ui methodes
   onClick() {
-    this.onGroupClick.emit(this.group)
+    this.onGroupClick.emit(this.group);
   }
   translate(data: string): string {
-    return this.translateService.instant(data)
+    return this.translateService.instant(data);
   }
   getClassName(): string {
-    return this.group.className || ''
+    return this.group.className || '';
   }
-  //endregion
+  // endregion
 }
