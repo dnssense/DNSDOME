@@ -40,7 +40,7 @@ export class TopdateComponent implements OnInit {
 
   // region initialization
   initDateDisplay() {
-    this.startDate = new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours() - 1, this.now.getMinutes());
+    this.startDate.setDate(this.now.getDate() - 7);
     this.endDate = new Date();
     this.setDateTextByDates();
   }
@@ -58,36 +58,29 @@ export class TopdateComponent implements OnInit {
     this.dateButtons = [
       {
         startDate: new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()),
-        endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+        endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours()),
         displayText: 'Last Year',
         active: false,
         isToday: false
       },
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 3, this.now.getDate()),
-        endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+        endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours()),
         displayText: 'Last 3 Month',
         active: false,
         isToday: false
       },
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()),
-        endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+        endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours()),
         displayText: 'Last Month',
         active: false,
         isToday: false
       },
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
-        endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate()),
+        endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours()),
         displayText: 'Last Week',
-        active: false,
-        isToday: false
-      },
-      {
-        startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours() - 1, this.now.getMinutes()),
-        endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours(), this.now.getMinutes()),
-        displayText: 'Last Hour',
         active: true,
         isToday: false
       },

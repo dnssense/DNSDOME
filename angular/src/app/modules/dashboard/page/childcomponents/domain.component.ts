@@ -40,7 +40,7 @@ export class DomainComponent implements AfterViewInit {
         description: 'DASHBOARD.TotalDnsRequestCount',
         uitype: 1
     };
-    @Input() reportType: 'livereport' | 'nolivereport' = 'livereport';
+    @Input() reportType: 'livereport' | 'nolivereport' = 'nolivereport';
     @Input() selectedDate: { startDate: Date, endDate: Date, duration: number };
     theme: any = 'light';
     topDomains: Domain[] = [];

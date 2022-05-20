@@ -41,14 +41,15 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     selectedDate: { startDate: Date, endDate: Date, duration: number };
     selectedGroup: GroupItemDom;
     selectedCategory: CategoryDom;
-    reportType: 'livereport' | 'nolivereport' = 'livereport';
+    reportType: 'livereport' | 'nolivereport' = 'nolivereport';
 
     ngOnInit() {
-        this.loadIntiLiveReport();
         this.getTheme();
         const now = new Date();
-        const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() - 1, now.getMinutes());
+        const startDate = new Date();
+        startDate.setDate(now.getDate() - 7);
         this.selectedDate = {startDate: startDate, endDate: now, duration: 0};
+        this.reloadData(true);
     }
 
     ngAfterViewInit() {
@@ -151,10 +152,18 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }
 
     private setNoLiveReportData() {
-        const res = this.getLiveResFromAnomaly();
-        this.setUiGroupData(res);
-        this.setUiCategoriesData(res);
-        this.refreshTopDomains();
+        if (this.trafficAnomaly.hit <= 0) {
+            const msBetweenEndDates = Math.abs(new Date().getTime() - this.selectedDate.endDate.getTime());
+            const hourEndBetween = msBetweenEndDates / (60 * 60 * 1000);
+            if (hourEndBetween <= 1) {
+                this.loadIntiLiveReport();
+            }
+        } else {
+            const res = this.getLiveResFromAnomaly();
+            this.setUiGroupData(res);
+            this.setUiCategoriesData(res);
+            this.refreshTopDomains();
+        }
     }
 
     private refreshTopDomains() {
@@ -347,10 +356,9 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
                 if (!result.hit) {
                     this.onEmptyData();
                     this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
-                } else {
-                    calback(result);
                 }
             }
+            calback(result);
         });
     }
 
