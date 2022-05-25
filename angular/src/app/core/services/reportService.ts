@@ -60,7 +60,10 @@ export class ReportService {
       { 'name': 'clientLocalIp', 'beautyName': 'TableColumn.ClientLocalIp', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?|N\/?A?)$/i },
       { 'name': 'clientMacAddress', 'beautyName': 'TableColumn.ClientMacAddress', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: '00:11:22:33:44:55 or 00:11:*', inputPattern: /^(\*?([0-9a-f]{1,2}?-?:?){1,6}\*?|N\/?A?)$/i },
       { 'name': 'clientBoxSerial', 'beautyName': 'TableColumn.ClientBoxSerial', 'hrType': '', 'aggsType': 'TERM', 'checked': false },
-      { 'name': 'hostName', 'beautyName': 'TableColumn.HostName', 'hrType': '', 'aggsType': 'TERM', 'checked': false, inputPattern: /^(\*?|\*?([.-]?\w+[.-]?)+\*?|N\/?A?)$/ }
+      { 'name': 'hostName', 'beautyName': 'TableColumn.HostName', 'hrType': '', 'aggsType': 'TERM', 'checked': false, inputPattern: /^(\*?|\*?([.-]?\w+[.-]?)+\*?|N\/?A?)$/ },
+      { 'name': 'ruleNumber', 'beautyName': 'TableColumn.RuleNumber', 'hrType': '', 'aggsType': 'TERM', 'checked': false, inputPattern: /^\d*$/  },
+      { 'name': 'ruleBy', 'beautyName': 'TableColumn.RuleBy', 'hrType': '', 'aggsType': 'TERM', 'checked': false, inputPattern: /^(A?D?U?S?R|A?D?G?R?P?|M?A?C?|L?O?C?I?P?|B?O?X?)$/ },
+      { 'name': 'ruleKeyword', 'beautyName': 'TableColumn.RuleKeyword', 'hrType': '', 'aggsType': 'TERM', 'checked': false },
     ]);
   }
 

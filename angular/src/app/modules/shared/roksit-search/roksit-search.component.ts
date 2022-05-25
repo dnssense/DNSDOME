@@ -562,16 +562,18 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
               this.actionType = 'allow';
             }
           } else if (filter.name === 'time') {
-              const date = moment(Date.parse(value));
+            const date = moment(Date.parse(value));
 
-              if (date.isValid()) {
-                this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
-              } else {
-                this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
-              }
+            if (date.isValid()) {
+              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
             } else {
-              this.searchSettings.should.push(new ColumnTagInput(filter.name, filter.contain ? 'contain' : '=', value.name || value));
+              this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
             }
+          } else if (filter.name === 'ruleBy') {
+              this.searchSettings.should.push(new ColumnTagInput(filter.name, '=', '*' + (value.name || value)));
+          } else {
+            this.searchSettings.should.push(new ColumnTagInput(filter.name, filter.contain ? 'contain' : '=', value.name || value));
+          }
         });
       } else {
         filter.values.forEach(value => {
@@ -584,16 +586,18 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
               this.actionType = 'deny';
             }
           } else if (filter.name === 'time') {
-              const date = moment(Date.parse(value));
+            const date = moment(Date.parse(value));
 
-              if (date.isValid()) {
-                this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
-              } else {
-                this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
-              }
+            if (date.isValid()) {
+              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', date.toISOString()));
             } else {
-              this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, filter.contain ? 'contain' : '=', value.name || value));
+              this.notification.error(this.translatorService.translate('PleaseEnterTimeTrueValue'));
             }
+          } else if (filter.name === 'ruleBy') {
+            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, '=', '*' + (value.name || value)));
+          } else {
+            this.searchSettings.mustnot.push(new ColumnTagInput(filter.name, filter.contain ? 'contain' : '=', value.name || value));
+          }
         });
       }
     });

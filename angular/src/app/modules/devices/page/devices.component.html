@@ -3,35 +3,100 @@
     <div class="container-fluid">
       <div class="row">
         <div class="row-tabs">
-          <div class="col-12 p-0 single-row">
-            <h5 class="page-title single-row">{{'DnsRelay'|translate}}</h5>
+          <div style="width: 200px">
+            <h5 class="page-title single-row" *ngIf="activeTabNumber === 0">{{'RuleOrder'|translate}}</h5>
+            <h5 class="page-title single-row" *ngIf="activeTabNumber === 1">{{'RegisteredDevices'|translate}}</h5>
           </div>
 
-
-          <div class="col-12 d-flex align-items-center justify-content-center py-3 mb-2 single-row"
+          <div class="d-flex align-items-center justify-content-center py-3 mb-2 single-row"
             style="padding-top: 0 !important;padding-bottom: 0 !important;">
-            <div class="rk-tabs" style="width: 420px;">
+            <div class="rk-tabs" style="width: 635px;">
               <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">
-                {{'Relay Servers'}}</div>
+                {{'Rules' | translate}}</div>
               <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">
-                {{'Groups'}}</div>
+                {{'DNSRelay' | translate}}</div>
               <div class="rk-tab" (click)="activeTabNumber = 2" [ngClass]="{'active': activeTabNumber === 2}">
-                {{'Clients'}}</div>
+                {{'UserIpHostMatch' | translate}}</div>
+              <div class="rk-tab" (click)="activeTabNumber = 3" [ngClass]="{'active': activeTabNumber === 3}">
+                {{'ADGroups' | translate}}</div>
             </div>
           </div>
 
-
           <div style="display: inline-block;opacity: 0;">
-            <button class="btn btn-icon btn-small mr-2">
-              <i-feather name="arrow-down"></i-feather>
-              {{'Download'|translate}}
-            </button>
-            <button class="btn btn-icon btn-small">
-              <i-feather name="settings"></i-feather>
-              {{'Settings'|translate}}
-            </button>
+<!--            <button class="btn btn-icon btn-small mr-2">-->
+<!--              <i-feather name="arrow-down"></i-feather>-->
+<!--              {{'Download'|translate}}-->
+<!--            </button>-->
+<!--            <button class="btn btn-icon btn-small">-->
+<!--              <i-feather name="settings"></i-feather>-->
+<!--              {{'Settings'|translate}}-->
+<!--            </button>-->
           </div>
         </div>
+
+        <rk-modal #ruleModal (close)="ruleModalClosed($event)">
+          <rk-modal-header icon="edit">
+            <rk-modal-header-title>
+              <h5>{{ 'Rule' }}</h5>
+            </rk-modal-header-title>
+
+            <rk-modal-header-close (click)="ruleModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+            <div class="container-fluid">
+              <div class="rk-modal-card">
+                <div class="rk-modal-card-title">{{ 'RuleDetail' | translate }}</div>
+
+                <div class="col-12 mt-3">
+                  <rk-select [options]="ruledByForSelect" [(value)]="selectedRule.ruledBy" [isSearchable]="false"></rk-select>
+                </div>
+
+                <div class="col-12 mt-3" *ngIf="selectedRule.ruledBy !== '05BOX'">
+                  <input type="text" class="rk-input w-100" placeholder="{{'Keyword'|translate}}" [(ngModel)]="selectedRule.keyword">
+                </div>
+
+                <div class="col-12 mt-3">
+                  <rk-select [options]="securityProfilesForSelect" [(value)]="selectedRule.agent.rootProfile.id"
+                             [isSearchable]="false" placeholder="{{'SelectProfile'|translate}}"
+                             [isShowButton]="true" buttonIcon="plus"
+                             buttonText="Create new profile" (buttonClickEmitter)="newProfileClicked($event)">
+                  </rk-select>
+                </div>
+
+                <div class="col-12 mt-3">
+                  <input type="text" class="rk-input w-100" placeholder="{{'BlockMessage'|translate}}" [(ngModel)]="selectedRule.agent.blockMessage">
+                </div>
+              </div>
+            </div>
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn btn-small w-100 mr-2" (click)="assignRule()">{{'Apply'|translate}}</button>
+            <button class="btn btn-small w-100 btn-default" (click)="ruleModal.toggle()">{{'Close'|translate}}</button>
+          </rk-modal-footer>
+        </rk-modal>
+
+        <rk-modal #profileModal (close)="profileModalClosed($event)">
+          <rk-modal-header>
+            <rk-modal-header-title>
+              <h5>{{'SecurityProfile'|translate}}</h5>
+            </rk-modal-header-title>
+            <rk-modal-header-close (click)="profileModal.toggle()"></rk-modal-header-close>
+          </rk-modal-header>
+
+          <rk-modal-body>
+
+            <app-profile-wizard #profileWizard [selectedAgent]="selectedAgent" [currentStep]="currentStep"
+                                [saveMode]="saveMode" (saveEmitter)="saveProfileEmit()"></app-profile-wizard>
+
+          </rk-modal-body>
+
+          <rk-modal-footer>
+            <button class="btn w-100 btn-small mr-2" (click)="saveProfile()">{{'Save'|translate}}</button>
+            <button class="btn w-100 btn-small" (click)="nextStep()">{{'Next'|translate}}</button>
+          </rk-modal-footer>
+        </rk-modal>
 
         <rk-modal #selectedBoxModal>
           <rk-modal-header>
@@ -46,7 +111,7 @@
 
             <div class="container-fluid">
               <div class="rk-modal-card">
-                <div class="rk-modal-card-title">{{ 'LocalDnsServer' | translate }}</div>
+                <div class="rk-modal-card-title">{{ 'LocalDnsServer' | translate }}</div>
 
                 <div class="row" *ngIf="selectedBox">
                   <div class="col-12 mt-3">
@@ -105,65 +170,324 @@
         </rk-modal>
 
         <div class="col-12 p-0 mt-3" *ngIf="activeTabNumber === 0">
-          <rk-table-container class="m-0">
-            <div class="rk-table-container-header">
-              <div class="top-content justify-content-start flex-wrap">
-                <div class="rk-table-title mr-5">Local DNS Relay Servers</div>
-                <!--
-                <div class="search mt-2 ml-5">
-                  <div class="rk-autocomplete-container" style="width: 220px;">
-                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="localDNSRelaySearch"
-                      class="rk-input rk-autocomplete" (ngModelChange)="localDNSRelaySearchChanged()">
-                    <i-feather class="search-icon" name="search"></i-feather>
+          <div style="width: auto; height: auto; border-left: solid 2px var(--light-blue-grey); margin: 0 25px; padding: 25px 0;">
+            <div class="rule-table-container" [ngStyle]="{'height': selectedRuleOrder === 1 ? ((ruleUsersPage.length*42)+180)+'px' : '60px'}">
+              <rk-table-container class="m-0">
+                <div class="rk-table-container-header" (click)="ruleTableHeaderClicked(1)">
+                  <div class="top-content justify-content-between flex-wrap">
+                    <div class="rk-table-title" style="cursor: pointer">
+                      <i-feather [name]="selectedRuleOrder === 1 ? 'chevron-up' : 'chevron-down'" style="width: 24px"></i-feather>
+                      <div class="Oval number bg-primary text-white">1</div>
+                      <span class="rule-table-header">{{'ADUsers' | translate}}</span>
+                    </div>
+                    <div class="rk-search-container">
+                      <input type="text" [placeholder]="'SearchADUser'|translate" class="rk-input"
+                             maxlength="64" [(ngModel)]="ruleUserFilterText" (keyup)="search('ruleUser')">
+                      <i-feather name="search"></i-feather>
+                    </div>
+                    <button class="btn btn-small btn-icon btn-safe" (click)="openRuleModal('ruleUser')">
+                      <i-feather name="plus" style="width: 24px"></i-feather>
+                      {{'Add Rule' | translate}}
+                    </button>
                   </div>
                 </div>
-                -->
+                <rk-table [tableHeight]="ruleUsersPage.length*42+43" (pageChange)="onPageChange($event, 'ruleUser')"
+                          [maxSize]="5" [totalCount]="ruleUsers.length" [totalCountPlaceholder]="ruleUsers.length"
+                          [pageViewCount]="ruleUserTableViewCnt" [currentPage]="ruleUserTableCurrentPage"
+                          (pageViewCountChange)="onPageViewCountChange($event, 'ruleUser')" [showPagination]="true"
+                          [paginationSelectDirection]="'up'" class="fixed-headerss">
+                  <ng-template #header>
+                    <tr>
+                      <th style="width: 120px">{{'TableColumn.RuleNumber' | translate}}</th>
+                      <th>{{'Local IP' | translate}}</th>
+                      <th>{{'TableColumn.SecurityProfile' | translate}}</th>
+                      <th>{{'Hostname' | translate}}</th>
+                      <th>{{'AD User' | translate}}</th>
+                      <th>{{'TableColumn.ADDomain' | translate}}</th>
+                      <th>{{'Last Valid Time' | translate}}</th>
+                      <th>{{'Delete' | translate}}</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template #body>
+                    <tr *ngFor="let rule of ruleUsersPage">
+                      <td style="text-align: center">{{getRuleWithRuledBy(rule.rules, getRuledByWithTable('ruleUser'))?.ruleId}}</td>
+                      <td>{{rule.ip || 'N/A'}}</td>
+                      <td>{{getRuleWithRuledBy(rule.rules, getRuledByWithTable('ruleUser'))?.agent?.rootProfile?.name || 'N/A'}}</td>
+                      <td>{{rule.host || 'N/A'}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                                (click)="editRule(getRuleWithRuledBy(rule.rules, getRuledByWithTable('ruleUser')))">
+                          {{rule.adUser || 'N/A'}}
+                        </button>
+                      </td>
+                      <td>{{rule.adDomain || 'N/A'}}</td>
+                      <td>{{rule.lastValidTime || 'N/A'}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteRule(rule, getRuledByWithTable('ruleUser'))">
+                          <i-feather name="trash-2" style="width: 16px; height: 16px"></i-feather>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </rk-table>
+              </rk-table-container>
+            </div>
+
+            <div class="rule-table-container" style="margin-top: 25px" [ngStyle]="{'height': selectedRuleOrder === 2 ? ((ruleGroupsPage.length*42)+180)+'px' : '60px'}">
+              <rk-table-container class="m-0">
+                <div class="rk-table-container-header" (click)="ruleTableHeaderClicked(2)">
+                  <div class="top-content justify-content-between flex-wrap">
+                    <div class="" style="cursor: pointer">
+                      <i-feather [name]="selectedRuleOrder === 2 ? 'chevron-up' : 'chevron-down'" style="width: 24px"></i-feather>
+                      <div class="Oval number bg-primary text-white">2</div>
+                      <span class="rule-table-header">{{'ADGroups' | translate}}</span>
+                    </div>
+                    <div class="rk-search-container">
+                      <input type="text" [placeholder]="'SearchADGroup'|translate" class="rk-input"
+                             maxlength="64" [(ngModel)]="ruleGroupFilterText" (keyup)="search('ruleGroup')">
+                      <i-feather name="search"></i-feather>
+                    </div>
+                    <button class="btn btn-small btn-icon btn-safe" (click)="openRuleModal('ruleGroup')">
+                      <i-feather name="plus" style="width: 24px"></i-feather>
+                      {{'AddRule' | translate}}
+                    </button>
+                  </div>
+                </div>
+                <rk-table [tableHeight]="ruleGroupsPage.length*42+43" (pageChange)="onPageChange($event, 'ruleGroup')"
+                          [maxSize]="5" [totalCount]="ruleGroups.length" [totalCountPlaceholder]="ruleGroups.length"
+                          [pageViewCount]="ruleGroupTableViewCnt" [currentPage]="ruleGroupTableCurrentPage"
+                          (pageViewCountChange)="onPageViewCountChange($event, 'ruleGroup')" [showPagination]="true"
+                          [paginationSelectDirection]="'up'" class="fixed-headerss">
+                  <ng-template #header>
+                    <tr>
+                      <th style="width: 120px">{{'TableColumn.RuleNumber' | translate}}</th>
+                      <th>{{'TableColumn.GroupName' | translate}}</th>
+                      <th>{{'TableColumn.SecurityProfile'|translate}}</th>
+                      <th>{{'TableColumn.MemberCount'|translate}}</th>
+                      <th>{{'TableColumn.ADDomain'|translate}}</th>
+                      <th>{{'TableColumn.Delete' | translate}}</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template #body>
+                    <tr *ngFor="let rule of ruleGroupsPage">
+                      <td style="text-align: center">{{rule.rules[0]?.ruleId}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                                (click)="editRule(rule.rules[0])">
+                          {{rule.groupName || 'N/A'}}
+                        </button>
+                      </td>
+                      <td>{{rule.rules[0]?.agent?.rootProfile?.name || 'N/A'}}</td>
+                      <td>{{rule.memberCount || 'N/A'}}</td>
+                      <td>{{rule.adDomain || 'N/A'}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteRule(rule, getRuledByWithTable('ruleGroup'))">
+                          <i-feather name="trash-2" style="width: 16px; height: 16px"></i-feather>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </rk-table>
+              </rk-table-container>
+            </div>
+
+            <div class="rule-table-container" style="margin-top: 25px" [ngStyle]="{'height': selectedRuleOrder === 3 ? ((ruleHostsPage.length*42)+180)+'px' : '60px'}">
+              <rk-table-container class="m-0">
+                <div class="rk-table-container-header" (click)="ruleTableHeaderClicked(3)">
+                  <div class="" style="cursor: pointer">
+                    <i-feather [name]="selectedRuleOrder === 3 ? 'chevron-up' : 'chevron-down'" style="width: 24px"></i-feather>
+                    <div class="Oval number bg-primary text-white">3</div>
+                    <span class="rule-table-header">{{'Computers' | translate}}</span>
+                  </div>
+                </div>
+                <rk-table [tableHeight]="ruleHostsPage.length*42+43" (pageChange)="onPageChange($event, 'ruleHost')"
+                          [maxSize]="5" [totalCount]="ruleHosts.length" [totalCountPlaceholder]="ruleHosts.length"
+                          [pageViewCount]="ruleHostTableViewCnt" [currentPage]="ruleHostTableCurrentPage"
+                          (pageViewCountChange)="onPageViewCountChange($event, 'ruleHost')" [showPagination]="true"
+                          [paginationSelectDirection]="'up'" class="fixed-headerss">
+                  <ng-template #header>
+                    <tr>
+                      <th style="width: 120px">{{'TableColumn.RuleNumber' | translate}}</th>
+                      <th>{{'TableColumn.LocalIP' | translate}}</th>
+                      <th>{{'TableColumn.SecurityProfile' | translate}}</th>
+                      <th>{{'TableColumn.Hostname' | translate}}</th>
+                      <th>{{'TableColumn.ADUser' | translate}}</th>
+                      <th>{{'TableColumn.ADDomain' | translate}}</th>
+                      <th>{{'TableColumn.LastValidTime' | translate}}</th>
+                      <th>{{'TableColumn.Delete' | translate}}</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template #body>
+                    <tr *ngFor="let rule of ruleHostsPage">
+                      <td style="text-align: center">{{getRuleWithRuledBy(rule.rules, getRuledByWithTable('ruleHost')).ruleId}}</td>
+                      <td>{{rule.ip || 'N/A'}}</td>
+                      <td>{{getRuleWithRuledBy(rule.rules, getRuledByWithTable('ruleHost'))?.agent?.rootProfile?.name || 'N/A'}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                                (click)="editRule(getRuleWithRuledBy(rule.rules, getRuledByWithTable('ruleHost')))">
+                          {{rule.host || 'N/A'}}
+                        </button>
+                      </td>
+                      <td>{{rule.adUser || 'N/A'}}</td>
+                      <td>{{rule.adDomain || 'N/A'}}</td>
+                      <td>{{rule.lastValidTime || 'N/A'}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteRule(rule, getRuledByWithTable('ruleHost'))">
+                          <i-feather name="trash-2" style="width: 16px; height: 16px"></i-feather>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </rk-table>
+              </rk-table-container>
+            </div>
+
+            <div class="rule-table-container" style="margin-top: 25px" [ngStyle]="{'height': selectedRuleOrder === 4 ? ((ruleLocIpsPage.length*42)+180)+'px' : '60px'}">
+              <rk-table-container class="m-0">
+                <div class="rk-table-container-header" (click)="ruleTableHeaderClicked(4)">
+                  <div class="" style="cursor: pointer">
+                    <i-feather [name]="selectedRuleOrder === 4 ? 'chevron-up' : 'chevron-down'" style="width: 24px"></i-feather>
+                    <div class="Oval number bg-primary text-white">4</div>
+                    <span class="rule-table-header">{{'LocalIPs' | translate}}</span>
+                  </div>
+                </div>
+                <rk-table [tableHeight]="ruleLocIpsPage.length*42+43" (pageChange)="onPageChange($event, 'ruleLocIp')"
+                          [maxSize]="5" [totalCount]="ruleLocIps.length" [totalCountPlaceholder]="ruleLocIps.length"
+                          [pageViewCount]="ruleLocIpTableViewCnt" [currentPage]="ruleLocIpTableCurrentPage"
+                          (pageViewCountChange)="onPageViewCountChange($event, 'ruleLocIp')" [showPagination]="true"
+                          [paginationSelectDirection]="'up'" class="fixed-headerss">
+                  <ng-template #header>
+                    <tr>
+                      <th style="width: 120px">{{'TableColumn.RuleNumber' | translate}}</th>
+                      <th>{{'TableColumn.LocalIP' | translate}}</th>
+                      <th>{{'TableColumn.SecurityProfile' | translate}}</th>
+                      <th>{{'TableColumn.Hostname' | translate}}</th>
+                      <th>{{'TableColumn.ADUser' | translate}}</th>
+                      <th>{{'TableColumn.ADDomain' | translate}}</th>
+                      <th>{{'TableColumn.LastValidTime' | translate}}</th>
+                      <th>{{'TableColumn.Delete' | translate}}</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template #body>
+                    <tr *ngFor="let rule of ruleLocIpsPage">
+                      <td style="text-align: center">{{getRuleWithRuledBy(rule.rules, getRuledByWithTable('ruleLocIp'))?.ruleId}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                                (click)="editRule(getRuleWithRuledBy(rule.rules, getRuledByWithTable('ruleLocIp')))">
+                          {{rule.ip || 'N/A'}}
+                        </button>
+                      </td>
+                      <td>{{getRuleWithRuledBy(rule.rules, getRuledByWithTable('ruleLocIp'))?.agent?.rootProfile?.name || 'N/A'}}</td>
+                      <td>{{rule.host || 'N/A'}}</td>
+                      <td>{{rule.adUser || 'N/A'}}</td>
+                      <td>{{rule.adDomain || 'N/A'}}</td>
+                      <td>{{rule.lastValidTime || 'N/A'}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteRule(rule, getRuledByWithTable('ruleLocIp'))">
+                          <i-feather name="trash-2" style="width: 16px; height: 16px"></i-feather>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </rk-table>
+              </rk-table-container>
+            </div>
+
+            <div class="rule-table-container" style="margin-top: 25px" [ngStyle]="{'height': selectedRuleOrder === 5 ? ((ruleBoxPage.length*42)+180)+'px' : '60px'}">
+              <rk-table-container class="m-0">
+                <div class="rk-table-container-header">
+                  <div class="" style="cursor: pointer" (click)="ruleTableHeaderClicked(5)">
+                    <i-feather [name]="selectedRuleOrder === 5 ? 'chevron-up' : 'chevron-down'" style="width: 24px"></i-feather>
+                    <div class="Oval number bg-primary text-white">5</div>
+                    <span class="rule-table-header">{{'LocalDNSDefaultRule' | translate}}</span>
+                  </div>
+                </div>
+                <rk-table [tableHeight]="ruleBoxPage.length*42+43" (pageChange)="onPageChange($event, 'ruleBox')"
+                          [maxSize]="5" [totalCount]="ruleBox.length" [totalCountPlaceholder]="ruleBox.length"
+                          [pageViewCount]="ruleBoxTableViewCnt" [currentPage]="ruleBoxTableCurrentPage"
+                          (pageViewCountChange)="onPageViewCountChange($event, 'ruleBox')" [showPagination]="true"
+                          [paginationSelectDirection]="'up'" class="fixed-headerss">
+                  <ng-template #header>
+                    <tr>
+                      <th style="width: 120px">{{'TableColumn.RuleNumber' | translate}}</th>
+                      <th>{{'TableColumn.DNSServerName' | translate}}</th>
+                      <th>{{'TableColumn.SecurityProfile' | translate}}</th>
+                      <th>{{'TableColumn.ClientCount' | translate}}</th>
+                      <th>{{'TableColumn.LastSyncTime' | translate}}</th>
+                      <th>{{'TableColumn.Delete' | translate}}</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template #body>
+                    <tr *ngFor="let rule of ruleBoxPage">
+                      <td style="text-align: center">{{rule.rules[0]?.ruleId}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                                (click)="editRule(rule.rules[0])">
+                          {{rule.host || 'N/A'}}
+                        </button>
+                      </td>
+                      <td>{{rule.rules[0]?.agent?.rootProfile?.name || 'N/A'}}</td>
+                      <td>{{rule.clientCount || 'N/A'}}</td>
+                      <td>{{rule.lastSyncTime || 'N/A'}}</td>
+                      <td>
+                        <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteRule(rule, getRuledByWithTable('ruleBox'))">
+                          <i-feather name="trash-2" style="width: 16px; height: 16px"></i-feather>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </rk-table>
+              </rk-table-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 p-0 mt-3" *ngIf="activeTabNumber === 1">
+          <rk-table-container class="m-0">
+            <div class="rk-table-container-header">
+              <div class="top-content justify-content-between flex-wrap">
+                <div class="rk-table-title mr-5">Local DNS Relay Servers</div>
+                <div class="col-lg-8 d-flex">
+                  <div class="rk-search-container">
+                    <input type="text" [placeholder]="'SearchDNSRelay'|translate" class="rk-input"
+                           maxlength="64" [(ngModel)]="boxFilterText" (keyup)="search('box')">
+                    <i-feather name="search"></i-feather>
+                  </div>
+                </div>
               </div>
             </div>
 
             <rk-table [showPagination]="false">
               <ng-template #header>
                 <tr>
-                  <th>{{'Profile'|translate}}</th>
-                  <th>{{'SecurityProfile'|translate}}</th>
-                  <!-- <th>{{'IsCpEnabled'|translate}}</th>
-                  <th>{{'CaptivePortalIP'|translate}}</th> -->
-                  <th colspan="2">{{'Operation'|translate}}</th>
+                  <th style="width: 100px">{{ 'TableColumn.Id' | translate }}</th>
+                  <th>{{ 'TableColumn.ServerName' | translate }}</th>
+                  <th>{{ 'TableColumn.SecurityProfile' |translate }}</th>
+                  <th>{{ 'TableColumn.ClientCount' |translate }}</th>
+                  <th>{{ 'TableColumn.LastSyncTime' |translate }}</th>
                 </tr>
               </ng-template>
 
               <ng-template #body>
-                <tr *ngFor="let b of boxes">
+                <tr *ngFor="let b of boxes; index as i">
+                  <td style="text-align: center">{{ (i+1).toString().padStart(2, '0') }}</td>
                   <td>
                     <i-feather name="server" class="icon-blue-grey mr-2"></i-feather>
-                    {{ b.host }}
+                    <button class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                            (click)="b.rules.length ? editRule(b.rules[0]) : openRuleModal('ruleBox', b.boxSerial)">
+                      {{b.host || 'N/A'}}
+                    </button>
                   </td>
                   <td>
-                    <ng-container *ngIf="b.agent; else elseTemplate221">
-                      <ng-container *ngIf="b.agent.rootProfile; else elseTemplate123">{{b.agent.rootProfile?.name}}
+                    <ng-container *ngIf="b.rules && b.rules[0] && b.rules[0].agent; else elseTemplate221">
+                      <ng-container *ngIf="b.rules[0].agent.rootProfile; else elseTemplate123">{{b.rules[0].agent.rootProfile?.name}}
                       </ng-container>
                       <ng-template #elseTemplate123>{{'NoProfile'|translate}}</ng-template>
                     </ng-container>
                     <ng-template #elseTemplate221>{{'NoAgent'|translate}}</ng-template>
                   </td>
-                  <!--<td>
-                    <i-feather [name]="b.agent?.isCpEnabled ? 'check' : 'x'"></i-feather>
-                  </td>
-                   <td>
-                    <ng-container *ngIf="b.agent?.isCpEnabled; else elseTemplate2">{{b.agent?.captivePortalIp}}
-                    </ng-container>
-                    <ng-template #elseTemplate2>-</ng-template>
-                  </td>-->
-                  <td style="width: 60px">
-                    <button class=" btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="editBox(b)">
-                      <i-feather name="edit-3"></i-feather>
-                    </button>
-                  </td>
-                  <td style=" width: 60px" (click)="deleteBox(b.id)">
-                    <button class=" btn btn-link btn-icon p-0 hover-gray bg-transparent">
-                      <i-feather name="trash-2"></i-feather>
-                    </button>
-                  </td>
+                  <td>{{ b.clientCount || 'N/A'}}</td>
+                  <td>{{ b.lastSyncTime || 'N/A'}}</td>
                 </tr>
               </ng-template>
             </rk-table>
@@ -222,7 +546,7 @@
                         <tr *ngFor="let item of selectedGroupAgent?.agents">
                           <td>{{ item.agentAlias }}</td>
                           <td style="max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                            {{ item.mac | MacAddressFormatterPipe }}
+                            {{ item.mac | MacAddressFormatterPipe }}
                           </td>
                           <td>{{ item.agentGroup.groupName }}</td>
                           <td class="text-right">
@@ -281,63 +605,72 @@
           </rk-modal-footer>
         </rk-modal>
 
-        <div class="col-12 p-0 mt-3" *ngIf="activeTabNumber === 1">
+        <div class="col-12 p-0 mt-3" *ngIf="activeTabNumber === 2">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between flex-wrap">
                 <div class="d-flex align-items-center">
-                  <div class="rk-table-title mr-4">{{'GroupAgent'|translate}}</div>
-                  <!--
-                  <div class="search ml-5 mt-2">
-                    <div class="rk-autocomplete-container" style="width: 220px;">
-                      <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="groupAgentSearch"
-                        class="rk-input rk-autocomplete" (ngModelChange)="groupAgentSearchChanged()">
-                      <i-feather class="search-icon" name="search"></i-feather>
-                    </div>
+                  <div class="rk-table-title mr-4">{{'ADUsers'|translate}}</div>
+                  <rk-radio class="rk-radio-m-0 mr-3" name="adClientFilterRadio" (valueChange)="changeMatchType()" [checked]="adClientFilter === ''"><span style="font-size: 14px; line-height: 1.71">{{'All' | translate}}: <span class="text-primary ml-1">{{adClients.length}}</span></span></rk-radio>
+                  <rk-radio class="rk-radio-m-0 mr-3" name="adClientFilterRadio" (valueChange)="changeMatchType('user')" [checked]="adClientFilter === 'user'"><span style="font-size: 14px; line-height: 1.71">{{'Ip-user matching' | translate}}: <span class="text-primary ml-1">{{getMatchingCount('adUser')}}</span></span></rk-radio>
+                  <rk-radio class="rk-radio-m-0 mr-4" name="adClientFilterRadio" (valueChange)="changeMatchType('host')" [checked]="adClientFilter === 'host'"><span style="font-size: 14px; line-height: 1.71">{{'Ip-hostname matching' | translate}}: <span class="text-primary ml-1">{{getMatchingCount('host')}}</span></span></rk-radio>
+                  <div class="rk-search-container">
+                    <input type="text" [placeholder]="'SearchADUser'|translate" class="rk-input"
+                           maxlength="64" [(ngModel)]="adClientsFilterText" (keyup)="search('adClient')">
+                    <i-feather name="search"></i-feather>
                   </div>
-                -->
                 </div>
-
-                <button class="btn btn-small btn-safe btn-icon mt-2" (click)="createNewGroup()">
-                  <i-feather name="plus" class="mr-2"></i-feather>
-                  {{'CreateNewGroup'|translate}}
-                </button>
               </div>
             </div>
-            <rk-table [showPagination]="false">
+            <rk-table [tableHeight]="adClientsPage.length*42+43" (pageChange)="onPageChange($event, 'adClient')"
+                      [maxSize]="5" [totalCount]="adClients.length" [totalCountPlaceholder]="adClients.length"
+                      [pageViewCount]="adClientTableViewCnt" [currentPage]="adClientTableCurrentPage"
+                      (pageViewCountChange)="onPageViewCountChange($event, 'adClient')" [showPagination]="true"
+                      [paginationSelectDirection]="'up'" class="fixed-headerss">
               <ng-template #header>
                 <tr>
-                  <th>{{'Group'|translate}}</th>
-                  <th>{{'MemberCount'|translate}}</th>
-                  <th>{{'SecurityProfile'|translate}}</th>
-                  <th colspan="2">{{'Operation'|translate}}</th>
+                  <th>#</th>
+                  <th>{{'TableColumn.LocalIP'|translate}}</th>
+                  <th>{{'TableColumn.SecurityProfile'|translate}}</th>
+                  <th>{{'TableColumn.RuleBy'|translate}}</th>
+                  <th>{{'TableColumn.Hostname'|translate}}</th>
+                  <th>{{'TableColumn.ADUser'|translate}}</th>
+                  <th>{{'TableColumn.ADGroups'|translate}}</th>
+                  <th>{{'TableColumn.ADDomain'|translate}}</th>
+                  <th>{{'TableColumn.LastValidTime'|translate}}</th>
                 </tr>
               </ng-template>
 
+              <ng-template #naTemplate>N/A</ng-template>
               <ng-template #body>
-                <tr *ngFor="let device of groupList">
+                <tr *ngFor="let client of adClientsPage; index as i">
+                  <td style="width: 32px; text-align: center">{{ ((adClientTableCurrentPage - 1) * adClientTableViewCnt + i + 1).toString().padStart(2, '0') }}</td>
                   <td>
-                    {{ device?.agentGroup?.groupName }}
-                  </td>
-                  <td>{{ device?.agents?.length }}</td>
-                  <td>
-                    {{ device?.securityProfile?.name }}
-                  </td>
-                  <td style="width: 60px;">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                      (click)="editGroupAgentModal(device)">
-                      <i-feather name="edit-3"></i-feather>
+                    <button *ngIf="client.ip;else naTemplate" class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                            (click)="editOrCreateRule(client, getRuledByWithTable('ruleLocIp'))">
+                      {{client.ip}}
                     </button>
                   </td>
-                  <td style="width: 60px">
-                    <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                      (click)="deleteDeviceGroup(device.agentGroup.groupName)">
-                      <i-feather name="trash-2"></i-feather>
+                  <td>{{ getClientRuleProfileNames(client) || 'N/A' }}</td>
+                  <td>{{ getClientRuleByNames(client) || 'N/A'}}</td>
+                  <td>
+                    <button *ngIf="client.host;else naTemplate" class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                            (click)="editOrCreateRule(client, getRuledByWithTable('ruleHost'))">
+                      {{client.host}}
                     </button>
                   </td>
+                  <td>
+                    <button *ngIf="client.adUser;else naTemplate" class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                            (click)="editOrCreateRule(client, getRuledByWithTable('ruleUser'))">
+                      {{client.adUser}}
+                    </button>
+                  </td>
+                  <td>{{ client.groupNames || 'N/A' }}</td>
+                  <td>{{ client.adDomain || 'N/A' }}</td>
+                  <td>{{ client.lastValidTime }}</td>
                 </tr>
-                <tr *ngIf="groupList.length == 0">
-                  <td colspan="5">
+                <tr *ngIf="adClientsPage.length == 0">
+                  <td colspan="9">
                     {{'DataNotFound'|translate}}
                   </td>
                 </tr>
@@ -497,131 +830,53 @@
           </rk-modal-footer>
         </rk-modal>
 
-        <div class="col-12 px-0 pr-lg-2 mt-3" *ngIf="activeTabNumber === 2 ">
+        <div class="col-12 px-0 pr-lg-2 mt-3" *ngIf="activeTabNumber === 3 ">
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between flex-wrap">
-                <div *ngIf="selectedGroup === 'all'">
-                  <div class="rk-table-title">{{'RoamingClients' | translate}}</div>
-                  <p class="rk-table-description">( {{'GroupPolicyApplies' | translate}} )</p>
-                </div>
-                <div *ngIf="selectedGroup === 'group'">
-                  <div class="rk-table-title">{{'GroupMembers' | translate}}</div>
-                  <p class="rk-table-description">( {{'GroupPolicyApplies' | translate}} )</p>
-                </div>
-                <div *ngIf="selectedGroup === 'ungroup'">
-                  <div class="rk-table-title">{{ 'UngroupMembers' | translate }}</div>
-                  <p class="rk-table-description">( {{'DnsRelayServerSecurityProfileApplied' | translate}} )
-                  </p>
-                </div>
-
-                <div class="col-12 col-md-6 mt-3 mt-md-0" style="max-width: 15%;min-width: 140px;">
-                  <rk-select [options]="categoryOptions" (valueChange)="clickedSelect($event)" [(value)]="category"
-                    [isSearchable]="false"></rk-select>
-                </div>
-
-                <div class="search mt-2">
-                  <div class="rk-autocomplete-container" style="width: 160px;">
-                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="memberSearch"
-                      class="rk-input rk-autocomplete" (ngModelChange)="memberSearchChanged()">
-                    <i-feather class="search-icon" name="search"></i-feather>
+                <div class="rk-table-title mr-5">Active Directory Groups</div>
+                <div class="col-lg-8 d-flex">
+                  <div class="rk-search-container">
+                    <input type="text" [placeholder]="'SearchADGroup'|translate" class="rk-input"
+                           maxlength="64" [(ngModel)]="adGroupsFilterText" (keyup)="search('adGroup')">
+                    <i-feather name="search"></i-feather>
                   </div>
                 </div>
-                <button class="btn btn-small mt-2" (click)="changeTableGroup('edit')" [disabled]="getEditDisabled">{{
-                  'ChangeGroup' | translate }}</button>
-                <button class="btn btn-small mt-2" (click)="changeTableGroup('create')"
-                  [disabled]="getCreateDisabled">{{ 'AddToGroup' | translate }}</button>
               </div>
             </div>
-            <rk-table [showPagination]="false">
+            <rk-table [tableHeight]="adGroupsPage.length*42+43" (pageChange)="onPageChange($event, 'adGroup')"
+                      [maxSize]="5" [totalCount]="adGroups.length" [totalCountPlaceholder]="adGroups.length"
+                      [pageViewCount]="adGroupTableViewCnt" [currentPage]="adGroupTableCurrentPage"
+                      (pageViewCountChange)="onPageViewCountChange($event, 'adGroup')" [showPagination]="true"
+                      [paginationSelectDirection]="'up'" class="fixed-headerss">
               <ng-template #header>
                 <tr>
-                  <th>
-                    <rk-checkbox size="sm" (valueChange)="tableCheckboxChanged($event)"></rk-checkbox>
-                  </th>
-                  <th>{{'HostName'|translate}}</th>
-                  <th>{{'MacAddress'|translate}}</th>
-                  <th>{{'GroupName'|translate}}</th>
-                  <th>{{'SecurityProfile'|translate}}</th>
-                  <th colspan="2">{{'Operation'|translate}}</th>
+                  <th>#</th>
+                  <th>{{'TableColumn.GroupName'|translate}}</th>
+                  <th>{{'TableColumn.SecurityProfile'|translate}}</th>
+                  <th>{{'TableColumn.MemberCount'|translate}}</th>
+                  <th>{{'TableColumn.ADDomain'|translate}}</th>
+                  <th>{{'TableColumn.LastSyncTime'|translate}}</th>
                 </tr>
               </ng-template>
 
               <ng-template #body>
-                <ng-container *ngIf="selectedGroup === 'group' || selectedGroup === 'all'">
-                  <tr *ngFor="let device of registereds" [ngClass]="{'selected': device?.selected}">
-                    <td style="width: 40px;">
-                      <rk-checkbox size="sm" [(value)]="device.selected"></rk-checkbox>
-                    </td>
-                    <td>{{ device.agentAlias }}</td>
-                    <td>{{ device.mac | MacAddressFormatterPipe }}</td>
-                    <td>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <span>{{ device.agentGroup ? device.agentGroup.groupName : 'NoGroup' | translate }}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <span>{{device.rootProfile?.name ||''}}</span>
-                      </div>
-                    </td>
-                    <td style="width: 60px;">
-                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                        (click)="editClientDevice(device)">
-                        <i-feather name="edit-3"></i-feather>
-                      </button>
-                    </td>
-                    <td style=" width: 60px">
-                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                        (click)="removeDeviceFromRegistereds(device.id)">
-                        <i-feather name="trash-2"></i-feather>
-                      </button>
-                    </td>
-                  </tr>
-                </ng-container>
-                <ng-container *ngIf="selectedGroup === 'ungroup' || selectedGroup === 'all'">
-                  <tr *ngFor="let device of unregistereds" [ngClass]="{'selected': device?.selected}">
-                    <td style="width: 40px;">
-                      <rk-checkbox size="sm" [(value)]="device.selected"></rk-checkbox>
-                    </td>
-                    <td>{{ device.agentAlias }}</td>
-                    <td>{{ device.mac | MacAddressFormatterPipe }}</td>
-                    <td>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <span>{{ device.agentGroup ? device.agentGroup.groupName : 'NoGroup' | translate }}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <span>{{device.rootProfile?.name ||''}}</span>
-                      </div>
-                    </td>
-                    <td style="width: 60px;">
-                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                        (click)="editClientDevice(device)">
-                        <i-feather name="edit-3"></i-feather>
-                      </button>
-                    </td>
-                    <td style="width: 60px;">
-                      <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                        (click)="removeDeviceFromUnregistereds(device)">
-                        <i-feather name="trash-2"></i-feather>
-                      </button>
-                    </td>
-                  </tr>
-                </ng-container>
 
-                <tr *ngIf="unregistereds.length == 0 && selectedGroup === 'ungroup'">
-                  <td colspan="6">
-                    {{'DataNotFound'|translate}}
+                <tr *ngFor="let group of adGroupsPage; index as i">
+                  <td style="width: 32px; text-align: center">{{ ((adGroupTableCurrentPage - 1) * adGroupTableViewCnt + i + 1).toString().padStart(2, '0') }}</td>
+                  <td>
+                    <button class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
+                            (click)="group.rules.length ? editRule(group.rules[0]) : openRuleModal('ruleGroup', group.groupName)">
+                      {{group.groupName || 'N/A'}}
+                    </button>
                   </td>
+                  <td>{{ group.rules[0]?.agent?.rootProfile?.name || 'N/A' }}</td>
+                  <td>{{ group.memberCount || 'N/A' }}</td>
+                  <td>{{ group.adDomain || 'N/A'}}</td>
+                  <td>{{ group.lastSyncTime || 'N/A'}}</td>
                 </tr>
-                <tr *ngIf="registereds.length == 0 && selectedGroup === 'group'">
-                  <td colspan="6">
-                    {{'DataNotFound'|translate}}
-                  </td>
-                </tr>
-                <tr *ngIf="registereds.length == 0 && unregistereds.length === 0 && selectedGroup === 'all'">
+
+                <tr *ngIf="adGroupsPage.length == 0">
                   <td colspan="6">
                     {{'DataNotFound'|translate}}
                   </td>
@@ -630,7 +885,6 @@
             </rk-table>
           </rk-table-container>
         </div>
-
 
       </div>
     </div>

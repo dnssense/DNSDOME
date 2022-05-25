@@ -37,7 +37,7 @@ export class ConfigService {
       id: 3, path: '/admin/', text: 'PageName.Deployment', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER'],
       subMenu: [
         { id: 3.1, path: 'deployment/public-ip', text: 'PageName.PublicIp', icon: 'public-ip', selected: false, roles: ['ROLE_CUSTOMER'] },
-        { id: 3.2, path: 'deployment/devices', text: 'PageName.Devices', icon: 'device', selected: false, roles: ['ROLE_CUSTOMER'] },
+        { id: 3.2, path: 'deployment/dns-relay', text: 'PageName.ADIntegration', icon: 'ad-integration', selected: false, roles: ['ROLE_CUSTOMER'] },
         { id: 3.3, path: 'deployment/roaming-clients', text: 'PageName.RoamingClients', icon: 'roaming-clients', selected: false, roles: ['ROLE_CUSTOMER'] },
       ]
     },

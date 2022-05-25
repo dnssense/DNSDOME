@@ -108,7 +108,7 @@ export class UsersComponent implements OnInit {
 
   get isCurrentUserAdmin() {
     const role = this.authenticatonService.currentSession?.currentUser?.role;
-    if (role && role.find(r => r.name == 'ROLE_MSP_ADMIN') /*role.name == 'ROLE_CUSTOMER'*/) {
+    if (role && role.find(r => r.name == 'ROLE_MSP_ADMIN' || r.name == 'ROLE_CUSTOMER') /*role.name == 'ROLE_CUSTOMER'*/) {
       return true;
     }
     return false;

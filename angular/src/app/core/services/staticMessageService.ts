@@ -376,5 +376,23 @@ export class StaticMessageService {
     return this.translator.translate('DomainCopiedToClipboard');
   }
 
+  get ruleSaved(): string {
+    return this.translator.translate('RuleSaved');
+  }
 
+  get ruleDeleted(): string {
+    return this.translator.translate('RuleDeleted');
+  }
+
+  get deleteRule(): string {
+    return this.translator.translate('DeleteRule');
+  }
+
+  get fillRuleKeyword(): string {
+    return this.translator.translate('FillRuleKeyword');
+  }
+
+  get fillRuleBy(): string {
+    return this.translator.translate('FillRuleBy');
+  }
 }

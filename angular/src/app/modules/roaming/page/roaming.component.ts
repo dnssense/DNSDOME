@@ -487,7 +487,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
         const request = {
-            box: this.virtualBox?.serial, uuid: this.virtualBox?.uuid, donttouchdomains: domains,
+            box: this.virtualBox?.serial, boxuuid: this.virtualBox?.uuid, donttouchdomains: domains,
             donttouchips: ips,
             localnetips: localnetworkips, uninstallPassword: this.uninstallPassword,
             disablePassword: this.disablePassword, defaultRoamingSecurityProfile: this.selectedDefaultRomainProfileId

@@ -1,6 +1,7 @@
 import { Agent } from './Agent';
 import { PublicIP } from './PublicIP';
 import { User } from './User';
+import {AgentRule} from './AgentRule';
 
 export class Box {
   id = -1;
@@ -17,4 +18,9 @@ export class Box {
   isCaptivePortal: boolean;
   serial: string;
   uuid: string;
+
+  rules?: AgentRule[];
+  lastSyncTime?: number|string;
+  clientCount?: number;
+  boxSerial: string;
 }
