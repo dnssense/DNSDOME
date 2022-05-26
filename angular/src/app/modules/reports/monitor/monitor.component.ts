@@ -77,12 +77,12 @@ export class MonitorComponent implements OnInit, AfterViewInit {
       this.roksitSearchComponent.searchSettings.must = [];
       this.roksitSearchComponent.searchSettings.mustnot = [];
 
-      if (this.queryParams.category && this.queryParams.category != 'total') {
+      if (this.queryParams.category && this.queryParams.category !== 'total') {
         if (this.categoryMappings[this.queryParams.category]) {
           this.categoryMappings[this.queryParams.category]?.forEach(x => {
             this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', x));
           });
-        } else if (this.queryParams.category != 'total') {
+        } else if (this.queryParams.category !== 'total') {
           this.roksitSearchComponent.searchSettings.should.push(new ColumnTagInput('category', '=', this.queryParams.category));
         }
 

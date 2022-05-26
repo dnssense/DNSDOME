@@ -273,17 +273,11 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
   }
 
   getNavigateByClickedDomain(domain) {
-    /* const currentSession = this.authService.currentSession;
-    this.token = currentSession.token;
-    this.refreshToken = currentSession.refreshToken;
-    console.log(`${this.configService.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`)
-    window.open(`${this.configService.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank"); 
-    */
     this.cyberxrayService.open(domain);
   }
 
   columnSet() {
-    for (let column of this.configColumn) {
+    for (const column of this.configColumn) {
       if (column.selected) {
         this.tableConfig.columns.forEach(col => {
           if (col.name === column.name) {
