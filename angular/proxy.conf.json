@@ -1,13 +1,4 @@
 {
-  "/api/calculate/*": {
-    "target": "http://localhost:9040",
-    "secure": false,
-    "logLevel": "debug",
-    "pathRewrite": {
-      "^/api": ""
-    },
-    "changeOrigin": true
-  },
   "/api/*": {
     "target": "https://beta.roksit.com",
     "secure": false,
