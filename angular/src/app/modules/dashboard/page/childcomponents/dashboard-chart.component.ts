@@ -222,7 +222,7 @@ export class DashboardChartComponent {
       },
     });
 
-    this.trafficChart.render();
+    this.trafficChart?.render();
   }
 
   getAnnotations(data: { name: string, type: string, data: any[][]}[]) {

@@ -100,7 +100,7 @@ export class GroupComponent implements OnInit {
     });
     groups.items.forEach( g => {
       const item = this.groups.find(it => it.datatype === g.name);
-      if (item) {
+      if (item && item.datatype !== 'total') {
         const ratio = this.getRoundedNumber((100 * g.hit) / totalHit);
         item.val1 = g.hit;
         item.val2 = ratio;
