@@ -58,7 +58,7 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }
 
     // region init
-    private loadIntiLiveReport() {
+    private loadInitLiveReport() {
         const req: LiveReportRequest = {group: this.selectedGroup?.datatype, category: this.selectedCategory?.name};
         this.fetchLiveReport(req, function (res) {
             if (!req.group) {
@@ -129,7 +129,7 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     // region utils methodes
     private reloadData(isInit: boolean = false) {
         if (this.reportType === 'livereport') {
-            this.loadIntiLiveReport();
+            this.loadInitLiveReport();
         } else {
             if (isInit) {
                 this.initLoadNotLiveReport();
@@ -156,7 +156,7 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
             const msBetweenEndDates = Math.abs(new Date().getTime() - this.selectedDate.endDate.getTime());
             const hourEndBetween = msBetweenEndDates / (60 * 60 * 1000);
             if (hourEndBetween <= 1) {
-                this.loadIntiLiveReport();
+                this.loadInitLiveReport();
             }
         } else {
             const res = this.getLiveResFromAnomaly();
@@ -346,6 +346,9 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     // region network service methodes
     private fetchLiveReport(req: LiveReportRequest, callback: Function) {
         this.dashboardService.getLiveReport(req).subscribe(res => {
+            if (!res || !res.hitstotal) {
+                this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
+            }
             callback(res);
         });
     }
@@ -355,7 +358,6 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
             if (result) {
                 if (!result.hit) {
                     this.onEmptyData();
-                    this.notificationService.warning(this.staticMesssageService.dashboardNoDataFoundMessage);
                 }
             }
             calback(result);
