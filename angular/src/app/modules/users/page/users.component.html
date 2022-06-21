@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="col-12 mt-3">
-                  <input type="text" class="rk-input w-100" placeholder=" {{'Email'|translate}}"
+                  <input [disabled]="isUpdateUser(user)" type="text" class="rk-input w-100" placeholder=" {{'Email'|translate}}"
                     [(ngModel)]="user.username">
                 </div>
 
