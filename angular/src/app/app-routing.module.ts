@@ -6,11 +6,11 @@ import { PagenotfoundRoutingModule } from './modules/pagenotfound/pagenotfound-r
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './modules/layouts/auth/authlayout.module#AuthLayoutModule'
+    loadChildren: () => import('./modules/layouts/auth/authlayout.module').then(m => m.AuthLayoutModule)
   },
   {
     path: 'admin',
-    loadChildren: './modules/layouts/admin/adminlayout.module#AdminLayoutModule'
+    loadChildren: () => import('./modules/layouts/admin/adminlayout.module').then(m => m.AdminLayoutModule)
   }
 
 ];
