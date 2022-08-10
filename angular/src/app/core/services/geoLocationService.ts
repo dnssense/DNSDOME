@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { currentId } from 'async_hooks';
 import { Observable, of } from 'rxjs';
 import 'rxjs/add/observable/of';

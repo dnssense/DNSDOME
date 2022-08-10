@@ -28,7 +28,6 @@
             ],
             "styles": [
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "node_modules/angular-calendar/scss/angular-calendar.scss",
               "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/intro.js/introjs.css",
               "node_modules/roksit-lib/assets/scss/roksit.core.scss",
