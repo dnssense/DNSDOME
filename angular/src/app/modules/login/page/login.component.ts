@@ -13,6 +13,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { SmsService } from 'src/app/core/services/smsService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { environment } from 'src/environments/environment';
+import { CountdownConfig, CountdownEvent, CountdownComponent } from 'ngx-countdown';
 
 
 declare var $: any;
@@ -60,7 +61,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   private toggleButton: any;
   private sidebarVisible: boolean;
   private nativeElement: Node;
-
   emailFormControl = new FormControl('', [
     Validators.required,
     Validators.email,
@@ -71,6 +71,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ]);
   @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
   captcha: string;
+
+  @ViewChild('cd', { static: false }) private countdown: CountdownComponent;
+  countdownConfig: CountdownConfig = {
+    leftTime: 120,
+    demand: true
+  };
   captcha_key: string;
   validEmailLogin: true | false;
   validPasswordLogin: true | false;
@@ -82,7 +88,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   forgoterEmail: string;
   twoFactorPhone: string;
   smsCode: string;
-  endTime: Date;
   isConfirmTimeEnded = true;
   maxRequest = 3;
   host: ConfigHost;
@@ -177,8 +182,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.smsInformation = res;
       this.maxRequest = 3;
       this.isConfirmTimeEnded = false;
-      this.endTime = new Date();
-      this.endTime.setMinutes(new Date().getMinutes() + 2);
+      this.countdown.begin();
 
     });
 
@@ -226,8 +230,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  timeEnd() {
-    if (this.notificationIndex < 1) {
+  timeEnd(e: CountdownEvent) {
+    if (this.notificationIndex < 1 && e && e.action === 'done') {
       this.notification.error('SMS Code Expired. Please Try Again.');
       this.isConfirmTimeEnded = true;
       this.openLogin();

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
@@ -22,6 +22,7 @@ import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.compon
 import { TranslateService } from '@ngx-translate/core';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ConfigService } from '../../../core/services/config.service';
+import { CountdownConfig, CountdownEvent, CountdownComponent } from 'ngx-countdown';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -88,7 +89,11 @@ export class AccountSettingsComponent implements OnInit {
     validPasswordRegister: true | false;
     matcher = new MyErrorStateMatcher();
     current2FAPreference: boolean;
-    endTime: Date;
+    @ViewChild('cd', { static: false }) private countdown: CountdownComponent;
+    countdownConfig: CountdownConfig = {
+        leftTime: 120,
+        demand: true
+    };
     isTimeSetted = false;
     maxRequest = 3;
     private smsInformation: RestSmsResponse;
@@ -383,8 +388,7 @@ export class AccountSettingsComponent implements OnInit {
                 this.maxRequest = 3;
                 this.notificationIndex = 0;
                 this.isConfirmTimeEnded = false;
-                this.endTime = new Date();
-                this.endTime.setMinutes(new Date().getMinutes() + 2);
+                this.countdown.begin();
                 this.isTimeSetted = true;
                 this.isSmsConfirming = true;
             });
@@ -438,8 +442,8 @@ export class AccountSettingsComponent implements OnInit {
         }
     }
 
-    timeEnd() {
-        if (this.isTimeSetted && this.notificationIndex < 1) {
+    timeEnd(e: CountdownEvent) {
+        if (this.isTimeSetted && this.notificationIndex < 1 && e && e.action === 'done') {
             this.notification.error(this.staticMessageService.confirmationTimeIsUpMessage);
             // location.reload();
             this.notificationIndex++;

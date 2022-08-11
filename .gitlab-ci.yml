@@ -1,4 +1,4 @@
-image: node:14.18.3
+image: node:16
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -23,7 +23,7 @@ cache:
     - node_modules/
 
 build_building:
-  image: node:14.18.3
+  image: node:16
   tags:
     - build-runner
   stage: build
