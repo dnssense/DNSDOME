@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NouisliderModule } from 'ng2-nouislider';
 import { TagInputModule } from 'ngx-chips';
 import { MaterialModule } from 'src/app/material.module';
 
@@ -20,7 +19,6 @@ import { RecaptchaModule } from 'ng-recaptcha';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    NouisliderModule,
     TagInputModule,
     MaterialModule,
     RecaptchaModule,

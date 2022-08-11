@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from './page/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NouisliderModule } from 'ng2-nouislider';
 import { MaterialModule } from 'src/app/material.module';
 import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
 import { LoginRoutingModule } from './login-routing.module';
@@ -21,7 +20,6 @@ import { RecaptchaModule } from 'ng-recaptcha';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    NouisliderModule,
     MaterialModule,
     RecaptchaModule,
     LoginRoutingModule,
