@@ -1,5 +1,7 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { CategoryQuery } from '../models/CategoryQuery';
@@ -21,7 +23,7 @@ export class ToolsService {
 
 
 
-    return this.http.get<any>(this._reputationURL  + '/' + d).map(r => r);
+    return this.http.get<any>(this._reputationURL  + '/' + d).pipe(map(r => r));
   }
   searchCategories(domains: string[]): Observable<CategoryQuery[]> {
 
@@ -36,10 +38,10 @@ export class ToolsService {
     body.set('domains', domains.join(','));
 
 
-    return this.http.post<any>(this._reputationURL , body.toString(), httpOptions).map(x => {
+    return this.http.post<any>(this._reputationURL , body.toString(), httpOptions).pipe(map(x => {
 
       return x.results;
-    });
+    }));
 
 
   }
@@ -47,7 +49,7 @@ export class ToolsService {
 
 
   sendCategoryRequestV2(request: Domain2CategorizeRequestV2): Observable<Domain2CategoriseResponseV2> {
-    return this.http.post<Domain2CategoriseResponseV2>(this._categorizationURL, request).map(result => result);
+    return this.http.post<Domain2CategoriseResponseV2>(this._categorizationURL, request).pipe(map(result => result));
   }
 }
 

@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { Subject } from 'rxjs';
@@ -165,7 +167,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   }
 
   fillResultTable(searchSetting: SearchSetting) {
-    this.customReportService.getData(searchSetting).takeUntil(this.ngUnsubscribe).subscribe((res: Response) => {
+    this.customReportService.getData(searchSetting).pipe(takeUntil(this.ngUnsubscribe)).subscribe((res: Response) => {
       if (res['searchSetting'] != null) {
         this.searchSetting = res['searchSetting'];
       }

@@ -1,7 +1,10 @@
+
+import {from as observableFrom,  Observable } from 'rxjs';
+
+import {last, concatMap, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
-import { Observable } from 'rxjs';
 import { Agent } from '../models/Agent';
 
 
@@ -20,28 +23,28 @@ export class RoamingService {
   };
 
   getClients(): Observable<Agent[]> {
-    return this.http.get<Agent[]>(this.roamingClientUrl).map(data => data);
+    return this.http.get<Agent[]>(this.roamingClientUrl).pipe(map(data => data));
   }
 
   saveClient(client: Agent): Observable<Agent> {
-    return this.http.post<Agent>(this.roamingClientUrl, client, this.options).map(data => data);
+    return this.http.post<Agent>(this.roamingClientUrl, client, this.options).pipe(map(data => data));
   }
 
   saveClients(clients: Agent[]): Observable<Agent> {
 
-    return Observable.from(clients).concatMap(x => {
+    return observableFrom(clients).pipe(concatMap(x => {
 
-      return this.http.post<Agent>(this.roamingClientUrl, x, this.options).map(data => data);
-    }).map(x => x).last();
+      return this.http.post<Agent>(this.roamingClientUrl, x, this.options).pipe(map(data => data));
+    }),map(x => x),last(),);
 
   }
 
   updateClient(client: Agent): Observable<Agent> {
-    return this.http.put<Agent>(this.roamingClientUrl, client, this.options).map(data => data);
+    return this.http.put<Agent>(this.roamingClientUrl, client, this.options).pipe(map(data => data));
   }
 
   deleteClient(id: number): Observable<{}> {
-    return this.http.delete<{}>(`${this.roamingClientUrl}/${id}`, this.options).map(res => res);
+    return this.http.delete<{}>(`${this.roamingClientUrl}/${id}`, this.options).pipe(map(res => res));
   }
 
 }

@@ -1,3 +1,5 @@
+
+import {takeUntil,  debounceTime, distinct, flatMap, map, mergeMap } from 'rxjs/operators';
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
@@ -18,7 +20,6 @@ import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { LogColumn } from '../../../core/models/LogColumn';
 import { ThrowStmt } from '@angular/compiler';
-import { debounceTime, distinct, flatMap, map, mergeMap } from 'rxjs/operators';
 import { ExcelService } from '../../../core/services/excelService';
 import { PdfService } from '../../../core/services/pdfService';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
@@ -102,8 +103,8 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
     selectedColumns: LogColumn[];
 
     ngAfterViewInit() {
-        this.bwService.initTableColumns()
-            .takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
+        this.bwService.initTableColumns().pipe(
+            takeUntil(this.ngUnsubscribe)).subscribe((res: LogColumn[]) => {
                 this.columns = res;
 
                 const tempcolumns = [];
@@ -162,14 +163,14 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
     }
 
     getCommonBWList() {
-        return this.bwService.getCommonBWListProfile(this.page, this.pageSize).takeUntil(this.ngUnsubscribe).map(res => {
+        return this.bwService.getCommonBWListProfile(this.page, this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
             this.fillResults(res);
-        });
+        }),);
     }
     searchCommonBWList() {
-        return this.bwService.searchCommonBWListProfile(this.searchKey, this.page, this.pageSize).takeUntil(this.ngUnsubscribe).map(res => {
+        return this.bwService.searchCommonBWListProfile(this.searchKey, this.page, this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
             this.fillResults(res);
-        });
+        }),);
     }
     onPageViewCountChange(event: any) {
         this.pageSize = event;

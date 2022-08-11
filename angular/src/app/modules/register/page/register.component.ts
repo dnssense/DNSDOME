@@ -13,7 +13,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { GeoLocation, GeoLocationService } from '../../../core/services/geoLocationService';
-import 'rxjs/add/operator/map';
+
 import { catchError, tap, mergeMap, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 

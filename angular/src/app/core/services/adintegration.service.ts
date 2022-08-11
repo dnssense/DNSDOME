@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ConfigService} from './config.service';
@@ -15,27 +17,27 @@ export class ADIntegrationService {
     constructor(private http: HttpClient, private config: ConfigService) { }
 
     getClients(): Observable<any> {
-        return this.http.get(`${this.adIntegrationUrl}/clients`, this.getOptions()).map(res => res);
+        return this.http.get(`${this.adIntegrationUrl}/clients`, this.getOptions()).pipe(map(res => res));
     }
 
     getRules(): Observable<any> {
-        return this.http.get(`${this.adIntegrationUrl}/rules`, this.getOptions()).map(res => res);
+        return this.http.get(`${this.adIntegrationUrl}/rules`, this.getOptions()).pipe(map(res => res));
     }
 
     getBoxes(): Observable<any> {
-        return this.http.get(`${this.adIntegrationUrl}/box`, this.getOptions()).map(res => res);
+        return this.http.get(`${this.adIntegrationUrl}/box`, this.getOptions()).pipe(map(res => res));
     }
 
     getGroups(): Observable<any> {
-        return this.http.get(`${this.adIntegrationUrl}/groups`, this.getOptions()).map(res => res);
+        return this.http.get(`${this.adIntegrationUrl}/groups`, this.getOptions()).pipe(map(res => res));
     }
 
     setRule(rule: AgentRule) {
-        return this.http.post(`${this.adIntegrationUrl}/rule`, rule, this.getOptions()).map(res => res);
+        return this.http.post(`${this.adIntegrationUrl}/rule`, rule, this.getOptions()).pipe(map(res => res));
     }
 
     deleteRule(rule: AgentRule) {
-        return this.http.delete(`${this.adIntegrationUrl}/rule/${rule.ruleId}`).map(res => res);
+        return this.http.delete(`${this.adIntegrationUrl}/rule/${rule.ruleId}`).pipe(map(res => res));
     }
 
     getOptions() {

@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -93,7 +95,7 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
 
 
   ngAfterViewInit() {
-    this.auditService.initTableColumns().takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
+    this.auditService.initTableColumns().pipe(takeUntil(this.ngUnsubscribe)).subscribe((res: LogColumn[]) => {
       this.columns = res;
 
       this.tableColumnsChanged.next();
@@ -160,7 +162,7 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
 
 
   public loadGraph(searchSettings: SearchSetting) {
-    this.auditService.getData(searchSettings, this.currentPage).takeUntil(this.ngUnsubscribe)
+    this.auditService.getData(searchSettings, this.currentPage).pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((res: AuditResponse) => {
         if (res['result'] || res['total']) {
           this.tableData = res['result'];

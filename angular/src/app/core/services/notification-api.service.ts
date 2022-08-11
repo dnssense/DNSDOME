@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
@@ -32,7 +34,7 @@ export class NotificationApiService {
     };
 
     getNotifications(request: NotificationRequest): Observable<Notification[]> {
-        return this.httpClient.get<Notification[]>(`${NOTIFICATION_URL}?page=${request.page}&pageSize=${request.pageSize}&date=${request.date.toISOString()}`, this.options).map(result => result);
+        return this.httpClient.get<Notification[]>(`${NOTIFICATION_URL}?page=${request.page}&pageSize=${request.pageSize}&date=${request.date.toISOString()}`, this.options).pipe(map(result => result));
     }
 
     updateNotification(request: Notification) {

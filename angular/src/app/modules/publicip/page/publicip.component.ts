@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import * as introJs from 'intro.js/intro.js';
@@ -485,7 +487,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     const ip0 = {} as IpWithMask;
     // wait for detecting public ip
-    return this.publicIpObs.map(ip => {
+    return this.publicIpObs.pipe(map(ip => {
 
       const findedMyPublicIp = this.publicIps.some(x => {
         if (x.staticSubnetIp) {
@@ -515,7 +517,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       this.agentModal.toggle();
 
 
-    });
+    }));
   }
 
   hideNewWizard() {

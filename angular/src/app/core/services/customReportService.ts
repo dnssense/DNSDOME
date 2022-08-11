@@ -1,5 +1,7 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs/Rx';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ErrorService } from './errorService';
 import { Category } from '../models/Category';
@@ -28,8 +30,8 @@ export class CustomReportService {
   public getData(searchSettings: SearchSetting): Observable<Object> {
     const body = JSON.stringify({ searchSetting: searchSettings });
     return this.http
-      .post(this._dataURL, body, this.getOptions())
-      .map((res: Response) => res);
+      .post(this._dataURL, body, this.getOptions()).pipe(
+      map((res: Response) => res));
 
   }
 
@@ -50,8 +52,8 @@ export class CustomReportService {
     };
 
     return this.http
-      .post(this._histogramURL, body, options)
-      .map((res: Response) => res);
+      .post(this._histogramURL, body, options).pipe(
+      map((res: Response) => res));
 
   }
 

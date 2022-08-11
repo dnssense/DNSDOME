@@ -230,10 +230,10 @@ export class AuthenticationService {
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
     return this.http.
-      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass }, this.getHttpOptions())
-      .map(res => {
+      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass }, this.getHttpOptions()).pipe(
+      map(res => {
         return res;
-      });
+      }));
 
   }
 
@@ -340,8 +340,8 @@ export class AuthenticationService {
   }
 
   forgotPassword(signupBean: SignupBean): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this._forgotPasswordSendURL, signupBean, this.getHttpOptions())
-      .map(res => res);
+    return this.http.post<OperationResult>(this._forgotPasswordSendURL, signupBean, this.getHttpOptions()).pipe(
+      map(res => res));
   }
 
   forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {

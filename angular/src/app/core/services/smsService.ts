@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Rx';
+import {Observable,  observable } from 'rxjs';
 import { ConfigService } from './config.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OperationResult } from '../models/OperationResult';
@@ -7,7 +7,6 @@ import { OperationResult } from '../models/OperationResult';
 import { User } from '../models/User';
 import { SmsType } from '../models/SmsType';
 import { RestPreloginResponse, RestPreloginSmsResponse, RestPreloginSmsConfirmRequet, RestSmsResponse, RestSmsConfirmRequest } from '../models/RestServiceModels';
-import { observable } from 'rxjs';
 
 
 

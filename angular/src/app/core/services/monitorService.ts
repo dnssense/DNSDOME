@@ -1,7 +1,8 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import 'rxjs/Rx';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { SearchSetting } from '../models/SearchSetting';
 import { ErrorService } from './errorService';
 import { ConfigService } from './config.service';
@@ -21,8 +22,8 @@ export class MonitorService {
     const body = { searchSetting: searchSettings, page: page };
 
     return this.http
-      .post(this._monitor, body, this.getOptions())
-      .map((res: Response) => res);
+      .post(this._monitor, body, this.getOptions()).pipe(
+      map((res: Response) => res));
 
   }
 

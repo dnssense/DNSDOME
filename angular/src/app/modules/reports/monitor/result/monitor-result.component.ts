@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { OnInit, Component, Input, Output, EventEmitter, ElementRef, ViewChild, OnDestroy, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { MonitorService } from 'src/app/core/services/monitorService';
@@ -125,7 +127,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
   }
 
   ngAfterViewInit() {
-    this.reportService.initTableColumns().takeUntil(this.ngUnsubscribe).subscribe((res: LogColumn[]) => {
+    this.reportService.initTableColumns().pipe(takeUntil(this.ngUnsubscribe)).subscribe((res: LogColumn[]) => {
       this.columns = res;
 
       this.tableColumnsChanged.next();
@@ -208,7 +210,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
   configColumn;
   public loadGraph(searchSettings: SearchSetting) {
-    this.monitorService.getData(searchSettings, this.currentPage).takeUntil(this.ngUnsubscribe)
+    this.monitorService.getData(searchSettings, this.currentPage).pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((res: Response) => {
         if (res['result'] || res['total']) {
           this.tableData = res['result'];
