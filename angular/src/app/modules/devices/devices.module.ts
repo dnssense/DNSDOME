@@ -7,7 +7,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AmazingTimePickerModule } from 'amazing-time-picker';
+//import { AmazingTimePickerModule } from 'amazing-time-picker';
 import { TimeProfileComponent } from './components/time-profile/time-profile.component';
 
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
@@ -28,7 +28,7 @@ import { RkTableModule, IconsModule, RkModalModule, RkRadioModule, RkCheckboxMod
     PipesModule,
     MaterialModule,
     DevicesRoutingModule,
-    AmazingTimePickerModule,
+    //AmazingTimePickerModule,
     ProfileWizardModule,
     TranslateModule.forChild({
       loader: {

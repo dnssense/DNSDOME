@@ -8,7 +8,7 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NouisliderModule } from 'ng2-nouislider';
-import { AmazingTimePickerModule } from 'amazing-time-picker';
+//import { AmazingTimePickerModule } from 'amazing-time-picker';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 import { IconsModule, RkTableModule, RkModalModule, RkSelectModule } from 'roksit-lib';
 import { PipesModule } from '../shared/pipes/pipes.module';
@@ -25,7 +25,7 @@ import { PipesModule } from '../shared/pipes/pipes.module';
     NouisliderModule,
     MaterialModule,
     SecurityProfilesRoutingModule,
-    AmazingTimePickerModule,
+    //AmazingTimePickerModule,
     ProfileWizardModule,
     TranslateModule.forChild({
       loader: {

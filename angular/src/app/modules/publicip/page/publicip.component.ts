@@ -127,7 +127,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
 
       } else {
-        this.publicIpService.getMyIp().timeout(2000).subscribe(result => {
+        this.publicIpService.getMyIp().subscribe(result => {
           this.detectedPublicIp = result;
           subscriber.next(this.detectedPublicIp);
 

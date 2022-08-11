@@ -62,8 +62,8 @@
 
                   <div id="twoFactorDiv" class="text-success text-center" style="display:none;"
                     (keydown)="checkInput($event)">
-                    <countdown-timer style="font-size: 25px; font-weight: 500;" (zeroTrigger)="timeEnd()"
-                      [end]="endTime"></countdown-timer>
+                    <!-- <countdown-timer style="font-size: 25px; font-weight: 500;" (zeroTrigger)="timeEnd()"
+                      [end]="endTime"></countdown-timer> -->
                     <input class="formInput w-100 mb-2" [(ngModel)]="twoFactorPhoneClone" readonly>
 
                     <input type="text" class="formInput w-100 mb-2" placeholder="SMS Code" [(ngModel)]="smsCode">

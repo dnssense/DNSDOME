@@ -11,7 +11,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
 
-import { CountdownTimerModule } from 'ngx-countdown-timer';
+//import { CountdownTimerModule } from 'ngx-countdown-timer';
 import { FooterModule } from '../shared/footer/footer.module';
 import { RecaptchaModule } from 'ng-recaptcha';
 
@@ -26,7 +26,7 @@ import { RecaptchaModule } from 'ng-recaptcha';
     RecaptchaModule,
     LoginRoutingModule,
     FooterModule,
-    CountdownTimerModule.forRoot(),
+    //CountdownTimerModule.forRoot(),
     TranslateModule.forChild({
       loader: {
           provide: TranslateLoader,

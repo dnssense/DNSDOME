@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { DEFAULT_INTERRUPTSOURCES, Idle } from '@ng-idle/core';
 import { Keepalive } from '@ng-idle/keepalive';
-import { JwtHelper } from 'angular2-jwt';
 import decodeJWT from 'jwt-decode';
 import { interval, Observable, Subject, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
@@ -33,7 +32,6 @@ export class AuthenticationService {
   private preloginUrl = this.configuration.getApiUrl() + '/user/prelogin';
 
   public currentSession: Session;
-  private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
   currentUserPropertiesChanged: Subject<any>;
   clientId: 'if you see me';

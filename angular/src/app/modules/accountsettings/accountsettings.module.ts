@@ -8,7 +8,7 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
-import { CountdownTimerModule } from 'ngx-countdown-timer';
+//import { CountdownTimerModule } from 'ngx-countdown-timer';
 import { RkSelectModule, RkCheckboxModule } from 'roksit-lib';
 
 
@@ -17,7 +17,7 @@ import { RkSelectModule, RkCheckboxModule } from 'roksit-lib';
   declarations: [
     AccountSettingsComponent,FieldErrorDisplayComponent],
   imports: [
-    CountdownTimerModule.forRoot(),
+    //CountdownTimerModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
