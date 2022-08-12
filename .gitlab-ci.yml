@@ -38,7 +38,7 @@ build_building:
       - node_modules
 
 package_docker_dev:
-  image: node:14.18.3
+  image: node:16
   tags:
     - package-runner
   stage: package
