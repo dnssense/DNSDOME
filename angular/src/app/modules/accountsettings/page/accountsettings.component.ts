@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
@@ -22,7 +22,7 @@ import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.compon
 import { TranslateService } from '@ngx-translate/core';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ConfigService } from '../../../core/services/config.service';
-import { CountdownConfig, CountdownEvent, CountdownComponent } from 'ngx-countdown';
+import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -89,7 +89,6 @@ export class AccountSettingsComponent implements OnInit {
     validPasswordRegister: true | false;
     matcher = new MyErrorStateMatcher();
     current2FAPreference: boolean;
-    @ViewChild('cd', { static: false }) private countdown: CountdownComponent;
     countdownConfig: CountdownConfig;
     isTimeSetted = false;
     maxRequest = 3;

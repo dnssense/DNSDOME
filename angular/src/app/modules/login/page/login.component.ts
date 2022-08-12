@@ -13,7 +13,7 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { SmsService } from 'src/app/core/services/smsService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { environment } from 'src/environments/environment';
-import { CountdownConfig, CountdownEvent, CountdownComponent } from 'ngx-countdown';
+import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
 
 
 declare var $: any;
@@ -72,7 +72,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
   captcha: string;
 
-  @ViewChild('cd', { static: false }) private countdown: CountdownComponent;
   countdownConfig: CountdownConfig;
   captcha_key: string;
   validEmailLogin: true | false;
