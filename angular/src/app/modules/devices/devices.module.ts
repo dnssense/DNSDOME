@@ -7,7 +7,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TimeProfileComponent } from './components/time-profile/time-profile.component';
 
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 import { PipesModule } from '../shared/pipes/pipes.module';
@@ -18,7 +17,6 @@ import { RkTableModule, IconsModule, RkModalModule, RkRadioModule, RkCheckboxMod
 @NgModule({
   declarations: [
     DevicesComponent,
-    TimeProfileComponent,
     ],
   imports: [
     FormsModule,
