@@ -19,7 +19,6 @@ import { IconsModule } from 'roksit-lib';
     CommonModule,
     MaterialModule,
     ToolsRoutingModule,
-    //AmazingTimePickerModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

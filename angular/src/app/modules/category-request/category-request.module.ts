@@ -19,7 +19,6 @@ import { CategoryRequestRoutingModule } from './category-request-routing.module'
     CommonModule,
     MaterialModule,
     CategoryRequestRoutingModule,
-    //AmazingTimePickerModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

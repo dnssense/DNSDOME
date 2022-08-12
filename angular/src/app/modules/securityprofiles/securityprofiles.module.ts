@@ -22,7 +22,6 @@ import { PipesModule } from '../shared/pipes/pipes.module';
     CommonModule,
     MaterialModule,
     SecurityProfilesRoutingModule,
-    //AmazingTimePickerModule,
     ProfileWizardModule,
     TranslateModule.forChild({
       loader: {

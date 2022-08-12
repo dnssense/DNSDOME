@@ -19,7 +19,6 @@ import { ThemeRoutingModule } from './theme-routing.module';
         CommonModule,
         MaterialModule,
         ThemeRoutingModule,
-        //AmazingTimePickerModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
