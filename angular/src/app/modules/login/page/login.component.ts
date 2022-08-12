@@ -73,10 +73,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   captcha: string;
 
   @ViewChild('cd', { static: false }) private countdown: CountdownComponent;
-  countdownConfig: CountdownConfig = {
-    leftTime: 120,
-    demand: true
-  };
+  countdownConfig: CountdownConfig;
   captcha_key: string;
   validEmailLogin: true | false;
   validPasswordLogin: true | false;
@@ -182,8 +179,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.smsInformation = res;
       this.maxRequest = 3;
       this.isConfirmTimeEnded = false;
-      this.countdown.begin();
-
+      this.countdownConfig = {
+        stopTime: new Date().getTime() + 1000 * 120
+      };
     });
 
   }
@@ -232,6 +230,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
   timeEnd(e: CountdownEvent) {
     if (this.notificationIndex < 1 && e && e.action === 'done') {
+      this.countdownConfig = undefined;
       this.notification.error('SMS Code Expired. Please Try Again.');
       this.isConfirmTimeEnded = true;
       this.openLogin();

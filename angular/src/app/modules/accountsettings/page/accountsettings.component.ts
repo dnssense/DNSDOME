@@ -90,10 +90,7 @@ export class AccountSettingsComponent implements OnInit {
     matcher = new MyErrorStateMatcher();
     current2FAPreference: boolean;
     @ViewChild('cd', { static: false }) private countdown: CountdownComponent;
-    countdownConfig: CountdownConfig = {
-        leftTime: 120,
-        demand: true
-    };
+    countdownConfig: CountdownConfig;
     isTimeSetted = false;
     maxRequest = 3;
     private smsInformation: RestSmsResponse;
@@ -388,7 +385,9 @@ export class AccountSettingsComponent implements OnInit {
                 this.maxRequest = 3;
                 this.notificationIndex = 0;
                 this.isConfirmTimeEnded = false;
-                this.countdown.begin();
+                this.countdownConfig = {
+                    stopTime: new Date().getTime() + 1000 * 120
+                };
                 this.isTimeSetted = true;
                 this.isSmsConfirming = true;
             });
@@ -444,6 +443,7 @@ export class AccountSettingsComponent implements OnInit {
 
     timeEnd(e: CountdownEvent) {
         if (this.isTimeSetted && this.notificationIndex < 1 && e && e.action === 'done') {
+            this.countdownConfig = undefined;
             this.notification.error(this.staticMessageService.confirmationTimeIsUpMessage);
             // location.reload();
             this.notificationIndex++;
