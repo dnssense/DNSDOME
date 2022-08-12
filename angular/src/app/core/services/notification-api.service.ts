@@ -19,7 +19,7 @@ export interface Notification {
     status: 0 | 1; // 0 not readed, 1 readed
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class NotificationApiService {
 
     constructor(

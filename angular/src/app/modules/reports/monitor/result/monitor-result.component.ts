@@ -30,7 +30,7 @@ export interface LinkClick {
   selector: 'app-monitor-result',
   templateUrl: 'monitor-result.component.html',
   styleUrls: ['monitor-result.component.css'],
-  providers: [CountryPipe, MacAddressFormatterPipe]
+  providers: [CountryPipe, MacAddressFormatterPipe, MonitorService]
 })
 export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
 

@@ -27,7 +27,8 @@ declare let $: any;
 @Component({
   selector: 'app-publicip',
   templateUrl: './publicip.component.html',
-  styleUrls: ['./publicip.component.sass']
+  styleUrls: ['./publicip.component.sass'],
+  providers: [DashBoardService]
 })
 export class PublicipComponent implements OnInit, AfterViewInit {
 

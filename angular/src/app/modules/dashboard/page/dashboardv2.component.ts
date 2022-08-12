@@ -23,7 +23,8 @@ import {TopdateComponent} from './childcomponents/topdate.component';
     selector: 'app-dashboardv2',
     templateUrl: 'dashboardv2.component.html',
     styleUrls: ['dashboard.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    providers: [DashBoardService]
 })
 export class Dashboardv2Component implements OnInit, AfterViewInit {
     constructor(private dashboardService: DashBoardService,

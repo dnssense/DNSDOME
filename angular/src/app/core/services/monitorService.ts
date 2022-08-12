@@ -8,7 +8,7 @@ import { ErrorService } from './errorService';
 import { ConfigService } from './config.service';
 import { LogColumn } from '../models/LogColumn';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class MonitorService {
   // public _initContentURL = this.configService.getApiUrl() + '/monitor/init'; // URL to subcategories api
   public _initTableColumnsURL = this.configService.getApiUrl() + '/monitor/tableColumns'; // URL to subcategories api

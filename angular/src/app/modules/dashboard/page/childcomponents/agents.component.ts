@@ -14,6 +14,7 @@ import {Box} from "../../../../core/models/Box";
   selector: 'app-dashboard-agents',
   templateUrl: 'agents.component.html',
   styleUrls: ['../dashboard.component.scss'],
+  providers: [DashBoardService]
 })
 export class AgentsComponent implements OnInit {
   constructor(private agentService: AgentService, private boxService: BoxService,

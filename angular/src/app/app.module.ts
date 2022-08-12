@@ -5,11 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { RecaptchaModule } from 'ng-recaptcha';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -18,17 +18,9 @@ import { NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule } fro
 import { RoksitModule, ServicesModule } from 'roksit-lib';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuthGuard } from './core/guards/AuthGuard';
 import { ErrorInterceptor } from './core/interceptors/ErrorInterceptor';
 import { HttpErrorInterceptor } from './core/interceptors/HttpErrorInterceptor';
 import { JwtInterceptor } from './core/interceptors/JwtInterceptor';
-import { AuthenticationService } from './core/services/authentication.service';
-import { ConfigService } from './core/services/config.service';
-import { CookieService } from './core/services/cookie.service';
-import { DashBoardService } from './core/services/dashBoardService';
-import { MonitorService } from './core/services/monitorService';
-import { NotificationApiService } from './core/services/notification-api.service';
-import { NotificationService } from './core/services/notification.service';
 import { translateHttpLoaderFactory } from './core/translationhelper';
 import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
 import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
@@ -73,16 +65,6 @@ import { ClipboardModule } from 'ngx-clipboard';
     ClipboardModule
   ],
   providers: [
-    AuthGuard,
-    AuthenticationService,
-    ConfigService,
-    CookieService,
-    BsModalService,
-    DashBoardService,
-    NotificationService,
-    TranslateService,
-    MonitorService,
-    NotificationApiService,
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     {
       provide: HTTP_INTERCEPTORS,

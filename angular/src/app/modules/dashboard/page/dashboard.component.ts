@@ -53,7 +53,8 @@ export interface RkDateButton {
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [DashBoardService]
 })
 export class DashboardComponent implements OnInit {
 

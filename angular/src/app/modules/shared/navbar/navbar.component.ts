@@ -53,7 +53,8 @@ declare var $: any;
 @Component({
     selector: 'app-navbar-cmp',
     templateUrl: 'navbar.component.html',
-    styleUrls: ['navbar.component.scss']
+    styleUrls: ['navbar.component.scss'],
+    providers: [NotificationApiService]
 })
 
 export class NavbarComponent implements OnInit {
