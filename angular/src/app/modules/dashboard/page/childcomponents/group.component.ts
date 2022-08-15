@@ -86,6 +86,19 @@ export class GroupComponent implements OnInit {
     });
     it.active = true;
   }
+
+  getGroupItem(groupId: number): GroupItemDom {
+    return this.groups[groupId];
+  }
+
+  setActive(groupId: number){
+    this.groups.forEach((group, index) => {
+      group.active = false;
+      if(groupId == index){
+          group.active = true;
+      }
+    });
+  }
   // endregion
 
   setDataGroup(groups: {items: Aggregation[]}, total: {allow: number, block: number}) {
