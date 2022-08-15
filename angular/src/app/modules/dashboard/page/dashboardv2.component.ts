@@ -59,10 +59,11 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }
 
     // region init
-    private loadInitLiveReport() {
+    private loadInitLiveReport(updateGroupItems: boolean = true) {
+        updateGroupItems = updateGroupItems && (!this.selectedGroup?.datatype || this.selectedGroup?.datatype === 'total');
         const req: LiveReportRequest = {group: this.selectedGroup?.datatype, category: this.selectedCategory?.name};
         this.fetchLiveReport(req, function (res) {
-                if (!req.group || req.group === 'total') {
+                if (updateGroupItems) {
                     this.setUiGroupData(res);
                 }
                 this.setUiCategoriesData(res);
@@ -126,20 +127,20 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
 
     onCategoryChanged(it: CategoryDom) {
         this.selectedCategory = it;
-        this.reloadData();
+        this.reloadData(false, false);
     }
 
     // endregion
 
     // region utils methodes
-    private reloadData(isInit: boolean = false) {
+    private reloadData(isInit: boolean = false, updateGroupItems: boolean = true) {
         if (this.reportType === 'livereport') {
             if(isInit){//after date and datasource change, reset group items ui with updated data
                 this.selectGroup(this.groupComponent.getGroupItem(0));
                 this.groupComponent.setActive(0);
                 this.onEmptyData();
             }
-            this.loadInitLiveReport();
+            this.loadInitLiveReport(updateGroupItems);
         } else {
             if (isInit) {
                 this.initLoadNotLiveReport();
