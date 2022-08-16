@@ -205,8 +205,11 @@ export class StaticMessageService {
   get enterRequiredFieldsMessage(): string {
     return this.translator.translate('ACCOUNTSETTINGS.EnterRequiredFields');
   }
-  get twoFactorAuthenticationMessage(): string {
-    return this.translator.translate('ACCOUNTSETTINGS.TwoFactorAuthentication');
+  get twoFactorAuthenticationMessageEnabled(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.TwoFactorAuthenticationEnabled');
+  }
+  get twoFactorAuthenticationMessageDisabled(): string {
+    return this.translator.translate('ACCOUNTSETTINGS.TwoFactorAuthenticationDisabled');
   }
   get userGSMIsMissingMessage(): string {
     return this.translator.translate('ACCOUNTSETTINGS.UserGSMIsMissing');

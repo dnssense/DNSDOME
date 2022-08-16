@@ -12,14 +12,8 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { CompanyService } from 'src/app/core/services/companyService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { SmsService } from 'src/app/core/services/smsService';
-// import { SmsInformation } from 'src/app/core/models/SmsInformation';
-import { SmsType } from 'src/app/core/models/SmsType';
 import { RestSmsResponse, RestSmsConfirmRequest, RestUserUpdateRequest } from 'src/app/core/models/RestServiceModels';
-import { LoggerService } from 'src/app/core/services/logger.service';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { countries } from 'src/app/core/models/Countries';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { TranslateService } from '@ngx-translate/core';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ConfigService } from '../../../core/services/config.service';
 import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
@@ -350,10 +344,13 @@ export class AccountSettingsComponent implements OnInit {
         if (this.user.gsm && this.user.gsmCode) {
             const request: RestUserUpdateRequest = {};
             request.isTwoFactorAuthentication = this.user.twoFactorAuthentication ? 0 : 1;
+            const notifMsg: string = this.user.twoFactorAuthentication ?
+                this.staticMessageService.twoFactorAuthenticationMessageDisabled :
+                this.staticMessageService.twoFactorAuthenticationMessageEnabled;
 
             this.accountService.update(request).subscribe(res => {
                 this.user.twoFactorAuthentication = !this.user.twoFactorAuthentication;
-                this.notification.success(this.staticMessageService.twoFactorAuthenticationMessage);
+                this.notification.success(notifMsg);
                 this.authService.saveSession();
             });
         } else {
