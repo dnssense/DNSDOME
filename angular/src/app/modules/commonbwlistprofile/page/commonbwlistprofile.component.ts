@@ -1,25 +1,17 @@
 
-import {takeUntil,  debounceTime, distinct, flatMap, map, mergeMap } from 'rxjs/operators';
+import {takeUntil,  debounceTime, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AgentService } from 'src/app/core/services/agent.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { AlertService } from 'src/app/core/services/alert.service';
-import { Agent } from 'src/app/core/models/Agent';
-import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
-import { BoxService } from 'src/app/core/services/box.service';
-import { BoxConf } from '../../roaming/page/roaming.component';
 import { CommonBWListProfileService } from '../../../core/services/commonBWListProfileService';
 import { CommonBWListProfile } from '../../../core/models/CommonBWListProfile';
 import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { TranslatorService } from '../../../core/services/translator.service';
-import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
+import { fromEvent, Subject, Subscription, of as observableOf } from 'rxjs';
 import * as moment from 'moment';
 import { LogColumn } from '../../../core/models/LogColumn';
-import { ThrowStmt } from '@angular/compiler';
 import { ExcelService } from '../../../core/services/excelService';
 import { PdfService } from '../../../core/services/pdfService';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
@@ -41,7 +33,6 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
         private excelService: ExcelService,
         private pdfService: PdfService
     ) {
-        this.getCommonBWList();
     }
     page = 0;
     pageSize = 10;
@@ -125,19 +116,21 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
 
                 this.searchboxevent = fromEvent(this.searchbox.nativeElement, 'keyup').pipe(
                     debounceTime(1000),
-                    map((i: any) => {
+                    distinctUntilChanged(),
+                    switchMap((i: any) => {
                         if (i.key != 'Enter') {
                             if (this.searchKey?.length > 3) {
-                                this.searchCommonBWList().subscribe();
+                                return this.searchCommonBWList();
                             }
                             else if (!this.searchKey.length) {
-                                this.getCommonBWList().subscribe();
+                                return this.getCommonBWList();
+                            } else {
+                                return observableOf(null);
                             }
+                        } else {
+                            return observableOf(null);  
                         }
-                    })).subscribe()
-                this.getCommonBWList().subscribe(x => {
-
-                });
+                    })).subscribe();
             });
 
     }

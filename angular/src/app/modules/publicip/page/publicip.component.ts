@@ -534,7 +534,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
 
-      for (let i = 1; i < this.selectedIp.staticSubnetIp.length; i++) {
+      for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
         this.selectedIp.staticSubnetIp[i].ranges = this.fillCIDR(this.selectedIp.staticSubnetIp[i].mask);
         const cname = 'ip' + i;
         this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
