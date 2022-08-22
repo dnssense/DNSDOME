@@ -404,6 +404,7 @@
     "ErrUserPasswordPolicy": "Parola güvenlik politikasına uygun değil!",
     "ErrDashboardInternalError": "Kontrol paneli verileri alınamadı",
     "ErrIpAllreadyExits": "Ip sistemde kayıtlı",
+    "ErrIpRangeConflict": "Ip sistemde kayıtlı",
     "ErrNotAuthorized": "Yetki verilmedi",
     "ErrApiKeyIsNotValid": "Yetki verilmedi",
     "ErrNotEnoughRight": "Yetki verilmedi",

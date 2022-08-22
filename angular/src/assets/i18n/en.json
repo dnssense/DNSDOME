@@ -406,6 +406,7 @@
     "ErrUserMaxLimitReached": "Maximum limit of requests exceeded!",
     "ErrDashboardInternalError": "Dashboard data could not be retrieved.",
     "ErrIpAllreadyExits": "IP already exists",
+    "ErrIpRangeConflict": "IP already exists",
     "ErrNotAuthorized": "Not authorized",
     "ErrApiKeyIsNotValid": "Not authorized",
     "ErrNotEnoughRight": "Not authorized",
