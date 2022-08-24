@@ -128,7 +128,11 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
                                 return observableOf(null);
                             }
                         } else {
-                            return observableOf(null);  
+                            if (this.searchKey?.length > 0 && this.searchKey?.length <= 3) {
+                                return this.searchCommonBWList();
+                            } else {
+                                return observableOf(null);
+                            } 
                         }
                     })).subscribe();
             });
