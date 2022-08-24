@@ -101,8 +101,8 @@ export class GroupComponent implements OnInit {
   }
   // endregion
 
-  setDataGroup(groups: {items: Aggregation[]}, total: {allow: number, block: number}) {
-    const totalHit = total.allow + total.block;
+  setDataGroup(groups: {items: Aggregation[]}, total: {allow: number, block: number}, hitTotal: number) {
+    const totalHit = Math.max(total.allow + total.block, hitTotal);
     this.groups.forEach(g => {
       g.val1 = 0;
       g.val2 = 0;
@@ -114,7 +114,7 @@ export class GroupComponent implements OnInit {
     groups.items.forEach( g => {
       const item = this.groups.find(it => it.datatype === g.name);
       if (item && item.datatype !== 'total') {
-        const ratio = this.getRoundedNumber((100 * g.hit) / totalHit);
+        const ratio = this.getRoundedNumber(100 * (g.hit / totalHit));
         item.val1 = g.hit;
         item.val2 = ratio;
       }

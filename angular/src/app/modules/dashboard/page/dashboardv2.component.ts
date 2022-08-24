@@ -85,7 +85,7 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }
 
     private setUiGroupData(res: LiveReportResponse) {
-        this.groupComponent.setDataGroup(res.groups, res.actions);
+        this.groupComponent.setDataGroup(res.groups, res.actions, res.hitstotal);
     }
 
     private setUiDomainsDomain(domains: Domain[], actions: { allow: number, block: number }) {
