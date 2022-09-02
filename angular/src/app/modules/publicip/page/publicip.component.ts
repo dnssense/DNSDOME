@@ -447,11 +447,14 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     if (agent) {
       if (agent.rootProfile && agent.rootProfile.id > 0) {
+
+        this.saveMode = 'ProfileUpdate';
+        this.profileWizard.saveMode = this.saveMode;
         this.selectedAgent = JSON.parse(JSON.stringify(agent));
 
         this.fillSecurityProfilesArray(agent);
 
-        this.saveMode = 'ProfileUpdate';
+       
 
         this.startWizard = true;
 
@@ -778,6 +781,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
   rkSelectButtonClicked($event: { clicked: boolean }) {
     this.saveMode = 'NewProfile';
+    this.profileWizard.saveMode = this.saveMode;
     this.selectedAgent = JSON.parse(JSON.stringify(this.selectedIp));
     this.selectedAgent.rootProfile = new SecurityProfile();
     this.currentStep = 1;
