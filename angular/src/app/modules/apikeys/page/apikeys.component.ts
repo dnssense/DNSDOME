@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import {Role} from 'src/app/core/models/Role';
+import {RestRole, Role} from 'src/app/core/models/Role';
 import {ApiKey, User} from 'src/app/core/models/User';
 import {AlertService} from 'src/app/core/services/alert.service';
 import {AuthenticationService} from 'src/app/core/services/authentication.service';
@@ -77,14 +77,18 @@ export class ApiKeysComponent implements OnInit {
 
   }
 
-  userFriendlyRoleName(role: string) {
-    if (role === 'ROLE_APIADMIN') {
+  userFriendlyRoleName(roleList: RestRole[]) {
+    if (!roleList || !roleList.length) {
+      return 'Not Defined';
+    }
+       
+    if (roleList.find(r => r.name === 'ROLE_APIADMIN')) {
       return 'Admin';
-    } else if (role === 'ROLE_API') {
+    } else if (roleList.find(r => r.name === 'ROLE_API')) {
       return 'User';
-    } else if (role === 'ROLE_INTEGRATION') {
+    } else if (roleList.find(r => r.name === 'ROLE_INTEGRATION')) {
       return 'Integration';
-    } else if (role === 'ROLE_REPUTATION') {
+    } else if (roleList.find(r => r.name === 'ROLE_REPUTATION')) {
       return 'Reputation';
     } else {
       return 'Not Defined';
