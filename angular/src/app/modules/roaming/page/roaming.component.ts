@@ -1013,7 +1013,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
     get roamingClientVersion() {
-        return '1.0.6';
+        return '1.0.7';
     }
 
 }
