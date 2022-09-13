@@ -1,6 +1,8 @@
+
+import {map} from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { OperationResult } from '../models/OperationResult';
 import { Role } from '../models/Role';
 import { User } from '../models/User';
@@ -26,7 +28,7 @@ export class UserService {
   }
 
   public getUsers(isApiKey = false): Observable<User[]> {
-    return this.http.get<User[]>(this._childUserListURL).map(res => {
+    return this.http.get<User[]>(this._childUserListURL).pipe(map(res => {
 
       // sayfa tek role mantigi ile calisiyor
       return res.map(x => {
@@ -45,7 +47,7 @@ export class UserService {
         return false;
       });
 
-    });
+    }));
 
   }
 
@@ -75,7 +77,7 @@ export class UserService {
       temp.roles.push(rol.name)
     }
     delete temp.role;
-    return this.http.post<any>(this._userSaveURL, temp, this.getOptions()).map(res => res);
+    return this.http.post<any>(this._userSaveURL, temp, this.getOptions()).pipe(map(res => res));
   }
 
   public update(user: any): Observable<any> {
@@ -86,11 +88,11 @@ export class UserService {
       temp.roles.push(rol.name)
     }
     delete temp.role;
-    return this.http.put<any>(this._userUpdateURL, temp, this.getOptions()).map(res => res);
+    return this.http.put<any>(this._userUpdateURL, temp, this.getOptions()).pipe(map(res => res));
   }
 
   public delete(user: User): Observable<OperationResult> {
-    return this.http.delete<OperationResult>(this._userDeleteURL + user.id).map(res => res);
+    return this.http.delete<OperationResult>(this._userDeleteURL + user.id).pipe(map(res => res));
   }
 
   private getOptions() {

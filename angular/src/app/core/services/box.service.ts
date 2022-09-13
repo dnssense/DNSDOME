@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -19,36 +21,36 @@ export class BoxService {
   constructor(private http: HttpClient, private config: ConfigService) { }
 
   getBoxes(): Observable<Box[]> {
-    return this.http.get<Box[]>(this.getBoxesURL).map(data => data);
+    return this.http.get<Box[]>(this.getBoxesURL).pipe(map(data => data));
   }
 
   saveBox(box: Box): Observable<Box> {
-    return this.http.post<Box>(this.saveBoxURL, box, this.getOptions()).map(data => data);
+    return this.http.post<Box>(this.saveBoxURL, box, this.getOptions()).pipe(map(data => data));
   }
 
   deleteBox(id: number): Observable<{}> {
-    return this.http.delete<{}>(this.deleteBoxURL + `/${id}`, this.getOptions()).map(res => res);
+    return this.http.delete<{}>(this.deleteBoxURL + `/${id}`, this.getOptions()).pipe(map(res => res));
   }
 
   getVirtualBox(): Observable<Box> {
-    return this.http.get<Box>(this.virtualBoxURL).map(data => data);
+    return this.http.get<Box>(this.virtualBoxURL).pipe(map(data => data));
   }
 
   getProgramLink(): Observable<any> {
-    return this.http.get<any>(this.getLinkURL).map(data => data);
+    return this.http.get<any>(this.getLinkURL).pipe(map(data => data));
   }
 
   getMagicLink(): Observable<any> {
-    return this.http.get<any>(this.boxMagicURL).map(data => {
+    return this.http.get<any>(this.boxMagicURL).pipe(map(data => {
       data.magic = this.config.getApiUrl() + data.magic;
       return data;
-    });
+    }));
   }
 
 
   saveBoxConfig(request: { box: string, boxuuid: string, donttouchdomains: string, donttouchips: string, localnetips: string, uninstallPassword: string, disablePassword: string }) {
 
-    return this.http.post<any>(this.boxConfURL, request).map(data => data);
+    return this.http.post<any>(this.boxConfURL, request).pipe(map(data => data));
   }
 
   private getOptions() {

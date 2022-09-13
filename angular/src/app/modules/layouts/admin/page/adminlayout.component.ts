@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Location, PopStateEvent } from '@angular/common';
-import 'rxjs/add/operator/filter';
+
 
 import PerfectScrollbar from 'perfect-scrollbar';
 import { NavbarComponent } from 'src/app/modules/shared/navbar/navbar.component';

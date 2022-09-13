@@ -1,7 +1,9 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import 'rxjs/Rx';
 import { SearchSetting } from '../models/SearchSetting';
-import { Observable } from 'rxjs/Rx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { OperationResult } from '../models/OperationResult';
@@ -20,19 +22,19 @@ export class ReportService {
   ) { }
 
   public getReportList(): Observable<SearchSetting[]> {
-    return this.http.get(this.reportListURL).map(res => {
+    return this.http.get(this.reportListURL).pipe(map(res => {
       const items = res as SearchSetting[];
       items.forEach(x => x.dateInterval = 5);
       return items;
-    });
+    }));
   }
 
   public saveReport(report: any): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this.reportSaveURL, report, this.getOptions()).map(res => res);
+    return this.http.post<OperationResult>(this.reportSaveURL, report, this.getOptions()).pipe(map(res => res));
   }
 
   public deleteReport(report: any): Observable<OperationResult> {
-    return this.http.delete<OperationResult>(`${this.reportDeleteURL}/${report.id}`, this.getOptions()).map(res => res);
+    return this.http.delete<OperationResult>(`${this.reportDeleteURL}/${report.id}`, this.getOptions()).pipe(map(res => res));
   }
 
   private getOptions() {
@@ -43,7 +45,7 @@ export class ReportService {
   }
 
   public initTableColumns(): Observable<LogColumn[]> {
-    return Observable.of([
+    return observableOf([
       { 'name': 'time', 'beautyName': 'Time', 'hrType': 'DNS_DATETIME', 'aggsType': '', 'checked': true, hide: true },
       { 'name': 'domain', 'beautyName': 'TableColumn.Domain', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?(\.?-*\w+\.?-*)+\*?)$/i },
       { 'name': 'subdomain', 'beautyName': 'TableColumn.Subdomain', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: 'example.com or example.*', inputPattern: /^(\*?|\*?(\.?-*\w+\.?-*)+\*?)$/i },

@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CustomReportResultColumnComponent } from './customreport-result-column.component';
 
 describe('CustomReportResultColumnComponent', () => {
   let component: CustomReportResultColumnComponent;
   let fixture: ComponentFixture<CustomReportResultColumnComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CustomReportResultColumnComponent]
     }).compileComponents();

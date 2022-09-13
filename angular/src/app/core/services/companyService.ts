@@ -1,6 +1,7 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Rx";
-import "rxjs/add/operator/map";
+import { Observable } from "rxjs";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Company, CompanyUpdaterDTO} from '../models/Company';
 import { ConfigService } from './config.service';
@@ -19,20 +20,20 @@ export class CompanyService {
   }
 
   public getCompany(): Observable<Company[]> {
-    return this.http.get<Company[]>(this.getCompanyURL).map(res => res);
+    return this.http.get<Company[]>(this.getCompanyURL).pipe(map(res => res));
   }
 
   public getCompanyById(id: string | number): Observable<Company> {
     let path = `${this.getCompanyByIdURL}${id}`
-    return this.http.get<Company>(path).map(res => res)
+    return this.http.get<Company>(path).pipe(map(res => res))
   }
 
   public saveCompany(com: Company): Observable<OperationResult> {
-    return this.http.put<OperationResult>(this.saveCompanyURL, com, this.getOptions()).map(res => res);
+    return this.http.put<OperationResult>(this.saveCompanyURL, com, this.getOptions()).pipe(map(res => res));
   }
 
   public updateCompanyWithParent(com: CompanyUpdaterDTO): Observable<any> {
-    return this.http.put<any>(this.updaterCompanyURL, com, this.getOptions()).map(res=>res)
+    return this.http.put<any>(this.updaterCompanyURL, com, this.getOptions()).pipe(map(res=>res))
   }
 
   private getOptions() {

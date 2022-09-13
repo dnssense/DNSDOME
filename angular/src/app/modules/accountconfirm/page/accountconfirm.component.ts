@@ -1,3 +1,5 @@
+
+import {delay} from 'rxjs/operators';
 import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
@@ -76,7 +78,7 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
       this.accountService.activateAccount(this.accountActivateId).subscribe(() => {
         this.activated = 1;
         // this.notification.success('Account activated');
-        of(null).delay(2000).subscribe(() => {
+        of(null).pipe(delay(2000)).subscribe(() => {
           this.router.navigateByUrl('/login');
         });
       }, err => {
@@ -96,7 +98,7 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
       this.activated = 1;
       this.passwordMustChange = '';
       // this.notification.success('Account activated');
-      of(null).delay(2000).subscribe(() => {
+      of(null).pipe(delay(2000)).subscribe(() => {
         this.router.navigateByUrl('/login');
       });
     }, err => {

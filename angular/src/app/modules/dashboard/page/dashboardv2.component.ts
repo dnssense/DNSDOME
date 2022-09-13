@@ -23,7 +23,8 @@ import {TopdateComponent} from './childcomponents/topdate.component';
     selector: 'app-dashboardv2',
     templateUrl: 'dashboardv2.component.html',
     styleUrls: ['dashboard.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    providers: [DashBoardService]
 })
 export class Dashboardv2Component implements OnInit, AfterViewInit {
     constructor(private dashboardService: DashBoardService,
@@ -58,14 +59,15 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }
 
     // region init
-    private loadInitLiveReport() {
+    private loadInitLiveReport(updateGroupItems: boolean = true) {
+        updateGroupItems = updateGroupItems && (!this.selectedGroup?.datatype || this.selectedGroup?.datatype === 'total');
         const req: LiveReportRequest = {group: this.selectedGroup?.datatype, category: this.selectedCategory?.name};
         this.fetchLiveReport(req, function (res) {
-            if (!req.group) {
-                this.setUiGroupData(res);
-            }
-            this.setUiCategoriesData(res);
-            this.setUiDomainsDomain(res.domains.items, res.actions);
+                if (updateGroupItems) {
+                    this.setUiGroupData(res);
+                }
+                this.setUiCategoriesData(res);
+                this.setUiDomainsDomain(res.domains.items, res.actions);
         }.bind(this));
     }
 
@@ -83,7 +85,7 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }
 
     private setUiGroupData(res: LiveReportResponse) {
-        this.groupComponent.setDataGroup(res.groups, res.actions);
+        this.groupComponent.setDataGroup(res.groups, res.actions, res.hitstotal);
     }
 
     private setUiDomainsDomain(domains: Domain[], actions: { allow: number, block: number }) {
@@ -112,24 +114,33 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }
 
     onGroupChanged(it: GroupItemDom) {
+        this.selectGroup(it);
+        this.reloadData();
+    }
+
+    selectGroup(it: GroupItemDom) {
         this.categoryComponent.setGroup(it);
         this.domainComponent.setGroup(it);
         this.selectedGroup = it;
         this.selectedCategory = null;
-        this.reloadData();
     }
 
     onCategoryChanged(it: CategoryDom) {
         this.selectedCategory = it;
-        this.reloadData();
+        this.reloadData(false, false);
     }
 
     // endregion
 
     // region utils methodes
-    private reloadData(isInit: boolean = false) {
+    private reloadData(isInit: boolean = false, updateGroupItems: boolean = true) {
         if (this.reportType === 'livereport') {
-            this.loadInitLiveReport();
+            if(isInit){//after date and datasource change, reset group items ui with updated data
+                this.selectGroup(this.groupComponent.getGroupItem(0));
+                this.groupComponent.setActive(0);
+                this.onEmptyData();
+            }
+            this.loadInitLiveReport(updateGroupItems);
         } else {
             if (isInit) {
                 this.initLoadNotLiveReport();
@@ -156,7 +167,8 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
             const msBetweenEndDates = Math.abs(new Date().getTime() - this.selectedDate.endDate.getTime());
             const hourEndBetween = msBetweenEndDates / (60 * 60 * 1000);
             if (hourEndBetween <= 1) {
-                this.loadInitLiveReport();
+                this.reportType = 'livereport';
+                this.reloadData(true);
             }
         } else {
             const res = this.getLiveResFromAnomaly();

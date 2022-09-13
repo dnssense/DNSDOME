@@ -61,7 +61,7 @@ export class ErrorInterceptor implements ErrorHandler {
 
       const message = translatorService.translate(error.message);
       console.log(message);
-      throw error;
+      //throw error;  remove this comment to view error on your local. it causes errorinterceptor to not intercept errors.
       // if (!(message.includes('\'push\' of undefined') && error.stack.includes('reports-module'))) { // TODO: will remove; after unfound push error fixed
       //   notificationService.error('Error');
       // }

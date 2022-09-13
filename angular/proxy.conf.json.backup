@@ -3,6 +3,9 @@
     "target": "http://localhost:9030",
     "secure": false,
     "logLevel": "debug",
+    "pathRewrite": {
+      "^/api": ""
+    }
     "changeOrigin": true
   },
   "/api/profiles": {

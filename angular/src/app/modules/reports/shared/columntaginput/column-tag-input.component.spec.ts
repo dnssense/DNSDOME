@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ColumnTagInputComponent } from './column-tag-input.component';
 
 describe('ColumnTagInputComponent', () => {
   let component: ColumnTagInputComponent;
   let fixture: ComponentFixture<ColumnTagInputComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ColumnTagInputComponent]
     }).compileComponents();

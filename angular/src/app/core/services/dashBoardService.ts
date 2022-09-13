@@ -1,9 +1,9 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-// tslint:disable-next-line: import-blacklist
-import 'rxjs/Rx';
 import { SearchSetting } from '../models/SearchSetting';
 // tslint:disable-next-line: import-blacklist
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { Dashboard, TopDomainValuesRequestV4, TopDomainValuesResponseV4, TopDomainsResponseV5, TopDomainsRequestV5 } from '../models/Dashboard';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from './config.service';
@@ -59,26 +59,26 @@ export class DashBoardService {
   ) { }
 
   public getHourlyCompanySummary(request: HourlyCompanySummaryV5Request): Observable<any> {
-    return this.http.post<{ duration: number }>(this._hourlyCompanySummaryURL, request).map(res => res);
+    return this.http.post<{ duration: number }>(this._hourlyCompanySummaryURL, request).pipe(map(res => res));
   }
 
   public getLiveReport(req: LiveReportRequest): Observable<LiveReportResponse> {
-    return this.http.post<LiveReportResponse>(this._liveReportURL, req).map(res => res);
+    return this.http.post<LiveReportResponse>(this._liveReportURL, req).pipe(map(res => res));
   }
 
   public getTopDomains(request: TopDomainsRequestV5): Observable<TopDomainsResponseV5> {
-    return this.http.post<TopDomainsResponseV5>(this._topDomainURL, request).map(res => res);
+    return this.http.post<TopDomainsResponseV5>(this._topDomainURL, request).pipe(map(res => res));
   }
 
   public getTopDomainValue(request: TopDomainValuesRequestV4): Observable<TopDomainValuesResponseV4> {
-    return this.http.post<TopDomainValuesResponseV4>(this._topDomainValueURL, request).map(res => res);
+    return this.http.post<TopDomainValuesResponseV4>(this._topDomainValueURL, request).pipe(map(res => res));
   }
 
   public getDistinctAgent(request: DurationRequest): Observable<DistinctAgentResponse> {
-    return this.http.post<DistinctAgentResponse>(this._distinctAgentURL, request).map(res => res);
+    return this.http.post<DistinctAgentResponse>(this._distinctAgentURL, request).pipe(map(res => res));
   }
   public getDistinctBox(request: DurationRequest): Observable<DistinctBoxResponse> {
-    return this.http.post<DistinctBoxResponse>(this._distinctBoxURL, request).map(res => res);
+    return this.http.post<DistinctBoxResponse>(this._distinctBoxURL, request).pipe(map(res => res));
   }
 
 

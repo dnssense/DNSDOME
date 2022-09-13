@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NouisliderModule } from 'ng2-nouislider';
 import { TagInputModule } from 'ngx-chips';
 import { MaterialModule } from 'src/app/material.module';
 import { AdminLayoutComponent } from './page/adminlayout.component';
@@ -17,7 +16,6 @@ import { MdModule } from '../../shared/md/md.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    NouisliderModule,
     TagInputModule,
     MaterialModule,
     AdminLayoutRoutingModule,

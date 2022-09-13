@@ -8,25 +8,25 @@ const authlayoutRoutes: Routes = [
     component: AuthLayoutComponent,
     children: [{
       path: 'login',
-      loadChildren: '../../login/login.module#LoginModule'
+      loadChildren: () => import('../../login/login.module').then(m => m.LoginModule)
     }, {
       path: 'cytelogin',
-      loadChildren: '../../cytelogin/cytelogin.module#CyteLoginModule'
+      loadChildren: () => import('../../cytelogin/cytelogin.module').then(m => m.CyteLoginModule)
     }, {
       path: 'register',
-      loadChildren: '../../register/register.module#RegisterModule'
+      loadChildren: () => import('../../register/register.module').then(m => m.RegisterModule)
     }, {
       path: 'forgot-password-confirm',
-      loadChildren: '../../forgotpasswordconfirm/forgotpasswordconfirm.module#ForgotPasswordConfirmModule'
+      loadChildren: () => import('../../forgotpasswordconfirm/forgotpasswordconfirm.module').then(m => m.ForgotPasswordConfirmModule)
     }, {
       path: 'account-confirm',
-      loadChildren: '../../accountconfirm/accountconfirm.module#AccountConfirmModule'
+      loadChildren: () => import('../../accountconfirm/accountconfirm.module').then(m => m.AccountConfirmModule)
     }, {
       path: 'account-created-parent',
-      loadChildren: '../../createdparentconfirm/createtparentconfirm.module#CreatetparentconfirmModule'
+      loadChildren: () => import('../../createdparentconfirm/createtparentconfirm.module').then(m => m.CreatetparentconfirmModule)
     }, {
       path: '',
-      loadChildren: '../../login/login.module#LoginModule'
+      loadChildren: () => import('../../login/login.module').then(m => m.LoginModule)
     }
     ]
   }

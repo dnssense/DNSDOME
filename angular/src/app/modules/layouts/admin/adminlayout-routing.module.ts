@@ -16,7 +16,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
-        loadChildren: '../../dashboard/dashboard.module#DashboardModule'
+        loadChildren: () => import('../../dashboard/dashboard.module').then(m => m.DashboardModule)
       },
       {
         path: 'reports',
@@ -24,7 +24,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
-        loadChildren: '../../reports/reports.module#ReportsModule'
+        loadChildren: () => import('../../reports/reports.module').then(m => m.ReportsModule)
       },
       {
         path: 'deployment/dns-relay',
@@ -32,7 +32,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER'
         },
-        loadChildren: '../../devices/devices.module#DevicesModule'
+        loadChildren: () => import('../../devices/devices.module').then(m => m.DevicesModule)
       },
       {
         path: 'deployment/public-ip',
@@ -40,7 +40,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER'
         },
-        loadChildren: '../../publicip/publicip.module#PublicipModule'
+        loadChildren: () => import('../../publicip/publicip.module').then(m => m.PublicipModule)
       },
       {
         path: 'settings/profiles',
@@ -48,7 +48,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER'
         },
-        loadChildren: '../../securityprofiles/securityprofiles.module#SecurityProfilesModule'
+        loadChildren: () => import('../../securityprofiles/securityprofiles.module').then(m => m.SecurityProfilesModule)
       },
       {
         path: 'account-settings',
@@ -56,7 +56,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
-        loadChildren: '../../accountsettings/accountsettings.module#AccountSettingsModule'
+        loadChildren: () => import('../../accountsettings/accountsettings.module').then(m => m.AccountSettingsModule)
       },
       {
         path: 'settings/scheduled-reports',
@@ -65,7 +65,7 @@ const adminlayoutRoutes: Routes = [
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
         loadChildren:
-          '../../scheduledreports/scheduledreports.module#ScheduledReportsModule'
+          () => import('../../scheduledreports/scheduledreports.module').then(m => m.ScheduledReportsModule)
       },
       {
         path: 'settings/users',
@@ -73,7 +73,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER'
         },
-        loadChildren: '../../users/users.module#UsersModule'
+        loadChildren: () => import('../../users/users.module').then(m => m.UsersModule)
       },
       {
         path: 'settings/apikeys',
@@ -81,7 +81,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER'
         },
-        loadChildren: '../../apikeys/apikeys.module#ApiKeysModule'
+        loadChildren: () => import('../../apikeys/apikeys.module').then(m => m.ApiKeysModule)
       },
       {
         path: 'deployment/roaming-clients',
@@ -89,7 +89,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER'
         },
-        loadChildren: '../../roaming/roaming.module#RoamingModule'
+        loadChildren: () => import('../../roaming/roaming.module').then(m => m.RoamingModule)
       },
       {
         path: 'settings/query-category',
@@ -97,7 +97,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
-        loadChildren: '../../tools/tools.module#ToolsModule'
+        loadChildren: () => import('../../tools/tools.module').then(m => m.ToolsModule)
       },
       {
         path: 'settings/common-bwlist',
@@ -105,7 +105,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
-        loadChildren: '../../commonbwlistprofile/commonbwlistprofile.module#CommonBWListProfileModule'
+        loadChildren: () => import('../../commonbwlistprofile/commonbwlistprofile.module').then(m => m.CommonBWListProfileModule)
       },
       {
         path: 'settings/theme-mode',
@@ -113,7 +113,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
-        loadChildren: '../../theme/theme.module#ThemeModule'
+        loadChildren: () => import('../../theme/theme.module').then(m => m.ThemeModule)
       },
       {
         path: 'anomaly-detection',
@@ -121,7 +121,7 @@ const adminlayoutRoutes: Routes = [
         data: {
           expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
         },
-        loadChildren: '../../anomaly-detection/anomaly-detection.module#AnomalyDetectionModule'
+        loadChildren: () => import('../../anomaly-detection/anomaly-detection.module').then(m => m.AnomalyDetectionModule)
       },
       { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

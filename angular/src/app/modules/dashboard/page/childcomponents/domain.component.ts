@@ -20,7 +20,8 @@ interface TagInputValue {
 @Component({
     selector: 'app-dashboard-domain',
     templateUrl: 'domain.component.html',
-    styleUrls: ['../dashboard.component.scss']
+    styleUrls: ['../dashboard.component.scss'],
+    providers: [DashBoardService]
 })
 export class DomainComponent implements AfterViewInit {
     constructor(private translateService: TranslateService, private cyberxrayService: CyberXRayService,

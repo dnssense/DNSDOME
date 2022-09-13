@@ -6,7 +6,7 @@ describe('TranslatorService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: TranslatorService = TestBed.get(TranslatorService);
+    const service: TranslatorService = TestBed.inject(TranslatorService);
     expect(service).toBeTruthy();
   });
 });

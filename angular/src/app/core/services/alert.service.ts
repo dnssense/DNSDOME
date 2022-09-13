@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import swal from 'sweetalert2';
-import { Observable, of as observableOf } from 'rxjs';
+import { Observable, of as observableOf, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 declare var $: any;
@@ -52,7 +52,7 @@ export class AlertService {
   }
 
   alertMessageAndConfirmation(title: string, message: string): Observable<any> {
-   return Observable.fromPromise(swal({
+   return from(swal({
       title: title,
       text: message,
       type: 'warning',
@@ -73,7 +73,7 @@ export class AlertService {
 
   alertWarningAndCancel(title: string, message: string): Observable<boolean> {
     
-    return Observable.fromPromise(swal({
+    return from(swal({
       title: title,
       text: message,
       type: 'warning',

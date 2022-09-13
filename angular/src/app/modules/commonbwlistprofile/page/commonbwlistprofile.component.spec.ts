@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CommonBWListProfileComponent } from './commonbwlistprofile.component';
 
 
@@ -7,7 +7,7 @@ describe('CommonBWListComponent', () => {
   let component: CommonBWListProfileComponent;
   let fixture: ComponentFixture<CommonBWListProfileComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CommonBWListProfileComponent]
     })

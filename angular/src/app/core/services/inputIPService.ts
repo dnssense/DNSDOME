@@ -29,7 +29,9 @@ export class InputIPService {
   }
 
   checkIPNumber(event: KeyboardEvent|FocusEvent, inputValue: string, ipValidations?: boolean[], index?: number) {
-
+    if(!inputValue){
+         return false;
+    }
     let isIPV4 = true;
 
     const specialChars = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', 'Home', 'End', 'Control', 'Shift', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'Meta', 'OS'];
