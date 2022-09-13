@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
+import { Observable ,  of} from 'rxjs';
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { OperationResult } from '../models/OperationResult';
 import { ConfigService } from './config.service';
 import { RegisterUser } from '../models/SignupBean';
 import { RestUserUpdateRequest, RestEmptyResponse } from '../models/RestServiceModels';
-import { catchError, map, mergeMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { catchError, mergeMap, map } from 'rxjs/operators';
 import { countries } from 'countries-list';
 import { GeoLocation, GeoLocationService } from 'src/app/core/services/geoLocationService';
 
@@ -56,7 +55,7 @@ export class AccountService {
       user.language = user.language.slice(0, user.language.indexOf('-'));
     }
 
-    return this.geoLocation.getCurrent().timeout(2000).pipe(
+    return this.geoLocation.getCurrent().pipe(
       catchError(() => {
         return of(null);
       }),

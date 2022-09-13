@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Valida
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { RecaptchaComponent } from 'ng-recaptcha';
-
 import { Company } from 'src/app/core/models/Company';
 import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 import { RegisterUser, SignupBean } from 'src/app/core/models/SignupBean';
@@ -14,10 +13,9 @@ import { NotificationService } from 'src/app/core/services/notification.service'
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { GeoLocation, GeoLocationService } from '../../../core/services/geoLocationService';
-import 'rxjs/add/operator/map';
-import { catchError, map, mergeMap } from 'rxjs/operators';
-import { ArrayType } from '@angular/compiler';
-import { Observable, of } from 'rxjs';
+
+import { catchError, tap, mergeMap, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 
 declare var $: any;
@@ -118,7 +116,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
 
   }
   detectGSMCode() {
-    return this.geolocation.getCurrent().timeout(2000).pipe(
+    return this.geolocation.getCurrent().pipe(
       catchError(() => {
         this.user.gsmCode = this.host.defaultGSMCode;
         this.registerForm.controls['gsmCode'].setValue(this.user.gsmCode);

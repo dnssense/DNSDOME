@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import * as introJs from 'intro.js/intro.js';
@@ -25,7 +27,8 @@ declare let $: any;
 @Component({
   selector: 'app-publicip',
   templateUrl: './publicip.component.html',
-  styleUrls: ['./publicip.component.sass']
+  styleUrls: ['./publicip.component.sass'],
+  providers: [DashBoardService]
 })
 export class PublicipComponent implements OnInit, AfterViewInit {
 
@@ -127,7 +130,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
 
       } else {
-        this.publicIpService.getMyIp().timeout(2000).subscribe(result => {
+        this.publicIpService.getMyIp().subscribe(result => {
           this.detectedPublicIp = result;
           subscriber.next(this.detectedPublicIp);
 
@@ -444,11 +447,14 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     if (agent) {
       if (agent.rootProfile && agent.rootProfile.id > 0) {
+
+        this.saveMode = 'ProfileUpdate';
+        this.profileWizard.saveMode = this.saveMode;
         this.selectedAgent = JSON.parse(JSON.stringify(agent));
 
         this.fillSecurityProfilesArray(agent);
 
-        this.saveMode = 'ProfileUpdate';
+       
 
         this.startWizard = true;
 
@@ -485,7 +491,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     const ip0 = {} as IpWithMask;
     // wait for detecting public ip
-    return this.publicIpObs.map(ip => {
+    return this.publicIpObs.pipe(map(ip => {
 
       const findedMyPublicIp = this.publicIps.some(x => {
         if (x.staticSubnetIp) {
@@ -515,7 +521,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       this.agentModal.toggle();
 
 
-    });
+    }));
   }
 
   hideNewWizard() {
@@ -531,7 +537,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
     if (this.selectedIp && this.selectedIp.staticSubnetIp && this.selectedIp.staticSubnetIp.length > 0) {
 
-      for (let i = 1; i < this.selectedIp.staticSubnetIp.length; i++) {
+      for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
         this.selectedIp.staticSubnetIp[i].ranges = this.fillCIDR(this.selectedIp.staticSubnetIp[i].mask);
         const cname = 'ip' + i;
         this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
@@ -775,6 +781,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
   rkSelectButtonClicked($event: { clicked: boolean }) {
     this.saveMode = 'NewProfile';
+    this.profileWizard.saveMode = this.saveMode;
     this.selectedAgent = JSON.parse(JSON.stringify(this.selectedIp));
     this.selectedAgent.rootProfile = new SecurityProfile();
     this.currentStep = 1;

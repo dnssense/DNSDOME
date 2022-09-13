@@ -1,7 +1,9 @@
+
+import {filter} from 'rxjs/operators';
 import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Location } from '@angular/common';
 //import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
 import { AlertService } from 'src/app/core/services/alert.service';
@@ -51,7 +53,8 @@ declare var $: any;
 @Component({
     selector: 'app-navbar-cmp',
     templateUrl: 'navbar.component.html',
-    styleUrls: ['navbar.component.scss']
+    styleUrls: ['navbar.component.scss'],
+    providers: [NotificationApiService]
 })
 
 export class NavbarComponent implements OnInit {
@@ -131,7 +134,7 @@ export class NavbarComponent implements OnInit {
         console.log(this.currentUser.parentId)
         console.log(this.currentUser.id)
 
-        this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
+        this._router = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
 
             const url = event.url;
 

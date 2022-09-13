@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { DEFAULT_INTERRUPTSOURCES, Idle } from '@ng-idle/core';
 import { Keepalive } from '@ng-idle/keepalive';
-import { JwtHelper } from 'angular2-jwt';
 import decodeJWT from 'jwt-decode';
 import { interval, Observable, Subject, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
@@ -33,7 +32,6 @@ export class AuthenticationService {
   private preloginUrl = this.configuration.getApiUrl() + '/user/prelogin';
 
   public currentSession: Session;
-  private jwtHelper: JwtHelper = new JwtHelper();
   private refreshTokenTimer: Observable<any>;
   currentUserPropertiesChanged: Subject<any>;
   clientId: 'if you see me';
@@ -232,10 +230,10 @@ export class AuthenticationService {
   prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
 
     return this.http.
-      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass }, this.getHttpOptions())
-      .map(res => {
+      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass }, this.getHttpOptions()).pipe(
+      map(res => {
         return res;
-      });
+      }));
 
   }
 
@@ -342,8 +340,8 @@ export class AuthenticationService {
   }
 
   forgotPassword(signupBean: SignupBean): Observable<OperationResult> {
-    return this.http.post<OperationResult>(this._forgotPasswordSendURL, signupBean, this.getHttpOptions())
-      .map(res => res);
+    return this.http.post<OperationResult>(this._forgotPasswordSendURL, signupBean, this.getHttpOptions()).pipe(
+      map(res => res));
   }
 
   forgotPasswordConfirm(key: string, password: string, passwordAgain: string): Observable<OperationResult> {

@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { Subject } from 'rxjs';
@@ -102,15 +104,14 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
       { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
       { id: 6, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
       { id: 7, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), isLink: true },
-      { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
-      { id: 9, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
-      { id: 10, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
-      { id: 11, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
-      { id: 12, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
-      { id: 13, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
-      { id: 14, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
-      { id: 15, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      { id: 16, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
+      { id: 8, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
+      { id: 9, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
+      { id: 10, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
+      { id: 11, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
+      { id: 12, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
+      { id: 13, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
+      { id: 14, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
+      { id: 15, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
     ],
     rows: [],
     selectableRows: true,
@@ -165,7 +166,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   }
 
   fillResultTable(searchSetting: SearchSetting) {
-    this.customReportService.getData(searchSetting).takeUntil(this.ngUnsubscribe).subscribe((res: Response) => {
+    this.customReportService.getData(searchSetting).pipe(takeUntil(this.ngUnsubscribe)).subscribe((res: Response) => {
       if (res['searchSetting'] != null) {
         this.searchSetting = res['searchSetting'];
       }

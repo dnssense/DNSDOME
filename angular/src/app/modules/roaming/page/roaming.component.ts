@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as isip from 'is-ip';
@@ -414,10 +416,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
     getConfParameters() {
 
-        return this.boxService.getVirtualBox().map(res => {
+        return this.boxService.getVirtualBox().pipe(map(res => {
             this.virtualBox = res;
             this.fillBoxDefaultSettings(this.virtualBox);
-        });
+        }));
     }
 
     showEditWizard(id: number) {

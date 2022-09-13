@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { currentId } from 'async_hooks';
-import { Observable, of } from 'rxjs';
-import 'rxjs/add/observable/of';
+import { Observable, of as observableOf } from 'rxjs';
+
+import { map, timeout } from 'rxjs/operators';
 export interface GeoLocation {
     ip: string;
     city: string;
@@ -28,10 +27,10 @@ export class GeoLocationService {
         this.current = null;
     }
     getCurrent(): Observable<GeoLocation> {
-        if (this.current) return Observable.of(this.current);
-        return this.http.get<GeoLocation>('https://ipapi.co/json').map(x => {
+        if (this.current) return observableOf(this.current);
+        return this.http.get<GeoLocation>('https://ipapi.co/json').pipe(timeout(2000), map(x => {
             this.current = x;
             return this.current;
-        });
+        }));
     }
 };

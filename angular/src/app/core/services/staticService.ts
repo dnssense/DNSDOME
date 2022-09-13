@@ -1,6 +1,8 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
+
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { CategoryV2 } from '../models/CategoryV2';
@@ -18,14 +20,14 @@ export class StaticService {
   constructor(private http: HttpClient, private config: ConfigService) { }
 
   getCategoryList(): Observable<CategoryV2[]> {
-    return this.http.get<CategoryV2[]>(this.categoryListURL).map(res => res);
+    return this.http.get<CategoryV2[]>(this.categoryListURL).pipe(map(res => res));
   }
 
   getApplicationList(): Observable<ApplicationV2[]> {
-    return this.http.get<ApplicationV2[]>(this.applicationListURL).map(res => res);
+    return this.http.get<ApplicationV2[]>(this.applicationListURL).pipe(map(res => res));
   }
 
   getCategoryMapping(): Observable<{ [index: string]: string[] }> {
-    return this.http.get<{[index: string]: string[]}>(this.mappingURL).map(res => res);
+    return this.http.get<{[index: string]: string[]}>(this.mappingURL).pipe(map(res => res));
   }
 }

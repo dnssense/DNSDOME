@@ -3,13 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { DndModule } from 'ng2-dnd';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
-import { OverlayPanelModule } from 'primeng/primeng';
 import { IconsModule, RkAutoCompleteModule, RkCheckboxModule, RkDateModule, RkFilterBadgeModule, RkModalModule, RkProgressBarModule, RkRadioModule, RkSelectModule, RkTableModule } from 'roksit-lib';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
@@ -47,12 +45,10 @@ import { TextLimitComponent } from './shared/textlimit/text-limit.component';
     NgApexchartsModule,
     ReportsRoutingModule,
     PipesModule,
-    DndModule.forRoot(),
     CollapseModule.forRoot(),
     PopoverModule.forRoot(),
     PaginationModule.forRoot(),
     TooltipModule.forRoot(),
-    OverlayPanelModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

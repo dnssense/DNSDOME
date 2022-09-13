@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RegisterComponent } from './page/register.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NouisliderModule } from 'ng2-nouislider';
 import { TagInputModule } from 'ngx-chips';
 import { SelectModule } from 'ng2-select';
 import { MaterialModule } from 'src/app/material.module';
@@ -23,7 +22,6 @@ import { RecaptchaModule } from 'ng-recaptcha';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    NouisliderModule,
     TagInputModule,
     MaterialModule,
     RecaptchaModule,

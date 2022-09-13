@@ -1,8 +1,9 @@
+
+import {of as observableOf, Observable, Subscriber} from 'rxjs';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import {Observable, Subscriber} from 'rxjs';
 import {Agent} from 'src/app/core/models/Agent';
 import {AgentType} from 'src/app/core/models/AgentType';
 import {Box} from 'src/app/core/models/Box';
@@ -649,7 +650,7 @@ export class DevicesComponent implements OnInit {
     if (selectedGroupAgentsRemoved.length)
       observable = this.agentService.deleteAgentDevice(selectedGroupAgentsRemoved.map(x => x.id))
     else
-      observable = Observable.of([]);
+      observable = observableOf([]);
 
     observable.subscribe(x => {
 

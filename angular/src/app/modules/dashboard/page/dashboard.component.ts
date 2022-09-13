@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {DashBoardService, DistinctAgentResponse, DistinctBoxResponse} from 'src/app/core/services/dashBoardService';
 
@@ -51,7 +53,8 @@ export interface RkDateButton {
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [DashBoardService]
 })
 export class DashboardComponent implements OnInit {
 
@@ -243,29 +246,29 @@ export class DashboardComponent implements OnInit {
 
     // wait all requests to finish
     return forkJoin(
-      this.agentService.getAgentLocation().map(x => {
+      this.agentService.getAgentLocation().pipe(map(x => {
         x.forEach(y => agentsLocation.push(y));
-      }),
-      this.roamingService.getClients().map(x => {
+      })),
+      this.roamingService.getClients().pipe(map(x => {
         x.forEach(y => agentsRoamingClient.push(y));
-      }),
+      })),
 
-      this.boxService.getBoxes().map(x => {
+      this.boxService.getBoxes().pipe(map(x => {
         x.forEach(y => {
           if (y.agent) {
             agentsBox.push(y.agent);
           }
         });
         x.forEach(y => boxes.push(y));
-      }),
+      })),
 
-      this.dashboardService.getDistinctAgent({ duration: 24 }).map(x => {
+      this.dashboardService.getDistinctAgent({ duration: 24 }).pipe(map(x => {
         x.items.forEach(y => distinctAgents.items.push(y));
-      }),
-      this.dashboardService.getDistinctBox({ duration: 24 }).map(x => {
+      })),
+      this.dashboardService.getDistinctBox({ duration: 24 }).pipe(map(x => {
         x.items.forEach(y => distinctBoxs.items.push(y));
-      })
-    ).map(() => {
+      }))
+    ).pipe(map(() => {
       const publicip: AgentCountModel = { name: 'PageName.PublicIp', activeCount: 0, passiveCount: 0, link: '/admin/deployment/public-ip' };
       const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0, link: '/admin/deployment/roaming-clients'};
 
@@ -313,7 +316,7 @@ export class DashboardComponent implements OnInit {
 
       this.agentCounts = [];
       this.agentCounts = [publicip, roamingclient, dnsrelay];
-    });
+    }));
   }
 
   setDateByDateButton(dateButtonItem: RkDateButton) {
@@ -332,7 +335,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getTopDomains(request: TopDomainsRequestV5) {
-    return this.dashboardService.getTopDomains(request).map(result => {
+    return this.dashboardService.getTopDomains(request).pipe(map(result => {
       // reset everything
       this.topDomains = [];
       this.items = [];
@@ -355,7 +358,7 @@ export class DashboardComponent implements OnInit {
           }
         });
       }
-    });
+    }));
   }
 
   infoboxChanged($event: { active: boolean }, type: 'total' | 'safe' | 'malicious' | 'variable' | 'restricted', selectedCategoryName: string) {
@@ -880,7 +883,7 @@ export class DashboardComponent implements OnInit {
 
   private getTrafficAnomaly(request: HourlyCompanySummaryV5Request) {
 
-    return this.dashboardService.getHourlyCompanySummary(request).map(result => {
+    return this.dashboardService.getHourlyCompanySummary(request).pipe(map(result => {
       if (result) {
         this.trafficAnomaly = result;
 
@@ -894,7 +897,7 @@ export class DashboardComponent implements OnInit {
         this.drawChartAnomaly();
       }
 
-    });
+    }));
 
 
 

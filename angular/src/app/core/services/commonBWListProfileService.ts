@@ -1,6 +1,9 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Box } from '../models/Box';
 import { CommonBWListProfile } from '../models/CommonBWListProfile';
 import { LogColumn } from '../models/LogColumn';
@@ -28,12 +31,12 @@ export class CommonBWListProfileService {
     getCommonBWListProfile(page: number, pageSize: number): Observable<GetResponse> {
         const params = new HttpParams().set('page', page.toString()).set('pageSize', pageSize.toString());
 
-        return this.http.get<GetResponse>(this.getList, { params }).map(data => data);
+        return this.http.get<GetResponse>(this.getList, { params }).pipe(map(data => data));
     }
     searchCommonBWListProfile(domain: string, page: number, pageSize: number): Observable<{ items: CommonBWListProfile[], count: number }> {
         const params = new HttpParams().set('domain', domain).set('page', page.toString()).set('pageSize', pageSize.toString());
 
-        return this.http.get<any>(this.getList, { params }).map(data => data);
+        return this.http.get<any>(this.getList, { params }).pipe(map(data => data));
     }
 
     saveCommonBWListProfile(items: CommonBWListProfile[]) {
@@ -43,7 +46,7 @@ export class CommonBWListProfileService {
     deleteCommonBWListProfile(items: CommonBWListProfile[]): Observable<GetResponse> {
         const params = new HttpParams().set('domains', items.map(x => x.domain).join(','))
 
-        return this.http.delete<GetResponse>(this.getList, { params }).map(data => data);
+        return this.http.delete<GetResponse>(this.getList, { params }).pipe(map(data => data));
     }
 
 
@@ -56,7 +59,7 @@ export class CommonBWListProfileService {
     }
 
     public initTableColumns(): Observable<LogColumn[]> {
-        return Observable.of([
+        return observableOf([
             { 'name': 'id', 'beautyName': 'Id', 'hrType': '', 'aggsType': 'TERM', 'checked': true, inputPattern: /^[a-z0-9@_*?-]*$/i },
             { 'name': 'domain', 'beautyName': 'Domain', 'hrType': '', 'aggsType': 'TERM', 'checked': true, inputPattern: /^[a-z0-9@_*?-]*$/i },
             { 'name': 'isBlocked', 'beautyName': 'IsBlocked', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '1 or 0', inputPattern: /^[01]$/ },

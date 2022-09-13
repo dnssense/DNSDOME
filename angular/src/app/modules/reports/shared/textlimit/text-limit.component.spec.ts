@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TextLimitComponent } from './text-limit.component';
 
 describe('TextLimitComponent', () => {
   let component: TextLimitComponent;
   let fixture: ComponentFixture<TextLimitComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TextLimitComponent]
     })

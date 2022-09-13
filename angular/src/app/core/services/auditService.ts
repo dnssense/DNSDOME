@@ -1,7 +1,10 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs/Rx';
 import { AuditData, AuditResponse, AuditSearchRequest } from '../models/AuditSearch';
 import { SearchSetting } from '../models/SearchSetting';
 import { AuthenticationService } from './authentication.service';
@@ -36,8 +39,8 @@ export class AuditService {
 
     const theme = this.configService.getThemeColor(this.authenticationService.currentSession?.currentUser?.id) || 'dark';
     return this.http
-      .post(this._audit, body, this.getOptions())
-      .map((res: AuditResponse) => {
+      .post(this._audit, body, this.getOptions()).pipe(
+      map((res: AuditResponse) => {
 
         res.result.map(x => {
           const items = this.tryParse(x.messageDetail);
@@ -49,7 +52,7 @@ export class AuditService {
           return x;
         });
         return res;
-      });
+      }));
 
   }
 
@@ -72,7 +75,7 @@ export class AuditService {
   }
 
   public initTableColumns(): Observable<LogColumn[]> {
-    return Observable.of([
+    return observableOf([
       { 'name': 'time', 'beautyName': 'AuditTableColumn.Time', 'hrType': 'DNS_DATETIME', 'aggsType': '', 'checked': true, hide: true },
       { 'name': 'username', 'beautyName': 'AuditTableColumn.Username', 'hrType': '', 'aggsType': 'TERM', 'checked': true, inputPattern: /^[a-z0-9@_*?-]*$/i },
       { 'name': 'isApiKey', 'beautyName': 'AuditTableColumn.IsApiKey', 'hrType': '', 'aggsType': 'TERM', 'checked': true, placeholder: '1 or 0', inputPattern: /^[01]$/ },

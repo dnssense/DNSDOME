@@ -1,6 +1,9 @@
+
+import {from as observableFrom,  Observable } from 'rxjs';
+
+import {last, concatMap, map} from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { AgentConf } from 'src/app/modules/roaming/page/roaming.component';
 import { Agent, AgentDetail } from '../models/Agent';
 import { DeviceGroup } from '../models/DeviceGroup';
@@ -40,61 +43,61 @@ export class AgentService {
 
   getRegisteredDevices(): Observable<Agent[]> {
 
-    return this.http.get<Agent[]>(this.getRegisteredURL).map(data => data);
+    return this.http.get<Agent[]>(this.getRegisteredURL).pipe(map(data => data));
   }
 
   getUnregisteredDevices(): Observable<DeviceResponse[]> {
 
-    return this.http.get<DeviceResponse[]>(this.getUnregisteredURL).map(data => data);
+    return this.http.get<DeviceResponse[]>(this.getUnregisteredURL).pipe(map(data => data));
   }
   deleteUnregisteredDevices(mac: string): Observable<DeviceResponse[]> {
 
-    return this.http.delete<DeviceResponse[]>(this.deleteUnregisteredURL + '/' + mac.replace(`:`, ``).toLowerCase()).map(data => data);
+    return this.http.delete<DeviceResponse[]>(this.deleteUnregisteredURL + '/' + mac.replace(`:`, ``).toLowerCase()).pipe(map(data => data));
   }
   saveAgentDevice(devices: DeviceGroup): Observable<Agent> {
 
-    return Observable.from(devices.agents).concatMap(x => {
+    return observableFrom(devices.agents).pipe(concatMap(x => {
 
       x.agentGroup = devices.agentGroup;
       x.rootProfile = devices.rootProfile;
 
-      return this.http.post<Agent>(this.saveDeviceURL, x, this.getOptions()).map(data => data);
-    }).map(x => x).last();
+      return this.http.post<Agent>(this.saveDeviceURL, x, this.getOptions()).pipe(map(data => data));
+    }),map(x => x),last(),);
 
   }
 
   deleteAgentDevice(ids: number[]): Observable<{}> {
 
-    return Observable.from(ids).concatMap(id =>
+    return observableFrom(ids).pipe(concatMap(id =>
       this.http.delete<{}>(this.deleteDeviceURL + `/${id}`, this.getOptions())
-    ).map(x => x).last();
+    ),map(x => x),last(),);
 
   }
 
   getAgentLocation(): Observable<Agent[]> {
-    return this.http.get<Agent[]>(this.getAgentsURL).map(data => data);
+    return this.http.get<Agent[]>(this.getAgentsURL).pipe(map(data => data));
   }
 
   saveAgentLocation(agent: Agent): Observable<Agent> {
 
-    return this.http.post<Agent>(this.saveAgentURL, agent, this.getOptions()).map(data => data);
+    return this.http.post<Agent>(this.saveAgentURL, agent, this.getOptions()).pipe(map(data => data));
   }
 
   deleteAgent(id: number): Observable<{}> {
-    return this.http.delete<{}>(this.deleteAgentURL + `/${id}`, this.getOptions()).map(res => res);
+    return this.http.delete<{}>(this.deleteAgentURL + `/${id}`, this.getOptions()).pipe(map(res => res));
   }
 
   getSecurityProfiles(): Observable<SecurityProfile[]> {
-    return this.http.get<SecurityProfile[]>(this.getSecurityProfilesURL).map(data => data);
+    return this.http.get<SecurityProfile[]>(this.getSecurityProfilesURL).pipe(map(data => data));
   }
 
   saveSecurityProfile(p: SecurityProfile): Observable<SecurityProfile> {
-    return this.http.post<SecurityProfile>(this.saveSecurityProfileURL, p, this.getOptions()).map(res => res);
+    return this.http.post<SecurityProfile>(this.saveSecurityProfileURL, p, this.getOptions()).pipe(map(res => res));
 
   }
 
   deleteSecurityProfile(id: number): Observable<{}> {
-    return this.http.delete<{}>(this.deleteSecurityProfileURL + `/${id}`, this.getOptions()).map(res => res);
+    return this.http.delete<{}>(this.deleteSecurityProfileURL + `/${id}`, this.getOptions()).pipe(map(res => res));
   }
 
   getOptions() {
@@ -106,11 +109,11 @@ export class AgentService {
   }
 
   getAgentAlives(uuids: string[]): Observable<{ clients?: string[] }> {
-    return this.http.post<any>(this.getAgentAliveUrl, { agentSerials: uuids.join(',') }, this.getOptions()).map(res => res);
+    return this.http.post<any>(this.getAgentAliveUrl, { agentSerials: uuids.join(',') }, this.getOptions()).pipe(map(res => res));
   }
 
   getAgentInfo(uuids: string[]): Observable<{ infos?: AgentDetail[] }> {
-    return this.http.post<any>(this.getAgentInfoUrl, { agentSerials: uuids.join(',') }, this.getOptions()).map(res => res);
+    return this.http.post<any>(this.getAgentInfoUrl, { agentSerials: uuids.join(',') }, this.getOptions()).pipe(map(res => res));
   }
 
   saveAgentConf(uuid: string, conf: AgentConf): Observable<any> {
@@ -122,7 +125,7 @@ export class AgentService {
       items: AgentConfItem[];
     }
 
-    return this.http.post(this.agentConfUrl, { items: [{ agentSerial: uuid, conf: conf }] }, this.getOptions()).map(res => res);
+    return this.http.post(this.agentConfUrl, { items: [{ agentSerial: uuid, conf: conf }] }, this.getOptions()).pipe(map(res => res));
   }
 
 

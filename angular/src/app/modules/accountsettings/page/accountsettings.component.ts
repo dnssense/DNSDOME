@@ -12,16 +12,11 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { CompanyService } from 'src/app/core/services/companyService';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { SmsService } from 'src/app/core/services/smsService';
-// import { SmsInformation } from 'src/app/core/models/SmsInformation';
-import { SmsType } from 'src/app/core/models/SmsType';
 import { RestSmsResponse, RestSmsConfirmRequest, RestUserUpdateRequest } from 'src/app/core/models/RestServiceModels';
-import { LoggerService } from 'src/app/core/services/logger.service';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { countries } from 'src/app/core/models/Countries';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { TranslateService } from '@ngx-translate/core';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ConfigService } from '../../../core/services/config.service';
+import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -88,7 +83,7 @@ export class AccountSettingsComponent implements OnInit {
     validPasswordRegister: true | false;
     matcher = new MyErrorStateMatcher();
     current2FAPreference: boolean;
-    endTime: Date;
+    countdownConfig: CountdownConfig;
     isTimeSetted = false;
     maxRequest = 3;
     private smsInformation: RestSmsResponse;
@@ -349,10 +344,13 @@ export class AccountSettingsComponent implements OnInit {
         if (this.user.gsm && this.user.gsmCode) {
             const request: RestUserUpdateRequest = {};
             request.isTwoFactorAuthentication = this.user.twoFactorAuthentication ? 0 : 1;
+            const notifMsg: string = this.user.twoFactorAuthentication ?
+                this.staticMessageService.twoFactorAuthenticationMessageDisabled :
+                this.staticMessageService.twoFactorAuthenticationMessageEnabled;
 
             this.accountService.update(request).subscribe(res => {
                 this.user.twoFactorAuthentication = !this.user.twoFactorAuthentication;
-                this.notification.success(this.staticMessageService.twoFactorAuthenticationMessage);
+                this.notification.success(notifMsg);
                 this.authService.saveSession();
             });
         } else {
@@ -383,8 +381,9 @@ export class AccountSettingsComponent implements OnInit {
                 this.maxRequest = 3;
                 this.notificationIndex = 0;
                 this.isConfirmTimeEnded = false;
-                this.endTime = new Date();
-                this.endTime.setMinutes(new Date().getMinutes() + 2);
+                this.countdownConfig = {
+                    stopTime: new Date().getTime() + 1000 * 120
+                };
                 this.isTimeSetted = true;
                 this.isSmsConfirming = true;
             });
@@ -438,8 +437,9 @@ export class AccountSettingsComponent implements OnInit {
         }
     }
 
-    timeEnd() {
-        if (this.isTimeSetted && this.notificationIndex < 1) {
+    timeEnd(e: CountdownEvent) {
+        if (this.isTimeSetted && this.notificationIndex < 1 && e && e.action === 'done') {
+            this.countdownConfig = undefined;
             this.notification.error(this.staticMessageService.confirmationTimeIsUpMessage);
             // location.reload();
             this.notificationIndex++;

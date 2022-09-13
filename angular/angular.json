@@ -10,14 +10,13 @@
       "prefix": "app",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "sass"
+          "style": "sass"
         }
       },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "aot": true,
             "outputPath": "dist/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -29,7 +28,6 @@
             ],
             "styles": [
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "node_modules/angular-calendar/scss/angular-calendar.scss",
               "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/intro.js/introjs.css",
               "node_modules/roksit-lib/assets/scss/roksit.core.scss",
@@ -51,7 +49,6 @@
               "node_modules/chartist-plugin-zoom/dist/chartist-plugin-zoom.js",
               "node_modules/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js",
               "node_modules/bootstrap-notify/bootstrap-notify.js",
-              "node_modules/nouislider/distribute/nouislider.min.js",
               "node_modules/bootstrap-select/dist/js/bootstrap-select.js",
               "node_modules/fullcalendar/dist/fullcalendar.js",
               "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.js",
@@ -66,7 +63,21 @@
               "node_modules/select2/dist/js/select2.full.min.js",
               "node_modules/waypoints/lib/jquery.waypoints.min.js",
               "node_modules/waypoints/lib/shortcuts/sticky.min.js"
-            ]
+            ],
+            "allowedCommonJsDependencies": [
+              "tldjs",
+              "is-ip",
+              "validator",
+              "ng9-odometer-next",
+              "raf",
+              "core-js"
+            ],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -79,9 +90,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -93,7 +102,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -123,10 +133,7 @@
             "styles": [
               "src/styles.sass",
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "node_modules/angular-calendar/scss/angular-calendar.scss",
-              "node_modules/sweetalert2/src/sweetalert2.scss",
-              "src/assets/css/demo.css",
-              "src/assets/scss/material-dashboard.scss"
+              "node_modules/sweetalert2/src/sweetalert2.scss"
             ],
             "scripts": [
               "node_modules/lodash/lodash.min.js",
@@ -143,7 +150,6 @@
               "node_modules/chartist-plugin-zoom/dist/chartist-plugin-zoom.js",
               "node_modules/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js",
               "node_modules/bootstrap-notify/bootstrap-notify.js",
-              "node_modules/nouislider/distribute/nouislider.min.js",
               "node_modules/bootstrap-select/dist/js/bootstrap-select.js",
               "node_modules/fullcalendar/dist/fullcalendar.js",
               "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.js",
@@ -207,7 +213,7 @@
   "defaultProject": "dnssense",
   "schematics": {
     "@schematics/angular:component": {
-      "styleext": "scss"
+      "style": "scss"
     }
   },
   "cli": {
