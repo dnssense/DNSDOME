@@ -69,8 +69,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
     Validators.required,
     Validators.email,
   ]);
-  @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
-  captcha: string;
+  @ViewChild('forgotPassCaptcha') forgotPassCaptchaComponent: RecaptchaComponent;
+  forgotPassCaptcha: string;
+
+  @ViewChild('loginCaptcha') loginCaptchaComponent: RecaptchaComponent;
+  loginCaptcha: string;
+  loginCaptchaRequired: boolean;
 
   countdownConfig: CountdownConfig;
   captcha_key: string;
@@ -116,10 +120,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
 
   login() {
+    if (this.loginCaptchaRequired && !this.capthaService.validCaptcha(this.loginCaptcha)) {
+      this.notification.warning(this.staticMessageService.captchaIsNotValid);
+      return;
+    }
     if (this.loginForm.valid) {
       this.isFailed = false;
 
-      this.authService.prelogin(this.email, this.password).subscribe(
+      this.authService.prelogin(this.email, this.password, this.loginCaptcha).subscribe(
         val => {
           if (val.user.isTwoFactorAuthentication) {
             this.open2FA(val);
@@ -129,10 +137,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
               //this.router.navigateByUrl('admin/deployment/roaming-clients');
             });
           }
+          this.loginCaptchaRequired = false;
         },
         (err) => {
+          this.loginCaptchaComponent?.reset();
           if (err.status == 401)
             this.isFailed = true;
+          else if(err?.error?.code === 'ErrRequireRecaptcha'){
+            this.loginCaptchaRequired = true;
+          }
           else
             throw err;
         }
@@ -239,13 +252,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   }
 
-  handleCaptcha($event) {
+  handleLoginCaptcha($event) {
 
-    this.captcha = $event;
+    this.loginCaptcha = $event;
+  }
+
+  handleForgotPassCaptcha($event) {
+
+    this.forgotPassCaptcha = $event;
   }
 
   sendPasswordActivationCode() {
-    if (!this.capthaService.validCaptcha(this.captcha)) {
+    if (!this.capthaService.validCaptcha(this.forgotPassCaptcha)) {
       this.notification.warning(this.staticMessageService.captchaIsNotValid);
       return;
     }
@@ -259,7 +277,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       forgoter.username = this.forgoterEmail;
 
 
-      forgoter.c_answer = this.captcha;
+      forgoter.c_answer = this.forgotPassCaptcha;
 
 
       this.authService.forgotPassword(forgoter).subscribe(res => {
@@ -267,7 +285,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.notification.success(this.staticMessageService.passwordResetLinkSendedPleaseCheckYourEmail);
         this.router.navigateByUrl('/login');
         this.openLogin();
-        this.captchaComponent.reset();
+        this.forgotPassCaptchaComponent.reset();
 
       });
     }
