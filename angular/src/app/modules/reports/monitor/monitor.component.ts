@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { MonitorResultComponent, LinkClick } from './result/monitor-result.component';
+import { MonitorResultComponent } from './result/monitor-result.component';
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
 import { RoksitSearchComponent, FilterBadgeModel } from '../../shared/roksit-search/roksit-search.component';
 import { Location } from '@angular/common';
@@ -10,6 +10,7 @@ import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { ReportService } from 'src/app/core/services/reportService';
 import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import {StaticService} from '../../../core/services/staticService';
+import { ActionClick } from 'roksit-lib';
 
 export interface MonitorReportRouteParams {
   startDate?: string;
@@ -142,7 +143,7 @@ export class MonitorComponent implements OnInit, AfterViewInit {
     this.roksitSearchComponent.setSearchSetting(this.searchSettings);
   }
 
-  linkClicked($event: LinkClick) {
+  actionClicked($event: ActionClick) {
     const filter = this.filters.find(x => x.name === $event.columnModel.name);
 
     if (filter) {

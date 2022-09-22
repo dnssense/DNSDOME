@@ -4,7 +4,7 @@ import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnDest
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
-import { RkTableColumnModel, RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { ActionClick, RkTableColumnModel, RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { Subject } from 'rxjs';
 import { AuditData, AuditResponse } from 'src/app/core/models/AuditSearch';
 import { LogColumn } from 'src/app/core/models/LogColumn';
@@ -16,11 +16,6 @@ import { ReportService } from 'src/app/core/services/reportService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
-
-export interface LinkClick {
-  columnModel: RkTableColumnModel;
-  value: string;
-}
 
 @Component({
   selector: 'app-audit-result',
@@ -59,14 +54,18 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
   tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
 
   tableConfig: RkTableConfigModel = {
+    copyText: {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')},
+    defaultActionText: {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')},
+    filterColumnText: this.translateService.translate('ColumnsToDisplay'),
+    cellDataMaxLen: 30,
     columns: [
-      { id: 0, name: 'time', displayText: this.translateService.translate('AuditTableColumn.Time'), isLink: true },
-      { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), isLink: true },
-      { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), isLink: true },
-      { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), isLink: true },
-      { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), isLink: true },
-      { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), isLink: true },
-      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), isLink: false, isPopover: true },
+      { id: 0, name: 'time', displayText: this.translateService.translate('AuditTableColumn.Time'), showAction: true },
+      { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), showAction: true },
+      { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), showAction: true },
+      { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
+      { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
+      { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
+      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true, hiddenCopy: true },
     ],
     rows: [],
     selectableRows: true
@@ -80,7 +79,7 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
 
   @Output() public tableColumnsChanged = new EventEmitter();
 
-  @Output() linkClickedOutput = new EventEmitter<LinkClick>();
+  @Output() actionClickedOutput = new EventEmitter<ActionClick>();
 
   ngOnInit() { }
 
@@ -122,13 +121,17 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
   }
 
   private changeColumnNames() {
+    this.tableConfig.copyText = {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')};
+    this.tableConfig.defaultActionText = {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')};
+    this.tableConfig.filterColumnText = this.translateService.translate('ColumnsToDisplay');
+
     this.tableConfig.columns = [
-      { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), isLink: true },
-      { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), isLink: true },
-      { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), isLink: true },
-      { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), isLink: true },
-      { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), isLink: true },
-      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), isLink: false },
+      { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), showAction: true },
+      { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), showAction: true },
+      { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
+      { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
+      { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
+      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, hiddenCopy: true },
     ];
   }
 
@@ -243,7 +246,7 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
     this.refresh(this.searchSetting);
   }
 
-  linkClicked($event: LinkClick) {
-    this.linkClickedOutput.emit($event);
+  actionClicked($event: ActionClick) {
+    this.actionClickedOutput.emit($event);
   }
 }

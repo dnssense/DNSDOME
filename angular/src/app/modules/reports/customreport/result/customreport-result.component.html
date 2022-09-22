@@ -14,6 +14,7 @@
 
                         <rk-table (pageChange)="onPageChange($event)" [totalCount]="100"
                             [pageViewCount]="searchSetting.topNumber" [paginationOptions]="paginationOptions"
+                            [isArrowVisible]="true"
                             (pageViewCountChange)="onPageViewCountChange($event)" [paginationSelectDirection]="'up'">
                             <ng-template #header>
                                 <tr>
@@ -28,53 +29,26 @@
                                         </button>
                                     </th>
                                     <th scope="col">
-                                        Count
+                                        {{'Count' | translate}}
                                         <button class="table-btn ripple" (click)="sort(null, selectedColumns.length)"
                                             [ngClass]="{'sort-icon-transformed': sortDirection === 'desc' && sortedColumn === col?.column?.name, 'active': sortedColumn === col?.column?.name }">
                                             <icon-sort></icon-sort>
                                         </button>
                                     </th>
                                     <th scope="col">
-                                        Percent
+                                        {{'Percent' | translate}}
                                     </th>
                                 </tr>
                             </ng-template>
 
                             <ng-template #body>
-                                <tr *ngFor="let dat of data;let i = index" [ngClass]="{'selected': dat.selected}">
+                                <tr *ngFor="let dat of tableConfig?.rows;let i = index" [ngClass]="{'selected': dat.selected}">
                                     <td class="index">
                                         <rk-checkbox [(value)]="dat.selected"></rk-checkbox>
                                     </td>
                                     <td *ngFor="let col of selectedColumns; let colIndex = index">
-                                        <ng-container *ngIf="isLink(col.column.name); else elseTemplate">
-                                            <a *ngIf="dat[colIndex] !== 'Others' && 'domain' === col.column.name"
-                                                (click)="cyberxray($event,dat[colIndex])" target="_blank" class="Oval">
-                                                <img src="../../../../../assets/img/CyberxIcon.svg" alt=""
-                                                    class="Shape"></a>
-                                            <button class="btn btn-link table-link-button"
-                                                style="background: transparent;"
-                                                (click)="linkClicked(col.column.name, dat[colIndex])">
-                                                <ng-container *ngIf="col.column.name === 'time'; else elseTimeTemplate">
-                                                    {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
-                                                </ng-container>
-
-                                                <ng-template #elseTimeTemplate>
-                                                    {{ col.column.name === 'action' ? ( dat[colIndex] ? (
-                                                    dat[colIndex]=='true'? 'Allow' : 'Deny'):'' ) : dat[colIndex] }}
-                                                </ng-template>
-                                            </button>
-                                        </ng-container>
-
-                                        <ng-template #elseTemplate>
-                                            <ng-container *ngIf="col === 'time'; else elseTimeTemplate2">
-                                                {{ dat[colIndex] | date: 'yyyy-MM-dd HH:mm:ss' }}
-                                            </ng-container>
-
-                                            <ng-template #elseTimeTemplate2>
-                                                {{ col.column.name === 'action' ? ( dat[colIndex] ? 'Allow' : 'Deny' ) :
-                                                dat[colIndex] }}
-                                            </ng-template>
-                                        </ng-template>
+                                        <rk-table-default-cell [row]="dat" [col]="selectedRkColumns[colIndex]" [config]="tableConfig" (actionColumnClicked)="actionClicked($event)" 
+                                          (navigationDomainClicked)="getNavigateByClickedDomain($event)"></rk-table-default-cell>
                                     </td>
                                     <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>
                                     <td>

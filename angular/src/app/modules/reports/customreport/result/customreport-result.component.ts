@@ -1,6 +1,7 @@
 
 import {takeUntil} from 'rxjs/operators';
 import { ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output, AfterViewInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { Subject } from 'rxjs';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
@@ -8,9 +9,8 @@ import { CustomReportService } from 'src/app/core/services/customReportService';
 import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js';
 import { ExcelService } from 'src/app/core/services/excelService';
 import { PdfService } from 'src/app/core/services/pdfService';
-import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { ActionClick, RkTableColumnModel, RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
-import { LinkClick } from '../../monitor/result/monitor-result.component';
 import * as moment from 'moment';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
@@ -38,6 +38,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     private excelService: ExcelService,
     private pdfService: PdfService,
     private translateService: TranslatorService,
+    private _translateService: TranslateService,
     private configService: ConfigService,
     private authService: AuthenticationService,
     private cyberxrayService: CyberXRayService
@@ -53,6 +54,9 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     if (theme) {
       this.theme = theme;
     }
+    _translateService.onLangChange.subscribe(result => {
+      this.changeColumnNames();
+    });
   }
 
   token;
@@ -63,6 +67,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   public date = new Date();
   public loading = false;
   public selectedColumns: AggregationItem[];
+  selectedRkColumns: RkTableColumnModel[];
   private logChart: any;
 
   theme: string;
@@ -75,7 +80,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   }
 
 
-  @Output() linkClickedOutput = new EventEmitter<LinkClick>();
+  @Output() actionClickedOutput = new EventEmitter<ActionClick>();
 
   public ss: SearchSetting;
 
@@ -95,23 +100,26 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
   maxHeight = window.innerWidth > 768 ? (window.innerHeight - 218) - (document.body.scrollHeight - document.body.clientHeight) : null;
 
   tableConfig: RkTableConfigModel = {
+    copyText: {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')},
+    defaultActionText: {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')},
+    filterColumnText: this.translateService.translate('ColumnsToDisplay'),
+    cellDataMaxLen: 30,
     columns: [
-      /* { id: 0, name: 'time', displayText: 'Time', isLink: true }, */
-      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
-      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
-      { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), isLink: true },
-      { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), isLink: true },
-      { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
-      { id: 6, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
-      { id: 7, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), isLink: true },
-      { id: 8, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
-      { id: 9, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
-      { id: 10, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
-      { id: 11, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
-      { id: 12, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
-      { id: 13, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
-      { id: 14, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      { id: 15, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true }
+      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true },
+      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true },
+      { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), showAction: true },
+      { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), showAction: true },
+      { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), showAction: true },
+      { id: 6, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), showAction: true },
+      { id: 7, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), showAction: true },
+      { id: 8, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), showAction: true },
+      { id: 9, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), showAction: true },
+      { id: 10, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), showAction: true },
+      { id: 11, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), showAction: true },
+      { id: 12, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), showAction: true },
+      { id: 13, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), showAction: true },
+      { id: 14, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), showAction: true },
+      { id: 15, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), showAction: true }
     ],
     rows: [],
     selectableRows: true,
@@ -197,10 +205,16 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
       }
 
       this.data = data;
-
+      this.selectedRkColumns = [];
       this.tableConfig.columns.forEach(col => {
-        const selectedCol = this.selectedColumns.find(item => item.column.name === col.name);
-
+        let selectedCol;
+        this.selectedColumns.forEach((item, index) => {
+          if(item.column.name === col.name){
+            selectedCol = item;
+            this.selectedRkColumns[index] = col;
+            return;
+          }
+        });
         col.selected = !!selectedCol;
       });
 
@@ -208,21 +222,33 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
       this.tableConfig.arrowVisible = true;
 
       this.data.forEach(item => {
-        const rowItem: RkTableRowModel = { selected: false };
+        
+        let rowItem: RkTableRowModel = {selected:item.selected};
+        
 
-        this.selectedColumns.forEach((selectedCol, index) => {
-          rowItem[selectedCol.column.name] = item[index];
+        this.selectedColumns.forEach((col, index) => {
+            if(rowItem['domain'] === 'Others'){
+              rowItem[col.column.name] = '';
+              return;
+            }
+            rowItem[col.column.name] = item[index];
+            if(col.column.name === 'action'){
+              rowItem[col.column.name] = rowItem[col.column.name] ? 'Allow' : 'Deny';
+             }
+       }); 
 
-        });
+       rowItem[this.selectedColumns.length] = item[this.selectedColumns.length];
 
-        if ((rowItem['domain'] && rowItem['domain'] !== punycode.toUnicode(rowItem['domain'])) ||
-          (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))) {
-          rowItem.popoverRows = [{ domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain']) }];
-        } else {
-          rowItem.popoverClass = 'none';
-        }
+       if(rowItem['domain'] != null && rowItem['domain'] !== 'Others'){
+          rowItem.imgOptions = {
+            src: '../../../../../assets/img/CyberxIcon.svg',
+            columnName: 'domain',
+            isNavigate: true,
+            customClass: 'navigate-icon'
+          };
+       }
+      this.tableConfig.rows.push(rowItem);
 
-        this.tableConfig.rows.push(rowItem);
       });
       // action column exits
       /*  if (this.selectedColumns.find(x => x.column.name == 'action') && this.tableConfig.rows.length > 1) {
@@ -405,31 +431,55 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     });
   }
 
+  private changeColumnNames() {
+    this.tableConfig.copyText = {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')};
+    this.tableConfig.defaultActionText = {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')};
+    this.tableConfig.filterColumnText = this.translateService.translate('ColumnsToDisplay');
+
+    this.tableConfig.columns = [
+      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true },
+      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true },
+      { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), showAction: true },
+      { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), showAction: true },
+      { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), showAction: true },
+      { id: 6, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), showAction: true },
+      { id: 7, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), showAction: true },
+      { id: 8, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), showAction: true },
+      { id: 9, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), showAction: true },
+      { id: 10, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), showAction: true },
+      { id: 11, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), showAction: true },
+      { id: 12, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), showAction: true },
+      { id: 13, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), showAction: true },
+      { id: 14, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), showAction: true },
+      { id: 15, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), showAction: true }
+    ];
+  }
+
   checkboxAllChange($event: boolean) {
-    this.data.forEach(elem => {
+    this.tableConfig?.rows?.forEach(elem => {
       elem.selected = $event;
     });
   }
 
   exportAs(extention: ExportTypes) {
-    let data = this.data.filter(x => x.selected);
+    let data = this.tableConfig.rows.filter(x => x.selected);
 
     if (data.length === 0) {
-      data = this.data;
+      data = this.tableConfig.rows;
     }
 
     if (data && data.length > 0) {
 
       let jsonString = '[';
-      for (let i = 0; i < data.length - 1; i++) {
+      for (let i = 0; i < data.length; i++) {
         const da = data[i];
         jsonString += '{';
         jsonString += '"id":' + (i + 1) + ',';
-        for (let j = 0; j < da.length - 1; j++) {
-          const e = da[j];
+        for (let j = 0; j < this.selectedColumns.length; j++) {
+          const e = da[this.selectedColumns[j].column.name];
           jsonString += '"' + this.selectedColumns[j].label + '" : "' + e + '",';
         }
-        jsonString += '"Count": "' + da[da.length - 1] + '" },';
+        jsonString += '"Count": "' + da[this.selectedColumns.length] + '" },';
       }
 
       if (jsonString.length > 1) {
@@ -447,9 +497,6 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  // linkClicked($event: LinkClick) {
-  //   this.linkClickedOutput.emit($event);
-  // }
 
   columnChanged($event: TableBadgeOutput) {
     // const columnIndex = this.selectedColumns.findIndex(x => x.column.name === $event.name);
@@ -482,22 +529,18 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     return value[0].toLocaleUpperCase() + value.substring(1);
   }
 
-  isLink(column: string): boolean {
-    return this.tableConfig.columns.find(x => x.name === column).isLink;
-  }
 
-  linkClicked(columnName: string, value) {
-    this.linkClickedOutput.emit({
+  actionClicked($event: ActionClick) {
+    this.actionClickedOutput.emit({
       columnModel: {
-        name: columnName,
-        isLink: true,
+        name: $event.columnModel.name,
       },
-      value: columnName === 'action' ? (value ? 'Allow' : 'Deny') : value
-    } as LinkClick);
+      value: $event.columnModel.name === 'action' ? ($event.value ? 'Allow' : 'Deny') : $event.value
+    } as ActionClick);
   }
 
   sort(col, columnIndex: number) {
-    this.data = this.data.sort((a, b) => {
+    this.tableConfig.rows = this.tableConfig?.rows?.sort((a, b) => {
       return this.sortDirection === 'asc' ? (a[columnIndex] > b[columnIndex] ? 1 : -1) : (a[columnIndex] < b[columnIndex] ? 1 : -1);
     });
 
@@ -508,15 +551,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
   }
 
-  cyberxray(event: any, domain: string) {
-    /* const currentSession = this.authService.currentSession;
-    this.token = currentSession.token;
-    this.refreshToken = currentSession.refreshToken;
-    console.log(`${this.configService.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`)
-    window.open(`${this.configService.host.cyberXRayUrl + domain}?t=${this.token}&r=${this.refreshToken}`, "_blank"); 
-    */
+  getNavigateByClickedDomain(domain) {
     this.cyberxrayService.open(domain);
-    event.stopPropagation();
-
   }
 }

@@ -103,6 +103,7 @@
     "DnsRelays": "Dns Relays",
     "Download": "İndirme",
     "Copy": "Kopyala",
+    "Copied": "Kopyalandı",
     "CopyDownloadLink": "İndirme Linki Kopyala",
     "CopyMagicConfigLink": "Ayarlar Linki Kopyala",
     "Settings": "Ayarlar",
@@ -747,5 +748,8 @@
     "SearchDNSRelay": "DNS Relay Sunucusu Ara",
     "DeleteRule": "Kural Sil",
     "FillRuleKeyword": "Kural Anahtar Kelimesi Giriniz",
-    "FillRuleBy": "Kural Uygulama Kriteri Seçiniz"
+    "FillRuleBy": "Kural Uygulama Kriteri Seçiniz",
+    "AddToFilter": "Filtreye ekle",
+    "AddedToFilter": "Eklendi",
+    "ColumnsToDisplay": "Gösterilecek Kolonlar"
 }

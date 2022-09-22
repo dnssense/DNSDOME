@@ -11,7 +11,7 @@
         <div class="row mt-1">
           <div class="col-md-12">
             <app-audit-result #auditResult [searchSetting]="searchSettings"
-              (addColumnValueEmitter)="addValuesIntoSelected($event)" (linkClickedOutput)="linkClicked($event)">
+              (addColumnValueEmitter)="addValuesIntoSelected($event)" (actionClickedOutput)="actionClicked($event)">
             </app-audit-result>
           </div>
         </div>

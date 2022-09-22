@@ -104,6 +104,7 @@
     "DnsRelays": "DNS Relays",
     "Download": "Download",
     "Copy": "Copy",
+    "Copied": "Copied",
     "CopyDownloadLink": "Copy Download Link",
     "CopyMagicConfigLink": "Copy Settings Link",
     "Settings": "Settings",
@@ -753,5 +754,8 @@
     "SearchDNSRelay": "Search DNS Relay Server",
     "DeleteRule": "Delete Rule",
     "FillRuleKeyword": "Rule Keyword Needed",
-    "FillRuleBy": "Rule By Needed"
+    "FillRuleBy": "Rule By Needed",
+    "AddToFilter": "Add to filter",
+    "AddedToFilter": "Added",
+    "ColumnsToDisplay": "Columns to Display"
 }

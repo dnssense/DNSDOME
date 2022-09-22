@@ -3,7 +3,6 @@ import { CustomReportResultComponent } from './result/customreport-result.compon
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { LinkClick } from '../monitor/result/monitor-result.component';
 import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
@@ -12,6 +11,7 @@ import { ColumnTagInput } from '../../../core/models/ColumnTagInput';
 import { ReportService } from 'src/app/core/services/reportService';
 import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import {StaticService} from '../../../core/services/staticService';
+import { ActionClick } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 
 export interface CustomReportRouteParams {
   startDate?: string;
@@ -180,7 +180,7 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
     this.customReportSearchComponent.setSearchSetting(this.searchSetting);
   }
 
-  linkClicked($event: LinkClick) {
+  actionClicked($event: ActionClick) {
     const filter = this.filters.find(x => x.name === $event.columnModel.name);
 
     if (filter) {

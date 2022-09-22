@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
+import { ActionClick } from 'roksit-lib';
 import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
@@ -10,7 +11,7 @@ import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { AuditService } from 'src/app/core/services/auditService';
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
 import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
-import { AuditResultComponent, LinkClick } from './result/audit-result.component';
+import { AuditResultComponent } from './result/audit-result.component';
 
 
 
@@ -107,7 +108,7 @@ export class AuditComponent implements OnInit, AfterViewInit {
     this.roksitSearchComponent.setSearchSetting(this.searchSettings);
   }
 
-  linkClicked($event: LinkClick) {
+  actionClicked($event: ActionClick) {
     const filter = this.filters.find(x => x.name === $event.columnModel.name);
 
     if (filter) {

@@ -9,7 +9,7 @@ import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
 import { ExcelService } from 'src/app/core/services/excelService';
 import { PdfService } from 'src/app/core/services/pdfService';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
-import { RkTableConfigModel, RkTableRowModel, RkTableColumnModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { RkTableConfigModel, RkTableRowModel, RkTableColumnModel, ActionClick } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 import * as moment from 'moment';
 import { ReportService } from 'src/app/core/services/reportService';
@@ -21,10 +21,6 @@ import * as punycode from 'punycode';
 import { ConfigHost, ConfigService } from '../../../../core/services/config.service';
 import { CyberXRayService } from '../../../../core/services/cyberxray.service';
 
-export interface LinkClick {
-  columnModel: RkTableColumnModel;
-  value: string;
-}
 
 @Component({
   selector: 'app-monitor-result',
@@ -72,27 +68,30 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
   tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
 
   tableConfig: RkTableConfigModel = {
+    copyText: {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')},
+    defaultActionText: {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')},
+    filterColumnText: this.translateService.translate('ColumnsToDisplay'),
+    cellDataMaxLen: 30,
     columns: [
-      { id: 0, name: 'time', displayText: this.translateService.translate('TableColumn.Time'), isLink: true },
-      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
-      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
-      { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), isLink: true },
-      { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), isLink: true },
-      { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
-      { id: 6, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
-      { id: 7, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), isLink: true },
-      // { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
-      { id: 8, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
-      { id: 9, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
-      { id: 10, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
-      { id: 11, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
-      { id: 12, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
-      { id: 13, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
-      { id: 14, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      { id: 15, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
-      { id: 16, name: 'ruleNumber', displayText: this.translateService.translate('TableColumn.RuleNumber'), isLink: true },
-      { id: 17, name: 'ruleBy', displayText: this.translateService.translate('TableColumn.RuleBy'), isLink: true, format: d => d?.substring(2) },
-      { id: 18, name: 'ruleKeyword', displayText: this.translateService.translate('TableColumn.RuleKeyword'), isLink: true },
+      { id: 0, name: 'time', displayText: this.translateService.translate('TableColumn.Time'), showAction: true },
+      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true, noLinkInPopover: true },
+      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true, noLinkInPopover: true},
+      { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), showAction: true },
+      { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), showAction: true },
+      { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), showAction: true },
+      { id: 6, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), showAction: true },
+      { id: 7, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), showAction: true },
+      { id: 8, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), showAction: true },
+      { id: 9, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), showAction: true },
+      { id: 10, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), showAction: true },
+      { id: 11, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), showAction: true },
+      { id: 12, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), showAction: true },
+      { id: 13, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), showAction: true },
+      { id: 14, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), showAction: true },
+      { id: 15, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), showAction: true },
+      { id: 16, name: 'ruleNumber', displayText: this.translateService.translate('TableColumn.RuleNumber'), showAction: true },
+      { id: 17, name: 'ruleBy', displayText: this.translateService.translate('TableColumn.RuleBy'), showAction: true, format: d => d?.substring(2) },
+      { id: 18, name: 'ruleKeyword', displayText: this.translateService.translate('TableColumn.RuleKeyword'), showAction: true },
 
     ],
     rows: [],
@@ -107,7 +106,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
   @Output() public tableColumnsChanged = new EventEmitter();
 
-  @Output() linkClickedOutput = new EventEmitter<LinkClick>();
+  @Output() actionClickedOutput = new EventEmitter<ActionClick>();
 
   ngOnInit() { }
 
@@ -156,27 +155,29 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
   }
 
   private changeColumnNames() {
+    this.tableConfig.copyText = {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')};
+    this.tableConfig.defaultActionText = {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')};
+    this.tableConfig.filterColumnText = this.translateService.translate('ColumnsToDisplay');
     this.tableConfig.columns = [
-      { id: 0, name: 'time', displayText: this.translateService.translate('TableColumn.Time'), isLink: true },
-      { id: 1, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), isLink: true },
-      { id: 2, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), isLink: true },
-      { id: 3, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), isLink: true },
-      { id: 4, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), isLink: true },
-      { id: 5, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), isLink: true },
-      { id: 6, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), isLink: true },
-      { id: 7, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), isLink: true },
-      // { id: 8, name: 'userId', displayText: this.translateService.translate('TableColumn.UserId'), isLink: true },
-      { id: 8, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
-      { id: 9, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), isLink: true, moreText: '?', isPopover: true, noLinkInPopover: true, popoverTrigers: 'mouseenter' },
-      { id: 10, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), isLink: true },
-      { id: 11, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), isLink: true },
-      { id: 12, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), isLink: true },
-      { id: 13, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), isLink: true },
-      { id: 14, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), isLink: true },
-      { id: 15, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), isLink: true },
-      { id: 16, name: 'ruleNumber', displayText: this.translateService.translate('TableColumn.RuleNumber'), isLink: true },
-      { id: 17, name: 'ruleBy', displayText: this.translateService.translate('TableColumn.RuleBy'), isLink: true, format: d => d?.substring(2) },
-      { id: 18, name: 'ruleKeyword', displayText: this.translateService.translate('TableColumn.RuleKeyword'), isLink: true },
+      { id: 0, name: 'time', displayText: this.translateService.translate('TableColumn.Time'), showAction: true },
+      { id: 1, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), showAction: true },
+      { id: 2, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), showAction: true },
+      { id: 3, name: 'agentAlias', displayText: this.translateService.translate('TableColumn.AgentAlias'), showAction: true },
+      { id: 4, name: 'clientLocalIp', displayText: this.translateService.translate('TableColumn.ClientLocalIp'), showAction: true },
+      { id: 5, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), showAction: true },
+      { id: 6, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), showAction: true },
+      { id: 7, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), showAction: true },
+      { id: 8, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true, noLinkInPopover: true },
+      { id: 9, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true,noLinkInPopover: true},
+      { id: 10, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), showAction: true },
+      { id: 11, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), showAction: true },
+      { id: 12, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), showAction: true },
+      { id: 13, name: 'applicationName', displayText: this.translateService.translate('TableColumn.ApplicationName'), showAction: true },
+      { id: 14, name: 'action', displayText: this.translateService.translate('TableColumn.Action'), showAction: true },
+      { id: 15, name: 'reasonType', displayText: this.translateService.translate('TableColumn.ReasonType'), showAction: true },
+      { id: 16, name: 'ruleNumber', displayText: this.translateService.translate('TableColumn.RuleNumber'), showAction: true },
+      { id: 17, name: 'ruleBy', displayText: this.translateService.translate('TableColumn.RuleBy'), showAction: true, format: d => d?.substring(2) },
+      { id: 18, name: 'ruleKeyword', displayText: this.translateService.translate('TableColumn.RuleKeyword'), showAction: true },
     ];
   }
 
@@ -265,7 +266,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
             (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))) {
             rowItem.popoverRows = [{ domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain']) }];
           } else {
-            rowItem.popoverClass = 'none';
+            //rowItem.popoverClass = 'none';
           }
 
           this.tableConfig.rows.push(rowItem);
@@ -347,7 +348,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
     this.refresh(this.searchSetting);
   }
 
-  linkClicked($event: LinkClick) {
-    this.linkClickedOutput.emit($event);
+  actionClicked($event: ActionClick) {
+    this.actionClickedOutput.emit($event);
   }
 }
