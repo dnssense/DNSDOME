@@ -207,11 +207,7 @@ export class NavbarComponent implements OnInit {
             .replace('/', ' ');
     }
 
-    getPath() {
-        const path = this.location.prepareExternalUrl(this.location.path());
 
-        return path;
-    }
 
     logout() {
         this.alert.alertWarningAndCancel(
@@ -262,25 +258,8 @@ export class NavbarComponent implements OnInit {
         }
     }
 
-    setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, existsSubMenu = false) {
-        this._menuItems.forEach(elem => elem.selected = false);
-
-        menuItem.selected = true;
-
-        this._menuItems.forEach(elem => {
-            if (elem.subMenu) {
-                elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
-            }
-        });
-
-        if (!existsSubMenu) {
-            this.sidebar.toggle();
-        }
-
-        if (subMenuItem) {
-            subMenuItem.selected = true;
-
-            this.sidebar.toggle();
-        }
+    menuSelected() {
+        this.sidebar.toggle();
     }
+
 }

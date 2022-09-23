@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { RkLayoutService } from 'roksit-lib';
 import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 import { User } from 'src/app/core/models/User';
@@ -7,6 +8,9 @@ import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
+import {takeUntil} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
 
 declare const $: any;
 
@@ -21,6 +25,7 @@ export class SidebarComponent implements OnInit {
     private authService: AuthenticationService,
     private router: Router,
     private translator: TranslatorService,
+    private _translateService: TranslateService,
     private alert: AlertService,
     public configService: ConfigService,
     private rkLayout: RkLayoutService
@@ -39,40 +44,17 @@ export class SidebarComponent implements OnInit {
   host: ConfigHost;
 
   _menuItems = ConfigService.menuItems;
+  private ngUnsubscribe: Subject<any> = new Subject<any>();
 
-  setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, hasSub?: RkMenuItem) {
 
-    // Butonları toggle yapmak için
-    if (menuItem.subMenu !== undefined) {
-      if (menuItem.selected == true) {
-        this._menuItems.forEach(elem => elem.selected = false);
-        menuItem.selected = false;
-      } else {
-        this._menuItems.forEach(elem => elem.selected = false);
-        menuItem.selected = true;
-      }
-    } else {
-      this._menuItems.forEach(elem => elem.selected = false);
-      menuItem.selected = true;
-    }
 
-    this._menuItems.forEach(elem => {
-      if (elem.subMenu) {
-        elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
-      }
-    });
-
-    if (subMenuItem) {
-      subMenuItem.selected = true;
-    }
-  }
-
-  toggleCollapse() {
-    this.rkLayout.setSidebarCollapse(!this.collapsed);
+  toggleCollapse(event) {
+    this.collapsed = event.collapsed;
+    this.rkLayout.setSidebarCollapse(this.collapsed);
     const currentUser = this.authService.currentSession?.currentUser;
     window.dispatchEvent(new Event('resize'));
 
-    localStorage.setItem(`menuCollapsed_for_user_${currentUser?.id}`, JSON.stringify(!this.collapsed));
+    localStorage.setItem(`menuCollapsed_for_user_${currentUser?.id}`, JSON.stringify(this.collapsed));
   }
 
   getUserName() {
@@ -81,16 +63,10 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  isMobileMenu() {
-    if ($(window).width() > 991) {
-      return false;
-    }
-    return true;
-  }
   private refreshMenus() {
     if (this.authService.currentSession && this.authService.currentSession.currentUser
       && this.authService.currentSession.currentUser.role && this.authService.currentSession.currentUser.role.length > 0) {
-
+        this._menuItems = ConfigService.menuItems;
       //const roleName: string = this.authService.currentSession.currentUser.role.name;
 
       this.menuItems = this._menuItems.filter(x => !x.roles || this.checkExistRole(x.roles));
@@ -135,6 +111,11 @@ export class SidebarComponent implements OnInit {
       this.refreshMenus();
     });
 
+    this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
+      this.configService.translateMenu();
+      this.refreshMenus();
+    });
+
     this.setActiveMenuItemByRoute();
 
     /*  this.menuItems = new Array();
@@ -146,6 +127,11 @@ export class SidebarComponent implements OnInit {
 
 
 
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   setActiveMenuItemByRoute() {
@@ -167,43 +153,5 @@ export class SidebarComponent implements OnInit {
         });
       }
     });
-  }
-
-  logout() {
-    this.alert
-      .alertWarningAndCancel(
-        this.translator.translate('AreYouSure'),
-        this.translator.translate('LOGOUT.LogoutMessage')
-      )
-      .subscribe(res => {
-        if (res) {
-          this.alert.alertAutoClose(
-            this.translator.translate('LOGOUT.LoggingOut'),
-            this.translator.translate('LOGOUT.LoggingOutMessage'),
-            1000
-          );
-          this.authService.logout();
-        }
-      });
-  }
-
-  updatePS(): void {
-    if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
-      const elemSidebar = <HTMLElement>(
-        document.querySelector('.sidebar .sidebar-wrapper')
-      );
-
-    }
-  }
-
-  isMac(): boolean {
-    let bool = false;
-    if (
-      navigator.platform.toUpperCase().indexOf('MAC') >= 0 ||
-      navigator.platform.toUpperCase().indexOf('IPAD') >= 0
-    ) {
-      bool = true;
-    }
-    return bool;
   }
 }

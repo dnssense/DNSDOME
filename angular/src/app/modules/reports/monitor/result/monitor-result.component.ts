@@ -41,10 +41,6 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
     private configService: ConfigService,
     private cyberxrayService: CyberXRayService
   ) {
-    _translateService.onLangChange.subscribe(result => {
-      this.changeColumnNames();
-    });
-
   }
 
   token;
@@ -108,7 +104,11 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
   @Output() actionClickedOutput = new EventEmitter<ActionClick>();
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
+      this.changeColumnNames();
+    });
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();

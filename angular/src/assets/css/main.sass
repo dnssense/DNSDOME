@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin-ext")
+@import "roksit-lib/assets/scss/core/variables"
 
 $white: #fff
 
@@ -56,7 +57,7 @@ ul
   .content
     overflow: visible
     flex: auto !important
-    width: calc(100% - 220px)
+    width: calc(100% - #{$menu-sidebar-width})
 
 .chart-info .section .value
   font-weight: bold
@@ -811,18 +812,17 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
 
     svg
       position: relative
-      transform: rotate(90deg)
       color: var(--primary)
 
   .wrapper
-    .sidebar
+    .rk-menu-sidebar
       display: none !important
 
     .content
       width: 100% !important
 
 .mobile-menu
-  .sidebar
+  .rk-menu-sidebar
     a
       &:hover
         text-decoration: none !important

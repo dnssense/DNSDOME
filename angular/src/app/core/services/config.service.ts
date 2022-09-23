@@ -205,6 +205,7 @@ export class ConfigService {
     if (themeColor) {
       this.rkUtilityService.changeTheme(themeColor === 'dark');
     }
+    this.translateMenu();
 
   }
 
@@ -214,6 +215,15 @@ export class ConfigService {
       // tslint:disable-next-line: triple-equals
       + (window.location.port != '' ? (':' + window.location.port) : '') + '/api';
   }
+
+  translateMenu() {
+    ConfigService.menuItems.forEach(elem => {
+        elem.translateText = this.translationservice.translate(elem.text);
+        if (elem.subMenu) {
+            elem.subMenu.forEach(subMenuElem => subMenuElem.translateText = this.translationservice.translate(subMenuElem.text));
+        }
+    });
+ }
 
   setDefaultLanguage(userId: number, lang: string) {
 

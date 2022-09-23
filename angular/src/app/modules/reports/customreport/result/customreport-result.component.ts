@@ -1,6 +1,6 @@
 
 import {takeUntil} from 'rxjs/operators';
-import { ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output, AfterViewInit } from '@angular/core';
+import { ElementRef, OnDestroy, Component, Input, ViewChild, EventEmitter, Output, AfterViewInit, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { Subject } from 'rxjs';
@@ -31,7 +31,7 @@ export interface TableBadgeOutput {
   templateUrl: 'customreport-result.component.html',
   styleUrls: ['customreport-result.component.css']
 })
-export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
+export class CustomReportResultComponent implements OnDestroy, AfterViewInit, OnInit {
 
   constructor(
     private customReportService: CustomReportService,
@@ -54,7 +54,9 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit {
     if (theme) {
       this.theme = theme;
     }
-    _translateService.onLangChange.subscribe(result => {
+  }
+  ngOnInit(): void {
+    this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
       this.changeColumnNames();
     });
   }
