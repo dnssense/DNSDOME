@@ -42,7 +42,6 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   public multiplier = 1;
   public searchSetting: SearchSetting = new SearchSetting();
   public selectedColumns: AggregationItem[];
-  public columns: LogColumn[];
   public columnsTemp: LogColumn[];
   public data: any[];
 
@@ -58,9 +57,7 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
   filters: FilterBadgeModel[] = [];
 
   ngOnInit(): void {
-    this.reportService.initTableColumns().subscribe((res: LogColumn[]) => {
-      this.columns = res;
-    });
+
   }
 
   ngAfterViewInit() {
@@ -167,6 +164,15 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
             aggsType: 'TERM',
             checked: true
           }, label: 'Domain'
+        },
+        {
+          column: {
+            name: 'category',
+            beautyName: 'Category',
+            hrType: '',
+            aggsType: 'TERM',
+            checked: true
+          }, label: 'Category'
         }
       ] as AggregationItem[];
     }
