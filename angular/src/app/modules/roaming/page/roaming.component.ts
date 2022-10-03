@@ -10,15 +10,14 @@ import { Box } from 'src/app/core/models/Box';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
 import { BlackWhiteListProfile, SecurityProfile, SecurityProfileItem } from 'src/app/core/models/SecurityProfile';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { AlertService } from 'src/app/core/services/alert.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { InputIPService } from 'src/app/core/services/inputIPService';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { GroupAgentModel } from '../../devices/page/devices.component';
 import { ClipboardService } from 'ngx-clipboard';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 
 declare let $: any;
 export interface BoxConf {
@@ -50,8 +49,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     constructor(
         private formBuilder: FormBuilder,
         private agentService: AgentService,
-        private alertService: AlertService,
-        private notification: NotificationService,
+        private alertService: RkAlertService,
+        private notification: RkNotificationService,
         private roamingService: RoamingService,
         private boxService: BoxService,
         private staticMessageService: StaticMessageService,

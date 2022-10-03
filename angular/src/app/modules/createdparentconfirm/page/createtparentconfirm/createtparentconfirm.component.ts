@@ -12,10 +12,10 @@ import {CaptchaService} from "../../../../core/services/captcha.service";
 import { environment } from 'src/environments/environment';
 import {RkSelectModel} from "roksit-lib/lib/modules/rk-select/rk-select.component";
 import {RoleConstant} from "../../../../core/models/Role";
-import {NotificationService} from "../../../../core/services/notification.service";
 import {StaticMessageService} from "../../../../core/services/staticMessageService";
 import {Company, CompanyUpdaterDTO} from "../../../../core/models/Company";
 import {CompanyService} from "../../../../core/services/companyService";
+import { RkNotificationService } from 'roksit-lib';
 
 declare var $: any;
 
@@ -28,7 +28,7 @@ export class CreatetparentconfirmComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private configservice: ConfigService, private translateservice: TranslatorService,
               private route: ActivatedRoute, private authService: AuthenticationService, private capthaService: CaptchaService,
-              private notification: NotificationService, private staticMessageService: StaticMessageService,
+              private notification: RkNotificationService, private staticMessageService: StaticMessageService,
               private router: Router, private companyService: CompanyService) {
     this.host = configservice.host;
     this.captcha_key = this.host.captcha_key

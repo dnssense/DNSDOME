@@ -4,7 +4,6 @@ import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {DashBoardService, DistinctAgentResponse, DistinctBoxResponse} from 'src/app/core/services/dashBoardService';
 
 import {CategoryV2} from 'src/app/core/models/CategoryV2';
-import {NotificationService} from 'src/app/core/services/notification.service';
 import {Router} from '@angular/router';
 import {AgentService} from 'src/app/core/services/agent.service';
 import {ConfigHost, ConfigService} from 'src/app/core/services/config.service';
@@ -35,6 +34,7 @@ import * as numeral from 'numeral';
 import {AuthenticationService} from 'src/app/core/services/authentication.service';
 import {CyberXRayService} from '../../../core/services/cyberxray.service';
 import {ClipboardService} from 'ngx-clipboard';
+import { RkNotificationService } from 'roksit-lib';
 
 interface TagInputValue {
   value: string;
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit {
     private config: ConfigService,
     private translateService: TranslateService,
     private toolService: ToolsService,
-    private notificationService: NotificationService,
+    private notificationService: RkNotificationService,
     private staticMesssageService: StaticMessageService,
     private translatorService: TranslatorService,
     private authService: AuthenticationService,

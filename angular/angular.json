@@ -28,7 +28,6 @@
             ],
             "styles": [
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/intro.js/introjs.css",
               "node_modules/roksit-lib/assets/scss/roksit.core.scss",
               "src/assets/css/animate.css",
@@ -132,8 +131,7 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": [
               "src/styles.sass",
-              "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "node_modules/sweetalert2/src/sweetalert2.scss"
+              "node_modules/perfect-scrollbar/css/perfect-scrollbar.css"
             ],
             "scripts": [
               "node_modules/lodash/lodash.min.js",

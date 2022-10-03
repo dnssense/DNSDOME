@@ -6,11 +6,11 @@ import {Domain, TopDomainValuesResponseV4} from '../../../../core/models/Dashboa
 import {CyberXRayService} from '../../../../core/services/cyberxray.service';
 import {ValidationService} from '../../../../core/services/validation.service';
 import {ClipboardService} from 'ngx-clipboard';
-import {NotificationService} from '../../../../core/services/notification.service';
 import {StaticMessageService} from '../../../../core/services/staticMessageService';
 import {GraphDto, LiveReportRequest} from '../../../../core/models/report';
 import {DashBoardService} from '../../../../core/services/dashBoardService';
 import {ChartDomain, ChartDomainItem, DashboardChartComponent} from './dashboard-chart.component';
+import { RkNotificationService } from 'roksit-lib';
 
 interface TagInputValue {
     value: string;
@@ -25,7 +25,7 @@ interface TagInputValue {
 })
 export class DomainComponent implements AfterViewInit {
     constructor(private translateService: TranslateService, private cyberxrayService: CyberXRayService,
-                private clipboardService: ClipboardService, private notificationService: NotificationService,
+                private clipboardService: ClipboardService, private notificationService: RkNotificationService,
                 private staticMesssageService: StaticMessageService, private dashboardService: DashBoardService) {
     }
 

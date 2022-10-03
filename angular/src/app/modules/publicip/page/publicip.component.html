@@ -188,12 +188,8 @@
                   <span class="text-primary">{{ publicIpsFiltered.length }}</span> {{'QueriesListed'|translate}}
                 </div>
 
-                <div class="search ml-5">
-                  <div class="rk-autocomplete-container" style="width: 220px;">
-                    <input type="text" placeholder="{{'Search'|translate}}" [(ngModel)]="searchKey"
-                      class="rk-input rk-autocomplete" (ngModelChange)="searchChanged()">
-                    <i-feather class="search-icon" name="search"></i-feather>
-                  </div>
+                <div class="search ml-5" style="width: 220px;">
+                  <rk-search [value]="searchKey"  [placeholder]="'Search'|translate" (valueChange)="searchKey=$event;searchChanged()" ></rk-search>
                 </div>
               </div>
             </div>

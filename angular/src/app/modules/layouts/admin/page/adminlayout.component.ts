@@ -42,8 +42,8 @@ export class AdminLayoutComponent implements OnInit {
     }
 
     ngOnInit() {
-        const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
-        const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
+        //const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
+        //const elemSidebar = <HTMLElement>document.querySelector('.rk-menu-sidebar .rk-menu-sidebar-wrapper');
         this.location.subscribe((ev: PopStateEvent) => {
             this.lastPoppedUrl = ev.url;
         });

@@ -3,7 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse } fr
 import { interval, Observable, of, throwError } from 'rxjs';
 import { catchError, map, finalize, retryWhen, delayWhen, scan } from 'rxjs/operators';
 import { AuthenticationService } from '../services/authentication.service';
-import { NotificationService } from '../services/notification.service';
+import { RkNotificationService } from 'roksit-lib';
 
 
 @Injectable()
@@ -11,7 +11,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     constructor(private authenticationService: AuthenticationService, private injector: Injector) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const notificationService = this.injector.get(NotificationService);
+        const notificationService = this.injector.get(RkNotificationService);
         return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {
                 if (event instanceof HttpResponse) {

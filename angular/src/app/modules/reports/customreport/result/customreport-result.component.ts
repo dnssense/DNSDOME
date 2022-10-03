@@ -9,7 +9,7 @@ import { CustomReportService } from 'src/app/core/services/customReportService';
 import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js';
 import { ExcelService } from 'src/app/core/services/excelService';
 import { PdfService } from 'src/app/core/services/pdfService';
-import { ActionClick, RkTableColumnModel, RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { ActionClick, RkTableColumnModel, RkTableComponent, RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 import * as moment from 'moment';
 import { TranslatorService } from 'src/app/core/services/translator.service';
@@ -94,7 +94,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
 
   @Output() changeColumnBadge = new EventEmitter();
 
-  @ViewChild('tableDivComponent') tableDivComponent: ElementRef;
+  @ViewChild('rkTable') tableComponent: RkTableComponent;
   logCountHistogram: any;
 
   private ngUnsubscribe: Subject<any> = new Subject<any>();
@@ -262,6 +262,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
        } */
 
       this.maxHeight = window.innerWidth > 768 ? (window.innerHeight - 218) - (document.body.scrollHeight - document.body.clientHeight) : null;
+      this.tableComponent?.checkTable();
     });
   }
 

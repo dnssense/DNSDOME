@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NotificationService } from './notification.service';
+import { RkNotificationService } from 'roksit-lib';
 import { TranslatorService } from './translator.service';
 
 
@@ -9,7 +9,7 @@ import { TranslatorService } from './translator.service';
 export class CaptchaService {
 
 
-  constructor(private translator: TranslatorService, private notification: NotificationService) {
+  constructor(private translator: TranslatorService, private notification: RkNotificationService) {
 
 
   }

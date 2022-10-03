@@ -1,10 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { RkLayoutService } from 'roksit-lib';
+import { RkAlertService, RkLayoutService } from 'roksit-lib';
 import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 import { User } from 'src/app/core/models/User';
-import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
@@ -26,7 +25,7 @@ export class SidebarComponent implements OnInit {
     private router: Router,
     private translator: TranslatorService,
     private _translateService: TranslateService,
-    private alert: AlertService,
+    private alert: RkAlertService,
     public configService: ConfigService,
     private rkLayout: RkLayoutService
   ) {

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { StaticService } from 'src/app/core/services/staticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { Agent } from 'src/app/core/models/Agent';
@@ -15,7 +14,6 @@ import {
 } from 'src/app/core/models/SecurityProfile';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { AlertService } from 'src/app/core/services/alert.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { Box } from 'src/app/core/models/Box';
 import { BoxService } from 'src/app/core/services/box.service';
@@ -25,6 +23,7 @@ import { BWListItem } from 'src/app/core/models/BWListItem';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateService } from '@ngx-translate/core';
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 
 declare var $: any;
 
@@ -56,8 +55,8 @@ export const ApplicationTypes = {
 export class ProfileWizardComponent {
 
   constructor(
-    private notification: NotificationService,
-    private alertService: AlertService,
+    private notification: RkNotificationService,
+    private alertService: RkAlertService,
     private staticService: StaticService,
     private agentService: AgentService,
     private roamingService: RoamingService,

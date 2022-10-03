@@ -1,11 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import {Role} from 'src/app/core/models/Role';
 import {User} from 'src/app/core/models/User';
-import {AlertService} from 'src/app/core/services/alert.service';
 import {AuthenticationService} from 'src/app/core/services/authentication.service';
-import {NotificationService} from 'src/app/core/services/notification.service';
 import {StaticMessageService} from 'src/app/core/services/staticMessageService';
 import {UserService} from 'src/app/core/services/userService';
 import * as validator from 'validator';
@@ -22,11 +21,11 @@ declare var $: any;
 export class UsersComponent implements OnInit {
 
     constructor(
-        private notification: NotificationService,
+        private notification: RkNotificationService,
         private userService: UserService,
         private staticMessageService: StaticMessageService,
         private authenticatonService: AuthenticationService,
-        private alertService: AlertService,
+        private alertService: RkAlertService,
         private companyService: CompanyService,
     ) {
 

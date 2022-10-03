@@ -1,7 +1,6 @@
 
 import {delay} from 'rxjs/operators';
 import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -77,7 +76,6 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
     if (this.passwordMustChange !== '1') {
       this.accountService.activateAccount(this.accountActivateId).subscribe(() => {
         this.activated = 1;
-        // this.notification.success('Account activated');
         of(null).pipe(delay(2000)).subscribe(() => {
           this.router.navigateByUrl('/login');
         });

@@ -3,7 +3,7 @@ import { ToolsService } from 'src/app/core/services/toolsService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { CategoryQuery } from 'src/app/core/models/CategoryQuery';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NotificationService } from 'src/app/core/services/notification.service';
+import { RkNotificationService } from 'roksit-lib';
 
 @Component({
     selector: 'app-tools',
@@ -15,7 +15,7 @@ export class ToolsComponent {
     constructor(
         private toolsService: ToolsService,
         private formBuilder: FormBuilder,
-        private notification: NotificationService
+        private notification: RkNotificationService
     ) {
         this.searchForm = this.formBuilder.group({
             'domain': ['', [Validators.required]]

@@ -15,7 +15,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule } from 'ngx-ui-loader';
-import { RoksitModule, ServicesModule } from 'roksit-lib';
+import { RoksitModule, ServicesModule, RkNotificationModule } from 'roksit-lib';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ErrorInterceptor } from './core/interceptors/ErrorInterceptor';
@@ -25,7 +25,6 @@ import { translateHttpLoaderFactory } from './core/translationhelper';
 import { AdminLayoutModule } from './modules/layouts/admin/adminlayout.module';
 import { AuthLayoutModule } from './modules/layouts/auth/authlayout.module';
 import { PagenotfoundModule } from './modules/pagenotfound/pagenotfound.module';
-import { NotificationModule } from './modules/shared/notification/notification.module';
 import { ClipboardModule } from 'ngx-clipboard';
 
 
@@ -40,7 +39,7 @@ import { ClipboardModule } from 'ngx-clipboard';
     AdminLayoutModule,
     PagenotfoundModule,
     AppRoutingModule,
-    NotificationModule,
+    RkNotificationModule,
     NgxUiLoaderModule.forRoot({ fgsPosition: 'center-center', minTime: 100, fgsType: 'ball-scale-multiple', fgsColor: '#507df3', pbColor: '#507df3' }),
     NgxUiLoaderHttpModule.forRoot({ showForeground: true, excludeRegexp: ['\/api\/oauth\/token$', '\/api\/user\/current$', '\/api\/user\/current\/role$', '\/websocket$'] }),
     NgxUiLoaderRouterModule,

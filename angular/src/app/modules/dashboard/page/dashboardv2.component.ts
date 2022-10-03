@@ -14,10 +14,10 @@ import {CategoryComponent} from './childcomponents/category.component';
 import {AuthenticationService} from '../../../core/services/authentication.service';
 import {ConfigService} from '../../../core/services/config.service';
 import {DomainComponent} from './childcomponents/domain.component';
-import {NotificationService} from '../../../core/services/notification.service';
 import {StaticMessageService} from '../../../core/services/staticMessageService';
 import {ToolsService} from '../../../core/services/toolsService';
 import {TopdateComponent} from './childcomponents/topdate.component';
+import { RkNotificationService } from 'roksit-lib';
 
 @Component({
     selector: 'app-dashboardv2',
@@ -29,7 +29,7 @@ import {TopdateComponent} from './childcomponents/topdate.component';
 export class Dashboardv2Component implements OnInit, AfterViewInit {
     constructor(private dashboardService: DashBoardService,
                 private authService: AuthenticationService, private config: ConfigService,
-                private notificationService: NotificationService,
+                private notificationService: RkNotificationService,
                 private staticMesssageService: StaticMessageService, private toolService: ToolsService) {
     }
 

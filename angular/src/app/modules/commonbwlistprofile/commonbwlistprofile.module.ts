@@ -7,7 +7,7 @@ import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
-import { IconsModule, RkTableModule, RkModalModule, RkSelectModule, RkCheckboxModule } from 'roksit-lib';
+import { IconsModule, RkTableModule, RkModalModule, RkSelectModule, RkCheckboxModule, RkSearchModule } from 'roksit-lib';
 import { PipesModule } from '../shared/pipes/pipes.module';
 import { CommonBWListProfileRoutingModule } from './commonbwlistprofile-routing.module';
 
@@ -36,6 +36,7 @@ import { CommonBWListProfileRoutingModule } from './commonbwlistprofile-routing.
     RkModalModule,
     RkSelectModule,
     RkCheckboxModule,
+    RkSearchModule
   ]
 
 })

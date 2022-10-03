@@ -8,15 +8,14 @@ import { Company } from 'src/app/core/models/Company';
 import { SignupBean } from 'src/app/core/models/SignupBean';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { AccountService } from 'src/app/core/services/accountService';
-import { AlertService } from 'src/app/core/services/alert.service';
 import { CompanyService } from 'src/app/core/services/companyService';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { SmsService } from 'src/app/core/services/smsService';
 import { RestSmsResponse, RestSmsConfirmRequest, RestUserUpdateRequest } from 'src/app/core/models/RestServiceModels';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ConfigService } from '../../../core/services/config.service';
 import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -36,9 +35,9 @@ export class AccountSettingsComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private authService: AuthenticationService,
-        private notification: NotificationService,
+        private notification: RkNotificationService,
         private accountService: AccountService,
-        private alert: AlertService,
+        private alert: RkAlertService,
         private companyService: CompanyService,
         private smsService: SmsService,
         private staticMessageService: StaticMessageService,

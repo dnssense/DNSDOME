@@ -3,13 +3,12 @@ import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import {RestRole, Role} from 'src/app/core/models/Role';
 import {ApiKey, User} from 'src/app/core/models/User';
-import {AlertService} from 'src/app/core/services/alert.service';
 import {AuthenticationService} from 'src/app/core/services/authentication.service';
-import {NotificationService} from 'src/app/core/services/notification.service';
 import {StaticMessageService} from 'src/app/core/services/staticMessageService';
 import {UserService} from 'src/app/core/services/userService';
 import * as validator from 'validator';
 import {ClipboardService} from 'ngx-clipboard'
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 
 declare var $: any;
 
@@ -21,11 +20,11 @@ declare var $: any;
 export class ApiKeysComponent implements OnInit {
 
   constructor(
-    private notification: NotificationService,
+    private notification: RkNotificationService,
     private userService: UserService,
     private staticMessageService: StaticMessageService,
     private authenticatonService: AuthenticationService,
-    private alertService: AlertService,
+    private alertService: RkAlertService,
     private clipboardSevice: ClipboardService
   ) {
     this.user = this.constructNewUser();

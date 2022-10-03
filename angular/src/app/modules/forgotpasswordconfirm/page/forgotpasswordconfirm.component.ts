@@ -1,5 +1,4 @@
 import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
@@ -11,6 +10,7 @@ import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { SmsService } from 'src/app/core/services/smsService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { RecaptchaComponent } from 'ng-recaptcha';
+import { RkNotificationService } from 'roksit-lib';
 
 
 declare var $: any;
@@ -36,7 +36,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class ForgotPasswordConfirmComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
-    private element: ElementRef, private notification: NotificationService,
+    private element: ElementRef, private notification: RkNotificationService,
     private capthaService: CaptchaService, private route: ActivatedRoute, private configService: ConfigService) {
     this.host = configService.host;
     this.captcha_key = this.host.captcha_key;

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChil
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
 import { RkDateConfig, RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import { RkFilterOutput } from 'roksit-lib/lib/modules/rk-filter-badge/rk-filter-badge.component';
@@ -13,12 +14,10 @@ import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
 import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { ReportService } from 'src/app/core/services/reportService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { StaticService } from 'src/app/core/services/staticService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
-import {AlertService} from '../../../core/services/alert.service';
 
 export class GroupedCategory {
   type: string;
@@ -52,12 +51,12 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   constructor(
     private staticService: StaticService,
     private reportService: ReportService,
-    private notification: NotificationService,
+    private notification: RkNotificationService,
     private router: Router,
     private staticmessageService: StaticMessageService,
     private translatorService: TranslatorService,
     private translateService: TranslateService,
-    private alertService: AlertService
+    private alertService: RkAlertService
   ) {
     this.getSavedReports();
 

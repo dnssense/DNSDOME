@@ -12,7 +12,7 @@
                         <rk-table-export (event)="exportAs($event)" [showTypes]="{ excel: true, pdf: false }">
                         </rk-table-export>
 
-                        <rk-table (pageChange)="onPageChange($event)" [totalCount]="100"
+                        <rk-table (pageChange)="onPageChange($event)" #rkTable [totalCount]="100"
                             [pageViewCount]="searchSetting.topNumber" [paginationOptions]="paginationOptions"
                             [isArrowVisible]="true"
                             (pageViewCountChange)="onPageViewCountChange($event)" [paginationSelectDirection]="'up'">

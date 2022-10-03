@@ -668,12 +668,8 @@
                       {{'Grouped'|translate}}
                     </rk-radio>
                   </div> -->
-                  <div class="search ml-5">
-                    <div class="rk-autocomplete-container" style="width: 220px;">
-                      <input type="text" placeholder="Search" [(ngModel)]="searchKeyUnGroup"
-                        class="rk-input rk-autocomplete">
-                      <i-feather class="search-icon" name="search"></i-feather>
-                    </div>
+                  <div class="search ml-5" style="width: 220px;">
+                    <rk-search [value]="searchKeyUnGroup"  [placeholder]="'Search'|translate" (valueChange)="searchKeyUnGroup=$event;"></rk-search>
                   </div>
                 </div>
 
