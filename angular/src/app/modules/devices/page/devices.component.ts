@@ -234,12 +234,24 @@ export class DevicesComponent implements OnInit {
 
       this.securityProfilesForSelect = [];
 
-      this.securityProfiles.forEach(elem => {
+      this.securityProfiles.forEach((elem, index) => {
+        let isSelected = false;
+        if (this.saveMode === 'NewProfile') {
+          if (index === this.securityProfiles.length - 1) {
+            isSelected = true;
+          }
+        } else {
+          isSelected = (this.selectedProfileId == elem.id);
+        }
+
+        if (isSelected) {
+          this.selectedRule.agent.rootProfile = elem;
+        }
 
         this.securityProfilesForSelect.push({
           displayText: elem.name,
           value: elem.id,
-          selected: this.selectedProfileId == elem.id
+          selected: isSelected
         });
 
       });
@@ -1255,7 +1267,7 @@ export class DevicesComponent implements OnInit {
     if (!this.selectedRule.ruledBy)
       return this.notification.warning(this.staticMessageService.fillRuleBy);
 
-    if (!this.selectedRule.keyword)
+    if (!this.selectedRule.keyword && this.selectedRule.ruledBy !== '05BOX')
       return this.notification.warning(this.staticMessageService.fillRuleKeyword);
 
     if (!this.selectedRule.agent?.rootProfile?.id)

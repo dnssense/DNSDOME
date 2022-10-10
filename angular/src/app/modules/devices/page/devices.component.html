@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="col-12 mt-3">
-                  <rk-select [options]="securityProfilesForSelect" [(value)]="selectedRule.agent.rootProfile.id"
+                  <rk-select [options]="securityProfilesForSelect" (valueChange)="securityProfileChanged($event)"
                              [isSearchable]="false" placeholder="{{'SelectProfile'|translate}}"
                              [isShowButton]="true" buttonIcon="plus"
                              buttonText="Create new profile" (buttonClickEmitter)="newProfileClicked($event)">
