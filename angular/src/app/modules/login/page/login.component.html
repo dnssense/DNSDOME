@@ -20,7 +20,10 @@
                       <input type="password" class="formInput mt-3" placeholder="{{'LOGIN.Password' | translate}}"
                         [ngClass]="{'formInputHasError': isFailed}" [(ngModel)]="password" formControlName="password">
 
-
+                      <div *ngIf="loginCaptchaRequired" class="mt-3">
+                          <re-captcha #loginCaptcha [siteKey]="captcha_key" (resolved)="handleLoginCaptcha($event)">
+                          </re-captcha>
+                      </div>
                       <div class="mt-1">
                         <a class="login-link" (click)="openForgotPassword()">{{'FORGOTPASSWORD.Title' | translate }}</a>
                       </div>
@@ -49,7 +52,7 @@
                     <input type="email" class="formInput mb-3" placeholder="{{'LOGIN.Email' | translate}} *"
                       [(ngModel)]="forgoterEmail" (ngModelChange)="emailValidationLogin($event)">
                     <div>
-                      <re-captcha [siteKey]="captcha_key" (resolved)="handleCaptcha($event)">
+                      <re-captcha #forgotPassCaptcha [siteKey]="captcha_key" (resolved)="handleForgotPassCaptcha($event)">
                       </re-captcha>
                     </div>
                     <div class="mt-2"><a class="login-link" (click)="openLogin()"> {{'LOGIN.Login'|translate}}</a></div>

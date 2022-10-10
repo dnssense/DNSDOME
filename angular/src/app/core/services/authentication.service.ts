@@ -227,10 +227,17 @@ export class AuthenticationService {
         }));
   }
 
-  prelogin(email: string, pass: string): Observable<RestPreloginResponse> {
+  prelogin(email: string, pass: string, captcha?: string): Observable<RestPreloginResponse> {
+
+    let input;
+    if(captcha){
+      input = { username: email, password: pass, c_answer: captcha };
+    } else {
+      input = { username: email, password: pass };
+    }
 
     return this.http.
-      post<RestPreloginResponse>(this.preloginUrl, { username: email, password: pass }, this.getHttpOptions()).pipe(
+      post<RestPreloginResponse>(this.preloginUrl, input, this.getHttpOptions()).pipe(
       map(res => {
         return res;
       }));
