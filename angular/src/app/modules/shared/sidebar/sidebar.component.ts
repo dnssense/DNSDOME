@@ -104,8 +104,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.refreshMenus();
     });
 
+    if (this._translateService.store.translations[this._translateService.currentLang]) {
+      this.translateMenu();
+    }
     this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-      this.configService.translateMenu();
+      this.translateMenu();
       this.refreshMenus();
     });
 
@@ -120,6 +123,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
 
 
+  }
+
+  translateMenu() {
+    ConfigService.menuItems.forEach(elem => {
+      elem.translateText = this.translator.translate(elem.text);
+      if (elem.subMenu) {
+        elem.subMenu.forEach(subMenuElem => subMenuElem.translateText = this.translator.translate(subMenuElem.text));
+      }
+    });
   }
 
   ngOnDestroy() {
