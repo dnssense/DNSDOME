@@ -1,8 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RkAlertService, RkLayoutService } from 'roksit-lib';
-import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 import { User } from 'src/app/core/models/User';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
@@ -11,14 +10,11 @@ import {takeUntil} from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 
-declare const $: any;
-
-
 @Component({
   selector: 'app-sidebar-cmp',
   templateUrl: 'sidebar.component.html'
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthenticationService,
@@ -30,7 +26,7 @@ export class SidebarComponent implements OnInit {
     private rkLayout: RkLayoutService
   ) {
     this.host = this.configService.host;
-    this.menuItems = new Array();
+    this.menuItems = [];
 
     this.getUserName();
   }
@@ -38,7 +34,6 @@ export class SidebarComponent implements OnInit {
   @Input() collapsed: boolean;
 
   public menuItems: any[];
-  //public profileMenuItems: any[];
   currentUser: User;
   host: ConfigHost;
 
@@ -66,7 +61,6 @@ export class SidebarComponent implements OnInit {
     if (this.authService.currentSession && this.authService.currentSession.currentUser
       && this.authService.currentSession.currentUser.role && this.authService.currentSession.currentUser.role.length > 0) {
         this._menuItems = ConfigService.menuItems;
-      //const roleName: string = this.authService.currentSession.currentUser.role.name;
 
       this.menuItems = this._menuItems.filter(x => !x.roles || this.checkExistRole(x.roles));
       for (const menu of this.menuItems) {
@@ -83,10 +77,10 @@ export class SidebarComponent implements OnInit {
   private checkExistRole(arr: string[]): boolean {
     if (this.authService.currentSession && this.authService.currentSession.currentUser
       && this.authService.currentSession.currentUser.role && this.authService.currentSession.currentUser.role.length > 0) {
-      let role = this.authService.currentSession.currentUser.role.find(s=>arr.includes(s.name));
-      return role != null
+      const role = this.authService.currentSession.currentUser.role.find(s => arr.includes(s.name));
+      return role != null;
     }
-    return false
+    return false;
   }
 
   ngOnInit() {
@@ -106,11 +100,11 @@ export class SidebarComponent implements OnInit {
 
     this.refreshMenus();
 
-    this.authService.currentUserPropertiesChanged.subscribe(data => {
+    this.authService.currentUserPropertiesChanged.subscribe(() => {
       this.refreshMenus();
     });
 
-    this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
+    this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.configService.translateMenu();
       this.refreshMenus();
     });
