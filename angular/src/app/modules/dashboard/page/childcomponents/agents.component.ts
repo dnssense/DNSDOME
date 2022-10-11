@@ -24,7 +24,7 @@ export class AgentsComponent implements OnInit {
   ngOnInit() {
     this.agentCounts.push({ name: 'PublicIp', activeCount: 0, passiveCount: 0, link: '/admin/deployment/public-ip' });
     this.agentCounts.push({ name: 'RoamingClient', activeCount: 0, passiveCount: 0, link: '/admin/deployment/roaming-clients' });
-    this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/devices' });
+    this.agentCounts.push({ name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/dns-relay' });
     this.fillAgentData()
   }
 
@@ -42,7 +42,7 @@ export class AgentsComponent implements OnInit {
     this.getAllAgentsService().subscribe(res => {
       const publicip: AgentCountModel = { name: 'PageName.PublicIp', activeCount: 0, passiveCount: 0, link: '/admin/deployment/public-ip' };
       const roamingclient: AgentCountModel = { name: 'RoamingClient', activeCount: 0, passiveCount: 0, link: '/admin/deployment/roaming-clients'};
-      const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/devices' };
+      const dnsrelay: AgentCountModel = { name: 'DnsRelay', activeCount: 0, passiveCount: 0, link: '/admin/deployment/dns-relay' };
       publicip.activeCount = res.disAgents.items.filter(x=>res.location.find(y=>x.id === y.id)).length
       publicip.passiveCount = res.location.length - publicip.activeCount
 
@@ -50,7 +50,7 @@ export class AgentsComponent implements OnInit {
       roamingclient.passiveCount = res.roaming.length - roamingclient.activeCount
 
       dnsrelay.activeCount = res.box.filter(x=>res.disBoxs.items.find(y=>x.serial === y.serial)).length
-      dnsrelay.passiveCount = res.box.filter(x=>x.agent).length - dnsrelay.activeCount
+      dnsrelay.passiveCount = res.box.length - dnsrelay.activeCount;
       cal([publicip,roamingclient,dnsrelay])
     })
   }
