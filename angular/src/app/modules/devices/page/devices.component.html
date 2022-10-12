@@ -57,14 +57,14 @@
                 </div>
 
                 <div class="col-12 mt-3">
-                  <rk-select [options]="securityProfilesForSelect" [(value)]="selectedRule.agent.rootProfile.id"
+                  <rk-select [options]="securityProfilesForSelect" (valueChange)="securityProfileChanged($event)"
                              [isSearchable]="false" placeholder="{{'SelectProfile'|translate}}"
                              [isShowButton]="true" buttonIcon="plus"
                              buttonText="Create new profile" (buttonClickEmitter)="newProfileClicked($event)">
                   </rk-select>
                 </div>
 
-                <div class="col-12 mt-3">
+                <div class="col-12 mt-3" *ngIf="false">
                   <input type="text" class="rk-input w-100" placeholder="{{'BlockMessage'|translate}}" [(ngModel)]="selectedRule.agent.blockMessage">
                 </div>
               </div>
@@ -119,7 +119,7 @@
                       [(ngModel)]="selectedBox.host">
                   </div>
 
-                  <div class="col-12 mt-3">
+                  <div class="col-12 mt-3"  *ngIf="false">
                     <input type="text" class="rk-input w-100" placeholder="{{'BlockMessage'|translate}}"
                       [(ngModel)]="selectedBox.agent.blockMessage">
                   </div>
@@ -183,7 +183,7 @@
                     <rk-search [value]="ruleUserFilterText"  [placeholder]="'SearchADUser'|translate" (valueChange)="ruleUserFilterText=$event; search('ruleUser')" ></rk-search>
                     <button class="btn btn-small btn-icon btn-safe" (click)="openRuleModal('ruleUser')">
                       <i-feather name="plus" style="width: 24px"></i-feather>
-                      {{'Add Rule' | translate}}
+                      {{'AddRule' | translate}}
                     </button>
                   </div>
                 </div>

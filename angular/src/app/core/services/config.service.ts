@@ -119,7 +119,7 @@ export class ConfigService {
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+90';
       if (window.location.host.indexOf('local.roksit') >= 0) {
-        this.host.hiddenMenus = ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
+        this.host.hiddenMenus = ['settings/query-category', 'deployment/roaming-clients', 'deployment/dns-relay'];
       }
     } else if (window.location.host.indexOf('cmerp') >= 0) {
       this.host.www = 'https://www.cmerp.my';

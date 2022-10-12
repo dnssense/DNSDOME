@@ -57,7 +57,7 @@ export class ReportService {
       { 'name': 'userId', 'beautyName': 'TableColumn.UserId', 'hrType': '', 'aggsType': 'TERM', 'checked': false, hide: true },
       { 'name': 'action', 'beautyName': 'TableColumn.Action', 'hrType': 'DNS_ACTION', 'aggsType': 'TERM', 'checked': true, placeholder: 'Allow / Deny', inputPattern: /^(a|al|all|allo|allow|d|de|den|deny)$/i },
       { 'name': 'applicationName', 'beautyName': 'TableColumn.ApplicationName', 'hrType': '', 'aggsType': 'TERM', 'checked': false, inputPattern: /^[*a-zA-Z0-9_ \/]{0,32}$/i },
-      { 'name': 'category', 'beautyName': 'TableColumn.Category', 'hrType': '', 'aggsType': 'TERM', 'checked': false, hide: true },
+      { 'name': 'category', 'beautyName': 'TableColumn.Category', 'hrType': '', 'aggsType': 'TERM', 'checked': true, hide: true },
       { 'name': 'reasonType', 'beautyName': 'TableColumn.ReasonType', 'hrType': '', 'aggsType': 'TERM', 'checked': false },
       { 'name': 'clientLocalIp', 'beautyName': 'TableColumn.ClientLocalIp', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: '10.11.12.13 or 10.11.*', inputPattern: /^(\*?[012]?\d{1,2}\*?|\*?([012]?\d{1,2}\.){1,3}\*?|\*?([012]?\d{1,2}\.){1,3}[012]?\d{1,2}\*?|N\/?A?)$/i },
       { 'name': 'clientMacAddress', 'beautyName': 'TableColumn.ClientMacAddress', 'hrType': '', 'aggsType': 'TERM', 'checked': false, placeholder: '00:11:22:33:44:55 or 00:11:*', inputPattern: /^(\*?([0-9a-f]{1,2}?-?:?){1,6}\*?|N\/?A?)$/i },

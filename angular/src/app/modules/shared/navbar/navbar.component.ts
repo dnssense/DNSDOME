@@ -34,7 +34,7 @@ const helpRoutes: HelpRoute[] = [
     { appRoute: '/admin/reports/monitor', helpRouteEn: 'monitor/overview', helpRouteTr: 'monitoer/genel-bakis', dnscyteRoute: 'monitor' },
     { appRoute: '/admin/reports/custom-reports', helpRouteEn: 'custom-report/overview', helpRouteTr: 'oezellestirilmis-raporlar-custom-report/genel-bakis', dnscyteRoute: 'reports' },
     { appRoute: '/admin/deployment/public-ip', helpRouteEn: 'kurulum/public-ip', helpRouteTr: 'kurulum/gercek-public-ip', dnscyteRoute: 'deployment/public-ip' },
-    { appRoute: '/admin/deployment/devices', helpRouteEn: 'devices/dns-relay-nedir', helpRouteTr: 'devices/dns-relay-nedir', dnscyteRoute: 'deployment/devices' },
+    { appRoute: '/admin/deployment/dns-relay', helpRouteEn: 'devices/dns-relay-nedir', helpRouteTr: 'devices/dns-relay-nedir', dnscyteRoute: 'deployment/dns-relay' },
     { appRoute: '/admin/deployment/roaming-clients', helpRouteEn: 'roaming-client/roaming-client', helpRouteTr: 'roaming-client/genel-bakis', dnscyteRoute: 'deployment/roaming-clients' },
     { appRoute: '/admin/settings/profiles', helpRouteEn: 'kurulum/guvenlik-profilleri', helpRouteTr: 'kurulum/guevenlik-profilleri', dnscyteRoute: 'settings/profiles' },
     { appRoute: '/admin/settings/users', helpRouteEn: 'ayarlar/user-settings', helpRouteTr: 'ayarlar/kullanici-ayarlari', dnscyteRoute: 'settings/users' },
