@@ -15,7 +15,7 @@
             <form [formGroup]="searchForm">
               <div class="search d-flex align-items-center justify-content-between">
                 <div class="rk-autocomplete-container w-100 mr-2">
-                  <input type="text" class="rk-input rk-autocomplete" placeholder="Enter domain" [(ngModel)]="domain"
+                  <input type="text" class="rk-input rk-autocomplete" [placeholder]="'EnterDomain' | translate" [(ngModel)]="domain"
                     (ngModelChange)="checkDomain('category')" formControlName="domain"
                     (keydown.space)="$event.preventDefault()" (keydown.enter)="isDomain ? searchCategory() : null" [ngStyle]="{'border-color': domain?.length > 1 && isDomain ? '#3397c5' : '#f95656'}">
                   <i-feather name="search" class="search-icon"></i-feather>
