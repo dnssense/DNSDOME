@@ -492,7 +492,8 @@
         "Bad-IP": "Bad-IP",
         "NX Domain": "NX Domain",
         "Empty Site": "Boş Site",
-        "DOH": "DoH"
+        "DOH": "DoH",
+        "Compromised Website": "Hacked Sites"
     },
     "DeviceSaved": "Cihaz kaydedildi",
     "DevicesSaved": "Cihazlar kaydedildi",

@@ -495,7 +495,8 @@
         "NX Domain": "NX Domain",
         "Empty Site": "Empty Site",
         "Empty Sites": "Empty Sites",
-        "DOH": "DoH"
+        "DOH": "DoH",
+        "Compromised Website": "Compromised Website"
     },
     "DeviceSaved": "Device saved",
     "DevicesSaved": "Devices saved",
