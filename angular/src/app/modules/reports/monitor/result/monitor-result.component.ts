@@ -70,8 +70,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
     cellDataMaxLen: 30,
     columns: [
       { id: 0, name: 'time', displayText: this.translateService.translate('TableColumn.Time'), showAction: true },
-      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true, noLinkInPopover: true },
-      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true, noLinkInPopover: true},
+      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true, isPopover: true },
+      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true, isPopover: true},
       { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), showAction: true },
       { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), showAction: true },
       { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), showAction: true },
@@ -104,7 +104,7 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
   @Output() actionClickedOutput = new EventEmitter<ActionClick>();
 
-  ngOnInit() { 
+  ngOnInit() {
     this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
       this.changeColumnNames();
     });
@@ -167,8 +167,8 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
       { id: 5, name: 'hostName', displayText: this.translateService.translate('TableColumn.HostName'), showAction: true },
       { id: 6, name: 'clientMacAddress', displayText: this.translateService.translate('TableColumn.ClientMacAddress'), showAction: true },
       { id: 7, name: 'clientBoxSerial', displayText: this.translateService.translate('TableColumn.ClientBoxSerial'), showAction: true },
-      { id: 8, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true, noLinkInPopover: true },
-      { id: 9, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true,noLinkInPopover: true},
+      { id: 8, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true, isPopover: true },
+      { id: 9, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true, isPopover: true},
       { id: 10, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), showAction: true },
       { id: 11, name: 'destinationIpCountryCode', displayText: this.translateService.translate('TableColumn.DestinationCountry'), showAction: true },
       { id: 12, name: 'category', displayText: this.translateService.translate('TableColumn.Category'), showAction: true },
@@ -262,11 +262,10 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
 
           rowItem['category'] = typeof rowItem['category'] === 'object' ? rowItem['category'].join(',') : rowItem['category'];
 
-          if ((rowItem['domain'] && rowItem['domain'] !== punycode.toUnicode(rowItem['domain'])) ||
-            (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain']))) {
-            rowItem.popoverRows = [{ domain: punycode.toUnicode(rowItem['domain']), subdomain: punycode.toUnicode(rowItem['subdomain']) }];
-          } else {
-            //rowItem.popoverClass = 'none';
+          if ((rowItem['domain'] && rowItem['domain'] !== punycode.toUnicode(rowItem['domain']))) {
+            rowItem.popoverRows = [{ domain: punycode.toUnicode(rowItem['domain'])}];
+          } else if (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain'])) {
+            rowItem.popoverRows = [{subdomain: punycode.toUnicode(rowItem['subdomain']) }];
           }
 
           this.tableConfig.rows.push(rowItem);

@@ -107,8 +107,8 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
     filterColumnText: this.translateService.translate('ColumnsToDisplay'),
     cellDataMaxLen: 30,
     columns: [
-      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true },
-      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true },
+      { id: 1, name: 'domain', displayText: this.translateService.translate('TableColumn.Domain'), showAction: true, isPopover: true },
+      { id: 2, name: 'subdomain', displayText: this.translateService.translate('TableColumn.Subdomain'), showAction: true, isPopover: true },
       { id: 3, name: 'sourceIp', displayText: this.translateService.translate('TableColumn.SourceIp'), showAction: true },
       { id: 4, name: 'sourceIpCountryCode', displayText: this.translateService.translate('TableColumn.SourceCountry'), showAction: true },
       { id: 5, name: 'destinationIp', displayText: this.translateService.translate('TableColumn.DestinationIp'), showAction: true },
@@ -224,9 +224,9 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
       this.tableConfig.arrowVisible = true;
 
       this.data.forEach(item => {
-        
+
         let rowItem: RkTableRowModel = {selected:item.selected};
-        
+
 
         this.selectedColumns.forEach((col, index) => {
             if(rowItem['domain'] === 'Others'){
@@ -237,7 +237,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
             if(col.column.name === 'action'){
               rowItem[col.column.name] = rowItem[col.column.name] ? 'Allow' : 'Deny';
              }
-       }); 
+       });
 
        rowItem[this.selectedColumns.length] = item[this.selectedColumns.length];
 
@@ -248,6 +248,11 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
             isNavigate: true,
             customClass: 'navigate-icon'
           };
+       }
+       if ((rowItem['domain'] && rowItem['domain'] !== punycode.toUnicode(rowItem['domain']))) {
+          rowItem.popoverRows = [{ domain: punycode.toUnicode(rowItem['domain'])}];
+       } else if (rowItem['subdomain'] && rowItem['subdomain'] !== punycode.toUnicode(rowItem['subdomain'])) {
+          rowItem.popoverRows = [{subdomain: punycode.toUnicode(rowItem['subdomain']) }];
        }
       this.tableConfig.rows.push(rowItem);
 

@@ -65,7 +65,7 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
       { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
       { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
       { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
-      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true, hiddenCopy: true },
+      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true },
     ],
     rows: [],
     selectableRows: true
@@ -131,7 +131,7 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
       { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
       { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
       { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
-      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, hiddenCopy: true },
+      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true },
     ];
   }
 

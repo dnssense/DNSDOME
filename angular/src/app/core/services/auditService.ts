@@ -46,7 +46,6 @@ export class AuditService {
           const items = this.tryParse(x.messageDetail);
           x.messageDetail = items[0];
           x.popoverRows = items.length > 1 ? items : undefined;
-          x.popoverClass = theme == 'dark' ? 'auditDetailDark' : "auditDetailWhite";
           (x as any).json = JSON.stringify(items);
           return x;
         });
