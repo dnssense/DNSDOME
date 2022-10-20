@@ -1100,7 +1100,10 @@ export class DevicesComponent implements OnInit {
     this.adIntegrationService.getGroups().subscribe(groups => {
       this.adGroups = groups.map(g => {
         const members = this.adClients.filter(c => c.groups.find(_g => _g.groupName === g.groupName));
-        g.memberCount = members.length;
+        g.memberCount = g.memberCount;
+        if (!g.memberCount) { // if memberCount returns 0, double check from clients.
+          g.memberCount = members.length;
+        }
 
         const lst = members.map(m => m.lastValidTime).sort().reverse()[0];
         if (lst)
