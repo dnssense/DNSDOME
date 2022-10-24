@@ -139,9 +139,9 @@
   </rk-modal-footer>
 </rk-modal>
 
-<div class="container-fluid" style="background-color: var(--body-bg)!important;">
+<div class="container-fluid monitor-filter-container pt-3 pr-3">
   <div class="row">
-    <div class="col-12">
+    <div class="col-12 col-lg-9 d-flex flex-column">
       <div class="monitor-traffic-search flex-wrap justify-content-start align-items-start">
         <div class="filter-left flex-wrap">
           <span class="monitor-title">{{ pageTitle | translate }}</span>
@@ -155,128 +155,112 @@
             </rk-radio>
           </div>
         </div>
-
-        <div class="filter-right flex-wrap align-items-start">
-          <!-- <button class="btn btn-small btn-icon mr-2" (click)="search()">
-            <i-feather name="search"></i-feather>
-            Search
-          </button> -->
-
-          <button class="btn btn-small mr-2 mt-1" [ngClass]="{'active': option.selected}"
-            *ngFor="let option of dateOptions" (click)="clickedDateOption(option)">{{ option.displayText }}</button>
-
-          <icon-equal style="margin: 10px 5px 0 0"></icon-equal>
-
-          <div style="min-width: 200px;" class="mt-1 d-flex flex-column justify-content-center align-items-center">
-            <rk-date #date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions"
-              [config]="dateConfig"></rk-date>
-
-            <!-- <span class="date-text mt-1">{{ dateText }}</span> -->
-
-            <!-- <rk-select [(value)]="searchSettings.dateInterval" (valueChange)="onSelectedDateChange($event)"
-              [options]="dateOptions" [placeholder]="'Date selection'"></rk-select> -->
-          </div>
-        </div>
       </div>
-    </div>
-  </div>
-  <div class="monitor-filter-container">
-    <div style="position: relative">
-      <div class="row" style="margin: 0 144px 0 10px; max-width: 1055px;">
-        <div class="select-container col-12 col-lg-3">
-          <rk-select class="w-100" [placeholder]="'Select' | translate" [(value)]="selectedColumnFilter"
-                     [options]="columnsOptions" (valueChange)="filterColumnChanged()">
-          </rk-select>
-        </div>
+      <div class="d-flex">
+          <div class="row ml-0 flex-grow-1 mr-0">
+            <div class="select-container col-12 col-lg-3">
+              <rk-select class="w-100" [placeholder]="'Select' | translate" [(value)]="selectedColumnFilter"
+                         [options]="columnsOptions" (valueChange)="filterColumnChanged()">
+              </rk-select>
+            </div>
 
-        <div class="select-container col-12 col-lg-2" style="min-width: 155px; max-width: 155px">
-          <div class="rk-tabs toggle-tabs w-100">
-            <div class="rk-tab" [ngClass]="{'active': searchType === 'equal'}" (click)="searchType = 'equal'">
-              <icon-equal></icon-equal>
+            <div class="select-container col-10 col-lg-2" style="min-width: 155px; max-width: 155px">
+              <div class="rk-tabs toggle-tabs w-100">
+                <div class="rk-tab" [ngClass]="{'active': searchType === 'equal'}" (click)="searchType = 'equal'">
+                  <icon-equal></icon-equal>
+                </div>
+                <div class="rk-tab" [ngClass]="{'active': searchType === 'not-equal'}" (click)="searchType = 'not-equal'">
+                  <icon-not-equal></icon-not-equal>
+                </div>
+                <div class="rk-tab" [ngClass]="{'active': searchType === 'contain'}" (click)="searchType = 'contain'" style="font-size: 10px;padding: 0 5px">{{'Contains' | translate}}</div>
+              </div>
             </div>
-            <div class="rk-tab" [ngClass]="{'active': searchType === 'not-equal'}" (click)="searchType = 'not-equal'">
-              <icon-not-equal></icon-not-equal>
+
+            <div class="select-container col-10 col-lg-4" style="position: relative;">
+              <input type="text" class="rk-input w-100" [(ngModel)]="filterText" (keydown.enter)="addManuelFilter()" (keydown)="checkInput($event)" [ngClass]="{'input-error' : inputError?.trim()}"
+                     [placeholder]="selectedColumn?.placeholder || (selectedColumn?.beautyName | translate) || '...'" [disabled]="!selectedColumnFilter">
+
+              <button class="btn btn-input" [ngClass]="{'btn-enabled': filterText?.trim().length > 0}"
+                      (click)="addManuelFilter()" [disabled]="filterText?.trim().length === 0">
+                <i-feather name="plus" class="mr-0"></i-feather>
+              </button>
+
+              <span class="text-security" style="position: absolute; bottom: -16px; left: 20px; font-size: 10px">{{ inputError | translate}}</span>
             </div>
-            <div class="rk-tab" [ngClass]="{'active': searchType === 'contain'}" (click)="searchType = 'contain'" style="font-size: 10px;padding: 0 5px">{{'Contains' | translate}}</div>
+
+            <div class="select-container col-10 col-lg-3" style="padding-left: 5px !important;border-left: solid 1px var(--blue-grey);" *ngIf="showCategory()">
+              <rk-select class="w-100" grouped="true" groupTitleBorder="true" multiSelection="true" [options]="autocompleteItems" [customContentTemplate]="categoryEquality"
+                         expandableGroups="true" [placeholder]="'Category' | translate" isSearchable="true" [searchPlaceholder]="'Search' | translate"
+                         isShowButton="true" [buttonText]="'Apply' | translate" (selectionChanged)="categoryEnterPress($event)" buttonClass="bg-primary"></rk-select>
+            </div>
+            <div class="col-2" *ngIf="!showCategory()">
+              <ng-container *ngTemplateOutlet="applyFilterButton"></ng-container>
+            </div>
+
+
+            <ng-template #categoryEquality>
+              <div class="rk-tabs toggle-tabs mb-2">
+                <div class="rk-tab" [ngClass]="{'active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
+                  <icon-equal></icon-equal>
+                </div>
+                <div class="rk-tab" [ngClass]="{'active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
+                  <icon-not-equal></icon-not-equal>
+                </div>
+              </div>
+            </ng-template>
           </div>
+        <div *ngIf="showCategory()">
+          <ng-container *ngTemplateOutlet="applyFilterButton"></ng-container>
         </div>
+        <ng-template #applyFilterButton>
+          <button class="btn btn-small btn-fill btn-icon px-2 justify-content-center ml-1" (click)="search('', true)" style="height: 36px; width: 134px !important;"  [ngStyle]="{'background-color': isShowRunBar ? '#FFB300' : 'var(--primary)'}" [ngClass]="{'pulse-animation': isShowPulseAnimation}">
+            <svg class="mr-3" id="Solid" height="18" viewBox="0 0 512 512" width="20" xmlns="http://www.w3.org/2000/svg">
+              <path d="m462.447 223.118a24.007 24.007 0 0 1 -29.565-16.671 185.51 185.51 0 0 0 -64.919-96.331 183.5 183.5 0 0 0 -223.925 0 184.189 184.189 0 0 0 -31.973 31.7l-18.928 5.567-2.962-53.331a231.385 231.385 0 0 1 307.125-21.924 233.815 233.815 0 0 1 81.814 121.425 24 24 0 0 1 -16.667 29.565zm-51.585 141.5-18.927 5.567a184.184 184.184 0 0 1 -31.972 31.7 183.5 183.5 0 0 1 -223.925 0 185.505 185.505 0 0 1 -64.92-96.331 24 24 0 1 0 -46.236 12.894 233.817 233.817 0 0 0 81.818 121.424 230.981 230.981 0 0 0 307.129-21.924zm-348.091-141.594 136-40a24 24 0 1 0 -13.543-46.048l-106.946 31.454-6.32-113.761a24 24 0 1 0 -47.924 2.662l8 144a24 24 0 0 0 30.734 21.693zm394.56 256.938a24 24 0 0 0 22.631-25.294l-8-144a24 24 0 0 0 -30.735-21.693l-135.995 40a24 24 0 0 0 13.544 46.049l106.942-31.454 6.32 113.76a24 24 0 0 0 23.941 22.67q.672 0 1.352-.038z"/>
+            </svg>
+            {{'Apply Filter' | translate}}
 
-        <div class="select-container col-12 col-lg-4" style="position: relative; border-right: solid 1px var(--blue-grey)">
-          <input type="text" class="rk-input w-100" [(ngModel)]="filterText" (keydown.enter)="addManuelFilter()" (keydown)="checkInput($event)" [ngClass]="{'input-error' : inputError?.trim()}"
-                 [placeholder]="selectedColumn?.placeholder || (selectedColumn?.beautyName | translate) || '...'" [disabled]="!selectedColumnFilter">
-
-          <button class="btn btn-input" [ngClass]="{'btn-enabled': filterText?.trim().length > 0}"
-                  (click)="addManuelFilter()" [disabled]="filterText?.trim().length === 0">
-            <i-feather name="plus" class="mr-0"></i-feather>
+            <div class="btn-animation"></div>
           </button>
-
-          <span class="text-security" style="position: absolute; bottom: -16px; left: 20px; font-size: 10px">{{ inputError | translate}}</span>
-        </div>
-
-        <div class="select-container col-12 col-lg-3">
-          <rk-select class="w-100" grouped="true" groupTitleBorder="true" multiSelection="true" [options]="autocompleteItems" [customContentTemplate]="categoryEquality"
-                     expandableGroups="true" [placeholder]="'Category' | translate" isSearchable="true" [searchPlaceholder]="'Search' | translate"
-                     isShowButton="true" [buttonText]="'Apply' | translate" (selectionChanged)="categoryEnterPress($event)" buttonClass="bg-primary"></rk-select>
-        </div>
-
-        <ng-template #categoryEquality>
-          <div class="rk-tabs toggle-tabs mb-2">
-            <div class="rk-tab" [ngClass]="{'active': modalCategoryIsEqual}" (click)="modalCategoryIsEqual = true">
-              <icon-equal></icon-equal>
-            </div>
-            <div class="rk-tab" [ngClass]="{'active': !modalCategoryIsEqual}" (click)="modalCategoryIsEqual = false">
-              <icon-not-equal></icon-not-equal>
-            </div>
-          </div>
         </ng-template>
+
       </div>
+      <div class="d-flex align-items-center flex-wrap" style="position: relative; min-height: 46px"  *ngIf="filters?.length > 0">
+        <div class="d-flex flex-wrap align-items-center badge-container">
+          <!--span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0"
+                style="cursor: pointer;" (click)="revertReport()">{{ searchSettings?.name }}</span-->
 
-      <button class="btn btn-small btn-fill btn-icon px-2 justify-content-center" (click)="search('', true)" style="height: 36px; position: absolute; width: 134px; bottom: 10px; right: 15px" [ngStyle]="{'background-color': isShowRunBar ? '#FFB300' : 'var(--primary)'}" [ngClass]="{'pulse-animation': isShowPulseAnimation}">
-        <svg class="mr-3" id="Solid" height="18" viewBox="0 0 512 512" width="20" xmlns="http://www.w3.org/2000/svg">
-          <path d="m462.447 223.118a24.007 24.007 0 0 1 -29.565-16.671 185.51 185.51 0 0 0 -64.919-96.331 183.5 183.5 0 0 0 -223.925 0 184.189 184.189 0 0 0 -31.973 31.7l-18.928 5.567-2.962-53.331a231.385 231.385 0 0 1 307.125-21.924 233.815 233.815 0 0 1 81.814 121.425 24 24 0 0 1 -16.667 29.565zm-51.585 141.5-18.927 5.567a184.184 184.184 0 0 1 -31.972 31.7 183.5 183.5 0 0 1 -223.925 0 185.505 185.505 0 0 1 -64.92-96.331 24 24 0 1 0 -46.236 12.894 233.817 233.817 0 0 0 81.818 121.424 230.981 230.981 0 0 0 307.129-21.924zm-348.091-141.594 136-40a24 24 0 1 0 -13.543-46.048l-106.946 31.454-6.32-113.761a24 24 0 1 0 -47.924 2.662l8 144a24 24 0 0 0 30.734 21.693zm394.56 256.938a24 24 0 0 0 22.631-25.294l-8-144a24 24 0 0 0 -30.735-21.693l-135.995 40a24 24 0 0 0 13.544 46.049l106.942-31.454 6.32 113.76a24 24 0 0 0 23.941 22.67q.672 0 1.352-.038z"/>
-        </svg>
-        {{'Apply Filter' | translate}}
-
-        <div class="btn-animation"></div>
-      </button>
-    </div>
-
-    <div class="d-flex align-items-center flex-wrap ml-3" style="position: relative; min-height: 46px">
-      <div class="d-flex flex-wrap align-items-center badge-container" style="padding-right: 25px;">
-        <!--span class="filter-text link-text mb-2" *ngIf="searchSettings?.name?.length > 0"
-              style="cursor: pointer;" (click)="revertReport()">{{ searchSettings?.name }}</span-->
-
-        <rk-filter-badge class="mr-2 mb-2" *ngFor="let filter of filters"
-                         [name]="getDisplayText(filter) | translate"
-                         [equal]="filter.equal" [values]="filter.values"
-                         (deleted)="onDeletedFilterBadge($event, filter)"
-                         (edited)="onEditedFilterBadge(filter)"
-                         (removeValueClicked)="removeManuelFilter(filter, $event.filterIndex, $event.valueIndex, filter.name)"
-                         (onChange)="filterBadgeChange(filter)"
-                         [doneText]="'Done' | translate"
-                         removableValues="true" [(editMode)]="filter.editMode"></rk-filter-badge>
-      </div>
-
-      <div style="width: 320px; min-width: 320px; position: absolute; right: 0; bottom: 0; top:0; text-align: right">
-        <!--                <button class="btn btn-small report-lb bg-transparent btn-link p-0 mr-3" *ngIf="filters?.length > 0"-->
-        <!--                        (click)="filtersClear()">{{ 'REPORT.CleanFilters' | translate }}</button>-->
-        <button *ngIf="filters?.length > 0"
-                class="btn btn-small mr-3 mb-2 border-primary" (click)="saveFilterClick()" style="width: 134px; padding: 9px 8px">
-
-          <i-feather name="save"></i-feather>
-          {{ 'REPORT.SaveFilter' | translate }}
-        </button>
-
-        <button class="btn btn-small mr-3 mb-2 border-primary" (click)="openFilters()" style="width: 134px; padding: 9px 8px">
-          <i-feather name="file-text"></i-feather>
-          {{ 'REPORT.SavedReports' | translate }}
-        </button>
+          <rk-filter-badge class="mr-2 mb-2" *ngFor="let filter of filters"
+                           [name]="getDisplayText(filter) | translate"
+                           [equal]="filter.equal" [values]="filter.values"
+                           (deleted)="onDeletedFilterBadge($event, filter)"
+                           (edited)="onEditedFilterBadge(filter)"
+                           (removeValueClicked)="removeManuelFilter(filter, $event.filterIndex, $event.valueIndex, filter.name)"
+                           (onChange)="filterBadgeChange(filter)"
+                           [doneText]="'Done' | translate"
+                           removableValues="true" [(editMode)]="filter.editMode"></rk-filter-badge>
+        </div>
       </div>
     </div>
-
-    <div style="position: absolute; z-index: 1; width: 180px; margin-left: 50%; left: -90px" *ngIf="filters?.length > 0"
-         [ngStyle]="{'margin-top': pageTitle === 'MonitorTraffic' ? '26px' : '-8px'}">
-
+    <div class="col-12 col-lg-3 d-flex flex-column align-items-start align-items-lg-end">
+      <div class="d-flex flex-row flex-lg-column" style="gap: 10px">
+        <div  class="d-flex flex-column align-items-start">
+          <rk-date style="min-width: 160px" #date alignment="right" (complete)="rkDateChanhed($event)" [times]="dateOptions"
+                   [config]="dateConfig"></rk-date>
+        </div>
+        <div class="d-flex flex-wrap flex-row flex-lg-column" style="gap: 8px" *ngIf="showReports()">
+          <button *ngIf="filters?.length > 0"
+                  class="btn btn-small border-primary" (click)="saveFilterClick()">
+            <i-feather name="save"></i-feather>
+            {{ 'REPORT.SaveFilter' | translate }}
+          </button>
+          <button class="btn btn-small border-primary" (click)="openFilters()">
+            <i-feather name="file-text"></i-feather>
+            {{ 'REPORT.SavedReports' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 d-flex align-items-center justify-content-center mt-2" *ngIf="showTraffic() && filters?.length > 0">
       <button class="btn btn-small bg-transparent btn-link p-0 mr-3"
               (click)="routeReportPage(pageTitle === 'MonitorTraffic' ? 'custom-reports' : 'monitor')">
         <i-feather name="external-link"></i-feather>

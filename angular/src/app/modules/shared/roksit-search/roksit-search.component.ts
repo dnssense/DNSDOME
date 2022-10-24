@@ -920,4 +920,16 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     } else
       this.inputError = '';
   }
+
+  showCategory(): boolean {
+    return ['PageName.CustomReports', 'MonitorTraffic'].includes(this.pageTitle);
+  }
+
+  showReports(): boolean {
+    return ['PageName.CustomReports', 'MonitorTraffic'].includes(this.pageTitle);
+  }
+
+  showTraffic(): boolean {
+    return ['PageName.CustomReports', 'MonitorTraffic'].includes(this.pageTitle);
+  }
 }
