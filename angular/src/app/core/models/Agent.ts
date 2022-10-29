@@ -31,6 +31,7 @@ export class Agent {
     isAlive = true;
     isUserDisabled = false;
     isUserDisabledSmartCache = false;
+    insertDate: string;
     os?: string;
     hostname?: string;
     version?: string;

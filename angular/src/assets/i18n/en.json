@@ -754,5 +754,8 @@
     "SearchDNSRelay": "Search DNS Relay Server",
     "DeleteRule": "Delete Rule",
     "FillRuleKeyword": "Rule Keyword Needed",
-    "FillRuleBy": "Rule By Needed"
+    "FillRuleBy": "Rule By Needed",
+    "Alive": "Alive",
+    "AliveLastSeen": "Last Seen: ",
+    "AliveMoreThanOneWeek": "More Than A Week"
 }

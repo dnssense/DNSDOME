@@ -748,5 +748,8 @@
     "SearchDNSRelay": "DNS Relay Sunucusu Ara",
     "DeleteRule": "Kural Sil",
     "FillRuleKeyword": "Kural Anahtar Kelimesi Giriniz",
-    "FillRuleBy": "Kural Uygulama Kriteri Seçiniz"
+    "FillRuleBy": "Kural Uygulama Kriteri Seçiniz",
+    "Alive": "Alive",
+    "AliveLastSeen": "Son Görülme: ",
+    "AliveMoreThanOneWeek": "Bir Haftadan Fazla"
 }
