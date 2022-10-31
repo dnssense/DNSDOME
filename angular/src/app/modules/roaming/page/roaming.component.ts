@@ -18,6 +18,7 @@ import { GroupAgentModel } from '../../devices/page/devices.component';
 import { ClipboardService } from 'ngx-clipboard';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import * as moment from "moment";
 
 declare let $: any;
 export interface BoxConf {
@@ -174,6 +175,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     @ViewChild('profileModal') profileModal: RkModalModel;
     @ViewChild('profileWizard') profileWizard: ProfileWizardComponent;
 
+    aliveDataLoaded: boolean;
+
     categoryOptions: RkSelectModel[] = [
         {
             displayText: 'Not Grouped',
@@ -257,13 +260,15 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 }
             });
             this.agentService.getAgentInfo(this.clients.map(x => x.uuid)).subscribe(x => {
-                this.clients.forEach(y => {
+              this.aliveDataLoaded = true;
+              this.clients.forEach(y => {
                     if (x?.infos?.find) {
 
                         const info = x.infos.find(a => a.uuid == y.uuid);
 
                         y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
                         y.isUserDisabledSmartCache = info ? info.isUserDisabledSmartCache > 0 : false;
+                        y.insertDate = info ? moment(info.insertDate).format('YYYY-MM-DD HH:mm') : null;
                         y.os = info?.os;
                         y.hostname = info?.hostname;
                         y.mac = info?.mac;

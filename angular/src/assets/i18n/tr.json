@@ -752,5 +752,8 @@
     "FillRuleBy": "Kural Uygulama Kriteri Seçiniz",
     "AddToFilter": "Filtreye ekle",
     "AddedToFilter": "Eklendi",
-    "ColumnsToDisplay": "Gösterilecek Kolonlar"
+    "ColumnsToDisplay": "Gösterilecek Kolonlar",
+    "Alive": "Alive",
+    "AliveLastSeen": "Son Görülme: ",
+    "AliveMoreThanOneWeek": "Bir Haftadan Fazla"
 }

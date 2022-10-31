@@ -758,5 +758,8 @@
     "FillRuleBy": "Rule By Needed",
     "AddToFilter": "Add to filter",
     "AddedToFilter": "Added",
-    "ColumnsToDisplay": "Columns to Display"
+    "ColumnsToDisplay": "Columns to Display",
+    "Alive": "Alive",
+    "AliveLastSeen": "Last Seen: ",
+    "AliveMoreThanOneWeek": "More Than A Week"
 }
