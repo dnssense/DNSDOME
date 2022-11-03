@@ -157,14 +157,14 @@
         </div>
       </div>
       <div class="d-flex">
-          <div class="row ml-0 flex-grow-1 mr-0">
-            <div class="select-container col-12 col-lg-3">
+          <div class="ml-0 flex-grow-1 mr-0 d-flex flex-wrap">
+            <div class="select-container flex-grow-1">
               <rk-select class="w-100" [placeholder]="'Select' | translate" [(value)]="selectedColumnFilter"
                          [options]="columnsOptions" (valueChange)="filterColumnChanged()">
               </rk-select>
             </div>
 
-            <div class="select-container col-10 col-lg-2" style="min-width: 155px; max-width: 155px">
+            <div class="select-container" style="width: 155px;">
               <div class="rk-tabs toggle-tabs w-100">
                 <div class="rk-tab" [ngClass]="{'active': searchType === 'equal'}" (click)="searchType = 'equal'">
                   <icon-equal></icon-equal>
@@ -176,7 +176,7 @@
               </div>
             </div>
 
-            <div class="select-container col-10 col-lg-4" style="position: relative;">
+            <div class="select-container flex-grow-1"  style="position: relative;">
               <input type="text" class="rk-input w-100" [(ngModel)]="filterText" (keydown.enter)="addManuelFilter()" (keydown)="checkInput($event)" [ngClass]="{'input-error' : inputError?.trim()}"
                      [placeholder]="selectedColumn?.placeholder || (selectedColumn?.beautyName | translate) || '...'" [disabled]="!selectedColumnFilter">
 
@@ -188,12 +188,12 @@
               <span class="text-security" style="position: absolute; bottom: -16px; left: 20px; font-size: 10px">{{ inputError | translate}}</span>
             </div>
 
-            <div class="select-container col-10 col-lg-3" style="padding-left: 5px !important;border-left: solid 1px var(--blue-grey);" *ngIf="showCategory()">
+            <div class="select-container" style="padding-left: 5px !important;border-left: solid 1px var(--blue-grey); flex-grow: 2" *ngIf="showCategory()">
               <rk-select class="w-100" grouped="true" groupTitleBorder="true" multiSelection="true" [options]="autocompleteItems" [customContentTemplate]="categoryEquality"
                          expandableGroups="true" [placeholder]="'Category' | translate" isSearchable="true" [searchPlaceholder]="'Search' | translate"
                          isShowButton="true" [buttonText]="'Apply' | translate" (selectionChanged)="categoryEnterPress($event)" buttonClass="bg-primary"></rk-select>
             </div>
-            <div class="col-2" *ngIf="!showCategory()">
+            <div class="flex-grow-1" *ngIf="!showCategory()">
               <ng-container *ngTemplateOutlet="applyFilterButton"></ng-container>
             </div>
 

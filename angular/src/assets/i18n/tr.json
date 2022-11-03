@@ -599,7 +599,9 @@
         "RuleBy": "Rule By",
         "ADGroups": "AD Grupları",
         "DNSServerName": "DNS Sunucu Adı",
-        "ClientCount": "İstemci Sayısı"
+        "ClientCount": "İstemci Sayısı",
+        "RuleKeyword": "Kural Anahtar Kelimesi"
+
     },
     "Month": "Ay",
     "Week": "Hafta",
