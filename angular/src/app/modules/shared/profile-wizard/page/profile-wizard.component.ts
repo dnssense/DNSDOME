@@ -1,13 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { StaticService } from 'src/app/core/services/staticService';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { Agent } from 'src/app/core/models/Agent';
 import { ApplicationV2 } from 'src/app/core/models/ApplicationV2';
 import {
-  SecurityProfile,
-  BlackWhiteListProfile,
-  SecurityProfileItem,
   ListItem,
   FIRSTLY_SEEN,
   DOH_BYPASS
@@ -19,13 +15,11 @@ import { Box } from 'src/app/core/models/Box';
 import { BoxService } from 'src/app/core/services/box.service';
 import { DEVICE_GROUP } from 'src/app/core/constants';
 import { DeviceGroup, AgentInfo } from 'src/app/core/models/DeviceGroup';
-import { BWListItem } from 'src/app/core/models/BWListItem';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RkAlertService, RkNotificationService } from 'roksit-lib';
 
-declare var $: any;
 
 // tslint:disable-next-line: class-name
 export class categoryItem {
@@ -62,14 +56,13 @@ export class ProfileWizardComponent {
     private roamingService: RoamingService,
     private boxService: BoxService,
     private staticMessageService: StaticMessageService,
-    private translatorService: TranslatorService,
-    private translateService: TranslateService
+    private translatorService: TranslatorService
   ) {
     this.getCategoriesAndApps();
-
+    /*
     translateService.onLangChange.subscribe(result => {
       this.fillGroupedApplications();
-    });
+    }); */
   }
 
   categoryMappings;
@@ -421,7 +414,7 @@ export class ProfileWizardComponent {
       return status;
     }
 
-    let alertMessage = '', alertTitle = '';
+    let alertMessage: string, alertTitle: string;
 
     if (this.selectedAgent.rootProfile.numberOfUsage && this.selectedAgent.rootProfile.numberOfUsage > 0) {
       alertTitle = this.selectedAgent.rootProfile.numberOfUsage + ` ${this.staticMessageService.agentsUsingThisProfileMessage}`;

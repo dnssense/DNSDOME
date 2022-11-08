@@ -10,7 +10,7 @@
         <icon-equal style="margin: 11px 10px 0" class="d-none d-xl-block"></icon-equal>
 
         <div class="d-flex flex-column text-center">
-          <rk-date #date [startDate]="startDate" [endDate]="endDate"
+          <rk-date #date [startDate]="startDate" [endDate]="endDate" [times]="times"
             (complete)="dateChanged($event, true)" [alignment]="'right'" [config]="dateConfig">
           </rk-date>
           <span class="date-text mt-1">{{ dateText }}</span>

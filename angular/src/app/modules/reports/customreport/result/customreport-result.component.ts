@@ -56,9 +56,10 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
     }
   }
   ngOnInit(): void {
+    /*
     this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
       this.changeColumnNames();
-    });
+    });*/
   }
 
   token;

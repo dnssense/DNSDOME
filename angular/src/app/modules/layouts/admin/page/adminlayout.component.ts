@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 
-import { Subscription } from 'rxjs';
+import {Subject} from 'rxjs';
 import { Location, PopStateEvent } from '@angular/common';
 
 
@@ -10,13 +10,15 @@ import { NavbarComponent } from 'src/app/modules/shared/navbar/navbar.component'
 import { NavItem } from 'src/app/modules/shared/md/md.module';
 import { RkLayoutService } from 'roksit-lib';
 import { SidebarComponent } from 'src/app/modules/shared/sidebar/sidebar.component';
+import {takeUntil} from 'rxjs/operators';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'app-adminlayout',
     templateUrl: './adminlayout.component.html',
     styleUrls: ['./adminlayout.component.sass']
 })
-export class AdminLayoutComponent implements OnInit {
+export class AdminLayoutComponent implements OnInit, OnDestroy {
 
     public navItems: NavItem[];
     private lastPoppedUrl: string;
@@ -28,14 +30,15 @@ export class AdminLayoutComponent implements OnInit {
     @ViewChild(NavbarComponent) navbar: NavbarComponent;
 
     collapsed: boolean;
+    private ngUnsubscribe: Subject<any> = new Subject<any>();
 
     constructor(
         private router: Router,
         location: Location,
-        private rkLayoutService: RkLayoutService
-    ) {
+        private rkLayoutService: RkLayoutService,
+       private _translateService: TranslateService
+     ) {
         this.location = location;
-
         rkLayoutService.sidebarCollapsed.subscribe(collapsed => {
             this.collapsed = collapsed;
         });
@@ -55,7 +58,7 @@ export class AdminLayoutComponent implements OnInit {
                     this.yScrollStack.push(window.scrollY);
                 }
             } else if (event instanceof NavigationEnd) {
-                if (event.url === this.lastPoppedUrl) {
+              if (event.url === this.lastPoppedUrl) {
                     this.lastPoppedUrl = undefined;
                     window.scrollTo(0, this.yScrollStack.pop());
                 } else {
@@ -74,6 +77,14 @@ export class AdminLayoutComponent implements OnInit {
         // }
 
         this.navItems = [];
+
+        // translation reload when language changes.
+        this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+          const currentUrl = this.router.url;
+          this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate([currentUrl]);
+          });
+        });
     }
 
     toggleCollapse() {
@@ -105,4 +116,9 @@ export class AdminLayoutComponent implements OnInit {
         }
         return bool;
     }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

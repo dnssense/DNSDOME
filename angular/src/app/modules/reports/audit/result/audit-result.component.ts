@@ -33,220 +33,221 @@ export class AuditResultComponent implements OnInit, AfterViewInit, AfterViewChe
     private translateService: TranslatorService,
     private _translateService: TranslateService
   ) {
-    _translateService.onLangChange.subscribe(result => {
-      this.changeColumnNames();
+  /*
+  _translateService.onLangChange.subscribe(result => {
+    this.changeColumnNames();
+  });*/
+}
+
+columns: LogColumn[];
+selectedColumns: LogColumn[];
+tableData: any;
+total = 0;
+multiplier = 1;
+maxSize = 10;
+private ngUnsubscribe: Subject<any> = new Subject<any>();
+columnListLength = 12;
+
+pageViewCount = 10;
+
+totalCount = 0;
+
+tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
+
+tableConfig: RkTableConfigModel = {
+copyText: {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')},
+defaultActionText: {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')},
+filterColumnText: this.translateService.translate('ColumnsToDisplay'),
+cellDataMaxLen: 30,
+columns: [
+  { id: 0, name: 'time', displayText: this.translateService.translate('AuditTableColumn.Time'), showAction: true },
+  { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), showAction: true },
+  { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), showAction: true },
+  { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
+  { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
+  { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
+  { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true },
+],
+rows: [],
+selectableRows: true
+};
+
+@Input() public searchSetting: SearchSetting;
+
+currentPage = 1;
+
+@Output() public addColumnValueEmitter = new EventEmitter();
+
+@Output() public tableColumnsChanged = new EventEmitter();
+
+@Output() actionClickedOutput = new EventEmitter<ActionClick>();
+
+ngOnInit() { }
+
+ngOnDestroy() {
+this.ngUnsubscribe.next();
+this.ngUnsubscribe.complete();
+}
+
+ngAfterViewChecked() {
+
+}
+
+
+ngAfterViewInit() {
+this.auditService.initTableColumns().pipe(takeUntil(this.ngUnsubscribe)).subscribe((res: LogColumn[]) => {
+  this.columns = res;
+
+  this.tableColumnsChanged.next();
+
+  const tempcolumns = [];
+
+  for (const data of this.columns) {
+    if (data['checked']) {
+      tempcolumns.push(data);
+    }
+  }
+
+  this.selectedColumns = tempcolumns;
+
+  this.selectedColumns.forEach(item => {
+    const col = this.tableConfig.columns.find(colItem => colItem.name === item.name);
+
+    if (col) {
+      col.selected = true;
+    }
+  });
+});
+this.loadGraph(this.searchSetting);
+}
+
+private changeColumnNames() {
+this.tableConfig.copyText = {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')};
+this.tableConfig.defaultActionText = {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')};
+this.tableConfig.filterColumnText = this.translateService.translate('ColumnsToDisplay');
+
+this.tableConfig.columns = [
+  { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), showAction: true },
+  { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), showAction: true },
+  { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
+  { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
+  { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
+  { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true },
+];
+}
+
+refresh(searchSettings: SearchSetting) {
+this.loadGraph(searchSettings);
+}
+
+exportAs(extention: ExportTypes) {
+if (this.tableData && this.tableData.length > 0) {
+  let tableData = JSON.parse(JSON.stringify(this.tableData)) as any[];
+
+  tableData = tableData.filter(x => x.selected);
+
+  if (tableData.length === 0) {
+    tableData = JSON.parse(JSON.stringify(this.tableData)) as any[];
+  }
+
+  tableData.forEach(data => {
+    delete data.id;
+  });
+
+  const d = new Date();
+
+  if (extention === 'excel') {
+    this.excelService.exportAsExcelFile(tableData, 'AuditReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
+  } else if (extention === 'pdf') {
+    this.pdfService.exportAsPdfFile('landscape', tableData, 'AuditReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
+  }
+}
+}
+
+
+public loadGraph(searchSettings: SearchSetting) {
+this.auditService.getData(searchSettings, this.currentPage).pipe(takeUntil(this.ngUnsubscribe))
+  .subscribe((res: AuditResponse) => {
+    if (res['result'] || res['total']) {
+      this.tableData = res['result'];
+      this.totalCount = res['total'];
+    }
+
+    this.tableConfig.rows = [];
+    this.tableConfig.arrowVisible = true;
+
+    this.tableData.forEach(item => {
+      // burasi degisirse fillSearchSettingsByFilters bu fonksiyon icindeki yere bak
+
+      item.time = moment(item.insertDate).format('YYYY-MM-DD HH:mm:ss');
+
+      const rowItem: RkTableRowModel = item;
+      rowItem.selected = false;
+      this.tableConfig.rows.push(rowItem);
     });
+
+    this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
+  });
+}
+
+public checkUncheckColumn(col: LogColumn) {
+let found = false;
+
+for (const a of this.columns) {
+  if (a.name === col.name) {
+    found = true;
+    col.checked = !a.checked;
+    a.checked = col.checked;
+    break;
   }
+}
 
-  columns: LogColumn[];
-  selectedColumns: LogColumn[];
-  tableData: any;
-  total = 0;
-  multiplier = 1;
-  maxSize = 10;
-  private ngUnsubscribe: Subject<any> = new Subject<any>();
-  columnListLength = 12;
+this.inputChecked(col);
+}
 
-  pageViewCount = 10;
-
-  totalCount = 0;
-
-  tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
-
-  tableConfig: RkTableConfigModel = {
-    copyText: {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')},
-    defaultActionText: {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')},
-    filterColumnText: this.translateService.translate('ColumnsToDisplay'),
-    cellDataMaxLen: 30,
-    columns: [
-      { id: 0, name: 'time', displayText: this.translateService.translate('AuditTableColumn.Time'), showAction: true },
-      { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), showAction: true },
-      { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), showAction: true },
-      { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
-      { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
-      { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
-      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true },
-    ],
-    rows: [],
-    selectableRows: true
-  };
-
-  @Input() public searchSetting: SearchSetting;
-
-  currentPage = 1;
-
-  @Output() public addColumnValueEmitter = new EventEmitter();
-
-  @Output() public tableColumnsChanged = new EventEmitter();
-
-  @Output() actionClickedOutput = new EventEmitter<ActionClick>();
-
-  ngOnInit() { }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
-
-  ngAfterViewChecked() {
-
-  }
-
-
-  ngAfterViewInit() {
-    this.auditService.initTableColumns().pipe(takeUntil(this.ngUnsubscribe)).subscribe((res: LogColumn[]) => {
-      this.columns = res;
-
-      this.tableColumnsChanged.next();
-
-      const tempcolumns = [];
-
-      for (const data of this.columns) {
-        if (data['checked']) {
-          tempcolumns.push(data);
-        }
-      }
-
-      this.selectedColumns = tempcolumns;
-
-      this.selectedColumns.forEach(item => {
-        const col = this.tableConfig.columns.find(colItem => colItem.name === item.name);
-
-        if (col) {
-          col.selected = true;
-        }
-      });
-    });
-    this.loadGraph(this.searchSetting);
-  }
-
-  private changeColumnNames() {
-    this.tableConfig.copyText = {text: this.translateService.translate('Copy'), doneText: this.translateService.translate('Copied')};
-    this.tableConfig.defaultActionText = {text: this.translateService.translate('AddToFilter'), doneText: this.translateService.translate('AddedToFilter')};
-    this.tableConfig.filterColumnText = this.translateService.translate('ColumnsToDisplay');
-
-    this.tableConfig.columns = [
-      { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), showAction: true },
-      { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), showAction: true },
-      { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
-      { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
-      { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
-      { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true },
-    ];
-  }
-
-  refresh(searchSettings: SearchSetting) {
-    this.loadGraph(searchSettings);
-  }
-
-  exportAs(extention: ExportTypes) {
-    if (this.tableData && this.tableData.length > 0) {
-      let tableData = JSON.parse(JSON.stringify(this.tableData)) as any[];
-
-      tableData = tableData.filter(x => x.selected);
-
-      if (tableData.length === 0) {
-        tableData = JSON.parse(JSON.stringify(this.tableData)) as any[];
-      }
-
-      tableData.forEach(data => {
-        delete data.id;
-      });
-
-      const d = new Date();
-
-      if (extention === 'excel') {
-        this.excelService.exportAsExcelFile(tableData, 'AuditReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
-      } else if (extention === 'pdf') {
-        this.pdfService.exportAsPdfFile('landscape', tableData, 'AuditReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
-      }
+public inputChecked(column: LogColumn) {
+if (column.checked) {
+  this.selectedColumns.push(column);
+} else {
+  for (const a of this.selectedColumns) {
+    if (a.name === column.name) {
+      const cindex = this.selectedColumns.indexOf(a);
+      this.selectedColumns.splice(cindex, 1);
+      break;
     }
   }
+}
+}
 
+changeColumnListLength() {
+if (this.columnListLength === 12) {
+  this.columnListLength = this.columns.length;
+} else {
+  this.columnListLength = 12;
+}
+}
 
-  public loadGraph(searchSettings: SearchSetting) {
-    this.auditService.getData(searchSettings, this.currentPage).pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((res: AuditResponse) => {
-        if (res['result'] || res['total']) {
-          this.tableData = res['result'];
-          this.totalCount = res['total'];
-        }
+public pageChanged(event: any): void {
+this.currentPage = event.page;
 
-        this.tableConfig.rows = [];
-        this.tableConfig.arrowVisible = true;
+this.loadGraph(this.searchSetting);
+}
 
-        this.tableData.forEach(item => {
-          // burasi degisirse fillSearchSettingsByFilters bu fonksiyon icindeki yere bak
+public addColumnValueIntoSelectedValues(column: any, xx: any) {
+this.addColumnValueEmitter.emit({ column: column, data: xx }); // How to pass the params event and ui...?
+}
 
-          item.time = moment(item.insertDate).format('YYYY-MM-DD HH:mm:ss');
+onPageChange(pageNumber: number) {
+this.pageChanged({ page: pageNumber });
+}
 
-          const rowItem: RkTableRowModel = item;
-          rowItem.selected = false;
-          this.tableConfig.rows.push(rowItem);
-        });
+onPageViewCountChange(event: number) {
+this.searchSetting.topNumber = event;
 
-        this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
-      });
-  }
+this.refresh(this.searchSetting);
+}
 
-  public checkUncheckColumn(col: LogColumn) {
-    let found = false;
-
-    for (const a of this.columns) {
-      if (a.name === col.name) {
-        found = true;
-        col.checked = !a.checked;
-        a.checked = col.checked;
-        break;
-      }
-    }
-
-    this.inputChecked(col);
-  }
-
-  public inputChecked(column: LogColumn) {
-    if (column.checked) {
-      this.selectedColumns.push(column);
-    } else {
-      for (const a of this.selectedColumns) {
-        if (a.name === column.name) {
-          const cindex = this.selectedColumns.indexOf(a);
-          this.selectedColumns.splice(cindex, 1);
-          break;
-        }
-      }
-    }
-  }
-
-  changeColumnListLength() {
-    if (this.columnListLength === 12) {
-      this.columnListLength = this.columns.length;
-    } else {
-      this.columnListLength = 12;
-    }
-  }
-
-  public pageChanged(event: any): void {
-    this.currentPage = event.page;
-
-    this.loadGraph(this.searchSetting);
-  }
-
-  public addColumnValueIntoSelectedValues(column: any, xx: any) {
-    this.addColumnValueEmitter.emit({ column: column, data: xx }); // How to pass the params event and ui...?
-  }
-
-  onPageChange(pageNumber: number) {
-    this.pageChanged({ page: pageNumber });
-  }
-
-  onPageViewCountChange(event: number) {
-    this.searchSetting.topNumber = event;
-
-    this.refresh(this.searchSetting);
-  }
-
-  actionClicked($event: ActionClick) {
-    this.actionClickedOutput.emit($event);
-  }
+actionClicked($event: ActionClick) {
+this.actionClickedOutput.emit($event);
+}
 }

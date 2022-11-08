@@ -105,9 +105,10 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
   @Output() actionClickedOutput = new EventEmitter<ActionClick>();
 
   ngOnInit() {
+    /*
     this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
       this.changeColumnNames();
-    });
+    });*/
   }
 
   ngOnDestroy() {

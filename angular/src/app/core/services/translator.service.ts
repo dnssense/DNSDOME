@@ -10,6 +10,10 @@ export class TranslatorService {
     return this.translationService.instant(data);
   }
 
+  translateWithArgs(data: string, params): string {
+    return this.translationService.instant(data, params);
+  }
+
   translateCategoryName(data: string) {
     return this.translationService.instant(`CATEGORY.${data}`);
   }
