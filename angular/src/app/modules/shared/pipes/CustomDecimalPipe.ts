@@ -7,7 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class CustomDecimalPipe implements PipeTransform {
 
-    transform(value: number, args: any[]) {
+    transform(value: number, args?: any[]) {
         if (value && !isNaN(value)) {
 
             let temp: string = '' + value;

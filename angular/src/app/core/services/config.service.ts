@@ -197,7 +197,7 @@ export class ConfigService {
   init(userId?: number) {
 
     const language = this.loadLanguage(userId);
-    this.translationservice.initLanguages(language);
+    this.translationservice.initLanguages(language, this.host);
     if (language) {
       this.translationservice.setDefaultLang(language);
       this.translationservice.use(language);

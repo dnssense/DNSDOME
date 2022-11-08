@@ -212,7 +212,8 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
       this.tableConfig.columns.forEach(col => {
         let selectedCol;
         this.selectedColumns.forEach((item, index) => {
-          if(item.column.name === col.name){
+          if (item.column.name === col.name) {
+            item.label = col.displayText;
             selectedCol = item;
             this.selectedRkColumns[index] = col;
             return;
@@ -226,23 +227,23 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
 
       this.data.forEach(item => {
 
-        let rowItem: RkTableRowModel = {selected:item.selected};
+        const rowItem: RkTableRowModel = {selected: item.selected};
 
 
         this.selectedColumns.forEach((col, index) => {
-            if(rowItem['domain'] === 'Others'){
+            if (rowItem['domain'] === 'Others') {
               rowItem[col.column.name] = '';
               return;
             }
             rowItem[col.column.name] = item[index];
-            if(col.column.name === 'action'){
+            if (col.column.name === 'action') {
               rowItem[col.column.name] = rowItem[col.column.name] ? 'Allow' : 'Deny';
              }
        });
 
        rowItem[this.selectedColumns.length] = item[this.selectedColumns.length];
 
-       if(rowItem['domain'] != null && rowItem['domain'] !== 'Others'){
+       if (rowItem['domain'] != null && rowItem['domain'] !== 'Others') {
           rowItem.imgOptions = {
             src: '../../../../../assets/img/CyberxIcon.svg',
             columnName: 'domain',
@@ -512,8 +513,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
 
     const selectedColumns = <AggregationItem[]>JSON.parse(JSON.stringify(this.searchSetting.columns.columns));
     const columnIndex = selectedColumns.findIndex(x => x.column.name === $event.name);
-
-    if ($event.value && columnIndex == -1) {
+    if ($event.value && columnIndex === -1) {
       selectedColumns.push({
         column: {
           name: $event.name,

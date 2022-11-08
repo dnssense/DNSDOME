@@ -77,7 +77,6 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         // }
 
         this.navItems = [];
-
         // translation reload when language changes.
         this._translateService.onLangChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
           const currentUrl = this.router.url;

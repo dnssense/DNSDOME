@@ -519,7 +519,7 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
 
     if (this.selectedColumn?.inputPattern && !this.selectedColumn?.inputPattern.test((this.filterText || '') + keyEvent.key)) {
       keyEvent.preventDefault();
-      this.inputError = 'Invalid Character'
+      this.inputError = 'Invalid Character';
     } else
       this.inputError = '';
   }

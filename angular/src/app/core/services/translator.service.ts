@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-
+import {ConfigHost} from './config.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -18,9 +18,13 @@ export class TranslatorService {
     return this.translationService.instant(`CATEGORY.${data}`);
   }
 
-  initLanguages(lang?: string) {
-    // const languages = ['en', 'tr'];
-    const languages = ['en'];
+  initLanguages(lang?: string, host?: ConfigHost) {
+    let languages;
+    if (host?.brand === 'CMERP' || host?.brand === 'DNSSense') {
+      languages = ['en'];
+    } else {
+      languages = ['en', 'tr'];
+    }
     languages.forEach(x => {
       this.translationService.addLangs([x]);
     });
