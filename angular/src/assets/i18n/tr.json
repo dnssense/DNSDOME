@@ -561,6 +561,9 @@
         "ShinkholeIp1": "Bloklanan trafiğin standart blok sayfası dışında yönlendirilmesini istediğiniz özel bir ip adresi varsa bu bölüme girmelisiniz.",
         "ShinkholeIp2": "Lokal DNS Visibility ürünü kullanmanız durumunda DNS Visibility ürününün ip adresini girmelisiniz."
     },
+    "CUSTOMREPORTS": {
+      "Others": "Diğerleri"
+    },
     "InstantMessaging": "Anlık Mesajlaşma",
     "InstantMessagingDesc": "İnternet üzerinden metin, görüntü ve ses iletimine izin veren çevirim içi sohbet uygulamalarını içerir.",
     "OnlineVideo": "Online Video",

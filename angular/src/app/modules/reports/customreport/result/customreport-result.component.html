@@ -47,8 +47,13 @@
                                         <rk-checkbox [(value)]="dat.selected"></rk-checkbox>
                                     </td>
                                     <td *ngFor="let col of selectedColumns; let colIndex = index">
-                                        <rk-table-default-cell [row]="dat" [col]="selectedRkColumns[colIndex]" [config]="tableConfig" (actionColumnClicked)="actionClicked($event)" 
-                                          (navigationDomainClicked)="getNavigateByClickedDomain($event)"></rk-table-default-cell>
+                                      <ng-container *ngIf="col?.column?.name === 'domain' && dat['domain'] === 'Others'; else cellsTemplate">
+                                        {{ 'CUSTOMREPORTS.Others' | translate }}
+                                      </ng-container>
+                                      <ng-template #cellsTemplate>
+                                        <rk-table-default-cell [row]="dat" [col]="selectedRkColumns[colIndex]" [config]="tableConfig" (actionColumnClicked)="actionClicked($event)"
+                                                               (navigationDomainClicked)="getNavigateByClickedDomain($event)"></rk-table-default-cell>
+                                      </ng-template>
                                     </td>
                                     <td>{{ dat[selectedColumns.length] | customDecimalPipe }}</td>
                                     <td>

@@ -500,6 +500,9 @@
         "DOH": "DoH",
         "Compromised Website": "Compromised Website"
     },
+    "CUSTOMREPORTS": {
+      "Others": "Others"
+    },
     "DeviceSaved": "Device saved",
     "DevicesSaved": "Devices saved",
     "DeviceDeleted": "Device deleted",
