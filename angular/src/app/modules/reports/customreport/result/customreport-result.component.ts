@@ -20,6 +20,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { environment } from 'src/environments/environment';
 import * as punycode from 'punycode';
 import { CyberXRayService } from '../../../../core/services/cyberxray.service';
+import {RkApexChartEN, RkApexChartTR} from 'roksit-lib';
 
 export interface TableBadgeOutput {
   name: string;
@@ -320,6 +321,8 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
           id: 'reportchart',
           series: series,
           chart: {
+            locales: [RkApexChartEN, RkApexChartTR],
+            defaultLocale: this.translateService.getCurrentLang(),
             height: 300, type: 'area', foreColor: '#898ea4',
             selection: {
               enabled: false,

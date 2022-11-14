@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {ConfigHost} from './config.service';
+import * as moment from 'moment';
 @Injectable({
   providedIn: 'root'
 })
@@ -45,6 +46,7 @@ export class TranslatorService {
 
   use(lang: string): any {
     this.translationService.use(lang);
+    moment.locale(lang);
   }
   getCurrentLang(): any {
     return this.translationService.currentLang;

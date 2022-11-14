@@ -2,6 +2,8 @@ import {Component} from '@angular/core';
 import * as moment from 'moment';
 import {TranslateService} from '@ngx-translate/core';
 import * as numeral from 'numeral';
+import {TranslatorService} from '../../../../core/services/translator.service';
+import {RkApexChartEN, RkApexChartTR} from 'roksit-lib';
 export interface ChartDomainItem {
   max: number;
   min: number;
@@ -20,7 +22,8 @@ export interface ChartDomain {
   styleUrls: ['../dashboard.component.scss']
 })
 export class DashboardChartComponent {
-  constructor(private translateService: TranslateService) {
+  constructor(private translateService: TranslateService,
+              private translatorService: TranslatorService) {
   }
 
   theme: any = 'light';
@@ -72,6 +75,8 @@ export class DashboardChartComponent {
     this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
       series: series,
       chart: {
+        locales: [RkApexChartEN, RkApexChartTR],
+        defaultLocale: this.translatorService.getCurrentLang(),
         id: `${this.getChartId()}`,
         type: 'line',
         stacked: false,
@@ -283,6 +288,8 @@ export class DashboardChartComponent {
     this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
       series: series,
       chart: {
+        locales: [RkApexChartEN, RkApexChartTR],
+        defaultLocale: this.translatorService.getCurrentLang(),
         id: `${this.getChartId()}`,
         foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
         type: 'line',

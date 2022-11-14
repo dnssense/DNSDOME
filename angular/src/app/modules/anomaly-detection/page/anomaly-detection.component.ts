@@ -3,6 +3,8 @@ import { LOCAL_STORAGE_THEME_COLOR } from '../../theme/theme.component';
 import * as moment from 'moment';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import {RkApexChartEN, RkApexChartTR} from 'roksit-lib';
+import {TranslatorService} from '../../../core/services/translator.service';
 
 @Component({
     templateUrl: 'anomaly-detection.component.html',
@@ -11,7 +13,8 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 
 export class AnomalyDetectionComponent implements OnInit {
 
-    constructor(private configService: ConfigService, private authentication: AuthenticationService) {
+    constructor(private configService: ConfigService, private authentication: AuthenticationService,
+                private translatorService: TranslatorService) {
 
     }
 
@@ -46,6 +49,8 @@ export class AnomalyDetectionComponent implements OnInit {
                 data: series
             }],
             chart: {
+                locales: [RkApexChartEN, RkApexChartTR],
+                defaultLocale: this.translatorService.getCurrentLang(),
                 id: 'domain-quering-chart',
                 foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',
                 type: 'line',
