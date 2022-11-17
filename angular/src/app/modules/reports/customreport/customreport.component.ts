@@ -142,18 +142,6 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
   public search(setting: SearchSetting) {
     this.searchSetting = setting;
-
-    if (this.searchSetting.startDate && this.searchSetting.endDate) {
-      const startDate = moment(this.searchSetting.startDate);
-      const endDate = moment(this.searchSetting.endDate);
-
-      const diff = endDate.diff(startDate, 'minutes');
-
-      this.customReportSearchComponent.date.selectTime({ value: diff } as RkDateTime, { startDate: new Date(this.searchSetting.startDate), endDate: new Date(this.searchSetting.endDate) });
-
-      this.customReportSearchComponent.dateText = this.customReportSearchComponent.convertTimeString(diff);
-    }
-
     if (this.searchSetting.columns.columns.length === 0) {
       this.searchSetting.columns.columns = [
         {

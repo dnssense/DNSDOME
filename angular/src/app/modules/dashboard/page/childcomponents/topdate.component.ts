@@ -101,7 +101,7 @@ export class TopdateComponent implements OnInit {
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 0),
         endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours(), this.now.getMinutes()),
-        displayText: `${this.translatorService.translate('Date.Today')} (00:00-${this.now.getHours()}:${this.now.getMinutes()})`,
+        displayText: `${this.translatorService.translate('Date.Today')} (00:00-${this.now.getHours()}:${(this.now.getMinutes() < 10 ? '0' : '') + this.now.getMinutes() })`,
         active: false,
         isToday: true
       }
@@ -119,6 +119,17 @@ export class TopdateComponent implements OnInit {
     }
     this.dateChanged({startDate: it.startDate, endDate: it.endDate, nameDis: it.displayText}, false, it.isToday);
     it.active = true;
+
+    const startDate = moment(this.startDate);
+    const endDate = moment(this.endDate);
+    const diff = endDate.diff(startDate, 'minutes');
+    const found = this.times.find(x => x.value === diff);
+    if (found) {
+      this.date.selectTime(found);
+    } else {
+      this.date.selectTime({value: diff }  as RkDateTime);
+    }
+
   }
   // endregion
 

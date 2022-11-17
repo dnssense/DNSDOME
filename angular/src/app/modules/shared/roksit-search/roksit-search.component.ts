@@ -298,7 +298,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
       this.date.selectTime(finded);
     }
 
-    this.setDateOptionBySearchSettings();
   }
 
   rkDateChanhed($event: { startDate: Date, endDate: Date }) {
@@ -331,7 +330,6 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.searchSettings.startDate = $event.startDate.toISOString();
     this.searchSettings.endDate = $event.endDate.toISOString();
 
-    this.setDateOptionBySearchSettings();
     this.fillSearchSettingsByFilters();
 
     this.searchSettingEmitter.emit(this.searchSettings);
@@ -500,17 +498,14 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   setDateOptionBySearchSettings(dateInterval?: number) {
-    const dateOptions = this.dateOptions.map(x => {
-      return { ...x, selected: x.value === (dateInterval ? dateInterval : this.searchSettings.dateInterval) };
-    });
+      const dateOptions = this.dateOptions.map(x => {
+        return { ...x, selected: x.value === (dateInterval ? dateInterval : this.searchSettings.dateInterval) };
+      });
 
-    this.dateOptions = dateOptions;
+      this.dateOptions = dateOptions;
   }
 
   search(type?: 'savedreport' | string, showFilterModal = false) {
-
-    this.setDateOptionBySearchSettings();
-
     if (type === 'savedreport') {
       this.searchSettingEmitter.emit(this.searchSettings);
 
