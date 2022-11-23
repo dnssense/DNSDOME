@@ -18,7 +18,8 @@ import { GroupAgentModel } from '../../devices/page/devices.component';
 import { ClipboardService } from 'ngx-clipboard';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
 import { RkAlertService, RkNotificationService } from 'roksit-lib';
-import * as moment from "moment";
+import * as moment from 'moment';
+import {TranslatorService} from '../../../core/services/translator.service';
 
 declare let $: any;
 export interface BoxConf {
@@ -57,6 +58,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         private staticMessageService: StaticMessageService,
         private inputIpService: InputIPService,
         private clipboardService: ClipboardService,
+        private translatorService: TranslatorService
 
     ) {
 
@@ -201,7 +203,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.loadClients();
 
         this.getConfParameters().subscribe();
-
+        this.categoryOptions.forEach((opt) => opt.displayText = this.translatorService.translate(opt.displayText));
     }
 
 
@@ -385,7 +387,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.dontDomains = [];
         this.dontIps = [];
         this.localnetIps = [];
-        this.uninstallPassword = ''
+        this.uninstallPassword = '';
         this.disablePassword = '';
         this.selectedDefaultRomainProfileId = 41;
 
@@ -435,7 +437,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     searchByKeyword() {
         if (this.searchKey) {
-            let key = this.searchKey.toLowerCase();
+            const key = this.searchKey.toLowerCase();
             this.clientsGroupedFiltered = this.clients.filter(f => {
                 return f.agentAlias.toLowerCase().includes(key)
                     || f.agentGroup?.groupName.toLowerCase().includes(key)
@@ -443,7 +445,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     || f.mac?.toLocaleLowerCase().includes(key)
                     || f.os?.toLocaleLowerCase().includes(key)
                     || f.version?.toLocaleLowerCase().includes(key)
-                    || f.rootProfile?.name.toLocaleLowerCase().includes(key)
+                    || f.rootProfile?.name.toLocaleLowerCase().includes(key);
             });
         } else {
             this.clientsGroupedFiltered = this.clients;
@@ -502,7 +504,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             this.notification.info(this.staticMessageService.agentsGlobalConfSaved);
             this.getConfParameters().subscribe(x => {
                 this.configureModal.toggle();
-            })
+            });
 
         });
 
@@ -520,7 +522,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     this.fileLink = res.link;
                     window.open(window.location.protocol + '//' + this.fileLink, '_blank');
 
-                })
+                });
 
                 //
             } else {
@@ -891,7 +893,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.saveAgentConf(agent);
     }
     agentUserDisableEnable(state: boolean, agent: Agent) {
-        //burasi
+        // burasi
     }
     agentDisableEnableSmartCache(state: boolean, agent: Agent) {
 
@@ -925,7 +927,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     getOSImg(os: string) {
         if (os) {
-            let ostype = os.toLowerCase();
+            const ostype = os.toLowerCase();
             return ostype.includes('windows') ? '../../../../assets/img/windows.png' : (ostype.includes('mac') ? '../../../../assets/img/Ios.png' : '');
         }
         return null;

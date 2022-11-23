@@ -8,9 +8,9 @@
           <div class="col-12 d-flex align-items-center justify-content-center py-3 mb-2 single-row"
             style="padding-top: 0 !important;padding-bottom: 0 !important;">
             <div class="rk-tabs" style="width: 420px;">
-              <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">{{'Roaming Clients'}}</div>
+              <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">{{'RoamingClients' | translate}}</div>
               <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">
-                {{'Groups'}}</div>
+                {{'Groups' | translate}}</div>
             </div>
           </div>
 
@@ -386,11 +386,11 @@
           <rk-modal-body>
             <div class="container-fluid">
               <div class="rk-modal-card">
-                <h6 class="rk-modal-card-title">{{ 'GroupName' | translate }}</h6>
+                <h6 class="rk-modal-card-title">{{ 'GroupName' | translate }}</h6>
 
                 <div class="row">
                   <div class="col-12 mt-3">
-                    <input type="text" class="rk-input w-100" placeholder="{{ 'GroupName' | translate }}"
+                    <input type="text" class="rk-input w-100" placeholder="{{ 'GroupName' | translate }}"
                       [(ngModel)]="groupName">
                   </div>
                 </div>

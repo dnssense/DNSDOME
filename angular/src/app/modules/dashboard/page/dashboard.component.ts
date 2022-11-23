@@ -785,7 +785,7 @@ export class DashboardComponent implements OnInit {
         }
       },
       noData: {
-        text: 'No Data',
+        text: this.translatorService.translate('NoData'),
         align: 'center',
         verticalAlign: 'middle',
         offsetX: 0,

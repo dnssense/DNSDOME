@@ -10,7 +10,7 @@
 
           <div class="d-flex align-items-center justify-content-center py-3 mb-2 single-row"
             style="padding-top: 0 !important;padding-bottom: 0 !important;">
-            <div class="rk-tabs" style="width: 635px;">
+            <div class="rk-tabs" style="width: 700px;">
               <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">
                 {{'Rules' | translate}}</div>
               <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">
@@ -195,12 +195,12 @@
                   <ng-template #header>
                     <tr>
                       <th style="width: 120px">{{'TableColumn.RuleNumber' | translate}}</th>
-                      <th>{{'Local IP' | translate}}</th>
+                      <th>{{'TableColumn.LocalIP' | translate}}</th>
                       <th>{{'TableColumn.SecurityProfile' | translate}}</th>
-                      <th>{{'Hostname' | translate}}</th>
-                      <th>{{'AD User' | translate}}</th>
+                      <th>{{'TableColumn.HostName' | translate}}</th>
+                      <th>{{'TableColumn.ADUser' | translate}}</th>
                       <th>{{'TableColumn.ADDomain' | translate}}</th>
-                      <th>{{'Last Valid Time' | translate}}</th>
+                      <th>{{'TableColumn.LastValidTime' | translate}}</th>
                       <th>{{'Delete' | translate}}</th>
                     </tr>
                   </ng-template>
@@ -438,7 +438,7 @@
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between flex-wrap">
-                <div class="rk-table-title mr-5">Local DNS Relay Servers</div>
+                <div class="rk-table-title mr-5">{{"LocalDnsRelayServers" | translate}}</div>
                 <div class="col-lg-8 d-flex">
                   <rk-search [value]="boxFilterText"  [placeholder]="'SearchDNSRelay'|translate" (valueChange)="boxFilterText=$event; search('box')" ></rk-search>
                 </div>
@@ -458,7 +458,7 @@
 
               <ng-template #body>
                 <tr *ngFor="let b of boxes; index as i">
-                  <td style="text-align: center">{{ (i+1).toString().padStart(2, '0') }}</td>
+                  <td>{{ (i+1).toString().padStart(2, '0') }}</td>
                   <td>
                     <i-feather name="server" class="icon-blue-grey mr-2"></i-feather>
                     <button class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
@@ -818,7 +818,7 @@
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between flex-wrap">
-                <div class="rk-table-title mr-5">Active Directory Groups</div>
+                <div class="rk-table-title mr-5">{{"ADGroups" | translate}}</div>
                 <div class="col-lg-8 d-flex">
                   <rk-search [value]="adGroupsFilterText"  [placeholder]="'SearchADGroup'|translate" (valueChange)="adGroupsFilterText=$event; search('adGroup')" ></rk-search>
                 </div>

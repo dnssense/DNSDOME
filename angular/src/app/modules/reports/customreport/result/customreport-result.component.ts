@@ -413,7 +413,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
           annotations: { yaxis: [{ label: { fontSize: '20px' } }] },
           animations: { enabled: true },
           noData: {
-            text: 'No Data',
+            text: this.translateService.translate('NoData'),
             align: 'center',
             verticalAlign: 'middle',
             offsetX: 0,

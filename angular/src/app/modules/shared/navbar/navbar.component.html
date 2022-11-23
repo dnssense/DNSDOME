@@ -81,18 +81,18 @@
                   {{ currentUser?.name }}
                 </div>
                 <div class="rk-dropdown">
-                  <div class="rk-dropdown-title">Account</div>
+                  <div class="rk-dropdown-title">{{"NAVBAR.Account" | translate}}</div>
                   <li *ngIf="currentUser.parentId < 1">
                     <a [routerLink]="['/admin/account-settings']" routerLinkActive="router-link-active"
                       class="dropdown-item">
                       <i-feather name="settings"></i-feather>
-                      Account Settings
+                      {{"NAVBAR.AccountSettings" | translate}}
                     </a>
                   </li>
                   <li>
                     <a (click)="logout()" class="dropdown-item">
                       <i-feather name="log-out"></i-feather>
-                      Exit
+                      {{"NAVBAR.Exit" | translate}}
                     </a>
                   </li>
                 </div>
@@ -131,18 +131,18 @@
                 {{ currentUser?.name }}
               </div>
               <div class="rk-dropdown">
-                <div class="rk-dropdown-title">Account</div>
+                <div class="rk-dropdown-title">{{"NAVBAR.Account" | translate}}</div>
                 <li>
                   <a [routerLink]="['/admin/account-settings']" routerLinkActive="router-link-active"
                     class="dropdown-item">
                     <i-feather name="settings"></i-feather>
-                    Account Settings
+                    {{"NAVBAR.AccountSettings" | translate}}
                   </a>
                 </li>
                 <li>
                   <a (click)="logout()" class="dropdown-item">
                     <i-feather name="log-out"></i-feather>
-                    Exit
+                    {{"NAVBAR.Exit" | translate}}
                   </a>
                 </li>
               </div>

@@ -576,6 +576,7 @@
     "SocialMedia": "Social Media",
     "SocialMediaDesc": "Contains applications allowing to interact with social media platforms.",
     "TableColumn": {
+        "Id": "Id",
         "Time": "Time",
         "Domain": "Domain",
         "Subdomain": "Subdomain",
@@ -778,5 +779,28 @@
     "ColumnsToDisplay": "Columns to Display",
     "Alive": "Alive",
     "AliveLastSeen": "Last Seen: ",
-    "AliveMoreThanOneWeek": "More Than A Week"
+    "AliveMoreThanOneWeek": "More Than A Week",
+    "NAVBAR": {
+      "Account": "Account",
+      "AccountSettings": "Account Settings",
+      "Exit": "Exit"
+    },
+    "SCHEDULEDREPORTS": {
+      "UserReports": "User Reports",
+      "ReportName": "Report Name",
+      "ScheduleInterval": "Schedule Interval",
+      "ScheduleDailyReportEmail": "Schedule Daily Report Email",
+      "ScheduleWeeklyReportEmail": "Schedule Weekly Report Email",
+      "ScheduleMonthlyReportEmail": "Schedule Monthly Report Email",
+      "Disabled": "Disabled"
+    },
+   "IpAddressDomain": "IP/Domain",
+   "LocalDnsRelayServers": "Local DNS Relay Servers",
+   "Ip-user matching": "Ip-User Matching",
+   "Ip-hostname matching": "Ip-Hostname Matching",
+   "Groups": "Gruplar",
+   "RoamingClients": "Roaming Clients",
+   "Grouped": "Grouped",
+   "Not Grouped": "Not Grouped",
+   "CreateNewProfile": "Create New Profile"
 }

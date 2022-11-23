@@ -573,6 +573,7 @@
     "SocialMedia": "Sosyal Medya",
     "SocialMediaDesc": "İnternet üzerinde sosyal medya mecralarıyla etkileşime izin veren uygulamaları içerir.",
     "TableColumn": {
+        "Id": "Id",
         "Time": "Zaman",
         "Domain": "Domain",
         "Subdomain": "Subdomain",
@@ -598,7 +599,7 @@
         "ADUser": "AD Kullanıcısı",
         "SecurityProfile": "Güvenlik Profili",
         "MemberCount": "AD Grup Üye Sayısı",
-        "RuleNumber": "Rule Number",
+        "RuleNumber": "Kural No",
         "GroupName": "Grup Adı",
         "ServerName": "Sunucu Adı",
         "RuleBy": "Rule By",
@@ -669,10 +670,10 @@
         "SavedReports": "Kayıtlı Raporlar",
         "SecurityProfiles": "Güvenlik Profilleri",
         "CommonBWListProfile": "Black White Listesi",
-        "QueryCategory": "Kategory Sorgulama",
+        "QueryCategory": "Kategori Sorgulama",
         "RequestChangingDomainCategory": "Alan Adı Kategorisi Değiştirme",
         "ThemeMode": "Tema",
-        "ADIntegration": "Active Directory Integration"
+        "ADIntegration": "Active Directory Entegrasyonu"
     },
     "MonitorTraffic": "Monitor Trafik",
     "AuditLogs": "Denetim Logları",
@@ -753,11 +754,11 @@
     "LocalDNSDefaultRule": "Yerel DNS Sunucusu Varsayılan Kuralları",
     "Computers":"Bilgisayarlar",
     "LocalIPs": "Yerel IPler",
-    "UserIpHostMatch": "User-Ip-Host Eşleşmeleri",
+    "UserIpHostMatch": "Kullanıcı-Ip-Makina Eşleşmeleri",
     "ADGroups": "Active Directory Grupları",
     "RuleDetail": "Kural Detayı",
     "DNSRelay": "DNS Relay",
-    "Rules": "Kuralları",
+    "Rules": "Kurallar",
     "RegisteredDevices": "Kayıtlı Aygıtlar",
     "RuleOrder": "Kural Sıralaması",
     "Keyword": "Anahtar Kelime",
@@ -774,5 +775,28 @@
     "ColumnsToDisplay": "Gösterilecek Kolonlar",
     "Alive": "Alive",
     "AliveLastSeen": "Son Görülme: ",
-    "AliveMoreThanOneWeek": "Bir Haftadan Fazla"
+    "AliveMoreThanOneWeek": "Bir Haftadan Fazla",
+    "NAVBAR": {
+      "Account": "Hesap",
+      "AccountSettings": "Hesap Ayarları",
+      "Exit": "Çıkış"
+    },
+    "SCHEDULEDREPORTS": {
+      "UserReports": "Kullanıcı Raporları",
+      "ReportName": "Rapor Aralığı",
+      "ScheduleInterval": "Gönderim Aralığı",
+      "ScheduleDailyReportEmail": "Email Raporunu Günlük Gönder",
+      "ScheduleWeeklyReportEmail": "Email Raporunu Haftalık Gönder",
+      "ScheduleMonthlyReportEmail": "Email Raporunu Aylık Gönder",
+      "Disabled": "Devre Dışı"
+    },
+    "IpAddressDomain": "IP/Domain",
+    "LocalDnsRelayServers": "Yerel DNS Relay Sunucuları",
+    "Ip-user matching": "Ip-Kullanıcı Eşleşmesi",
+    "Ip-hostname matching": "Ip-Makina Adı Eşleşmesi",
+    "Groups": "Gruplar",
+    "RoamingClients": "Roaming Clients",
+    "Grouped": "Gruplanmış",
+    "Not Grouped": "Gruplanmamış",
+    "CreateNewProfile": "Yeni Profil Oluştur"
 }
