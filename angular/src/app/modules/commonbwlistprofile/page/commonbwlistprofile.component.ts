@@ -33,7 +33,7 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
         private pdfService: PdfService
     ) {
     }
-    page = 0;
+    page = 1;
     pageSize = 10;
     searchKey: string;
     totalCount = 0;
@@ -131,11 +131,11 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
                                 return this.searchCommonBWList();
                             }else {
                                 return observableOf(null);
-                            } 
+                            }
                         }
                     })).subscribe();
             });
-
+      this.getCommonBWList().subscribe(y => y);
     }
 
     fillResults(res: any) {
@@ -145,7 +145,7 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
         this.tableConfig.arrowVisible = true;
         let count = 1;
         this.bwlist.forEach(item => {
-            (item as any).id = (this.page * this.pageSize) + count;
+            (item as any).id = ((this.page - 1) * this.pageSize) + count;
             count++;
             item.insertDate = moment(item.insertDate).format('YYYY-MM-DD HH:mm:ss');
             (item as any).isBlocked = item.isBlocked ? "black" : "white";
@@ -159,12 +159,12 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
     }
 
     getCommonBWList() {
-        return this.bwService.getCommonBWListProfile(this.page, this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
+        return this.bwService.getCommonBWListProfile((this.page - 1), this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
             this.fillResults(res);
         }),);
     }
     searchCommonBWList() {
-        return this.bwService.searchCommonBWListProfile(this.searchKey, this.page, this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
+        return this.bwService.searchCommonBWListProfile(this.searchKey, (this.page - 1), this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
             this.fillResults(res);
         }),);
     }
@@ -173,7 +173,7 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
         this.getCommonBWList().subscribe(y => y);
     }
     onPageChange(event: any) {
-        this.page = event - 1;
+        this.page = event;
         this.getCommonBWList().subscribe(y => y);
     }
 
