@@ -603,6 +603,10 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   }
 
   clear() {
+    const prevDateInterval = this.searchSettings.dateInterval;
+    const prevStartDate = this.searchSettings.startDate;
+    const prevEndDate = this.searchSettings.endDate;
+
     this.searchSettings = new SearchSetting();
     this.selectedSavedReport = new SearchSetting();
     this.savedReportValue = 0;
@@ -611,7 +615,13 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     this.searchSettings.mustnot = [];
     this.searchSettings.should = [];
 
-    this.searchSettings.dateInterval = this.dateOptions[0].value;
+    if (prevEndDate && prevStartDate) {
+      this.searchSettings.startDate = prevStartDate;
+      this.searchSettings.endDate = prevEndDate;
+    } else {
+      this.searchSettings.dateInterval = prevDateInterval || 5;
+    }
+    // this.searchSettings.dateInterval = this.dateOptions[0].value;
 
     this.groupedCategories.forEach(elem => elem.items.forEach(item => item.selected = false));
 

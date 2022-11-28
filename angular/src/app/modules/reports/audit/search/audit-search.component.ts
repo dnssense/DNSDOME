@@ -440,13 +440,24 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
 
 
   clear() {
+    const prevDateInterval = this.searchSettings.dateInterval;
+    const prevStartDate = this.searchSettings.startDate;
+    const prevEndDate = this.searchSettings.endDate;
+
     this.searchSettings = new SearchSetting();
 
     this.searchSettings.must = [];
     this.searchSettings.mustnot = [];
     this.searchSettings.should = [];
 
-    this.searchSettings.dateInterval = this.dateOptions[0].value;
+    if (prevEndDate && prevStartDate) {
+      this.searchSettings.startDate = prevStartDate;
+      this.searchSettings.endDate = prevEndDate;
+    } else {
+      this.searchSettings.dateInterval = prevDateInterval || 5;
+    }
+
+    // this.searchSettings.dateInterval = this.dateOptions[0].value;
 
     this.filtersClearEmitter.emit();
   }
