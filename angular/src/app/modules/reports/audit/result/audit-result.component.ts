@@ -63,7 +63,7 @@ columns: [
   { id: 0, name: 'time', displayText: this.translateService.translate('AuditTableColumn.Time'), showAction: true },
   { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), showAction: true },
   { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), showAction: true },
-  { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
+  // { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
   { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
   { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
   { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true },
@@ -129,7 +129,7 @@ this.tableConfig.filterColumnText = this.translateService.translate('ColumnsToDi
 this.tableConfig.columns = [
   { id: 1, name: 'username', displayText: this.translateService.translate('AuditTableColumn.Username'), showAction: true },
   { id: 2, name: 'isApiKey', displayText: this.translateService.translate('AuditTableColumn.IsApiKey'), showAction: true },
-  { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
+  // { id: 3, name: 'ip', displayText: this.translateService.translate('AuditTableColumn.Ip'), showAction: true },
   { id: 4, name: 'severity', displayText: this.translateService.translate('AuditTableColumn.Severity'), showAction: true },
   { id: 5, name: 'message', displayText: this.translateService.translate('AuditTableColumn.Message'), showAction: true },
   { id: 6, name: 'messageDetail', displayText: this.translateService.translate('AuditTableColumn.MessageDetail'), showAction: false, isPopover: true },
@@ -151,6 +151,7 @@ if (this.tableData && this.tableData.length > 0) {
   }
 
   tableData.forEach(data => {
+    delete data.ip;
     delete data.id;
   });
 
