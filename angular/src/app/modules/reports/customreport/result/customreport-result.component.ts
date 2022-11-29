@@ -238,7 +238,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
             }
             rowItem[col.column.name] = item[index];
             if (col.column.name === 'action') {
-              rowItem[col.column.name] = rowItem[col.column.name] ? 'Allow' : 'Deny';
+              rowItem[col.column.name] = rowItem[col.column.name] === 'true' ? 'Allow' : 'Deny';
              }
        });
 
