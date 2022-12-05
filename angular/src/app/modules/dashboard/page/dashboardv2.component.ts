@@ -18,6 +18,7 @@ import {StaticMessageService} from '../../../core/services/staticMessageService'
 import {ToolsService} from '../../../core/services/toolsService';
 import {TopdateComponent} from './childcomponents/topdate.component';
 import { RkNotificationService } from 'roksit-lib';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-dashboardv2',
@@ -321,8 +322,10 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
         if (this.selectedDate.duration > 0) {
             req.duration = this.selectedDate.duration;
         } else {
-            req.startDate = this.selectedDate.startDate.toISOString();
-            req.endDate = this.selectedDate.endDate.toISOString();
+            const startReqDate = moment(this.selectedDate.startDate).startOf('hour').toDate();
+            const endReqDate = moment(this.selectedDate.endDate).endOf('hour').toDate();
+            req.startDate = startReqDate.toISOString();
+            req.endDate = endReqDate.toISOString();
         }
         return req;
     }
