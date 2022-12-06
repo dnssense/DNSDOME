@@ -508,12 +508,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
           this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
           return false;
         }
-        let domain = this.localDetectDomain;
-        if (String(domain).toLowerCase().startsWith('http')) {
-          domain = String(domain).toLowerCase().replace('http://', '').replace('https://', '');
-        }
-        const resultDomain = ValidationService.domainValidationWithoutTLD(domain);
-        if (resultDomain !== true) {
+        const resultDomain = this.checkIsValidDomaind(this.localDetectDomain);
+        if (!resultDomain) {
           this.notification.warning(this.staticMessageService.enterValidDomainMessage);
           return false;
         }
