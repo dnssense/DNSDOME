@@ -20,6 +20,7 @@ import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile
 import { RkAlertService, RkNotificationService } from 'roksit-lib';
 import * as moment from 'moment';
 import {TranslatorService} from '../../../core/services/translator.service';
+import {ValidationService} from '../../../core/services/validation.service';
 
 declare let $: any;
 export interface BoxConf {
@@ -29,6 +30,9 @@ export interface BoxConf {
     uninstallPassword: string;
     disablePassword: string;
     defaultRoamingSecurityProfile: number;
+    isEnableLocalDedect: number;
+    localDetectDomain: string;
+    localDetectIp: string;
 }
 
 export interface AgentConf {
@@ -137,6 +141,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     localnetip: string;
     uninstallPassword: string;
     disablePassword: string;
+    isEnableLocalDedect: number;
+    localDetectDomain = '';
+    localDetectIp = '';
 
     alwaysActive = true;
     disabledNetwork = false;
@@ -377,7 +384,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue);
 
     }
-    checkIPNumberForLocalNetIps(event: KeyboardEvent, inputValue: string) {
+    checkIPNumber(event: KeyboardEvent, inputValue: string) {
 
         const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue);
 
@@ -409,7 +416,13 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 if (boxConf.disablePassword) {
                     this.disablePassword = boxConf.disablePassword;
                 }
-
+                this.isEnableLocalDedect = boxConf.isEnableLocalDedect;
+                if (boxConf.localDetectDomain) {
+                  this.localDetectDomain = boxConf.localDetectDomain;
+                }
+                if (boxConf.localDetectIp) {
+                  this.localDetectIp = boxConf.localDetectIp;
+                }
                 this.selectedDefaultRomainProfileId = boxConf.defaultRoamingSecurityProfile || 41;
                 this.fillSecurityProfilesSelectForDefaultSettings(this.securityProfiles, this.selectedDefaultRomainProfileId);
 
@@ -488,9 +501,29 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.clipboardService.copy(input);
     }
 
+    checkLocalDetect(): boolean {
+      if (this.isEnableLocalDedect) {
+        const resultIp = isip(this.localDetectIp) ? this.localDetectIp : null;
+        if (!resultIp) {
+          this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
+          return false;
+        }
+        let domain = this.localDetectDomain;
+        if (String(domain).toLowerCase().startsWith('http')) {
+          domain = String(domain).toLowerCase().replace('http://', '').replace('https://', '');
+        }
+        const resultDomain = ValidationService.domainValidationWithoutTLD(domain);
+        if (resultDomain !== true) {
+          this.notification.warning(this.staticMessageService.enterValidDomainMessage);
+          return false;
+        }
+      }
+      return true;
+    }
 
     saveRoamingGlobalSettings() {
-
+        if (!this.checkLocalDetect())
+          return;
         const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
@@ -498,6 +531,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             box: this.virtualBox?.serial, boxuuid: this.virtualBox?.uuid, donttouchdomains: domains,
             donttouchips: ips,
             localnetips: localnetworkips, uninstallPassword: this.uninstallPassword,
+            isEnableLocalDedect: this.isEnableLocalDedect, localDetectIp: this.localDetectIp, localDetectDomain: this.localDetectDomain,
             disablePassword: this.disablePassword, defaultRoamingSecurityProfile: this.selectedDefaultRomainProfileId
         };
         this.boxService.saveBoxConfig(request).subscribe(x => {
@@ -1018,6 +1052,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
             return obj;
         });
+    }
+
+    onIsEnableLocalDetectChange(state: boolean) {
+        this.isEnableLocalDedect = (state) ? 1 : 0;
     }
 
     get roamingClientVersion() {

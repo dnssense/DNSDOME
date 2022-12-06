@@ -118,6 +118,8 @@
     "DontTouchIpsDescription": "Don’t touch ips not encrypt by agent, the packets goes to these ip address's not encrypt by agent",
     "LocalNetIps": "Local Network Dns Servers",
     "LocalNetIpsDescription": "When one of these servers responses with dns result, agent will disable protection",
+    "EnableLocalDetect": "Enable Local Host Detection",
+    "EnableLocalDetectDescription": "The agent will deactivate itself when the local network is detected.",
     "Add": "Add",
     "RoamingClientsEdit": "Roaming Clients Edit",
     "DefaultGroup": "Default Group",

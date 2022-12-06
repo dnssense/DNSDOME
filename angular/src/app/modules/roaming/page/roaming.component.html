@@ -173,9 +173,9 @@
 
                     <div class="input-container">
                       <input type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"
-                        placeholder="Ip" class="rk-input w-100"
-                        (keydown)="checkIPNumberForLocalNetIps($event, localnetip)" [(ngModel)]="localnetip"
-                        [ngModelOptions]="{standalone: true}">
+                             placeholder="Ip" class="rk-input w-100"
+                             (keydown)="checkIPNumber($event, localnetip)" [(ngModel)]="localnetip"
+                             [ngModelOptions]="{standalone: true}">
 
 
                       <button class="btn btn-icon p-0 px-2 ml-1 safe-btn" style="height: 35px;"
@@ -196,6 +196,36 @@
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="container-fluid mb-2">
+              <div class="rk-modal-card">
+                <div class="d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="rk-modal-card-title">{{'EnableLocalDetect'|translate}}</h6>
+                  <rk-switch class="align-self-end" [(value)]="!!isEnableLocalDedect" (valueChange)="onIsEnableLocalDetectChange($event)">
+                  </rk-switch>
+                </div>
+                <div class="row mt-0">
+                  <div class="col-12 mt-0">
+                    <p class="rk-description">
+                      {{'EnableLocalDetectDescription'|translate}}
+                    </p>
+
+                    <div class="input-container flex-column" *ngIf="!!isEnableLocalDedect">
+                      <input type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"
+                             placeholder="Ip" class="rk-input w-100"
+                             [(ngModel)]="localDetectIp"
+                             [ngModelOptions]="{standalone: true}">
+
+                      <input type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"
+                             placeholder="Domain"  [(ngModel)]="localDetectDomain" class="rk-input w-100 mt-2">
+
+                    </div>
+
                   </div>
                 </div>
               </div>

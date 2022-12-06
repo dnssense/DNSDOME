@@ -117,6 +117,8 @@
     "DontTouchIpsDescription": "Şifrelenmeyecek ip listesidir, bu ip adreslerine giden paketler şifrelenmeyecektir",
     "LocalNetIps": "Local Network Dns Servers",
     "LocalNetIpsDescription": "Bu dns serverlardan biri cevap verirse, koruma pasif hale geçecektir",
+    "EnableLocalDetect": "Yerel Ağ Algılamayı Aktifleştir",
+    "EnableLocalDetectDescription": "Ajan, yerel ağ algılandığında kendini devre dışı bırakacaktır.",
     "Add": "Ekle",
     "RoamingClientsEdit": "Mobil Cihazları Düzenle",
     "DefaultGroup": "Ön Tanımlı Grup",
