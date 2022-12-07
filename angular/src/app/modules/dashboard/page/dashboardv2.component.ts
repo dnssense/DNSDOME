@@ -136,10 +136,10 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     // region utils methodes
     private reloadData(isInit: boolean = false, updateGroupItems: boolean = true) {
         if (this.reportType === 'livereport') {
-            if(isInit){//after date and datasource change, reset group items ui with updated data
+            if (isInit) {// after date and datasource change, reset group items ui with updated data
                 this.selectGroup(this.groupComponent.getGroupItem(0));
                 this.groupComponent.setActive(0);
-                this.onEmptyData();
+                // this.onEmptyData();
             }
             this.loadInitLiveReport(updateGroupItems);
         } else {
