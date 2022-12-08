@@ -11,6 +11,7 @@ import {GraphDto, LiveReportRequest} from '../../../../core/models/report';
 import {DashBoardService} from '../../../../core/services/dashBoardService';
 import {ChartDomain, ChartDomainItem, DashboardChartComponent} from './dashboard-chart.component';
 import { RkNotificationService } from 'roksit-lib';
+import * as moment from "moment";
 
 interface TagInputValue {
     value: string;
@@ -162,10 +163,12 @@ export class DomainComponent implements AfterViewInit {
     }
 
     loadGraphNoLive(domain: string) {
+      const startReqDate = moment(this.selectedDate.startDate).startOf('hour').toDate();
+      const endReqDate = moment(this.selectedDate.endDate).endOf('hour').toDate();
         const req = {
             domain: domain,
-            startDate: this.selectedDate.startDate.toISOString(),
-            endDate: this.selectedDate.endDate.toISOString()
+            startDate: startReqDate.toISOString(),
+            endDate: endReqDate.toISOString()
         };
         this.dashboardService.getTopDomainValue(req).subscribe(result => {
             const res: { items: GraphDto[] } = {items: []};

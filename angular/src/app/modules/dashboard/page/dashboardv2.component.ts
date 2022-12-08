@@ -180,9 +180,11 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }
 
     private refreshTopDomains() {
+        const startReqDate = moment(this.selectedDate.startDate).startOf('hour').toDate();
+        const endReqDate = moment(this.selectedDate.endDate).endOf('hour').toDate();
         const request = {
-            startDate: this.selectedDate.startDate.toISOString(),
-            endDate: this.selectedDate.endDate.toISOString()
+            startDate: startReqDate.toISOString(),
+            endDate: endReqDate.toISOString()
         } as TopDomainsRequestV5;
         request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedGroup?.datatype;
         this.setUiDomainsDomain([], {allow: 0, block: 0});
