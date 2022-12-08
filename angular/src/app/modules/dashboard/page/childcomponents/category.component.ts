@@ -123,10 +123,10 @@ export class CategoryComponent {
   }
 
   setCategories(cats: { items: Aggregation[] }, graphs: { items: GraphDto[] }, total: { allow: number, block: number }, isAllowChangeTableContent: boolean = true) {
-    const totalHit = total.allow + total.block;
     if (isAllowChangeTableContent || this.categories.length <= 0) {
+      const totalHit = cats.items.reduce((sum, cat) => sum + cat.hit, 0);
       this.categories = cats.items.map(cat => {
-        return {name: cat.name, hit: cat.hit, hit_ratio: Math.floor((100 * cat.hit) / totalHit)};
+        return {name: cat.name, hit: cat.hit, hit_ratio: totalHit > 0 ? Math.floor((100 * cat.hit) / totalHit) : 0};
       });
     }
     this.drawChart(graphs);
