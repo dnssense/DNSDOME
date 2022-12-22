@@ -16,13 +16,13 @@
 
           <div>
             <button class="btn btn-icon btn-small mr-2" (click)="downloadFile()">
-              <i-feather name="arrow-down"></i-feather>
+               <ng-container [ngTemplateOutlet]="windowsIcon"></ng-container>
               {{'Download'|translate}} ({{roamingClientVersion}})
             </button>
 
 
             <button class="btn btn-icon btn-small mr-2" (click)="copyLink()">
-              <i-feather name="arrow-down"></i-feather>
+              <ng-container [ngTemplateOutlet]="windowsIcon"></ng-container>
               {{'CopyDownloadLink'|translate}}
             </button>
 
@@ -825,3 +825,9 @@ Mac:{{c.mac}}">
     </div>
   </div>
 </div>
+
+<ng-template #windowsIcon>
+  <svg class="windows-icon" width="15px" height="15px" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 48.3167L101.482 37.2202L101.518 115.816L20.0753 116.279L20 48.3167ZM101.443 124.871L101.507 203.536L20.0639 192.339L20.0594 124.344L101.443 124.871ZM111.32 35.768L219.358 20V114.816L111.32 115.674V35.768ZM219.384 125.611L219.358 220L111.32 204.753L111.17 125.435L219.384 125.611Z"/>
+  </svg>
+</ng-template>
