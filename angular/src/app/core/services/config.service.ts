@@ -15,6 +15,7 @@ export class ConfigHost {
   title: string;
   privacyUrl: string;
   supportUrl: string;
+  termsOfServiceUrl: string;
   onlineHelpUrl: string;
   captcha_key: string;
   docUrl: string;
@@ -75,11 +76,12 @@ export class ConfigService {
       this.host.iconImage = 'favicon-dnssense.png';
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnssense.png';
       this.host.title = 'DnsSense';
-      this.host.privacyUrl = 'https://www.dnssense.com/privacy-statement.htm';
+      this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       this.host.docUrl = 'http://docs.roksit.com';
-      this.host.supportUrl = 'https://dnssense.com';
-      this.host.onlineHelpUrl = 'https://dnssense.com';
+      this.host.supportUrl = 'https://dnssense.com/contact';
+      this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
+      this.host.onlineHelpUrl = 'https://dnssense.com/faq';
       this.host.portal = 'https://portal.dnssense.com';
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
@@ -95,27 +97,28 @@ export class ConfigService {
       this.host.privacyUrl = 'https://www.cybercyte.com/privacy-and-cookie-policy/';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58'; // dnccyte için yenisi gerekli
       this.host.docUrl = 'https://docs.dnscyte.com';
-
       this.host.portal = 'https://portal.dnscyte.com';
       this.host.supportUrl = 'https://support.cybercyte.com/portal/home';
+      this.host.termsOfServiceUrl = 'https://www.cybercyte.com/privacy-and-cookie-policy/';
       this.host.onlineHelpUrl = 'https://docs.dnscyte.com';
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
     } else if (window.location.host.indexOf('roksit') >= 0) {
       this.host.www = 'https://www.roksit.com';
       this.host.brand = 'Roksit';
-      this.host.aboutus = 'https://www.roksit.com/about-us';
+      this.host.aboutus = 'https://www.roksit.com/company';
       this.host.logoImage = 'logo-roksit.png';
       this.host.logoDarkImage = 'roksit-white.svg';
       this.host.iconImage = 'favicon-roksit.png';
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-roksit.png';
       this.host.title = 'Roksit';
-      this.host.privacyUrl = 'https://www.roksit.com/privacy-statement.htm';
+      this.host.privacyUrl = 'https://www.roksit.com/privacy-policy';
       this.host.captcha_key = '6LdZopwUAAAAALG7uO9JV88w2y9sQnTJ9M0Lqhrg';
       this.host.docUrl = 'https://docs.roksit.com';
       this.host.portal = 'https://portal.roksit.com';
-      this.host.supportUrl = 'https://roksit.com';
-      this.host.onlineHelpUrl = 'https://roksit.com';
+      this.host.supportUrl = 'https://www.roksit.com/contact';
+      this.host.termsOfServiceUrl = 'https://www.roksit.com/en/application-terms-of-service';
+      this.host.onlineHelpUrl = 'https://www.roksit.com';
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+90';
       if (window.location.host.indexOf('local.roksit') >= 0) {
@@ -124,18 +127,19 @@ export class ConfigService {
     } else if (window.location.host.indexOf('cmerp') >= 0) {
       this.host.www = 'https://www.cmerp.my';
       this.host.brand = 'CMERP';
-      this.host.aboutus = 'https://www.cmerp.my/about-us';
+      this.host.aboutus = 'https://www.cmerp.my';
       this.host.logoImage = 'logo-cmerp.png';
       this.host.logoDarkImage = 'logo-cmerp.png';
       this.host.iconImage = 'favicon-cmerp.png';
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-cmerp.png';
       this.host.title = 'CMERP';
-      this.host.privacyUrl = 'https://www.cmerp.my/privacy-statement.htm';
+      this.host.privacyUrl = 'https://www.cmerp.my';
+      this.host.termsOfServiceUrl = 'https://www.cmerp.my';
       this.host.captcha_key = '6LfvWs0ZAAAAAPGo7js_t5j2UtXncod_UyZAo_L8';
       this.host.docUrl = 'https://docs.cmerp.my';
       this.host.portal = 'https://adf.cmerp.my';
-      this.host.supportUrl = 'https://cmerp.my';
-      this.host.onlineHelpUrl = 'https://cmerp.my';
+      this.host.supportUrl = 'https://www.cmerp.my/index.html#contact';
+      this.host.onlineHelpUrl = 'https://www.cmerp.my';
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+60';
     } else {
@@ -147,12 +151,12 @@ export class ConfigService {
       this.host.iconImage = 'favicon-dnssense.png';
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnssense.png';
       this.host.title = 'DnsSense';
-      this.host.privacyUrl = 'https://www.dnssense.com/privacy-statement.htm';
+      this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       this.host.docUrl = 'https://docs.roksit.com';
-      this.host.portal = 'https://portal.dnssense.com';
-      this.host.supportUrl = 'https://dnssense.com';
-      this.host.onlineHelpUrl = 'https://dnssense.com';
+      this.host.supportUrl = 'https://dnssense.com/contact';
+      this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
+      this.host.onlineHelpUrl = 'https://dnssense.com/faq';
       this.host.hiddenMenus = []; // put paths to hide menu  exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
     }
@@ -193,7 +197,7 @@ export class ConfigService {
   init(userId?: number) {
 
     const language = this.loadLanguage(userId);
-    this.translationservice.initLanguages(language);
+    this.translationservice.initLanguages(language, this.host);
     if (language) {
       this.translationservice.setDefaultLang(language);
       this.translationservice.use(language);
@@ -202,7 +206,6 @@ export class ConfigService {
     if (themeColor) {
       this.rkUtilityService.changeTheme(themeColor === 'dark');
     }
-
   }
 
   getApiUrl(): string {

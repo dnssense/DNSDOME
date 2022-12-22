@@ -68,15 +68,15 @@
                       phone number</p>
 
                     <input type="text" class="formInput" placeholder="Company Name" [(ngModel)]="user.company.name"
-                      formControlName="company" [ngClass]="{'formInputHasError':(registerForm.get('company').dirty|| registerForm.get('company').touched) 
+                      formControlName="company" [ngClass]="{'formInputHasError':(registerForm.get('company').dirty|| registerForm.get('company').touched)
                       && !registerForm.get('company').valid}">
 
                     <input type="text" class="formInput mt-2" placeholder="{{'REGISTER.FirstName' | translate}}"
-                      [(ngModel)]="user.name" formControlName="name" [ngClass]="{'formInputHasError':(registerForm.get('name').dirty|| registerForm.get('name').touched) 
+                      [(ngModel)]="user.name" formControlName="name" [ngClass]="{'formInputHasError':(registerForm.get('name').dirty|| registerForm.get('name').touched)
                       && !registerForm.get('name').valid}">
 
                     <input type="text" class="formInput mt-2" placeholder="{{'REGISTER.LastName' | translate}}"
-                      [(ngModel)]="user.surname" formControlName="surname" [ngClass]="{'formInputHasError':(registerForm.get('surname').dirty|| registerForm.get('surname').touched) 
+                      [(ngModel)]="user.surname" formControlName="surname" [ngClass]="{'formInputHasError':(registerForm.get('surname').dirty|| registerForm.get('surname').touched)
                       && registerForm.get('surname').hasError('required')}">
 
                     <div class="form-group-sm has-default">
@@ -84,7 +84,7 @@
                         <div class="input-group-prepend d-flex" style="width:100%;">
 
                           <div class="dns-dropdown d-inline-block dropdown-accent dns-full-width" style="width: 130px;">
-                            <button class="btns dropdown-toggle reverse-form text-left formInput mt-2" [ngClass]="{'formInputHasError':(registerForm.get('gsmCode').dirty|| registerForm.get('gsmCode').touched) 
+                            <button class="btns dropdown-toggle reverse-form text-left formInput mt-2" [ngClass]="{'formInputHasError':(registerForm.get('gsmCode').dirty|| registerForm.get('gsmCode').touched)
                       && !registerForm.get('gsmCode').valid}" id="dropdownMenuButton" data-toggle="dropdown"
                               aria-haspopup="true" aria-expanded="false">
                               <ng-container *ngIf="user && user.gsmCode; else elseTemplateSelectedProfile">
@@ -108,7 +108,7 @@
 
                           <input type="tel" class="formInput ml-2 mt-2" name="gsm" (keydown)="checkisTelNumber($event)"
                             placeholder="{{'REGISTER.GSM' | translate}}" maxlength="10" minlength="9"
-                            [(ngModel)]="user.gsm" formControlName="gsm" title="5XX1234567" [ngClass]="{'formInputHasError':(registerForm.get('gsm').dirty|| registerForm.get('gsm').touched) 
+                            [(ngModel)]="user.gsm" formControlName="gsm" title="5XX1234567" [ngClass]="{'formInputHasError':(registerForm.get('gsm').dirty|| registerForm.get('gsm').touched)
                                         && !registerForm.get('gsm').valid }">
 
                         </div>
@@ -117,15 +117,15 @@
 
                     <input type="email" class="formInput mt-2" placeholder="{{'REGISTER.Email' | translate}}"
                       [(ngModel)]="user.username" (ngModelChange)="emailValidationRegister($event)"
-                      formControlName="username" [ngClass]="{'formInputHasError':(registerForm.get('username').dirty|| registerForm.get('username').touched) 
-                      && (registerForm.get('username').hasError('required') || !validEmailRegister || 
+                      formControlName="username" [ngClass]="{'formInputHasError':(registerForm.get('username').dirty|| registerForm.get('username').touched)
+                      && (registerForm.get('username').hasError('required') || !validEmailRegister ||
                       !registerForm.get('username').valid )}">
                     <p style="color: red;" *ngIf="registerForm.get('username').hasError('unsolicitedMailAddress')">
                       Instant or Temporary e-mail services are not valid!</p>
 
                     <input type="password" class="formInput mt-2" placeholder="{{'REGISTER.Password' | translate}}*"
                       (keyup)="checkPasswordStrength()" [(ngModel)]="user.password" formControlName="password"
-                      [ngClass]="{'formInputHasError':(registerForm.get('password').dirty|| registerForm.get('password').touched) 
+                      [ngClass]="{'formInputHasError':(registerForm.get('password').dirty|| registerForm.get('password').touched)
                       && !registerForm.get('password').valid}">
 
                     <div class="password-strength-register mt-2" style="max-width: 100%;">
@@ -153,7 +153,7 @@
 
                     <input type="password" class="formInput mt-2 mb-3" title="Enter same password again"
                       placeholder="{{'REGISTER.ConfirmPassword' | translate}}" [(ngModel)]="user.passwordAgain"
-                      formControlName="passwordAgain" [ngClass]="{'formInputHasError':(registerForm.get('passwordAgain').dirty|| registerForm.get('passwordAgain').touched) 
+                      formControlName="passwordAgain" [ngClass]="{'formInputHasError':(registerForm.get('passwordAgain').dirty|| registerForm.get('passwordAgain').touched)
                       && !registerForm.get('passwordAgain').valid}">
 
                   </div>
@@ -168,14 +168,14 @@
                       <div class="col-md-12">
                         <div>
                           <button type="submit" class="btns signup-btns mt-3 mb-4" [disabled]="!isRegisterFormValid()"
-                            title="By clicking the 'Register', you are agree to our Terms of Service and Privacy Policy and you understand that your personal information may be transferred for processing outside your country of residence."
+                            title="By clicking the 'Register', you agree to our Terms of Service and Privacy Policy and you understand that your personal information may be transferred for processing outside your country of residence."
                             (click)="register()">Register</button>
                         </div>
                       </div>
                     </div>
                     <div style="font-size: 12px; max-width: 400px; color: #868e96; line-height: normal;">
-                      <p>By clicking the 'Register', you are agree to our
-                        <a href="{{host.privacyUrl}}" target="_blank">Terms of Service and Privacy Policy</a> and you
+                      <p>By clicking the 'Register', you agree to our
+                        <a href="{{host.termsOfServiceUrl}}" target="_blank">Terms of Service</a> and <a href="{{host.privacyUrl}}" target="_blank">Privacy Policy</a> and you
                         understand that
                         your personal information may be transferred for processing outside your country of residence.
                       </p>

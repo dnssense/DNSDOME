@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {RkDateButton} from '../dashboard.component';
-import {RkDateConfig} from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import {RkDateConfig, RkDateTime} from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import {TranslatorService} from 'src/app/core/services/translator.service';
 import * as moment from 'moment';
 
@@ -33,6 +33,20 @@ export class TopdateComponent implements OnInit {
     endDate: this.translatorService.translate('Date.EndDate'),
   };
 
+    times: RkDateTime[] = [
+                        { value: 60 * 1, displayText: this.translatorService.translateWithArgs('Date.LastXHour', {X: '1'}) },
+                        { value: 60 * 3, displayText: this.translatorService.translateWithArgs('Date.LastXHour', {X: '3'}) },
+                        { value: 60 * 6, displayText: this.translatorService.translateWithArgs('Date.LastXHour', {X: '6'}) },
+                        { value: 60 * 12, displayText: this.translatorService.translateWithArgs('Date.LastXHour', {X: '12'}) },
+                        { value: 60 * 24, displayText: this.translatorService.translateWithArgs('Date.LastXDay', {X: '1'}) },
+                        { value: 60 * 24 * 2, displayText: this.translatorService.translateWithArgs('Date.LastXDay', {X: '2'}) },
+                        { value: 60 * 24 * 3, displayText: this.translatorService.translateWithArgs('Date.LastXDay', {X: '3'}) },
+                        { value: 60 * 24 * 7, displayText: this.translatorService.translateWithArgs('Date.LastXWeek', {X: '1'}) },
+                        { value: 60 * 24 * 14, displayText: this.translatorService.translateWithArgs('Date.LastXWeek', {X: '2'}) },
+                        { value: 60 * 24 * 30, displayText: this.translatorService.translate('Date.LastMonth') },
+                        { value: 60 * 24 * 30 * 2, displayText: this.translatorService.translateWithArgs('Date.LastXMonth', {X: '2'}) }
+                        ];
+
   ngOnInit() {
     this.initDateDisplay();
     this.setDateButtons();
@@ -59,35 +73,35 @@ export class TopdateComponent implements OnInit {
       {
         startDate: new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()),
         endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours()),
-        displayText: 'Last Year',
+        displayText: this.translatorService.translate('Date.LastYear'),
         active: false,
         isToday: false
       },
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 3, this.now.getDate()),
         endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours()),
-        displayText: 'Last 3 Month',
+        displayText: this.translatorService.translate('Date.Last3Month'),
         active: false,
         isToday: false
       },
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()),
         endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours()),
-        displayText: 'Last Month',
+        displayText: this.translatorService.translate('Date.LastMonth'),
         active: false,
         isToday: false
       },
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate() - 7),
         endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours()),
-        displayText: 'Last Week',
+        displayText: this.translatorService.translate('Date.LastWeek'),
         active: true,
         isToday: false
       },
       {
         startDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), 0),
         endDate: new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate(), this.now.getHours(), this.now.getMinutes()),
-        displayText: `Today (00:00-${this.now.getHours()}:${this.now.getMinutes()})`,
+        displayText: `${this.translatorService.translate('Date.Today')} (00:00-${this.now.getHours()}:${(this.now.getMinutes() < 10 ? '0' : '') + this.now.getMinutes() })`,
         active: false,
         isToday: true
       }
@@ -105,6 +119,17 @@ export class TopdateComponent implements OnInit {
     }
     this.dateChanged({startDate: it.startDate, endDate: it.endDate, nameDis: it.displayText}, false, it.isToday);
     it.active = true;
+
+    const startDate = moment(this.startDate);
+    const endDate = moment(this.endDate);
+    const diff = endDate.diff(startDate, 'minutes');
+    const found = this.times.find(x => x.value === diff);
+    if (found) {
+      this.date.selectTime(found);
+    } else {
+      this.date.selectTime({value: diff }  as RkDateTime);
+    }
+
   }
   // endregion
 
@@ -128,7 +153,7 @@ export class TopdateComponent implements OnInit {
 
     this.onDateChanged.emit({startDate: this.startDate, endDate: this.endDate, duration: duration, name: ev.nameDis});
   }
-  setDateComponent(selected:{ startDate: Date, endDate: Date, duration: number }) {
+  setDateComponent(selected: { startDate: Date, endDate: Date, duration: number }) {
     this.startDate = new Date(selected.startDate);
     this.endDate = new Date(selected.endDate);
     this.dateButtons.forEach(elem => elem.active = false);

@@ -30,7 +30,6 @@ export interface AuditData {
   messageDetail?: string;
   popoverRows?: string[];
   popoverClass?: string;
-  hiddenCopy?: boolean;
 }
 
 export class AuditResponse {

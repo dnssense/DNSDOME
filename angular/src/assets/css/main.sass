@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin-ext")
+@import "roksit-lib/assets/scss/core/variables"
 
 $white: #fff
 
@@ -56,7 +57,7 @@ ul
   .content
     overflow: visible
     flex: auto !important
-    width: calc(100% - 220px)
+    width: calc(100% - #{$menu-sidebar-width})
 
 .chart-info .section .value
   font-weight: bold
@@ -126,38 +127,6 @@ ul
 figure
   margin-bottom: 0 !important
 
-.alert
-  position: relative
-  padding: 10px
-  border-radius: 5px
-  background: #FFB300
-  color: white
-  font-size: 12px
-  display: flex
-  align-items: center
-  justify-content: space-between
-
-  &.alert-info
-    background: #0288D1
-  &.alert-success
-    background: #4CAF50
-  &.alert-warning
-    background: #FFB300
-  &.alert-danger
-    background: #f44336
-
-  .material-icons.notifications
-    display: none
-
-  button
-    &.close
-      border: 0
-      outline: 0
-      width: 20px
-      height: 100%
-      background: transparent
-      color: white
-
 .accordion-label
   font-size: 12px
   color : #898ea4
@@ -166,13 +135,6 @@ figure
 .accordion-description
   font-size: 10px
   color: #97a5bb
-
-.swal2-actions
-  button
-    margin-right: 10px
-
-    &:last-child
-      margin-right: 0
 
 .input-container
   display: flex
@@ -508,7 +470,7 @@ rk-modal-body
 
     background-color: rgba(59, 72, 80, 0.9)
     background-image: linear-gradient(30deg, rgba(59, 72, 80, 0.44), rgba(59, 68, 75, 0.44), rgba(60, 82, 88, 0.44))
-    box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.2)
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.2)
     color: #fff
     text-align: center
     white-space: pre-wrap
@@ -517,7 +479,7 @@ rk-modal-body
   &:after
     content: ''
     border-style: solid
-    border-width: 5px 5px 0px 5px
+    border-width: 5px 5px 0 5px
     border-color: rgba(55, 64, 70, 0.9) transparent transparent transparent
     transition-duration: 0s
 
@@ -553,7 +515,7 @@ rk-modal-body
     transform: translate(-5px, 50%) scale(1)
 
   &:after
-    border-width: 5px 0px 5px 5px
+    border-width: 5px 0 5px 5px
     border-color: transparent transparent transparent rgba(55, 64, 70, 0.9)
     transform-origin: left
     transform: translateY(50%) scaleX(0)
@@ -573,7 +535,7 @@ rk-modal-body
     transform: translate(5px, 50%) scale(1)
 
   &:after
-    border-width: 5px 5px 5px 0px
+    border-width: 5px 5px 5px 0
     border-color: transparent rgba(55, 64, 70, 0.9) transparent transparent
     transform-origin: right
     transform: translateY(50%) scaleX(0)
@@ -593,7 +555,7 @@ rk-modal-body
     transform: translate(-50%, 5px) scale(1)
 
   &:after
-    border-width: 0px 5px 5px 5px
+    border-width: 0 5px 5px 5px
     border-color: transparent transparent rgba(55, 64, 70, 0.9) transparent
     transform-origin: bottom
 
@@ -652,7 +614,6 @@ rk-collapse-description
 
   .run-bar-text
     margin: 0
-    color: white
     font-size: 12px
     font-weight: 500
     color: $white
@@ -710,15 +671,6 @@ rk-collapse-description
 
 rk-table-container .rk-table-container-header .bottom-content .badges-container .x-scroll-left-button
   width: 30px !important
-
-.swal2-popup
-  background: var(--body-bg) !important
-
-  .swal2-title
-    color: var(--title-color) !important
-
-  .swal2-content
-    color: var(--title-color) !important
 
 .rd-m-10
   .rk-radio
@@ -811,18 +763,17 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
 
     svg
       position: relative
-      transform: rotate(90deg)
       color: var(--primary)
 
   .wrapper
-    .sidebar
+    .rk-menu-sidebar
       display: none !important
 
     .content
       width: 100% !important
 
 .mobile-menu
-  .sidebar
+  .rk-menu-sidebar
     a
       &:hover
         text-decoration: none !important
@@ -966,30 +917,6 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
   width: 16px
   position: relative
   bottom: 1px
-
-
-ngb-popover-window
-  overflow: auto
-
-.auditDetailWhite
-  background-color: rgb(243,205,107)!important
-  font-size: 12px
-  border-radius: 10px
-  max-height: 400px
-  max-width: 400px
-
-
-  
-
-.auditDetailDark
-  background-color: rgb(243,205,107)!important
-  font-size: 12px
-  color: black
-  border-radius: 10px
-  max-height: 400px
-  max-width: 400px
-
-
 
 .rk-input-container.input-error, .rk-input.input-error, .rk-input:focus.input-error, .ng-invalid.ng-dirty, .ng-invalid.ng-touched
   border-color: #ff0000!important

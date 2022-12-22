@@ -11,15 +11,14 @@ import {Agent, IpWithMask} from 'src/app/core/models/Agent';
 import {AgentType} from 'src/app/core/models/AgentType';
 import {BlackWhiteListProfile, SecurityProfile, SecurityProfileItem} from 'src/app/core/models/SecurityProfile';
 import {AgentService} from 'src/app/core/services/agent.service';
-import {AlertService} from 'src/app/core/services/alert.service';
 import {AuthenticationService} from 'src/app/core/services/authentication.service';
 import {InputIPService} from 'src/app/core/services/inputIPService';
-import {NotificationService} from 'src/app/core/services/notification.service';
 import {PublicIPService} from 'src/app/core/services/publicIPService';
 import {StaticMessageService} from 'src/app/core/services/staticMessageService';
 import {ValidationService} from 'src/app/core/services/validation.service';
 import {ProfileWizardComponent} from '../../shared/profile-wizard/page/profile-wizard.component';
 import {DashBoardService, DistinctAgentResponse} from '../../../core/services/dashBoardService';
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 
 
 declare let $: any;
@@ -110,8 +109,8 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   activeAgents: DistinctAgentResponse = {items: []};
 
   constructor(
-    private alertService: AlertService,
-    private notification: NotificationService,
+    private alertService: RkAlertService,
+    private notification: RkNotificationService,
     private authService: AuthenticationService,
     private formBuilder: FormBuilder,
     private agentService: AgentService,

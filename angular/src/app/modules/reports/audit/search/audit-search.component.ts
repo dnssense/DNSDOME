@@ -2,6 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChil
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
+import { RkNotificationService } from 'roksit-lib';
 import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
 import { RkDateConfig, RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import { RkFilterOutput } from 'roksit-lib/lib/modules/rk-filter-badge/rk-filter-badge.component';
@@ -12,7 +13,6 @@ import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { SearchSetting, SearchSettingsType } from 'src/app/core/models/SearchSetting';
 import { AuditService } from 'src/app/core/services/auditService';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { StaticService } from 'src/app/core/services/staticService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
@@ -31,17 +31,17 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
   constructor(
     private auditService: AuditService,
     private staticService: StaticService,
-    private notification: NotificationService,
+    private notification: RkNotificationService,
     private router: Router,
     private staticmessageService: StaticMessageService,
     private translatorService: TranslatorService,
     private translateService: TranslateService
   ) {
 
-
+    /*
     this.translateService.onLangChange.subscribe(result => {
       this.dateText = this.convertTimeString(Number(this.searchSettings.dateInterval || 5));
-    });
+    });*/
   }
 
   @Input() searchSettings: SearchSetting;
@@ -56,11 +56,11 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
 
   private dateNow = new Date();
   dateOptions: RkDateTime[] = [
-    {value: 5, displayText: '5 Minutes'},
-    {value: 60 * 6, displayText: '6 Hours'},
-    {value: 60 * 24, displayText: 'Last Day'},
-    {value: 60 * 24 * 7, displayText: 'Last Week'},
-    {value: 60 * this.dateNow.getHours() + this.dateNow.getMinutes(), displayText: `Today (00:00 - ${this.dateNow.getHours().toLocaleString('tr', {minimumIntegerDigits: 2})}:${this.dateNow.getMinutes().toLocaleString('tr', {minimumIntegerDigits: 2})})`},
+    {value: 5, displayText: this.translatorService.translate('Date.5Minutes')},
+    {value: 60 * 6, displayText: this.translatorService.translate('Date.6Hours')},
+    {value: 60 * 24, displayText: this.translatorService.translate('Date.LastDay')},
+    {value: 60 * 24 * 7, displayText: this.translatorService.translate('Date.LastWeek')},
+    {value: 60 * this.dateNow.getHours() + this.dateNow.getMinutes(), displayText: `${this.translatorService.translate('Date.Today')} (00:00 - ${this.dateNow.getHours().toLocaleString('tr', {minimumIntegerDigits: 2})}:${this.dateNow.getMinutes().toLocaleString('tr', {minimumIntegerDigits: 2})})`},
   ];
 
   private allSavedReports: SearchSetting[] = [];
@@ -440,13 +440,24 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
 
 
   clear() {
+    const prevDateInterval = this.searchSettings.dateInterval;
+    const prevStartDate = this.searchSettings.startDate;
+    const prevEndDate = this.searchSettings.endDate;
+
     this.searchSettings = new SearchSetting();
 
     this.searchSettings.must = [];
     this.searchSettings.mustnot = [];
     this.searchSettings.should = [];
 
-    this.searchSettings.dateInterval = this.dateOptions[0].value;
+    if (prevEndDate && prevStartDate) {
+      this.searchSettings.startDate = prevStartDate;
+      this.searchSettings.endDate = prevEndDate;
+    } else {
+      this.searchSettings.dateInterval = prevDateInterval || 5;
+    }
+
+    // this.searchSettings.dateInterval = this.dateOptions[0].value;
 
     this.filtersClearEmitter.emit();
   }
@@ -519,7 +530,7 @@ export class AuditSearchComponent implements OnInit, AfterViewInit {
 
     if (this.selectedColumn?.inputPattern && !this.selectedColumn?.inputPattern.test((this.filterText || '') + keyEvent.key)) {
       keyEvent.preventDefault();
-      this.inputError = 'Invalid Character'
+      this.inputError = 'Invalid Character';
     } else
       this.inputError = '';
   }

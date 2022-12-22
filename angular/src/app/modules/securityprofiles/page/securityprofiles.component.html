@@ -40,12 +40,8 @@
                   <div class="inf mr-4">
                     <span class="text-primary">{{ securityProfiles?.length }}</span> {{'QueriesListed'|translate}}
                   </div>
-
-                  <div class="search ml-5">
-                    <div class="rk-autocomplete-container" style="width: 220px;">
-                      <input type="text" placeholder="Search" [(ngModel)]="searchKey" class="rk-input rk-autocomplete">
-                      <i-feather class="search-icon" name="search"></i-feather>
-                    </div>
+                  <div class="search ml-5" style="width: 220px;">
+                    <rk-search [value]="searchKey"  [placeholder]="'Search'|translate" (valueChange)="searchKey=$event;"></rk-search>
                   </div>
                 </div>
 

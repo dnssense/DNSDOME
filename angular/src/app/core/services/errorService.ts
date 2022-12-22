@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentService } from './component.service';
-import { NotificationService } from './notification.service';
+import { RkNotificationService } from 'roksit-lib';
 
 /**
  * Created by fahri on 26.07.2017.
@@ -11,7 +11,7 @@ import { NotificationService } from './notification.service';
 export class ErrorService {
   constructor(
     public componentService: ComponentService,
-    public notificationService: NotificationService
+    public notificationService: RkNotificationService
   ) {}
 
   public handleAuthenticatedError(error: HttpErrorResponse) {

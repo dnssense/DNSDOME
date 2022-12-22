@@ -34,10 +34,7 @@
 .monitor-filter-container {
   border-radius: 20px 20px 0 0;
   background-color: var(--card-bg);
-  margin: 1em -15px 0 -15px;
-  padding-top: 1em;
   position: relative;
-
   .seperator {
     display: inline-flex;
     width: 1px;
@@ -51,9 +48,10 @@
   .select-container {
     //min-width: 220px;
     margin-bottom: 10px;
-    padding-left: 5px!important;
+    padding-left: 0px!important;
     padding-right: 5px!important;
     max-width: 300px;
+    min-width: 130px;
   }
 
   .badge-container rk-filter-badge:last-child {

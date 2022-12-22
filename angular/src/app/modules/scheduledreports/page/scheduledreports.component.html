@@ -6,7 +6,7 @@
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content">
-                <div class="rk-table-title">User Reports</div>
+                <div class="rk-table-title">{{"SCHEDULEDREPORTS.UserReports" | translate}}</div>
               </div>
             </div>
 
@@ -14,9 +14,9 @@
               <ng-template #header>
                 <tr>
                   <th>#</th>
-                  <th>Report Name</th>
-                  <th colspan="4">Schedule Interval</th>
-                  <th>Delete</th>
+                  <th>{{"SCHEDULEDREPORTS.ReportName" | translate}}</th>
+                  <th colspan="4">{{"SCHEDULEDREPORTS.ScheduleInterval" | translate}}</th>
+                  <th>{{"Delete" | translate}}</th>
                 </tr>
               </ng-template>
 
@@ -29,7 +29,7 @@
                       [checked]="report.scheduledReport?.status && report.scheduledReport?.period === 'd'"
                       (valueChange)="changeScheduledPeriodAndStatus(report.id, 'd')" [name]="'report-' + index"
                       value="d">
-                      Schedule Daily report email
+                      {{"SCHEDULEDREPORTS.ScheduleDailyReportEmail" | translate}}
                     </rk-radio>
                   </td>
                   <td class="rk-radio-for-table" style="width: 230px;">
@@ -37,7 +37,7 @@
                       [checked]="report.scheduledReport?.status && report.scheduledReport?.period === 'w'"
                       (valueChange)="changeScheduledPeriodAndStatus(report.id, 'w')" [name]="'report-' + index"
                       value="w">
-                      Schedule Weekly report email
+                      {{"SCHEDULEDREPORTS.ScheduleWeeklyReportEmail" | translate}}
                     </rk-radio>
                   </td>
                   <td class="rk-radio-for-table" style="width: 230px;">
@@ -45,7 +45,7 @@
                       [checked]="report.scheduledReport?.status && report.scheduledReport?.period === 'm'"
                       (valueChange)="changeScheduledPeriodAndStatus(report.id, 'm')" [name]="'report-' + index"
                       value="m">
-                      Schedule Monthly report email
+                      {{"SCHEDULEDREPORTS.ScheduleMonthlyReportEmail" | translate}}
                     </rk-radio>
                   </td>
                   <td class="rk-radio-for-table" style="width: 230px;">
@@ -53,7 +53,7 @@
                       [checked]="!report.scheduledReport || report.scheduledReport.status===0"
                       (valueChange)="changeScheduledPeriodAndStatus(report.id, null)" [name]="'report-' + index"
                       value="m">
-                      Disabled
+                      {{"SCHEDULEDREPORTS.Disabled" | translate}}
                     </rk-radio>
                   </td>
                   <td style="width: 60px;">

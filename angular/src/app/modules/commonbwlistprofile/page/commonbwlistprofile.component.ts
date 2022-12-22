@@ -1,8 +1,6 @@
 
 import {takeUntil,  debounceTime, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { AlertService } from 'src/app/core/services/alert.service';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { CommonBWListProfileService } from '../../../core/services/commonBWListProfileService';
@@ -15,6 +13,7 @@ import { LogColumn } from '../../../core/models/LogColumn';
 import { ExcelService } from '../../../core/services/excelService';
 import { PdfService } from '../../../core/services/pdfService';
 import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
+import { RkAlertService, RkNotificationService, RkSearchComponent } from 'roksit-lib';
 
 @Component({
     selector: 'app-commonbwlistprofile',
@@ -26,15 +25,15 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
 
     constructor(
         private bwService: CommonBWListProfileService,
-        private notification: NotificationService,
-        private alertService: AlertService,
+        private notification: RkNotificationService,
+        private alertService: RkAlertService,
         private staticMessageService: StaticMessageService,
         private translateService: TranslatorService,
         private excelService: ExcelService,
         private pdfService: PdfService
     ) {
     }
-    page = 0;
+    page = 1;
     pageSize = 10;
     searchKey: string;
     totalCount = 0;
@@ -51,7 +50,7 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
     saveMode: 'NewBWList' | 'BWListUpdate' | 'NotEditable';
 
     @ViewChild('bwlistModal') bwlistModal: RkModalModel;
-    @ViewChild('searchbox') searchbox: ElementRef<HTMLInputElement>;
+    @ViewChild('rkSearch', {static: true}) rkSearch: RkSearchComponent;
 
     tableConfig: RkTableConfigModel =
         {
@@ -114,7 +113,7 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
                     }
                 });
 
-                this.searchboxevent = fromEvent(this.searchbox.nativeElement, 'keyup').pipe(
+                this.searchboxevent = this.rkSearch?.keyupValueChange.pipe(
                     debounceTime(1000),
                     distinctUntilChanged(),
                     switchMap((i: any) => {
@@ -130,13 +129,13 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
                         } else {
                             if (this.searchKey?.length > 0 && this.searchKey?.length <= 3) {
                                 return this.searchCommonBWList();
-                            } else {
+                            }else {
                                 return observableOf(null);
-                            } 
+                            }
                         }
                     })).subscribe();
             });
-
+      this.getCommonBWList().subscribe(y => y);
     }
 
     fillResults(res: any) {
@@ -146,7 +145,7 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
         this.tableConfig.arrowVisible = true;
         let count = 1;
         this.bwlist.forEach(item => {
-            (item as any).id = (this.page * this.pageSize) + count;
+            (item as any).id = ((this.page - 1) * this.pageSize) + count;
             count++;
             item.insertDate = moment(item.insertDate).format('YYYY-MM-DD HH:mm:ss');
             (item as any).isBlocked = item.isBlocked ? "black" : "white";
@@ -160,12 +159,12 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
     }
 
     getCommonBWList() {
-        return this.bwService.getCommonBWListProfile(this.page, this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
+        return this.bwService.getCommonBWListProfile((this.page - 1), this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
             this.fillResults(res);
         }),);
     }
     searchCommonBWList() {
-        return this.bwService.searchCommonBWListProfile(this.searchKey, this.page, this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
+        return this.bwService.searchCommonBWListProfile(this.searchKey, (this.page - 1), this.pageSize).pipe(takeUntil(this.ngUnsubscribe),map(res => {
             this.fillResults(res);
         }),);
     }
@@ -174,7 +173,7 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
         this.getCommonBWList().subscribe(y => y);
     }
     onPageChange(event: any) {
-        this.page = event - 1;
+        this.page = event;
         this.getCommonBWList().subscribe(y => y);
     }
 
@@ -221,8 +220,8 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
 
     }
 
-    onSearchChangeEvent(ev: any) {
-
+    onSearchChangeEvent(value: string) {
+        this.searchKey=value;
     }
 
     exportAs(extention: ExportTypes) {

@@ -1,7 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { NotificationService } from 'src/app/core/services/notification.service';
-import { AlertService } from 'src/app/core/services/alert.service';
 import { Agent } from 'src/app/core/models/Agent';
 import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
@@ -10,6 +8,7 @@ import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { BoxService } from 'src/app/core/services/box.service';
 import { BoxConf } from '../../roaming/page/roaming.component';
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 
 @Component({
     selector: 'app-securityprofiles',
@@ -20,8 +19,8 @@ export class SecurityProfilesComponent {
 
     constructor(
         private agentService: AgentService,
-        private notification: NotificationService,
-        private alertService: AlertService,
+        private notification: RkNotificationService,
+        private alertService: RkAlertService,
         private staticMessageService: StaticMessageService,
         private boxService: BoxService
     ) {

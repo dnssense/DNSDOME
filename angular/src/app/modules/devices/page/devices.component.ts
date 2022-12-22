@@ -10,9 +10,7 @@ import {Box} from 'src/app/core/models/Box';
 import {AgentGroup, AgentInfo, DeviceGroup} from 'src/app/core/models/DeviceGroup';
 import {BlackWhiteListProfile, SecurityProfile, SecurityProfileItem} from 'src/app/core/models/SecurityProfile';
 import {AgentService} from 'src/app/core/services/agent.service';
-import {AlertService} from 'src/app/core/services/alert.service';
 import {BoxService} from 'src/app/core/services/box.service';
-import {NotificationService} from 'src/app/core/services/notification.service';
 import {StaticMessageService} from 'src/app/core/services/staticMessageService';
 import {MacAddressFormatterPipe} from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
 import {TranslatorService} from '../../../core/services/translator.service';
@@ -22,6 +20,7 @@ import {ADUserDHCP} from '../../../core/models/ADUserDHCP';
 import {LDAPUserGroup} from '../../../core/models/LdapUserGroup';
 import {AgentRule, AgentRuledBy} from '../../../core/models/AgentRule';
 import {ProfileWizardComponent} from '../../shared/profile-wizard/page/profile-wizard.component';
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 
 
 export function validLength(val: string) {
@@ -46,9 +45,9 @@ export class DevicesComponent implements OnInit {
 
   constructor(private agentService: AgentService,
               private formBuilder: FormBuilder,
-              private alertService: AlertService,
+              private alertService: RkAlertService,
               private boxService: BoxService,
-              private notification: NotificationService,
+              private notification: RkNotificationService,
               private staticMessageService: StaticMessageService,
               private translateService: TranslatorService,
               private adIntegrationService: ADIntegrationService) {

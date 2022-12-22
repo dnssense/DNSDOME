@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 import { PipesModule } from '../shared/pipes/pipes.module';
-import { RkTableModule, IconsModule, RkModalModule, RkRadioModule, RkCheckboxModule, RkSelectModule } from 'roksit-lib';
+import { RkTableModule, IconsModule, RkModalModule, RkRadioModule, RkCheckboxModule, RkSelectModule, RkSearchModule } from 'roksit-lib';
 
 
 
@@ -38,7 +38,8 @@ import { RkTableModule, IconsModule, RkModalModule, RkRadioModule, RkCheckboxMod
     RkModalModule,
     RkRadioModule,
     RkCheckboxModule,
-    RkSelectModule
+    RkSelectModule,
+    RkSearchModule
   ],
   providers: [PipesModule]
 

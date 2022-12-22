@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { AlertService } from 'src/app/core/services/alert.service';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { ScheduledReport } from 'src/app/core/models/ScheduledReport';
 import { ReportService } from 'src/app/core/services/reportService';
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
 
 @Component({
     selector: 'app-scheduledreports',
@@ -13,8 +12,8 @@ import { ReportService } from 'src/app/core/services/reportService';
 export class ScheduledReportsComponent {
 
     constructor(
-        private notification: NotificationService,
-        private alert: AlertService,
+        private notification: RkNotificationService,
+        private alert: RkAlertService,
         private reportService: ReportService
     ) {
         this.loadReports();

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { IconsModule, RkCheckboxModule, RkModalModule, RkRadioModule, RkSelectModule, RkSwitchModule, RkTableModule, RkToggleButtonModule } from 'roksit-lib';
+import { IconsModule, RkCheckboxModule, RkModalModule, RkRadioModule, RkSearchModule, RkSelectModule, RkSwitchModule, RkTableModule, RkToggleButtonModule } from 'roksit-lib';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
 import { PipesModule } from '../shared/pipes/pipes.module';
@@ -37,6 +37,7 @@ import { RoamingRoutingModule } from './roaming-routing.module';
     RkSelectModule,
     RkSwitchModule,
     RkRadioModule,
+    RkSearchModule
   ]
 
 })

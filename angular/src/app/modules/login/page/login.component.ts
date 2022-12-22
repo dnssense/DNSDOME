@@ -9,11 +9,11 @@ import { SignupBean } from 'src/app/core/models/SignupBean';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { SmsService } from 'src/app/core/services/smsService';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { environment } from 'src/environments/environment';
 import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
+import { RkNotificationService } from 'roksit-lib';
 
 
 declare var $: any;
@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private authService: AuthenticationService,
     private router: Router,
     private element: ElementRef,
-    private notification: NotificationService,
+    private notification: RkNotificationService,
     private smsService: SmsService,
     private capthaService: CaptchaService,
     private configService: ConfigService,

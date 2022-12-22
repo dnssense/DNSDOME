@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidebarComponent } from './sidebar.component';
-import { IconsModule } from 'roksit-lib';
+import { IconsModule, RkMenuModule } from 'roksit-lib';
 import { HttpClient } from '@angular/common/http';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
         RouterModule,
         CommonModule,
         IconsModule,
+        RkMenuModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,

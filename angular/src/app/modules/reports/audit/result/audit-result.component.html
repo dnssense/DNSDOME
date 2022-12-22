@@ -6,7 +6,7 @@
       [maxSize]="5" [totalCount]="totalCount > 10000 ? 10000 : totalCount" [totalCountPlaceholder]="totalCount"
       [pageViewCount]="searchSetting.topNumber" [currentPage]="currentPage"
       (pageViewCountChange)="onPageViewCountChange($event)" [showPagination]="true"
-      (linkColumnClicked)="linkClicked($event)" [paginationSelectDirection]="'up'" class="fixed-headerss">
+      (actionColumnClicked)="actionClicked($event)" [paginationSelectDirection]="'up'" class="fixed-headerss">
     </rk-table>
   </rk-table-container>
 </div>

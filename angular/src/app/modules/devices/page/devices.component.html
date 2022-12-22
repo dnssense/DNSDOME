@@ -10,7 +10,7 @@
 
           <div class="d-flex align-items-center justify-content-center py-3 mb-2 single-row"
             style="padding-top: 0 !important;padding-bottom: 0 !important;">
-            <div class="rk-tabs" style="width: 635px;">
+            <div class="rk-tabs" style="width: 700px;">
               <div class="rk-tab" (click)="activeTabNumber = 0" [ngClass]="{'active': activeTabNumber === 0}">
                 {{'Rules' | translate}}</div>
               <div class="rk-tab" (click)="activeTabNumber = 1" [ngClass]="{'active': activeTabNumber === 1}">
@@ -180,11 +180,7 @@
                       <div class="Oval number bg-primary text-white">1</div>
                       <span class="rule-table-header">{{'ADUsers' | translate}}</span>
                     </div>
-                    <div class="rk-search-container">
-                      <input type="text" [placeholder]="'SearchADUser'|translate" class="rk-input"
-                             maxlength="64" [(ngModel)]="ruleUserFilterText" (keyup)="search('ruleUser')">
-                      <i-feather name="search"></i-feather>
-                    </div>
+                    <rk-search [value]="ruleUserFilterText"  [placeholder]="'SearchADUser'|translate" (valueChange)="ruleUserFilterText=$event; search('ruleUser')" ></rk-search>
                     <button class="btn btn-small btn-icon btn-safe" (click)="openRuleModal('ruleUser')">
                       <i-feather name="plus" style="width: 24px"></i-feather>
                       {{'AddRule' | translate}}
@@ -199,12 +195,12 @@
                   <ng-template #header>
                     <tr>
                       <th style="width: 120px">{{'TableColumn.RuleNumber' | translate}}</th>
-                      <th>{{'Local IP' | translate}}</th>
+                      <th>{{'TableColumn.LocalIP' | translate}}</th>
                       <th>{{'TableColumn.SecurityProfile' | translate}}</th>
-                      <th>{{'Hostname' | translate}}</th>
-                      <th>{{'AD User' | translate}}</th>
+                      <th>{{'TableColumn.HostName' | translate}}</th>
+                      <th>{{'TableColumn.ADUser' | translate}}</th>
                       <th>{{'TableColumn.ADDomain' | translate}}</th>
-                      <th>{{'Last Valid Time' | translate}}</th>
+                      <th>{{'TableColumn.LastValidTime' | translate}}</th>
                       <th>{{'Delete' | translate}}</th>
                     </tr>
                   </ng-template>
@@ -242,11 +238,7 @@
                       <div class="Oval number bg-primary text-white">2</div>
                       <span class="rule-table-header">{{'ADGroups' | translate}}</span>
                     </div>
-                    <div class="rk-search-container">
-                      <input type="text" [placeholder]="'SearchADGroup'|translate" class="rk-input"
-                             maxlength="64" [(ngModel)]="ruleGroupFilterText" (keyup)="search('ruleGroup')">
-                      <i-feather name="search"></i-feather>
-                    </div>
+                    <rk-search [value]="ruleGroupFilterText"  [placeholder]="'SearchADGroup'|translate" (valueChange)="ruleGroupFilterText=$event; search('ruleGroup')" ></rk-search>
                     <button class="btn btn-small btn-icon btn-safe" (click)="openRuleModal('ruleGroup')">
                       <i-feather name="plus" style="width: 24px"></i-feather>
                       {{'AddRule' | translate}}
@@ -446,13 +438,9 @@
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between flex-wrap">
-                <div class="rk-table-title mr-5">Local DNS Relay Servers</div>
+                <div class="rk-table-title mr-5">{{"LocalDnsRelayServers" | translate}}</div>
                 <div class="col-lg-8 d-flex">
-                  <div class="rk-search-container">
-                    <input type="text" [placeholder]="'SearchDNSRelay'|translate" class="rk-input"
-                           maxlength="64" [(ngModel)]="boxFilterText" (keyup)="search('box')">
-                    <i-feather name="search"></i-feather>
-                  </div>
+                  <rk-search [value]="boxFilterText"  [placeholder]="'SearchDNSRelay'|translate" (valueChange)="boxFilterText=$event; search('box')" ></rk-search>
                 </div>
               </div>
             </div>
@@ -470,7 +458,7 @@
 
               <ng-template #body>
                 <tr *ngFor="let b of boxes; index as i">
-                  <td style="text-align: center">{{ (i+1).toString().padStart(2, '0') }}</td>
+                  <td>{{ (i+1).toString().padStart(2, '0') }}</td>
                   <td>
                     <i-feather name="server" class="icon-blue-grey mr-2"></i-feather>
                     <button class="btn btn-link btn-icon btn-small p-0 hover-gray bg-transparent underline"
@@ -614,11 +602,7 @@
                   <rk-radio class="rk-radio-m-0 mr-3" name="adClientFilterRadio" (valueChange)="changeMatchType()" [checked]="adClientFilter === ''"><span style="font-size: 14px; line-height: 1.71">{{'All' | translate}}: <span class="text-primary ml-1">{{adClients.length}}</span></span></rk-radio>
                   <rk-radio class="rk-radio-m-0 mr-3" name="adClientFilterRadio" (valueChange)="changeMatchType('user')" [checked]="adClientFilter === 'user'"><span style="font-size: 14px; line-height: 1.71">{{'Ip-user matching' | translate}}: <span class="text-primary ml-1">{{getMatchingCount('adUser')}}</span></span></rk-radio>
                   <rk-radio class="rk-radio-m-0 mr-4" name="adClientFilterRadio" (valueChange)="changeMatchType('host')" [checked]="adClientFilter === 'host'"><span style="font-size: 14px; line-height: 1.71">{{'Ip-hostname matching' | translate}}: <span class="text-primary ml-1">{{getMatchingCount('host')}}</span></span></rk-radio>
-                  <div class="rk-search-container">
-                    <input type="text" [placeholder]="'SearchADUser'|translate" class="rk-input"
-                           maxlength="64" [(ngModel)]="adClientsFilterText" (keyup)="search('adClient')">
-                    <i-feather name="search"></i-feather>
-                  </div>
+                  <rk-search [value]="adClientsFilterText"  [placeholder]="'SearchADUser'|translate" (valueChange)="adClientsFilterText=$event; search('adClient')" ></rk-search>
                 </div>
               </div>
             </div>
@@ -834,13 +818,9 @@
           <rk-table-container class="m-0">
             <div class="rk-table-container-header">
               <div class="top-content justify-content-between flex-wrap">
-                <div class="rk-table-title mr-5">Active Directory Groups</div>
+                <div class="rk-table-title mr-5">{{"ADGroups" | translate}}</div>
                 <div class="col-lg-8 d-flex">
-                  <div class="rk-search-container">
-                    <input type="text" [placeholder]="'SearchADGroup'|translate" class="rk-input"
-                           maxlength="64" [(ngModel)]="adGroupsFilterText" (keyup)="search('adGroup')">
-                    <i-feather name="search"></i-feather>
-                  </div>
+                  <rk-search [value]="adGroupsFilterText"  [placeholder]="'SearchADGroup'|translate" (valueChange)="adGroupsFilterText=$event; search('adGroup')" ></rk-search>
                 </div>
               </div>
             </div>

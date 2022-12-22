@@ -9,13 +9,13 @@ import { RegisterUser, SignupBean } from 'src/app/core/models/SignupBean';
 import { AccountService } from 'src/app/core/services/accountService';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { GeoLocation, GeoLocationService } from '../../../core/services/geoLocationService';
 
 import { catchError, tap, mergeMap, map } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { RkNotificationService } from 'roksit-lib';
 
 
 declare var $: any;
@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     private configService: ConfigService,
     private router: Router,
     private staticMessageService: StaticMessageService,
-    private notification: NotificationService,
+    private notification: RkNotificationService,
     private geolocation: GeoLocationService
   ) { }
 

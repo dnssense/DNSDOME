@@ -15,8 +15,11 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "customWebpackConfig": {
+              "path": "./extra-webpack.config.js"
+            },
             "outputPath": "dist/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -28,7 +31,6 @@
             ],
             "styles": [
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/intro.js/introjs.css",
               "node_modules/roksit-lib/assets/scss/roksit.core.scss",
               "src/assets/css/animate.css",
@@ -48,7 +50,6 @@
               "node_modules/chartist/dist/chartist.js",
               "node_modules/chartist-plugin-zoom/dist/chartist-plugin-zoom.js",
               "node_modules/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js",
-              "node_modules/bootstrap-notify/bootstrap-notify.js",
               "node_modules/bootstrap-select/dist/js/bootstrap-select.js",
               "node_modules/fullcalendar/dist/fullcalendar.js",
               "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.js",
@@ -106,7 +107,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "browserTarget": "angular:build"
           },
@@ -132,8 +133,7 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": [
               "src/styles.sass",
-              "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
-              "node_modules/sweetalert2/src/sweetalert2.scss"
+              "node_modules/perfect-scrollbar/css/perfect-scrollbar.css"
             ],
             "scripts": [
               "node_modules/lodash/lodash.min.js",
@@ -149,7 +149,6 @@
               "node_modules/chartist/dist/chartist.js",
               "node_modules/chartist-plugin-zoom/dist/chartist-plugin-zoom.js",
               "node_modules/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js",
-              "node_modules/bootstrap-notify/bootstrap-notify.js",
               "node_modules/bootstrap-select/dist/js/bootstrap-select.js",
               "node_modules/fullcalendar/dist/fullcalendar.js",
               "node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.js",

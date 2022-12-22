@@ -1,15 +1,14 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { NotificationModule } from './modules/shared/notification/notification.module';
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
 import { TranslateService, TranslateStore, TranslateLoader, TranslateCompiler, TranslateParser, MissingTranslationHandler } from '@ngx-translate/core';
-
+import { RkNotificationModule } from 'roksit-lib';
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        NotificationModule,
+        RkNotificationModule,
         RouterTestingModule,
         NgxUiLoaderModule
       ],

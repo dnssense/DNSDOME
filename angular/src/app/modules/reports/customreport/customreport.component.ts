@@ -3,7 +3,6 @@ import { CustomReportResultComponent } from './result/customreport-result.compon
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
-import { LinkClick } from '../monitor/result/monitor-result.component';
 import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
@@ -12,6 +11,7 @@ import { ColumnTagInput } from '../../../core/models/ColumnTagInput';
 import { ReportService } from 'src/app/core/services/reportService';
 import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import {StaticService} from '../../../core/services/staticService';
+import { ActionClick } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 
 export interface CustomReportRouteParams {
   startDate?: string;
@@ -142,18 +142,6 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
 
   public search(setting: SearchSetting) {
     this.searchSetting = setting;
-
-    if (this.searchSetting.startDate && this.searchSetting.endDate) {
-      const startDate = moment(this.searchSetting.startDate);
-      const endDate = moment(this.searchSetting.endDate);
-
-      const diff = endDate.diff(startDate, 'minutes');
-
-      this.customReportSearchComponent.date.selectTime({ value: diff } as RkDateTime, { startDate: new Date(this.searchSetting.startDate), endDate: new Date(this.searchSetting.endDate) });
-
-      this.customReportSearchComponent.dateText = this.customReportSearchComponent.convertTimeString(diff);
-    }
-
     if (this.searchSetting.columns.columns.length === 0) {
       this.searchSetting.columns.columns = [
         {
@@ -186,7 +174,7 @@ export class CustomReportComponent implements OnInit, AfterViewInit {
     this.customReportSearchComponent.setSearchSetting(this.searchSetting);
   }
 
-  linkClicked($event: LinkClick) {
+  actionClicked($event: ActionClick) {
     const filter = this.filters.find(x => x.name === $event.columnModel.name);
 
     if (filter) {

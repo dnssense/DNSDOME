@@ -10,16 +10,17 @@ import { Box } from 'src/app/core/models/Box';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
 import { BlackWhiteListProfile, SecurityProfile, SecurityProfileItem } from 'src/app/core/models/SecurityProfile';
 import { AgentService } from 'src/app/core/services/agent.service';
-import { AlertService } from 'src/app/core/services/alert.service';
 import { BoxService } from 'src/app/core/services/box.service';
 import { InputIPService } from 'src/app/core/services/inputIPService';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { RoamingService } from 'src/app/core/services/roaming.service';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { GroupAgentModel } from '../../devices/page/devices.component';
 import { ClipboardService } from 'ngx-clipboard';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
-import * as moment from "moment";
+import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import * as moment from 'moment';
+import {TranslatorService} from '../../../core/services/translator.service';
+import {ValidationService} from '../../../core/services/validation.service';
 
 declare let $: any;
 export interface BoxConf {
@@ -29,6 +30,9 @@ export interface BoxConf {
     uninstallPassword: string;
     disablePassword: string;
     defaultRoamingSecurityProfile: number;
+    isEnableLocalDedect: number;
+    localDetectDomain: string;
+    localDetectIp: string;
 }
 
 export interface AgentConf {
@@ -51,13 +55,14 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     constructor(
         private formBuilder: FormBuilder,
         private agentService: AgentService,
-        private alertService: AlertService,
-        private notification: NotificationService,
+        private alertService: RkAlertService,
+        private notification: RkNotificationService,
         private roamingService: RoamingService,
         private boxService: BoxService,
         private staticMessageService: StaticMessageService,
         private inputIpService: InputIPService,
         private clipboardService: ClipboardService,
+        private translatorService: TranslatorService
 
     ) {
 
@@ -136,6 +141,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     localnetip: string;
     uninstallPassword: string;
     disablePassword: string;
+    isEnableLocalDedect: number;
+    localDetectDomain = '';
+    localDetectIp = '';
 
     alwaysActive = true;
     disabledNetwork = false;
@@ -202,7 +210,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.loadClients();
 
         this.getConfParameters().subscribe();
-
+        this.categoryOptions.forEach((opt) => opt.displayText = this.translatorService.translate(opt.displayText));
     }
 
 
@@ -376,7 +384,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue);
 
     }
-    checkIPNumberForLocalNetIps(event: KeyboardEvent, inputValue: string) {
+    checkIPNumber(event: KeyboardEvent, inputValue: string) {
 
         const isIPV4 = this.inputIpService.checkIPNumber(event, inputValue);
 
@@ -386,7 +394,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.dontDomains = [];
         this.dontIps = [];
         this.localnetIps = [];
-        this.uninstallPassword = ''
+        this.uninstallPassword = '';
         this.disablePassword = '';
         this.selectedDefaultRomainProfileId = 41;
 
@@ -408,7 +416,13 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 if (boxConf.disablePassword) {
                     this.disablePassword = boxConf.disablePassword;
                 }
-
+                this.isEnableLocalDedect = boxConf.isEnableLocalDedect;
+                if (boxConf.localDetectDomain) {
+                  this.localDetectDomain = boxConf.localDetectDomain;
+                }
+                if (boxConf.localDetectIp) {
+                  this.localDetectIp = boxConf.localDetectIp;
+                }
                 this.selectedDefaultRomainProfileId = boxConf.defaultRoamingSecurityProfile || 41;
                 this.fillSecurityProfilesSelectForDefaultSettings(this.securityProfiles, this.selectedDefaultRomainProfileId);
 
@@ -436,7 +450,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     searchByKeyword() {
         if (this.searchKey) {
-            let key = this.searchKey.toLowerCase();
+            const key = this.searchKey.toLowerCase();
             this.clientsGroupedFiltered = this.clients.filter(f => {
                 return f.agentAlias.toLowerCase().includes(key)
                     || f.agentGroup?.groupName.toLowerCase().includes(key)
@@ -444,7 +458,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     || f.mac?.toLocaleLowerCase().includes(key)
                     || f.os?.toLocaleLowerCase().includes(key)
                     || f.version?.toLocaleLowerCase().includes(key)
-                    || f.rootProfile?.name.toLocaleLowerCase().includes(key)
+                    || f.rootProfile?.name.toLocaleLowerCase().includes(key);
             });
         } else {
             this.clientsGroupedFiltered = this.clients;
@@ -487,9 +501,25 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.clipboardService.copy(input);
     }
 
+    checkLocalDetect(): boolean {
+      if (this.isEnableLocalDedect) {
+        const resultIp = isip(this.localDetectIp) ? this.localDetectIp : null;
+        if (!resultIp) {
+          this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
+          return false;
+        }
+        const resultDomain = this.checkIsValidDomaind(this.localDetectDomain);
+        if (!resultDomain) {
+          this.notification.warning(this.staticMessageService.enterValidDomainMessage);
+          return false;
+        }
+      }
+      return true;
+    }
 
     saveRoamingGlobalSettings() {
-
+        if (!this.checkLocalDetect())
+          return;
         const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
         const ips = this.dontIps.filter(x => isip(x)).join(',');
         const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
@@ -497,13 +527,14 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             box: this.virtualBox?.serial, boxuuid: this.virtualBox?.uuid, donttouchdomains: domains,
             donttouchips: ips,
             localnetips: localnetworkips, uninstallPassword: this.uninstallPassword,
+            isEnableLocalDedect: this.isEnableLocalDedect, localDetectIp: this.localDetectIp, localDetectDomain: this.localDetectDomain,
             disablePassword: this.disablePassword, defaultRoamingSecurityProfile: this.selectedDefaultRomainProfileId
         };
         this.boxService.saveBoxConfig(request).subscribe(x => {
             this.notification.info(this.staticMessageService.agentsGlobalConfSaved);
             this.getConfParameters().subscribe(x => {
                 this.configureModal.toggle();
-            })
+            });
 
         });
 
@@ -521,7 +552,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     this.fileLink = res.link;
                     window.open(window.location.protocol + '//' + this.fileLink, '_blank');
 
-                })
+                });
 
                 //
             } else {
@@ -892,7 +923,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.saveAgentConf(agent);
     }
     agentUserDisableEnable(state: boolean, agent: Agent) {
-        //burasi
+        // burasi
     }
     agentDisableEnableSmartCache(state: boolean, agent: Agent) {
 
@@ -926,7 +957,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     getOSImg(os: string) {
         if (os) {
-            let ostype = os.toLowerCase();
+            const ostype = os.toLowerCase();
             return ostype.includes('windows') ? '../../../../assets/img/windows.png' : (ostype.includes('mac') ? '../../../../assets/img/Ios.png' : '');
         }
         return null;
@@ -1019,8 +1050,12 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         });
     }
 
+    onIsEnableLocalDetectChange(state: boolean) {
+        this.isEnableLocalDedect = (state) ? 1 : 0;
+    }
+
     get roamingClientVersion() {
-        return '1.0.7';
+        return '1.0.8';
     }
 
 }

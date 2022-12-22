@@ -6,16 +6,14 @@ import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Location } from '@angular/common';
 //import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
-import { AlertService } from 'src/app/core/services/alert.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
-import { NotificationService } from 'src/app/core/services/notification.service';
 import { Notification, NotificationApiService, NotificationRequest } from 'src/app/core/services/notification-api.service';
 import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { LOCAL_STORAGE_THEME_COLOR } from '../../theme/theme.component';
-import { RkUtilityService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkUtilityService } from 'roksit-lib';
 import { identifierModuleUrl } from '@angular/compiler';
 
 const misc: any = {
@@ -82,8 +80,8 @@ export class NavbarComponent implements OnInit {
         location: Location,
         private element: ElementRef,
         private router: Router,
-        private notification: NotificationService,
-        private alert: AlertService,
+        private notification: RkNotificationService,
+        private alert: RkAlertService,
         private auth: AuthenticationService,
         public config: ConfigService,
         private translator: TranslatorService,
@@ -207,11 +205,7 @@ export class NavbarComponent implements OnInit {
             .replace('/', ' ');
     }
 
-    getPath() {
-        const path = this.location.prepareExternalUrl(this.location.path());
 
-        return path;
-    }
 
     logout() {
         this.alert.alertWarningAndCancel(
@@ -262,25 +256,8 @@ export class NavbarComponent implements OnInit {
         }
     }
 
-    setActive(menuItem: RkMenuItem, subMenuItem?: RkMenuItem, existsSubMenu = false) {
-        this._menuItems.forEach(elem => elem.selected = false);
-
-        menuItem.selected = true;
-
-        this._menuItems.forEach(elem => {
-            if (elem.subMenu) {
-                elem.subMenu.forEach(subMenuElem => subMenuElem.selected = false);
-            }
-        });
-
-        if (!existsSubMenu) {
-            this.sidebar.toggle();
-        }
-
-        if (subMenuItem) {
-            subMenuItem.selected = true;
-
-            this.sidebar.toggle();
-        }
+    menuSelected() {
+        this.sidebar.toggle();
     }
+
 }

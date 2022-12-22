@@ -14,10 +14,11 @@ import {CategoryComponent} from './childcomponents/category.component';
 import {AuthenticationService} from '../../../core/services/authentication.service';
 import {ConfigService} from '../../../core/services/config.service';
 import {DomainComponent} from './childcomponents/domain.component';
-import {NotificationService} from '../../../core/services/notification.service';
 import {StaticMessageService} from '../../../core/services/staticMessageService';
 import {ToolsService} from '../../../core/services/toolsService';
 import {TopdateComponent} from './childcomponents/topdate.component';
+import { RkNotificationService } from 'roksit-lib';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-dashboardv2',
@@ -29,7 +30,7 @@ import {TopdateComponent} from './childcomponents/topdate.component';
 export class Dashboardv2Component implements OnInit, AfterViewInit {
     constructor(private dashboardService: DashBoardService,
                 private authService: AuthenticationService, private config: ConfigService,
-                private notificationService: NotificationService,
+                private notificationService: RkNotificationService,
                 private staticMesssageService: StaticMessageService, private toolService: ToolsService) {
     }
 
@@ -135,10 +136,10 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     // region utils methodes
     private reloadData(isInit: boolean = false, updateGroupItems: boolean = true) {
         if (this.reportType === 'livereport') {
-            if(isInit){//after date and datasource change, reset group items ui with updated data
+            if (isInit) {// after date and datasource change, reset group items ui with updated data
                 this.selectGroup(this.groupComponent.getGroupItem(0));
                 this.groupComponent.setActive(0);
-                this.onEmptyData();
+                // this.onEmptyData();
             }
             this.loadInitLiveReport(updateGroupItems);
         } else {
@@ -179,9 +180,11 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
     }
 
     private refreshTopDomains() {
+        const startReqDate = moment(this.selectedDate.startDate).startOf('hour').toDate();
+        const endReqDate = moment(this.selectedDate.endDate).endOf('hour').toDate();
         const request = {
-            startDate: this.selectedDate.startDate.toISOString(),
-            endDate: this.selectedDate.endDate.toISOString()
+            startDate: startReqDate.toISOString(),
+            endDate: endReqDate.toISOString()
         } as TopDomainsRequestV5;
         request.type = this.selectedCategory ? this.selectedCategory.name : this.selectedGroup?.datatype;
         this.setUiDomainsDomain([], {allow: 0, block: 0});
@@ -321,8 +324,10 @@ export class Dashboardv2Component implements OnInit, AfterViewInit {
         if (this.selectedDate.duration > 0) {
             req.duration = this.selectedDate.duration;
         } else {
-            req.startDate = this.selectedDate.startDate.toISOString();
-            req.endDate = this.selectedDate.endDate.toISOString();
+            const startReqDate = moment(this.selectedDate.startDate).startOf('hour').toDate();
+            const endReqDate = moment(this.selectedDate.endDate).endOf('hour').toDate();
+            req.startDate = startReqDate.toISOString();
+            req.endDate = endReqDate.toISOString();
         }
         return req;
     }
