@@ -40,6 +40,9 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
     tableHeight = 100;
     isBlocked = false;
     bwdomains = '';
+    bwdomainsPlaceHolder = 'example1.com\n' +
+      'example2.com\n' +
+      'example3.com';
     searchboxevent: Subscription;
 
     bwlist: CommonBWListProfile[] = [];
@@ -120,16 +123,15 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
                         if (i.key != 'Enter') {
                             if (this.searchKey?.length > 3) {
                                 return this.searchCommonBWList();
-                            }
-                            else if (!this.searchKey.length) {
+                            } else if (!this.searchKey.length) {
                                 return this.getCommonBWList();
                             } else {
                                 return observableOf(null);
                             }
                         } else {
-                            if (this.searchKey?.length > 0 && this.searchKey?.length <= 3) {
+                            if (this.searchKey?.length > 0) {
                                 return this.searchCommonBWList();
-                            }else {
+                            } else {
                                 return observableOf(null);
                             }
                         }
@@ -178,7 +180,8 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
     }
 
     saveCommonBWList() {
-        const domainlist = this.bwdomains.split(/\n/gm).map(x => x.trim()).filter(y => y);
+        const re = /,/gi;
+        const domainlist = this.bwdomains.replace(re, '').split(/\n/gm).map(x => x.trim()).filter(y => y);
         if (!domainlist.length) {
             this.notification.warning(this.staticMessageService.pleaseEnterSomeDomains)
             return;
@@ -193,6 +196,7 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
             this.getCommonBWList().subscribe(x => {
 
                 this.bwlistModal.toggle();
+                this.bwdomains = '';
             }, (err) => {
                 this.bwlistModal.toggle();
                 throw err;
