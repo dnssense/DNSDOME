@@ -303,6 +303,17 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
   rkDateChanhed($event: { startDate: Date, endDate: Date }) {
     let startDate = moment($event.startDate);
     let endDate = moment($event.endDate);
+    const selectedDateOption = this.dateOptions.find((date) => date.selected);
+    if (selectedDateOption !== null) {
+      this.searchSettings.dateInterval = selectedDateOption.value;
+      this.searchSettings.startDate = null;
+      this.searchSettings.endDate = null;
+
+    } else {
+      this.searchSettings.dateInterval = null;
+      this.searchSettings.startDate = $event.startDate.toISOString();
+      this.searchSettings.endDate = $event.endDate.toISOString();
+    }
 
     if (startDate > endDate) {
 
@@ -321,14 +332,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     if (diffDay > 7) {
       this.notification.warning(this.translatorService.translate('DateDifferenceWarning'));
-
       return;
     }
-
-    this.searchSettings.dateInterval = null;
-
-    this.searchSettings.startDate = $event.startDate.toISOString();
-    this.searchSettings.endDate = $event.endDate.toISOString();
 
     this.fillSearchSettingsByFilters();
 
