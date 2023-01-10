@@ -300,12 +300,11 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   }
 
-  rkDateChanhed($event: { startDate: Date, endDate: Date }) {
+  rkDateChanhed($event: { startDate: Date, endDate: Date, dateInterval: RkDateTime }) {
     let startDate = moment($event.startDate);
     let endDate = moment($event.endDate);
-    const selectedDateOption = this.dateOptions.find((date) => date.selected);
-    if (selectedDateOption !== null) {
-      this.searchSettings.dateInterval = selectedDateOption.value;
+    if ($event.dateInterval) {
+      this.searchSettings.dateInterval = $event.dateInterval.value;
       this.searchSettings.startDate = null;
       this.searchSettings.endDate = null;
 
