@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { RkAlertService, RkLayoutService } from 'roksit-lib';
+import {RkAlertService, RkLayoutService, RkUtilityService} from 'roksit-lib';
 import { User } from 'src/app/core/models/User';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
@@ -23,12 +23,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
     private _translateService: TranslateService,
     private alert: RkAlertService,
     public configService: ConfigService,
-    private rkLayout: RkLayoutService
+    private rkLayout: RkLayoutService,
+    private rkUtilityService: RkUtilityService
   ) {
     this.host = this.configService.host;
     this.menuItems = [];
 
     this.getUserName();
+    const theme = this.configService.getThemeColor(this.currentUser?.id) || 'white';
+    this.theme = theme;
+    this.rkUtilityService.themeColor.pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
+      this.theme = result === 'light' ? 'white' : 'dark';
+    });
   }
 
   @Input() collapsed: boolean;
@@ -36,6 +42,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   public menuItems: any[];
   currentUser: User;
   host: ConfigHost;
+  theme: string;
 
   _menuItems = ConfigService.menuItems;
   private ngUnsubscribe: Subject<any> = new Subject<any>();
