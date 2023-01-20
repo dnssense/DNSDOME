@@ -154,7 +154,7 @@ export class AccountSettingsComponent implements OnInit {
         this.userPhoneForm =
             this.formBuilder.group({
                 'gsmCode': ['', [Validators.required]],
-                'gsm': ['', [Validators.required, Validators.minLength(9), Validators.maxLength(10), Validators.pattern(number)]],
+                'gsm': ['', [Validators.required, Validators.minLength(9), Validators.maxLength(11), Validators.pattern(number)]],
                 'smsCode': ['']
             });
 
@@ -368,7 +368,7 @@ export class AccountSettingsComponent implements OnInit {
             this.notification.warning(this.staticMessageService.pleaseFillThePhoneNumber);
             return;
         }
-        if (this.phoneNumberTemp && this.phoneNumberTemp.length === 10) {
+        if (this.phoneNumberTemp && this.phoneNumberTemp.length >= 9 && this.phoneNumberTemp.length <= 11 ) {
             this.user.gsm = this.phoneNumberTemp;
             this.user.gsmCode = this.gsmCodeTemp;
 
