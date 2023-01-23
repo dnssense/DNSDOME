@@ -1,6 +1,6 @@
 <rk-menu [menuItems]="menuItems" [collapsed]="collapsed" (onToggle)="toggleCollapse($event)" [hiddenMenus]="host?.hiddenMenus">
   <ng-template #logo *ngIf="host?.logoCompanyImage">
-    <img *ngIf="theme == 'white'" src="/assets/img/{{  host.logoCompanyImage }}" style="width: 140px;">
-    <img *ngIf="theme != 'white'" src="/assets/img/{{ host.logoCompanyDarkImage }}" style="width: 140px;">
+    <img *ngIf="theme == 'white'" src="/assets/img/{{  host.logoCompanyImage }}" style="width: 180px;">
+    <img *ngIf="theme != 'white'" src="/assets/img/{{ host.logoCompanyDarkImage }}" style="width: 180px;">
   </ng-template>
 </rk-menu>
