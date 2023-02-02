@@ -592,7 +592,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     addDomainToList() {
 
-        if (this.dontDomains && this.dontDomains.length < 10) {
+        if (this.dontDomains && this.dontDomains.length < 20) {
             const result = this.checkIsValidDomaind(this.domain);
             if (!result) {
                 this.notification.warning(this.staticMessageService.enterValidDomainMessage);
@@ -618,7 +618,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
     addIpToList() {
 
-        if (this.dontIps && this.dontIps.length < 10) {
+        if (this.dontIps && this.dontIps.length < 20) {
             const result = isip(this.ip) ? this.ip : null;
             if (!result) {
                 this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
