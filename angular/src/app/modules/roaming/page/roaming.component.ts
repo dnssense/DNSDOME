@@ -21,6 +21,8 @@ import { RkAlertService, RkNotificationService } from 'roksit-lib';
 import * as moment from 'moment';
 import {TranslatorService} from '../../../core/services/translator.service';
 import {ValidationService} from '../../../core/services/validation.service';
+import {RkTableColumnModel, RkTableConfigModel} from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import {AggregationItem} from '../../../core/models/AggregationItem';
 
 declare let $: any;
 export interface BoxConf {
@@ -96,6 +98,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     clientForm: FormGroup;
     clients: Agent[];
+    clientsOrigin: Agent[];
     clientsGroupedFiltered: Agent[];
     clientsUngroupedFiltered: Agent[];
     clientsForShow: Agent[];
@@ -198,9 +201,36 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         }
     ];
 
-    ngOnInit(): void {
+    columns: RkTableColumnModel[] = [
+      { id: 1, name: 'agentAlias', displayText: this.translatorService.translate('DeviceName')},
+      { id: 2, name: 'rootProfile', displayText: this.translatorService.translate('SecurityProfile')},
+      { id: 3, name: 'agentGroup', displayText: this.translatorService.translate('GroupName') },
+      { id: 4, name: 'isAlive', displayText: this.translatorService.translate('Alive')},
+      { id: 5, name: 'isUserDisabled', displayText: this.translatorService.translate('UserDisabled')},
+      { id: 6, name: 'isDisabled', displayText: this.translatorService.translate('Protection')},
+      { id: 7, name: 'isUserDisabledSmartCache', displayText: this.translatorService.translate('UserDisabledSmartCache')},
+      { id: 8, name: 'isSmartCacheEnabled', displayText: this.translatorService.translate('SmartCache') },
+      { id: 9, name: 'os', displayText: this.translatorService.translate('OS')},
+      { id: 10, name: 'version', displayText: this.translatorService.translate('Version')}
+    ];
+
+  pageNumber = 1;
+  pageViewCount = 10;
+  paginationOptions: RkSelectModel[] = [
+    { displayText: '10', value: 10, selected: true },
+    { displayText: '25', value: 25 },
+    { displayText: '50', value: 50 },
+    { displayText: '100', value: 100 },
+    { displayText: '200', value: 200 }
+  ];
+  sortDirection;
+  sortedColumn: string;
+  tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
+  selectAll: boolean;
+  ngOnInit(): void {
 
         this.clients = [];
+        this.clientsOrigin = [];
         this.clientForm = this.formBuilder.group({
             'name': ['', [Validators.required]],
             'type': ['', [Validators.required]],
@@ -249,6 +279,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.roamingService.getClients().subscribe(res => {
             this.clients = res;
+            this.clientsOrigin = [];
             this.clients.forEach(x => {
                 if (x.conf) {
                     const agentConf = JSON.parse(x.conf) as AgentConf;
@@ -256,9 +287,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     x.uninstallPassword = agentConf.uninstallPassword;
                     x.disablePassword = agentConf.disablePassword;
                     x.isSmartCacheEnabled = agentConf.isSmartCacheEnabled > 0;
-
                 }
-
+              this.clientsOrigin.push(JSON.parse(JSON.stringify(x)));
             });
             this.agentService.getAgentAlives(this.clients.map(x => x.uuid)).subscribe(x => {
 
@@ -308,10 +338,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 this.selectedGroupName = this.groupListForSelect[0].displayText;
             }
             this.clientsForShow = this.isGroupedRadioButtonSelected ? this.clientsGroupedFiltered : this.clientsUngroupedFiltered;
-
-
-
-
+            this.calculateTableHeight();
         });
     }
 
@@ -713,6 +740,56 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.changeGroupModel.toggle();
     }
 
+   async updateAgents(type: 'cache' | 'protection', mod: 'enable' | 'disable') {
+     const filteredClients = this.clients.filter(x => x.selected).map(x => JSON.parse(JSON.stringify(x)));
+     if (!filteredClients.length) {
+       this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
+       return;
+     }
+     const changedAgents = filteredClients.filter((agent) => {
+       const originAgent = this.clientsOrigin.find((item) => agent.id === item.id);
+       if (!originAgent)
+         return false;
+       if (type === 'protection') {
+          return  (agent.isDisabled === true && mod === 'enable') || (agent.isDisabled === false && mod === 'disable');
+       }
+       return  (agent.isSmartCacheEnabled === true && mod === 'disable') || (agent.isSmartCacheEnabled === false && mod === 'enable');
+     });
+     for (const agent of changedAgents) {
+       const conf: AgentConf = {
+         isDisabled: type === 'protection' ? (mod === 'disable' ? 1 : 0) : (agent.isDisabled ? 1 : 0),
+         isSmartCacheEnabled: type === 'cache' ? (mod === 'enable' ? 1 : 0) : (agent.isSmartCacheEnabled ? 1 : 0),
+         disablePassword: agent.disablePassword,
+         uninstallPassword: agent.uninstallPassword
+       };
+       await this.agentService.saveAgentConf(agent.uuid, conf).toPromise();
+     }
+     if (changedAgents.length > 0) {
+        this.loadClients();
+        this.notification.success(this.staticMessageService.savedAgentConfMessage);
+        this.selectAll = false;
+     }
+   }
+
+  deleteAgents() {
+    const filteredClients = this.clients.filter(x => x.selected).map(x => JSON.parse(JSON.stringify(x)));
+    if (!filteredClients.length) {
+      this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
+      return;
+    }
+    this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.willDeleteAgentRoamingClientMessage).subscribe(
+       async res => {
+         if (res) {
+           for (const agent of filteredClients) {
+             await this.roamingService.deleteClient(agent.id).toPromise();
+           }
+           this.deletedAgentRoamingClientMessage();
+           this.loadClients();
+           this.selectAll = false;
+         }
+       });
+  }
+
     saveChangedGroup() {
         if (!this.selectedAgentsForChangeAddGroup.length) {
             this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
@@ -817,7 +894,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         const findedProfile = this.securityProfiles.find(x => x.id === this.selectedProfileRadio);
 
-        console.log('findedProfile => ', findedProfile);
 
         if (findedProfile) {
             selectedItems.forEach(elem => {
@@ -932,7 +1008,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.saveAgentConf(agent);
     }
     showGroupedClients(val: boolean) {
-
         this.isGroupedRadioButtonSelected = val;
         this.clientsForShow = val ? this.clientsGroupedFiltered : this.clientsUngroupedFiltered;
         this.clients.forEach(x => x.selected = false);
@@ -1058,4 +1133,42 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         return '1.0.8';
     }
 
+  onPageChange(pageNumber: number) {
+    this.pageNumber = pageNumber;
+    this.calculateTableHeight();
+  }
+
+  onPageViewCountChange(pageViewCount: number) {
+    this.pageViewCount = pageViewCount;
+    this.calculateTableHeight();
+  }
+
+  sort(col, name: string) {
+    this.clientsForShow = this.clientsForShow.sort((a, b) => {
+      if (name === 'agentGroup') {
+        return this.sortDirection === 'asc' ? (a[name]?.groupName > b[name]?.groupName ? 1 : -1) : (a[name]?.groupName < b[name]?.groupName ? 1 : -1);
+      }
+      return this.sortDirection === 'asc' ? (a[name] > b[name] ? 1 : -1) : (a[name] < b[name] ? 1 : -1);
+    });
+    this.clientsForShow = [...this.clientsForShow];
+
+    if (col) {
+      this.sortedColumn = col.name;
+    }
+
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  }
+  checkboxAllChange($event: boolean, list: Agent[]) {
+    this.clientsForShow.forEach(elem => {
+      elem.selected = false;
+    });
+
+    list.forEach(elem => {
+      elem.selected = $event;
+    });
+  }
+
+  calculateTableHeight() {
+    this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
+  }
 }

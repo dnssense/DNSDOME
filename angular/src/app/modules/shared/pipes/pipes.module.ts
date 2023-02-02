@@ -6,6 +6,7 @@ import { DateFormatPipe } from './DateFormatPipe';
 import { FilterPipe } from './filter.pipe';
 import { MacAddressFormatterPipe } from './MacAddressFormatterPipe';
 import { MultiFilterPipe } from './multifilter.pipe';
+import {PaginationFilterPipe} from './paginationfilter.pipe';
 
 @Injectable()
 @NgModule({
@@ -18,7 +19,8 @@ import { MultiFilterPipe } from './multifilter.pipe';
       CustomDecimalPipe,
       MacAddressFormatterPipe,
       FilterPipe,
-      MultiFilterPipe
+      MultiFilterPipe,
+      PaginationFilterPipe
    ],
    exports: [
       DateFormatPipe,
@@ -26,7 +28,8 @@ import { MultiFilterPipe } from './multifilter.pipe';
       CustomDecimalPipe,
       MacAddressFormatterPipe,
       FilterPipe,
-      MultiFilterPipe
+      MultiFilterPipe,
+      PaginationFilterPipe
    ]
 })
 export class PipesModule { }
