@@ -98,7 +98,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     clientForm: FormGroup;
     clients: Agent[];
-    clientsOrigin: Agent[];
     clientsGroupedFiltered: Agent[];
     clientsUngroupedFiltered: Agent[];
     clientsForShow: Agent[];
@@ -230,7 +229,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
 
         this.clients = [];
-        this.clientsOrigin = [];
         this.clientForm = this.formBuilder.group({
             'name': ['', [Validators.required]],
             'type': ['', [Validators.required]],
@@ -279,7 +277,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.roamingService.getClients().subscribe(res => {
             this.clients = res;
-            this.clientsOrigin = [];
             this.clients.forEach(x => {
                 if (x.conf) {
                     const agentConf = JSON.parse(x.conf) as AgentConf;
@@ -288,7 +285,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     x.disablePassword = agentConf.disablePassword;
                     x.isSmartCacheEnabled = agentConf.isSmartCacheEnabled > 0;
                 }
-              this.clientsOrigin.push(JSON.parse(JSON.stringify(x)));
             });
             this.agentService.getAgentAlives(this.clients.map(x => x.uuid)).subscribe(x => {
 
@@ -747,13 +743,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
        return;
      }
      const changedAgents = filteredClients.filter((agent) => {
-       const originAgent = this.clientsOrigin.find((item) => agent.id === item.id);
-       if (!originAgent)
-         return false;
        if (type === 'protection') {
-          return  (agent.isDisabled === true && mod === 'enable') || (agent.isDisabled === false && mod === 'disable');
+          return  (agent.isDisabled && mod === 'enable') || (!agent.isDisabled && mod === 'disable');
        }
-       return  (agent.isSmartCacheEnabled === true && mod === 'disable') || (agent.isSmartCacheEnabled === false && mod === 'enable');
+       return  (agent.isSmartCacheEnabled && mod === 'disable') || (!agent.isSmartCacheEnabled && mod === 'enable');
      });
      for (const agent of changedAgents) {
        const conf: AgentConf = {
