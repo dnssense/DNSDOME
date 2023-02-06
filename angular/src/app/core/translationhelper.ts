@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import {MultiTranslateHttpLoader} from 'ngx-translate-multi-http-loader';
 
 declare const VERSION: string;
-
 export function translateHttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, '/assets/i18n/', `.json?version=${VERSION}`);
+  return new MultiTranslateHttpLoader(http, [
+    { prefix: '/assets/i18n/roksit-lib/', suffix: `.json?version=${VERSION}` }, // first add lib translation, then if you want you can override any translation
+    { prefix: '/assets/i18n/', suffix: `.json?version=${VERSION}` },
+  ]);
 }

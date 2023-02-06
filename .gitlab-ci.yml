@@ -38,7 +38,7 @@ build_building:
       - node_modules
   except:
     refs:
-      - angular-15
+      - master
 
 package_docker_dev:
   image: node:16
@@ -51,7 +51,7 @@ package_docker_dev:
     - docker push $REGISTRY_DEV/$NS/$IMAGE:$VERSION
   except:
     refs:
-      - angular-15
+      - master
 
 deploy_k8_dev:
   tags:
@@ -75,4 +75,4 @@ deploy_k8_dev:
     - git push
   except:
     refs:
-      - angular-15
+      - master

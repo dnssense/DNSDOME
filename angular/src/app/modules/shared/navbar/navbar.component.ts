@@ -5,16 +5,13 @@ import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@an
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Location } from '@angular/common';
-//import { ROUTES, ProfileRoutes } from '../sidebar/sidebar.component';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { Notification, NotificationApiService, NotificationRequest } from 'src/app/core/services/notification-api.service';
 import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { LOCAL_STORAGE_THEME_COLOR } from '../../theme/theme.component';
 import { RkAlertService, RkNotificationService, RkUtilityService } from 'roksit-lib';
-import { identifierModuleUrl } from '@angular/compiler';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -123,14 +120,11 @@ export class NavbarComponent implements OnInit {
     _menuItems: RkMenuItem[] = ConfigService.menuItems;
 
     ngOnInit() {
-        //this.listTitles = ROUTES.filter(listTitle => listTitle);
+        // this.listTitles = ROUTES.filter(listTitle => listTitle);
 
         this.getNotifications();
 
         this.currentUser = this.auth.currentSession?.currentUser;
-
-        console.log(this.currentUser.parentId)
-        console.log(this.currentUser.id)
 
         this._router = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
 
@@ -145,7 +139,7 @@ export class NavbarComponent implements OnInit {
         });
     }
     isCmerp() {
-        return this.host.brand == "CMERP"
+        return this.host.brand == "CMERP";
     }
 
     isDnssense() {
