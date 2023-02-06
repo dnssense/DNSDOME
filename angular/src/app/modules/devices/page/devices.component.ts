@@ -1,7 +1,7 @@
 
 import {of as observableOf, Observable, Subscriber} from 'rxjs';
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import {Agent} from 'src/app/core/models/Agent';
@@ -44,7 +44,7 @@ export class GroupAgentModel {
 export class DevicesComponent implements OnInit {
 
   constructor(private agentService: AgentService,
-              private formBuilder: FormBuilder,
+              private formBuilder: UntypedFormBuilder,
               private alertService: RkAlertService,
               private boxService: BoxService,
               private notification: RkNotificationService,
@@ -69,7 +69,7 @@ export class DevicesComponent implements OnInit {
   groupList: GroupAgentModel[] = [];
   agentGroups: AgentGroup[] = [];
 
-  boxForm: FormGroup;
+  boxForm: UntypedFormGroup;
   isNewProfileSelected = false;
   private _boxes: Box[] = [];
   boxes: Box[] = [];

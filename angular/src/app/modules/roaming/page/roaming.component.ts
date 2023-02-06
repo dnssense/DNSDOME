@@ -1,7 +1,7 @@
 
 import {map} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import * as isip from 'is-ip';
 import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
@@ -55,7 +55,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private agentService: AgentService,
         private alertService: RkAlertService,
         private notification: RkNotificationService,
@@ -96,7 +96,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     grupOperation: string;
     groupOperation: string;
 
-    clientForm: FormGroup;
+    clientForm: UntypedFormGroup;
     clients: Agent[];
     clientsGroupedFiltered: Agent[];
     clientsUngroupedFiltered: Agent[];

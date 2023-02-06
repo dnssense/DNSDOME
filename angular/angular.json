@@ -188,7 +188,6 @@
       }
     }
   },
-  "defaultProject": "dnssense",
   "schematics": {
     "@schematics/angular:component": {
       "style": "scss"

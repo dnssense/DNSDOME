@@ -1,5 +1,5 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { RecaptchaComponent } from 'ng-recaptcha';
@@ -21,7 +21,7 @@ import { RkNotificationService } from 'roksit-lib';
 declare var $: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
@@ -35,7 +35,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, AfterContentInit {
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private element: ElementRef,
     private accountService: AccountService,
     private capthaService: CaptchaService,
@@ -50,7 +50,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   private sidebarVisible: boolean;
   matcher = new MyErrorStateMatcher();
   isFailed: boolean;
-  registerForm: FormGroup;
+  registerForm: UntypedFormGroup;
   public user: SignupBean;
   private privacyPolicy = false;
   private captcha: string;
@@ -58,7 +58,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   public captcha_key = '';
   @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
   phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
-  emailFormControl = new FormControl('', [
+  emailFormControl = new UntypedFormControl('', [
     Validators.required,
     Validators.email,
   ]);
@@ -157,12 +157,12 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     // body.classList.remove('off-canvas-sidebar');
   }
 
-  validateAllFormFields(formGroup: FormGroup) {
+  validateAllFormFields(formGroup: UntypedFormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
       const control = formGroup.get(field);
-      if (control instanceof FormControl) {
+      if (control instanceof UntypedFormControl) {
         control.markAsTouched({ onlySelf: true });
-      } else if (control instanceof FormGroup) {
+      } else if (control instanceof UntypedFormGroup) {
         this.validateAllFormFields(control);
       }
     });

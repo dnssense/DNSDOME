@@ -1,7 +1,7 @@
 
 import {map} from 'rxjs/operators';
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import * as introJs from 'intro.js/intro.js';
 import * as isip from 'is-ip';
 import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
@@ -35,7 +35,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
   // ipv4v6Pattern = '((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))';
   publicIps: Agent[] = [];
   publicIpsFiltered: Agent[] = [];
-  publicIpForm: FormGroup;
+  publicIpForm: UntypedFormGroup;
   startWizard = false;
 
   ipCidr = {
@@ -112,7 +112,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     private alertService: RkAlertService,
     private notification: RkNotificationService,
     private authService: AuthenticationService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private agentService: AgentService,
     private publicIpService: PublicIPService,
     private staticMessageService: StaticMessageService,
@@ -539,7 +539,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       for (let i = 0; i < this.selectedIp.staticSubnetIp.length; i++) {
         this.selectedIp.staticSubnetIp[i].ranges = this.fillCIDR(this.selectedIp.staticSubnetIp[i].mask);
         const cname = 'ip' + i;
-        this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
+        this.publicIpForm.addControl(cname, new UntypedFormControl(cname, Validators.required));
         this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(39), Validators.pattern(ValidationService.ipv4v6Pattern)]);
         this.publicIpForm.controls[cname].updateValueAndValidity();
       }
@@ -675,7 +675,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       ip0.ranges = this.fillCIDR(32);
       this.selectedIp.staticSubnetIp.push(ip0);
       const cname = 'ip' + (this.selectedIp.staticSubnetIp.length - 1);
-      this.publicIpForm.addControl(cname, new FormControl(cname, Validators.required));
+      this.publicIpForm.addControl(cname, new UntypedFormControl(cname, Validators.required));
       this.publicIpForm.controls[cname].setValidators([Validators.required, Validators.maxLength(39), Validators.pattern(ValidationService.ipv4v6Pattern)]);
       this.publicIpForm.controls[cname].updateValueAndValidity();
     }
