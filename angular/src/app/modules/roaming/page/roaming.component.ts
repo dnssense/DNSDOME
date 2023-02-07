@@ -226,6 +226,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
   sortedColumn: string;
   tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
   selectAll: boolean;
+  private dateFormat = 'YYYY-MM-DD HH:mm';
   ngOnInit(): void {
 
         this.clients = [];
@@ -266,9 +267,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.selectedDefaultRomainProfileId = event;
     }
 
-
-
-    loadClients() {
+  loadClients() {
         this.agentService.getSecurityProfiles().subscribe(result => {
             this.securityProfiles = result;
             this.fillSecurityProfilesSelect(result);
@@ -303,7 +302,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
                         y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
                         y.isUserDisabledSmartCache = info ? info.isUserDisabledSmartCache > 0 : false;
-                        y.insertDate = info ? moment(info.insertDate).format('YYYY-MM-DD HH:mm') : null;
+                        y.insertDate = info ? moment(info.insertDate).format(this.dateFormat) : null;
                         y.os = info?.os;
                         y.hostname = info?.hostname;
                         y.mac = info?.mac;
@@ -1140,6 +1139,16 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     this.clientsForShow = this.clientsForShow.sort((a, b) => {
       if (name === 'agentGroup') {
         return this.sortDirection === 'asc' ? (a[name]?.groupName > b[name]?.groupName ? 1 : -1) : (a[name]?.groupName < b[name]?.groupName ? 1 : -1);
+      } else if(name === 'rootProfile'){
+        return this.sortDirection === 'asc' ? (a.rootProfile?.name > b.rootProfile?.name ? 1 : -1) : (a.rootProfile?.name < b.rootProfile?.name ? 1 : -1);
+      }else if(name === 'isAlive'){
+         let sortValue;
+         if(a.isAlive === b.isAlive){
+             sortValue = moment(a.insertDate).toDate().getTime() - moment(b.insertDate).toDate().getTime();
+         } else {
+           sortValue = a.isAlive ? 1: -1;
+         }
+        return this.sortDirection === 'asc' ? sortValue :-1*sortValue;
       }
       return this.sortDirection === 'asc' ? (a[name] > b[name] ? 1 : -1) : (a[name] < b[name] ? 1 : -1);
     });
