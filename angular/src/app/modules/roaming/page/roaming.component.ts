@@ -283,6 +283,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     x.uninstallPassword = agentConf.uninstallPassword;
                     x.disablePassword = agentConf.disablePassword;
                     x.isSmartCacheEnabled = agentConf.isSmartCacheEnabled > 0;
+                } else {
+                  x.isDisabled = x.isDisabled || false;
+                  x.isSmartCacheEnabled = x.isSmartCacheEnabled || false;
                 }
             });
             this.agentService.getAgentAlives(this.clients.map(x => x.uuid)).subscribe(x => {
