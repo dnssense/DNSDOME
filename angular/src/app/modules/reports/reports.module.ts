@@ -7,7 +7,6 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
 import { IconsModule, RkAutoCompleteModule, RkCheckboxModule, RkDateModule, RkFilterBadgeModule, RkModalModule, RkProgressBarModule, RkRadioModule, RkSelectModule, RkTableModule } from 'roksit-lib';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { MaterialModule } from 'src/app/material.module';
@@ -42,7 +41,6 @@ import { TextLimitComponent } from './shared/textlimit/text-limit.component';
     MaterialModule,
     ReactiveFormsModule,
     CommonModule,
-    NgApexchartsModule,
     ReportsRoutingModule,
     PipesModule,
     CollapseModule.forRoot(),
