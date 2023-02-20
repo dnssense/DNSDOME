@@ -1,7 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
-import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { RkAlertService, RkNotificationService, RkSelectModel, RkModalModel } from 'roksit-lib';
 import {Role} from 'src/app/core/models/Role';
 import {User} from 'src/app/core/models/User';
 import {AuthenticationService} from 'src/app/core/services/authentication.service';

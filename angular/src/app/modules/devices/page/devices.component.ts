@@ -2,8 +2,6 @@
 import {of as observableOf, Observable, Subscriber} from 'rxjs';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
-import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import {Agent} from 'src/app/core/models/Agent';
 import {AgentType} from 'src/app/core/models/AgentType';
 import {Box} from 'src/app/core/models/Box';
@@ -20,7 +18,7 @@ import {ADUserDHCP} from '../../../core/models/ADUserDHCP';
 import {LDAPUserGroup} from '../../../core/models/LdapUserGroup';
 import {AgentRule, AgentRuledBy} from '../../../core/models/AgentRule';
 import {ProfileWizardComponent} from '../../shared/profile-wizard/page/profile-wizard.component';
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkModalModel, RkSelectModel } from 'roksit-lib';
 
 
 export function validLength(val: string) {

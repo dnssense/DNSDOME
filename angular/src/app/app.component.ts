@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { RkUtilityService } from 'roksit-lib';
 import { AuthenticationService } from './core/services/authentication.service';
 import { ConfigHost, ConfigService } from './core/services/config.service';
+import {RkLayoutService} from "roksit-lib";
 
 
 @Component({
@@ -20,8 +20,6 @@ export class AppComponent implements OnInit {
     private config: ConfigService,
     private authenticationService: AuthenticationService,
     private configService: ConfigService,
-    private rkUtilityService: RkUtilityService,
-
   ) {
 
     const user = this.authenticationService.currentSession?.currentUser;
@@ -32,10 +30,6 @@ export class AppComponent implements OnInit {
     this.iconImage = this.host.iconImage;
     const element = document.getElementById('appIcon');
     element.setAttribute('href', `/assets/img/${this.iconImage}`);
-
-
-
-
   }
   ngOnInit(): void {
 

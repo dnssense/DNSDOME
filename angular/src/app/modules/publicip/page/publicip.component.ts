@@ -4,8 +4,6 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import * as introJs from 'intro.js/intro.js';
 import * as isip from 'is-ip';
-import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import {Observable} from 'rxjs';
 import {Agent, IpWithMask} from 'src/app/core/models/Agent';
 import {AgentType} from 'src/app/core/models/AgentType';
@@ -18,7 +16,7 @@ import {StaticMessageService} from 'src/app/core/services/staticMessageService';
 import {ValidationService} from 'src/app/core/services/validation.service';
 import {ProfileWizardComponent} from '../../shared/profile-wizard/page/profile-wizard.component';
 import {DashBoardService, DistinctAgentResponse} from '../../../core/services/dashBoardService';
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkModalModel, RkSelectModel } from 'roksit-lib';
 
 
 declare let $: any;
@@ -453,7 +451,7 @@ export class PublicipComponent implements OnInit, AfterViewInit {
 
         this.fillSecurityProfilesArray(agent);
 
-       
+
 
         this.startWizard = true;
 

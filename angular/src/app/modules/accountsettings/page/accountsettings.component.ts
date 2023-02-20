@@ -11,11 +11,10 @@ import { AccountService } from 'src/app/core/services/accountService';
 import { CompanyService } from 'src/app/core/services/companyService';
 import { SmsService } from 'src/app/core/services/smsService';
 import { RestSmsResponse, RestSmsConfirmRequest, RestUserUpdateRequest } from 'src/app/core/models/RestServiceModels';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ConfigService } from '../../../core/services/config.service';
 import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkSelectModel } from 'roksit-lib';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {

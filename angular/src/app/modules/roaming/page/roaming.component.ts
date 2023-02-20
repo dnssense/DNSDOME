@@ -3,8 +3,6 @@ import {map} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import * as isip from 'is-ip';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { Agent } from 'src/app/core/models/Agent';
 import { Box } from 'src/app/core/models/Box';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
@@ -17,12 +15,9 @@ import { StaticMessageService } from 'src/app/core/services/staticMessageService
 import { GroupAgentModel } from '../../devices/page/devices.component';
 import { ClipboardService } from 'ngx-clipboard';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkTableColumnModel, RkSelectModel, RkModalModel } from 'roksit-lib';
 import * as moment from 'moment';
 import {TranslatorService} from '../../../core/services/translator.service';
-import {ValidationService} from '../../../core/services/validation.service';
-import {RkTableColumnModel, RkTableConfigModel} from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
-import {AggregationItem} from '../../../core/models/AggregationItem';
 
 declare let $: any;
 export interface BoxConf {

@@ -2,13 +2,11 @@ import { Component, ViewChild } from '@angular/core';
 import { AgentService } from 'src/app/core/services/agent.service';
 import { Agent } from 'src/app/core/models/Agent';
 import { SecurityProfile } from 'src/app/core/models/SecurityProfile';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { BoxService } from 'src/app/core/services/box.service';
 import { BoxConf } from '../../roaming/page/roaming.component';
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkSelectModel, RkModalModel } from 'roksit-lib';
 
 @Component({
     selector: 'app-securityprofiles',

@@ -9,9 +9,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { Notification, NotificationApiService, NotificationRequest } from 'src/app/core/services/notification-api.service';
-import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { RkAlertService, RkNotificationService, RkUtilityService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkUtilityService, RkMenuItem, RkModalModel } from 'roksit-lib';
 
 const misc: any = {
     navbar_menu_visible: 0,

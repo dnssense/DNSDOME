@@ -10,12 +10,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {AuthenticationService} from "../../../../core/services/authentication.service";
 import {CaptchaService} from "../../../../core/services/captcha.service";
 import { environment } from 'src/environments/environment';
-import {RkSelectModel} from "roksit-lib/lib/modules/rk-select/rk-select.component";
 import {RoleConstant} from "../../../../core/models/Role";
 import {StaticMessageService} from "../../../../core/services/staticMessageService";
 import {Company, CompanyUpdaterDTO} from "../../../../core/models/Company";
 import {CompanyService} from "../../../../core/services/companyService";
-import { RkNotificationService } from 'roksit-lib';
+import { RkNotificationService, RkSelectModel } from 'roksit-lib';
 
 declare var $: any;
 

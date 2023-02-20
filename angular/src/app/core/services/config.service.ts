@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { RkUtilityService } from 'roksit-lib';
+import { RkUtilityService, RkMenuItem } from 'roksit-lib';
 import { TranslatorService } from './translator.service';
-import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
-import { WindowInterruptSource } from '@ng-idle/core';
 
 export class ConfigHost {
   www: string;
