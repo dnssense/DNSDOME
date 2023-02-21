@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
-import { MaterialModule } from 'src/app/material.module';
 import { AdminLayoutComponent } from './page/adminlayout.component';
 import { AdminLayoutRoutingModule } from './adminlayout-routing.module';
 import { NavbarModule } from '../../shared/navbar/navbar.module';
@@ -17,7 +16,6 @@ import { MdModule } from '../../shared/md/md.module';
     FormsModule,
     ReactiveFormsModule,
     TagInputModule,
-    MaterialModule,
     AdminLayoutRoutingModule,
     NavbarModule,
     FooterModule,
