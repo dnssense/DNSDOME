@@ -5,8 +5,8 @@ import { PagenotfoundComponent } from './page/pagenotfound/pagenotfound.componen
 
 
 const pagenotfoundRoutes: Routes = [
-  { path: '**',  component: PagenotfoundComponent },
-  
+  { path: '',  component: PagenotfoundComponent },
+
 ];
 
 @NgModule({

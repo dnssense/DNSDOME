@@ -3,12 +3,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { RkAlertService, RkNotificationService } from 'roksit-lib';
-import { RkAutoCompleteModel } from 'roksit-lib/lib/modules/rk-autocomplete/rk-autocomplete.component';
-import { RkDateConfig, RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
-import { RkFilterOutput } from 'roksit-lib/lib/modules/rk-filter-badge/rk-filter-badge.component';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { RkRadioOutput } from 'roksit-lib/lib/modules/rk-radio/rk-radio.component';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
+import { RkSelectModel, RkRadioOutput, RkModalModel, RkFilterOutput, RkDateConfig, RkDateTime  } from 'roksit-lib';
 import { CategoryV2 } from 'src/app/core/models/CategoryV2';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { LogColumn } from 'src/app/core/models/LogColumn';
@@ -300,9 +295,19 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   }
 
-  rkDateChanhed($event: { startDate: Date, endDate: Date }) {
+  rkDateChanhed($event: { startDate: Date, endDate: Date, dateInterval: RkDateTime }) {
     let startDate = moment($event.startDate);
     let endDate = moment($event.endDate);
+    if ($event.dateInterval) {
+      this.searchSettings.dateInterval = $event.dateInterval.value;
+      this.searchSettings.startDate = null;
+      this.searchSettings.endDate = null;
+
+    } else {
+      this.searchSettings.dateInterval = null;
+      this.searchSettings.startDate = $event.startDate.toISOString();
+      this.searchSettings.endDate = $event.endDate.toISOString();
+    }
 
     if (startDate > endDate) {
 
@@ -321,14 +326,8 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
     if (diffDay > 7) {
       this.notification.warning(this.translatorService.translate('DateDifferenceWarning'));
-
       return;
     }
-
-    this.searchSettings.dateInterval = null;
-
-    this.searchSettings.startDate = $event.startDate.toISOString();
-    this.searchSettings.endDate = $event.endDate.toISOString();
 
     this.fillSearchSettingsByFilters();
 

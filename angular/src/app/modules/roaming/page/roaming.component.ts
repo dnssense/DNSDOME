@@ -1,10 +1,8 @@
 
 import {map} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import * as isip from 'is-ip';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { Agent } from 'src/app/core/models/Agent';
 import { Box } from 'src/app/core/models/Box';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
@@ -17,10 +15,9 @@ import { StaticMessageService } from 'src/app/core/services/staticMessageService
 import { GroupAgentModel } from '../../devices/page/devices.component';
 import { ClipboardService } from 'ngx-clipboard';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkTableColumnModel, RkSelectModel, RkModalModel } from 'roksit-lib';
 import * as moment from 'moment';
 import {TranslatorService} from '../../../core/services/translator.service';
-import {ValidationService} from '../../../core/services/validation.service';
 
 declare let $: any;
 export interface BoxConf {
@@ -53,7 +50,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private agentService: AgentService,
         private alertService: RkAlertService,
         private notification: RkNotificationService,
@@ -94,7 +91,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     grupOperation: string;
     groupOperation: string;
 
-    clientForm: FormGroup;
+    clientForm: UntypedFormGroup;
     clients: Agent[];
     clientsGroupedFiltered: Agent[];
     clientsUngroupedFiltered: Agent[];
@@ -198,7 +195,34 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         }
     ];
 
-    ngOnInit(): void {
+    columns: RkTableColumnModel[] = [
+      { id: 1, name: 'agentAlias', displayText: this.translatorService.translate('DeviceName')},
+      { id: 2, name: 'rootProfile', displayText: this.translatorService.translate('SecurityProfile')},
+      { id: 3, name: 'agentGroup', displayText: this.translatorService.translate('GroupName') },
+      { id: 4, name: 'isAlive', displayText: this.translatorService.translate('Alive')},
+      { id: 5, name: 'isUserDisabled', displayText: this.translatorService.translate('UserDisabled')},
+      { id: 6, name: 'isDisabled', displayText: this.translatorService.translate('Protection')},
+      { id: 7, name: 'isUserDisabledSmartCache', displayText: this.translatorService.translate('UserDisabledSmartCache')},
+      { id: 8, name: 'isSmartCacheEnabled', displayText: this.translatorService.translate('SmartCache') },
+      { id: 9, name: 'os', displayText: this.translatorService.translate('OS')},
+      { id: 10, name: 'version', displayText: this.translatorService.translate('Version')}
+    ];
+
+  pageNumber = 1;
+  pageViewCount = 10;
+  paginationOptions: RkSelectModel[] = [
+    { displayText: '10', value: 10, selected: true },
+    { displayText: '25', value: 25 },
+    { displayText: '50', value: 50 },
+    { displayText: '100', value: 100 },
+    { displayText: '200', value: 200 }
+  ];
+  sortDirection;
+  sortedColumn: string;
+  tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
+  selectAll: boolean;
+  private dateFormat = 'YYYY-MM-DD HH:mm';
+  ngOnInit(): void {
 
         this.clients = [];
         this.clientForm = this.formBuilder.group({
@@ -238,9 +262,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.selectedDefaultRomainProfileId = event;
     }
 
-
-
-    loadClients() {
+  loadClients() {
         this.agentService.getSecurityProfiles().subscribe(result => {
             this.securityProfiles = result;
             this.fillSecurityProfilesSelect(result);
@@ -256,9 +278,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     x.uninstallPassword = agentConf.uninstallPassword;
                     x.disablePassword = agentConf.disablePassword;
                     x.isSmartCacheEnabled = agentConf.isSmartCacheEnabled > 0;
-
+                } else {
+                  x.isDisabled = x.isDisabled || false;
+                  x.isSmartCacheEnabled = x.isSmartCacheEnabled || false;
                 }
-
             });
             this.agentService.getAgentAlives(this.clients.map(x => x.uuid)).subscribe(x => {
 
@@ -277,7 +300,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
                         y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
                         y.isUserDisabledSmartCache = info ? info.isUserDisabledSmartCache > 0 : false;
-                        y.insertDate = info ? moment(info.insertDate).format('YYYY-MM-DD HH:mm') : null;
+                        y.insertDate = info ? moment(info.insertDate).format(this.dateFormat) : null;
                         y.os = info?.os;
                         y.hostname = info?.hostname;
                         y.mac = info?.mac;
@@ -308,10 +331,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 this.selectedGroupName = this.groupListForSelect[0].displayText;
             }
             this.clientsForShow = this.isGroupedRadioButtonSelected ? this.clientsGroupedFiltered : this.clientsUngroupedFiltered;
-
-
-
-
+            this.calculateTableHeight();
         });
     }
 
@@ -565,7 +585,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     addDomainToList() {
 
-        if (this.dontDomains && this.dontDomains.length < 10) {
+        if (this.dontDomains && this.dontDomains.length < 20) {
             const result = this.checkIsValidDomaind(this.domain);
             if (!result) {
                 this.notification.warning(this.staticMessageService.enterValidDomainMessage);
@@ -591,7 +611,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
     addIpToList() {
 
-        if (this.dontIps && this.dontIps.length < 10) {
+        if (this.dontIps && this.dontIps.length < 20) {
             const result = isip(this.ip) ? this.ip : null;
             if (!result) {
                 this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
@@ -713,6 +733,53 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.changeGroupModel.toggle();
     }
 
+   async updateAgents(type: 'cache' | 'protection', mod: 'enable' | 'disable') {
+     const filteredClients = this.clients.filter(x => x.selected).map(x => JSON.parse(JSON.stringify(x)));
+     if (!filteredClients.length) {
+       this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
+       return;
+     }
+     const changedAgents = filteredClients.filter((agent) => {
+       if (type === 'protection') {
+          return  (agent.isDisabled && mod === 'enable') || (!agent.isDisabled && mod === 'disable');
+       }
+       return  (agent.isSmartCacheEnabled && mod === 'disable') || (!agent.isSmartCacheEnabled && mod === 'enable');
+     });
+     for (const agent of changedAgents) {
+       const conf: AgentConf = {
+         isDisabled: type === 'protection' ? (mod === 'disable' ? 1 : 0) : (agent.isDisabled ? 1 : 0),
+         isSmartCacheEnabled: type === 'cache' ? (mod === 'enable' ? 1 : 0) : (agent.isSmartCacheEnabled ? 1 : 0),
+         disablePassword: agent.disablePassword,
+         uninstallPassword: agent.uninstallPassword
+       };
+       await this.agentService.saveAgentConf(agent.uuid, conf).toPromise();
+     }
+     if (changedAgents.length > 0) {
+        this.loadClients();
+        this.notification.success(this.staticMessageService.savedAgentConfMessage);
+        this.selectAll = false;
+     }
+   }
+
+  deleteAgents() {
+    const filteredClients = this.clients.filter(x => x.selected).map(x => JSON.parse(JSON.stringify(x)));
+    if (!filteredClients.length) {
+      this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
+      return;
+    }
+    this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.willDeleteAgentRoamingClientMessage).subscribe(
+       async res => {
+         if (res) {
+           for (const agent of filteredClients) {
+             await this.roamingService.deleteClient(agent.id).toPromise();
+           }
+           this.deletedAgentRoamingClientMessage();
+           this.loadClients();
+           this.selectAll = false;
+         }
+       });
+  }
+
     saveChangedGroup() {
         if (!this.selectedAgentsForChangeAddGroup.length) {
             this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
@@ -817,7 +884,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         const findedProfile = this.securityProfiles.find(x => x.id === this.selectedProfileRadio);
 
-        console.log('findedProfile => ', findedProfile);
 
         if (findedProfile) {
             selectedItems.forEach(elem => {
@@ -932,7 +998,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.saveAgentConf(agent);
     }
     showGroupedClients(val: boolean) {
-
         this.isGroupedRadioButtonSelected = val;
         this.clientsForShow = val ? this.clientsGroupedFiltered : this.clientsUngroupedFiltered;
         this.clients.forEach(x => x.selected = false);
@@ -1058,4 +1123,52 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         return '1.0.8';
     }
 
+  onPageChange(pageNumber: number) {
+    this.pageNumber = pageNumber;
+    this.calculateTableHeight();
+  }
+
+  onPageViewCountChange(pageViewCount: number) {
+    this.pageViewCount = pageViewCount;
+    this.calculateTableHeight();
+  }
+
+  sort(col, name: string) {
+    this.clientsForShow = this.clientsForShow.sort((a, b) => {
+      if (name === 'agentGroup') {
+        return this.sortDirection === 'asc' ? (a[name]?.groupName > b[name]?.groupName ? 1 : -1) : (a[name]?.groupName < b[name]?.groupName ? 1 : -1);
+      } else if(name === 'rootProfile'){
+        return this.sortDirection === 'asc' ? (a.rootProfile?.name > b.rootProfile?.name ? 1 : -1) : (a.rootProfile?.name < b.rootProfile?.name ? 1 : -1);
+      }else if(name === 'isAlive'){
+         let sortValue;
+         if(a.isAlive === b.isAlive){
+             sortValue = moment(a.insertDate).toDate().getTime() - moment(b.insertDate).toDate().getTime();
+         } else {
+           sortValue = a.isAlive ? 1: -1;
+         }
+        return this.sortDirection === 'asc' ? sortValue :-1*sortValue;
+      }
+      return this.sortDirection === 'asc' ? (a[name] > b[name] ? 1 : -1) : (a[name] < b[name] ? 1 : -1);
+    });
+    this.clientsForShow = [...this.clientsForShow];
+
+    if (col) {
+      this.sortedColumn = col.name;
+    }
+
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  }
+  checkboxAllChange($event: boolean, list: Agent[]) {
+    this.clientsForShow.forEach(elem => {
+      elem.selected = false;
+    });
+
+    list.forEach(elem => {
+      elem.selected = $event;
+    });
+  }
+
+  calculateTableHeight() {
+    this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
+  }
 }

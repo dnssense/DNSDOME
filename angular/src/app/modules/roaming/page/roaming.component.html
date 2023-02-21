@@ -16,18 +16,18 @@
 
           <div>
             <button class="btn btn-icon btn-small mr-2" (click)="downloadFile()">
-              <i-feather name="arrow-down"></i-feather>
+               <ng-container [ngTemplateOutlet]="windowsIcon"></ng-container>
               {{'Download'|translate}} ({{roamingClientVersion}})
             </button>
 
 
             <button class="btn btn-icon btn-small mr-2" (click)="copyLink()">
-              <i-feather name="arrow-down"></i-feather>
+              <ng-container [ngTemplateOutlet]="windowsIcon"></ng-container>
               {{'CopyDownloadLink'|translate}}
             </button>
 
             <button class="btn btn-icon btn-small mr-2" (click)="copyMagicLink()">
-              <i-feather name="arrow-down"></i-feather>
+              <ng-container [ngTemplateOutlet]="macIcon"></ng-container>
               {{'CopyMagicConfigLink'|translate}}
             </button>
 
@@ -324,7 +324,7 @@
               <div class="rk-modal-card">
                 <div class="row">
                   <div class="col-12">
-                    <input type="text" class="rk-input w-100" placeholder="Name"
+                    <input type="text" class="rk-input w-100" [disabled]="true" placeholder="Name"
                       [(ngModel)]="selectedClient.agentAlias">
                     <p class="rk-description m-0">{{'PublicIpDescriptions.AgentAlias' | translate}}</p>
                   </div>
@@ -666,85 +666,99 @@
       </div>
 
 
-
-
-
       <div class="row" *ngIf="activeTabNumber === 0">
-        <div class="col-12 p-0 mt-3 roamingClients">
-          <rk-table-container class="m-0 mx-auto">
-            <div class="rk-table-container-header">
-              <div class="top-content justify-content-between">
-                <div class="d-flex align-items-center flex-wrap">
-                  <div class="inf mr-4">
-                    <span class="text-primary">{{ clientsForShow?.length }} </span>
-                    {{'QueriesListed'|translate}}
-                  </div>
-                  <div style="min-width: 150px;">
-                    <rk-select [options]="categoryOptions" (valueChange)="clickedSelect($event)" [isSearchable]="false">
-                    </rk-select>
-                  </div>
-                  <!-- <div class="groupSelect ml-5">
-                    <rk-radio class="rk-radio-m-0 float-none" [checked]="isGroupedRadioButtonSelected==false"
-                      (valueChange)="showGroupedClients(false)" value="true">
-                      {{'NotGrouped'|translate}}
-                    </rk-radio>
+        <div class="col-12 p-0 mt-3 roamingClients" *ngIf="clientsForShow | multifilter: searchKeyUnGroup : 'agentAlias,mac,rootProfile.name,agentGroup.groupName,os,hostname,version' as list">
+          <rk-table-container  class="m-0 mx-auto" *ngIf="list | paginationfilter: { currentPage: pageNumber, pageSize: pageViewCount } as paginatedList">
+            <div  class="rk-table-container-header">
+              <div class="top-content d-flex flex-column align-items-stretch" style="gap: 5px">
+                    <div class="d-flex align-items-center flex-wrap">
+                        <div class="inf mr-4">
+                          <span class="text-primary">{{ clientsForShow?.length }} </span>
+                          {{'QueriesListed'|translate}}
+                        </div>
+                        <div style="min-width: 150px;">
+                          <rk-select [options]="categoryOptions" (valueChange)="clickedSelect($event)" [isSearchable]="false">
+                          </rk-select>
+                        </div>
+                        <div class="search ml-5" style="width: 220px;">
+                          <rk-search [value]="searchKeyUnGroup"  [placeholder]="'Search'|translate" (valueChange)="searchKeyUnGroup=$event;"></rk-search>
+                        </div>
+                   </div>
+                  <div class="d-flex justify-content-end" style="gap: 5px">
+                  <ng-container *ngIf="{ disabled: getUnGroupClientsGroupedFilteredDisabled} as localSelection">
+                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
+                            [disabled]="localSelection.disabled === true" (click)="openChangeGroup()">
+                      {{'AddToGroup'|translate}}
+                    </button>
 
-                  </div>
-                  <div class="groupSelect ml-5">
+                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
+                            [disabled]="localSelection.disabled === true" (click)="updateAgents('protection', 'enable')">
+                      {{'EnableProtection'|translate}}
+                    </button>
 
-                    <rk-radio class="rk-radio-m-0 float-none" [checked]="isGroupedRadioButtonSelected"
-                      (valueChange)="showGroupedClients(true)" value="false">
-                      {{'Grouped'|translate}}
-                    </rk-radio>
-                  </div> -->
-                  <div class="search ml-5" style="width: 220px;">
-                    <rk-search [value]="searchKeyUnGroup"  [placeholder]="'Search'|translate" (valueChange)="searchKeyUnGroup=$event;"></rk-search>
-                  </div>
+                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
+                            [disabled]="localSelection.disabled === true" (click)="updateAgents('protection', 'disable')">
+                      {{'DisableProtection'|translate}}
+                    </button>
+
+                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
+                            [disabled]="localSelection.disabled === true" (click)="updateAgents('cache', 'enable')">
+                      {{'EnableCache'|translate}}
+                    </button>
+
+                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
+                            [disabled]="localSelection.disabled === true" (click)="updateAgents('cache', 'disable')">
+                      {{'DisableCache'|translate}}
+                    </button>
+                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
+                            [disabled]="localSelection.disabled === true" (click)="deleteAgents()">
+                      {{'Delete'|translate}}
+                    </button>
+                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected"
+                            [disabled]="getClientsGroupedFilteredDisabled" (click)="openChangeGroup()">
+                      {{'ChangeGroup'|translate}}
+                    </button>
+                  </ng-container>
+
                 </div>
 
                 <div>
-                  <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
-                    [disabled]="getUnGroupClientsGroupedFilteredDisabled" (click)="openChangeGroup()">
-                    {{'AddToGroup'|translate}}
-                  </button>
-                  <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected"
-                    [disabled]="getClientsGroupedFilteredDisabled" (click)="openChangeGroup()">
-                    {{'ChangeGroup'|translate}}
-                  </button>
                 </div>
               </div>
             </div>
 
-            <rk-table [showPagination]="false">
+            <rk-table (pageChange)="onPageChange($event)"  [totalCount]="list?.length || 0"
+                      [pageViewCount]="pageViewCount" [paginationOptions]="paginationOptions"
+                      [isArrowVisible]="true" [tableHeight]="tableHeight + 'px'"
+                      (pageViewCountChange)="onPageViewCountChange($event)" [paginationSelectDirection]="'up'">
               <ng-template #header>
                 <tr>
-                  <th>
-                    <rk-checkbox (valueChange)="clientsTableCheckboxChanged($event)"></rk-checkbox>
+                  <th style="width: 60px;">
+                    <rk-checkbox [(value)]="selectAll" (valueChange)="checkboxAllChange($event, paginatedList)"></rk-checkbox>
                   </th>
-                  <th>{{'DeviceName'|translate}}</th>
-                  <th>{{'SecurityProfile'|translate}}</th>
-                  <th>{{'GroupName'|translate}}</th>
-                  <th>{{'Alive'|translate}}</th>
-                  <th>{{'UserDisabled'|translate}}</th>
-                  <th> {{'Protection'|translate}}</th>
-                  <th> {{'UserDisabledSmartCache'|translate}}</th>
-                  <th> {{'SmartCache'|translate}}</th>
-                  <th> {{'OS'|translate}}</th>
-                  <th> {{'Version'|translate}}</th>
-                  <th>{{'Delete'|translate}}</th>
+                  <th scope="col" *ngFor="let col of columns; let index = index">
+                    {{ col.displayText }}
+                    <button class="table-btn ripple" (click)="sort(col, col?.name)"
+                            [ngClass]="{'sort-icon-transformed': sortDirection === 'desc' && sortedColumn === col?.name, 'active': sortedColumn === col?.name }">
+                      <icon-sort></icon-sort>
+                    </button>
+                  </th>
+                  <th scope="col">
+                    {{'Delete'|translate}}
+                  </th>
                 </tr>
               </ng-template>
 
               <ng-template #body>
                 <tr
-                  *ngFor="let c of clientsForShow | multifilter: searchKeyUnGroup : 'agentAlias,mac,rootProfile.name,agentGroup.groupName,os,hostname,version'">
+                  *ngFor="let c of paginatedList">
                   <td style="width: 60px">
                     <rk-checkbox [(value)]="c.selected"></rk-checkbox>
                   </td>
                   <td>
                     <div class="d-flex align-items-center justify-content-between">
                       <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent"
-                        (click)="openRoamingClientModal(c)" style="text-decoration: underline;font-size: 12px">
+                              (click)="openRoamingClientModal(c)" style="text-decoration: underline;font-size: 12px">
                         {{ c.agentAlias }}
                       </button>
                     </div>
@@ -759,7 +773,7 @@
                   <td class="text-center d-flex" style="gap: 5px">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                       <path [attr.fill]="c.isAlive ? '#28A745' : '#97A5BB'" fill-rule="evenodd"
-                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
                     </svg>
                     <span *ngIf="!c.isAlive && aliveDataLoaded" class="align-self-center">
                       <span class="font-weight-bold">{{'AliveLastSeen' | translate }}</span>
@@ -769,7 +783,7 @@
                   <td class="text-center" style="width: 20px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                       <path [attr.fill]="c.isUserDisabled ? '#d20b0b' : '#97A5BB'" fill-rule="evenodd"
-                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
                     </svg>
 
                   </td>
@@ -780,12 +794,11 @@
                   <td class="text-center" style="width: 20px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                       <path [attr.fill]="c.isUserDisabledSmartCache ? '#d20b0b' : '#97A5BB'" fill-rule="evenodd"
-                        d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
+                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1zm2.637 8.06l-3.887 3.77-1.387-1.346A1 1 0 1 0 7.97 12.92l2.083 2.02a1 1 0 0 0 1.392 0l4.583-4.444a1 1 0 0 0-1.392-1.436z" />
                     </svg>
                   </td>
                   <td class="text-center" style="width: 20px;">
-                    <rk-switch [(value)]="c.isSmartCacheEnabled"
-                      (valueChange)="agentDisableEnableSmartCache($event, c)">
+                    <rk-switch [(value)]="c.isSmartCacheEnabled" (valueChange)="agentDisableEnableSmartCache($event, c)">
                     </rk-switch>
                   </td>
                   <td class="text-left" style="width: 100px;">
@@ -806,14 +819,13 @@ Mac:{{c.mac}}">
                   </td>
                   <td style="width: 30px">
                     <button class="btn btn-link btn-icon p-0 hover-gray bg-transparent" (click)="deleteClient(c.id)"
-                      style="background: transparent;">
+                            style="background: transparent;">
                       <i-feather name="trash-2"></i-feather>
                     </button>
                   </td>
                 </tr>
-
                 <tr
-                  *ngIf="(isGroupedRadioButtonSelected ? clientsGroupedFiltered : clientsUngroupedFiltered)?.length === 0">
+                  *ngIf="(isGroupedRadioButtonSelected ? clientsGroupedFiltered : clientsUngroupedFiltered)?.length === 0 || list.length === 0">
                   <td colspan="5">{{'NoData'|translate}}</td>
                 </tr>
               </ng-template>
@@ -825,3 +837,21 @@ Mac:{{c.mac}}">
     </div>
   </div>
 </div>
+
+<ng-template #windowsIcon>
+  <svg class="os-icon" width="15px" height="15px" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 48.3167L101.482 37.2202L101.518 115.816L20.0753 116.279L20 48.3167ZM101.443 124.871L101.507 203.536L20.0639 192.339L20.0594 124.344L101.443 124.871ZM111.32 35.768L219.358 20V114.816L111.32 115.674V35.768ZM219.384 125.611L219.358 220L111.32 204.753L111.17 125.435L219.384 125.611Z"/>
+  </svg>
+</ng-template>
+<ng-template #macIcon>
+  <svg class="os-icon" style="vertical-align: top" width="17px" height="17px" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_1413_5003)">
+      <path d="M196.782 88.18C195.613 89.08 174.982 100.62 174.982 126.28C174.982 155.96 201.234 166.46 202.02 166.72C201.899 167.36 197.85 181.1 188.179 195.1C179.556 207.42 170.55 219.72 156.85 219.72C143.149 219.72 139.624 211.82 123.808 211.82C108.395 211.82 102.915 219.98 90.3833 219.98C77.8516 219.98 69.1076 208.58 59.0541 194.58C47.4088 178.14 38 152.6 38 128.36C38 89.48 63.4663 68.86 88.5297 68.86C101.847 68.86 112.948 77.54 121.31 77.54C129.268 77.54 141.679 68.34 156.829 68.34C162.571 68.34 183.202 68.86 196.782 88.18V88.18ZM149.637 51.88C155.903 44.5 160.335 34.26 160.335 24.02C160.335 22.6 160.214 21.16 159.952 20C149.758 20.38 137.629 26.74 130.315 35.16C124.573 41.64 119.214 51.88 119.214 62.26C119.214 63.82 119.476 65.38 119.597 65.88C120.242 66 121.289 66.14 122.337 66.14C131.484 66.14 142.988 60.06 149.637 51.88Z"/>
+    </g>
+    <defs>
+      <clipPath id="clip0_1413_5003">
+        <rect width="164" height="200" fill="white" transform="translate(38 20)"/>
+      </clipPath>
+    </defs>
+  </svg>
+</ng-template>

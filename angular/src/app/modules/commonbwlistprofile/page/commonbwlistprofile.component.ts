@@ -1,19 +1,16 @@
 
 import {takeUntil,  debounceTime, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { CommonBWListProfileService } from '../../../core/services/commonBWListProfileService';
 import { CommonBWListProfile } from '../../../core/models/CommonBWListProfile';
-import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { TranslatorService } from '../../../core/services/translator.service';
-import { fromEvent, Subject, Subscription, of as observableOf } from 'rxjs';
+import { Subject, Subscription, of as observableOf } from 'rxjs';
 import * as moment from 'moment';
 import { LogColumn } from '../../../core/models/LogColumn';
 import { ExcelService } from '../../../core/services/excelService';
 import { PdfService } from '../../../core/services/pdfService';
-import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
-import { RkAlertService, RkNotificationService, RkSearchComponent } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkSearchComponent, RkModalModel,  RkTableConfigModel, RkTableRowModel, ExportTypes } from 'roksit-lib';
 
 @Component({
     selector: 'app-commonbwlistprofile',
@@ -40,6 +37,9 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
     tableHeight = 100;
     isBlocked = false;
     bwdomains = '';
+    bwdomainsPlaceHolder = 'example1.com\n' +
+      'example2.com\n' +
+      'example3.com';
     searchboxevent: Subscription;
 
     bwlist: CommonBWListProfile[] = [];
@@ -120,16 +120,15 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
                         if (i.key != 'Enter') {
                             if (this.searchKey?.length > 3) {
                                 return this.searchCommonBWList();
-                            }
-                            else if (!this.searchKey.length) {
+                            } else if (!this.searchKey.length) {
                                 return this.getCommonBWList();
                             } else {
                                 return observableOf(null);
                             }
                         } else {
-                            if (this.searchKey?.length > 0 && this.searchKey?.length <= 3) {
+                            if (this.searchKey?.length > 0) {
                                 return this.searchCommonBWList();
-                            }else {
+                            } else {
                                 return observableOf(null);
                             }
                         }
@@ -178,7 +177,8 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
     }
 
     saveCommonBWList() {
-        const domainlist = this.bwdomains.split(/\n/gm).map(x => x.trim()).filter(y => y);
+        const re = /,/gi;
+        const domainlist = this.bwdomains.replace(re, '').split(/\n/gm).map(x => x.trim()).filter(y => y);
         if (!domainlist.length) {
             this.notification.warning(this.staticMessageService.pleaseEnterSomeDomains)
             return;
@@ -193,6 +193,7 @@ export class CommonBWListProfileComponent implements OnInit, AfterViewInit, Afte
             this.getCommonBWList().subscribe(x => {
 
                 this.bwlistModal.toggle();
+                this.bwdomains = '';
             }, (err) => {
                 this.bwlistModal.toggle();
                 throw err;

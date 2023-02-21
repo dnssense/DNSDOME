@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin-ext")
-@import "roksit-lib/assets/scss/core/variables"
+@import "node_modules/roksit-lib/assets/scss/core/variables"
 
 $white: #fff
 
@@ -164,7 +164,7 @@ figure
     flex: 1
     .title
       font-size: 10px
-      color: #303759
+      color: var(--text-dark)
       margin-bottom: 0
       word-break: break-word
 
@@ -926,4 +926,8 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
   rk-checkbox
     label
       font-size: 14px !important
+
+.responsive-img
+  width: 100%
+  height: auto
 

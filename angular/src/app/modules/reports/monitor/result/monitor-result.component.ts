@@ -1,6 +1,6 @@
 
 import {takeUntil} from 'rxjs/operators';
-import { OnInit, Component, Input, Output, EventEmitter, ElementRef, ViewChild, OnDestroy, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { OnInit, Component, Input, Output, EventEmitter, OnDestroy, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { MonitorService } from 'src/app/core/services/monitorService';
 import { Subject } from 'rxjs';
@@ -9,17 +9,15 @@ import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
 import { ExcelService } from 'src/app/core/services/excelService';
 import { PdfService } from 'src/app/core/services/pdfService';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
-import { RkTableConfigModel, RkTableRowModel, RkTableColumnModel, ActionClick } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
-import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 import * as moment from 'moment';
 import { ReportService } from 'src/app/core/services/reportService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { environment } from 'src/environments/environment';
 import * as punycode from 'punycode';
-import { ConfigHost, ConfigService } from '../../../../core/services/config.service';
+import { ConfigService } from '../../../../core/services/config.service';
 import { CyberXRayService } from '../../../../core/services/cyberxray.service';
+import { ExportTypes, RkTableConfigModel, RkTableRowModel, ActionClick } from 'roksit-lib';
 
 
 @Component({

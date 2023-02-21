@@ -36,6 +36,9 @@ build_building:
     paths:
       - angular
       - node_modules
+  except:
+    refs:
+      - master
 
 package_docker_dev:
   image: node:16
@@ -46,6 +49,9 @@ package_docker_dev:
     - docker build -t $IMAGE .
     - docker tag $IMAGE $REGISTRY_DEV/$NS/$IMAGE:$VERSION
     - docker push $REGISTRY_DEV/$NS/$IMAGE:$VERSION
+  except:
+    refs:
+      - master
 
 deploy_k8_dev:
   tags:
@@ -67,3 +73,6 @@ deploy_k8_dev:
     - git add . || exit_code=$?
     - git commit -m 'ui.dnssense updated' || exit_code=$?
     - git push
+  except:
+    refs:
+      - master

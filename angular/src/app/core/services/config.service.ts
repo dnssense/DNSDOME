@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { RkUtilityService } from 'roksit-lib';
+import { RkUtilityService, RkMenuItem } from 'roksit-lib';
 import { TranslatorService } from './translator.service';
-import { RkMenuItem } from 'roksit-lib/lib/models/rk-menu.model';
-import { WindowInterruptSource } from '@ng-idle/core';
 
 export class ConfigHost {
   www: string;
@@ -11,6 +9,8 @@ export class ConfigHost {
   logofullUrl: string;
   logoImage: string;
   logoDarkImage: string;
+  logoCompanyImage: string;
+  logoCompanyDarkImage: string;
   iconImage: string;
   title: string;
   privacyUrl: string;
@@ -71,10 +71,12 @@ export class ConfigService {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';
       this.host.aboutus = 'https://www.dnssense.com/about-us';
-      this.host.logoImage = 'logo-dnssense.svg';
-      this.host.logoDarkImage = 'logo-dnssense-dark.svg';
-      this.host.iconImage = 'favicon-dnssense.png';
-      this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnssense.png';
+      this.host.logoImage = 'DNSDome-OnLightBG.svg';
+      this.host.logoDarkImage = 'DNSDome-OnDarkBG.svg';
+      this.host.logoCompanyImage = 'DNSSense-OnLightBG.svg';
+      this.host.logoCompanyDarkImage = 'DNSSense-OnDarkBG.svg';
+      this.host.iconImage = 'dnssense-favicon.ico';
+      this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/DNSSense-OnLightBG.svg';
       this.host.title = 'DnsSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
@@ -107,10 +109,12 @@ export class ConfigService {
       this.host.www = 'https://www.roksit.com';
       this.host.brand = 'Roksit';
       this.host.aboutus = 'https://www.roksit.com/company';
-      this.host.logoImage = 'logo-roksit.png';
-      this.host.logoDarkImage = 'roksit-white.svg';
-      this.host.iconImage = 'favicon-roksit.png';
-      this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-roksit.png';
+      this.host.logoImage = 'DNSDome-OnLightBG.svg';
+      this.host.logoDarkImage = 'DNSDome-OnDarkBG.svg';
+      this.host.logoCompanyImage = 'RoksitLogo-OnLightBG.svg';
+      this.host.logoCompanyDarkImage = 'RoksitLogo-OnDarkBG.svg';
+      this.host.iconImage = 'roksit-favicon.ico';
+      this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/DNSDome-OnLightBG.svg';
       this.host.title = 'Roksit';
       this.host.privacyUrl = 'https://www.roksit.com/privacy-policy';
       this.host.captcha_key = '6LdZopwUAAAAALG7uO9JV88w2y9sQnTJ9M0Lqhrg';
@@ -146,18 +150,21 @@ export class ConfigService {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';
       this.host.aboutus = 'https://www.dnssense.com/about-us';
-      this.host.logoImage = 'logo-dnssense.png';
-      this.host.logoDarkImage = 'logo-dnssense.png';
-      this.host.iconImage = 'favicon-dnssense.png';
-      this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/logo-dnssense.png';
+      this.host.logoImage = 'DNSDome-OnLightBG.svg';
+      this.host.logoDarkImage = 'DNSDome-OnDarkBG.svg';
+      this.host.logoCompanyImage = 'DNSSense-OnLightBG.svg';
+      this.host.logoCompanyDarkImage = 'DNSSense-OnDarkBG.svg';
+      this.host.iconImage = 'dnssense-favicon.ico';
+      this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/DNSSense-OnLightBG.svg';
       this.host.title = 'DnsSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
-      this.host.docUrl = 'https://docs.roksit.com';
+      this.host.docUrl = 'http://docs.roksit.com';
       this.host.supportUrl = 'https://dnssense.com/contact';
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
       this.host.onlineHelpUrl = 'https://dnssense.com/faq';
-      this.host.hiddenMenus = []; // put paths to hide menu  exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
+      this.host.portal = 'https://portal.dnssense.com';
+      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
     }
   }

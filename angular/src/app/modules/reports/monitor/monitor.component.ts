@@ -8,9 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { ColumnTagInput } from 'src/app/core/models/ColumnTagInput';
 import { ReportService } from 'src/app/core/services/reportService';
-import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import {StaticService} from '../../../core/services/staticService';
-import { ActionClick } from 'roksit-lib';
+import { ActionClick, RkDateTime } from 'roksit-lib';
 
 export interface MonitorReportRouteParams {
   startDate?: string;

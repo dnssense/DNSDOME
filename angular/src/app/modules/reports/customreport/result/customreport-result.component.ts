@@ -9,18 +9,13 @@ import { CustomReportService } from 'src/app/core/services/customReportService';
 import ApexCharts from 'node_modules/apexcharts/dist/apexcharts.common.js';
 import { ExcelService } from 'src/app/core/services/excelService';
 import { PdfService } from 'src/app/core/services/pdfService';
-import { ActionClick, RkTableColumnModel, RkTableComponent, RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
-import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
 import * as moment from 'moment';
 import { TranslatorService } from 'src/app/core/services/translator.service';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
-import { LOCAL_STORAGE_THEME_COLOR } from 'src/app/modules/theme/theme.component';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { environment } from 'src/environments/environment';
 import * as punycode from 'punycode';
 import { CyberXRayService } from '../../../../core/services/cyberxray.service';
-import {RkApexChartEN, RkApexChartTR} from 'roksit-lib';
+import {RkApexChartEN, RkApexChartTR, ActionClick, RkTableColumnModel, RkTableComponent, RkTableConfigModel, RkTableRowModel, ExportTypes, RkSelectModel} from 'roksit-lib';
 
 export interface TableBadgeOutput {
   name: string;
