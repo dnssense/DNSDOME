@@ -683,7 +683,8 @@
                         <div class="search ml-5" style="width: 220px;">
                           <rk-search [value]="searchKeyUnGroup"  [placeholder]="'Search'|translate" (valueChange)="searchKeyUnGroup=$event;"></rk-search>
                         </div>
-                   </div>
+
+                    </div>
                   <div class="d-flex justify-content-end" style="gap: 5px">
                   <ng-container *ngIf="{ disabled: getUnGroupClientsGroupedFilteredDisabled} as localSelection">
                     <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
@@ -718,6 +719,7 @@
                             [disabled]="getClientsGroupedFilteredDisabled" (click)="openChangeGroup()">
                       {{'ChangeGroup'|translate}}
                     </button>
+                    <rk-table-export (event)="exportAs($event)" [showTypes]="{ excel: true, pdf: false }"></rk-table-export>
                   </ng-container>
 
                 </div>

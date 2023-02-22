@@ -15,9 +15,17 @@ import { StaticMessageService } from 'src/app/core/services/staticMessageService
 import { GroupAgentModel } from '../../devices/page/devices.component';
 import { ClipboardService } from 'ngx-clipboard';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
-import { RkAlertService, RkNotificationService, RkTableColumnModel, RkSelectModel, RkModalModel } from 'roksit-lib';
+import {
+  RkAlertService,
+  RkNotificationService,
+  RkTableColumnModel,
+  RkSelectModel,
+  RkModalModel,
+  ExportTypes
+} from 'roksit-lib';
 import * as moment from 'moment';
 import {TranslatorService} from '../../../core/services/translator.service';
+import {ExcelService} from '../../../core/services/excelService';
 
 declare let $: any;
 export interface BoxConf {
@@ -59,7 +67,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         private staticMessageService: StaticMessageService,
         private inputIpService: InputIPService,
         private clipboardService: ClipboardService,
-        private translatorService: TranslatorService
+        private translatorService: TranslatorService,
+        private excelService: ExcelService
 
     ) {
 
@@ -1170,5 +1179,24 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
   calculateTableHeight() {
     this.tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
+  }
+
+  exportAs(extention: ExportTypes) {
+    if (this.clients && this.clients.length > 0) {
+      const tableData = JSON.parse(JSON.stringify(this.clients)) as any[];
+
+      tableData.forEach(data => {
+        delete data.id;
+        delete data.userId;
+        delete data.companyId;
+        delete data.conf;
+      });
+
+      const d = new Date();
+
+      if (extention === 'excel') {
+        this.excelService.exportAsExcelFile(tableData, 'ClientsReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
+      }
+    }
   }
 }
