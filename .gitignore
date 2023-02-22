@@ -191,6 +191,7 @@ buildNumber.properties
 /src/main/java/com/roksit/etv/web/service/MudurManagement.java
 node_modules/
 package-lock.json
+.angular
 
 ### code
 .settings/

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
@@ -11,14 +11,13 @@ import { AccountService } from 'src/app/core/services/accountService';
 import { CompanyService } from 'src/app/core/services/companyService';
 import { SmsService } from 'src/app/core/services/smsService';
 import { RestSmsResponse, RestSmsConfirmRequest, RestUserUpdateRequest } from 'src/app/core/models/RestServiceModels';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ConfigService } from '../../../core/services/config.service';
 import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkSelectModel } from 'roksit-lib';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
         const isSubmitted = form && form.submitted;
         return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
     }
@@ -33,7 +32,7 @@ export class AccountSettingsComponent implements OnInit {
     passwordStrength: any;
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private authService: AuthenticationService,
         private notification: RkNotificationService,
         private accountService: AccountService,
@@ -67,10 +66,10 @@ export class AccountSettingsComponent implements OnInit {
             }
         });
     }
-    userInfoForm: FormGroup;
-    userPhoneForm: FormGroup;
-    companyInfoForm: FormGroup;
-    changePasswordForm: FormGroup;
+    userInfoForm: UntypedFormGroup;
+    userPhoneForm: UntypedFormGroup;
+    companyInfoForm: UntypedFormGroup;
+    changePasswordForm: UntypedFormGroup;
     validEmailRegister: true | false;
     user: User;
     currentGsm: string;

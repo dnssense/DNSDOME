@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ConfigHost, ConfigService} from '../../../../core/services/config.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {ValidationService} from '../../../../core/services/validation.service';
 import {ForgotPasswordModel} from "../../../forgotpasswordconfirm/page/forgotpasswordconfirm.component";
 import '@angular/localize/init'
@@ -10,12 +10,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {AuthenticationService} from "../../../../core/services/authentication.service";
 import {CaptchaService} from "../../../../core/services/captcha.service";
 import { environment } from 'src/environments/environment';
-import {RkSelectModel} from "roksit-lib/lib/modules/rk-select/rk-select.component";
 import {RoleConstant} from "../../../../core/models/Role";
 import {StaticMessageService} from "../../../../core/services/staticMessageService";
 import {Company, CompanyUpdaterDTO} from "../../../../core/models/Company";
 import {CompanyService} from "../../../../core/services/companyService";
-import { RkNotificationService } from 'roksit-lib';
+import { RkNotificationService, RkSelectModel } from 'roksit-lib';
 
 declare var $: any;
 
@@ -26,7 +25,7 @@ declare var $: any;
 })
 export class CreatetparentconfirmComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder, private configservice: ConfigService, private translateservice: TranslatorService,
+  constructor(private formBuilder: UntypedFormBuilder, private configservice: ConfigService, private translateservice: TranslatorService,
               private route: ActivatedRoute, private authService: AuthenticationService, private capthaService: CaptchaService,
               private notification: RkNotificationService, private staticMessageService: StaticMessageService,
               private router: Router, private companyService: CompanyService) {
@@ -56,7 +55,7 @@ export class CreatetparentconfirmComponent implements OnInit {
   lengthStrength = false;
   parentRoleLevel: string
   whichPage: "password" | "login" | "security" = "password"
-  loginForm: FormGroup;
+  loginForm: UntypedFormGroup;
   email: string;
   password: string;
   isFailed: boolean;

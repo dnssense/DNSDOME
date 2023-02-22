@@ -27,7 +27,12 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/roksit-lib/assets/i18n/",
+                "output": "/assets/i18n/roksit-lib/"
+              }
             ],
             "styles": [
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
@@ -45,7 +50,6 @@
               "node_modules/bootstrap-material-design/dist/js/bootstrap-material-design.min.js",
               "node_modules/moment/moment.js",
               "node_modules/arrive/src/arrive.js",
-              "node_modules/web-animations-js/web-animations.min.js",
               "node_modules/apexcharts/dist/apexcharts.min.js",
               "node_modules/chartist/dist/chartist.js",
               "node_modules/chartist-plugin-zoom/dist/chartist-plugin-zoom.js",
@@ -144,7 +148,6 @@
               "node_modules/moment/moment.js",
               "node_modules/arrive/src/arrive.js",
               "node_modules/hammerjs/hammer.min.js",
-              "node_modules/web-animations-js/web-animations.min.js",
               "node_modules/apexcharts/dist/apexcharts.min.js",
               "node_modules/chartist/dist/chartist.js",
               "node_modules/chartist-plugin-zoom/dist/chartist-plugin-zoom.js",
@@ -163,18 +166,6 @@
             "assets": [
               "src/favicon.ico",
               "src/assets"
-            ]
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
             ]
           }
         }
@@ -196,26 +187,19 @@
               "devServerTarget": "dnssense:serve:production"
             }
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
       }
     }
   },
-  "defaultProject": "dnssense",
   "schematics": {
     "@schematics/angular:component": {
       "style": "scss"
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "cache": {
+      "enabled": false
+    }
   }
 }

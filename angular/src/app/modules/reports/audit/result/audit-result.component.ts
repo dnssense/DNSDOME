@@ -3,10 +3,8 @@ import {takeUntil} from 'rxjs/operators';
 import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
-import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
-import { ActionClick, RkTableColumnModel, RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { Subject } from 'rxjs';
-import { AuditData, AuditResponse } from 'src/app/core/models/AuditSearch';
+import { AuditResponse } from 'src/app/core/models/AuditSearch';
 import { LogColumn } from 'src/app/core/models/LogColumn';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { AuditService } from 'src/app/core/services/auditService';
@@ -16,6 +14,7 @@ import { ReportService } from 'src/app/core/services/reportService';
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { CountryPipe } from 'src/app/modules/shared/pipes/CountryPipe';
 import { MacAddressFormatterPipe } from 'src/app/modules/shared/pipes/MacAddressFormatterPipe';
+import {ActionClick, ExportTypes, RkTableConfigModel, RkTableRowModel} from 'roksit-lib';
 
 @Component({
   selector: 'app-audit-result',

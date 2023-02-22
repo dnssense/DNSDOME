@@ -4,14 +4,13 @@ import { LogColumn } from 'src/app/core/models/LogColumn';
 import { AggregationItem } from 'src/app/core/models/AggregationItem';
 import { SearchSetting } from 'src/app/core/models/SearchSetting';
 import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Location } from '@angular/common';
 import { ColumnTagInput } from '../../../core/models/ColumnTagInput';
 import { ReportService } from 'src/app/core/services/reportService';
-import { RkDateTime } from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import {StaticService} from '../../../core/services/staticService';
-import { ActionClick } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
+import { ActionClick, RkDateTime } from 'roksit-lib';
 
 export interface CustomReportRouteParams {
   startDate?: string;

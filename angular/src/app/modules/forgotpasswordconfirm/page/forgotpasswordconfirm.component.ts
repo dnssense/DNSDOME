@@ -1,9 +1,9 @@
 import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
+import { UntypedFormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { CaptchaService } from 'src/app/core/services/captcha.service';
@@ -21,7 +21,7 @@ export interface ForgotPasswordModel {
 }
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
@@ -35,7 +35,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class ForgotPasswordConfirmComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthenticationService, private router: Router,
+  constructor(private formBuilder: UntypedFormBuilder, private authService: AuthenticationService, private router: Router,
     private element: ElementRef, private notification: RkNotificationService,
     private capthaService: CaptchaService, private route: ActivatedRoute, private configService: ConfigService) {
     this.host = configService.host;

@@ -29,12 +29,11 @@ import * as moment from 'moment';
 import {ToolsService} from 'src/app/core/services/toolsService';
 import {StaticMessageService} from 'src/app/core/services/staticMessageService';
 import {TranslatorService} from 'src/app/core/services/translator.service';
-import {RkDateConfig} from 'roksit-lib/lib/modules/rk-date/rk-date.component';
 import * as numeral from 'numeral';
 import {AuthenticationService} from 'src/app/core/services/authentication.service';
 import {CyberXRayService} from '../../../core/services/cyberxray.service';
 import {ClipboardService} from 'ngx-clipboard';
-import { RkNotificationService } from 'roksit-lib';
+import { RkNotificationService, RkDateConfig } from 'roksit-lib';
 
 interface TagInputValue {
   value: string;

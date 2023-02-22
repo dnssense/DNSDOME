@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {RkDateButton} from '../dashboard.component';
-import {RkDateConfig, RkDateTime} from 'roksit-lib/lib/modules/rk-date/rk-date.component';
+import {RkDateConfig, RkDateTime} from 'roksit-lib';
 import {TranslatorService} from 'src/app/core/services/translator.service';
 import * as moment from 'moment';
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Ip } from '../models/Ip';
 import * as validator from 'validator';
 import * as tldjs from 'tldjs';
@@ -207,7 +207,7 @@ export class ValidationService {
   }
 
   static matchingPasswords(passwordKey: string, passwordConfirmationKey: string): any {
-    return (group: FormGroup) => {
+    return (group: UntypedFormGroup) => {
       const password = group.controls[passwordKey];
       const confirmPassword = group.controls[passwordConfirmationKey];
       // password alanları boşsa null dönmeli
@@ -220,7 +220,7 @@ export class ValidationService {
   }
 
   static matchingEmail(emailKey: string, emailConfirmationKey: string): any {
-    return (group: FormGroup) => {
+    return (group: UntypedFormGroup) => {
       const email = group.controls[emailKey];
       const confirmEmail = group.controls[emailConfirmationKey];
 

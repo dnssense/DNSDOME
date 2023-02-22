@@ -6,7 +6,7 @@ import { AdminLayoutComponent } from './page/adminlayout.component';
 
 const adminlayoutRoutes: Routes = [
   {
-    path: 'admin',
+    path: '',
     component: AdminLayoutComponent,
     canActivate: [AuthGuard],
     children: [

@@ -8,7 +8,7 @@ import { CaptchaService } from 'src/app/core/services/captcha.service';
 import { SmsService } from 'src/app/core/services/smsService';
 import { AccountService } from 'src/app/core/services/accountService';
 import { of } from 'rxjs';
-import {FormBuilder, Validators} from '@angular/forms';
+import {UntypedFormBuilder, Validators} from '@angular/forms';
 import {ValidationService} from '../../../core/services/validation.service';
 
 declare var $: any;
@@ -42,7 +42,7 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
       private router: Router,
       private route: ActivatedRoute,
       private configService: ConfigService,
-      private formBuilder: FormBuilder,
+      private formBuilder: UntypedFormBuilder,
       private captchaService: CaptchaService) {
     this.host = configService.host;
     this.captcha_key = this.host.captcha_key;

@@ -1,19 +1,16 @@
 
 import {takeUntil,  debounceTime, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
+import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { CommonBWListProfileService } from '../../../core/services/commonBWListProfileService';
 import { CommonBWListProfile } from '../../../core/models/CommonBWListProfile';
-import { RkTableConfigModel, RkTableRowModel } from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
 import { TranslatorService } from '../../../core/services/translator.service';
-import { fromEvent, Subject, Subscription, of as observableOf } from 'rxjs';
+import { Subject, Subscription, of as observableOf } from 'rxjs';
 import * as moment from 'moment';
 import { LogColumn } from '../../../core/models/LogColumn';
 import { ExcelService } from '../../../core/services/excelService';
 import { PdfService } from '../../../core/services/pdfService';
-import { ExportTypes } from 'roksit-lib/lib/modules/rk-table/rk-table-export/rk-table-export.component';
-import { RkAlertService, RkNotificationService, RkSearchComponent } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkSearchComponent, RkModalModel,  RkTableConfigModel, RkTableRowModel, ExportTypes } from 'roksit-lib';
 
 @Component({
     selector: 'app-commonbwlistprofile',

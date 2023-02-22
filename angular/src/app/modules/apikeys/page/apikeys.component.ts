@@ -1,14 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {RkModalModel} from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import {RkSelectModel} from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import {RestRole, Role} from 'src/app/core/models/Role';
 import {ApiKey, User} from 'src/app/core/models/User';
 import {AuthenticationService} from 'src/app/core/services/authentication.service';
 import {StaticMessageService} from 'src/app/core/services/staticMessageService';
 import {UserService} from 'src/app/core/services/userService';
 import * as validator from 'validator';
-import {ClipboardService} from 'ngx-clipboard'
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import {ClipboardService} from 'ngx-clipboard';
+import { RkAlertService, RkNotificationService, RkModalModel, RkSelectModel } from 'roksit-lib';
 
 declare var $: any;
 
@@ -80,7 +78,7 @@ export class ApiKeysComponent implements OnInit {
     if (!roleList || !roleList.length) {
       return 'Not Defined';
     }
-       
+
     if (roleList.find(r => r.name === 'ROLE_APIADMIN')) {
       return 'Admin';
     } else if (roleList.find(r => r.name === 'ROLE_API')) {

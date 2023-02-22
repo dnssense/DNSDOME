@@ -1,10 +1,8 @@
 
 import {map} from 'rxjs/operators';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import * as isip from 'is-ip';
-import { RkModalModel } from 'roksit-lib/lib/modules/rk-modal/rk-modal.component';
-import { RkSelectModel } from 'roksit-lib/lib/modules/rk-select/rk-select.component';
 import { Agent } from 'src/app/core/models/Agent';
 import { Box } from 'src/app/core/models/Box';
 import { AgentGroup } from 'src/app/core/models/DeviceGroup';
@@ -17,12 +15,9 @@ import { StaticMessageService } from 'src/app/core/services/staticMessageService
 import { GroupAgentModel } from '../../devices/page/devices.component';
 import { ClipboardService } from 'ngx-clipboard';
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component';
-import { RkAlertService, RkNotificationService } from 'roksit-lib';
+import { RkAlertService, RkNotificationService, RkTableColumnModel, RkSelectModel, RkModalModel } from 'roksit-lib';
 import * as moment from 'moment';
 import {TranslatorService} from '../../../core/services/translator.service';
-import {ValidationService} from '../../../core/services/validation.service';
-import {RkTableColumnModel, RkTableConfigModel} from 'roksit-lib/lib/modules/rk-table/rk-table/rk-table.component';
-import {AggregationItem} from '../../../core/models/AggregationItem';
 
 declare let $: any;
 export interface BoxConf {
@@ -55,7 +50,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
 
     constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private agentService: AgentService,
         private alertService: RkAlertService,
         private notification: RkNotificationService,
@@ -96,7 +91,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     grupOperation: string;
     groupOperation: string;
 
-    clientForm: FormGroup;
+    clientForm: UntypedFormGroup;
     clients: Agent[];
     clientsGroupedFiltered: Agent[];
     clientsUngroupedFiltered: Agent[];
@@ -226,6 +221,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
   sortedColumn: string;
   tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
   selectAll: boolean;
+  private dateFormat = 'YYYY-MM-DD HH:mm';
   ngOnInit(): void {
 
         this.clients = [];
@@ -266,9 +262,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.selectedDefaultRomainProfileId = event;
     }
 
-
-
-    loadClients() {
+  loadClients() {
         this.agentService.getSecurityProfiles().subscribe(result => {
             this.securityProfiles = result;
             this.fillSecurityProfilesSelect(result);
@@ -284,6 +278,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     x.uninstallPassword = agentConf.uninstallPassword;
                     x.disablePassword = agentConf.disablePassword;
                     x.isSmartCacheEnabled = agentConf.isSmartCacheEnabled > 0;
+                } else {
+                  x.isDisabled = x.isDisabled || false;
+                  x.isSmartCacheEnabled = x.isSmartCacheEnabled || false;
                 }
             });
             this.agentService.getAgentAlives(this.clients.map(x => x.uuid)).subscribe(x => {
@@ -303,7 +300,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
                         y.isUserDisabled = info ? info.isUserDisabled > 0 : false;
                         y.isUserDisabledSmartCache = info ? info.isUserDisabledSmartCache > 0 : false;
-                        y.insertDate = info ? moment(info.insertDate).format('YYYY-MM-DD HH:mm') : null;
+                        y.insertDate = info ? moment(info.insertDate).format(this.dateFormat) : null;
                         y.os = info?.os;
                         y.hostname = info?.hostname;
                         y.mac = info?.mac;
@@ -1140,6 +1137,16 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     this.clientsForShow = this.clientsForShow.sort((a, b) => {
       if (name === 'agentGroup') {
         return this.sortDirection === 'asc' ? (a[name]?.groupName > b[name]?.groupName ? 1 : -1) : (a[name]?.groupName < b[name]?.groupName ? 1 : -1);
+      } else if(name === 'rootProfile'){
+        return this.sortDirection === 'asc' ? (a.rootProfile?.name > b.rootProfile?.name ? 1 : -1) : (a.rootProfile?.name < b.rootProfile?.name ? 1 : -1);
+      }else if(name === 'isAlive'){
+         let sortValue;
+         if(a.isAlive === b.isAlive){
+             sortValue = moment(a.insertDate).toDate().getTime() - moment(b.insertDate).toDate().getTime();
+         } else {
+           sortValue = a.isAlive ? 1: -1;
+         }
+        return this.sortDirection === 'asc' ? sortValue :-1*sortValue;
       }
       return this.sortDirection === 'asc' ? (a[name] > b[name] ? 1 : -1) : (a[name] < b[name] ? 1 : -1);
     });

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ToolsService } from 'src/app/core/services/toolsService';
 import { ValidationService } from 'src/app/core/services/validation.service';
 import { CategoryQuery } from 'src/app/core/models/CategoryQuery';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { RkNotificationService } from 'roksit-lib';
 
 @Component({
@@ -14,7 +14,7 @@ export class ToolsComponent {
 
     constructor(
         private toolsService: ToolsService,
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         private notification: RkNotificationService
     ) {
         this.searchForm = this.formBuilder.group({
@@ -22,7 +22,7 @@ export class ToolsComponent {
         });
     }
 
-    searchForm: FormGroup;
+    searchForm: UntypedFormGroup;
     isDomain: boolean;
     isDomainForReq: boolean;
     domain: string;

@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { IconsModule, RkCheckboxModule, RkModalModule, RkRadioModule, RkSearchModule, RkSelectModule, RkSwitchModule, RkTableModule, RkToggleButtonModule } from 'roksit-lib';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
-import { MaterialModule } from 'src/app/material.module';
 import { PipesModule } from '../shared/pipes/pipes.module';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 import { RoamingComponent } from './page/roaming.component';
@@ -18,7 +17,6 @@ import { RoamingRoutingModule } from './roaming-routing.module';
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    MaterialModule,
     RoamingRoutingModule,
     ProfileWizardModule,
     TranslateModule.forChild({

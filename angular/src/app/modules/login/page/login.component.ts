@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { RecaptchaComponent } from 'ng-recaptcha';
@@ -19,7 +19,7 @@ import { RkNotificationService } from 'roksit-lib';
 declare var $: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   twoFactorPhoneClone: any;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private authService: AuthenticationService,
     private router: Router,
     private element: ElementRef,
@@ -61,11 +61,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
   private toggleButton: any;
   private sidebarVisible: boolean;
   private nativeElement: Node;
-  emailFormControl = new FormControl('', [
+  emailFormControl = new UntypedFormControl('', [
     Validators.required,
     Validators.email,
   ]);
-  twoFactorFormControl = new FormControl('', [
+  twoFactorFormControl = new UntypedFormControl('', [
     Validators.required,
     Validators.email,
   ]);
@@ -81,7 +81,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   validEmailLogin: true | false;
   validPasswordLogin: true | false;
   matcher = new MyErrorStateMatcher();
-  loginForm: FormGroup;
+  loginForm: UntypedFormGroup;
   isFailed: boolean;
   email: string;
   password: string;

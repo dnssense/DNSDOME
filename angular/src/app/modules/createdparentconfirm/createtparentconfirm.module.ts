@@ -8,7 +8,7 @@ import {FooterModule} from "../shared/footer/footer.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {RecaptchaModule} from "ng-recaptcha";
-import {RkSelectModule, RoksitModule} from "roksit-lib";
+import {RkSelectModule} from "roksit-lib";
 
 @NgModule({
   declarations: [CreatetparentconfirmComponent],
