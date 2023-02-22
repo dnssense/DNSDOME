@@ -17,6 +17,7 @@ import { RkNotificationService } from 'roksit-lib';
 
 
 declare var $: any;
+declare const VERSION: string;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -53,10 +54,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.sidebarVisible = false;
     this.host = this.configService.host;
     this.captcha_key = this.host.captcha_key;
-    this.jumpKey = this.route.snapshot.queryParams.code
+    this.jumpKey = this.route.snapshot.queryParams.code;
+    this.version = this.getVersion();
   }
 
   environment = environment;
+  version: string;
   test: Date = new Date();
   private toggleButton: any;
   private sidebarVisible: boolean;
@@ -289,6 +292,20 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
       });
     }
+
+  }
+
+  getVersion = () => {
+    let versionValue = '';
+    try {
+      const date = new Date(VERSION);
+      versionValue = date.getFullYear().toString() + this.pad2(date.getMonth() + 1) + this.pad2( date.getDate()) + this.pad2( date.getHours() ) + this.pad2( date.getMinutes() ) + this.pad2( date.getSeconds());
+    } catch (e) {}
+    return versionValue;
+  }
+
+  pad2 = (n) => {
+    return n < 10 ? '0' + n : n;
   }
 
 
