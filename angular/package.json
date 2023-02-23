@@ -62,7 +62,6 @@
     "numeral": "^2.0.6",
     "perfect-scrollbar": "1.1.0",
     "popper.js": "1.16.1",
-    "roksit-lib": "file:roksit-lib-0.2.6.tgz",
     "select2": "^4.0.5",
     "serve": "^11.3.0",
     "tldjs": "^2.3.1",
@@ -78,6 +77,7 @@
     "xlsx": "^0.14.3",
     "zone.js": "~0.11.4",
 
+    "roksit-lib": "file:roksit-lib-0.2.6.tgz",
     "@ng-bootstrap/ng-bootstrap": "^14.0.1",
     "@ngx-translate/core": "^13.0.0",
     "rxjs": "^6.5.5",
