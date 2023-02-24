@@ -1186,10 +1186,13 @@ export class RoamingComponent implements OnInit, AfterViewInit {
       const tableData = JSON.parse(JSON.stringify(this.clients)) as any[];
 
       tableData.forEach(data => {
+        data.alive = data.isAlive ? 'Alive' : 'Last Seen ' + (data?.insertDate ? (data?.insertDate) : 'More Than One Week');
         delete data.id;
         delete data.userId;
         delete data.companyId;
         delete data.conf;
+        delete data.isAlive;
+        delete data.insertDate;
       });
 
       const d = new Date();
