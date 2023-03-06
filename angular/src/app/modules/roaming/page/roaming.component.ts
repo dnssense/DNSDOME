@@ -1202,4 +1202,25 @@ export class RoamingComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
+  exportGroupsAs(extention: ExportTypes) {
+    if (this.groupedClients && this.groupedClients.length > 0) {
+      const tableData = JSON.parse(JSON.stringify(this.groupedClients)) as any[];
+      tableData.forEach(data => {
+        data['Name'] = data.name;
+        data['Member Count'] = data.memberCounts;
+        data['Security Profile'] = data.securityProfile.name;
+        delete data.agents;
+        delete data.securityProfile;
+        delete data.agentGroup;
+        delete data.memberCounts;
+        delete data.name;
+      });
+      const d = new Date();
+
+      if (extention === 'excel') {
+        this.excelService.exportAsExcelFile(tableData, 'GroupedClientsReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
+      }
+    }
+  }
 }
