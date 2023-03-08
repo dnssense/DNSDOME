@@ -689,39 +689,41 @@
 
                     </div>
                   <div class="d-flex justify-content-end" style="gap: 5px">
-                  <ng-container *ngIf="{ disabled: getUnGroupClientsGroupedFilteredDisabled} as localSelection">
+                  <ng-container *ngIf="{ disabled: (!isGroupedRadioButtonSelected && getUnGroupClientsGroupedFilteredDisabled) || (isGroupedRadioButtonSelected && getClientsGroupedFilteredDisabled )} as localSelection">
                     <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
                             [disabled]="localSelection.disabled === true" (click)="openChangeGroup()">
                       {{'AddToGroup'|translate}}
                     </button>
 
-                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
-                            [disabled]="localSelection.disabled === true" (click)="updateAgents('protection', 'enable')">
-                      {{'EnableProtection'|translate}}
-                    </button>
-
-                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
-                            [disabled]="localSelection.disabled === true" (click)="updateAgents('protection', 'disable')">
-                      {{'DisableProtection'|translate}}
-                    </button>
-
-                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
-                            [disabled]="localSelection.disabled === true" (click)="updateAgents('cache', 'enable')">
-                      {{'EnableCache'|translate}}
-                    </button>
-
-                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
-                            [disabled]="localSelection.disabled === true" (click)="updateAgents('cache', 'disable')">
-                      {{'DisableCache'|translate}}
-                    </button>
-                    <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected==false"
-                            [disabled]="localSelection.disabled === true" (click)="deleteAgents()">
-                      {{'Delete'|translate}}
-                    </button>
                     <button class="btn btn-small" *ngIf="isGroupedRadioButtonSelected"
                             [disabled]="getClientsGroupedFilteredDisabled" (click)="openChangeGroup()">
                       {{'ChangeGroup'|translate}}
                     </button>
+
+                    <button class="btn btn-small"
+                            [disabled]="localSelection.disabled === true" (click)="updateAgents('protection', 'enable')">
+                      {{'EnableProtection'|translate}}
+                    </button>
+
+                    <button class="btn btn-small"
+                            [disabled]="localSelection.disabled === true" (click)="updateAgents('protection', 'disable')">
+                      {{'DisableProtection'|translate}}
+                    </button>
+
+                    <button class="btn btn-small"
+                            [disabled]="localSelection.disabled === true" (click)="updateAgents('cache', 'enable')">
+                      {{'EnableCache'|translate}}
+                    </button>
+
+                    <button class="btn btn-small"
+                            [disabled]="localSelection.disabled === true" (click)="updateAgents('cache', 'disable')">
+                      {{'DisableCache'|translate}}
+                    </button>
+                    <button class="btn btn-small"
+                            [disabled]="localSelection.disabled === true" (click)="deleteAgents()">
+                      {{'Delete'|translate}}
+                    </button>
+
                     <rk-table-export (event)="exportAs($event)" [showTypes]="{ excel: true, pdf: false }"></rk-table-export>
                   </ng-container>
 

@@ -1182,8 +1182,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
   }
 
   exportAs(extention: ExportTypes) {
-    if (this.clients && this.clients.length > 0) {
-      const tableData = JSON.parse(JSON.stringify(this.clients)) as any[];
+    const exportedTypeList = this.isGroupedRadioButtonSelected ? this.clientsGroupedFiltered : this.clientsUngroupedFiltered;
+    if (exportedTypeList && exportedTypeList?.length > 0) {
+      const tableData = JSON.parse(JSON.stringify(exportedTypeList)) as any[];
 
       tableData.forEach(data => {
         data.alive = data.isAlive ? 'Alive' : 'Last Seen ' + (data?.insertDate ? (data?.insertDate) : 'More Than One Week');
