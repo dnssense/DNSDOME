@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { CyteLoginComponent } from './page/cytelogin.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
-import { MaterialModule } from 'src/app/material.module';
 import { CyteLoginRoutingModule } from './cytelogin-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
-import { HttpClient } from '@angular/common/http';  
+import { HttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [CyteLoginComponent],
@@ -16,8 +15,7 @@ import { HttpClient } from '@angular/common/http';
     FormsModule,
     ReactiveFormsModule,
     TagInputModule,
-    MaterialModule, 
-    CyteLoginRoutingModule, 
+    CyteLoginRoutingModule,
     TranslateModule.forChild({
       loader: {
           provide: TranslateLoader,

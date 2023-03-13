@@ -9,7 +9,6 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { IconsModule, RkAutoCompleteModule, RkCheckboxModule, RkDateModule, RkFilterBadgeModule, RkModalModule, RkProgressBarModule, RkRadioModule, RkSelectModule, RkTableModule } from 'roksit-lib';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
-import { MaterialModule } from 'src/app/material.module';
 import { PipesModule } from '../shared/pipes/pipes.module';
 import { SharedModule } from '../shared/shared.module';
 import { AuditComponent } from './audit/audit.component';
@@ -21,7 +20,6 @@ import { CustomReportResultComponent } from './customreport/result/customreport-
 import { MonitorComponent } from './monitor/monitor.component';
 import { MonitorResultComponent } from './monitor/result/monitor-result.component';
 import { ReportsRoutingModule } from './reports-routing.module';
-// import { ColumnTagInputComponent } from './shared/columntaginput/column-tag-input.component';
 import { TextLimitComponent } from './shared/textlimit/text-limit.component';
 
 @NgModule({
@@ -38,7 +36,6 @@ import { TextLimitComponent } from './shared/textlimit/text-limit.component';
   ],
   imports: [
     FormsModule,
-    MaterialModule,
     ReactiveFormsModule,
     CommonModule,
     ReportsRoutingModule,

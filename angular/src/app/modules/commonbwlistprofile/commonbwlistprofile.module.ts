@@ -4,7 +4,6 @@ import { CommonBWListProfileComponent } from './page/commonbwlistprofile.compone
 import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
-import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
 import { IconsModule, RkTableModule, RkModalModule, RkSelectModule, RkCheckboxModule, RkSearchModule } from 'roksit-lib';
@@ -20,7 +19,6 @@ import { CommonBWListProfileRoutingModule } from './commonbwlistprofile-routing.
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    MaterialModule,
     CommonBWListProfileRoutingModule,
     ProfileWizardModule,
     TranslateModule.forChild({

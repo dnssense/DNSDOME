@@ -7,7 +7,7 @@
             <div class="col-lg-8 col-md-8 col-sm-8 ml-auto mr-auto">
               <div class="card-login">
                 <div class="card-login-title text-center">
-                  <img src="/assets/img/{{host.logoImage}}" class="responsive-img" />
+                  <img src="/assets/img/{{host.logoCompanyLoginImage ? host.logoCompanyLoginImage : host.logoImage}}" style="width: 50%; height: auto" />
                 </div>
                 <div class="card-body">
                   <div id="loginDiv">
@@ -41,7 +41,7 @@
                             {{'UseChromeFirefoxOpera'|translate}}
                           </div>
                           <div class="col-12 text-center" style="color: white">
-                            version:{{environment.version}}
+                            version:{{version}}
                           </div>
                         </div>
                       </div>
@@ -77,6 +77,9 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="card-login-title text-center" *ngIf="host.logoCompanyLoginImage && host.logoImage">
+              <img  src="/assets/img/{{host.logoImage}}" style="width: 20%; height: auto" />
             </div>
           </div>
           <div class="row">

@@ -7,6 +7,7 @@ export class ConfigHost {
   brand: 'CyberCyte' | 'DNSSense' | 'Roksit' | 'CMERP';
   aboutus: string;
   logofullUrl: string;
+  logoCompanyLoginImage?: string;
   logoImage: string;
   logoDarkImage: string;
   logoCompanyImage: string;
@@ -71,6 +72,8 @@ export class ConfigService {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';
       this.host.aboutus = 'https://www.dnssense.com/about-us';
+      this.host.logoCompanyLoginImage = 'DnsSenseLogoCompany.svg';
+      this.host.logoCompanyLoginImage = 'DNSSense-OnLightBG.svg';
       this.host.logoImage = 'DNSDome-OnLightBG.svg';
       this.host.logoDarkImage = 'DNSDome-OnDarkBG.svg';
       this.host.logoCompanyImage = 'DNSSense-OnLightBG.svg';
@@ -109,6 +112,7 @@ export class ConfigService {
       this.host.www = 'https://www.roksit.com';
       this.host.brand = 'Roksit';
       this.host.aboutus = 'https://www.roksit.com/company';
+      this.host.logoCompanyLoginImage = 'RoksitLogoCompany.svg';
       this.host.logoImage = 'DNSDome-OnLightBG.svg';
       this.host.logoDarkImage = 'DNSDome-OnDarkBG.svg';
       this.host.logoCompanyImage = 'RoksitLogo-OnLightBG.svg';
@@ -150,6 +154,8 @@ export class ConfigService {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';
       this.host.aboutus = 'https://www.dnssense.com/about-us';
+      this.host.logoCompanyLoginImage = 'DnsSenseLogoCompany.svg';
+      this.host.logoCompanyLoginImage = 'DNSSense-OnLightBG.svg';
       this.host.logoImage = 'DNSDome-OnLightBG.svg';
       this.host.logoDarkImage = 'DNSDome-OnDarkBG.svg';
       this.host.logoCompanyImage = 'DNSSense-OnLightBG.svg';

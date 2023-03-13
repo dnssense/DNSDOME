@@ -5,7 +5,6 @@ import { ToolsRoutingModule } from './tools-routing.module';
 import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
-import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconsModule } from 'roksit-lib';
 
@@ -17,7 +16,6 @@ import { IconsModule } from 'roksit-lib';
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    MaterialModule,
     ToolsRoutingModule,
     TranslateModule.forChild({
       loader: {
