@@ -12,6 +12,7 @@ import {DashBoardService} from '../../../../core/services/dashBoardService';
 import {ChartDomain, ChartDomainItem, DashboardChartComponent} from './dashboard-chart.component';
 import { RkNotificationService } from 'roksit-lib';
 import * as moment from "moment";
+import {TranslatorService} from "../../../../core/services/translator.service";
 
 interface TagInputValue {
     value: string;
@@ -25,7 +26,9 @@ interface TagInputValue {
     providers: [DashBoardService]
 })
 export class DomainComponent implements AfterViewInit {
-    constructor(private translateService: TranslateService, private cyberxrayService: CyberXRayService,
+    constructor(private translateService: TranslateService,
+                private translatorService: TranslatorService,
+                private cyberxrayService: CyberXRayService,
                 private clipboardService: ClipboardService, private notificationService: RkNotificationService,
                 private staticMesssageService: StaticMessageService, private dashboardService: DashBoardService) {
     }
@@ -58,7 +61,7 @@ export class DomainComponent implements AfterViewInit {
         if (this.currentGroup) {
             const catName = this.translate(this.currentGroup.name);
             if (this.currentGroup.datatype !== 'total') {
-                return catName + ' Categories';
+                return catName + ' ' + this.translatorService.translate('Categories');
             }
             return catName;
         }
