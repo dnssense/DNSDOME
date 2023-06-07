@@ -33,9 +33,6 @@
                         <button class="btns login-btns" (click)="login()">
                           {{'LOGIN.Login'|translate}}
                         </button>
-                        <a class="nav-link mt-1" [routerLink]="['/register']" style="color: #4353ff; font-weight: 500;">
-                          {{'LOGIN.SignupForFreeTrial'|translate}}
-                        </a>
                         <div class="row">
                           <div *ngIf="isIEOrEdge" class="col-12 text-center" style="color: gray; font-size: 12px;">
                             {{'UseChromeFirefoxOpera'|translate}}
