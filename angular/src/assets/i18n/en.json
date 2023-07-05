@@ -161,8 +161,8 @@
     "Total": "Total",
     "Safe": "Safe",
     "safe": "Safe",
-    "Variable": "Variable",
-    "variable": "Variable",
+    "Variable": "Risky",
+    "variable": "Risky",
     "HarmfullContent": "Restricted Content",
     "TotalDays": "Total days",
     "Service Temporarily Unavailable": "Service Temporarily Unavailable",
@@ -206,7 +206,7 @@
     "ClearAds": "Clear Ads",
     "MaliciousCategories": "Malicious Categories",
     "HarmfullCategories": "Restricted Categories",
-    "VariableCategories": "Variable Categories",
+    "VariableCategories": "Risky Categories",
     "SafeCategories": "Safe Categories",
     "Applications": "Applications",
     "BlackWhiteList": "Black White List",
@@ -504,7 +504,8 @@
         "Empty Site": "Empty Site",
         "Empty Sites": "Empty Sites",
         "DOH": "DoH",
-        "Compromised Website": "Compromised Website"
+        "Compromised Website": "Compromised Website",
+        "Safe Domain": "Safe Domain"
     },
     "CUSTOMREPORTS": {
       "Others": "Others"

@@ -7,6 +7,7 @@ import * as numeral from 'numeral';
 import {ChartDomain, ChartDomainItem, DashboardChartComponent} from './dashboard-chart.component';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
+import {TranslatorService} from "../../../../core/services/translator.service";
 
 @Component({
   selector: 'app-dashboard-category',
@@ -14,7 +15,7 @@ import {Router} from '@angular/router';
   styleUrls: ['../dashboard.component.scss']
 })
 export class CategoryComponent {
-  constructor(private translateService: TranslateService, private router: Router) {
+  constructor(private translateService: TranslateService, private translatorService: TranslatorService, private router: Router) {
   }
 
   private _selectedDate: { startDate: Date, endDate: Date, duration: number };
@@ -54,7 +55,7 @@ export class CategoryComponent {
     if (this.currentGroup) {
       const catName = this.translate(this.currentGroup.name);
       if (this.currentGroup.datatype !== 'total') {
-        return catName + ' Categories';
+        return catName + ' ' + this.translatorService.translate('Categories') ;
       }
       return catName;
     }

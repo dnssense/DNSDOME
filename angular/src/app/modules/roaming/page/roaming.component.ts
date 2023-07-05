@@ -1082,11 +1082,12 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         if (agent) {
             if (agent.rootProfile && agent.rootProfile.id > 0) {
+                this.saveMode = 'ProfileUpdate';
+                this.profileWizard.saveMode = this.saveMode;
                 this.selectedClient = JSON.parse(JSON.stringify(agent));
 
                 // this.fillSecurityProfilesArray(agent);
 
-                this.saveMode = 'ProfileUpdate';
                 this.profileClient = JSON.parse(JSON.stringify(agent));
 
                 this.startWizard = true;

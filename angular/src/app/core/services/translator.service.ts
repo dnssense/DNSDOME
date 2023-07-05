@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {ConfigHost} from './config.service';
 import * as moment from 'moment';
+import flatpickr from 'flatpickr';
+import { Turkish } from 'flatpickr/dist/l10n/tr';
+Turkish.weekdays.shorthand = ['P', 'P', 'S', 'Ç', 'P', 'C', 'C'];
+import { english } from 'flatpickr/dist/l10n/default';
 @Injectable({
   providedIn: 'root'
 })
@@ -34,24 +38,37 @@ export class TranslatorService {
     this.translationService.setDefaultLang(languages[0]);
 
     const browserLang = this.translationService.getBrowserLang();
+    let selectedLang;
     if (!lang) {
-      this.translationService.use(languages.find(x => x == browserLang) ? browserLang : languages[0]);
+      selectedLang = languages.find(x => x === browserLang) ? browserLang : languages[0];
     } else {
-      const language = languages.find(x => x == lang);
-      if (language) {
-        this.translationService.use(language);
-      } else { this.translationService.use(languages[0]); }
+      selectedLang = languages.find(x => x === lang);
     }
+    if (selectedLang) {
+      this.translationService.use(selectedLang);
+      this.setCalendarLang(selectedLang);
+    } else {
+      this.translationService.use(languages[0]);
+      this.setCalendarLang(selectedLang);
+    }
+
   }
 
   use(lang: string): any {
     this.translationService.use(lang);
     moment.locale(lang);
+    this.setCalendarLang(lang);
   }
   getCurrentLang(): any {
     return this.translationService.currentLang;
   }
   setDefaultLang(lang: string): any {
     this.translationService.setDefaultLang(lang);
+  }
+  setCalendarLang(lang: string) {
+    if (lang === 'tr')
+      flatpickr.localize(Turkish);
+    else
+      flatpickr.localize(english);
   }
 }

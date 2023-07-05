@@ -57,7 +57,7 @@ export class GroupComponent implements OnInit {
         active: false,
         datatype: 'variable',
         name: 'Variable',
-        color: '#A0AAB7',
+        color: '#FF872F',
         className: 'gray',
         val1: 0,
         val2: 0,
