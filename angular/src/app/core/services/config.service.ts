@@ -180,7 +180,8 @@ export class ConfigService {
 
 
       if (userId) {
-        const language = localStorage.getItem(`language_for_user_${userId}`);
+        // const language = localStorage.getItem(`language_for_user_${userId}`);
+        const language = 'en';
         if (language) {
           return language;
         }

@@ -6,7 +6,7 @@ import flatpickr from 'flatpickr';
 import { Turkish } from 'flatpickr/dist/l10n/tr';
 Turkish.weekdays.shorthand = ['P', 'P', 'S', 'Ç', 'P', 'C', 'C'];
 import { english } from 'flatpickr/dist/l10n/default';
-import {RkTranslatorService} from "roksit-lib";
+import {RkTranslatorService} from 'roksit-lib';
 @Injectable({
   providedIn: 'root'
 })
