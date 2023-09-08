@@ -37,6 +37,7 @@
             "styles": [
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
               "node_modules/intro.js/introjs.css",
+              "node_modules/flag-icons/css/flag-icons.min.css",
               "node_modules/roksit-lib/assets/scss/roksit.core.scss",
               "src/assets/css/animate.css",
               "src/styles.sass"

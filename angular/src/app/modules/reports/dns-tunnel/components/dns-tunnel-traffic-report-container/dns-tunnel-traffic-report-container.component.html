@@ -1,0 +1,55 @@
+<ng-template #domainFilter let-filter="filter">
+  <domain-selection [list]="mapToList(filter)" (onAddItem)="addFilterItems(filter, [$event])" (onDeleteItem)="deleteFilterItem(filter, $event)" (onDeleteAllItems)="deleteAllFilterItems(filter)"></domain-selection>
+</ng-template>
+<ng-template #domainIpFilter let-filter="filter">
+  <ip-selection [translationPrefix]="'DestinationIpSelection'" [list]="mapToList(filter)" (onAddItem)="addFilterItems(filter, [$event])" (onDeleteItem)="deleteFilterItem(filter, $event)" (onDeleteAllItems)="deleteAllFilterItems(filter)"></ip-selection>
+</ng-template>
+<ng-template #sourceIpFilter let-filter="filter">
+  <ip-selection [translationPrefix]="'SourceIpSelection'" [list]="mapToList(filter)" (onAddItem)="addFilterItems(filter, [$event])" (onDeleteItem)="deleteFilterItem(filter, $event)" (onDeleteAllItems)="deleteAllFilterItems(filter)"></ip-selection>
+</ng-template>
+<ng-template #locationAgentFilter let-filter="filter">
+  <common-manual-selection [list]="mapToList(filter)" [translationKeyHeader]="'LocationAgentSelection'" (onAddItem)="addFilterItems(filter, [$event])"
+                           (onDeleteAllItems)="deleteAllFilterItems(filter)"
+                           (onDeleteItem)="deleteFilterItem(filter, $event)"></common-manual-selection>
+</ng-template>
+<ng-template #actionTypeFilter let-filter="filter">
+  <action-type-selection [selectedValue]="filter && filter.values > 0 ? filter.values[0].value : actionTypes.yes" (onSelectValue)="setFilterItems(filter, null, $event)"></action-type-selection>
+</ng-template>
+<ng-template #sourceCountryFilter let-filter="filter">
+  <country-selection [selectedValues]="mapToList(filter)" (onSelectItems)="addFilterItems(filter, $event)" (onUnselectItems)="deleteMultipleFilterItems(filter, $event)"></country-selection>
+</ng-template>
+<ng-template #destinationCountryFilter let-filter="filter">
+  <country-selection [selectedValues]="mapToList(filter)" (onSelectItems)="addFilterItems(filter, $event)" (onUnselectItems)="deleteMultipleFilterItems(filter, $event)"></country-selection>
+</ng-template>
+<ng-template #subdomainFilter let-filter="filter">
+  <subdomain-selection [list]="mapToList(filter)" (onAddItem)="addFilterItems(filter, [$event])" (onDeleteItem)="deleteFilterItem(filter, $event)" (onDeleteAllItems)="deleteAllFilterItems(filter)"></subdomain-selection>
+</ng-template>
+<ng-template #blockReasonFilter let-filter="filter">
+  <common-manual-selection [list]="mapToList(filter)" [translationKeyHeader]="'BlockReasonSelection'" (onAddItem)="addFilterItems(filter, [$event])"
+                           (onDeleteAllItems)="deleteAllFilterItems(filter)"
+                           (onDeleteItem)="deleteFilterItem(filter, $event)"></common-manual-selection>
+</ng-template>
+<ng-template #categoryFilter let-filter="filter">
+  <category-selection [selectedValues]="mapToList(filter)" (onSelectItems)="addFilterItems(filter, $event)" (onUnselectItems)="deleteMultipleFilterItems(filter, $event)"></category-selection>
+</ng-template>
+<ng-template #applicationFilter let-filter="filter">
+  <application-selection [selectedValues]="mapToList(filter)" (onSelectItems)="addFilterItems(filter, $event)" (onUnselectItems)="deleteMultipleFilterItems(filter, $event)"></application-selection>
+</ng-template>
+<div class="tw-flex tw-flex-col" *ngIf="filterDropDownList">
+  <base-filter-wrapper class="tw-sticky"  theme="rounded" #filterWrapperComponent [initialFilters]="filter"  [filterDropDownList]="filterDropDownList" (onFilterApplied)="filterApplied($event)">
+    <ng-template #leftPart>
+      <div class="tw-flex">
+        <rk-week-day-calendar #calendar [selectedDateInterval]="selectedDateInterval"  class="tw-mr-1.5"  (dateSelectedCallback)="dateSelected($event)">
+        </rk-week-day-calendar>
+        <rk-pill *ngIf="hourIntervalLbl" [label]="hourIntervalLbl" [theme]="'passive'" displayRemove="true" (removeClicked)="removeHourFilter()" class="tw-mr-4">
+          <ng-template #leftSlot>
+            <feather-icon name="clock"></feather-icon>
+          </ng-template>
+        </rk-pill>
+      </div>
+    </ng-template>
+  </base-filter-wrapper>
+  <div class="rk-table-rounded-border tw-mt-4 tw-h-[500px]">
+     <dns-tunnel-traffic-report #tunnelTrafficReportComponent [initAfterView]="true" [filter]="filterWrapperComponent?.filter" [filterTypes]="filterTypes"></dns-tunnel-traffic-report>
+  </div>
+</div>

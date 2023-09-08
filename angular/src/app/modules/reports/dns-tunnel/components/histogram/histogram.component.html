@@ -1,0 +1,50 @@
+<div class="bar-chart d-flex flex-column" [rkSpinner]="loading" class="tw-min-h-[270px]">
+  <div class="d-flex justify-content-between align-items-center">
+    <rk-n-switch class="tw-flex-1"  [(value)]="selectedDateOption" (valueChange)="dateOptionChanged($event)" [config]="dateOptions"></rk-n-switch>
+    <div class="d-flex tw-flex-1 tw-justify-center align-items-center tw-gap-3" >
+      <rk-tooltip size="mini" [desc]="'PreviousInfo' | translate: {'arg': navigationButtonTranslation}">
+        <ng-template #tooltipContainer>
+          <time-navigation-button type="previous" (clickEvent)="changeWeek('prev')"></time-navigation-button>
+        </ng-template>
+      </rk-tooltip>
+      <rk-tooltip *ngIf="!disableNextBtn" size="mini" [desc]="'NextInfo' | translate: {'arg': navigationButtonTranslation}">
+        <ng-template #tooltipContainer>
+          <time-navigation-button type="next" [disabled]="false" (clickEvent)="changeWeek('next')"></time-navigation-button>
+        </ng-template>
+      </rk-tooltip>
+      <time-navigation-button *ngIf="disableNextBtn" type="next" [disabled]="true" (clickEvent)="changeWeek('next')"></time-navigation-button>
+    </div>
+    <div class="tw-flex tw-flex-1 tw-justify-end tw-gap-5">
+      <rk-select-control color="primary" [label]="DnsTunnelLevels.High | TunnelSeverityName" [isChecked]="highSelected" (checkboxChange)="onGroupChange(DnsTunnelLevels.High, $event)"></rk-select-control>
+      <rk-select-control color="primary" [label]="DnsTunnelLevels.Suspicious | TunnelSeverityName" [isChecked]="suspiciousSelected" (checkboxChange)="onGroupChange(DnsTunnelLevels.Suspicious, $event)"></rk-select-control>
+    </div>
+    <div class="">
+
+    </div>
+  </div>
+  <div #chartWrapper style="height: 275px" class="tw-relative tw-mt-2.5" *ngIf="chartOptions" id="chartWrapper">
+    <apx-chart
+      #histogramChart
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [colors] = "chartOptions.colors"
+      [dataLabels]="chartOptions.dataLabels"
+      [plotOptions]="chartOptions.plotOptions"
+      [yaxis]="chartOptions.yaxis"
+      [legend]="chartOptions.legend"
+      [grid]="chartOptions.grid"
+      [fill]="chartOptions.fill"
+      [stroke]="chartOptions.stroke"
+      [tooltip]="chartOptions.tooltip"
+      [xaxis]="chartOptions.xaxis"
+      [responsive]="chartOptions.responsive"
+      [states]="chartOptions.states"
+    ></apx-chart>
+    <div *ngIf="infoMsg" class="d-flex align-items-center justify-content-center histogram-info-label">
+      <span class= "font-weight-bold">{{infoMsg}}</span>
+    </div>
+  </div>
+</div>
+
+
+

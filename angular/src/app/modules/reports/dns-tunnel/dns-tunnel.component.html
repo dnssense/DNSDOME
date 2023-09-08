@@ -1,0 +1,58 @@
+<ng-template #domainFilter let-filter="filter">
+  <domain-selection [list]="mapToList(filter)" (onAddItem)="addFilterItems(filter, [$event])" (onDeleteItem)="deleteFilterItem(filter, $event)" (onDeleteAllItems)="deleteAllFilterItems(filter)"></domain-selection>
+</ng-template>
+<div class="page-content-container tw-flex tw-flex-col">
+    <!--<div class="tw-flex tw-items-center tw-py-3 tw-px-4 tw-gap-3 tw-bg-white tw-rounded-lg tw-shadow-lg tw-mb-4">
+        <rk-n-switch  [(value)]="selectedOption" (valueChange)="optionChanged($event)" [config]="options"></rk-n-switch>
+        <span class="rk-body-12" [innerHTML]="translationPrefix + '.ProtectionMsg' | translate: {'arg':  (selectedOption === 0 ? 'Blocking': 'Logging') | translate | lowercase }"></span>
+    </div>-->
+  <div class="tw-rounded-xl tw-shadow tw-bg-white tw-flex tw-flex-col">
+      <div class="tw-py-4 tw-px-6">
+        <div class="tw-flex tw-flex-col tw-text-base tw-py-4 tw-relative" *ngIf="loaded">
+          <rk-button-v2 class="tw-absolute tw-top-4 tw-right-8 tw-z-[1]"  variant="raised" color="primary" [size]="'xs'" [label]="translationPrefix + '.ManageExceptionBtnLbl' | translate" (clicked)="manageExceptions()">
+            <ng-template #leftIcon>
+              <feather-icon  name="alert-octagon"></feather-icon>
+            </ng-template>
+          </rk-button-v2>
+          <rk-tabs-view class="tw-w-full" (tabClicked)="tabSelected($event)">
+            <rk-tab-view active="true" hideContent="true" [tabTitle]="translationPrefix + '.SuspiciousTraffic' | translate | uppercase">
+            </rk-tab-view>
+          </rk-tabs-view>
+          <div class="tw-flex tw-flex-col" [hidden]="selectedTabId !== 0">
+            <base-filter-wrapper class="tw-sticky tw-pt-9"  theme="rounded" #filterWrapperComponent [initialFilters]="filter"  [filterDropDownList]="filterDropDownList" (onFilterApplied)="onFilterApply($event)">
+              <ng-template #leftPart>
+                <div class="tw-flex">
+                  <rk-week-day-calendar #calendar [selectedDateInterval]="selectedDateInterval" [primaryTheme]="showPrimaryCalendar" class="tw-mr-1.5"  (dateSelectedCallback)="dateSelected($event)">
+                    <ng-template #calendarFooter>
+                      <div class="tw-flex tw-justify-end tw-py-4 tw-px-5 tw-gap-3 tw-border-0 tw-border-t tw-border-solid tw-border-light-grey-8">
+                        <button class="tw-rounded-full tw-py-1 tw-px-2.5 tw-border tw-border-solid tw-border-gray-9 rk-body-10 tw-text-title-color tw-bg-white hover:tw-bg-primary hover:tw-border-primary hover:tw-text-white" (click)="setManualDate(7*24*60, 'days')">
+                          {{'Date.LastXDay' | translate: {'X': 7} }}
+                        </button>
+                        <button class="tw-rounded-full tw-py-1 tw-px-2.5 tw-border tw-border-solid tw-border-gray-9 rk-body-10 tw-text-title-color tw-bg-white hover:tw-bg-primary hover:tw-border-primary hover:tw-text-white" (click)="setManualDate(24*60, 'hours')">
+                          {{'Date.LastXHour' | translate: {'X': 24} }}
+                        </button>
+                      </div>
+                    </ng-template>
+                  </rk-week-day-calendar>
+                  <rk-pill *ngIf="hourIntervalLbl" [label]="hourIntervalLbl" [theme]="'passive'" displayRemove="true" (removeClicked)="removeHourFilter()" class="tw-mr-4">
+                    <ng-template #leftSlot>
+                      <feather-icon name="clock"></feather-icon>
+                    </ng-template>
+                  </rk-pill>
+                </div>
+              </ng-template>
+            </base-filter-wrapper>
+            <div class="tw-px-5 tw-py-9" >
+              <dns-tunnel-histogram  #histogram  [filter]="filterWrapperComponent?.filter" [filterTypes]="filterTypes" (onHistogramDateChanged)="dateChanged($event)"  (onHistogramGroupChanged)="onHistogramGroupFilterChanged($event)" (onDateOptionSet)="onHistogramDateOptionSet($event)"></dns-tunnel-histogram>
+            </div>
+            <div class="rk-table-rounded-border tw-h-[500px]">
+              <dns-tunnel-event-report #eventReportComponent (onTunnelEventDetailClick)="onDnsTunnelEventClick($event)" [filter]="filterWrapperComponent?.filter" [filterTypes]="filterTypes"></dns-tunnel-event-report>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class="tw-rounded-xl tw-shadow tw-bg-white tw-flex tw-flex-col tw-mt-4 tw-py-8 tw-px-6" #trafficReportContainer *ngIf="selectedTunnelEventItem  && selectedTabId === 0">
+    <dns-tunnel-traffic-report-container   [tunnelEventItem]="selectedTunnelEventItem"></dns-tunnel-traffic-report-container>
+  </div>
+</div>

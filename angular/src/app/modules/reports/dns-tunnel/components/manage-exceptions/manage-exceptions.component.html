@@ -1,0 +1,145 @@
+<ng-template #listItem let-blockItem = blockItem let-whiteListItem = whiteListItem>
+    <div class="tw-flex tw-flex-col tw-group tw-bg-white tw-border-0 !tw-border-b tw-border-solid tw-border-light-grey-2">
+        <div class="tw-flex">
+            <div class="tw-flex tw-py-4 tw-px-3 tw-flex-1 group-hover:tw-bg-prime-10">
+                <span class="rk-body-14 tw-flex-1">{{blockItem ? blockItem.domain : whiteListItem.record}}</span>
+            </div>
+            <div class="tw-w-[64px] tw-flex" *ngIf="whiteListItem">
+                <div class="tw-flex tw-cursor-default tw-items-center tw-ml-auto tw-transition-[width] tw-w-0 tw-px-3 tw-gap-1 tw-border-0  tw-border-solid tw-border-primary-5 group-hover:tw-w-full group-hover:tw-border-l-[3px] group-hover:tw-bg-white tw-overflow-hidden [&>*]:tw-overflow-hidden">
+                    <rk-tooltip size="mini" [desc]="'Delete' | translate">
+                        <ng-template #tooltipContainer>
+                            <div class="tw-flex tw-items-center tw-w-8 tw-h-8 tw-justify-center tw-rounded-[4px] hover:tw-bg-prime-10 tw-cursor-pointer" (click)="openConfirmDeleteWhiteListDialog(whiteListItem)">
+                                <feather-icon class="!tw-w-5 !w-h-5 !tw-flex" name="trash-2"></feather-icon>
+                            </div>
+                        </ng-template>
+                    </rk-tooltip>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #deleteModalTemplate let-data>
+    <rk-basic-dialog [title]="(translationPrefix + '.ExceptionDeleteConfirmTitleText' | translate : {'arg': data?.item?.record })" [description]="(translationPrefix + '.ExceptionDeleteConfirmText' | translate: {'arg': data?.item?.record })">
+        <ng-template #headerIcon>
+            <feather-icon name="trash-2"></feather-icon>
+        </ng-template>
+        <ng-template #footerButtons>
+            <rk-button-v2  variant="basic"  [label]="'Cancel' | translate" (clicked)="hideTopDialogModal()">
+            </rk-button-v2>
+            <rk-button-v2  variant="raised" color="primary" [label]="'Delete' | translate" (clicked)="deleteWhiteList(data?.item)">
+            </rk-button-v2>
+        </ng-template>
+    </rk-basic-dialog>
+</ng-template>
+<ng-template #deleteAllBlockedDomainModalTemplate>
+  <rk-basic-dialog [title]="(translationPrefix + '.DeleteAllBlockedListDialogTitle' | translate)" [description]="(translationPrefix + '.DeleteAllBlockedListDialogDesc' | translate)">
+    <ng-template #headerIcon>
+      <feather-icon name="trash-2"></feather-icon>
+    </ng-template>
+    <ng-template #footerButtons>
+      <rk-button-v2  variant="basic"  [label]="'Cancel' | translate" (clicked)="hideTopDialogModal()">
+      </rk-button-v2>
+      <rk-button-v2  variant="raised" color="primary" [label]="'Delete' | translate" (clicked)="deleteAllBlockedList()">
+      </rk-button-v2>
+    </ng-template>
+  </rk-basic-dialog>
+</ng-template>
+<ng-template #infoBanner let-desc = desc>
+    <div class="tw-flex tw-items-center tw-gap-2.5 tw-rounded-lg tw-py-4 tw-px-5 tw-bg-light-grey-6 tw-border tw-border-solid tw-border-primary-1">
+        <div class="tw-h-4 tw-w-4 tw-flex tw-items-center">
+            <feather-icon class="!tw-flex !tw-w-full" name="info"></feather-icon>
+        </div>
+        <span class="rk-body-12">{{desc}}</span>
+    </div>
+</ng-template>
+<div class="rk-popup-container tw-shadow-lg tw-flex tw-flex-col" [hidden]="newWhiteListItem">
+    <div class="manage-exception-header">
+        <div class="tw-flex tw-gap-2 tw-items-center">
+            <div class="tw-h-4 tw-w-4 tw-flex tw-items-center"><feather-icon class="!tw-flex !tw-w-full" name="alert-octagon"></feather-icon></div>
+            <span class="rk-button-14">{{translationPrefix + '.ExceptionModalTitle' | translate}}</span>
+        </div>
+        <div class="tw-p-1.5 tw-ml-auto tw-h-9 tw-w-9">
+            <feather-icon class="!tw-w-full !tw-h-full !tw-flex tw-items-center tw-cursor-pointer" name="x" (click)="closeDialog()"></feather-icon>
+        </div>
+    </div>
+    <div class="manage-exception-body rk-scroll-sm tw-relative">
+      <div class="tw-absolute tw-top-4 tw-right-8 tw-z-[1] tw-flex tw-items-center">
+          <rk-button-v2 *ngIf="selectedTabId === 1"  variant="raised" color="primary" [size]="'xs'" [label]="'AddNew' | translate" (clicked)="addNewWhiteList()">
+            <ng-template #leftIcon>
+              <feather-icon  name="plus-circle"></feather-icon>
+            </ng-template>
+          </rk-button-v2>
+        <rk-button-v2 *ngIf="selectedTabId === 0"  variant="stroke" color="default"  [size]="'xs'" [label]="'DeleteAll' | translate" (clicked)="openConfirmDeleteAllDialog()">
+          <ng-template #leftIcon>
+            <feather-icon  name="trash-2"></feather-icon>
+          </ng-template>
+        </rk-button-v2>
+      </div>
+      <rk-tabs-view class="tw-w-full" (tabClicked)="tabSelected($event)">
+            <rk-tab-view active="true" hideContent="true" [tabTitle]="translationPrefix + '.BlockedTabTitle' | translate | uppercase">
+            </rk-tab-view>
+            <rk-tab-view hideContent="true"  [tabTitle]="translationPrefix + '.WhiteListTabTitle' | translate | uppercase">
+            </rk-tab-view>
+        </rk-tabs-view>
+        <div class="tw-mt-5">
+            <ng-container *ngTemplateOutlet="infoBanner; context: {desc: translationPrefix + (selectedTabId === 0 ? '.BlockedBannerText': '.WhiteListBannerText') | translate}"></ng-container>
+        </div>
+        <div class="tw-mt-1">
+            <ng-container *ngIf="selectedTabId === 0">
+                <ng-container *ngIf="blockedList && blockedList.length > 0">
+                    <div class="tw-flex tw-flex-col">
+                        <div *ngFor="let item of blockedList">
+                            <ng-container *ngTemplateOutlet="listItem; context: {blockItem: item}"></ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+                <rk-table-info *ngIf="blockListFetched && (!blockedList || blockedList.length === 0)" class="tw-flex tw-mt-10 tw-justify-center" [description]="translationPrefix + '.NoBlockedDomainTitle' | translate">
+                </rk-table-info>
+            </ng-container>
+            <ng-container *ngIf="selectedTabId === 1">
+                <ng-container *ngIf="whiteList && whiteList.length > 0">
+                    <div class="tw-flex tw-flex-col">
+                        <div *ngFor="let item of whiteList">
+                            <ng-container *ngTemplateOutlet="listItem; context: {whiteListItem: item}"></ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+                <rk-table-info *ngIf="whiteListFetched && (!whiteList || whiteList.length === 0)" class="tw-flex tw-mt-10 tw-justify-center" [description]="translationPrefix + '.NoWhiteListTitle' | translate">
+                </rk-table-info>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="info-notif">
+        <rk-inline-badge *ngIf="showInfo" [badgeType]="badgeTypes.Success" class="mr-3">
+            <span>{{infoMsg}}</span>
+        </rk-inline-badge>
+    </div>
+</div>
+<div class="rk-popup-container tw-shadow-lg tw-flex tw-flex-col" *ngIf="newWhiteListItem">
+    <div class="manage-exception-header">
+        <div class="tw-flex tw-gap-2 tw-items-center">
+            <feather-icon class="tw-cursor-pointer !tw-w-[18px] !tw-h-[18px] !tw-flex" (click)="backToMainModal()" name="arrow-left"></feather-icon>
+            <span class="rk-button-14">{{(translationPrefix + '.AddExceptionModalTitle' | translate)}}</span>
+        </div>
+        <div class="tw-p-1.5 tw-ml-auto tw-h-9 tw-w-9">
+            <feather-icon class="!tw-w-full !tw-h-full !tw-flex tw-items-center tw-cursor-pointer" name="x" (click)="backToMainModal()"></feather-icon>
+        </div>
+    </div>
+    <div class="manage-exception-body rk-scroll-sm !tw-h-auto !tw-pb-12">
+        <div class="tw-mb-10">
+            <ng-container *ngTemplateOutlet="infoBanner; context: {desc: translationPrefix + '.AddExceptionBannerText' | translate }"></ng-container>
+        </div>
+        <rk-text-input #nameElement class="tw-w-full" [label]="translationPrefix + '.DomainSubdomainInputTitle' | translate"  [size]="'md'" [placeholder]="" [required]="true" valueChangeTrigger="keyup" [customValidation]="customDomainValidation()" [(value)]="newWhiteListItem.record">
+        </rk-text-input>
+    </div>
+    <div class="manage-exception-footer">
+        <div class="tw-ml-auto tw-flex tw-items-center tw-gap-6">
+            <rk-button-v2  variant="stroke" color="default" [label]="'Cancel' | translate" (clicked)="backToMainModal()">
+            </rk-button-v2>
+            <rk-button-v2  variant="raised" color="primary" [label]="translationPrefix + '.AddWhiteListBtn' | translate" (clicked)="saveWhiteList()">
+            </rk-button-v2>
+        </div>
+    </div>
+</div>
+

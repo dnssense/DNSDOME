@@ -35,6 +35,7 @@ export class ConfigService {
     { id: 0, path: '/admin/dashboard', text: 'PageName.Dashboard', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
     { id: 1, path: '/admin/reports/monitor', text: 'PageName.Monitor', icon: 'monitor', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
     { id: 2, path: '/admin/reports/custom-reports', text: 'PageName.CustomReports', icon: 'custom-reports', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+    { id: 6, path: '/admin/reports/dns-tunnel', text: 'PageName.DnsTunnel', icon: 'dns-tunnel', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
     {
       id: 3, path: '/admin/', text: 'PageName.Deployment', icon: 'dashboard', selected: false, roles: ['ROLE_CUSTOMER'],
       subMenu: [

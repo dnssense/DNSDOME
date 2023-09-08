@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {MissingTranslationHandler, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import { RecaptchaModule } from 'ng-recaptcha';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -14,8 +14,14 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule } from 'ngx-ui-loader';
-import {RkNotificationModule, ServicesModule} from 'roksit-lib';
+import {NgxUiLoaderConfig, NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule} from 'ngx-ui-loader';
+import {
+  ApplicationService,
+  CategoryService,
+  RkNotificationModule,
+  RkTranslatorService,
+  ServicesModule
+} from 'roksit-lib';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ErrorInterceptor } from './core/interceptors/ErrorInterceptor';
@@ -23,6 +29,15 @@ import { HttpErrorInterceptor } from './core/interceptors/HttpErrorInterceptor';
 import { JwtInterceptor } from './core/interceptors/JwtInterceptor';
 import { translateHttpLoaderFactory } from './core/translationhelper';
 import { ClipboardModule } from 'ngx-clipboard';
+import {RkTranslationHandler, TranslatorService} from './core/services/translator.service';
+import {CacheableCategoryServiceImpl} from './core/services/cacheable-categories.service';
+import {CacheableApplicationServiceImpl} from './core/services/cacheable-application.service';
+const ngxUiLoaderConfig: NgxUiLoaderConfig = {
+  logoUrl: '/assets/img/DNSDome Logo Reveal.svg',
+  minTime: 100,
+  fgsColor: '#507df3',
+  pbColor: '#507df3'
+};
 
 
 @NgModule({
@@ -33,16 +48,15 @@ import { ClipboardModule } from 'ngx-clipboard';
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    NgxUiLoaderModule.forRoot({
-      fgsPosition: 'center-center',
-      minTime: 100,
-      fgsType: 'ball-scale-multiple',
-      fgsColor: '#507df3',
-      pbColor: '#507df3'
-    }),
+    NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
     NgxUiLoaderHttpModule.forRoot({
       showForeground: true,
-      excludeRegexp: ['\/api\/oauth\/token$', '\/api\/user\/current$', '\/api\/user\/current\/role$', '\/websocket$']
+      excludeRegexp: [
+        '\/api\/oauth\/token$',
+        '\/api\/user\/current$',
+        '\/api\/user\/current\/role$',
+        '\/websocket$',
+        '\/api\/investigation\/v1']
     }),
     NgxUiLoaderRouterModule,
     BsDropdownModule.forRoot(),
@@ -58,7 +72,8 @@ import { ClipboardModule } from 'ngx-clipboard';
         provide: TranslateLoader,
         useFactory: translateHttpLoaderFactory,
         deps: [HttpClient]
-      }
+      },
+      missingTranslationHandler: {provide: MissingTranslationHandler, useClass: RkTranslationHandler}
     }),
     ServicesModule.forRoot(),
     NgIdleKeepaliveModule.forRoot(),
@@ -80,7 +95,10 @@ import { ClipboardModule } from 'ngx-clipboard';
     {
       provide: ErrorHandler,
       useClass: ErrorInterceptor
-    }
+    },
+    { provide: RkTranslatorService, useClass: TranslatorService },
+    { provide: CategoryService, useClass: CacheableCategoryServiceImpl },
+    { provide: ApplicationService, useClass: CacheableApplicationServiceImpl },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -16,7 +16,11 @@ const reportsRoutes: Routes = [
   {
     path: 'audit',
     component: AuditComponent
-  }
+  },
+  {
+    path: 'dns-tunnel',
+    loadComponent: () => import('./dns-tunnel/dns-tunnel.component')
+  },
 ];
 
 @NgModule({
