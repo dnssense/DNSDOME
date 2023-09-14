@@ -21,7 +21,7 @@ const reportsRoutes: Routes = [
   },
   {
     path: 'dns-tunnel',
-    canActivate: [LicenceGuard],
+    canMatch: [LicenceGuard],
     data: {
       productTypeCode: LicenceProductCode.DNSTunnel,
       licenceTypeCode: LicenceTypeCode.DNSTunnel_Block
