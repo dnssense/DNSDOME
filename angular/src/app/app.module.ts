@@ -17,7 +17,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import {NgxUiLoaderConfig, NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule} from 'ngx-ui-loader';
 import {
   ApplicationService,
-  CategoryService,
+  CategoryService, ProductLicenceService,
   RkNotificationModule,
   RkTranslatorService,
   ServicesModule
@@ -32,6 +32,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import {RkTranslationHandler, TranslatorService} from './core/services/translator.service';
 import {CacheableCategoryServiceImpl} from './core/services/cacheable-categories.service';
 import {CacheableApplicationServiceImpl} from './core/services/cacheable-application.service';
+import {ProductLicenceServiceImpl} from "./core/services/product-licence.service";
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   logoUrl: '/assets/img/DNSDome Logo Reveal.svg',
   minTime: 100,
@@ -99,6 +100,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     { provide: RkTranslatorService, useClass: TranslatorService },
     { provide: CategoryService, useClass: CacheableCategoryServiceImpl },
     { provide: ApplicationService, useClass: CacheableApplicationServiceImpl },
+    { provide: ProductLicenceService, useClass: ProductLicenceServiceImpl },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

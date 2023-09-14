@@ -121,7 +121,7 @@ function mapUICriteriaToServiceModel(i, serviceModel: BaseFilterRequestServiceMo
     const filterItem = {name: i.name} as BaseServiceFilterModel;
     filterItem.value = [];
     i.values?.forEach((v: FilterBadgeValueV2) => {
-        filterItem.value.push(mapper ? mapper(v.value) : v.value);
+        filterItem.value.push(mapper ? mapper((v.value !== null && v.value !== undefined) ? v.value : 'N/A') : (v.value !== null && v.value !== undefined) ? v.value : 'N/A');
     });
     if (i.equal) {
         serviceModel.must.push(filterItem);

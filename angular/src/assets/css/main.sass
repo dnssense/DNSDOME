@@ -2,7 +2,7 @@
 @import "node_modules/roksit-lib/assets/scss/core/variables"
 
 $white: #fff
-
+$toolbarHeight: 60px
 html, body
   scroll-behavior: smooth
 
@@ -565,8 +565,8 @@ rk-collapse-description
   font-size: 10px
 
 .toolbar
-  height: 60px !important
-  min-height: 60px !important
+  height: var($toolbarHeight) !important
+  min-height: var($toolbarHeight) !important
   flex-direction: column !important
 
 .main-content

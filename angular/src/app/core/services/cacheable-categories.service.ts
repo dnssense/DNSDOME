@@ -26,6 +26,9 @@ export class CacheableCategoryServiceImpl extends CategoryService {
     constructor(private staticService: StaticService) {
         super();
     }
+    clearCache() {
+      this.cache$ = null;
+    }
     getCategories(clearCache?: boolean): Observable<CategoryUI[]> {
             return this.getRawServiceData(clearCache).pipe(
                 map(data => {

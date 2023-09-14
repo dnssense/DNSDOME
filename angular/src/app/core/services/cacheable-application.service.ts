@@ -34,6 +34,9 @@ export class CacheableApplicationServiceImpl extends ApplicationService {
     constructor(private staticService: StaticService) {
         super();
     }
+    clearCache() {
+      this.cache$ = null;
+    }
     getApplications(clearCache?: boolean): Observable<ApplicationUI[]> {
             return this.getRawServiceData(clearCache).pipe(
                 map(data => {

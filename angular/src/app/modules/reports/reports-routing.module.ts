@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuditComponent } from './audit/audit.component';
 import { CustomReportComponent } from './customreport/customreport.component';
 import { MonitorComponent } from './monitor/monitor.component';
+import {LicenceGuard} from '../../core/guards/LicenceGuard';
+import {LicenceProductCode, LicenceTypeCode} from 'roksit-lib';
 
 const reportsRoutes: Routes = [
   {
@@ -19,6 +21,11 @@ const reportsRoutes: Routes = [
   },
   {
     path: 'dns-tunnel',
+    canActivate: [LicenceGuard],
+    data: {
+      productTypeCode: LicenceProductCode.DNSTunnel,
+      licenceTypeCode: LicenceTypeCode.DNSTunnel_Block
+    },
     loadComponent: () => import('./dns-tunnel/dns-tunnel.component')
   },
 ];

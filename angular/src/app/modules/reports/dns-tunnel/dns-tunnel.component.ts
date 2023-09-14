@@ -1,24 +1,27 @@
 import {AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {
-  RkNSwitchModule,
-  RkNSwitchModel,
-  RkTranslatorService,
-  BaseFilterWrapperComponent,
-  RkPillComponent,
-  RkWeekDayCalendarComponent,
   BaseFilterInput,
-  RkTabsViewComponent,
-  RkTabViewComponent,
-  TrafficFilterBadgeModel,
-  FilterDropDownConfig,
+  BaseFilterWrapperComponent,
+  CommonDialogCustomConfig,
+  CommonManualSelectionComponent, CompanyLicenceUIResponse,
+  DomainSelectionComponent,
   FilterBadgeModelV2,
   FilterBadgeValueV2,
-  DomainSelectionComponent,
-  TrafficColumnNames,
+  FilterDropDownConfig, LicenceProductCode, LicenceTypeCode, LicenceTypeItem,
+  NestedDialogCustomConfig, ProductLicenceService,
+  RkButtonV2Component,
   RkFilterServiceV2,
-  CommonManualSelectionComponent,
-  RkButtonV2Component, NestedDialogCustomConfig, CommonDialogCustomConfig
+  RkNotificationService,
+  RkNSwitchModel,
+  RkNSwitchModule,
+  RkPillComponent,
+  RkTabsViewComponent,
+  RkTabViewComponent,
+  RkTranslatorService,
+  RkWeekDayCalendarComponent,
+  TrafficColumnNames,
+  TrafficFilterBadgeModel, UpdateLicenceUIRequest
 } from 'roksit-lib';
 import {TranslateModule} from '@ngx-translate/core';
 import {FeatherModule} from 'angular-feather';
@@ -40,6 +43,8 @@ import {
 } from './components/dns-tunnel-traffic-report-container/dns-tunnel-traffic-report-container.component';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {ManageExceptionsComponent} from './components/manage-exceptions/manage-exceptions.component';
+import {Router} from '@angular/router';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-dns-tunnel',
@@ -54,8 +59,10 @@ export default class DnsTunnelComponent implements OnInit, AfterViewInit, OnDest
   @ViewChild('filterWrapperComponent', {static: false}) filterComponent: BaseFilterWrapperComponent;
   @ViewChild('trafficReportContainer', {static: false}) trafficReportContainer: ElementRef;
   dialog = inject(MatDialog);
+  rkNotification = inject(RkNotificationService);
   @ViewChild('domainFilter', {static: true}) domainFilter: TemplateRef<HTMLElement>;
   translatorService = inject(RkTranslatorService);
+  productLicenceService = inject(ProductLicenceService);
   translationPrefix = 'DnsTunnel';
   selectedTabId = 0;
   filter: BaseFilterInput;
@@ -65,7 +72,8 @@ export default class DnsTunnelComponent implements OnInit, AfterViewInit, OnDest
   ];
   dnsTunnelCommunicationService = inject(DnsTunnelCommunicationService);
   private rkFilterService = inject(RkFilterServiceV2);
-  selectedOption: number;
+  selectedOption = -1;
+  prevSelectedOption = -1;
   loaded: boolean;
   ngUnsubscribe: Subject<any> = new Subject<any>();
   showPrimaryCalendar = false;
@@ -75,13 +83,38 @@ export default class DnsTunnelComponent implements OnInit, AfterViewInit, OnDest
   filterDropDownList: FilterDropDownConfig;
   dateTriggeredFromCalendar = false;
   selectedTunnelEventItem: DnsTunnelSuspiciousEventsItem;
+  companyLicenceData: CompanyLicenceUIResponse;
+  loggingLicenceType: LicenceTypeItem;
+  blockingLicenceType: LicenceTypeItem;
+  constructor(private router: Router) {
+    this.productLicenceService.getCompanyLicence(LicenceProductCode.DNSTunnel).pipe(take(1)).subscribe(res => {
+      this.companyLicenceData = res;
+      this.setProtectionData();
+    });
+  }
+  setProtectionData() {
+    if (this.companyLicenceData?.results?.product?.licenceTypes?.length >= 2) {
+      this.companyLicenceData?.results?.product?.licenceTypes.forEach(lt => {
+        if (lt.code === LicenceTypeCode.DNSTunnel_Block) {
+          this.blockingLicenceType = lt;
+        } else if (lt.code === LicenceTypeCode.DNSTunnel_Log) {
+          this.loggingLicenceType = lt;
+        }
+      });
+    }
+    if (this.companyLicenceData?.results?.licenceType?.code === LicenceTypeCode.DNSTunnel_Block) {
+      this.optionChanged(0);
+    } else if (this.companyLicenceData?.results?.licenceType?.code === LicenceTypeCode.DNSTunnel_Log) {
+      this.optionChanged(1);
+    }
+  }
   optionChanged(option: number) {
+    this.prevSelectedOption = this.selectedOption;
     this.selectedOption = option;
   }
 
   ngOnInit(): void {
     this.loaded = true;
-    this.optionChanged(0);
     const currentDate = new Date();
     let startDate = new Date(currentDate.getTime());
     const minuteInterval = 7 * 24 * 60;
@@ -235,5 +268,25 @@ export default class DnsTunnelComponent implements OnInit, AfterViewInit, OnDest
         },
         ...NestedDialogCustomConfig,
         ...CommonDialogCustomConfig});
+  }
+  changeProtection(option: number) {
+    const req = {id: this.companyLicenceData.results.id,
+                 companyId: this.companyLicenceData.results.companyId,
+                 productId: this.companyLicenceData.results.product.id,
+                 licenceTypeId: option === 0 ? this.blockingLicenceType.id : this.loggingLicenceType.id} as UpdateLicenceUIRequest;
+    this.productLicenceService.updateLicence(req).pipe(take(1)).subscribe(res => {
+      if (res.status === 200) {
+        this.productLicenceService.getCompanyLicence(LicenceProductCode.DNSTunnel, true).pipe(take(1)).subscribe(res2 => {
+          this.companyLicenceData = res2;
+          this.setProtectionData();
+        }, () => {
+          this.optionChanged(this.prevSelectedOption);
+          this.rkNotification.error(this.translatorService.translate('GenericError'));
+        });
+      }
+    }, () => {
+      this.optionChanged(this.prevSelectedOption);
+      this.rkNotification.error(this.translatorService.translate('GenericError'));
+    });
   }
 }
