@@ -4,7 +4,6 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { Company } from 'src/app/core/models/Company';
-import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 import { RegisterUser, SignupBean } from 'src/app/core/models/SignupBean';
 import { AccountService } from 'src/app/core/services/accountService';
 import { CaptchaService } from 'src/app/core/services/captcha.service';
@@ -15,7 +14,7 @@ import { GeoLocation, GeoLocationService } from '../../../core/services/geoLocat
 
 import { catchError, tap, mergeMap, map } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { RkNotificationService } from 'roksit-lib';
+import {phoneNumberCodes, RkNotificationService } from 'roksit-lib';
 
 
 declare var $: any;
@@ -57,7 +56,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   public host: ConfigHost;
   public captcha_key = '';
   @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
-  phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
+  phoneNumberCodes = phoneNumberCodes;
   emailFormControl = new UntypedFormControl('', [
     Validators.required,
     Validators.email,
