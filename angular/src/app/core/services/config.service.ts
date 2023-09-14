@@ -54,7 +54,7 @@ export class ConfigService {
         { id: 5.4, path: 'settings/common-bwlist', text: 'PageName.CommonBWListProfile', icon: 'bwlist', selected: false, roles: ['ROLE_CUSTOMER'] },
         { id: 5.5, path: 'settings/profiles', text: 'PageName.SecurityProfiles', icon: 'security-profiles', selected: false, roles: ['ROLE_CUSTOMER'] },
         { id: 5.6, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
-        { id: 5.8, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
+        // { id: 5.8, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
       ]
     }
   ];
@@ -217,10 +217,10 @@ export class ConfigService {
       this.translationservice.setDefaultLang(language);
       this.translationservice.use(language);
     }
-    const themeColor = this.getThemeColor(userId);
+    /*const themeColor = this.getThemeColor(userId);
     if (themeColor) {
       this.rkUtilityService.changeTheme(themeColor === 'dark');
-    }
+    }*/
   }
 
   getApiUrl(): string {
@@ -242,11 +242,12 @@ export class ConfigService {
   }
 
   saveThemeColor(userId: number, color: string) {
-
+    /*
     if (userId) {
       localStorage.setItem(`theme_for_user_${userId}`, color);
     }
     this.rkUtilityService.changeTheme(color === 'dark');
+    */
   }
   getThemeColor(userId: number) {
     if (userId) {
