@@ -23,8 +23,8 @@ const reportsRoutes: Routes = [
     path: 'dns-tunnel',
     canMatch: [LicenceGuard],
     data: {
-      productTypeCode: LicenceProductCode.DNSTunnel,
-      licenceTypeCode: LicenceTypeCode.DNSTunnel_Block
+      productTypeCode: LicenceProductCode.Eye,
+      licenceTypeCode: LicenceTypeCode.Eye_DDR
     },
     loadComponent: () => import('./dns-tunnel/dns-tunnel.component')
   },

@@ -36,7 +36,7 @@ import {
   TimeNavigationButtonComponent,
   RkTooltipComponent,
   RkSelectControlComponent,
-  RkFilterServiceV2, TrafficFilterBadgeModel
+  RkFilterServiceV2, TrafficFilterBadgeModel, RkNotificationService
 } from 'roksit-lib';
 import {FeatherModule} from 'angular-feather';
 import {DnsTunnelCommunicationService} from '../../services/dns-tunnel-communication.service';
@@ -50,7 +50,6 @@ import {
   DnsTunnelService
 } from '../../../../../core/services/dns-tunnel.service';
 import {DnsTunnelHistogramTooltipComponent} from './histogram-tooltip/dns-tunnel-histogram-tooltip.component';
-
 
 
 
@@ -88,6 +87,7 @@ export class DnsTunnelHistogramComponent implements OnInit, AfterViewInit, OnDes
   DnsTunnelLevels = DnsTunnelLevel;
   translationPrefix = 'DnsTunnel';
   translatorService = inject(RkTranslatorService);
+  notifService = inject(RkNotificationService);
   viewContainerRef = inject(ViewContainerRef);
   tunnelService = inject(DnsTunnelService);
   rkFilterService = inject(RkFilterServiceV2);
@@ -157,6 +157,11 @@ export class DnsTunnelHistogramComponent implements OnInit, AfterViewInit, OnDes
       })
     ).subscribe((data: DnsTunnelHistogramUIResponse) => {
       this.processResponse(data);
+    }, () => {
+      this.showLoading(false);
+      this.data = [];
+      this.drawChart();
+      this.notifService.error(this.translatorService.translate('GenericError'));
     });
   }
   getTimeInfo = () => {

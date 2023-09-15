@@ -18,9 +18,13 @@ import {
 import {catchError, map, shareReplay} from 'rxjs/operators';
 import {
   CompanyLicenceUIResponse,
-  LicencePageUIRequest, LicencePageUIResponse,
+  LicencePageUIRequest,
+  LicencePageUIResponse,
   LicencePageUpdateUIRequest,
-  LicencePageUpdateUIResponse, LicenceProductCode, ProductLicenceService, UpdateLicenceUIRequest,
+  LicencePageUpdateUIResponse,
+  LicenceProductCode,
+  ProductLicenceService,
+  UpdateLicenceUIRequest,
   UpdateLicenceUIResponse
 } from 'roksit-lib';
 

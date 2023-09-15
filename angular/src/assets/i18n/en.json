@@ -893,97 +893,24 @@
       "FromPlaceHolder": "From...",
       "ToPlaceHolder": "To..."
     },
-   "DomainSelection": {
-    "Placeholder1": "Search in Domains",
-    "Placeholder2": "Domain Name",
-    "HelpTooltip": "Enter base domain name to add (e.g. google.com)",
-    "SectionHead": "DOMAINS",
-    "NoDataTitle": "No Domains Yet",
-    "NoDataDesc": "You can add domains above or from the results table to filter",
-    "ExistMSG": "Domain Already Exists",
-    "InvalidMSG": "Invalid Domain",
-    "AdditionMSG": "New domain has been added",
-    "DeletionMSG": "Domain has been removed",
-    "AllDeletionMSG": "All domains has been removed"
-  },
   "LocationAgentSelection": {
-    "Placeholder1": "Search in Locations/Agents",
-    "Placeholder2": "Location/Agent Name",
-    "HelpTooltip": "Enter location/agent name to add",
-    "SectionHead": "LOCATIONS/AGENTS",
-    "NoDataTitle": "No Locations/Agents Yet",
-    "NoDataDesc": "You can add locations/agents above or from the results table to filter",
-    "ExistMSG": "Location/Agent Already Exists",
-    "InvalidMSG": "Invalid Location/Agent",
-    "AdditionMSG": "New location/agent has been added",
-    "DeletionMSG": "Location/Agent has been removed",
-    "AllDeletionMSG": "All locations/agents has been removed"
+    "ArgName": "Location/Agent Name"
   },
   "CountrySelection": {
     "Placeholder": "Search in Countries",
     "Selected": "Selected Countries",
     "Available": "Available Countries"
   },
-  "SubdomainSelection": {
-    "Placeholder1": "Search in Subdomain's",
-    "Placeholder2": "Subdomain",
-    "HelpTooltip": "Enter a domain ip to add (e.g. example.com or example.*\n)",
-    "SectionHead": "SUBDOMAINS",
-    "NoDataTitle": "No Subdomains Yet",
-    "NoDataDesc": "You can add Subdomains above or from the results table to filter",
-    "ExistMSG": "Subdomain Already Exists",
-    "InvalidMSG": "Invalid Subdomain",
-    "AdditionMSG": "New Subdomain has been added",
-    "DeletionMSG": "Subdomain has been removed",
-    "AllDeletionMSG": "All Subdomains has been removed"
-  },
   "BlockReasonSelection": {
-    "Placeholder1": "Search in Block Reasons",
-    "Placeholder2": "Block Reason",
-    "HelpTooltip": "Enter a block reason to add",
-    "SectionHead": "BLOCK REASONS",
-    "NoDataTitle": "No Block Reasons Yet",
-    "NoDataDesc": "You can add Block Reasons above or from the results table to filter",
-    "ExistMSG": "Block Reason Already Exists",
-    "InvalidMSG": "Invalid Block Reason",
-    "AdditionMSG": "New Block Reason has been added",
-    "DeletionMSG": "Block Reason has been removed",
-    "AllDeletionMSG": "All Block Reasons has been removed"
+    "ArgName": "Block Reason"
   },
   "DestinationIpSelection": {
-    "Placeholder1": "Search in Destination IPs",
-    "Placeholder2": "Destination IP",
-    "HelpTooltip": "Enter a destination ip to add (e.g. 10.11.12.13 or 10.11.*\n)",
-    "SectionHead": "DESTINATION IPS",
-    "NoDataTitle": "No Destination IPs Yet",
-    "NoDataDesc": "You can add destination IPs above or from the results table to filter",
-    "ExistMSG": "Destination IP Already Exists",
-    "InvalidMSG": "Invalid Destination IP",
-    "AdditionMSG": "New destination IP has been added",
-    "DeletionMSG": "Destination IP has been removed",
-    "AllDeletionMSG": "All destination IPs has been removed",
-    "NALabel": "Include Destinations Without IP Address",
-    "NAValue": "All destinations without IP address",
-    "NASuccessNotif": "Destinations without IP have been added",
-    "MSGEnterValidDomain": "Enter a valid domain",
-    "MSGEnterValidIp": "Enter a valid ip",
-    "MSGDomainAlreadyExist": "Domain already exists"
+    "ArgName": "Destination IP",
+    "HelpTooltip": "Enter a destination ip to add (e.g. 10.11.12.13 or 10.11.*\n)"
   },
   "SourceIpSelection": {
-    "Placeholder1": "Search in Source IPs",
-    "Placeholder2": "Source IP",
-    "HelpTooltip": "Enter a source ip to add (e.g. 10.11.12.13 or 10.11.*\n)",
-    "SectionHead": "SOURCE IPS",
-    "NoDataTitle": "No Source IPs Yet",
-    "NoDataDesc": "You can add source IPs above or from the results table to filter",
-    "ExistMSG": "source IP Already Exists",
-    "InvalidMSG": "Invalid Source IP",
-    "AdditionMSG": "New source IP has been added",
-    "DeletionMSG": "Source IP has been removed",
-    "AllDeletionMSG": "All source IPs has been removed",
-    "NALabel": "Include Sources Without IP Address",
-    "NAValue": "All sources without IP address",
-    "NASuccessNotif": "Sources without IP have been added"
+    "ArgName": "Source IP",
+    "HelpTooltip": "Enter a source ip to add (e.g. 10.11.12.13 or 10.11.*\n)"
   },
   "CategorySelection": {
     "Placeholder": "Search in {{arg}} Categories",

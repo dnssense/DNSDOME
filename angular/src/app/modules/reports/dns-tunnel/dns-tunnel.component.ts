@@ -45,7 +45,12 @@ import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {ManageExceptionsComponent} from './components/manage-exceptions/manage-exceptions.component';
 import {Router} from '@angular/router';
 import {take} from 'rxjs/operators';
+import {AuthenticationService} from '../../../core/services/authentication.service';
+import {RoleConstant} from '../../../core/models/Role';
 
+const VALUE_LOGGING = 'LOGGING';
+const VALUE_BLOCK = 'BLOCK';
+const KEY_TUNNEL = 'tunnel';
 @Component({
   selector: 'app-dns-tunnel',
   standalone: true,
@@ -84,27 +89,19 @@ export default class DnsTunnelComponent implements OnInit, AfterViewInit, OnDest
   dateTriggeredFromCalendar = false;
   selectedTunnelEventItem: DnsTunnelSuspiciousEventsItem;
   companyLicenceData: CompanyLicenceUIResponse;
-  loggingLicenceType: LicenceTypeItem;
-  blockingLicenceType: LicenceTypeItem;
-  constructor(private router: Router) {
-    this.productLicenceService.getCompanyLicence(LicenceProductCode.DNSTunnel).pipe(take(1)).subscribe(res => {
+  hasUpdateRight: boolean;
+  constructor(private router: Router, private authService: AuthenticationService) {
+    if (this.authService?.currentSession?.currentUser?.role?.find(r => r.name === RoleConstant.ADMIN))
+      this.hasUpdateRight = true;
+    this.productLicenceService.getCompanyLicence(LicenceProductCode.Eye).pipe(take(1)).subscribe(res => {
       this.companyLicenceData = res;
       this.setProtectionData();
     });
   }
   setProtectionData() {
-    if (this.companyLicenceData?.results?.product?.licenceTypes?.length >= 2) {
-      this.companyLicenceData?.results?.product?.licenceTypes.forEach(lt => {
-        if (lt.code === LicenceTypeCode.DNSTunnel_Block) {
-          this.blockingLicenceType = lt;
-        } else if (lt.code === LicenceTypeCode.DNSTunnel_Log) {
-          this.loggingLicenceType = lt;
-        }
-      });
-    }
-    if (this.companyLicenceData?.results?.licenceType?.code === LicenceTypeCode.DNSTunnel_Block) {
+    if (this.companyLicenceData?.results?.option[KEY_TUNNEL] === VALUE_BLOCK) {
       this.optionChanged(0);
-    } else if (this.companyLicenceData?.results?.licenceType?.code === LicenceTypeCode.DNSTunnel_Log) {
+    } else {
       this.optionChanged(1);
     }
   }
@@ -270,13 +267,21 @@ export default class DnsTunnelComponent implements OnInit, AfterViewInit, OnDest
         ...CommonDialogCustomConfig});
   }
   changeProtection(option: number) {
+    let reqOption;
+    if (option === 0) {
+      reqOption = {'tunnel': VALUE_BLOCK};
+    } else {
+      reqOption = {'tunnel': VALUE_LOGGING};
+    }
     const req = {id: this.companyLicenceData.results.id,
                  companyId: this.companyLicenceData.results.companyId,
                  productId: this.companyLicenceData.results.product.id,
-                 licenceTypeId: option === 0 ? this.blockingLicenceType.id : this.loggingLicenceType.id} as UpdateLicenceUIRequest;
+                 licenceTypeId: this.companyLicenceData.results.licenceType.id,
+                 option: reqOption
+    };
     this.productLicenceService.updateLicence(req).pipe(take(1)).subscribe(res => {
       if (res.status === 200) {
-        this.productLicenceService.getCompanyLicence(LicenceProductCode.DNSTunnel, true).pipe(take(1)).subscribe(res2 => {
+        this.productLicenceService.getCompanyLicence(LicenceProductCode.Eye, true).pipe(take(1)).subscribe(res2 => {
           this.companyLicenceData = res2;
           this.setProtectionData();
         }, () => {

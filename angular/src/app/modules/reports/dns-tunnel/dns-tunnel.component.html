@@ -2,8 +2,8 @@
   <domain-selection [list]="mapToList(filter)" (onAddItem)="addFilterItems(filter, [$event])" (onDeleteItem)="deleteFilterItem(filter, $event)" (onDeleteAllItems)="deleteAllFilterItems(filter)"></domain-selection>
 </ng-template>
 <div class="page-content-container tw-flex tw-flex-col">
-    <div *ngIf="selectedOption >= 0" class="tw-flex tw-items-center tw-py-3 tw-px-4 tw-gap-3 tw-bg-white tw-rounded-lg tw-shadow-lg tw-mb-4">
-        <rk-n-switch *ngIf="blockingLicenceType && loggingLicenceType"  [(value)]="selectedOption" (valueChange)="changeProtection($event)" [config]="options"></rk-n-switch>
+    <div  class="tw-flex tw-items-center tw-py-3 tw-px-4 tw-gap-3 tw-bg-white tw-rounded-lg tw-shadow-lg tw-mb-4">
+        <rk-n-switch *ngIf="hasUpdateRight"  [(value)]="selectedOption" (valueChange)="changeProtection($event)" [config]="options"></rk-n-switch>
         <span class="rk-body-12" [innerHTML]="translationPrefix + '.ProtectionMsg' | translate: {'arg':  (selectedOption === 0 ? 'Blocking': 'Logging') | translate | lowercase }"></span>
     </div>
   <div class="tw-rounded-xl tw-shadow tw-bg-white tw-flex tw-flex-col">

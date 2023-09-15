@@ -2,12 +2,12 @@
   <div class="d-flex justify-content-between align-items-center">
     <rk-n-switch class="tw-flex-1"  [(value)]="selectedDateOption" (valueChange)="dateOptionChanged($event)" [config]="dateOptions"></rk-n-switch>
     <div class="d-flex tw-flex-1 tw-justify-center align-items-center tw-gap-3" >
-      <rk-tooltip size="mini" [desc]="'PreviousInfo' | translate: {'arg': navigationButtonTranslation}">
+      <rk-tooltip size="mini" [desc]="'Rk-Common.PreviousInfo' | translate: {'arg': navigationButtonTranslation}">
         <ng-template #tooltipContainer>
           <time-navigation-button type="previous" (clickEvent)="changeWeek('prev')"></time-navigation-button>
         </ng-template>
       </rk-tooltip>
-      <rk-tooltip *ngIf="!disableNextBtn" size="mini" [desc]="'NextInfo' | translate: {'arg': navigationButtonTranslation}">
+      <rk-tooltip *ngIf="!disableNextBtn" size="mini" [desc]="'Rk-Common.NextInfo' | translate: {'arg': navigationButtonTranslation}">
         <ng-template #tooltipContainer>
           <time-navigation-button type="next" [disabled]="false" (clickEvent)="changeWeek('next')"></time-navigation-button>
         </ng-template>

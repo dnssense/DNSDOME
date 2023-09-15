@@ -4,7 +4,7 @@ import {
   LicencePageUpdateUIRequest,
   LicencePageUpdateUIResponse, LicenceProductCode, LicenceRequestType, LicenceTypeCode,
   LicenceTypeItem,
-  ProductTypeItem, UpdateLicenceUIRequest, UpdateLicenceUIResponse
+  ProductTypeItem, UpdateLicenceUIRequest, UpdateLicenceUIResponse,
 } from 'roksit-lib';
 
 
@@ -43,6 +43,7 @@ export class CompanyLicenceServiceResponse {
     product: ProductTypeServiceItem;
     licenceType: LicenceTypeServiceItem;
     expiration: Date;
+    option: Map<string, any>;
     userCount: number;
   };
 }
@@ -93,6 +94,7 @@ export function mapCompanyLicenceServiceResponseToUI(json: CompanyLicenceService
       product: json.results.product ? mapProductTypeFromServiceToUI(json.results.product) : null,
       licenceType: json.results.licenceType ? mapLicenceTypeFromServiceToUI(json.results.licenceType) : null,
       expiration: json.results.expiration,
+      option: json.results.option,
       userCount: json.results.userCount
     } : null
   };
@@ -141,6 +143,7 @@ export class UpdateLicenceServiceRequest {
   companyId: number;
   product: {id: number};
   licenceType?: {id: number};
+  option: Map<string, any>;
 }
 
 export function mapUpdateLicenceUIRequestToService(ui: UpdateLicenceUIRequest): UpdateLicenceServiceRequest {
@@ -148,7 +151,8 @@ export function mapUpdateLicenceUIRequestToService(ui: UpdateLicenceUIRequest): 
     id: ui.id,
     companyId: ui.companyId,
     product: {id: ui.productId},
-    licenceType: {id: ui.licenceTypeId}
+    licenceType: {id: ui.licenceTypeId},
+    option: ui.option
   };
 }
 export class UpdateLicenceServiceResponse {

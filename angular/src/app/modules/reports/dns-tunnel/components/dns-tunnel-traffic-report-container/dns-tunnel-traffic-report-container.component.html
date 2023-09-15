@@ -8,7 +8,8 @@
   <ip-selection [translationPrefix]="'SourceIpSelection'" [list]="mapToList(filter)" (onAddItem)="addFilterItems(filter, [$event])" (onDeleteItem)="deleteFilterItem(filter, $event)" (onDeleteAllItems)="deleteAllFilterItems(filter)"></ip-selection>
 </ng-template>
 <ng-template #locationAgentFilter let-filter="filter">
-  <common-manual-selection [list]="mapToList(filter)" [translationKeyHeader]="'LocationAgentSelection'" (onAddItem)="addFilterItems(filter, [$event])"
+  <common-manual-selection [list]="mapToList(filter)"  (onAddItem)="addFilterItems(filter, [$event])"
+                           [commonDynamicTranslationKey]="'LocationAgentSelection.ArgName' | translate"
                            (onDeleteAllItems)="deleteAllFilterItems(filter)"
                            (onDeleteItem)="deleteFilterItem(filter, $event)"></common-manual-selection>
 </ng-template>
@@ -25,7 +26,8 @@
   <subdomain-selection [list]="mapToList(filter)" (onAddItem)="addFilterItems(filter, [$event])" (onDeleteItem)="deleteFilterItem(filter, $event)" (onDeleteAllItems)="deleteAllFilterItems(filter)"></subdomain-selection>
 </ng-template>
 <ng-template #blockReasonFilter let-filter="filter">
-  <common-manual-selection [list]="mapToList(filter)" [translationKeyHeader]="'BlockReasonSelection'" (onAddItem)="addFilterItems(filter, [$event])"
+  <common-manual-selection [list]="mapToList(filter)" (onAddItem)="addFilterItems(filter, [$event])"
+                           [commonDynamicTranslationKey]="'BlockReasonSelection.ArgName' | translate"
                            (onDeleteAllItems)="deleteAllFilterItems(filter)"
                            (onDeleteItem)="deleteFilterItem(filter, $event)"></common-manual-selection>
 </ng-template>
