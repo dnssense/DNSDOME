@@ -26,7 +26,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     url: string;
     location: Location;
 
-    @ViewChild(SidebarComponent) sidebar: SidebarComponent;
+    @ViewChild(SidebarComponent, {static: true}) sidebar: SidebarComponent;
     @ViewChild(NavbarComponent) navbar: NavbarComponent;
 
     collapsed: boolean;

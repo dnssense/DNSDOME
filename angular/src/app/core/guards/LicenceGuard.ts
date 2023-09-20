@@ -29,11 +29,45 @@ export class LicenceGuard implements CanMatch {
             const phoneNumberTemp = user?.gsm;
             const fullName = user?.name + ' ' + user.surname;
             const email = user?.username || '';
-            this.router.navigate(['/admin/product-licence'], {state: { companyLicenceData: res, pageLicenceInfo: route.data, personalInfo: {gsmCode: gsmCodeTemp, phoneNum: phoneNumberTemp, fullName: fullName, email: email}  } });
+            if (this.router.url === '/admin/product-licence') {
+              this.router.navigate(['/admin', {}]).then(_ => {
+                this.router.navigate(['/admin/product-licence'], {
+                  state: {
+                    companyLicenceData: res,
+                    pageLicenceInfo: route.data,
+                    personalInfo: {
+                      gsmCode: gsmCodeTemp,
+                      phoneNum: phoneNumberTemp,
+                      fullName: fullName,
+                      email: email
+                    }
+                  }
+                });
+              });
+            } else {
+              this.router.navigate(['/admin/product-licence'], {
+                state: {
+                  companyLicenceData: res,
+                  pageLicenceInfo: route.data,
+                  personalInfo: {
+                    gsmCode: gsmCodeTemp,
+                    phoneNum: phoneNumberTemp,
+                    fullName: fullName,
+                    email: email
+                  }
+                }
+              });
+            }
             return false;
           }),
           catchError( (err) => {
-            this.router.navigate(['/admin/product-licence'], { state: { error: true } });
+            if (this.router.url === '/admin/product-licence') {
+              this.router.navigate(['/admin', {}]).then(_ => {
+                this.router.navigate(['/admin/product-licence'], {state: {error: true}});
+              });
+            } else {
+              this.router.navigate(['/admin/product-licence'], {state: {error: true}});
+            }
             return of(false);
           }),
         );
