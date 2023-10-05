@@ -443,7 +443,7 @@
         "Illegal Drugs": "Illegal Drugs",
         "Adult": "Adult",
         "Pornography": "Pornography",
-        "Hate/Violance/illegal": "Hate/Violence/illegal",
+        "Hate/Violance/illegal": "Hate/Violance/illegal",
         "Gambling": "Gambling",
         "Games": "Games",
         "Swimsuits and Underwear": "Swimsuits and Underwear",
@@ -834,7 +834,8 @@
      "WhiteListItemDeletionMsg": "Domain has been removed from whitelist",
      "WhiteListItemSaveMsg": "New domain has been added to whitelist",
      "AllBlockListItemDeletionMsg": "All blocked domains has been deleted",
-     "ManageExceptionBtnLbl": "Blocked / Whitelist"
+     "ManageExceptionBtnLbl": "Blocked / Whitelist",
+     "InBlockListMsg": "The domain you are trying to whitelist is already in blocked list"
    },
    "Columns": {
      "EventStartTime": "Event Start Time",

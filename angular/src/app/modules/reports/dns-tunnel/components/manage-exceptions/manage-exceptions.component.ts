@@ -100,6 +100,11 @@ export class ManageExceptionsComponent implements OnDestroy {
                 this.nameElement.caption = this.translatorService.translate('MSGDomainAlreadyExist');
                 return;
             }
+            if (this.blockedList?.findIndex(d => d.domain === this.newWhiteListItem.record.trim()) >= 0) {
+              this.nameElement.showError = true;
+              this.nameElement.caption = this.translatorService.translate(this.translationPrefix + '.InBlockListMsg');
+              return;
+            }
             this.tunnelService.saveWhiteList(this.newWhiteListItem.record).pipe(takeUntil(this.ngUnsubscribe)).subscribe((res) => {
               if (res.status === 200) {
                 this.getWhiteListItems();
