@@ -428,7 +428,7 @@ export class DnsTunnelHistogramComponent implements OnInit, AfterViewInit, OnDes
           strokeDashArray: 0,
           borderColor: this.styles.getPropertyValue('--primary-light-200').trim(),
           fillColor: this.styles.getPropertyValue('--primary-light-200').trim(),
-          opacity: 0.7,
+          opacity: 1,
           offsetX: offsetX
         }, false);
       } , 400);
