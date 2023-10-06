@@ -2,7 +2,7 @@
   <row-item-time *ngIf="row[currentColumn]" [config]="{time: row[currentColumn]}"></row-item-time>
 </ng-template>
 <ng-template #severityTemplate let-row=row let-columns=columns let-currentColumn = currentColumn>
-   <div  [ngClass]="{'tw-bg-security': row[currentColumn] === tunnelLevels.High, 'tw-bg-harmful': row[currentColumn] === tunnelLevels.Suspicious}" class="tw-flex tw-rounded-full tw-items-center !tw-text-white tw-py-1 tw-px-3 rk-body-12 tw-font-semibold">
+   <div  [ngClass]="{'tw-bg-security': row[currentColumn] === tunnelLevels.High, 'tw-bg-harmful': row[currentColumn] === tunnelLevels.Suspicious}" class="tw-flex tw-rounded-full tw-items-center tw-justify-center !tw-text-white tw-py-1 tw-w-[110px] tw-leading-[10px] tw-text-[10px] tw-font-semibold">
       <span>{{row[currentColumn] | TunnelSeverityName}}</span>
    </div>
 </ng-template>

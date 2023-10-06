@@ -436,7 +436,7 @@
         "Undecided Not Safe": "Undecided Not Safe",
         "Undecided Safe": "Undecided Safe",
         "Domain Parking": "Domain Parking",
-        "Newly Register": "Newly Registered",
+        "Newly Register": "Newly Register",
         "Newly Up": "Newly Up",
         "Dead Sites": "Dead Sites",
         "Firstly Seen": "Firstly Seen",
@@ -503,7 +503,7 @@
         "NX Domain": "NX Domain",
         "Empty Site": "Empty Site",
         "Empty Sites": "Empty Sites",
-        "DOH": "DoH",
+        "DOH": "DOH",
         "Compromised Website": "Compromised Website",
         "Safe Domain": "Safe Domain"
     },
@@ -687,7 +687,7 @@
         "RequestChangingDomainCategory": "Request Changing Domain Category",
         "ThemeMode": "ThemeMode",
         "ADIntegration": "Active Directory Integration",
-        "DnsTunnel": "AI Based Dns Tunnel"
+        "DnsTunnel": "AI Based DNS Tunnel"
     },
     "MonitorTraffic": "Monitor Traffic",
     "AuditLogs": "Audit Logs",
@@ -851,6 +851,7 @@
      "HitsForLast7Days": "Hits For Last 7 Days",
      "FailRatioForLast7Days": "Fail Ratio For Last 7 Days",
      "FQDNCountForLast7Days": "FQDN Count For Last 7 Days",
+     "FQDNHitRatioForLast7Days": "FQDN Hit Ratio For Last 7 Days",
      "FailRatio": "Fail Ratio",
      "FailCount": "Fail Count",
      "SuccessCount": "Success Count",

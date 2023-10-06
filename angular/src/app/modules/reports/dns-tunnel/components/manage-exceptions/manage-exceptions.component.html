@@ -69,7 +69,7 @@
               <feather-icon  name="plus-circle"></feather-icon>
             </ng-template>
           </rk-button-v2>
-        <rk-button-v2 *ngIf="selectedTabId === 0"  variant="stroke" color="default"  [size]="'xs'" [label]="'DeleteAll' | translate" (clicked)="openConfirmDeleteAllDialog()">
+        <rk-button-v2 *ngIf="selectedTabId === 0" [disabled]="!blockedList || blockedList.length === 0" variant="stroke" color="default"  [size]="'xs'" [label]="'DeleteAll' | translate" (clicked)="openConfirmDeleteAllDialog()">
           <ng-template #leftIcon>
             <feather-icon  name="trash-2"></feather-icon>
           </ng-template>

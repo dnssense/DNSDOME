@@ -9,7 +9,7 @@
   <div class="tw-rounded-xl tw-shadow tw-bg-white tw-flex tw-flex-col">
       <div class="tw-py-4 tw-px-6">
         <div class="tw-flex tw-flex-col tw-text-base tw-py-4 tw-relative" *ngIf="loaded">
-          <rk-button-v2 class="tw-absolute tw-top-4 tw-right-8 tw-z-[1]"  variant="raised" color="primary" [size]="'xs'" [label]="translationPrefix + '.ManageExceptionBtnLbl' | translate" (clicked)="manageExceptions()">
+          <rk-button-v2 class="tw-absolute tw-top-1 tw-right-0 tw-z-[1]"  variant="raised" color="primary" [size]="'xs'" [label]="translationPrefix + '.ManageExceptionBtnLbl' | translate" (clicked)="manageExceptions()">
             <ng-template #leftIcon>
               <feather-icon  name="alert-octagon"></feather-icon>
             </ng-template>
@@ -42,7 +42,7 @@
                 </div>
               </ng-template>
             </base-filter-wrapper>
-            <div class="tw-px-5 tw-py-9" >
+            <div class="tw-px-5 tw-pt-9 tw-pb-16" >
               <dns-tunnel-histogram  #histogram  [filter]="filterWrapperComponent?.filter" [filterTypes]="filterTypes" (onHistogramDateChanged)="dateChanged($event)"  (onHistogramGroupChanged)="onHistogramGroupFilterChanged($event)" (onDateOptionSet)="onHistogramDateOptionSet($event)"></dns-tunnel-histogram>
             </div>
             <div class="rk-table-rounded-border tw-h-[500px]">

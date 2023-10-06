@@ -477,7 +477,7 @@ export class DnsTunnelHistogramComponent implements OnInit, AfterViewInit, OnDes
         type: 'bar',
         height: 275,
         width: '102%',
-        redrawOnWindowResize: false,
+        redrawOnWindowResize: true,
         stacked: true,
         toolbar: {
           show: false

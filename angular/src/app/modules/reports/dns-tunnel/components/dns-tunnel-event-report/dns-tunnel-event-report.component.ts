@@ -147,7 +147,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
       },
       {
         name: 'company_lw.fqdn_hit_ratio',
-        translationKey: 'Columns.HitsForLast7Days',
+        translationKey: 'Columns.FQDNHitRatioForLast7Days',
         sortable: true,
         rangeFilterable: true,
         roundNumber: true,

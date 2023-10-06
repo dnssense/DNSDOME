@@ -96,7 +96,8 @@ export class DnsTunnelTrafficReportContainerComponent implements OnInit {
     }
   }
   dateChanged = (event: { gte: number, lt: number }) => {
-    this.filter = {...this.filter, gte: event.gte, lt: event.lt};
+    this.filter.gte = event.gte;
+    this.filter.lt = event.lt;
     this.rkFilterService.updateFilter(this.filter);
     this.updateDateInterval();
   }

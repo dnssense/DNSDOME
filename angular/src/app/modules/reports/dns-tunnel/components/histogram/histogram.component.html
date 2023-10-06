@@ -15,8 +15,8 @@
       <time-navigation-button *ngIf="disableNextBtn" type="next" [disabled]="true" (clickEvent)="changeWeek('next')"></time-navigation-button>
     </div>
     <div class="tw-flex tw-flex-1 tw-justify-end tw-gap-5">
-      <rk-select-control color="primary" [label]="DnsTunnelLevels.High | TunnelSeverityName" [isChecked]="highSelected" (checkboxChange)="onGroupChange(DnsTunnelLevels.High, $event)"></rk-select-control>
       <rk-select-control color="primary" [label]="DnsTunnelLevels.Suspicious | TunnelSeverityName" [isChecked]="suspiciousSelected" (checkboxChange)="onGroupChange(DnsTunnelLevels.Suspicious, $event)"></rk-select-control>
+      <rk-select-control color="primary" [label]="DnsTunnelLevels.High | TunnelSeverityName" [isChecked]="highSelected" (checkboxChange)="onGroupChange(DnsTunnelLevels.High, $event)"></rk-select-control>
     </div>
     <div class="">
 

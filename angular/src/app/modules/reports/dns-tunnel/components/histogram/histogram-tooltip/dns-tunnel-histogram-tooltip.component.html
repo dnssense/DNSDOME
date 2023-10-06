@@ -19,7 +19,7 @@
 
 <ng-template #rowItem let-series =series>
     <div class="tw-flex tw-items-center tw-gap-2" >
-        <span class="tw-w-20 tw-font-normal long-text" [title]="series.name">{{series.name}}</span>
+        <span class="tw-w-[100px] tw-font-normal long-text" [title]="series.name">{{series.name}}</span>
         <span class="tw-w-20 {{getProgressBarClass(series.type)}}">
                         <ngb-progressbar class="tw-w-20"  [value]="series.value" [max]="total" height="6px"></ngb-progressbar>
         </span>

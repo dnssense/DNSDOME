@@ -81,7 +81,7 @@ export class ConfigService {
       this.host.logoCompanyDarkImage = 'DNSSense-OnDarkBG.svg';
       this.host.iconImage = 'dnssense-favicon.ico';
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/DNSSense-OnLightBG.svg';
-      this.host.title = 'DnsSense';
+      this.host.title = 'DNSSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       this.host.docUrl = 'http://docs.roksit.com';
@@ -163,7 +163,7 @@ export class ConfigService {
       this.host.logoCompanyDarkImage = 'DNSSense-OnDarkBG.svg';
       this.host.iconImage = 'dnssense-favicon.ico';
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/DNSSense-OnLightBG.svg';
-      this.host.title = 'DnsSense';
+      this.host.title = 'DNSSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       this.host.docUrl = 'http://docs.roksit.com';
