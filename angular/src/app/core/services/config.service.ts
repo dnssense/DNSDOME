@@ -56,7 +56,11 @@ export class ConfigService {
         { id: 5.6, path: 'settings/query-category', text: 'PageName.QueryCategory', icon: 'tools', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
         // { id: 5.8, path: 'settings/theme-mode', text: 'PageName.ThemeMode', icon: 'theme-mode', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER'] },
       ]
-    }
+    },
+    {id: 7, inBottom: true, path: 'logout', customClick: () => {}, text: 'PageName.Logout', icon: 'logout', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
+    {id: 8, inBottom: true, path: 'help', customClick: () => {}, text: 'PageName.Help', icon: 'help', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']}, 
+    {id: 9, inBottom: true, path: '/admin/account-settings', text: 'PageName.AccountSettings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
+
   ];
 
   host: ConfigHost;
@@ -149,7 +153,7 @@ export class ConfigService {
       this.host.portal = 'https://adf.cmerp.my';
       this.host.supportUrl = 'https://www.cmerp.my/index.html#contact';
       this.host.onlineHelpUrl = 'https://www.cmerp.my';
-      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
+      this.host.hiddenMenus = ['help']; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+60';
     } else {
       this.host.www = 'https://www.dnssense.com';
@@ -171,7 +175,7 @@ export class ConfigService {
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
       this.host.onlineHelpUrl = 'https://dnssense.com/faq';
       this.host.portal = 'https://portal.dnssense.com';
-      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
+      this.host.hiddenMenus = ['help']; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
     }
   }

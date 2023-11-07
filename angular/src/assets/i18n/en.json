@@ -687,7 +687,10 @@
         "RequestChangingDomainCategory": "Request Changing Domain Category",
         "ThemeMode": "ThemeMode",
         "ADIntegration": "Active Directory Integration",
-        "DnsTunnel": "AI Based DNS Tunnel"
+        "DnsTunnel": "AI Based DNS Tunnel",
+        "AccountSettings": "Account Settings",
+        "Logout": "Logout",
+        "Help": "Help"
     },
     "MonitorTraffic": "Monitor Traffic",
     "AuditLogs": "Audit Logs",
