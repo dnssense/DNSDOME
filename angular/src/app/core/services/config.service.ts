@@ -73,7 +73,7 @@ export class ConfigService {
     if (window.location.host.startsWith('localhost'))
       this.host.cyberXRayUrl = window.location.protocol + `//localhost:4202/#/admin/dashboard/`;
 
-    if (window.location.host.indexOf('dnssense') >= 0) {
+    if (window.location.host.indexOf('dnssense') >= 0 || window.location.host.indexOf('roksit') >= 0) {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';
       this.host.aboutus = 'https://www.dnssense.com/about-us';
@@ -89,7 +89,7 @@ export class ConfigService {
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       this.host.docUrl = 'http://docs.roksit.com';
-      this.host.supportUrl = 'https://dnssense.com/contact';
+      this.host.supportUrl = 'https://dnssense.com/support';
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
       this.host.onlineHelpUrl = 'https://dnssense.com/faq';
       this.host.portal = 'https://portal.dnssense.com';
@@ -113,31 +113,7 @@ export class ConfigService {
       this.host.onlineHelpUrl = 'https://docs.dnscyte.com';
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
-    } else if (window.location.host.indexOf('roksit') >= 0) {
-      this.host.www = 'https://www.roksit.com';
-      this.host.brand = 'Roksit';
-      this.host.aboutus = 'https://www.roksit.com/company';
-      this.host.logoCompanyLoginImage = 'RoksitLogoCompany.svg';
-      this.host.logoImage = 'DNSDome-OnLightBG.svg';
-      this.host.logoDarkImage = 'DNSDome-OnDarkBG.svg';
-      this.host.logoCompanyImage = 'RoksitLogo-OnLightBG.svg';
-      this.host.logoCompanyDarkImage = 'RoksitLogo-OnDarkBG.svg';
-      this.host.iconImage = 'roksit-favicon.ico';
-      this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/DNSDome-OnLightBG.svg';
-      this.host.title = 'Roksit';
-      this.host.privacyUrl = 'https://www.roksit.com/privacy-policy';
-      this.host.captcha_key = '6LdZopwUAAAAALG7uO9JV88w2y9sQnTJ9M0Lqhrg';
-      this.host.docUrl = 'https://docs.roksit.com';
-      this.host.portal = 'https://portal.roksit.com';
-      this.host.supportUrl = 'https://www.roksit.com/contact';
-      this.host.termsOfServiceUrl = 'https://www.roksit.com/en/application-terms-of-service';
-      this.host.onlineHelpUrl = 'https://www.roksit.com';
-      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
-      this.host.defaultGSMCode = '+90';
-      if (window.location.host.indexOf('local.roksit') >= 0) {
-        this.host.hiddenMenus = ['settings/query-category', 'deployment/roaming-clients', 'deployment/dns-relay'];
-      }
-    } else if (window.location.host.indexOf('cmerp') >= 0) {
+    }  else if (window.location.host.indexOf('cmerp') >= 0) {
       this.host.www = 'https://www.cmerp.my';
       this.host.brand = 'CMERP';
       this.host.aboutus = 'https://www.cmerp.my';
@@ -171,7 +147,7 @@ export class ConfigService {
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       this.host.docUrl = 'http://docs.roksit.com';
-      this.host.supportUrl = 'https://dnssense.com/contact';
+      this.host.supportUrl = 'https://dnssense.com/support';
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
       this.host.onlineHelpUrl = 'https://dnssense.com/faq';
       this.host.portal = 'https://portal.dnssense.com';
