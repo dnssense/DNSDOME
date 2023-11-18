@@ -727,7 +727,7 @@ export class DashboardComponent implements OnInit {
 
               <div class="__apexcharts_custom_tooltip_content">
                 <span class="__apexcharts_custom_tooltip_row">
-                  <span class="color" style="background: #507df3"></span> Min: <b>${series[0][dataPointIndex]}</b>
+                  <span class="color" style="background: var(--primary)"></span> Min: <b>${series[0][dataPointIndex]}</b>
                 </span>
                 <span class="__apexcharts_custom_tooltip_row">
                   <span class="color" style="background: #c41505"></span> Max: <b>${series[1][dataPointIndex]}</b>
@@ -836,7 +836,7 @@ export class DashboardComponent implements OnInit {
       } else if (percentMax >= 40) {
         color = '#6158ca';
       } else if (percentMax >= 20) {
-        color = '#507df3';
+        color = '#135F82';
       }
 
       const elm = {

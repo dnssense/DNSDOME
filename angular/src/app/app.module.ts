@@ -36,8 +36,8 @@ import {ProductLicenceServiceImpl} from "./core/services/product-licence.service
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   logoUrl: '/assets/img/DNSDome Logo Reveal.svg',
   minTime: 100,
-  fgsColor: '#507df3',
-  pbColor: '#507df3'
+  fgsColor: '#135F82',
+  pbColor: '#135F82'
 };
 
 
