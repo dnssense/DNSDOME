@@ -40,10 +40,10 @@
 <div class="tw-flex tw-flex-col" *ngIf="filterDropDownList">
   <base-filter-wrapper class="tw-sticky"  theme="rounded" #filterWrapperComponent [initialFilters]="filter"  [filterDropDownList]="filterDropDownList" (onFilterApplied)="filterApplied($event)">
     <ng-template #leftPart>
-      <div class="tw-flex">
-        <rk-week-day-calendar #calendar [selectedDateInterval]="selectedDateInterval"  class="tw-mr-1.5"  (dateSelectedCallback)="dateSelected($event)">
+      <div class="tw-flex tw-mr-2.5 tw-gap-1.5">
+        <rk-week-day-calendar #calendar [selectedDateInterval]="selectedDateInterval"  (dateSelectedCallback)="dateSelected($event)">
         </rk-week-day-calendar>
-        <rk-pill *ngIf="hourIntervalLbl" [label]="hourIntervalLbl" [theme]="'passive'" displayRemove="true" (removeClicked)="removeHourFilter()" class="tw-mr-4">
+        <rk-pill *ngIf="hourIntervalLbl" [label]="hourIntervalLbl" [theme]="'passive'" displayRemove="true" (removeClicked)="removeHourFilter()">
           <ng-template #leftSlot>
             <feather-icon name="clock"></feather-icon>
           </ng-template>

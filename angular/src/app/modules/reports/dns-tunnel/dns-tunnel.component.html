@@ -21,8 +21,8 @@
           <div class="tw-flex tw-flex-col" [hidden]="selectedTabId !== 0">
             <base-filter-wrapper class="tw-sticky tw-pt-9"  theme="rounded" #filterWrapperComponent [initialFilters]="filter"  [filterDropDownList]="filterDropDownList" (onFilterApplied)="onFilterApply($event)">
               <ng-template #leftPart>
-                <div class="tw-flex">
-                  <rk-week-day-calendar #calendar [selectedDateInterval]="selectedDateInterval" [primaryTheme]="showPrimaryCalendar" class="tw-mr-1.5"  (dateSelectedCallback)="dateSelected($event)">
+                <div class="tw-flex tw-mr-2.5 tw-gap-1.5">
+                  <rk-week-day-calendar #calendar [selectedDateInterval]="selectedDateInterval" [primaryTheme]="showPrimaryCalendar"  (dateSelectedCallback)="dateSelected($event)">
                     <ng-template #calendarFooter>
                       <div class="tw-flex tw-justify-end tw-py-4 tw-px-5 tw-gap-3 tw-border-0 tw-border-t tw-border-solid tw-border-light-grey-8">
                         <button class="tw-rounded-full tw-py-1 tw-px-2.5 tw-border tw-border-solid tw-border-gray-9 rk-body-10 tw-text-title-color tw-bg-white hover:tw-bg-primary hover:tw-border-primary hover:tw-text-white" (click)="setManualDate(7*24*60, 'days')">
@@ -34,7 +34,7 @@
                       </div>
                     </ng-template>
                   </rk-week-day-calendar>
-                  <rk-pill *ngIf="hourIntervalLbl" [label]="hourIntervalLbl" [theme]="'passive'" displayRemove="true" (removeClicked)="removeHourFilter()" class="tw-mr-4">
+                  <rk-pill *ngIf="hourIntervalLbl" [label]="hourIntervalLbl" [theme]="'passive'" displayRemove="true" (removeClicked)="removeHourFilter()">
                     <ng-template #leftSlot>
                       <feather-icon name="clock"></feather-icon>
                     </ng-template>
