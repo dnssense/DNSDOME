@@ -116,6 +116,14 @@ const adminlayoutRoutes: Routes = [
         loadChildren: () => import('../../theme/theme.module').then(m => m.ThemeModule)
       },
       {
+        path: 'product-licence',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
+        },
+        loadComponent: () => import('../../licence-info/licence-info.component')
+      },
+      {
         path: 'anomaly-detection',
         canActivate: [RoleGuard],
         data: {

@@ -1,11 +1,16 @@
 <div class="wrapper">
-    <div class="rk-menu-sidebar" [ngClass]="{'collapsed': collapsed}">
-        <app-sidebar-cmp [collapsed]="collapsed" class="d-block w-100"></app-sidebar-cmp>
-    </div>
+    <rk-sidebar  [ngClass]="{'collapsed': collapsed}" [menuItems]="menuItems" [collapsed]="collapsed" (onCollapseToggle)="collapsed = $event" [hiddenMenus]="host?.hiddenMenus">
+        <ng-template #bgLogo>
+            <img src="/assets/img/Dome_Sidebar_Logo.svg">
+        </ng-template>
+    </rk-sidebar>
 
     <div class="content">
-        <app-navbar-cmp></app-navbar-cmp>
-
+        <rk-navbar (onMenuClick)="setCollapsed(false)">
+            <ng-template #logo>
+                <img class="tw-w-auto !tw-h-5"  [src]="'/assets/img/' + (host.logoCompanyImage || host.logoImage)">
+            </ng-template>
+         </rk-navbar>
         <router-outlet></router-outlet>
     </div>
 </div>

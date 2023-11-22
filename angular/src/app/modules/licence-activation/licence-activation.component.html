@@ -1,0 +1,8 @@
+<div class="page-content-container tw-flex tw-flex-col tw-h-full">
+  <div class="tw-rounded-xl rk-button-20 tw-shadow tw-bg-white tw-flex tw-flex-col tw-items-center tw-justify-center tw-h-40 tw-w-full">
+    <span class="tw-text-green tw-mb-10" *ngIf="state === 'activated'">{{"LicenceActivation.ActiveMsg" | translate}}</span>
+    <span class="tw-text-status-error tw-mb-10" *ngIf="state === 'error'">{{"LicenceActivation.ErrorMsg" | translate}}</span>
+    <span class="tw-text-status-error tw-mb-10" *ngIf="!state && !key">{{"LicenceActivation.ActivationLinkProblem" | translate}}</span>
+    <rk-button-v2 [label]="'LOGIN.Login' | translate" size="lg" (clicked)="goToLoginPage()"></rk-button-v2>
+  </div>
+</div>

@@ -14,7 +14,7 @@ import { Session } from '../models/Session';
 import { SignupBean } from '../models/SignupBean';
 import { User } from '../models/User';
 import { ConfigService } from './config.service';
-import { CookieService } from './cookie.service';
+import { CacheService } from './cache.service';
 import { SpinnerService } from './spinner.service';
 @Injectable({
   providedIn: 'root'
@@ -39,7 +39,7 @@ export class AuthenticationService {
   constructor(
     private configuration: ConfigService,
     private http: HttpClient,
-    private cookieService: CookieService,
+    private cookieService: CacheService,
     private router: Router,
     private spinner: SpinnerService,
     private idle: Idle, private keepalive: Keepalive

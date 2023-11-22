@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from './core/services/authentication.service';
 import { ConfigHost, ConfigService } from './core/services/config.service';
-import {RkLayoutService} from "roksit-lib";
+import {RkLayoutService, RkUtilityService} from "roksit-lib";
 
 
 @Component({
@@ -20,8 +20,9 @@ export class AppComponent implements OnInit {
     private config: ConfigService,
     private authenticationService: AuthenticationService,
     private configService: ConfigService,
+    private rkUtilityService: RkUtilityService
   ) {
-
+    this.rkUtilityService.changeToNewPrimaryColor();
     const user = this.authenticationService.currentSession?.currentUser;
     this.config.init(user?.id);
     this.authenticationService.checkSessionIsValid();
@@ -32,7 +33,6 @@ export class AppComponent implements OnInit {
     element.setAttribute('href', `/assets/img/${this.iconImage}`);
   }
   ngOnInit(): void {
-
 
   }
 }

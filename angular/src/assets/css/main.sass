@@ -2,7 +2,7 @@
 @import "node_modules/roksit-lib/assets/scss/core/variables"
 
 $white: #fff
-
+$toolbarHeight: 60px
 html, body
   scroll-behavior: smooth
 
@@ -565,8 +565,8 @@ rk-collapse-description
   font-size: 10px
 
 .toolbar
-  height: 60px !important
-  min-height: 60px !important
+  height: var($toolbarHeight) !important
+  min-height: var($toolbarHeight) !important
   flex-direction: column !important
 
 .main-content
@@ -606,7 +606,7 @@ rk-collapse-description
 .run-bar
   height: 47px
   width: 100%
-  background: #507df3
+  background: var(--primary)
   display: flex
   align-items: center
   justify-content: center
@@ -626,7 +626,7 @@ rk-collapse-description
       min-width: 60px
       height: 26px
       background: $white
-      color: #507df3
+      color: var(--primary)
       border-radius: 5px
       outline: 0 !important
       border: 0 !important
@@ -931,4 +931,16 @@ rk-table-container .rk-table-container-header .bottom-content .badges-container 
 .responsive-img
   width: 100%
   height: auto
+
+.ngx-loading-logo
+  display: none
+.ngx-foreground-spinner
+  display: none
+app-rk-spinner
+  .ngx-loading-logo
+    display: block
+    top: 50% !important
+    width: 92px !important
+    height: 92px !important
+
 
