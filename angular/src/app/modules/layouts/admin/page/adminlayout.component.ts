@@ -60,7 +60,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     public menuItems: any[];
 
     _menuItems = ConfigService.menuItems;
-    helpRoute = 'https://docs.roksit.com/';
+    helpRoute = 'https://www.dnssense.com/support';
     private ngUnsubscribe: Subject<any> = new Subject<any>();
 
     constructor(

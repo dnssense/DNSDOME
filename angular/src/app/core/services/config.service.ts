@@ -88,7 +88,7 @@ export class ConfigService {
       this.host.title = 'DNSSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
-      this.host.docUrl = 'http://docs.roksit.com';
+      this.host.docUrl = 'https://www.dnssense.com/support';
       this.host.supportUrl = 'https://dnssense.com/support';
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
       this.host.onlineHelpUrl = 'https://dnssense.com/faq';
@@ -146,7 +146,7 @@ export class ConfigService {
       this.host.title = 'DNSSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
-      this.host.docUrl = 'http://docs.roksit.com';
+      this.host.docUrl = 'https://www.dnssense.com/support';
       this.host.supportUrl = 'https://dnssense.com/support';
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
       this.host.onlineHelpUrl = 'https://dnssense.com/faq';
