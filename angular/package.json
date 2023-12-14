@@ -102,7 +102,7 @@
     "ng-apexcharts": "1.7.4"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "16.0.0",
+    "@angular-builders/custom-webpack": "^17.0.0",
     "@angular/cli": "^16.2.10",
     "@angular/compiler-cli": "16.2.12",
     "@angular/language-service": "16.2.12",
