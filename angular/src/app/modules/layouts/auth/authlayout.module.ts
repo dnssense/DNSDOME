@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TagInputModule } from 'ngx-chips';
 import { AuthLayoutComponent } from './page/authlayout.component';
 import { AuthLayoutRoutingModule } from './authlayout-routing.module';
 import {MatButtonModule} from '@angular/material/button';
@@ -13,7 +12,6 @@ import {MatButtonModule} from '@angular/material/button';
     FormsModule,
     MatButtonModule,
     ReactiveFormsModule,
-    TagInputModule,
     AuthLayoutRoutingModule
   ]
 })

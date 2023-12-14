@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, ViewChild, ElementRef} from '@angular/core';
 import {GroupItemDom} from './group-item.component';
 import {TranslateService} from '@ngx-translate/core';
 import * as numeral from 'numeral';
@@ -13,6 +13,8 @@ import {ChartDomain, ChartDomainItem, DashboardChartComponent} from './dashboard
 import { RkNotificationService } from 'roksit-lib';
 import * as moment from "moment";
 import {TranslatorService} from "../../../../core/services/translator.service";
+import { MatChipInputEvent } from '@angular/material/chips';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
 
 interface TagInputValue {
     value: string;
@@ -32,8 +34,9 @@ export class DomainComponent implements AfterViewInit {
                 private clipboardService: ClipboardService, private notificationService: RkNotificationService,
                 private staticMesssageService: StaticMessageService, private dashboardService: DashBoardService) {
     }
-
+    readonly separatorKeysCodes = [ENTER, COMMA] as const;
     @ViewChild('chartComponent') chartComponent: DashboardChartComponent;
+    @ViewChild('matSearchInput') matSearchInput: ElementRef<HTMLInputElement>;
     currentGroup: GroupItemDom = {
         active: true,
         datatype: 'total',
@@ -73,15 +76,26 @@ export class DomainComponent implements AfterViewInit {
         this.search();
     }
 
-    onItemAdded($event: TagInputValue) {
-        const isDomain = ValidationService.isDomainValid($event.value);
+    onItemAdded($event: MatChipInputEvent) {
+        const isDomain = ValidationService.isDomainValid($event.value?.trim());
         if (!isDomain) {
             this.selectedDomains = [];
+        } else {
+            this.selectedDomains = [{display: $event.value?.trim(), value: $event.value?.trim()}];
+        }
+        setTimeout(() => this.matSearchInput.nativeElement.value = '', 0);
+
+    }
+
+    onItemRemove(domain: TagInputValue) {
+        const index = this.selectedDomains.indexOf(domain);
+        if (index >= 0) {
+           this.selectedDomains.splice(index, 1);
         }
     }
 
-    copyItem($event: TagInputValue) {
-        this.clipboardService.copy($event.value);
+    copyItem(domain: TagInputValue) {
+        this.clipboardService.copy(domain.display);
         this.notificationService.info(this.staticMesssageService.domainCopiedToClipboardMessage);
     }
 

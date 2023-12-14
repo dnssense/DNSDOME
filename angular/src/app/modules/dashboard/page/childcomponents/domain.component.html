@@ -45,10 +45,30 @@
 
   <div class="top-domain-chart pt-2 d-flex flex-column justify-content-between">
     <div class="search d-flex justify-content-between">
-      <div class="tag-input-container w-100">
+      <!--<div class="tag-input-container w-100">
         <tag-input [(ngModel)]="selectedDomains" (onAdd)="onItemAdded($event)" [maxItems]="1" (onSelect)="copyItem($event)">
         </tag-input>
-      </div>
+      </div>-->
+      <mat-form-field class="tw-w-full">
+        <mat-chip-grid #chipGrid>
+          @for (domain of selectedDomains; track domain) {
+            <mat-chip-row
+              (removed)="onItemRemove(domain)"
+              (click)="copyItem(domain)">
+              {{domain.value}}
+              <feather-icon matChipRemove name="x" class="!tw-flex !tw-w-[18px] !tw-h-[18px] tw-items-center tw-justify-center"></feather-icon>
+            </mat-chip-row>
+          }
+          <input #matSearchInput [placeholder]="selectedDomains?.length > 0 ? '' : 'Enter a new tag'"
+                 [matChipInputFor]="chipGrid"
+                 [disabled]="selectedDomains?.length > 0 ? true: false"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="true"
+                 (matChipInputTokenEnd)="onItemAdded($event)"
+                 matAutocomplete
+                 [matAutocompleteDisabled]="true"/>
+        </mat-chip-grid>
+      </mat-form-field>
       <button class="btn btn-accent ml-3" (click)="search()">{{'Search'|translate}}</button>
     </div>
     <app-dashboard-chart #chartComponent></app-dashboard-chart>
