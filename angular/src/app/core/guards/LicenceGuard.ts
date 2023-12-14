@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {ActivatedRouteSnapshot, CanMatch, Router} from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import {catchError, map} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {AuthenticationService} from '../services/authentication.service';
@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import {ProductLicenceService} from 'roksit-lib';
 
 @Injectable({ providedIn: 'root' })
-export class LicenceGuard implements CanMatch {
+export class LicenceGuard  {
     constructor(
         public productLicence: ProductLicenceService,
         public router: Router,
