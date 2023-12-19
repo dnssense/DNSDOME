@@ -1,4 +1,4 @@
-image: node:18
+image: node:18-alpine3.18
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -23,7 +23,7 @@ cache:
     - node_modules/
 
 build_building:
-  image: node:18
+  image: node:18-alpine3.18
   tags:
     - build-runner
   stage: build
@@ -41,7 +41,7 @@ build_building:
       - master
 
 package_docker_dev:
-  image: node:18
+  image: node:18-alpine3.18
   tags:
     - package-runner
   stage: package
