@@ -92,7 +92,7 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
 
   @Input() filters: FilterBadgeModel[] = [];
 
-  columns: LogColumn[] = [];
+  @Input() columns: LogColumn[] = [];
   columnsOptions: RkSelectModel[] = [];
 
   searchType: 'equal'|'not-equal'|'contain' = 'equal';
@@ -154,21 +154,26 @@ export class RoksitSearchComponent implements OnInit, AfterViewInit {
     endDate: this.translatorService.translate('Date.EndDate'),
   };
 
-  ngOnInit() {
-    this.reportService.initTableColumns().subscribe(columns => {
-
-      if (!!columns) {
-        this.columns = columns;
-
-        this.columnsOptions = columns.filter(c => !c.hide).map(x => {
-          return {
-            displayText: this.translatorService.translate(x.beautyName),
-            value: x.name
-          } as RkSelectModel;
-        });
-      }
+  setColumnOptions() {
+    this.columnsOptions = this.columns.filter(c => !c.hide).map(x => {
+      return {
+        displayText: this.translatorService.translate(x.beautyName),
+        value: x.name
+      } as RkSelectModel;
     });
+  }
 
+  ngOnInit() {
+    if(this.columns?.length > 0) {
+       this.setColumnOptions();
+    } else {
+      this.reportService.initTableColumns().subscribe(columns => {
+        if (!!columns) {
+          this.columns = columns;
+          this.setColumnOptions();
+        }
+      });
+    }
     this.filters.concat(this.searchSettings.should.map(x => this.createBadge(x, true)));
     this.filters.concat(this.searchSettings.mustnot.map(x => this.createBadge(x, false)));
 
