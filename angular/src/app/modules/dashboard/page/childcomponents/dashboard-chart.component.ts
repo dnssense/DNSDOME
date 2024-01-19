@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import {TranslateService} from '@ngx-translate/core';
 import * as numeral from 'numeral';
 import {TranslatorService} from '../../../../core/services/translator.service';
-import {RkApexChartEN, RkApexChartTR} from 'roksit-lib';
+import {RkApexChartEN, RkApexChartTR, RkApexChartRU} from 'roksit-lib';
 export interface ChartDomainItem {
   max: number;
   min: number;
@@ -75,7 +75,7 @@ export class DashboardChartComponent {
     this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
       series: series,
       chart: {
-        locales: [RkApexChartEN, RkApexChartTR],
+        locales: [RkApexChartEN, RkApexChartTR, RkApexChartRU],
         defaultLocale: this.translatorService.getCurrentLang(),
         id: `${this.getChartId()}`,
         type: 'line',
@@ -288,7 +288,7 @@ export class DashboardChartComponent {
     this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
       series: series,
       chart: {
-        locales: [RkApexChartEN, RkApexChartTR],
+        locales: [RkApexChartEN, RkApexChartTR, RkApexChartRU],
         defaultLocale: this.translatorService.getCurrentLang(),
         id: `${this.getChartId()}`,
         foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',

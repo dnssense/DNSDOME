@@ -142,6 +142,7 @@
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css"
             ],
             "scripts": [
+              "src/assets/js/yandex-captcha.min.js",
               "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.js",
               "node_modules/jquery-ui-dist/jquery-ui.js",

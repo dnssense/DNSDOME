@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Injector, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 
 import {Subject} from 'rxjs';
@@ -7,12 +7,14 @@ import { Location, PopStateEvent } from '@angular/common';
 
 import PerfectScrollbar from 'perfect-scrollbar';
 import { NavItem } from 'src/app/modules/shared/md/md.module';
-import { RkLayoutService, RkSidebarComponent, RkNavbarComponent, RkAlertService } from 'roksit-lib';
+import { RkLayoutService, RkSidebarComponent, RkNavbarComponent, RkAlertService, HelpSupportComponent, CommonDialogCustomConfig, NestedDialogCustomConfig, HelpSupportService } from 'roksit-lib';
 import {takeUntil} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
+import { MatDialog } from '@angular/material/dialog';
+import { HelpSupportServiceImpl } from 'src/app/core/services/help-support.service';
 interface HelpRoute {
     appRoute: string;
     helpRouteEn: string;
@@ -41,13 +43,17 @@ const helpRoutes: HelpRoute[] = [
 @Component({
     selector: 'app-adminlayout',
     templateUrl: './adminlayout.component.html',
-    styleUrls: ['./adminlayout.component.sass']
+    styleUrls: ['./adminlayout.component.sass'],
+    providers: [
+      {provide: HelpSupportService, useClass: HelpSupportServiceImpl},
+]
 })
 export class AdminLayoutComponent implements OnInit, OnDestroy {
 
     public navItems: NavItem[];
     private lastPoppedUrl: string;
     private yScrollStack: number[] = [];
+    dialog = inject(MatDialog);
     url: string;
     location: Location;
 
@@ -71,10 +77,12 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         private rkLayoutService: RkLayoutService,
         public configService: ConfigService,
        private _translateService: TranslateService,
-       private translator: TranslatorService
+       private translator: TranslatorService,
+       private injector: Injector
      ) {
         this.location = location;
         this.host = this.configService.host;
+        this.helpRoute = this.host.onlineHelpUrl;
         this._menuItems.forEach(i => {
             if(i.path === 'logout'){
                 i.customClick = this.logout;
@@ -215,10 +223,12 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         this.authService.logout();
   }
   openHelp = () => {
-        window.open(this.helpRoute, "_blank");
+        //window.open(this.helpRoute, "_blank");
+        this.dialog.open(HelpSupportComponent, {data: {injector: this.injector}, ...NestedDialogCustomConfig, ...CommonDialogCustomConfig});
+
   }
 
-    helpUrlChanged(url: string, lang: string) {
+  helpUrlChanged(url: string, lang: string) {
         const findedAppRoute = helpRoutes.find(x => x.appRoute === url);
 
         if (findedAppRoute) {

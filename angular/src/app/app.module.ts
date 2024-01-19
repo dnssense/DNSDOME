@@ -34,7 +34,6 @@ import {CacheableCategoryServiceImpl} from './core/services/cacheable-categories
 import {CacheableApplicationServiceImpl} from './core/services/cacheable-application.service';
 import {ProductLicenceServiceImpl} from "./core/services/product-licence.service";
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
-  logoUrl: '/assets/img/DNSDome Logo Reveal.svg',
   minTime: 100,
   fgsColor: '#135F82',
   pbColor: '#135F82'

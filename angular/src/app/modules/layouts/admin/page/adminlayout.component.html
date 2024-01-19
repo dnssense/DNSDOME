@@ -1,7 +1,7 @@
 <div class="wrapper">
     <rk-sidebar  [ngClass]="{'collapsed': collapsed}" [menuItems]="menuItems" [collapsed]="collapsed" (onCollapseToggle)="collapsed = $event" [hiddenMenus]="host?.hiddenMenus">
-        <ng-template #bgLogo>
-            <img src="/assets/img/Dome_Sidebar_Logo.svg">
+        <ng-template #bgLogo *ngIf="host.sidebarBgImage">
+            <img [src]="host.sidebarBgImage">
         </ng-template>
     </rk-sidebar>
 
