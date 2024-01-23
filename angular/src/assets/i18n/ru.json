@@ -961,5 +961,6 @@
    "MSGDomainAlreadyExist"	:	 "Домен уже существует",
    "PhoneNumber"	:	 "Номер телефона",
    "CompanyEmailAddress"	:	 "Адрес электронной почты компании",
-   "GenericError"	:	 "Произошла ошибка"
+   "GenericError"	:	 "Произошла ошибка",
+   "CopyRightText": "<a href=\"{{arg3}}\" target=\"blank\">{{arg2}}</a> &copy; Все права защищены"
 }		

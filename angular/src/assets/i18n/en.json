@@ -961,5 +961,6 @@
    "MSGDomainAlreadyExist": "Domain already exists",
    "PhoneNumber": "Phone Number",
    "CompanyEmailAddress": "Company Email Address",
-   "GenericError": "An error has occured"
+   "GenericError": "An error has occured",
+   "CopyRightText": "Copyright &copy; {{arg1}} <a href=\"{{arg3}}\" target=\"blank\">{{arg2}}</a>"
 }

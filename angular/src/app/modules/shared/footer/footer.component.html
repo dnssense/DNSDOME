@@ -2,8 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 text-center">
-        <div class="copyright  ml-2" style="color: #868e96;">
-          Copyright &copy; {{test | date: 'yyyy'}} <a [href]="host.www" target="_blank">{{host.brand}}</a>
+        <div class="copyright  ml-2" style="color: #868e96;" [innerHTML]="'CopyRightText' | translate: {'arg1': (test | date: 'yyyy'), 'arg2': host.brand | uppercase, 'arg3': host.www}">
         </div>
       </div>
       <div class="col-md-12 text-center">
