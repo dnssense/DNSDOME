@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import {ConfigHost, ConfigService} from '../../../../core/services/config.service';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {ValidationService} from '../../../../core/services/validation.service';
@@ -17,13 +17,14 @@ import {CompanyService} from "../../../../core/services/companyService";
 import { RkNotificationService, RkSelectModel } from 'roksit-lib';
 
 declare var $: any;
+declare const window: any;
 
 @Component({
   selector: 'app-createdparentconfirm',
   templateUrl: './createtparentconfirm.component.html',
   styleUrls: ['./createtparentconfirm.component.sass']
 })
-export class CreatetparentconfirmComponent implements OnInit {
+export class CreatetparentconfirmComponent implements OnInit, AfterViewInit {
 
   constructor(private formBuilder: UntypedFormBuilder, private configservice: ConfigService, private translateservice: TranslatorService,
               private route: ActivatedRoute, private authService: AuthenticationService, private capthaService: CaptchaService,
@@ -40,7 +41,7 @@ export class CreatetparentconfirmComponent implements OnInit {
       {validator: Validators.compose([ValidationService.matchingPasswords('password', 'passwordAgain')])}
     );
   }
-
+  @ViewChild('yandexCaptchaContainer') yandexCaptchaContainer!: ElementRef;
   host: ConfigHost;
   confirmForm: any;
   model: ForgotPasswordModel = {}
@@ -74,10 +75,30 @@ export class CreatetparentconfirmComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+
+    // this.captchaComponent.ngOnInit();
+    if(this.host.captchaType === 'Yandex'){
+      this.initYandexCaptcha();
+    }
+    
+  }
+
+  initYandexCaptcha() {
+    setTimeout(() => {
+      if(this.yandexCaptchaContainer.nativeElement && window.smartCaptcha) {
+        (window.smartCaptcha)?.render(this.yandexCaptchaContainer.nativeElement, {
+          sitekey: this.host.captcha_key,
+          hl: this.configservice.getTranslationLanguage(),
+         })
+      }
+    }, 0); 
+  }
+
   // region ui methodes
 
   isFormValid() {
-    if (this.model != null && this.confirmForm.dirty && this.confirmForm.valid && this.captcha != null) {
+    if (this.model != null && this.confirmForm.dirty && this.confirmForm.valid) {
       return true
     }
     return false
@@ -88,6 +109,9 @@ export class CreatetparentconfirmComponent implements OnInit {
   }
 
   submitPassword() {
+    if(this.host.captchaType === 'Yandex') {
+      this.captcha =  (document.querySelector(".yandex-captcha input[data-testid='smart-token']") as HTMLInputElement)?.value || '';
+    }
     if (!this.capthaService.validCaptcha(this.captcha))
       return
     this.authService.confirmAccountCreatedByParent(this.confirmId, this.model.password, this.model.passwordAgain).subscribe(res=>{

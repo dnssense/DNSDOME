@@ -18,6 +18,7 @@ import {phoneNumberCodes, RkNotificationService } from 'roksit-lib';
 
 
 declare var $: any;
+declare const window: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -56,6 +57,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   public host: ConfigHost;
   public captcha_key = '';
   @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
+  @ViewChild('yandexCaptchaContainer') yandexCaptchaContainer!: ElementRef;
   phoneNumberCodes = phoneNumberCodes;
   emailFormControl = new UntypedFormControl('', [
     Validators.required,
@@ -88,10 +90,24 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   ngAfterViewInit(): void {
 
     // this.captchaComponent.ngOnInit();
+    if(this.host.captchaType === 'Yandex'){
+      this.initYandexCaptcha();
+    }
+    
   }
 
   ngAfterContentInit() {
     // this.captchaComponent.reset();
+  }
+  initYandexCaptcha() {
+    setTimeout(() => {
+      if(this.yandexCaptchaContainer.nativeElement && window.smartCaptcha) {
+        (window.smartCaptcha)?.render(this.yandexCaptchaContainer.nativeElement, {
+          sitekey: this.host.captcha_key,
+          hl: this.configService.getTranslationLanguage(),
+         })
+      }
+    }, 0); 
   }
 
   createRegisterForm() {
@@ -201,7 +217,7 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   isRegisterFormValid() {
-    if (this.user != null && this.registerForm.dirty && this.registerForm.valid && this.captcha != null && this.capthaService.validCaptcha(this.captcha)) {
+    if (this.user != null && this.registerForm.dirty && this.registerForm.valid) {
 
       return true;
     }
@@ -209,12 +225,18 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   register() {
+    if(this.host.captchaType === 'Yandex') {
+      this.captcha =  (document.querySelector(".yandex-captcha input[data-testid='smart-token']") as HTMLInputElement)?.value || '';
+    }
     if (!this.capthaService.validCaptcha(this.captcha)) {
-      this.captchaComponent.reset();
+      this.captchaComponent?.reset();
       return;
     } else {
       this.user.c_answer = this.captcha;
-      this.captchaComponent.reset();
+      this.captchaComponent?.reset();
+      if(this.host.captchaType === 'Yandex'){
+        this.initYandexCaptcha();
+      }
       this.isRegisterFormValid();
     }
 

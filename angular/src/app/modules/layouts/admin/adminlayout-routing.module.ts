@@ -123,14 +123,6 @@ const adminlayoutRoutes: Routes = [
         },
         loadComponent: () => import('../../licence-info/licence-info.component')
       },
-      {
-        path: 'anomaly-detection',
-        canActivate: [RoleGuard],
-        data: {
-          expectedRole: 'ROLE_CUSTOMER,ROLE_USER'
-        },
-        loadChildren: () => import('../../anomaly-detection/anomaly-detection.module').then(m => m.AnomalyDetectionModule)
-      },
       { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

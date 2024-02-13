@@ -9,6 +9,7 @@ import { AuditService } from 'src/app/core/services/auditService';
 import { DateFormatPipe } from '../../shared/pipes/DateFormatPipe';
 import { FilterBadgeModel, RoksitSearchComponent } from '../../shared/roksit-search/roksit-search.component';
 import { AuditResultComponent } from './result/audit-result.component';
+import { TranslatorService } from 'src/app/core/services/translator.service';
 
 
 
@@ -25,7 +26,8 @@ export class AuditComponent implements OnInit, AfterViewInit {
   constructor(
     private location: Location,
     private activatedRoute: ActivatedRoute,
-    private auditService: AuditService
+    private auditService: AuditService,
+    private translatorService: TranslatorService,
   ) {
 
   }
@@ -46,7 +48,20 @@ export class AuditComponent implements OnInit, AfterViewInit {
   columnsOptions: RkSelectModel[] = [];
   columns: LogColumn[] = [];
   ngOnInit() {
+    this.auditService.initTableColumns().subscribe(columns => {
 
+      if (!!columns) {
+
+        this.columns = columns;
+
+        this.columnsOptions = columns.filter(c => !c.hide).map(x => {
+          return {
+            displayText: this.translatorService.translate(x.beautyName),
+            value: x.name
+          } as RkSelectModel;
+        });
+      }
+    });
 
 
   }

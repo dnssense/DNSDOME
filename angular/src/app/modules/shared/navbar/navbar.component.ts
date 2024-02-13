@@ -69,7 +69,7 @@ export class NavbarComponent implements OnInit {
 
     breadcrumb: string[] = [];
 
-    helpRoute = 'https://docs.roksit.com/';
+    helpRoute = 'https://www.dnssense.com/support';
 
     constructor(
         location: Location,

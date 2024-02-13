@@ -126,7 +126,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "dnssense:build"
+            "buildTarget": "dnssense:build"
           }
         },
         "test": {
@@ -142,6 +142,7 @@
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css"
             ],
             "scripts": [
+              "src/assets/js/yandex-captcha.min.js",
               "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.js",
               "node_modules/jquery-ui-dist/jquery-ui.js",

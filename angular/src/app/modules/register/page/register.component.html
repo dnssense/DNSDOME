@@ -161,8 +161,9 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group-sm has-default text-center ml-auto">
-                      <re-captcha [siteKey]="captcha_key" language='en' (resolved)="handleCaptcha($event)">
+                      <re-captcha *ngIf="host.captchaType === 'Google'" [siteKey]="captcha_key" language='en' (resolved)="handleCaptcha($event)">
                       </re-captcha>
+                      <div class="yandex-captcha" *ngIf="host.captchaType === 'Yandex'" #yandexCaptchaContainer></div>
                     </div>
                     <div class="row">
                       <div class="col-md-12">
@@ -175,7 +176,7 @@
                     </div>
                     <div style="font-size: 12px; max-width: 400px; color: #868e96; line-height: normal;">
                       <p>By clicking the 'Register', you agree to our
-                        <a href="{{host.termsOfServiceUrl}}" target="_blank">Terms of Service</a> and <a href="{{host.privacyUrl}}" target="_blank">Privacy Policy</a> and you
+                        <a [href]="host.termsOfServiceUrl" target="_blank">Terms of Service</a> and <a [href]="host.privacyUrl" target="_blank">Privacy Policy</a> and you
                         understand that
                         your personal information may be transferred for processing outside your country of residence.
                       </p>

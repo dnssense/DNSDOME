@@ -25,7 +25,7 @@ import {
 } from 'ng-apexcharts';
 import {TranslateModule} from '@ngx-translate/core';
 import {Subject} from 'rxjs';
-import {skip, switchMap, takeUntil} from 'rxjs/operators';
+import {catchError, skip, switchMap, takeUntil} from 'rxjs/operators';
 import * as momenttz from 'moment-timezone';
 import {
   RkNSwitchModel,
@@ -154,14 +154,16 @@ export class DnsTunnelHistogramComponent implements OnInit, AfterViewInit, OnDes
         }
         this.showLoading(true);
         return this.tunnelService.getHistogram(req);
+      }),
+      catchError((e, originalObservable) => {
+        this.showLoading(false);
+        this.data = [];
+        this.drawChart();
+        this.notifService.error(this.translatorService.translate('GenericError'));
+        return originalObservable;
       })
     ).subscribe((data: DnsTunnelHistogramUIResponse) => {
       this.processResponse(data);
-    }, () => {
-      this.showLoading(false);
-      this.data = [];
-      this.drawChart();
-      this.notifService.error(this.translatorService.translate('GenericError'));
     });
   }
   getTimeInfo = () => {

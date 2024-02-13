@@ -6,6 +6,7 @@ import flatpickr from 'flatpickr';
 import { Turkish } from 'flatpickr/dist/l10n/tr';
 Turkish.weekdays.shorthand = ['P', 'P', 'S', 'Ç', 'P', 'C', 'C'];
 import { english } from 'flatpickr/dist/l10n/default';
+import { Russian } from 'flatpickr/dist/l10n/ru';
 import {RkTranslatorService} from 'roksit-lib';
 @Injectable({
   providedIn: 'root'
@@ -70,6 +71,8 @@ export class TranslatorService implements RkTranslatorService {
   setCalendarLang(lang: string) {
     if (lang === 'tr')
       flatpickr.localize(Turkish);
+    else if(lang === 'ru')
+      flatpickr.localize(Russian);
     else
       flatpickr.localize(english);
   }

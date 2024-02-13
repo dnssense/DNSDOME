@@ -1,6 +1,6 @@
 
 import {delay} from 'rxjs/operators';
-import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -12,6 +12,7 @@ import {UntypedFormBuilder, Validators} from '@angular/forms';
 import {ValidationService} from '../../../core/services/validation.service';
 
 declare var $: any;
+declare const window: any;
 
 @Component({
   selector: 'app-accountconfirm',
@@ -19,7 +20,8 @@ declare var $: any;
   styleUrls: ['accountconfirm.component.sass']
 })
 
-export class AccountConfirmComponent implements OnInit, OnDestroy {
+export class AccountConfirmComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('yandexCaptchaContainer') yandexCaptchaContainer!: ElementRef;
   host: ConfigHost;
   toggleButton: any;
   activated = 0;
@@ -59,6 +61,24 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
 
 
   }
+  ngAfterViewInit(): void {
+
+    // this.captchaComponent.ngOnInit();
+    if(this.host.captchaType === 'Yandex'){
+      this.initYandexCaptcha();
+    }
+  }
+
+  initYandexCaptcha() {
+    setTimeout(() => {
+      if(this.yandexCaptchaContainer.nativeElement && window.smartCaptcha) {
+        (window.smartCaptcha)?.render(this.yandexCaptchaContainer.nativeElement, {
+          sitekey: this.host.captcha_key,
+          hl: this.configService.getTranslationLanguage(),
+         })
+      }
+    }, 0); 
+  }
   ngOnInit() {
     // const navbar: HTMLElement = this.element.nativeElement;
     // this.toggleButton = navbar.getElementsByClassName('navbar-toggle')[0];
@@ -89,6 +109,9 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
 
 
   activateWithPass() {
+    if(this.host.captchaType === 'Yandex') {
+      this.captcha =  (document.querySelector(".yandex-captcha input[data-testid='smart-token']") as HTMLInputElement)?.value || '';
+    }
     if (!this.captchaService.validCaptcha(this.captcha)) {
       return;
     }
@@ -144,7 +167,6 @@ export class AccountConfirmComponent implements OnInit, OnDestroy {
 
   isFormValid() {
     return this.model != null && this.passwordConfirmForm.dirty
-        && this.passwordConfirmForm.valid
-        && this.captcha != null;
+        && this.passwordConfirmForm.valid;
   }
 }

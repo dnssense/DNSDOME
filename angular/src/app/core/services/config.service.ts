@@ -4,14 +4,16 @@ import { TranslatorService } from './translator.service';
 
 export class ConfigHost {
   www: string;
-  brand: 'CyberCyte' | 'DNSSense' | 'Roksit' | 'CMERP';
+  brand: 'CyberCyte' | 'DNSSense' | 'Roksit' | 'CMERP' | 'kvildns';
   aboutus: string;
   logofullUrl: string;
   logoCompanyLoginImage?: string;
+  spinnerImage = '/assets/img/DNSDome Logo Reveal.svg';
   logoImage: string;
   logoDarkImage: string;
   logoCompanyImage: string;
   logoCompanyDarkImage: string;
+  sidebarBgImage: string;
   iconImage: string;
   title: string;
   privacyUrl: string;
@@ -19,6 +21,7 @@ export class ConfigHost {
   termsOfServiceUrl: string;
   onlineHelpUrl: string;
   captcha_key: string;
+  captchaType: 'Google' | 'Yandex' = 'Google';
   docUrl: string;
   portal: string;
   hiddenMenus?: string[];
@@ -88,13 +91,14 @@ export class ConfigService {
       this.host.title = 'DNSSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
-      this.host.docUrl = 'http://docs.roksit.com';
+      this.host.docUrl = 'https://www.dnssense.com/support';
       this.host.supportUrl = 'https://dnssense.com/support';
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
-      this.host.onlineHelpUrl = 'https://dnssense.com/faq';
+      this.host.onlineHelpUrl = 'https://www.dnssense.com/support';
       this.host.portal = 'https://portal.dnssense.com';
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
+      this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
     } else if (window.location.host.indexOf('cyte') >= 0) {
       this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'CyberCyte';
@@ -131,6 +135,28 @@ export class ConfigService {
       this.host.onlineHelpUrl = 'https://www.cmerp.my';
       this.host.hiddenMenus = ['help']; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+60';
+    } else if (window.location.host.indexOf('kvil') >= 0) {
+      this.host.www = 'https://www.kvildns.ru';
+      this.host.brand = 'kvildns';
+      this.host.aboutus = 'https://www.kvildns.ru/about-us';
+      this.host.logoCompanyLoginImage = 'DNSCube-Company.svg';
+      this.host.logoImage = 'DNSCube-Product.svg';
+      this.host.logoCompanyImage = 'DNSCube-Company.svg';
+      this.host.iconImage = 'favicon-dnscube.png';
+      this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/DNSCube-Product.svg';
+      this.host.title = 'kvildns';
+      this.host.privacyUrl = 'https://www.kvildns.ru/privacy-policy';
+      this.host.termsOfServiceUrl = 'https://kvildns.ru/terms-of-service';
+      this.host.captcha_key = 'ysc1_2U8mj5Czn2rbGstdvi7gQdNGBYVIC6hQyrzaxGjv8e158a3d';
+      this.host.captchaType = 'Yandex';
+      this.host.docUrl = 'https://kvildns.ru';
+      this.host.portal = 'https://portal.kvildns.ru';
+      this.host.supportUrl = 'https://kvildns.ru';
+      this.host.onlineHelpUrl = 'https://kvildns.ru/faq';
+      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
+      this.host.defaultGSMCode = '+7';
+      this.host.sidebarBgImage = '/assets/img/DNSCube_Sidebar.svg';
+      this.host.spinnerImage = '/assets/img/DNSCube Logo Reveal.svg'
     } else {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';
@@ -146,13 +172,14 @@ export class ConfigService {
       this.host.title = 'DNSSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
       this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
-      this.host.docUrl = 'http://docs.roksit.com';
+      this.host.docUrl = 'https://www.dnssense.com/support';
       this.host.supportUrl = 'https://dnssense.com/support';
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
-      this.host.onlineHelpUrl = 'https://dnssense.com/faq';
+      this.host.onlineHelpUrl = 'https://www.dnssense.com/support';
       this.host.portal = 'https://portal.dnssense.com';
-      this.host.hiddenMenus = ['help']; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
+      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
+      this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
     }
   }
   loadLanguage(userId: number): string | undefined {
@@ -191,7 +218,12 @@ export class ConfigService {
 
   init(userId?: number) {
 
-    const language = this.loadLanguage(userId);
+    let language = '';
+    if (this.host.brand?.toLocaleLowerCase() === 'kvildns'){
+        language = 'ru'; 
+    } else {
+        language = this.loadLanguage(userId);
+    }
     this.translationservice.initLanguages(language, this.host);
     if (language) {
       this.translationservice.setDefaultLang(language);

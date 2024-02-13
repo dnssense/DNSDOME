@@ -7,7 +7,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RkProgressBarModule, RkDateModule, RkTableModule, RkInfoBoxModule, IconsModule } from 'roksit-lib';
-import { TagInputModule } from 'ngx-chips';
+//import { TagInputModule } from 'ngx-chips';
 import {Dashboardv2Component} from './page/dashboardv2.component';
 import {AgentsComponent} from './page/childcomponents/agents.component';
 import {TopdateComponent} from './page/childcomponents/topdate.component';
@@ -16,12 +16,16 @@ import {GroupComponent} from './page/childcomponents/group.component';
 import {CategoryComponent} from './page/childcomponents/category.component';
 import {DashboardChartComponent} from './page/childcomponents/dashboard-chart.component';
 import {DomainComponent} from './page/childcomponents/domain.component';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { FeatherModule } from 'angular-feather';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
-TagInputModule.withDefaults({
+/*TagInputModule.withDefaults({
   tagInput: {
     placeholder: 'Domain...'
   }
-});
+});*/
 
 @NgModule({
   declarations: [DashboardComponent, Dashboardv2Component, AgentsComponent,
@@ -44,7 +48,11 @@ TagInputModule.withDefaults({
         deps: [HttpClient]
       }
     }),
-    TagInputModule
+    MatFormFieldModule, 
+    MatChipsModule, 
+    FeatherModule,
+    MatAutocompleteModule
+    //TagInputModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 
