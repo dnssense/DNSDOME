@@ -1,0 +1,33 @@
+<ng-template #timestampTemplate let-row=row let-columns=columns let-currentColumn = currentColumn>
+  <row-item-time *ngIf="row[currentColumn]" [config]="{time: row[currentColumn]}"></row-item-time>
+</ng-template>
+<ng-template #arrayTemplate  let-row=row let-columns=columns let-currentColumn = currentColumn>
+  <row-item class="tw-flex tw-justify-center" [cellValue]="row[currentColumn] ? row[currentColumn]?.join(', '): 'N/A'" [column]="columns" [truncatedTextLength]="columns.maxTruncateLength"></row-item>
+</ng-template>
+<ng-template #countryTemplate  let-row=row let-columns=columns let-currentColumn = currentColumn>
+  <row-item-country *ngIf="row[currentColumn]"  [countryAbbreviation]="row[currentColumn]"></row-item-country>
+  <span *ngIf="!row[currentColumn]">N/A</span>
+</ng-template>
+<ng-template #actionTemplate  let-row=row let-columns=columns let-currentColumn = currentColumn>
+  <div class="tw-flex tw-items-center tw-gap-2">
+    <div class="tw-flex tw-items-center tw-w-[14px] tw-h-[14px] tw-rounded-full" [ngClass]="{'tw-bg-green-3': row[currentColumn], 'tw-bg-security-2': !row[currentColumn]}">
+      <feather-icon *ngIf="row[currentColumn]" name="check" style="stroke-width: 5px; padding: 2.5px;" class="!tw-flex tw-items-center tw-text-white"></feather-icon>
+      <feather-icon *ngIf="!row[currentColumn]" name="x" style="stroke-width: 5px; padding: 2.5px;" class="!tw-flex tw-items-center tw-text-white"></feather-icon>
+    </div>
+    <span>{{row[currentColumn] ? 'Allow' : 'Block' | translate}}</span>
+  </div>
+</ng-template>
+<div class="tw-relative tw-h-full nested-detail-table">
+  <rk-table-v2 *ngIf="availableColumns" [dataSource]="dataSource" [tableConfig]="tableConfig" [loading]="loading"
+               [availableColumns]="availableColumns" [rangeFilters]="rangeFilters">
+    <ng-template #topHeaderLeftPart>
+      <span class="rk-button-12">{{translationPrefix + '.TunnelTrafficHeaderText' | translate | uppercase}}</span>
+    </ng-template>
+    <ng-template #topHeaderRightPart>
+      <div class="d-flex tw-gap-5 tw-px-9">
+        <stats-tag [desc]="'StatsCount' | translate: {'arg': totalCount | roundedNumber | uppercase}"></stats-tag>
+      </div>
+    </ng-template>
+  </rk-table-v2>
+</div>
+

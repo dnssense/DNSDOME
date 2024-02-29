@@ -545,7 +545,7 @@ var DashboardComponent = /** @class */ (function () {
                     var mDate = moment(w.globals.seriesX[0][dataPointIndex]).utc(false).format('MMM DD YYYY - HH:mm');
                     // const mDate2 = moment(w.globals.seriesX[0][dataPointIndex]).utc(true).format('MMM DD YYYY - HH:mm');
                     // const mDate3 = moment.utc(w.globals.seriesX[0][dataPointIndex]).local().format('MMM DD YYYY - HH:mm');
-                    return "\n            <div class=\"__apexcharts_custom_tooltip\">\n              <div class=\"__apexcharts_custom_tooltip_date\">" + mDate + "</div>\n\n              <div class=\"__apexcharts_custom_tooltip_content\">\n                <span class=\"__apexcharts_custom_tooltip_row\">\n                  <span class=\"color\" style=\"background: #507df3\"></span> Min: <b>" + series[0][dataPointIndex] + "</b>\n                </span>\n                <span class=\"__apexcharts_custom_tooltip_row\">\n                  <span class=\"color\" style=\"background: #c41505\"></span> Max: <b>" + series[1][dataPointIndex] + "</b>\n                </span>\n                <span class=\"__apexcharts_custom_tooltip_row\">\n                  <span class=\"color\" style=\"background: " + (_this.theme === 'white' ? '#b5dbff' : '#004175') + "\"></span> Hit: <b>" + series[2][dataPointIndex] + "</b>\n                </span>\n\n                <p>\n                  " + _this.translatorService.translate('TooltipDescription') + "\n                </p>\n                </div>\n            </div>\n          ";
+                    return "\n            <div class=\"__apexcharts_custom_tooltip\">\n              <div class=\"__apexcharts_custom_tooltip_date\">" + mDate + "</div>\n\n              <div class=\"__apexcharts_custom_tooltip_content\">\n                <span class=\"__apexcharts_custom_tooltip_row\">\n                  <span class=\"color\" style=\"background: var(--primary)\"></span> Min: <b>" + series[0][dataPointIndex] + "</b>\n                </span>\n                <span class=\"__apexcharts_custom_tooltip_row\">\n                  <span class=\"color\" style=\"background: #c41505\"></span> Max: <b>" + series[1][dataPointIndex] + "</b>\n                </span>\n                <span class=\"__apexcharts_custom_tooltip_row\">\n                  <span class=\"color\" style=\"background: " + (_this.theme === 'white' ? '#b5dbff' : '#004175') + "\"></span> Hit: <b>" + series[2][dataPointIndex] + "</b>\n                </span>\n\n                <p>\n                  " + _this.translatorService.translate('TooltipDescription') + "\n                </p>\n                </div>\n            </div>\n          ";
                 }
             },
             legend: {
@@ -637,7 +637,7 @@ var DashboardComponent = /** @class */ (function () {
                 color = '#6158ca';
             }
             else if (percentMax >= 20) {
-                color = '#507df3';
+                color = '#135F82';
             }
             var elm = {
                 x: time,

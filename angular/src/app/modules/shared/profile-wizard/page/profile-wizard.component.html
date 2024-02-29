@@ -223,7 +223,7 @@
 
           <div class="input-container">
             <rk-search class="w-100" [value]="whiteListItem.domain"  placeholder="White List Domain" (valueChange)="whiteListItem.domain=$event; whiteListItemValidation()" ></rk-search>
-            <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewWhiteListItem"
+            <button class="btn btn-small ml-1 tw-flex tw-justify-center tw-px-2.5"  [disabled]="!isNewWhiteListItem"
               (click)="addToWhiteList()">
               {{'Add'|translate}}
             </button>
@@ -269,7 +269,7 @@
 
           <div class="input-container">
             <rk-search class="w-100" [value]="blackListItem.domain"  placeholder="Black List Domain" (valueChange)="blackListItem.domain=$event; blackListItemValidation()" ></rk-search>
-            <button class="btn btn-small ml-1" style="width: 60px" [disabled]="!isNewBlackListItem"
+            <button class="btn btn-small ml-1 tw-flex tw-justify-center tw-px-2.5"  [disabled]="!isNewBlackListItem"
               (click)="addToBlackList()">
               {{'Add'|translate}}
             </button>

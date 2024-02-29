@@ -229,7 +229,7 @@
                                   <span>{{ 'TrafficExcessRate' | translate }}:</span>
 
                                   <span>
-                                    <div class="color" style="background: #507df3;"></div> %20
+                                    <div class="color" style="background: var(--primary);"></div> %20
                                   </span>
 
                                   <span>
@@ -313,11 +313,11 @@
 
                             <div class="top-domain-chart pt-2 d-flex flex-column justify-content-between">
                               <div class="search d-flex justify-content-between">
-                                <div class="tag-input-container w-100">
-                                  <tag-input [(ngModel)]="items" (onAdd)="onItemAdded($event)" [maxItems]="1" (onSelect)="copyItem($event)">
-                                  </tag-input>
+                                <!-- <div class="tag-input-container w-100">
+                                    <tag-input [(ngModel)]="items" (onAdd)="onItemAdded($event)" [maxItems]="1" (onSelect)="copyItem($event)">
+                                  </tag-input> 
                                 </div>
-
+                                -->           
                                 <button class="btn btn-accent ml-3" (click)="search()">{{'Search'|translate}}</button>
                               </div>
 

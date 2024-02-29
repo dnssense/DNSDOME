@@ -9,10 +9,10 @@
           </div>
 
           <div class="account">
-            <div *ngIf="!isCmerp() && !isDnssense()" class="btn-group" dropdown placement="bottom right">
+            <!--<div *ngIf="!isCmerp() && !isDnssense()" class="btn-group" dropdown placement="bottom right">
               <button class="notification-btn ripple" dropdownToggle type="button">
                 <i-feather name="globe"></i-feather>
-                <div class="btn-badge" style="background: var(--primary);">{{currentLanguage}}</div>
+                <div class="btn-badge" style="background: var(&#45;&#45;primary);">{{currentLanguage}}</div>
               </button>
 
               <div *dropdownMenu class="dropdown-menu dropdown-menu-right rk-list-dropdown-container" role="menu">
@@ -25,7 +25,7 @@
                   </li>
                 </div>
               </div>
-            </div>
+            </div>-->
 
             <a [href]="helpRoute" *ngIf="!isCmerp() && !isDnssense()" target="_blank"
               class="btn btn-small btn-icon btn-link notification-btn">

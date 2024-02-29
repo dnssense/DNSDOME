@@ -1,9 +1,10 @@
 <div class="main-content" #component>
   <div class="rk-base-card">
     <div class="card-item rk-col px-0 pt-0">
-      <app-roksit-search (filtersClearEmitter)="clearFilters()"
+      <app-roksit-search *ngIf="columns" (filtersClearEmitter)="clearFilters()"
                          [(isShowRunBar)]="isShowRunBar" [filters]="filters" pageTitle="PageName.AuditLogs" [searchSettings]="searchSettings"
-                         (searchSettingEmitter)="search($event)">
+                         (searchSettingEmitter)="search($event)"
+                         [columns]="columns">
       </app-roksit-search>
 
       <div class="container-fluid">

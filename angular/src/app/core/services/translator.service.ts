@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import {MissingTranslationHandler, MissingTranslationHandlerParams, TranslateService} from '@ngx-translate/core';
 import {ConfigHost} from './config.service';
 import * as moment from 'moment';
 import flatpickr from 'flatpickr';
 import { Turkish } from 'flatpickr/dist/l10n/tr';
 Turkish.weekdays.shorthand = ['P', 'P', 'S', 'Ç', 'P', 'C', 'C'];
 import { english } from 'flatpickr/dist/l10n/default';
+import { Russian } from 'flatpickr/dist/l10n/ru';
+import {RkTranslatorService} from 'roksit-lib';
 @Injectable({
   providedIn: 'root'
 })
-export class TranslatorService {
+export class TranslatorService implements RkTranslatorService {
   constructor(private translationService: TranslateService) { }
-  translate(data: string): string {
-    return this.translationService.instant(data);
+  translate(data: string, params?: object): string {
+    return this.translationService.instant(data, params);
   }
 
   translateWithArgs(data: string, params): string {
@@ -24,8 +26,9 @@ export class TranslatorService {
   }
 
   initLanguages(lang?: string, host?: ConfigHost) {
-    let languages;
-    if (host?.brand === 'CMERP' || host?.brand === 'DNSSense') {
+    const languages = ['en'];
+    const selectedLang = 'en';
+    /*if (host?.brand === 'CMERP' || host?.brand === 'DNSSense') {
       languages = ['en'];
     } else {
       languages = ['en', 'tr'];
@@ -43,7 +46,7 @@ export class TranslatorService {
       selectedLang = languages.find(x => x === browserLang) ? browserLang : languages[0];
     } else {
       selectedLang = languages.find(x => x === lang);
-    }
+    }*/
     if (selectedLang) {
       this.translationService.use(selectedLang);
       this.setCalendarLang(selectedLang);
@@ -68,7 +71,18 @@ export class TranslatorService {
   setCalendarLang(lang: string) {
     if (lang === 'tr')
       flatpickr.localize(Turkish);
+    else if(lang === 'ru')
+      flatpickr.localize(Russian);
     else
       flatpickr.localize(english);
+  }
+}
+
+export class RkTranslationHandler implements MissingTranslationHandler {
+  handle(params: MissingTranslationHandlerParams) {
+    console.warn('MISSINGTRANSLATION:', `[${params.translateService.currentLang}]`, params.key);
+
+    let key;
+    return (key = params.key.split('.'))[1] || key[0];
   }
 }

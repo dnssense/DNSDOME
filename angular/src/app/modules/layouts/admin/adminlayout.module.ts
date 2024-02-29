@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TagInputModule } from 'ngx-chips';
 import { AdminLayoutComponent } from './page/adminlayout.component';
 import { AdminLayoutRoutingModule } from './adminlayout-routing.module';
-import { NavbarModule } from '../../shared/navbar/navbar.module';
 import { FooterModule } from '../../shared/footer/footer.module';
-import { SidebarModule } from '../../shared/sidebar/sidebar.module';
 import { MdModule } from '../../shared/md/md.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeatherModule } from 'angular-feather';
+import {
+  RkNavbarComponent,
+  RkSidebarComponent
+} from 'roksit-lib';
+
 
 @NgModule({
   declarations: [AdminLayoutComponent],
@@ -15,12 +19,13 @@ import { MdModule } from '../../shared/md/md.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    TagInputModule,
     AdminLayoutRoutingModule,
-    NavbarModule,
     FooterModule,
-    SidebarModule,
-    MdModule
+    MdModule,
+    RkNavbarComponent,
+    RkSidebarComponent,
+    TranslateModule,
+    FeatherModule
   ]
 })
 export class AdminLayoutModule { }

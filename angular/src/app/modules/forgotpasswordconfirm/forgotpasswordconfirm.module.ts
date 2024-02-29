@@ -6,7 +6,6 @@ import {HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TagInputModule } from 'ngx-chips';
 
 import { ForgotPasswordConfirmComponent } from './page/forgotpasswordconfirm.component';
 import { ForgotPasswordConfirmComponentRoutingModule } from './forgotpasswordconfirm-routing.module';
@@ -22,7 +21,6 @@ import { RecaptchaModule } from 'ng-recaptcha';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    TagInputModule,
     RecaptchaModule,
     FooterModule,
     ForgotPasswordConfirmComponentRoutingModule,

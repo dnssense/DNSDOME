@@ -15,7 +15,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import * as punycode from 'punycode';
 import { CyberXRayService } from '../../../../core/services/cyberxray.service';
-import {RkApexChartEN, RkApexChartTR, ActionClick, RkTableColumnModel, RkTableComponent, RkTableConfigModel, RkTableRowModel, ExportTypes, RkSelectModel} from 'roksit-lib';
+import {RkApexChartEN, RkApexChartTR, RkApexChartRU, ActionClick, RkTableColumnModel, RkTableComponent, RkTableConfigModel, RkTableRowModel, ExportTypes, RkSelectModel} from 'roksit-lib';
 
 export interface TableBadgeOutput {
   name: string;
@@ -316,7 +316,7 @@ export class CustomReportResultComponent implements OnDestroy, AfterViewInit, On
           id: 'reportchart',
           series: series,
           chart: {
-            locales: [RkApexChartEN, RkApexChartTR],
+            locales: [RkApexChartEN, RkApexChartTR, RkApexChartRU],
             defaultLocale: this.translateService.getCurrentLang(),
             height: 300, type: 'area', foreColor: '#898ea4',
             selection: {

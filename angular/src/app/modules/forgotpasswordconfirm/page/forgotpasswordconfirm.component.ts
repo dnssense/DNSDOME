@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { ConfigService, ConfigHost } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { UntypedFormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
@@ -14,6 +14,7 @@ import { RkNotificationService } from 'roksit-lib';
 
 
 declare var $: any;
+declare const window: any;
 
 export interface ForgotPasswordModel {
   password?: string;
@@ -33,7 +34,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: 'forgotpasswordconfirm.component.html',
   styleUrls: ['forgotpasswordconfirm.component.sass']
 })
-export class ForgotPasswordConfirmComponent implements OnInit {
+export class ForgotPasswordConfirmComponent implements OnInit, AfterViewInit {
 
   constructor(private formBuilder: UntypedFormBuilder, private authService: AuthenticationService, private router: Router,
     private element: ElementRef, private notification: RkNotificationService,
@@ -62,6 +63,7 @@ export class ForgotPasswordConfirmComponent implements OnInit {
   private forgotId: string;
   public captcha_key: string;
   @ViewChild(RecaptchaComponent) captchaComponent: RecaptchaComponent;
+  @ViewChild('yandexCaptchaContainer') yandexCaptchaContainer!: ElementRef;
   matcher = new MyErrorStateMatcher();
 
 
@@ -83,12 +85,30 @@ export class ForgotPasswordConfirmComponent implements OnInit {
     // }, 700);
 
   }
+  ngAfterViewInit(): void {
+
+    // this.captchaComponent.ngOnInit();
+    if(this.host.captchaType === 'Yandex'){
+      this.initYandexCaptcha();
+    }
+    
+  }
+
+  initYandexCaptcha() {
+    setTimeout(() => {
+      if(this.yandexCaptchaContainer.nativeElement && window.smartCaptcha) {
+        (window.smartCaptcha)?.render(this.yandexCaptchaContainer.nativeElement, {
+          sitekey: this.host.captcha_key,
+          hl: this.configService.getTranslationLanguage(),
+         })
+      }
+    }, 0); 
+  }
 
 
   isFormValid() {
     if (this.model != null && this.forgotPasswordConfirmForm.dirty
-      && this.forgotPasswordConfirmForm.valid
-      && this.captcha != null) {
+      && this.forgotPasswordConfirmForm.valid) {
       return true;
     }
     return false;
@@ -99,6 +119,9 @@ export class ForgotPasswordConfirmComponent implements OnInit {
   }
 
   forgotPasswordConfirm() {
+    if(this.host.captchaType === 'Yandex') {
+      this.captcha =  (document.querySelector(".yandex-captcha input[data-testid='smart-token']") as HTMLInputElement)?.value || '';
+    }
     if (!this.capthaService.validCaptcha(this.captcha)) {
       return;
     } else {

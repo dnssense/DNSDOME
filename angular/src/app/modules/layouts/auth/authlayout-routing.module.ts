@@ -24,7 +24,12 @@ const authlayoutRoutes: Routes = [
     }, {
       path: 'account-created-parent',
       loadChildren: () => import('../../createdparentconfirm/createtparentconfirm.module').then(m => m.CreatetparentconfirmModule)
-    }, {
+    },
+      {
+        path: 'activate-licence',
+        loadComponent: () => import('../../licence-activation/licence-activation.component')
+      },
+      {
       path: '',
       loadChildren: () => import('../../login/login.module').then(m => m.LoginModule)
     }

@@ -52,7 +52,8 @@
                              formControlName="passwordAgain">
                     </div>
                     <div class="form-group-sm has-default text-center">
-                      <re-captcha [siteKey]="captcha_key" (resolved)="handleCaptcha($event)"></re-captcha>
+                      <re-captcha *ngIf="host.captchaType === 'Google'" [siteKey]="captcha_key" (resolved)="handleCaptcha($event)"></re-captcha>
+                      <div class="yandex-captcha" *ngIf="host.captchaType === 'Yandex'" #yandexCaptchaContainer></div>
                     </div>
                   </div>
                 </div>

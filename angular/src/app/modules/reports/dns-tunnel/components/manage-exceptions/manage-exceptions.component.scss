@@ -1,0 +1,49 @@
+:host {
+    > div {
+        width: 600px;
+    }
+    ::ng-deep  {
+        feather-icon[name="edit-3"] svg, feather-icon[name="trash-2"] svg {
+            width: 100% !important;
+            height: 100% !important;
+            display: flex;
+        }
+        *:hover > feather-icon[name="trash-2"] svg, *:hover > feather-icon[name="edit-3"] svg {
+            color: var(--primary);
+        }
+    }
+}
+.manage-exception-header {
+    display: flex;
+    padding: 10px 22px 10px 32px;
+    align-items: center;
+    border-radius: 11px 11px 0px 0px;
+    border-bottom: 1px solid var(--primary-light-200);
+    background: var(--white-2);
+}
+
+.manage-exception-body {
+    padding: 30px 22px 20px 20px;
+    display: flex;
+    height: 600px;
+    overflow: auto;
+    flex-direction: column;
+}
+
+.manage-exception-footer {
+    display: inline-flex;
+    padding: 14px 32px 14px 28px;
+    align-items: center;
+    border-radius: 0px 0px 11px 11px;
+    border-top: 1px solid var(--primary-light-200);
+    background: var(--white-2);
+}
+
+icon-inspect {
+    --svgFillColor: var(--gray);
+}
+icon-execute {
+    --svgFillColor: var(--gray);
+}
+
+
