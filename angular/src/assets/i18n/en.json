@@ -316,7 +316,31 @@
         "PasswordRequirements2": "one lower case",
         "PasswordRequirements3": "one number",
         "PasswordRequirements4": "8 characters",
-        "DefineYourPassword": "Define your password"
+        "DefineYourPassword": "Define your password",
+        "Title": "{{arg}} Days Free Protection From Threats",
+        "Subtitle": "Protect your organisation in minutes.",
+        "Subtitle2": "Why {{arg}}?",
+        "Desc1": "Stop zero-day attacks.",
+        "Desc2": "Pre & Post infection protection.",
+        "Desc3": "Define and enforce internet usage policy.",
+        "Desc4": "White list categorization of internet traffic (all ports and protocols)",
+        "Desc5": "Next Generation protection using machine learning & artificial intelligence.",
+        "Desc6": "Simple deployment with no overhead.",
+        "FieldsDescText": "All fields are required except phone number",
+        "CompanyName": "Company Name",
+        "Select": "Select",
+        "MailWarning": " Instant or Temporary e-mail services are not valid!",
+        "PassDesc": "* Your password has to be at least:",
+        "PassCondition1": "one upper case",
+        "PassCondition2": "one lower case",
+        "PassCondition3": "one number",
+        "PassCondition4": "8 characters",
+        "EnterSamePass": "Enter same password again",
+        "RegisterText": "Register",
+        "InfoText": "By clicking the 'Register', you agree to our <a href=\"{{arg1}}\" target=\"blank\">Terms of Service</a> and <a href=\"{{arg2}}\" target=\"blank\">Privacy Policy</a> and you understand that your personal information may be transferred for processing outside your country of residence",
+        "MailSentTitle": "<p>Great News!</p> <p>Your free trial is almost ready!</p>",
+        "LogIn": "Log In",
+        "MailSentDesc": "<p class=\"mt-2\">A verification email has been sent</p> <p> to: <b> {{arg}} </b></p><p>Please click the activation link sent to your e-mail address.<p>"
     },
     "ACCOUNTSETTINGS": {
         "UserInformation": "User Information",
@@ -616,7 +640,7 @@
         "ADGroups": "AD Groups",
         "DNSServerName": "DNS Server Name",
         "ClientCount": "Client Count",
-        "RuleKeyword": "Rule Keyword"
+        "RuleKeyword": "Rule Keyword"        
     },
     "Month": "Months",
     "Week": "Weeks",
@@ -962,5 +986,10 @@
    "PhoneNumber": "Phone Number",
    "CompanyEmailAddress": "Company Email Address",
    "GenericError": "An error has occured",
-   "CopyRightText": "Copyright &copy; {{arg1}} <a href=\"{{arg3}}\" target=\"blank\">{{arg2}}</a>"
+   "CopyRightText": "Copyright &copy; {{arg1}} <a href=\"{{arg3}}\" target=\"blank\">{{arg2}}</a>",
+   "AddNewPublicIP": "Add New Public IP",
+   "Rule": "Rule",
+   "Source": "Source",
+   "Destination":"Destination",
+   "Decision": "Decision"  
 }
