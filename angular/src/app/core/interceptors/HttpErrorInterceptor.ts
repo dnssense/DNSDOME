@@ -3,7 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse } fr
 import { interval, Observable, of, throwError } from 'rxjs';
 import { catchError, map, finalize, retryWhen, delayWhen, scan } from 'rxjs/operators';
 import { AuthenticationService } from '../services/authentication.service';
-import { RkNotificationService, HelpSupportModel } from 'roksit-lib';
+import { HelpSupportModel } from 'roksit-lib';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HelpSupportServiceImpl } from '../services/help-support.service';
 
@@ -11,7 +11,6 @@ import { HelpSupportServiceImpl } from '../services/help-support.service';
 export class HttpErrorInterceptor implements HttpInterceptor {
     constructor(private authenticationService: AuthenticationService, private injector: Injector, private helpSupportService: HelpSupportServiceImpl) { }
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const notificationService = this.injector.get(RkNotificationService);
         return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {
                 if (event instanceof HttpResponse) {
