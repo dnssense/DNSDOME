@@ -9,7 +9,6 @@ variables:
   YES2ALL: "y"
   K8_FILE: ui.dnssense.yaml
   POD_STATE: $$(kubectl get pods -n $NS | grep -e  $(grep -m1 "name" /tmp/$K8_FILE | cut -d ':' -f2) | awk '{print $4}') 
-  K8_FILE: rest.sms.yaml
   RUN: '"Running"'
   WAITING: '"Waiting to  Service UP"'
 
@@ -74,7 +73,7 @@ deploy_k8_dev:
       "
     - git clone git@gitlab:kube_dep/dep.dnssense.git
     - cd dep.dnssense
-    - export CURRENTIMAGE=$(cat templates/dnssense/$K8_FILE|grep "$REGISTRY_DEV/$NS/$IMAGE")
+    - export CURRENTIMAGE=$(cat templates/dnssense/$K8_FILE|grep "{{public_registry}}/$NS/$IMAGE")
     - echo  "current  $CURRENTIMAGE"
     - export CURRENTVERSION=$(echo $CURRENTIMAGE|cut -d '"' -f2|cut -d ":" -f2)
     - export NEWIMAGE="${CURRENTIMAGE//$CURRENTVERSION/$VERSION}"
