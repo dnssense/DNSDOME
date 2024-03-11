@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TagInputModule } from 'ngx-chips';
 
 import { FooterModule } from '../shared/footer/footer.module';
 import { AccountConfirmComponent } from './page/accountconfirm.component';
@@ -18,7 +17,6 @@ import { RecaptchaModule } from 'ng-recaptcha';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    TagInputModule,
     RecaptchaModule,
     FooterModule,
     AccountConfirmComponentRoutingModule,

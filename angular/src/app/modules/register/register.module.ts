@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RegisterComponent } from './page/register.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TagInputModule } from 'ngx-chips';
 import { FieldErrorDisplayComponent } from './components/field-error-display/field-error-display.component';
 import { RegisterRoutingModule } from './register-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -19,7 +18,6 @@ import { RecaptchaModule } from 'ng-recaptcha';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    TagInputModule,
     RecaptchaModule,
     RegisterRoutingModule,
     FooterModule,

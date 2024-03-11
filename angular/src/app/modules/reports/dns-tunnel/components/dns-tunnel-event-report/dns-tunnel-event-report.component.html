@@ -1,0 +1,34 @@
+<ng-template #timestampTemplate let-row=row let-columns=columns let-currentColumn = currentColumn>
+  <row-item-time *ngIf="row[currentColumn]" [config]="{time: row[currentColumn]}"></row-item-time>
+</ng-template>
+<ng-template #severityTemplate let-row=row let-columns=columns let-currentColumn = currentColumn>
+   <div  [ngClass]="{'tw-bg-security': row[currentColumn] === tunnelLevels.High, 'tw-bg-harmful': row[currentColumn] === tunnelLevels.Suspicious}" class="tw-flex tw-rounded-full tw-items-center tw-justify-center !tw-text-white tw-py-1 tw-w-[110px] tw-leading-[10px] tw-text-[10px] tw-font-semibold">
+      <span>{{row[currentColumn] | TunnelSeverityName}}</span>
+   </div>
+</ng-template>
+<ng-template #breakdownTemplate  let-row=row let-columns=columns let-currentColumn = currentColumn>
+  <row-item-dns-query [row]="row" [columns]="columns" [currentColumn]="currentColumn"></row-item-dns-query>
+</ng-template>
+<ng-template #arrayTemplate  let-row=row let-columns=columns let-currentColumn = currentColumn>
+  <row-item class="tw-flex tw-justify-center" [cellValue]="row[currentColumn] ? row[currentColumn]?.join(', '): 'N/A'" [column]="columns" [truncatedTextLength]="columns.maxTruncateLength"></row-item>
+</ng-template>
+<ng-template #numberTemplate  let-row=row let-columns=columns let-currentColumn = currentColumn>
+  <span *ngIf="row[currentColumn] < 0; else defaultCell">N/A</span>
+  <ng-template #defaultCell>
+    <row-default-item [tableConfig]="tableConfig" [filterable]="false" [tableColumn]="columns" [element]="row"></row-default-item>
+  </ng-template>
+</ng-template>
+
+<div class="tw-relative tw-h-full nested-detail-table">
+  <rk-table-v2 *ngIf="availableColumns" [dataSource]="dataSource" [tableConfig]="tableConfig" [loading]="loading"
+               [availableColumns]="availableColumns" [rangeFilters]="rangeFilters">
+    <ng-template #topHeaderLeftPart>
+      <span class="rk-button-12">{{translationPrefix + '.TunnelEventHeaderText' | translate | uppercase}}</span>
+    </ng-template>
+    <ng-template #topHeaderRightPart>
+      <div class="d-flex tw-gap-5 tw-px-9">
+        <stats-tag [desc]="translationPrefix + '.StatsCount' | translate: {'arg': totalCount | roundedNumber | uppercase}"></stats-tag>
+      </div>
+    </ng-template>
+  </rk-table-v2>
+</div>

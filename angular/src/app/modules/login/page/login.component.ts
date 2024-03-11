@@ -18,6 +18,7 @@ import { RkNotificationService } from 'roksit-lib';
 
 declare var $: any;
 declare const VERSION: string;
+declare const window: any;
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -73,9 +74,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
     Validators.email,
   ]);
   @ViewChild('forgotPassCaptcha') forgotPassCaptchaComponent: RecaptchaComponent;
+  @ViewChild('yandexForgotPassCaptchaContainer') yandexForgotPassCaptchaContainer!: ElementRef;
   forgotPassCaptcha: string;
 
   @ViewChild('loginCaptcha') loginCaptchaComponent: RecaptchaComponent;
+  @ViewChild('yandexLoginCaptchaContainer') yandexLoginCaptchaContainer!: ElementRef;
   loginCaptcha: string;
   loginCaptchaRequired: boolean;
 
@@ -120,12 +123,39 @@ export class LoginComponent implements OnInit, AfterViewInit {
     // this.captchaComponent.ngOnInit();
   }
 
+  initLoginYandexCaptcha() {
+    setTimeout(() => {
+      if(this.yandexLoginCaptchaContainer.nativeElement && window.smartCaptcha) {
+        (window.smartCaptcha)?.render(this.yandexLoginCaptchaContainer.nativeElement, {
+          sitekey: this.host.captcha_key,
+          hl: this.configService.getTranslationLanguage(),
+         })
+      }
+    }, 0); 
+  }
+
+  initForgotPassYandexCaptcha() {
+    setTimeout(() => {
+      if(this.yandexForgotPassCaptchaContainer.nativeElement && window.smartCaptcha) {
+        (window.smartCaptcha)?.render(this.yandexForgotPassCaptchaContainer.nativeElement, {
+          sitekey: this.host.captcha_key,
+          hl: this.configService.getTranslationLanguage(),
+         })
+      }
+    }, 0); 
+  }
+
 
 
   login() {
-    if (this.loginCaptchaRequired && !this.capthaService.validCaptcha(this.loginCaptcha)) {
-      this.notification.warning(this.staticMessageService.captchaIsNotValid);
-      return;
+    if(this.loginCaptchaRequired) {
+      if(this.host.captchaType === 'Yandex') {
+        this.loginCaptcha =  (document.querySelector(".yandex-login input[data-testid='smart-token']") as HTMLInputElement)?.value || '';
+      }
+      if (!this.capthaService.validCaptcha(this.loginCaptcha)) {
+        this.notification.warning(this.staticMessageService.captchaIsNotValid);
+        return;
+      }
     }
     if (this.loginForm.valid) {
       this.isFailed = false;
@@ -144,6 +174,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
         },
         (err) => {
           this.loginCaptchaComponent?.reset();
+          if (this.host.captchaType === 'Yandex'){
+            this.initLoginYandexCaptcha();
+          }
           if (err.status == 401)
             this.isFailed = true;
           else if(err?.error?.code === 'ErrRequireRecaptcha'){
@@ -181,6 +214,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     $('#loginDiv').slideUp(500);
     $('#forgotPasswordDiv').slideDown(500);
+    if(this.host.captchaType === 'Yandex')
+      this.initForgotPassYandexCaptcha();
   }
 
   open2FA(val: RestPreloginResponse) {
@@ -266,6 +301,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   sendPasswordActivationCode() {
+    if(this.host.captchaType === 'Yandex') {
+      this.forgotPassCaptcha =  (document.querySelector(".yandex-forgot-pass input[data-testid='smart-token']") as HTMLInputElement)?.value || '';
+    }
     if (!this.capthaService.validCaptcha(this.forgotPassCaptcha)) {
       this.notification.warning(this.staticMessageService.captchaIsNotValid);
       return;
@@ -288,8 +326,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.notification.success(this.staticMessageService.passwordResetLinkSendedPleaseCheckYourEmail);
         this.router.navigateByUrl('/login');
         this.openLogin();
-        this.forgotPassCaptchaComponent.reset();
-
+        this.forgotPassCaptchaComponent?.reset();
+        if (this.host.captchaType === 'Yandex'){
+          this.initForgotPassYandexCaptcha();
+        }
       });
     }
 

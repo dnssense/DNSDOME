@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { ValidationService } from 'src/app/core/services/validation.service';
-import * as phoneNumberCodesList from 'src/app/core/models/PhoneNumberCodes';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { User } from 'src/app/core/models/User';
 import { Company } from 'src/app/core/models/Company';
@@ -14,7 +13,7 @@ import { RestSmsResponse, RestSmsConfirmRequest, RestUserUpdateRequest } from 's
 import { StaticMessageService } from 'src/app/core/services/staticMessageService';
 import { ConfigService } from '../../../core/services/config.service';
 import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
-import { RkAlertService, RkNotificationService, RkSelectModel } from 'roksit-lib';
+import {phoneNumberCodes, RkAlertService, RkNotificationService, RkSelectModel } from 'roksit-lib';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -86,7 +85,7 @@ export class AccountSettingsComponent implements OnInit {
     maxRequest = 3;
     private smsInformation: RestSmsResponse;
     isConfirmTimeEnded = true;
-    public phoneNumberCodes = phoneNumberCodesList.phoneNumberCodes;
+    public phoneNumberCodes = phoneNumberCodes;
 
     notificationIndex = 0;
     isSmsConfirming = false;
@@ -135,7 +134,7 @@ export class AccountSettingsComponent implements OnInit {
             this.phoneNumberTemp = this.user.gsm;
             this.currentGsm = this.user.gsm;
 
-            this.countryOptions = phoneNumberCodesList.phoneNumberCodes.map(x => {
+            this.countryOptions = phoneNumberCodes.map(x => {
                 return {
                     value: x.dial_code,
                     displayText: x.name,

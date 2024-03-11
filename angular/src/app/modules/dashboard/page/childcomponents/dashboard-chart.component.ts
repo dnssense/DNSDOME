@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import {TranslateService} from '@ngx-translate/core';
 import * as numeral from 'numeral';
 import {TranslatorService} from '../../../../core/services/translator.service';
-import {RkApexChartEN, RkApexChartTR} from 'roksit-lib';
+import {RkApexChartEN, RkApexChartTR, RkApexChartRU} from 'roksit-lib';
 export interface ChartDomainItem {
   max: number;
   min: number;
@@ -75,7 +75,7 @@ export class DashboardChartComponent {
     this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
       series: series,
       chart: {
-        locales: [RkApexChartEN, RkApexChartTR],
+        locales: [RkApexChartEN, RkApexChartTR, RkApexChartRU],
         defaultLocale: this.translatorService.getCurrentLang(),
         id: `${this.getChartId()}`,
         type: 'line',
@@ -144,7 +144,7 @@ export class DashboardChartComponent {
 
               <div class="__apexcharts_custom_tooltip_content">
                 <span class="__apexcharts_custom_tooltip_row">
-                  <span class="color" style="background: #507df3"></span> Min: <b>${series[0][dataPointIndex]}</b>
+                  <span class="color" style="background: var(--primary)"></span> Min: <b>${series[0][dataPointIndex]}</b>
                 </span>
                 <span class="__apexcharts_custom_tooltip_row">
                   <span class="color" style="background: #c41505"></span> Max: <b>${series[1][dataPointIndex]}</b>
@@ -255,7 +255,7 @@ export class DashboardChartComponent {
       } else if (percentMax >= 40) {
         color = '#6158ca';
       } else if (percentMax >= 20) {
-        color = '#507df3';
+        color = '#135F82';
       }
 
       const elm = {
@@ -288,7 +288,7 @@ export class DashboardChartComponent {
     this.trafficChart = new ApexCharts(document.querySelector(`#${this.getChartContainerId()}`), {
       series: series,
       chart: {
-        locales: [RkApexChartEN, RkApexChartTR],
+        locales: [RkApexChartEN, RkApexChartTR, RkApexChartRU],
         defaultLocale: this.translatorService.getCurrentLang(),
         id: `${this.getChartId()}`,
         foreColor: this.theme === 'white' ? '#9aa1a9' : '#7b7b7e',

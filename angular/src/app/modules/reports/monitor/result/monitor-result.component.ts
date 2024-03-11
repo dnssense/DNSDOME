@@ -220,18 +220,18 @@ export class MonitorResultComponent implements OnInit, AfterViewInit, AfterViewC
         this.tableConfig.rows = [];
         // add column headers
         this.tableConfig.headers = [
-          { name: 'time', displayText: 'Time', columnName: ['time'] },
+          { name: 'time', displayText: this.translateService.translate('TableColumn.Time'), columnName: ['time'] },
           {
             name: 'source', columnName:
-              ['sourceIp', 'sourceIpCountryCode', 'agentAlias', 'clientLocalIp', 'hostName', 'clientMacAddress', 'clientBoxSerial'], displayText: 'Source'
+              ['sourceIp', 'sourceIpCountryCode', 'agentAlias', 'clientLocalIp', 'hostName', 'clientMacAddress', 'clientBoxSerial'], displayText: this.translateService.translate('Source')
           },
           {
             name: 'destination', columnName:
-              ['domain', 'subdomain', 'destinationIp', 'destinationIpCountryCode'], displayText: 'Destination'
+              ['domain', 'subdomain', 'destinationIp', 'destinationIpCountryCode'], displayText: this.translateService.translate('Destination')
           },
           {
             name: 'decision', columnName:
-              ['category', 'applicationName', 'action', 'reasonType', 'ruleNumber', 'ruleBy', 'ruleKeyword'], displayText: 'Decision'
+              ['category', 'applicationName', 'action', 'reasonType', 'ruleNumber', 'ruleBy', 'ruleKeyword'], displayText: this.translateService.translate('Decision')
           }
         ];
 

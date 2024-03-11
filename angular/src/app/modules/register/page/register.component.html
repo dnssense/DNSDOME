@@ -22,35 +22,22 @@
           <div class="row">
             <div class="col-md-12 signUpHeader mt-2" style="font-size: 30px;">
               <p>
-                <ng-container *ngIf="host.brand == 'CyberCyte'; else elseTemplate">
-                  60
-                </ng-container>
-                <ng-template #elseTemplate>
-                  14
-                </ng-template>
-                Days Free Protection From Threats
+                {{'REGISTER.Title' | translate: {'arg': host.brand == 'CyberCyte' ? 60 : 14} }}
               </p>
             </div>
           </div>
           <div class="row mt-0 ml-1">
             <div class="col-md-6" style="border-right: 1px solid #eeeeee;">
-              <p class="signUpHeader mt-2" style="font-size: 21px;">Protect your organisation in minutes.</p>
-              <p class="signUpHeader mt-2" style="font-size: 14px;">Why {{host.title}}?</p>
+              <p class="signUpHeader mt-2" style="font-size: 21px;">{{'REGISTER.Subtitle' | translate}}</p>
+              <p class="signUpHeader mt-2" style="font-size: 14px;">{{'REGISTER.Subtitle2' | translate: {'arg': host.title} }}</p>
               <div class="mb-3">
-                <img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Stop zero-day attacks.
+                <img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">{{'REGISTER.Desc1' | translate}}
               </div>
-              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Pre & Post infection
-                protection.</div>
-              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Define and enforce
-                internet usage policy.</div>
-              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">White list
-                categorisation
-                of internet traffic (all ports and protocols)</div>
-              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">Next Generation
-                protection
-                using machine learning & artificial intelligence.</div>
-              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">
-                Simple deployment with no overhead.</div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">{{'REGISTER.Desc2' | translate}}</div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">{{'REGISTER.Desc3' | translate}}</div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">{{'REGISTER.Desc4' | translate}}</div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">{{'REGISTER.Desc5' | translate}}</div>
+              <div class="mb-3"><img class="mr-1 tickIcon" src="/assets/images/icons/tick.svg">{{'REGISTER.Desc6' | translate}}</div>
               <div class="ml-4">
                 <div class="container">
                   <img src="/assets/img/dashboardImage2.png" alt="Dashboard" />
@@ -64,10 +51,9 @@
               <form [formGroup]="registerForm" class="form-horizontal mt-3">
                 <div class="row">
                   <div class="col-md-12" style="max-width: 450px;">
-                    <p style="font-size: 12px; margin-top: -15px; margin-bottom: 0px;">All fields are required except
-                      phone number</p>
+                    <p style="font-size: 12px; margin-top: -15px; margin-bottom: 0px;">{{'REGISTER.FieldsDescText' | translate}}</p>
 
-                    <input type="text" class="formInput" placeholder="Company Name" [(ngModel)]="user.company.name"
+                    <input type="text" class="formInput" placeholder="{{'REGISTER.CompanyName' | translate}}" [(ngModel)]="user.company.name"
                       formControlName="company" [ngClass]="{'formInputHasError':(registerForm.get('company').dirty|| registerForm.get('company').touched)
                       && !registerForm.get('company').valid}">
 
@@ -91,7 +77,7 @@
                                 {{user.gsmCode}}
                               </ng-container>
                               <ng-template #elseTemplateSelectedProfile>
-                                Select
+                                {{'REGISTER.Select' | translate}}
                               </ng-template>
                               <i class="icon-down-open-big btn-arrow"></i>
                             </button>
@@ -121,7 +107,7 @@
                       && (registerForm.get('username').hasError('required') || !validEmailRegister ||
                       !registerForm.get('username').valid )}">
                     <p style="color: red;" *ngIf="registerForm.get('username').hasError('unsolicitedMailAddress')">
-                      Instant or Temporary e-mail services are not valid!</p>
+                      {{'REGISTER.MailWarning' | translate}}</p>
 
                     <input type="password" class="formInput mt-2" placeholder="{{'REGISTER.Password' | translate}}*"
                       (keyup)="checkPasswordStrength()" [(ngModel)]="user.password" formControlName="password"
@@ -135,23 +121,20 @@
                       <div [ngClass]="{'active': passStrength>3}"></div>
                     </div>
                     <div class="form-group-sm has-default color-9d9d9d" style="font-size: 12px;" id="passDetails">
-                      * Your password has to be at least:
+                      {{'REGISTER.PassDesc' | translate}}
                       <div class="row">
                         <div class="col-md-6">
-                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': upStrength}">one upper
-                            case</i>
-                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': lowStrength}">one lower
-                            case</i>
+                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': upStrength}">{{'REGISTER.PassCondition1' | translate}}</i>
+                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': lowStrength}">{{'REGISTER.PassCondition2' | translate}}</i>
                         </div>
                         <div class="col-md-6">
-                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': numStrength}">one number</i>
-                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': lengthStrength}">8
-                            characters</i>
+                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': numStrength}">{{'REGISTER.PassCondition3' | translate}}</i>
+                          <i class="d-flex fa" [ngClass]="{'fa-check greenCheck': lengthStrength}">{{'REGISTER.PassCondition4' | translate}}</i>
                         </div>
                       </div>
                     </div>
 
-                    <input type="password" class="formInput mt-2 mb-3" title="Enter same password again"
+                    <input type="password" class="formInput mt-2 mb-3" title="{{'REGISTER.EnterSamePass' | translate}}"
                       placeholder="{{'REGISTER.ConfirmPassword' | translate}}" [(ngModel)]="user.passwordAgain"
                       formControlName="passwordAgain" [ngClass]="{'formInputHasError':(registerForm.get('passwordAgain').dirty|| registerForm.get('passwordAgain').touched)
                       && !registerForm.get('passwordAgain').valid}">
@@ -161,23 +144,20 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group-sm has-default text-center ml-auto">
-                      <re-captcha [siteKey]="captcha_key" language='en' (resolved)="handleCaptcha($event)">
+                      <re-captcha *ngIf="host.captchaType === 'Google'" [siteKey]="captcha_key" language='en' (resolved)="handleCaptcha($event)">
                       </re-captcha>
+                      <div class="yandex-captcha" *ngIf="host.captchaType === 'Yandex'" #yandexCaptchaContainer></div>
                     </div>
                     <div class="row">
                       <div class="col-md-12">
                         <div>
                           <button type="submit" class="btns signup-btns mt-3 mb-4" [disabled]="!isRegisterFormValid()"
-                            title="By clicking the 'Register', you agree to our Terms of Service and Privacy Policy and you understand that your personal information may be transferred for processing outside your country of residence."
-                            (click)="register()">Register</button>
+                            (click)="register()">{{'REGISTER.RegisterText' | translate}}</button>
                         </div>
                       </div>
                     </div>
                     <div style="font-size: 12px; max-width: 400px; color: #868e96; line-height: normal;">
-                      <p>By clicking the 'Register', you agree to our
-                        <a href="{{host.termsOfServiceUrl}}" target="_blank">Terms of Service</a> and <a href="{{host.privacyUrl}}" target="_blank">Privacy Policy</a> and you
-                        understand that
-                        your personal information may be transferred for processing outside your country of residence.
+                      <p [innerHTML]="'REGISTER.InfoText' | translate: {'arg1': host.termsOfServiceUrl, 'arg2':host.privacyUrl}">
                       </p>
                     </div>
                   </div>
@@ -202,7 +182,7 @@
         <div class="col-md-9">
           <a class="nav-link pull-right" [routerLink]="['/login']"
             style="color: #868e96; font-weight: 500; font-size: 16px;">
-            Log In
+            {{'REGISTER.LogIn' | translate}}
           </a>
         </div>
       </div>
@@ -213,16 +193,10 @@
               <div class="col-md-2 col-sm-12 col-xs-12 mb-2">
                 <img src="/assets/img/check-ring.svg" />
               </div>
-              <div class="col-md-10 col-sm-12 mb-2" style="font-family: Roboto; font-size: 25px; font-weight: normal;">
-                <p>Great News!</p>
-                <p>Your free trial is almost ready!</p>
+              <div class="col-md-10 col-sm-12 mb-2" style="font-family: Roboto; font-size: 25px; font-weight: normal;" [innerHTML]="'REGISTER.MailSentTitle' | translate">
               </div>
               <div class="col-md-12 mr-auto ml-auto"
-                style="font-weight: normal; background-color: rgba(67, 83, 255, 0.08)">
-                <p class="mt-2">A verification email has been sent</p>
-                <p> to: <b>{{user.username}}</b></p>
-                <p>Please click the activation link sent to your e-mail address.
-                <p>
+                style="font-weight: normal; background-color: rgba(67, 83, 255, 0.08)" [innerHTML]="'REGISTER.MailSentDesc' | translate: {'arg': user.username}">
               </div>
               <div class="col-md-12 mr-auto ml-auto mt-3" style="font-weight: normal;">
                 <!-- <p>To re-send the verification e-mail please click <a href="#">here </a></p> -->
