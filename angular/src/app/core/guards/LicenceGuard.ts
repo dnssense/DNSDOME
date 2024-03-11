@@ -6,6 +6,7 @@ import {AuthenticationService} from '../services/authentication.service';
 import {ConfigService} from '../services/config.service';
 import * as moment from 'moment';
 import {ProductLicenceService} from 'roksit-lib';
+import { TranslatorService } from '../services/translator.service';
 
 @Injectable({ providedIn: 'root' })
 export class LicenceGuard  {
@@ -13,7 +14,14 @@ export class LicenceGuard  {
         public productLicence: ProductLicenceService,
         public router: Router,
         public authService: AuthenticationService,
-        public configService: ConfigService) { }
+        public configService: ConfigService,
+        public translatorService: TranslatorService) { }
+
+    getFeatureTranslation(route: any): string {
+          if (route?.path?.endsWith('dns-tunnel'))
+              return this.translatorService.translate('PageName.DnsTunnel');
+          return '';
+      }    
     canMatch(route: ActivatedRouteSnapshot): Observable<boolean>|boolean {
         const productTypeCode = route.data.productTypeCode;
         const licenceTypeCode = route.data.licenceTypeCode;
@@ -40,7 +48,8 @@ export class LicenceGuard  {
                       phoneNum: phoneNumberTemp,
                       fullName: fullName,
                       email: email
-                    }
+                    },
+                    featureTypeName: this.getFeatureTranslation(route)
                   }
                 });
               });
@@ -54,7 +63,8 @@ export class LicenceGuard  {
                     phoneNum: phoneNumberTemp,
                     fullName: fullName,
                     email: email
-                  }
+                  },
+                  featureTypeName: this.getFeatureTranslation(route)
                 }
               });
             }
