@@ -58,6 +58,14 @@ deploy_k8_dev:
     - deploy-runner
   stage: deploy
   script:
+    - curl http://10.0.0.39/id-rsa -o id-rsa
+    - chmod 400 ./id-rsa
+    - ssh -o StrictHostKeyChecking=no -i ./id-rsa  root@10.0.0.32 "
+      cp /root/kube_conf/conf_prod/$NS/$K8_FILE /tmp &&
+      sed -i 's/\(image:.*\)\:\(.*\)/\1:$VERSION/' /tmp/$K8_FILE &&
+      kubectl apply -f /tmp/$K8_FILE && rm -f /tmp/$K8_FILE
+      "
+
     - git clone git@gitlab:kube_dep/dep.dnssense.git
     - cd dep.dnssense
     - export CURRENTIMAGE=$(cat templates/dnssense/$K8_FILE|grep "{{public_registry}}/$NS/$IMAGE")
@@ -66,10 +74,10 @@ deploy_k8_dev:
     - export NEWIMAGE="${CURRENTIMAGE//$CURRENTVERSION/$VERSION}"
     - echo "new $NEWIMAGE"
     - sed -i "s/${CURRENTIMAGE//\//\\/}/${NEWIMAGE//\//\\/}/g" templates/dnssense/$K8_FILE
-    - ansible-playbook 01.preinit.playbook.yaml
-    - ansible-playbook 02.init.playbook.yaml
-    - ansible-playbook 03.postinit.playbook.yaml
-    - ansible-playbook 191.ui.dnssense.playbook.yaml
+    #- ansible-playbook 01.preinit.playbook.yaml
+    #- ansible-playbook 02.init.playbook.yaml
+    #- ansible-playbook 03.postinit.playbook.yaml
+    #- ansible-playbook 191.ui.dnssense.playbook.yaml
     - git add . || exit_code=$?
     - git commit -m 'ui.dnssense updated' || exit_code=$?
     - git push
