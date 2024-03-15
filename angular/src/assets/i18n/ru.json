@@ -965,6 +965,11 @@
     "ActiveMsg"	:	 "Лицензия успешно активирована",
     "ErrorMsg"	:	 "Произошла ошибка во время активации лицензии.",
     "ActivationLinkProblem"	:	 "Возникла проблема с вашей ссылкой для активации."
+  },
+  "NotificationBar": {
+    "MultipleLicenceWarning": "Your DDR  licence will expire in {{day1}} days on {{date1}}, your DNSEye licence will expire in {{day2}} days on {{date2}}. In order to maintain continuous access to these services, kindly proceed with the renewal process promptly",
+    "SingleLicenceWarning": "Your license will expire in {{day}} days on {{expirationText}}. In order to maintain continuous access to {{licenceName}}, kindly proceed with the renewal process promptly",
+    "RenewToday": "Renew Today"
   },		
   "StatsCount"	:	 "Количество записей <b>{{arg}}</b>",
   "xDays"	:	 "{{arg}} Дней",

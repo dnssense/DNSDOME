@@ -4,10 +4,10 @@ import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import {Subject} from 'rxjs';
 import { Location, PopStateEvent } from '@angular/common';
 
-
+import * as moment from 'moment';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { NavItem } from 'src/app/modules/shared/md/md.module';
-import { RkLayoutService, RkSidebarComponent, RkNavbarComponent, RkAlertService, HelpSupportComponent, CommonDialogCustomConfig, NestedDialogCustomConfig, HelpSupportService } from 'roksit-lib';
+import { RkLayoutService, RkSidebarComponent, RkNavbarComponent, RkAlertService, HelpSupportComponent, CommonDialogCustomConfig, NestedDialogCustomConfig, HelpSupportService, ProductLicenceService, LicenceProductCode } from 'roksit-lib';
 import {takeUntil} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
@@ -15,6 +15,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { TranslatorService } from 'src/app/core/services/translator.service';
 import { MatDialog } from '@angular/material/dialog';
 import { HelpSupportServiceImpl } from 'src/app/core/services/help-support.service';
+import { forkJoin } from 'rxjs';
 interface HelpRoute {
     appRoute: string;
     helpRouteEn: string;
@@ -64,7 +65,8 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     hiddenMenus: string[];
     masterDV: string;
     public menuItems: any[];
-
+    notifBarAlertMsg = '';
+    showNotifBar: boolean;
     _menuItems = ConfigService.menuItems;
     helpRoute = 'https://www.dnssense.com/support';
     private ngUnsubscribe: Subject<any> = new Subject<any>();
@@ -78,7 +80,8 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         public configService: ConfigService,
        private _translateService: TranslateService,
        private translator: TranslatorService,
-       private injector: Injector
+       private injector: Injector,
+       private productLicenceService: ProductLicenceService
      ) {
         this.location = location;
         this.host = this.configService.host;
@@ -141,6 +144,24 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         });*/
     
         this.setActiveMenuItemByRoute();
+        const productLicence$ = this.productLicenceService.getCompanyLicence(LicenceProductCode.Eye);
+        forkJoin([productLicence$])
+            .subscribe(([productLicence]) => {
+                const currentDate = new Date();
+                let expireProductDate: Date;
+                let remainingProductExpirationDays = -1;
+                if (productLicence && productLicence.status === 200 && productLicence.results.expiration) {
+                    expireProductDate = moment(productLicence.results.expiration).toDate();
+                    remainingProductExpirationDays = Math.round((expireProductDate.getTime() - currentDate.getTime()) / (1000 * 3600 * 24));
+                }
+                if((remainingProductExpirationDays <= 30 && remainingProductExpirationDays >= 0)) {
+                        const licenceName = 'DDR';
+                        const day = remainingProductExpirationDays;
+                        const expirationText = moment(expireProductDate).format('MMMM Do YYYY');
+                        this.notifBarAlertMsg = this.translator.translateWithArgs('NotificationBar.SingleLicenceWarning', {licenceName: licenceName, day: day, expirationText: expirationText}); 
+                        this.showNotifBar = true;
+                } 
+            });
     }
 
     get currentLanguage() {
@@ -223,9 +244,9 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   logout = () => {
         this.authService.logout();
   }
-  openHelp = () => {
+  openHelp = (stepNo?: number) => {
         //window.open(this.helpRoute, "_blank");
-        this.dialog.open(HelpSupportComponent, {data: {injector: this.injector}, ...NestedDialogCustomConfig, ...CommonDialogCustomConfig});
+        this.dialog.open(HelpSupportComponent, {data: {injector: this.injector, stepNo: stepNo? stepNo: 0}, ...NestedDialogCustomConfig, ...CommonDialogCustomConfig});
 
   }
 
