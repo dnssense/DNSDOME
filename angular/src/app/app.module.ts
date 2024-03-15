@@ -56,7 +56,9 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
         '\/api\/user\/current$',
         '\/api\/user\/current\/role$',
         '\/websocket$',
-        '\/api\/investigation\/v1']
+        '\/api\/investigation\/v1',
+        '\/communication\/api\/help-support'
+      ]
     }),
     NgxUiLoaderRouterModule,
     BsDropdownModule.forRoot(),

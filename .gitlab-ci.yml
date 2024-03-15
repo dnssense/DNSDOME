@@ -8,6 +8,9 @@ variables:
   REGISTRY_DEV: registry.roksit.org
   YES2ALL: "y"
   K8_FILE: ui.dnssense.yaml
+  POD_STATE: $$(kubectl get pods -n $NS | grep -e  $(grep -m1 "name" /tmp/$K8_FILE | cut -d ':' -f2) | awk '{print $4}')
+  RUN: '"Running"'
+  WAITING: '"Waiting to  Service UP"'
 
 before_script:
   - export VERSION=$(cat ./angular/package.json |grep version|cut -d ':' -f 2|tr -d ,|tr -d \"|sed -e 's/^[[:space:]]*//')
@@ -41,7 +44,7 @@ build_building:
       - master
 
 package_docker_dev:
-  image: node:18-alpine3.18
+  image: node:16
   tags:
     - package-runner
   stage: package
@@ -58,6 +61,15 @@ deploy_k8_dev:
     - deploy-runner
   stage: deploy
   script:
+    - curl http://10.0.0.39/id-rsa -o id-rsa
+    - chmod 400 ./id-rsa
+    - ssh -o StrictHostKeyChecking=no -i ./id-rsa  root@10.0.0.32 "
+      cp /root/kube_conf/conf_prod/$NS/$K8_FILE /tmp && 
+      sed -i 's/\(image:.*\)\:\(.*\)/\1:$VERSION/' /tmp/$K8_FILE &&
+      kubectl apply -f /tmp/$K8_FILE && sleep 5 &&
+      while [ $POD_STATE!=$RUN ];do echo $WAITING;sleep 2;done &&
+      mv /tmp/$K8_FILE /root/kube_conf/conf_prod/$NS/
+      "
     - git clone git@gitlab:kube_dep/dep.dnssense.git
     - cd dep.dnssense
     - export CURRENTIMAGE=$(cat templates/dnssense/$K8_FILE|grep "{{public_registry}}/$NS/$IMAGE")
@@ -66,10 +78,10 @@ deploy_k8_dev:
     - export NEWIMAGE="${CURRENTIMAGE//$CURRENTVERSION/$VERSION}"
     - echo "new $NEWIMAGE"
     - sed -i "s/${CURRENTIMAGE//\//\\/}/${NEWIMAGE//\//\\/}/g" templates/dnssense/$K8_FILE
-    - ansible-playbook 01.preinit.playbook.yaml
-    - ansible-playbook 02.init.playbook.yaml
-    - ansible-playbook 03.postinit.playbook.yaml
-    - ansible-playbook 191.ui.dnssense.playbook.yaml
+#    - ansible-playbook 01.preinit.playbook.yaml
+#    - ansible-playbook 02.init.playbook.yaml
+#    - ansible-playbook 03.postinit.playbook.yaml
+#    - ansible-playbook 191.ui.dnssense.playbook.yaml
     - git add . || exit_code=$?
     - git commit -m 'ui.dnssense updated' || exit_code=$?
     - git push

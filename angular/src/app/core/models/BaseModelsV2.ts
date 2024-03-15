@@ -141,9 +141,7 @@ export function mapBaseUIFilterRequestToServiceModel (uiModel: BaseFilterUIReque
             }
             if (i.name === FilterContants.IS_FV) {
                 handleCustomFvFilter(i, serviceModel);
-            } else if (i.name === TrafficColumnNames.MacAddress) {
-                mapUICriteriaToServiceModel(i, serviceModel, mapUIMacAddressToService);
-            } else {
+            }  else {
                 mapUICriteriaToServiceModel(i, serviceModel);
             }
         });
@@ -179,16 +177,4 @@ export function mapBaseUIFilterRequestToServiceModel (uiModel: BaseFilterUIReque
         };
     }
     return serviceModel;
-}
-
-export function mapServiceMacAddressToUI(macAddress: string): string {
-    const alphaNum = /^[A-Za-z0-9]+$/;
-    if (macAddress?.length === 12 && alphaNum.test(macAddress)) {
-        return macAddress.replace(/(.{2})/g, '$1:').slice(0 , -1);
-    }
-    return macAddress;
-}
-
-function mapUIMacAddressToService(macAddress: string): string {
-    return macAddress?.replace(/:/g, '');
 }

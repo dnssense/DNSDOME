@@ -494,11 +494,13 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         }
     }
 
-    copyLink() {
+    copyLink(mac?: boolean) {
 
         this.boxService.getProgramLink().subscribe(res => {
             if (res && res.link) {
-
+                if(mac) {
+                    res.link = res.link + '&platform=mac';
+                }
                 this.fileLink = res.link;
                 this.copyToClipBoard(this.fileLink);
                 this.notification.info(this.staticMessageService.downloadLinkCopiedToClipboardMessage);
@@ -570,16 +572,15 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
 
-    downloadFile() {
-        const domains = this.dontDomains.map(d => { d = '.'.concat(d.trim()); return d; }).join(',');
-        const ips = this.dontIps.filter(x => isip(x)).join(',');
-        const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
-
+    downloadFile(mac?: boolean) {
         this.boxService.getProgramLink().subscribe(res => {
             if (res && res.link) {
                 this.getConfParameters().subscribe(x => {
+                    if(mac) {
+                        res.link = res.link + '&platform=mac';
+                    }
                     this.fileLink = res.link;
-                    window.open(window.location.protocol + '//' + this.fileLink, '_blank');
+                    window.open(window.location.protocol + '//' + this.fileLink , '_blank');
 
                 });
 
@@ -588,8 +589,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 this.notification.error(this.staticMessageService.couldNotCreateDownloadLinkMessage);
             }
         });
-
-
     }
 
     addDomainToList() {
@@ -1131,6 +1130,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     get roamingClientVersion() {
         return '1.1.1';
+    }
+
+    get roamingMacClientVersion() {
+        return '2.0.6';
     }
 
   onPageChange(pageNumber: number) {

@@ -19,6 +19,10 @@
                <ng-container [ngTemplateOutlet]="windowsIcon"></ng-container>
               {{'Download'|translate}} ({{roamingClientVersion}})
             </button>
+            <button class="btn btn-icon btn-small mr-2" (click)="downloadFile(true)">
+              <ng-container [ngTemplateOutlet]="macIcon"></ng-container>
+             {{'Download'|translate}} ({{roamingMacClientVersion}})
+           </button>
 
 
             <button class="btn btn-icon btn-small mr-2" (click)="copyLink()">
@@ -26,10 +30,15 @@
               {{'CopyDownloadLink'|translate}}
             </button>
 
-            <button class="btn btn-icon btn-small mr-2" (click)="copyMagicLink()">
+            <button class="btn btn-icon btn-small mr-2" (click)="copyLink(true)">
+              <ng-container [ngTemplateOutlet]="macIcon"></ng-container>
+              {{'CopyDownloadLink'|translate}}
+            </button>
+
+            <!-- <button class="btn btn-icon btn-small mr-2" (click)="copyMagicLink()">
               <ng-container [ngTemplateOutlet]="macIcon"></ng-container>
               {{'CopyMagicConfigLink'|translate}}
-            </button>
+            </button> -->
 
 
             <button class="btn btn-icon btn-small" (click)="openConfigureModal()">
