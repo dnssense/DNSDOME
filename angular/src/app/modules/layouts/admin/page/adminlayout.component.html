@@ -1,9 +1,9 @@
 <div class="tw-flex tw-flex-col">
     <div [ngClass]="{'tw-max-h-0 !tw-overflow-hidden': !showNotifBar, 'tw-max-h-[1000px]': showNotifBar}" class="tw-transition-[max-height]">
         <div  class="tw-relative tw-bg-primary tw-w-full tw-flex tw-items-center tw-justify-center tw-px-16 tw-py-4 tw-gap-5 rk-body-12 !tw-text-white">
-            <span>{{notifBarAlertMsg}}</span>
-            <div (click)="openHelp(4)" class="tw-bg-white tw-rounded-full tw-py-1.5 tw-px-3 rk-button-10 !tw-text-primary tw-cursor-pointer tw-whitespace-nowrap tw-mr-5 tw-h-[22px]">{{'NotificationBar.RenewToday' | translate}}</div>  
-            <feather-icon (click)="showNotifBar = false" name="x" class="tw-absolute !tw-flex !tw-items-center !tw-justify-center !tw-stroke-white tw-opacity-50 tw-cursor-pointer tw-right-12"></feather-icon>
+            <span class="tw-text-center">{{notifBarAlertMsg}}</span>
+            <div (click)="openHelp(4)" class="tw-bg-white tw-rounded-full tw-py-1.5 tw-px-3 rk-button-10 !tw-text-primary tw-cursor-pointer tw-whitespace-nowrap tw-mr-5 tw-h-[22px] tw-opacity-80 hover:tw-opacity-100">{{'NotificationBar.RenewToday' | translate}}</div>  
+            <feather-icon (click)="showNotifBar = false" name="x" class="tw-absolute !tw-flex !tw-items-center !tw-justify-center !tw-stroke-white tw-opacity-50 hover:tw-opacity-100 tw-cursor-pointer tw-right-12"></feather-icon>
         </div>
     </div>
     <div class="wrapper">
