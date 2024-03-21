@@ -18,6 +18,11 @@
                 <ng-template #logo>
                     <img class="tw-w-auto !tw-h-5"  [src]="'/assets/img/' + (host.logoCompanyImage || host.logoImage)">
                 </ng-template>
+                @if(host.staticHeaderProductLogo) {
+                    <ng-template #logo2>
+                        <img  [src]="host.staticHeaderProductLogo">
+                    </ng-template>
+                }
              </rk-navbar>
             <router-outlet></router-outlet>
         </div>

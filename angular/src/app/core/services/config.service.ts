@@ -27,6 +27,7 @@ export class ConfigHost {
   hiddenMenus?: string[];
   cyberXRayUrl: string;
   defaultGSMCode: string;
+  staticHeaderProductLogo?: string;
 }
 
 @Injectable({
@@ -99,6 +100,7 @@ export class ConfigService {
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
       this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
+      this.host.staticHeaderProductLogo = '/assets/img/Static_Head_Product_Logo_DNSDome.svg';
     } else if (window.location.host.indexOf('cyte') >= 0) {
       this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'CyberCyte';
@@ -180,6 +182,7 @@ export class ConfigService {
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
       this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
+      this.host.staticHeaderProductLogo = '/assets/img/Static_Head_Product_Logo_DNSDome.svg';
     }
   }
   loadLanguage(userId: number): string | undefined {
