@@ -714,7 +714,8 @@
         "DnsTunnel": "AI Based DNS Tunnel",
         "AccountSettings": "Account Settings",
         "Logout": "Logout",
-        "Help": "Help"
+        "Help": "Help",
+        "About": "About"
     },
     "MonitorTraffic": "Monitor Traffic",
     "AuditLogs": "Audit Logs",
@@ -996,5 +997,9 @@
    "Rule": "Rule",
    "Source": "Source",
    "Destination":"Destination",
-   "Decision": "Decision"  
+   "Decision": "Decision",
+   "ExpiresAt": "Expires at: {{arg}}",
+   "Licences":"Licences",
+   "About": "About",
+   "UIVersion": "UI Version"
 }

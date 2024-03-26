@@ -27,7 +27,6 @@ export class ConfigHost {
   hiddenMenus?: string[];
   cyberXRayUrl: string;
   defaultGSMCode: string;
-  staticHeaderProductLogo?: string;
 }
 
 @Injectable({
@@ -64,7 +63,7 @@ export class ConfigService {
     {id: 7, inBottom: true, path: 'logout', customClick: () => {}, text: 'PageName.Logout', icon: 'logout', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
     {id: 8, inBottom: true, path: 'help', customClick: () => {}, text: 'PageName.Help', icon: 'help', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']}, 
     {id: 9, inBottom: true, path: '/admin/account-settings', text: 'PageName.AccountSettings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
-
+    {id: 10, inBottom: true, path: 'about', customClick: () => {}, text: 'PageName.About', icon: 'info', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']}, 
   ];
 
   host: ConfigHost;
@@ -100,7 +99,6 @@ export class ConfigService {
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
       this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
-      this.host.staticHeaderProductLogo = '/assets/img/Static_Head_Product_Logo_DNSDome.svg';
     } else if (window.location.host.indexOf('cyte') >= 0) {
       this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'CyberCyte';
@@ -182,7 +180,6 @@ export class ConfigService {
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
       this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
-      this.host.staticHeaderProductLogo = '/assets/img/Static_Head_Product_Logo_DNSDome.svg';
     }
   }
   loadLanguage(userId: number): string | undefined {

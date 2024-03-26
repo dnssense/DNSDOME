@@ -13,8 +13,11 @@ import {TranslateService} from '@ngx-translate/core';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HelpSupportServiceImpl } from 'src/app/core/services/help-support.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TemplateRef } from '@angular/core';
+import { DestroyRef } from '@angular/core';
 import { forkJoin } from 'rxjs';
 interface HelpRoute {
     appRoute: string;
@@ -22,6 +25,7 @@ interface HelpRoute {
     helpRouteTr: string;
     dnscyteRoute: string;
 }
+declare const VERSION: string;
 
 const helpRoutes: HelpRoute[] = [
     { appRoute: '/admin/dashboard', helpRouteEn: 'dashboard/overview', helpRouteTr: 'dashboard/genel-bakis', dnscyteRoute: 'dashboard' },
@@ -55,9 +59,10 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     private lastPoppedUrl: string;
     private yScrollStack: number[] = [];
     dialog = inject(MatDialog);
+    dialogRef: MatDialogRef<any>;
     url: string;
     location: Location;
-
+    @ViewChild('aboutUsModal', {static: true}) aboutUsModal: TemplateRef<HTMLElement>; 
     @ViewChild(RkSidebarComponent, {static: true}) sidebar: RkSidebarComponent;
     @ViewChild(RkNavbarComponent) navbar: RkNavbarComponent;
     host: ConfigHost;
@@ -69,7 +74,9 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     showNotifBar: boolean;
     _menuItems = ConfigService.menuItems;
     helpRoute = 'https://www.dnssense.com/support';
+    licenceList: {name: string, expireDate: string}[] = [];
     private ngUnsubscribe: Subject<any> = new Subject<any>();
+    uiVersion = VERSION;
 
     constructor(
         private router: Router,
@@ -81,7 +88,8 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
        private _translateService: TranslateService,
        private translator: TranslatorService,
        private injector: Injector,
-       private productLicenceService: ProductLicenceService
+       private productLicenceService: ProductLicenceService,
+       private destroyRef: DestroyRef
      ) {
         this.location = location;
         this.host = this.configService.host;
@@ -91,7 +99,9 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
                 i.customClick = this.logout;
             } else if(i.path === 'help'){
                 i.customClick = this.openHelp;
-            }
+            }  else if(i.path === 'about'){
+              i.customClick = this.openAbout;
+          }
         })
 
         this.menuItems = [];
@@ -151,6 +161,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
                 let expireProductDate: Date;
                 let remainingProductExpirationDays = -1;
                 if (productLicence && productLicence.status === 200 && productLicence.results.expiration) {
+                    this.licenceList.push({name: 'DDR', expireDate: moment(productLicence.results.expiration).format('DD.MM.YYYY')});
                     expireProductDate = moment(productLicence.results.expiration).toDate();
                     remainingProductExpirationDays = Math.round((expireProductDate.getTime() - currentDate.getTime()) / (1000 * 3600 * 24));
                 }
@@ -248,6 +259,13 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         //window.open(this.helpRoute, "_blank");
         this.dialog.open(HelpSupportComponent, {data: {injector: this.injector, stepNo: stepNo? stepNo: 0}, ...NestedDialogCustomConfig, ...CommonDialogCustomConfig});
 
+  }
+
+  openAbout = () => {
+    this.dialogRef = this.dialog.open(this.aboutUsModal, {data: {}, ...NestedDialogCustomConfig, ...CommonDialogCustomConfig});    
+  }
+  closeAboutUsDialog = () => {
+      this.dialogRef?.close();
   }
 
   helpUrlChanged(url: string, lang: string) {

@@ -18,9 +18,9 @@
                 <ng-template #logo>
                     <img class="tw-w-auto !tw-h-5"  [src]="'/assets/img/' + (host.logoCompanyImage || host.logoImage)">
                 </ng-template>
-                @if(host.staticHeaderProductLogo) {
+                @if(host.logoCompanyImage && host.logoImage) {
                     <ng-template #logo2>
-                        <img  [src]="host.staticHeaderProductLogo">
+                        <ng-container [ngTemplateOutlet]="productLogoTemplate" [ngTemplateOutletContext]="{size: 'sm'}" ></ng-container>
                     </ng-template>
                 }
              </rk-navbar>
@@ -28,4 +28,52 @@
         </div>
     </div>
 </div>
+
+<ng-template #aboutUsModal>
+    <div class="tw-flex tw-flex-col tw-gap-4 tw-shadow-lg" [ngStyle]="{'width': '500px'}">
+        <div class="about-us-header tw-gap-2">
+              <div class="tw-h-6 tw-w-6 tw-flex tw-items-center [&>*]:!tw-flex">
+                  <feather-icon name="info"></feather-icon>
+              </div>
+              <span class="rk-button-14">{{'About' | translate}}</span>
+              <div class="tw-p-1.5 tw-ml-auto tw-h-9 tw-w-9">
+                <feather-icon class="!tw-w-full !tw-h-full !tw-flex tw-items-center tw-cursor-pointer" name="x" (click)="closeAboutUsDialog()"></feather-icon>
+              </div>
+        </div>
+        <div class="about-us-body tw-flex-col  tw-justify-center tw-gap-8">
+            @if(host.logoImage) {
+                <ng-container [ngTemplateOutlet]="productLogoTemplate" [ngTemplateOutletContext]="{size: 'lg'}" ></ng-container>
+            }
+            <div class="tw-flex tw-flex-col tw-px-10 tw-gap-3">
+                 <div class="tw-flex tw-items-center  tw-gap-3">
+                   <span class="tw-w-2/5 tw-self-start tw-text-end rk-button-14 !tw-text-primary">{{"UIVersion" | translate}}:</span>
+                   <span class="tw-w-3/5 rk-body-14">{{uiVersion}}</span>
+                 </div>
+                 @if(licenceList?.length > 0) {
+                   <div class="tw-flex tw-items-center  tw-gap-3">
+                       <span class="tw-w-2/5 tw-self-start tw-text-end rk-button-14 !tw-text-primary">{{"Licences" | translate}}:</span>
+                        <div class="tw-w-3/5 tw-flex tw-flex-col tw-gap-3">
+                           @for(licence of licenceList; track licence ) {
+                               <div class="tw-flex tw-flex-col rk-body-14">
+                                   <span>{{licence.name}}</span>
+                                   <span class="!tw-text-gray-9">({{'ExpiresAt' | translate : {arg: licence.expireDate} }})</span>
+                                </div>
+                           }
+                        </div>
+                    </div>
+                 }
+              </div>
+        </div>
+        <div class="tw-flex tw-justify-end about-us-footer">
+            <rk-button-v2  variant="raised" color="primary" [label]="'Done' | translate" (clicked)="closeAboutUsDialog()">
+            </rk-button-v2>
+        </div>
+      </div>
+</ng-template>
+
+<ng-template #productLogoTemplate let-size="size">
+    <div [ngClass]="{'tw-px-8': size === 'lg', 'tw-px-5': size === 'sm'}" class="tw-flex tw-py-[14px] tw-self-center tw-items-center   tw-border tw-border-solid tw-border-light-grey-2 tw-rounded-full">
+        <img [ngClass]="{'tw-h-[22px]': size === 'lg', 'tw-h-4': size === 'sm'}" [src]="'/assets/img/' + host.logoImage">
+   </div>
+</ng-template>
 
