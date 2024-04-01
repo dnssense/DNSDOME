@@ -17,11 +17,11 @@
           <div>
             <button class="btn btn-icon btn-small mr-2" (click)="downloadFile()">
                <ng-container [ngTemplateOutlet]="windowsIcon"></ng-container>
-              {{'Download'|translate}} ({{roamingClientVersion}})
+              {{'Download'|translate}} {{roamingClientVersion ? '(' + roamingClientVersion + ')': ''}}
             </button>
             <button class="btn btn-icon btn-small mr-2" (click)="downloadFile(true)">
               <ng-container [ngTemplateOutlet]="macIcon"></ng-container>
-             {{'Download'|translate}} ({{roamingMacClientVersion}})
+             {{'Download'|translate}} {{roamingMacClientVersion ? '(' + roamingMacClientVersion+ ')': ''}}
            </button>
 
 

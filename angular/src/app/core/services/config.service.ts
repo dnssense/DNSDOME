@@ -236,11 +236,15 @@ export class ConfigService {
   }
 
   getApiUrl(): string {
-    return window.location.protocol
-      + '//' + window.location.hostname
-      // tslint:disable-next-line: triple-equals
-      + (window.location.port != '' ? (':' + window.location.port) : '') + '/api';
+    return this.getLocationUrl() + '/api';
   }
+
+  getLocationUrl(): string {
+      return window.location.protocol
+        + '//' + window.location.hostname
+        // tslint:disable-next-line: triple-equals
+        + (window.location.port != '' ? (':' + window.location.port) : '');
+    }
 
   setDefaultLanguage(userId: number, lang: string) {
 
