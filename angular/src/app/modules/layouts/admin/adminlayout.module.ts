@@ -9,7 +9,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FeatherModule } from 'angular-feather';
 import {
   RkNavbarComponent,
-  RkSidebarComponent
+  RkSidebarComponent,
+  RkButtonV2Component
 } from 'roksit-lib';
 
 
@@ -25,7 +26,8 @@ import {
     RkNavbarComponent,
     RkSidebarComponent,
     TranslateModule,
-    FeatherModule
+    FeatherModule,
+    RkButtonV2Component
   ]
 })
 export class AdminLayoutModule { }

@@ -336,12 +336,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   getVersion = () => {
-    let versionValue = '';
-    try {
-      const date = new Date(VERSION);
-      versionValue = date.getFullYear().toString() + this.pad2(date.getMonth() + 1) + this.pad2( date.getDate()) + this.pad2( date.getHours() ) + this.pad2( date.getMinutes() ) + this.pad2( date.getSeconds());
-    } catch (e) {}
-    return versionValue;
+    return VERSION;
   }
 
   pad2 = (n) => {

@@ -1,4 +1,10 @@
 {
+  "/download/*/version.txt": {
+    "target": "https://beta.roksit.com",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
   "/api/*": {
     "target": "https://beta.roksit.com",
     "secure": false,

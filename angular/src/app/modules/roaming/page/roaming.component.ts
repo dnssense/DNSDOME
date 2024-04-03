@@ -1,6 +1,6 @@
 
 import {map} from 'rxjs/operators';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import * as isip from 'is-ip';
 import { Agent } from 'src/app/core/models/Agent';
@@ -26,6 +26,7 @@ import {
 import * as moment from 'moment';
 import {TranslatorService} from '../../../core/services/translator.service';
 import {ExcelService} from '../../../core/services/excelService';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 declare let $: any;
 export interface BoxConf {
@@ -68,7 +69,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         private inputIpService: InputIPService,
         private clipboardService: ClipboardService,
         private translatorService: TranslatorService,
-        private excelService: ExcelService
+        private excelService: ExcelService,
+        private destroyRef: DestroyRef
 
     ) {
 
@@ -231,6 +233,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
   tableHeight = window.innerWidth > 768 ? (window.innerHeight - 373) - (document.body.scrollHeight - document.body.clientHeight) : null;
   selectAll: boolean;
   private dateFormat = 'YYYY-MM-DD HH:mm';
+  roamingClientVersion: string;
+  roamingMacClientVersion: string;
   ngOnInit(): void {
 
         this.clients = [];
@@ -244,6 +248,12 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         this.getConfParameters().subscribe();
         this.categoryOptions.forEach((opt) => opt.displayText = this.translatorService.translate(opt.displayText));
+        this.boxService.getWindowsRoamingClientVersion().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(version => {
+            this.roamingClientVersion = version;
+        });
+        this.boxService.getMacRoamingClientVersion().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(version => {
+            this.roamingMacClientVersion = version;
+        });
     }
 
 
@@ -1126,14 +1136,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     onIsEnableLocalDetectChange(state: boolean) {
         this.isEnableLocalDedect = (state) ? 1 : 0;
-    }
-
-    get roamingClientVersion() {
-        return '1.1.1';
-    }
-
-    get roamingMacClientVersion() {
-        return '2.0.6';
     }
 
   onPageChange(pageNumber: number) {

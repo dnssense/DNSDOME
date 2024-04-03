@@ -4,23 +4,28 @@ import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import {Subject} from 'rxjs';
 import { Location, PopStateEvent } from '@angular/common';
 
-
+import * as moment from 'moment';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { NavItem } from 'src/app/modules/shared/md/md.module';
-import { RkLayoutService, RkSidebarComponent, RkNavbarComponent, RkAlertService, HelpSupportComponent, CommonDialogCustomConfig, NestedDialogCustomConfig, HelpSupportService } from 'roksit-lib';
+import { RkLayoutService, RkSidebarComponent, RkNavbarComponent, RkAlertService, HelpSupportComponent, CommonDialogCustomConfig, NestedDialogCustomConfig, HelpSupportService, ProductLicenceService, LicenceProductCode } from 'roksit-lib';
 import {takeUntil} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 import { ConfigHost, ConfigService } from 'src/app/core/services/config.service';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { TranslatorService } from 'src/app/core/services/translator.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HelpSupportServiceImpl } from 'src/app/core/services/help-support.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TemplateRef } from '@angular/core';
+import { DestroyRef } from '@angular/core';
+import { forkJoin } from 'rxjs';
 interface HelpRoute {
     appRoute: string;
     helpRouteEn: string;
     helpRouteTr: string;
     dnscyteRoute: string;
 }
+declare const VERSION: string;
 
 const helpRoutes: HelpRoute[] = [
     { appRoute: '/admin/dashboard', helpRouteEn: 'dashboard/overview', helpRouteTr: 'dashboard/genel-bakis', dnscyteRoute: 'dashboard' },
@@ -54,9 +59,10 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     private lastPoppedUrl: string;
     private yScrollStack: number[] = [];
     dialog = inject(MatDialog);
+    dialogRef: MatDialogRef<any>;
     url: string;
     location: Location;
-
+    @ViewChild('aboutUsModal', {static: true}) aboutUsModal: TemplateRef<HTMLElement>; 
     @ViewChild(RkSidebarComponent, {static: true}) sidebar: RkSidebarComponent;
     @ViewChild(RkNavbarComponent) navbar: RkNavbarComponent;
     host: ConfigHost;
@@ -64,10 +70,13 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     hiddenMenus: string[];
     masterDV: string;
     public menuItems: any[];
-
+    notifBarAlertMsg = '';
+    showNotifBar: boolean;
     _menuItems = ConfigService.menuItems;
     helpRoute = 'https://www.dnssense.com/support';
+    licenceList: {name: string, expireDate: string}[] = [];
     private ngUnsubscribe: Subject<any> = new Subject<any>();
+    uiVersion = VERSION;
 
     constructor(
         private router: Router,
@@ -78,7 +87,9 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         public configService: ConfigService,
        private _translateService: TranslateService,
        private translator: TranslatorService,
-       private injector: Injector
+       private injector: Injector,
+       private productLicenceService: ProductLicenceService,
+       private destroyRef: DestroyRef
      ) {
         this.location = location;
         this.host = this.configService.host;
@@ -88,7 +99,9 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
                 i.customClick = this.logout;
             } else if(i.path === 'help'){
                 i.customClick = this.openHelp;
-            }
+            }  else if(i.path === 'about'){
+              i.customClick = this.openAbout;
+          }
         })
 
         this.menuItems = [];
@@ -141,6 +154,25 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         });*/
     
         this.setActiveMenuItemByRoute();
+        const productLicence$ = this.productLicenceService.getCompanyLicence(LicenceProductCode.Eye);
+        forkJoin([productLicence$])
+            .subscribe(([productLicence]) => {
+                const currentDate = new Date();
+                let expireProductDate: Date;
+                let remainingProductExpirationDays = -1;
+                if (productLicence && productLicence.status === 200 && productLicence.results.expiration) {
+                    this.licenceList.push({name: 'DDR', expireDate: moment(productLicence.results.expiration).format('DD.MM.YYYY')});
+                    expireProductDate = moment(productLicence.results.expiration).toDate();
+                    remainingProductExpirationDays = Math.round((expireProductDate.getTime() - currentDate.getTime()) / (1000 * 3600 * 24));
+                }
+                if((remainingProductExpirationDays <= 30 && remainingProductExpirationDays >= 0)) {
+                        const licenceName = 'DDR';
+                        const day = remainingProductExpirationDays;
+                        const expirationText = moment(expireProductDate).format('MMMM Do YYYY');
+                        this.notifBarAlertMsg = this.translator.translateWithArgs('NotificationBar.SingleLicenceWarning', {licenceName: licenceName, day: day, expirationText: expirationText}); 
+                        this.showNotifBar = true;
+                } 
+            });
     }
 
     get currentLanguage() {
@@ -223,10 +255,17 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   logout = () => {
         this.authService.logout();
   }
-  openHelp = () => {
+  openHelp = (stepNo?: number) => {
         //window.open(this.helpRoute, "_blank");
-        this.dialog.open(HelpSupportComponent, {data: {injector: this.injector}, ...NestedDialogCustomConfig, ...CommonDialogCustomConfig});
+        this.dialog.open(HelpSupportComponent, {data: {injector: this.injector, stepNo: stepNo? stepNo: 0}, ...NestedDialogCustomConfig, ...CommonDialogCustomConfig});
 
+  }
+
+  openAbout = () => {
+    this.dialogRef = this.dialog.open(this.aboutUsModal, {data: {}, ...NestedDialogCustomConfig, ...CommonDialogCustomConfig});    
+  }
+  closeAboutUsDialog = () => {
+      this.dialogRef?.close();
   }
 
   helpUrlChanged(url: string, lang: string) {

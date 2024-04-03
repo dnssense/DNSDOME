@@ -714,7 +714,8 @@
         "DnsTunnel"	:	 "DNS-туннелирование",
         "AccountSettings"	:	 "Настройки учетной записи",
         "Logout"	:	 "Выход",
-        "Help"	:	 "Справка"
+        "Help"	:	 "Справка",
+        "About": "относительно"
     },		
     "MonitorTraffic"	:	 "Мониторинг трафика",
     "AuditLogs"	:	 "Журналы аудита",
@@ -965,7 +966,12 @@
     "ActiveMsg"	:	 "Лицензия успешно активирована",
     "ErrorMsg"	:	 "Произошла ошибка во время активации лицензии.",
     "ActivationLinkProblem"	:	 "Возникла проблема с вашей ссылкой для активации."
-  },		
+  },
+  "NotificationBar": {
+    "MultipleLicenceWarning": "Ваша лицензия DDR истекает {{date1}}, через {{day1}} дней. Ваша лицензия DNSWatch истекает  {{date2}},через {{day2}} дней. Чтобы продолжить получать доступ к сервисам KVILDNS, пожалуйста, не забудте обновить вашу лицензию",
+    "SingleLicenceWarning": "Срок действия вашей лицензии истечет через {{day}} дн. {{expirationText}}. In order to maintain continuous access to {{licenceName}}, kindly proceed with the renewal process promptly",
+    "RenewToday": "Обновить сегодня"
+  },
   "StatsCount"	:	 "Количество записей <b>{{arg}}</b>",
   "xDays"	:	 "{{arg}} Дней",
    "IpAddressDomain"	:	 "IP/Домен",
@@ -991,5 +997,9 @@
    "Rule": "Правило",   
    "Source": "Источник",
    "Destination":"Назначение",
-   "Decision": "Решение"
+   "Decision": "Решение",
+   "ExpiresAt": "Срок действия истекает: {{arg}}",
+   "Licences":"Лицензии",
+   "About": "относительно",
+   "UIVersion": "Версия UI"
 }		

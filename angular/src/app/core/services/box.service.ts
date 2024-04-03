@@ -17,6 +17,8 @@ export class BoxService {
   private getLinkURL = this.config.getApiUrl() + '/box/roamingclientlink';
   private boxConfURL = this.config.getApiUrl() + '/box/conf';
   private boxMagicURL = this.config.getApiUrl() + '/box/roamingclientconfig/magic';
+  private windowsVersionUrl = this.config.getLocationUrl() + '/download/windows/version.txt';
+  private macVersionUrl = this.config.getLocationUrl() + '/download/mac/version.txt';
 
   constructor(private http: HttpClient, private config: ConfigService) { }
 
@@ -34,6 +36,14 @@ export class BoxService {
 
   getVirtualBox(): Observable<Box> {
     return this.http.get<Box>(this.virtualBoxURL).pipe(map(data => data));
+  }
+
+  getWindowsRoamingClientVersion(): Observable<string> {
+    return this.http.get<string>(this.windowsVersionUrl,  {responseType: 'text' as 'json' }).pipe(map(data => data));
+  }
+
+  getMacRoamingClientVersion(): Observable<string> {
+    return this.http.get<string>(this.macVersionUrl,  {responseType: 'text' as 'json' }).pipe(map(data => data));
   }
 
   getProgramLink(): Observable<any> {

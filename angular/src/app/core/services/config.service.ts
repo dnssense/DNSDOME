@@ -63,7 +63,7 @@ export class ConfigService {
     {id: 7, inBottom: true, path: 'logout', customClick: () => {}, text: 'PageName.Logout', icon: 'logout', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
     {id: 8, inBottom: true, path: 'help', customClick: () => {}, text: 'PageName.Help', icon: 'help', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']}, 
     {id: 9, inBottom: true, path: '/admin/account-settings', text: 'PageName.AccountSettings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
-
+    {id: 10, inBottom: true, path: 'about', customClick: () => {}, text: 'PageName.About', icon: 'info', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']}, 
   ];
 
   host: ConfigHost;
@@ -236,11 +236,15 @@ export class ConfigService {
   }
 
   getApiUrl(): string {
-    return window.location.protocol
-      + '//' + window.location.hostname
-      // tslint:disable-next-line: triple-equals
-      + (window.location.port != '' ? (':' + window.location.port) : '') + '/api';
+    return this.getLocationUrl() + '/api';
   }
+
+  getLocationUrl(): string {
+      return window.location.protocol
+        + '//' + window.location.hostname
+        // tslint:disable-next-line: triple-equals
+        + (window.location.port != '' ? (':' + window.location.port) : '');
+    }
 
   setDefaultLanguage(userId: number, lang: string) {
 
