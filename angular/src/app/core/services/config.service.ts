@@ -90,7 +90,7 @@ export class ConfigService {
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/DNSSense-OnLightBG.svg';
       this.host.title = 'DNSSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
-      this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
+      this.host.captcha_key = '6Le6ge0pAAAAANeH_OEyIPWUtiH1B7aBrfK49sh0';//'6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       this.host.docUrl = 'https://www.dnssense.com/support';
       this.host.supportUrl = 'https://dnssense.com/support';
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
