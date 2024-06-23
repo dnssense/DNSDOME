@@ -338,7 +338,7 @@
         "EnterSamePass": "Введите пароль повторно",
         "RegisterText": "Зарегистрироваться",
         "InfoText": "Нажимая 'Зарегистрироваться', вы соглашаетесь с <a href=\"{{arg1}}\" target=\"blank\">Terms of Service</a> and <a href=\"{{arg2}}\" target=\"blank\">Privacy Policy</a> и принимате, что ваша персональная информация может быть передана и обрабатываться вне территории РФ",
-        "MailSentTitle": "<p>Great News!</p> <p>Your free trial is almost ready!</p>",
+        "MailSentTitle": "<p>Отличные новости!</p> <p>Ваша бесплатная пробная версия почти готова!</p>",
         "LogIn": "Log In",
         "MailSentDesc": "<p class=\"mt-2\">Подтверждение отправлено на почу</p> <p> to: <b> {{arg}} </b></p><p>Пожалуйста, пройдите по ссылке активации из письма подтверждения.<p>"
     },		
