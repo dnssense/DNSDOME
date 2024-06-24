@@ -61,9 +61,9 @@ export class ConfigService {
       ]
     },
     {id: 7, inBottom: true, path: 'logout', customClick: () => {}, text: 'PageName.Logout', icon: 'logout', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
-    {id: 8, inBottom: true, path: 'help', customClick: () => {}, text: 'PageName.Help', icon: 'help', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']}, 
+    {id: 8, inBottom: true, path: 'help', customClick: () => {}, text: 'PageName.Help', icon: 'help', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
     {id: 9, inBottom: true, path: '/admin/account-settings', text: 'PageName.AccountSettings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
-    {id: 10, inBottom: true, path: 'about', customClick: () => {}, text: 'PageName.About', icon: 'info', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']}, 
+    {id: 10, inBottom: true, path: 'about', customClick: () => {}, text: 'PageName.About', icon: 'info', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
   ];
 
   host: ConfigHost;
@@ -153,7 +153,7 @@ export class ConfigService {
       this.host.portal = 'https://portal.kvildns.ru';
       this.host.supportUrl = 'https://kvildns.ru';
       this.host.onlineHelpUrl = 'https://kvildns.ru/faq';
-      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
+      this.host.hiddenMenus = ['deployment/roaming-clients']; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+7';
       this.host.sidebarBgImage = '/assets/img/DNSCube_Sidebar.svg';
       this.host.spinnerImage = '/assets/img/DNSCube Logo Reveal.svg'
@@ -220,7 +220,7 @@ export class ConfigService {
 
     let language = '';
     if (this.host.brand?.toLocaleLowerCase() === 'kvildns'){
-        language = 'ru'; 
+        language = 'ru';
     } else {
         language = this.loadLanguage(userId);
     }
