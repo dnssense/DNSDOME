@@ -190,7 +190,6 @@ export class ConfigService {
       }
       return true;
     })
-    console.log(ConfigService.menuItems);
   }
   loadLanguage(userId: number): string | undefined {
     try {

@@ -56,11 +56,15 @@ export class AgentsComponent implements OnInit {
       menuItems = menuItems.filter(item => {
         this.configService.host.hiddenMenus.forEach(it => {
           if (it.length > 3 && item.link.includes(it)) {
+            console.log(`hidden dashboard agent ${it}`)
             return false;
           }
         })
         return true
       })
+      console.log("hidden dashboard agent begin");
+      console.log(menuItems)
+      console.log("hidden dashboard agent end");
       cal(menuItems)
     })
   }
