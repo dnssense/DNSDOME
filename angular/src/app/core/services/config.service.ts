@@ -181,6 +181,15 @@ export class ConfigService {
       this.host.defaultGSMCode = '+44';
       this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
     }
+    ConfigService.menuItems = ConfigService.menuItems.filter(menuItem => {
+      if (this.host.hiddenMenus.includes(menuItem.path)) {return false}
+      if (menuItem.subMenu) {
+        menuItem.subMenu = menuItem.subMenu.filter(item => {
+          return !this.host.hiddenMenus.includes(item.path);
+        });
+      }
+      return true;
+    })
   }
   loadLanguage(userId: number): string | undefined {
     try {
