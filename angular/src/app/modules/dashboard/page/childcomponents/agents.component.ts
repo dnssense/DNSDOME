@@ -61,9 +61,6 @@ export class AgentsComponent implements OnInit {
         }
         return true
       })
-      console.log("hidden dashboard agent begin");
-      console.log(menuItems)
-      console.log("hidden dashboard agent end");
       cal(menuItems)
     })
   }
