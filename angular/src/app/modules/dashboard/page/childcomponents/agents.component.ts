@@ -54,12 +54,11 @@ export class AgentsComponent implements OnInit {
       dnsrelay.passiveCount = res.box.length - dnsrelay.activeCount;
       let menuItems = [publicip,roamingclient,dnsrelay]
       menuItems = menuItems.filter(item => {
-        this.configService.host.hiddenMenus.forEach(it => {
-          if (it.length > 3 && item.link.includes(it)) {
-            console.log(`hidden dashboard agent ${it}`)
-            return false;
-          }
-        })
+        if (this.configService.host.hiddenMenus) {
+          return !this.configService.host.hiddenMenus.find(it => {
+            return it.length > 3 && item.link.includes(it);
+          })
+        }
         return true
       })
       console.log("hidden dashboard agent begin");
