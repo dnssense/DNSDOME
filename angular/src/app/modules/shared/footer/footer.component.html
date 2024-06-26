@@ -5,7 +5,7 @@
         <div class="copyright  ml-2" style="color: #868e96;" [innerHTML]="'CopyRightText' | translate: {'arg1': (test | date: 'yyyy'), 'arg2': host.brand | uppercase, 'arg3': host.www}">
         </div>
       </div>
-      <div class="col-md-12 text-center">
+      <div class="col-md-12 text-center" *ngIf="host.brand != 'kvildns'">
         <nav class="text-center" style="color:#868e96">
           <ul>
             <li>
