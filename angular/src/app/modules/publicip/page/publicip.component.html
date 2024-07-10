@@ -73,7 +73,7 @@
 
                   <div class="row">
                     <div class="col-12">
-                      <input type="text" class="rk-input w-100" placeholder="{{'Name'|translate}}" name="agentName"
+                      <input type="text" class="rk-input w-100" placeholder="{{'ShowName'|translate}}" name="agentName"
                         id="agentName" [(ngModel)]="selectedIp.agentAlias" formControlName="agentName" maxlength="64">
 
                       <p class="rk-description m-0">{{'PublicIpDescriptions.AgentAlias' | translate}}</p>
@@ -95,7 +95,7 @@
                       <div class="col-12 d-flex mt-3" *ngFor="let row of selectedIp.staticSubnetIp; index as i">
                         <div class="rk-input-container" [ngClass]="{'input-error': ipValidations[i] === false}">
                           <span style="flex: 2">
-                            <input type="text" placeholder="{{'IP'|translate}}" name="'ip'+i"
+                            <input type="text" placeholder="{{'YourIPAddress'|translate}}" name="'ip'+i"
                               (keydown)="checkIPNumberForAgent($event, selectedIp.staticSubnetIp[i], i)" (blur)="checkIPNumberForAgent($event, selectedIp.staticSubnetIp[i], i)"
                               [(ngModel)]="selectedIp.staticSubnetIp[i].baseIp" [ngModelOptions]="{standalone: true}">
                             /
@@ -128,30 +128,34 @@
                       </rk-select>
                       <p class="rk-description m-0">{{'PublicIpDescriptions.Profile' | translate}}</p>
                     </div>
-
-                    <div class="col-12 mt-3">
+                    <rk-collapse color="#AED6F1" [active] = "false" class="d-flex mt-3" style="width: 100%">
+                      <rk-collapse-title>{{'PublicIP.OtherOption'|translate}}</rk-collapse-title>
+                      <rk-collapse-body>
+                        <div class="col-12 mt-3">
                       <textarea class="rk-input textarea w-100 resize:none" name="blockMessage" id="blockMessage"
-                        [(ngModel)]="selectedIp.blockMessage" placeholder="{{'BlockMessage'|translate}}" rows="4"
-                        [ngModelOptions]="{standalone: true}"></textarea>
-                      <p class="rk-description m-0">{{'PublicIpDescriptions.BlockMessage' | translate}}</p>
-                    </div>
+                                [(ngModel)]="selectedIp.blockMessage" placeholder="{{'BlockMessage'|translate}}" rows="4"
+                                [ngModelOptions]="{standalone: true}"></textarea>
+                          <p class="rk-description m-0">{{'PublicIpDescriptions.BlockMessage' | translate}}</p>
+                        </div>
 
-                    <div class="col-12 mt-3">
-                      <input type="text" class="rk-input w-100" maxlength="39" placeholder="{{'SinkHoleIp'|translate}}"
-                        (keydown)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)" (blur)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)"
-                        [(ngModel)]="selectedIp.cyberXRayIp" [ngModelOptions]="{standalone: true}"
-                        [ngClass]="{'input-error': sinkHoleValidation[0] === false}">
-                      <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp1' | translate}}</p>
-                      <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp2' | translate}}</p>
-                    </div>
+                        <div class="col-12 mt-3">
+                          <input type="text" class="rk-input w-100" maxlength="39" placeholder="{{'SinkHoleIp'|translate}}"
+                                 (keydown)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)" (blur)="checkIPNumberForSinkhole($event, selectedIp.cyberXRayIp)"
+                                 [(ngModel)]="selectedIp.cyberXRayIp" [ngModelOptions]="{standalone: true}"
+                                 [ngClass]="{'input-error': sinkHoleValidation[0] === false}">
+                          <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp1' | translate}}</p>
+                          <p class="rk-description m-0">{{'PublicIpDescriptions.ShinkholeIp2' | translate}}</p>
+                        </div>
+                      </rk-collapse-body>
+                    </rk-collapse>
+
                   </div>
 
                 </div>
               </div>
             </form>
-
+            <p class="container-fluid rk-description m-0">{{getDnsServerDesc()}}</p>
           </rk-modal-body>
-
           <rk-modal-footer>
             <button class="btn w-100 btn-small mr-2" id="defaultSaveBtn" [disabled]="!isNewItemUpdated"
               (click)="savePublicIp()">{{'Apply'|translate}}</button>

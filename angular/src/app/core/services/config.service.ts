@@ -27,6 +27,7 @@ export class ConfigHost {
   hiddenMenus?: string[];
   cyberXRayUrl: string;
   defaultGSMCode: string;
+  dnsServers: string
 }
 
 @Injectable({
@@ -99,6 +100,7 @@ export class ConfigService {
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
       this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
+      this.host.dnsServers = '45.129.19.19,45.129.19.20';
     } else if (window.location.host.indexOf('cyte') >= 0) {
       this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'CyberCyte';
@@ -117,6 +119,7 @@ export class ConfigService {
       this.host.onlineHelpUrl = 'https://docs.dnscyte.com';
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
+      this.host.dnsServers = '45.129.19.19,45.129.19.20';
     }  else if (window.location.host.indexOf('cmerp') >= 0) {
       this.host.www = 'https://www.cmerp.my';
       this.host.brand = 'CMERP';
@@ -135,6 +138,7 @@ export class ConfigService {
       this.host.onlineHelpUrl = 'https://www.cmerp.my';
       this.host.hiddenMenus = ['help']; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+60';
+      this.host.dnsServers = '45.129.19.19,45.129.19.20';
     } else if (window.location.host.indexOf('kvil') >= 0) {
       this.host.www = 'https://www.kvildns.ru';
       this.host.brand = 'kvildns';
@@ -157,6 +161,7 @@ export class ConfigService {
       this.host.defaultGSMCode = '+7';
       this.host.sidebarBgImage = '/assets/img/DNSCube_Sidebar.svg';
       this.host.spinnerImage = '/assets/img/DNSCube Logo Reveal.svg'
+      this.host.dnsServers = '62.76.89.149';
     } else {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';
@@ -180,6 +185,7 @@ export class ConfigService {
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
       this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
+      this.host.dnsServers = '45.129.19.19,45.129.19.20';
     }
     ConfigService.menuItems = ConfigService.menuItems.filter(menuItem => {
       if (this.host.hiddenMenus.includes(menuItem.path)) {return false}

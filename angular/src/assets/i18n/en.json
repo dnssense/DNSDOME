@@ -87,7 +87,9 @@
     "DynamicIp": "Dynamic IP",
     "BlockPageLogo": "Block Page Logo",
     "IP": "IP",
+    "YourIPAddress": "Your IP Address",
     "Name": "Name",
+    "ShowName": "Shown Name",
     "DNSFQDN": "DNS FQDN",
     "SelectProfile": "Select Profile",
     "SinkHoleIp": "Sinkhole IP",
@@ -640,7 +642,7 @@
         "ADGroups": "AD Groups",
         "DNSServerName": "DNS Server Name",
         "ClientCount": "Client Count",
-        "RuleKeyword": "Rule Keyword"        
+        "RuleKeyword": "Rule Keyword"
     },
     "Month": "Months",
     "Week": "Weeks",
@@ -1001,5 +1003,9 @@
    "ExpiresAt": "Expires at: {{arg}}",
    "Licences":"Licences",
    "About": "About",
-   "UIVersion": "UI Version"
+   "UIVersion": "UI Version",
+   "PublicIP": {
+     "OtherOption" : "Other Option",
+     "BrandDnsServers": "{{Brand}} DNS Server Ips: {{ips}}"
+   }
 }

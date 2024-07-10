@@ -7,36 +7,47 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { translateHttpLoaderFactory } from 'src/app/core/translationhelper';
 import { HttpClient } from '@angular/common/http';
 import { ProfileWizardModule } from '../shared/profile-wizard/profile-wizard.module';
-import { IconsModule, RkModalModule, RkTableModule, RkRadioModule, RkSelectModule, RkLayoutModule, RkToggleButtonModule, RkSearchModule } from 'roksit-lib';
-import { SharedModule } from '../shared/shared.module';
-import { PipesModule } from '../shared/pipes/pipes.module';
-
-@NgModule({
-  declarations: [PublicipComponent],
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    CommonModule,
-    PublicipRoutingModule,
-    ProfileWizardModule,
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: translateHttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
+import {
     IconsModule,
     RkModalModule,
     RkTableModule,
-    SharedModule,
     RkRadioModule,
     RkSelectModule,
     RkLayoutModule,
     RkToggleButtonModule,
     RkSearchModule,
-    PipesModule
-  ]
+    RkCollapseModule
+} from 'roksit-lib';
+import { SharedModule } from '../shared/shared.module';
+import { PipesModule } from '../shared/pipes/pipes.module';
+
+@NgModule({
+  declarations: [PublicipComponent],
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        CommonModule,
+        PublicipRoutingModule,
+        ProfileWizardModule,
+        TranslateModule.forChild({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: translateHttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        IconsModule,
+        RkModalModule,
+        RkTableModule,
+        SharedModule,
+        RkRadioModule,
+        RkSelectModule,
+        RkLayoutModule,
+        RkToggleButtonModule,
+        RkSearchModule,
+        PipesModule,
+        RkCollapseModule
+    ]
 
 })
 export class PublicipModule { }
