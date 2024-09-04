@@ -677,6 +677,7 @@
         "6Hours": "Last 6 Hours",
         "LastDay": "Last Day",
         "Last1Hour": "Last 1 Hour",
+        "Last3Hour": "Last 3 Hours",
         "LastXHour": "Last {{X}} Hours",
         "Last1Day": "Last 1 Day",
         "LastXDay": "Last {{X}} Days",
