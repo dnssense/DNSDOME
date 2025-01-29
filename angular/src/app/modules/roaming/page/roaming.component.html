@@ -145,7 +145,7 @@
 
 
                       <button class="btn btn-icon p-0 px-2 ml-1 safe-btn" style="height: 35px;"
-                        [ngStyle]="{'background-color':(ip===undefined || ip?.length === 0) ? 'var(--light-blue-grey)' : 'var(--safe)'}"
+                        [ngStyle]="{'background-color':(ip === undefined || ip?.length === 0) ? 'var(--light-blue-grey)' : 'var(--safe)'}"
                         (click)="addIpToList()" [disabled]="ip?.length === 0">
                         <i-feather name="plus" class="mr-0"></i-feather>
                       </button>
@@ -154,12 +154,12 @@
                     </div>
 
                     <div class="cards mt-3">
-                      <div class="card gray-card" *ngFor="let ip of dontIps; let index = index">
+                      <div class="card gray-card" *ngFor="let ip of doNotTouchIpCollection.ips; let index = index">
                         <div class="card-content">
                           <h6 class="title">{{ ip }}</h6>
                         </div>
 
-                        <div class="card-close" (click)="removeElementFromIpList(index)">
+                        <div class="card-close" (click)="doNotTouchIpCollection.removeByIndex(index)">
                           <i-feather name="trash-2"></i-feather>
                         </div>
                       </div>
@@ -188,19 +188,19 @@
 
 
                       <button class="btn btn-icon p-0 px-2 ml-1 safe-btn" style="height: 35px;"
-                        [ngStyle]="{'background-color':(localnetip===undefined || localnetip?.length === 0) ? 'var(--light-blue-grey)' : 'var(--safe)'}"
+                        [ngStyle]="{'background-color':(localnetip === undefined || localnetip?.length === 0) ? 'var(--light-blue-grey)' : 'var(--safe)'}"
                         (click)="addIpToLocalNetList()" [disabled]="localnetip?.length === 0">
                         <i-feather name="plus" class="mr-0"></i-feather>
                       </button>
                     </div>
 
                     <div class="cards mt-3">
-                      <div class="card gray-card" *ngFor="let ip of localnetIps; let index = index">
+                      <div class="card gray-card" *ngFor="let ip of localNetIpCollection.ips; let index = index">
                         <div class="card-content">
                           <h6 class="title">{{ ip }}</h6>
                         </div>
 
-                        <div class="card-close" (click)="removeElementFromLocalNetIpList(index)">
+                        <div class="card-close" (click)="localNetIpCollection.removeByIndex(index)">
                           <i-feather name="trash-2"></i-feather>
                         </div>
                       </div>
@@ -233,6 +233,52 @@
                       <input type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"
                              placeholder="Domain"  [(ngModel)]="localDetectDomain" class="rk-input w-100 mt-2">
 
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="container-fluid mb-2">
+              <div class="rk-modal-card">
+                <div class="d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="rk-modal-card-title">{{'EnableSSLBlockPage'|translate}}</h6>
+                  <rk-switch class="align-self-end" [(value)]="isSSLBlockPageEnabled" (valueChange)="onIsSSLBlockPageEnabledChange($event)">
+                  </rk-switch>
+                </div>
+                <div class="row mt-0">
+                  <div class="col-12 mt-0">
+                    <p class="rk-description">
+                      {{'EnableSSLBlockPageDescription'|translate}}
+                    </p>
+
+                    <div class="input-container">
+                      <input type="text" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"
+                        placeholder="Ip" class="rk-input w-100" (keydown)="checkIPNumber($event, sslBlockPageIp)"
+                        [(ngModel)]="sslBlockPageIp" [ngModelOptions]="{standalone: true}">
+
+
+                      <button class="btn btn-icon p-0 px-2 ml-1 safe-btn" style="height: 35px;"
+                        [ngStyle]="{'background-color':(sslBlockPageIp === undefined || sslBlockPageIp?.length === 0) ? 'var(--light-blue-grey)' : 'var(--safe)'}"
+                        (click)="addIpToList()" [disabled]="sslBlockPageIp?.length === 0">
+                        <i-feather name="plus" class="mr-0"></i-feather>
+                      </button>
+
+
+                    </div>
+
+                    <div class="cards mt-3">
+                      <div class="card gray-card" *ngFor="let ip of sslBlockPageIpCollection.ips">
+                        <div class="card-content">
+                          <h6 class="title">{{ ip }}</h6>
+                        </div>
+
+                        <div class="card-close" (click)="sslBlockPageIpCollection.remove(ip)">
+                          <i-feather name="trash-2"></i-feather>
+                        </div>
+                      </div>
                     </div>
 
                   </div>

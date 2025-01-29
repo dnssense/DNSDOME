@@ -27,6 +27,9 @@ import * as moment from 'moment';
 import {TranslatorService} from '../../../core/services/translator.service';
 import {ExcelService} from '../../../core/services/excelService';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { IpCollection } from 'src/app/core/utils/ip';
+
+const DEFAULT_SSL_BLOCK_PAGE_IP = '176.53.43.54'
 
 declare let $: any;
 export interface BoxConf {
@@ -39,6 +42,8 @@ export interface BoxConf {
     isEnableLocalDedect: number;
     localDetectDomain: string;
     localDetectIp: string;
+    isEnableSslBlockPage?: boolean;
+    sslBlockPageIps?: string[];
 }
 
 export interface AgentConf {
@@ -73,7 +78,9 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         private destroyRef: DestroyRef
 
     ) {
-
+        this.doNotTouchIpCollection = this.createIpCollection(20);
+        this.localNetIpCollection = this.createIpCollection(10);
+        this.sslBlockPageIpCollection = this.createIpCollection(20);
     }
 
 
@@ -99,6 +106,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         return true;
     }
+
     grupOperation: string;
     groupOperation: string;
 
@@ -133,8 +141,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     saveMode: string;
     startWizard = false;
     dontDomains: string[] = [];
-    dontIps: string[] = [];
-    localnetIps: string[] = [];
 
     confParameters: string[] = [];
 
@@ -147,11 +153,16 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     domain: string;
     ip: string;
     localnetip: string;
+    sslBlockPageIp: string;
     uninstallPassword: string;
     disablePassword: string;
     isEnableLocalDedect: number;
+    isSSLBlockPageEnabled: boolean;
     localDetectDomain = '';
     localDetectIp = '';
+    doNotTouchIpCollection: IpCollection;
+    localNetIpCollection: IpCollection;
+    sslBlockPageIpCollection: IpCollection;
 
     alwaysActive = true;
     disabledNetwork = false;
@@ -235,6 +246,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
   private dateFormat = 'YYYY-MM-DD HH:mm';
   roamingClientVersion: string;
   roamingMacClientVersion: string;
+
   ngOnInit(): void {
 
         this.clients = [];
@@ -431,8 +443,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
     fillBoxDefaultSettings(virtualBox: Box) {
         this.dontDomains = [];
-        this.dontIps = [];
-        this.localnetIps = [];
+        this.doNotTouchIpCollection.clear();
+        this.localNetIpCollection.clear();
         this.uninstallPassword = '';
         this.disablePassword = '';
         this.selectedDefaultRomainProfileId = 41;
@@ -440,28 +452,43 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         if (virtualBox?.conf) {
             try {
                 const boxConf: BoxConf = JSON.parse(virtualBox.conf);
+
                 if (boxConf.donttouchdomains) {
-                    this.dontDomains = boxConf.donttouchdomains.split(',').filter(x => x).map(x => x[0] === '.' ? x.substring(1) : x);
+                    this.dontDomains = boxConf.donttouchdomains.split(',').filter(Boolean).map(x => x[0] === '.' ? x.substring(1) : x);
                 }
+
                 if (boxConf.donttouchips) {
-                    this.dontIps = boxConf.donttouchips.split(',').filter(x => x);
+                    this.doNotTouchIpCollection.set(boxConf.donttouchips.split(',').filter(Boolean));
                 }
+
                 if (boxConf.localnetips) {
-                    this.localnetIps = boxConf.localnetips.split(',').filter(x => x);
+                    this.localNetIpCollection.set(boxConf.localnetips.split(',').filter(Boolean));
                 }
+
                 if (boxConf.uninstallPassword) {
                     this.uninstallPassword = boxConf.uninstallPassword;
                 }
+
                 if (boxConf.disablePassword) {
                     this.disablePassword = boxConf.disablePassword;
                 }
+
                 this.isEnableLocalDedect = boxConf.isEnableLocalDedect;
+                this.isSSLBlockPageEnabled = !!boxConf.isEnableSslBlockPage;
+                this.sslBlockPageIpCollection.set(boxConf.sslBlockPageIps ?? [])
+
+                if (this.isSSLBlockPageEnabled) {
+                    this.assignDefaultSSLBlockPageIps();
+                }
+
                 if (boxConf.localDetectDomain) {
                   this.localDetectDomain = boxConf.localDetectDomain;
                 }
+
                 if (boxConf.localDetectIp) {
                   this.localDetectIp = boxConf.localDetectIp;
                 }
+
                 this.selectedDefaultRomainProfileId = boxConf.defaultRoamingSecurityProfile || 41;
                 this.fillSecurityProfilesSelectForDefaultSettings(this.securityProfiles, this.selectedDefaultRomainProfileId);
 
@@ -472,8 +499,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         }
 
     }
-    getConfParameters() {
 
+    getConfParameters() {
         return this.boxService.getVirtualBox().pipe(map(res => {
             this.virtualBox = res;
             this.fillBoxDefaultSettings(this.virtualBox);
@@ -559,18 +586,26 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
     saveRoamingGlobalSettings() {
-        if (!this.checkLocalDetect())
+        if (!this.checkLocalDetect()) {
           return;
+        }
+
         const domains = this.dontDomains.map(domain => domain[0] !== '.' ? '.'.concat(domain) : domain).join(',');
-        const ips = this.dontIps.filter(x => isip(x)).join(',');
-        const localnetworkips = this.localnetIps.filter(x => isip(x)).join(',');
+
         const request = {
-            box: this.virtualBox?.serial, boxuuid: this.virtualBox?.uuid, donttouchdomains: domains,
-            donttouchips: ips,
-            localnetips: localnetworkips, uninstallPassword: this.uninstallPassword,
-            isEnableLocalDedect: this.isEnableLocalDedect, localDetectIp: this.localDetectIp, localDetectDomain: this.localDetectDomain,
-            disablePassword: this.disablePassword, defaultRoamingSecurityProfile: this.selectedDefaultRomainProfileId
+            box: this.virtualBox?.serial,
+            boxuuid: this.virtualBox?.uuid,
+            donttouchdomains: domains,
+            donttouchips: this.doNotTouchIpCollection.toString(),
+            localnetips: this.localNetIpCollection.toString(),
+            uninstallPassword: this.uninstallPassword,
+            isEnableLocalDedect: this.isEnableLocalDedect,
+            localDetectIp: this.localDetectIp,
+            localDetectDomain: this.localDetectDomain,
+            disablePassword: this.disablePassword,
+            defaultRoamingSecurityProfile: this.selectedDefaultRomainProfileId
         };
+
         this.boxService.saveBoxConfig(request).subscribe(x => {
             this.notification.info(this.staticMessageService.agentsGlobalConfSaved);
             this.getConfParameters().subscribe(x => {
@@ -602,7 +637,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
     addDomainToList() {
-
         if (this.dontDomains && this.dontDomains.length < 20) {
             const result = this.checkIsValidDomaind(this.domain);
             if (!result) {
@@ -627,59 +661,21 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         // this.saveDomainChanges();
     }
+
+    addToSSLBlockPageIps() {
+        this.sslBlockPageIpCollection.add(this.sslBlockPageIp);
+        this.sslBlockPageIp = ''
+    }
+
     addIpToList() {
-
-        if (this.dontIps && this.dontIps.length < 20) {
-            const result = isip(this.ip) ? this.ip : null;
-            if (!result) {
-                this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
-                return;
-            }
-
-            this.dontIps.push(result);
-
-
-
-            this.ip = '';
-
-            // this.saveDomainChanges();
-        } else {
-            this.notification.warning(this.staticMessageService.youReachedMaxIpsCountMessage);
-        }
+        this.doNotTouchIpCollection.add(this.ip);
+        this.ip = '';
     }
+
     addIpToLocalNetList() {
-
-        if (this.localnetIps && this.localnetIps.length < 10) {
-            const result = isip(this.localnetip) ? this.localnetip : null;
-            if (!result) {
-                this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
-                return;
-            }
-
-            this.localnetIps.push(result);
-
-
-
-            this.localnetip = '';
-
-            // this.saveDomainChanges();
-        } else {
-            this.notification.warning(this.staticMessageService.youReachedMaxIpsCountMessage);
-        }
+        this.localNetIpCollection.add(this.localnetip);
+        this.localnetip = '';
     }
-
-    removeElementFromIpList(index: number) {
-        this.dontIps.splice(index, 1);
-
-        // this.saveDomainChanges();
-    }
-    removeElementFromLocalNetIpList(index: number) {
-        this.localnetIps.splice(index, 1);
-
-        // this.saveDomainChanges();
-    }
-
-
 
     checkIsValidDomaind(d: string): string | null {
         d = d.toLocaleLowerCase().replace('https://', '').replace('http://', '');
@@ -1148,6 +1144,12 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     this.calculateTableHeight();
   }
 
+  onIsSSLBlockPageEnabledChange(value: boolean) {
+    if (value) {
+        this.assignDefaultSSLBlockPageIps()
+    }
+  }
+
   sort(col, name: string) {
     this.clientsForShow = this.clientsForShow.sort((a, b) => {
       if (name === 'agentGroup') {
@@ -1229,5 +1231,23 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.excelService.exportAsExcelFile(tableData, 'GroupedClientsReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear());
       }
     }
+  }
+
+  private assignDefaultSSLBlockPageIps() {
+    if (!this.sslBlockPageIpCollection.length) {
+        this.sslBlockPageIpCollection.set([DEFAULT_SSL_BLOCK_PAGE_IP])
+    }
+  }
+
+  private createIpCollection(maxCount: number) {
+    return new IpCollection({
+        maxCount,
+        onIpNotValid() {
+            this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
+        },
+        onMaxCountReached() {
+            this.notification.warning(this.staticMessageService.youReachedMaxIpsCountMessage);
+        },
+    })
   }
 }
