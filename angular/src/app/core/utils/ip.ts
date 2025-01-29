@@ -1,7 +1,15 @@
 import * as isIp from "is-ip";
 
 export class IpCollection {
-    ips: string[] = [];
+    private ips: string[] = [];
+
+    get length() {
+        return this.ips.length;
+    }
+
+    get isEmpty() {
+        return this.ips.length === 0;
+    }
 
     constructor(private options: {
         maxCount: number;
@@ -42,18 +50,18 @@ export class IpCollection {
     }
 
     set(ips: string[]) {
-        this.ips = ips;
+        this.ips = ips.filter(t => isIp(t));
     }
 
-    get length() {
-        return this.ips.length;
-    }
-
-    get isEmpty() {
-        return this.ips.length === 0;
+    fromString(ipsString: string) {
+        this.ips = ipsString.split(',').map(t => t.trim()).filter(t => !!t && isIp(t)); 
     }
 
     toString() {
         return this.ips.join(',');
+    }
+
+    values() {
+        return this.ips;
     }
 }

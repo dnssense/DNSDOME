@@ -58,7 +58,17 @@ export class BoxService {
   }
 
 
-  saveBoxConfig(request: { box: string, boxuuid: string, donttouchdomains: string, donttouchips: string, localnetips: string, uninstallPassword: string, disablePassword: string }) {
+  saveBoxConfig(request: {
+    box: string,
+    boxuuid: string,
+    donttouchdomains: string,
+    donttouchips: string,
+    localnetips: string,
+    uninstallPassword: string,
+    disablePassword: string,
+    isEnableSslBlockPage: boolean,
+    sslBlockPageIps: string[]
+  }) {
 
     return this.http.post<any>(this.boxConfURL, request).pipe(map(data => data));
   }

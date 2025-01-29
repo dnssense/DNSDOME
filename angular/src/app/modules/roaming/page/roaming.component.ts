@@ -151,8 +151,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     searchKeyUnGroup = '';
 
     domain: string;
-    ip: string;
-    localnetip: string;
+    doNotTouchIp: string;
+    localNetIp: string;
     sslBlockPageIp: string;
     uninstallPassword: string;
     disablePassword: string;
@@ -408,11 +408,11 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
         clients.forEach(elem => {
             if (elem.agentGroup && elem.agentGroup.id > 0) {
-                const finded = grouped.get(elem.agentGroup.groupName); // .find(x => x.agentGroup.groupName === elem.agentGroup.groupName);
+                const found = grouped.get(elem.agentGroup.groupName); // .find(x => x.agentGroup.groupName === elem.agentGroup.groupName);
 
-                if (finded) {
-                    finded.memberCounts++;
-                    finded.agents.push(elem);
+                if (found) {
+                    found.memberCounts++;
+                    found.agents.push(elem);
                 } else {
                     grouped.set(elem.agentGroup?.groupName,
                         {
@@ -458,11 +458,15 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 }
 
                 if (boxConf.donttouchips) {
-                    this.doNotTouchIpCollection.set(boxConf.donttouchips.split(',').filter(Boolean));
+                    this.doNotTouchIpCollection.fromString(boxConf.donttouchips);
                 }
 
                 if (boxConf.localnetips) {
-                    this.localNetIpCollection.set(boxConf.localnetips.split(',').filter(Boolean));
+                    this.localNetIpCollection.fromString(boxConf.localnetips);
+                }
+
+                if (boxConf.sslBlockPageIps) {
+                    this.sslBlockPageIpCollection.set(boxConf.sslBlockPageIps);
                 }
 
                 if (boxConf.uninstallPassword) {
@@ -475,7 +479,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
                 this.isEnableLocalDedect = boxConf.isEnableLocalDedect;
                 this.isSSLBlockPageEnabled = !!boxConf.isEnableSslBlockPage;
-                this.sslBlockPageIpCollection.set(boxConf.sslBlockPageIps ?? [])
 
                 if (this.isSSLBlockPageEnabled) {
                     this.assignDefaultSSLBlockPageIps();
@@ -548,8 +551,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
 
     }
-    copyMagicLink() {
 
+    copyMagicLink() {
         this.boxService.getMagicLink().subscribe(res => {
             if (res && res.magic) {
 
@@ -560,8 +563,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 this.notification.error(this.staticMessageService.couldNotCreateMagicLinkMessage);
             }
         });
-
-
     }
 
 
@@ -598,6 +599,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             donttouchdomains: domains,
             donttouchips: this.doNotTouchIpCollection.toString(),
             localnetips: this.localNetIpCollection.toString(),
+            isEnableSslBlockPage: this.isSSLBlockPageEnabled,
+            sslBlockPageIps: this.sslBlockPageIpCollection.values(),
             uninstallPassword: this.uninstallPassword,
             isEnableLocalDedect: this.isEnableLocalDedect,
             localDetectIp: this.localDetectIp,
@@ -668,13 +671,13 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
     addIpToList() {
-        this.doNotTouchIpCollection.add(this.ip);
-        this.ip = '';
+        this.doNotTouchIpCollection.add(this.doNotTouchIp);
+        this.doNotTouchIp = '';
     }
 
     addIpToLocalNetList() {
-        this.localNetIpCollection.add(this.localnetip);
-        this.localnetip = '';
+        this.localNetIpCollection.add(this.localNetIp);
+        this.localNetIp = '';
     }
 
     checkIsValidDomaind(d: string): string | null {
@@ -775,24 +778,32 @@ export class RoamingComponent implements OnInit, AfterViewInit {
      }
    }
 
-  deleteAgents() {
-    const filteredClients = this.clients.filter(x => x.selected).map(x => JSON.parse(JSON.stringify(x)));
-    if (!filteredClients.length) {
-      this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
-      return;
+    deleteAgents() {
+        const filteredClients = this.clients.filter(x => x.selected).map(x => JSON.parse(JSON.stringify(x)));
+
+        if (!filteredClients.length) {
+            this.notification.warning(this.staticMessageService.needsToSelectAGroupMemberMessage);
+
+            return;
+        }
+
+        this.alertService.alertWarningAndCancel(
+            this.staticMessageService.areYouSureMessage,
+            this.staticMessageService.willDeleteAgentRoamingClientMessage
+        ).subscribe(
+            async res => {
+                if (res) {
+                    for (const agent of filteredClients) {
+                        await this.roamingService.deleteClient(agent.id).toPromise();
+                    }
+
+                    this.deletedAgentRoamingClientMessage();
+                    this.loadClients();
+                    this.selectAll = false;
+                }
+            }
+        );
     }
-    this.alertService.alertWarningAndCancel(this.staticMessageService.areYouSureMessage, this.staticMessageService.willDeleteAgentRoamingClientMessage).subscribe(
-       async res => {
-         if (res) {
-           for (const agent of filteredClients) {
-             await this.roamingService.deleteClient(agent.id).toPromise();
-           }
-           this.deletedAgentRoamingClientMessage();
-           this.loadClients();
-           this.selectAll = false;
-         }
-       });
-  }
 
     saveChangedGroup() {
         if (!this.selectedAgentsForChangeAddGroup.length) {
@@ -808,10 +819,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
             x.agentGroup.groupName = this.selectedGroupName;
 
-            const findedGroup = this.groupedClients.find(group => group.agentGroup.groupName === this.selectedGroupName);
+            const foundGroup = this.groupedClients.find(group => group.agentGroup.groupName === this.selectedGroupName);
 
-            if (findedGroup) {
-                x.rootProfile = findedGroup.securityProfile;
+            if (foundGroup) {
+                x.rootProfile = foundGroup.securityProfile;
             }
         });
 
@@ -825,6 +836,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             });
 
     }
+
     cleanChangedGroup() {
         this.selectedAgentsForChangeAddGroup.forEach(x => x.selected = false);
     }
@@ -840,6 +852,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         this.groupMembers = [];
         this.groupModal.toggle();
     }
+
     saveOrUpdateGroup() {
         let selectedItems: Agent[] = [];
         if (!this.groupName) {
@@ -896,12 +909,12 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             }
         }
 
-        const findedProfile = this.securityProfiles.find(x => x.id === this.selectedProfileRadio);
+        const foundProfile = this.securityProfiles.find(x => x.id === this.selectedProfileRadio);
 
 
-        if (findedProfile) {
+        if (foundProfile) {
             selectedItems.forEach(elem => {
-                elem.rootProfile = findedProfile;
+                elem.rootProfile = foundProfile;
             });
         }
 
@@ -1242,10 +1255,10 @@ export class RoamingComponent implements OnInit, AfterViewInit {
   private createIpCollection(maxCount: number) {
     return new IpCollection({
         maxCount,
-        onIpNotValid() {
+        onIpNotValid: () => {
             this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
         },
-        onMaxCountReached() {
+        onMaxCountReached: () => {
             this.notification.warning(this.staticMessageService.youReachedMaxIpsCountMessage);
         },
     })
