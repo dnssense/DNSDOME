@@ -17,6 +17,8 @@ import {ValidationService} from 'src/app/core/services/validation.service';
 import {ProfileWizardComponent} from '../../shared/profile-wizard/page/profile-wizard.component';
 import {DashBoardService, DistinctAgentResponse} from '../../../core/services/dashBoardService';
 import { RkAlertService, RkNotificationService, RkModalModel, RkSelectModel } from 'roksit-lib';
+import {TranslatorService} from "../../../core/services/translator.service";
+import {ConfigService} from "../../../core/services/config.service";
 
 
 declare let $: any;
@@ -115,7 +117,9 @@ export class PublicipComponent implements OnInit, AfterViewInit {
     private publicIpService: PublicIPService,
     private staticMessageService: StaticMessageService,
     private inputIpService: InputIPService,
-    private dashboardService: DashBoardService
+    private dashboardService: DashBoardService,
+    private translator: TranslatorService,
+    private config: ConfigService,
   ) {
     let role = this.authService.currentSession.currentUser.role;
     if (role.length)
@@ -177,7 +181,10 @@ export class PublicipComponent implements OnInit, AfterViewInit {
       this.currentStep++;
     }
   }
-
+  getDnsServerDesc():string {
+    let str = this.translator.translateWithArgs('PublicIP.BrandDnsServers', {Brand: this.config.host.brand, ips: this.config.host.dnsServers});
+    return str
+  }
   ngAfterViewInit() {
   }
 

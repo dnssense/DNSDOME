@@ -1,4 +1,4 @@
-{		
+{
     "Title"	:	 "Безопасность DNS",
     "Welcome"	:	 "Добро пожаловать!",
     "ExceptionOccured"	:	 "Произошло исключение",
@@ -23,14 +23,14 @@
     "Contains"	:	 "Содержит",
     "Active"	:	 "Активный",
     "Passive"	:	 "Пассивный",
-    "Malicious"	:	 "Вредоносный",
-    "malicious"	:	 "Вредоносный",
-    "Count"	:	 "Число срабатываний",
+    "Malicious"	:	 "Вредоносные",
+    "malicious"	:	 "Вредоносные",
+    "Count"	:	 "Число запросов",
     "Domain"	:	 "Домен",
     "Percent"	:	 "Процент",
     "NewDomains"	:	 "Новые домены",
-    "Harmful"	:	 "Нежелательный",
-    "restricted"	:	 "Нежелательный",
+    "Harmful"	:	 "Нежелательные",
+    "restricted"	:	 "Нежелательные",
     "Search"	:	 "Поиск",
     "AllFieldsRequired"	:	 "Все поля обязательны для заполнения",
     "Selected"	:	 "Выбрано",
@@ -87,7 +87,9 @@
     "DynamicIp"	:	 "Динамический IP",
     "BlockPageLogo"	:	 "Логотип страницы блокировки",
     "IP"	:	 "IP",
+    "YourIPAddress": "Ваш IP-адрес",
     "Name"	:	 "Имя",
+    "ShowName": "Показанное имя",
     "DNSFQDN"	:	 "DNS FQDN",
     "SelectProfile"	:	 "Выбрать профиль",
     "SinkHoleIp"	:	 "Sinkhole IP",
@@ -158,12 +160,12 @@
     "QueryCategory"	:	 "Категория запроса",
     "EnterDomain"	:	 "Введите Домен",
     "Categories"	:	 "Категории",
-    "Total"	:	 "Всего",
-    "Safe"	:	 "Безопасный",
-    "safe"	:	 "Безопасный",
-    "Variable"	:	 "Рискованный",
-    "variable"	:	 "Рискованный",
-    "HarmfullContent"	:	 "Нежелательный",
+    "Total"	:	 "Общий",
+    "Safe"	:	 "Безопасные",
+    "safe"	:	 "Безопасные",
+    "Variable"	:	 "Рискованные",
+    "variable"	:	 "Рискованные",
+    "HarmfullContent"	:	 "Нежелательные",
     "TotalDays"	:	 "Общее количество дней",
     "Service Temporarily Unavailable"	:	 "Услуга временно недоступна",
     "Bad Gateway"	:	 "Услуга временно недоступна",
@@ -199,8 +201,8 @@
     "SecurityMode"	:	 "Режим безопасности",
     "PositiveSecurity"	:	 "ПОЗИТИВНАЯ БЕЗОПАСНОСТЬ",
     "NegativeSecurity"	:	 "НЕГАТИВНАЯ БЕЗОПАСНОСТЬ",
-    "PositiveSecurityDescription"	:	 "Вы сможете посещать только безопасные домены, домены из категории Впервые Обнаруженные будут заблокированы. Эти домены будут категорезированы в течении 10 минут. ",
-    "NegativeSecurityDescription"	:	 "Вы сможете посещать домены из категории Впервые Обнаруженные, несмотря на то, что они могут быть опасны. Эти домены будут категорезированы в течении 10 минут.", 
+    "PositiveSecurityDescription": "Вы сможете посещать только безопасные домены, домены из категории Впервые Обнаруженные будут заблокированы. Эти домены будут категорезированы в режиме реального времени.",
+    "NegativeSecurityDescription": "Вы сможете посещать домены из категории Впервые Обнаруженные, несмотря на то, что они могут быть опасны. Эти домены будут категорезированы в режиме реального времени.",
     "SafeSearch"	:	 "Безопасный поиск",
     "YouTubeRestrictMode"	:	 "Режим ограничения доступа к YouTube",
     "ClearAds"	:	 "Очистить рекламу",
@@ -245,20 +247,20 @@
         "ApplyChangedSettings"	:	 "Применить измененные настройки",
         "TotalTraffic"	:	 "Общий трафик",
         "BlockPage"	:	 "Страница блокировки",
-        "BlockedTraffic"	:	 "Заблокированный трафик",
+        "BlockedTraffic"	:	 "Заблокированные запросы",
         "CleanFilters"	:	 "Очистить фильтры",
         "SaveFilter"	:	 "Сохранить фильтр"
-    },		
+    },
     "LANGUAGE"	:	 {
         "RU"	:	 "Русский",
         "EN"	:	 "Английский"
-    },		
+    },
     "LOGOUT"	:	 {
         "Logout"	:	 "Выход",
         "LogoutMessage"	:	 "Вы хотите выйти из системы?",
         "LoggingOut"	:	 "Выход из системы…",
         "LoggingOutMessage"	:	 "Вы благополучно вышли из системы."
-    },		
+    },
     "LOGIN"	:	 {
         "InvalidEmailOrPassword"	:	 "Неверный адрес электронной почты или пароль",
         "Register"	:	 "Зарегистрироваться",
@@ -270,7 +272,7 @@
         "Password"	:	 "Пароль",
         "PasswordRequired"	:	 "Пожалуйста, введите действительный пароль.",
         "SignupForFreeTrial"	:	 "Подпишитесь на бесплатную пробную версию"
-    },		
+    },
     "REGISTER"	:	 {
         "ResetYourPassword"	:	 "Сбросить пароль",
         "Register"	:	 "Зарегистрироваться",
@@ -338,10 +340,10 @@
         "EnterSamePass": "Введите пароль повторно",
         "RegisterText": "Зарегистрироваться",
         "InfoText": "Нажимая 'Зарегистрироваться', вы соглашаетесь с <a href=\"{{arg1}}\" target=\"blank\">Terms of Service</a> and <a href=\"{{arg2}}\" target=\"blank\">Privacy Policy</a> и принимате, что ваша персональная информация может быть передана и обрабатываться вне территории РФ",
-        "MailSentTitle": "<p>Great News!</p> <p>Your free trial is almost ready!</p>",
-        "LogIn": "Log In",
+        "MailSentTitle": "<p>Отличные новости!</p> <p>Ваша бесплатная пробная версия почти готова!</p>",
+        "LogIn": "Вход",
         "MailSentDesc": "<p class=\"mt-2\">Подтверждение отправлено на почу</p> <p> to: <b> {{arg}} </b></p><p>Пожалуйста, пройдите по ссылке активации из письма подтверждения.<p>"
-    },		
+    },
     "ACCOUNTSETTINGS"	:	 {
         "UserInformation"	:	 "Информация о пользователе",
         "CompanyInformation"	:	 "Информация о компании",
@@ -373,10 +375,10 @@
         "ExceededTheNumberOfAttempts"	:	 "Вы превысили количество попыток. Попробуйте еще раз.",
         "ConfirmationTimeIsUp"	:	 "Время подтверждения истекло",
         "PasswordChanged"	:	 "Пароль изменен"
-    },		
+    },
     "CATEGORYREQUEST"	:	 {
         "ChangeDomainCategory"	:	 "Изменить категорию домена"
-    },		
+    },
     "DASHBOARD"	:	 {
         "SettingExits"	:	"Ваша текущая панель статистики уже содержит этот отчет. Пожалуйста, выберите другой.",
         "SelectSetting"	:	 "Необходимо выбрать опцию для добавления. Пожалуйста, выберите сохраненный отчет из настроек.",
@@ -385,7 +387,7 @@
         "TotalTrafficTime"	:	"Общая временная шкала",
         "TotalDays365"	:	 "365 дней",
         "TimeRange"	:	 "Временной диапазон",
-        "TrafficBasedAnomaly"	:	 "Аномалия в траффике",
+        "TrafficBasedAnomaly"	:	 "Статистика",
         "SelectedTimevsAverage"	:	 "Выбранное время в сравнении со средним",
         "TimeHit"	:	 "Время запроса",
         "AverageHit"	:	 "Среднее число запросов",
@@ -393,13 +395,13 @@
         "ShowDetail"	:	 "Показать детали",
         "ShowSummary"	:	 "Показать сводку",
         "TotalDnsRequestCount"	:	"Общее количество DNS запросов"
-    },		
+    },
     "BOX"	:	 {
         "Details"	:	 "Детали ячейки",
         "Name"	:	 "Название ячейки",
         "BlockMessage"	:	 "Сообщение о блокировке",
         "DeviceLANIp"	:	 "Локальный IP-адрес устройства"
-    },		
+    },
     "TIMEPROFILE"	:	 {},
     "DEVICE"	:	 {},
     "PAGENOTFOUND"	:	 {
@@ -407,7 +409,7 @@
         "Title"	:	 "Страница не найдена",
         "Sorry"	:	 "Извините, запрошенная вами страница не существует",
         "Continue"	:	 "Перейти на нашу домашнюю страницу"
-    },		
+    },
     "ErrOAuthTestError"	:	 "Ошибка тестирования",
     "ErrOAuthJwtVerificationFailed"	:	 "Проверка Jwt не удалась, пожалуйста, повторите вход в систему.",
     "ErrOAuthNotAuthorized"	:	 "Не разрешено",
@@ -454,7 +456,7 @@
     "ErrUserThereWillNotBeAnyAdminUser"	:	 "Вы не можете этого сделать, не останется ни одного пользователя-администратора.",
     "FORGOTPASSWORD"	:	 {
         "Title"	:	 "Сбросить пароль"
-    },		
+    },
     "CATEGORY"	:	 {
         "Unknown"	:	 "Неизвестный",
         "Undecided Not Safe"	:	 "Неперепроверенный небезопасный",
@@ -530,10 +532,10 @@
         "DOH"	:	 "DOH",
         "Compromised Website"	:	"Скомпрометированный веб-сайт",
         "Safe Domain"	:	 "Безопасный домен"
-    },		
+    },
     "CUSTOMREPORTS"	:	 {
       "Others"	:	 "Другие"
-    },		
+    },
     "DeviceSaved"	:	 "Устройство сохранено",
     "DevicesSaved"	:	 "Устройства сохранены",
     "DeviceDeleted"	:	 "Устройство удалено",
@@ -597,7 +599,7 @@
         "BlockMessage"	:	 "Это сообщение, которое будет отображаться на странице блокировки, когда пользователи захотят получить доступ к заблокированному домену.",
         "ShinkholeIp1"	:	 "Если существует специальный IP-адрес, который вы хотите использовать в качестве адреса страницы блокировки, вам следует ввести его в этом разделе.",
         "ShinkholeIp2"	:	"Если вы используете локальную виртуальную машину KVILDNS, вы можете ввести IP-адрес её Shinkhole (страницы блокировки)."
-    },		
+    },
     "InstantMessaging"	:	 "Мгновенный обмен сообщениями",
     "InstantMessagingDesc"	:	 "Содержит домены, такие как недавно зарегистрированные, недавно активные, припаркованные домены,  также мертвые сайты, которые могут представлять угрозу.",
     "OnlineVideo"	:	 "Онлайн-видео",
@@ -641,7 +643,7 @@
         "DNSServerName"	:	 "Имя DNS-сервера",
         "ClientCount"	:	 "Количество клиентов",
         "RuleKeyword"	:	 "Ключевое слово правила"
-    },		
+    },
     "Month"	:	 "Месяцы",
     "Week"	:	 "Недели",
     "Day"	:	 "Дни",
@@ -654,18 +656,18 @@
     "NextMonth"	:	 "Следующий месяц",
     "Previous3Month"	:	 "Предыдущие 3 месяца",
     "Next3Month"	:	 "Следующие 3 месяца",
-    "TopDomainList"	:	 "Рейтинг доменов",
+    "TopDomainList"	:	 "рейтинг доменов",
     "DateDifferenceWarning"	:	 "Диапазон дат не должен превышать последних 7 дней.",
     "Date"	:	 {
-        "StartHour"	:	 "Час начала",
-        "EndHour"	:	 "Час окончания",
+        "StartHour"	:	 "С",
+        "EndHour"	:	 "по",
         "Cancel"	:	 "Отменить",
         "Apply"	:	 "Применить",
         "SelectDate"	:	 "Быстрый выбор",
         "Custom"	:	 "Произвольный",
         "Placeholder"	:	"Пожалуйста, выберите",
-        "StartDate"	:	 "Дата начала",
-        "EndDate"	:	 "Дата окончания",
+        "StartDate"	:	 "Время начала",
+        "EndDate"	:	 "Время окончания",
         "LastYear"	:	 "За 1 год",
         "Last3Month"	:	 "За 3 месяца",
         "LastMonth"	:	 "За 1 месяц",
@@ -675,16 +677,17 @@
         "6Hours"	:	 "За 6 часов",
         "LastDay"	:	 "За день",
         "Last1Hour"	:	 "За 1 час",
+        "Last3Hour": "За 3 часа",
         "LastXHour"	:	 "За {{X}} часов",
         "Last1Day"	:	 "За 1 день",
-        "LastXDay"	:	 "За {{X}} дней",
+        "LastXDay"	:	 "За {{X}} дня",
         "LastXMinutes"	:	 "За {{X}} минут",
-        "LastXWeek"	:	 "За {{X}} недель",
-        "LastXMonth"	:	 "За {{X}} месяцев",
+        "LastXWeek"	:	 "За {{X}} недели",
+        "LastXMonth"	:	 "За {{X}} месяца",
         "LastXYear"	:	 "За {{X}} лет"
-    },		
+    },
     "TooltipDescription"	:	 "Нажмите на точечный курсор для получения подробной информации",
-    "LocationDetails"	:	 "Сведения о местоположении",
+    "LocationDetails"	:	 "Параметры",
     "UserInformation"	:	 "Информация о пользователе",
     "ApiKeyInformation"	:	 "Информация о ключе API",
     "PleaseEnterTimeTrueValue"	:	 "Пожалуйста, введите дату в корректном формате.",
@@ -696,7 +699,7 @@
         "Dashboard"	:	 "Статистика",
         "Monitor"	:	 "Монитор",
         "CustomReports"	:	 "Пользовательские отчеты",
-        "Deployment"	:	 "Развертывание",
+        "Deployment"	:	 "Настройки",
         "PublicIp"	:	 "Публичный IP",
         "Devices"	:	 "Устройства",
         "RoamingClients"	:	 "Роуминг-клиенты",
@@ -712,11 +715,11 @@
         "ThemeMode"	:	 "Тема",
         "ADIntegration"	:	 "Интеграция с Active Directory",
         "DnsTunnel"	:	 "DNS-туннелирование",
-        "AccountSettings"	:	 "Настройки учетной записи",
+        "AccountSettings"	:	 "Профиль пользователя",
         "Logout"	:	 "Выход",
         "Help"	:	 "Справка",
         "About": "относительно"
-    },		
+    },
     "MonitorTraffic"	:	 "Мониторинг трафика",
     "AuditLogs"	:	 "Журналы аудита",
     "QueryCount"	:	 "Количество запросов",
@@ -753,7 +756,7 @@
         "Message"	:	 "Сообщение",
         "MessageDetail"	:	 "Подробная информация о сообщении",
         "IsApiKey"	:	 "Ключ API"
-    },		
+    },
     "Key"	:	 "Ключ",
     "Member"	:	 "Участник",
     "Unmember"	:	 "Исключить",
@@ -784,7 +787,7 @@
         "NoAccessInfo"	:	 "MSP не имеет никакого доступа.",
         "Info"	:	 "Информация об MSP",
         "Edit"	:	 "Редактировать MSP"
-    },		
+    },
     "RuleBy"	:	 {
         "01ADUSR"	:	 "Пользователь AD",
         "02ADGRP"	:	 "Группа AD",
@@ -792,7 +795,7 @@
         "04LOCIP"	:	 "Локальный IP",
         "05BOX"	:	 "DNS-сервер по умолчанию",
         "N/A"	:	 "N/A"
-    },		
+    },
     "RuleDeleted"	:	 "Правило удалено",
     "RuleSaved"	:	 "Правило сохранено",
     "LocalDNSDefaultRule"	:	 "Правила по умолчанию для локальных DNS-серверов",
@@ -822,9 +825,9 @@
     "AliveMoreThanOneWeek"	:	 "Больше недели",
     "NAVBAR"	:	 {
       "Account"	:	 "Учетная запись",
-      "AccountSettings"	:	 "Настройки учетной записи",
+      "AccountSettings"	:	 "Профиль пользователя",
       "Exit"	:	 "Выход"
-    },		
+    },
     "SCHEDULEDREPORTS"	:	 {
       "UserReports"	:	 "Отчеты пользователей",
       "ReportName"	:	 "Название отчета",
@@ -833,7 +836,7 @@
       "ScheduleWeeklyReportEmail"	:	 "Запланировать еженедельный отчет по электронной почте",
       "ScheduleMonthlyReportEmail"	:	 "Запланировать отправку ежемесячного отчета по электронной почте",
       "Disabled"	:	 "Отключен"
-    },		
+    },
    "DnsTunnel"	:	 {
      "EnableProtection"	:	 "Включить защиту",
      "DisableProtection"	:	 "Отключить защиту",
@@ -864,7 +867,7 @@
      "AllBlockListItemDeletionMsg"	:	 "Все заблокированные домены удалены",
      "ManageExceptionBtnLbl"	:	 "Заблокировано / Внесено в белый список",
      "InBlockListMsg"	:	 "Домен, который вы пытаетесь внести в белый список, уже находится в списке заблокированных"
-   },		
+   },
    "Columns"	:	 {
      "EventStartTime"	:	 "Время начала события",
      "EventEndTime"	:	 "Время окончания события",
@@ -900,7 +903,7 @@
      "ReasonOfBlocking"	:	 "Причина блокировки",
      "DestinationCountry"	:	 "Страна назначения",
      "DestinationIp"	:	 "IP-адрес назначения"
-   },		
+   },
     "BaseFilterSelection"	:	 {
       "FilterAddPopoverHeader"	:	 "Добавить новый фильтр",
       "FilterAddLabel"	:	 "Добавить фильтр",
@@ -908,7 +911,7 @@
       "Exclude"	:	 "Исключить из результатов",
       "ApplyChanges"	:	 "Применить изменения",
       "FVFilterDesc"	:	 "Узнать, произошло ли это событие впервые на активах вашей компании"
-    },		
+    },
     "RangeSelection"	:	 {
       "EmptyPlaceHolder"	:	 "Любой",
       "BetweenPlaceHolder"	:	 "От {{arg1}} до {{arg2}}",
@@ -922,33 +925,33 @@
       "InputPlaceHolder"	:	 "Значение",
       "FromPlaceHolder"	:	 "От...",
       "ToPlaceHolder"	:	 "До..."
-    },		
+    },
   "LocationAgentSelection"	:	 {
     "ArgName"	:	 "Местоположение / Имя агента"
-  },		
+  },
   "CountrySelection"	:	 {
     "Placeholder"	:	 "Поиск по странам",
     "Selected"	:	 "Избранные страны",
     "Available"	:	 "Доступные страны"
-  },		
+  },
   "BlockReasonSelection"	:	 {
     "ArgName"	:	 "Причина блокирования"
-  },		
+  },
   "DestinationIpSelection"	:	 {
     "ArgName"	:	 "IP-адрес назначения",
     "HelpTooltip"	:	 "Введите IP-адрес назначения для добавления (например, 10.11.12.13 или 10.11.*\n)"
-  },		
+  },
   "SourceIpSelection"	:	 {
     "ArgName"	:	 "IP-адрес отправителя",
     "HelpTooltip"	:	 "Введите IP-адрес отправителя для добавления (например, 10.11.12.13 или 10.11.*\n)"
-  },		
+  },
   "CategorySelection"	:	 {
     "Placeholder"	:	 "Поиск по категориям {{arg}}",
     "SelectedCategories"	:	 "Избранные категории",
     "Selected"	:	 "Избранный",
     "Available"	:	 "Доступно",
     "AvailableCategories"	:	 "Доступные категории {{arg}}"
-  },		
+  },
   "ApplicationSelection"	:	 {
     "Placeholder"	:	 "Поиск в приложениях {{arg}}",
     "SelectedApplications"	:	 "Выбранные приложения",
@@ -961,7 +964,7 @@
     "SOCIAL"	:	 "Социальные сети",
     "CLEAR_ADS"	:	 "Убрать рекламу",
     "HTTP"	:	 "HTTP"
-  },		
+  },
   "LicenceActivation"	:	 {
     "ActiveMsg"	:	 "Лицензия успешно активирована",
     "ErrorMsg"	:	 "Произошла ошибка во время активации лицензии.",
@@ -994,12 +997,16 @@
    "GenericError"	:	 "Произошла ошибка",
    "CopyRightText": "<a href=\"{{arg3}}\" target=\"blank\">{{arg2}}</a> &copy; Все права защищены",
    "AddNewPublicIP": "Добавить публичный IP",
-   "Rule": "Правило",   
+   "Rule": "Правило",
    "Source": "Источник",
    "Destination":"Назначение",
    "Decision": "Решение",
    "ExpiresAt": "Срок действия истекает: {{arg}}",
    "Licences":"Лицензии",
    "About": "относительно",
-   "UIVersion": "Версия UI"
-}		
+   "UIVersion": "Версия UI",
+   "PublicIP": {
+     "OtherOption" : "Другой вариант",
+     "BrandDnsServers": "{{Brand}} DNS-сервер Ips: {{ips}}"
+   }
+}

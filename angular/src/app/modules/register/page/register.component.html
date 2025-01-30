@@ -93,7 +93,7 @@
                           </div>
 
                           <input type="tel" class="formInput ml-2 mt-2" name="gsm" (keydown)="checkisTelNumber($event)"
-                            placeholder="{{'REGISTER.GSM' | translate}}" maxlength="10" minlength="9"
+                            placeholder="{{'REGISTER.GSM' | translate}}" maxlength="12" minlength="6"
                             [(ngModel)]="user.gsm" formControlName="gsm" title="5XX1234567" [ngClass]="{'formInputHasError':(registerForm.get('gsm').dirty|| registerForm.get('gsm').touched)
                                         && !registerForm.get('gsm').valid }">
 
@@ -156,7 +156,7 @@
                         </div>
                       </div>
                     </div>
-                    <div style="font-size: 12px; max-width: 400px; color: #868e96; line-height: normal;">
+                    <div style="font-size: 12px; max-width: 400px; color: #868e96; line-height: normal;" *ngIf="host.brand != 'kvildns'">
                       <p [innerHTML]="'REGISTER.InfoText' | translate: {'arg1': host.termsOfServiceUrl, 'arg2':host.privacyUrl}">
                       </p>
                     </div>
@@ -191,7 +191,7 @@
           <div class="col-md-10 mr-auto ml-auto">
             <div class="row">
               <div class="col-md-2 col-sm-12 col-xs-12 mb-2">
-                <img src="/assets/img/check-ring.svg" />
+                <img src="/assets/img/check-ring.svg" *ngIf="host.brand != 'kvildns'"/>
               </div>
               <div class="col-md-10 col-sm-12 mb-2" style="font-family: Roboto; font-size: 25px; font-weight: normal;" [innerHTML]="'REGISTER.MailSentTitle' | translate">
               </div>

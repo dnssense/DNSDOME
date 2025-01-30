@@ -27,6 +27,7 @@ export class ConfigHost {
   hiddenMenus?: string[];
   cyberXRayUrl: string;
   defaultGSMCode: string;
+  dnsServers: string
 }
 
 @Injectable({
@@ -61,9 +62,9 @@ export class ConfigService {
       ]
     },
     {id: 7, inBottom: true, path: 'logout', customClick: () => {}, text: 'PageName.Logout', icon: 'logout', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
-    {id: 8, inBottom: true, path: 'help', customClick: () => {}, text: 'PageName.Help', icon: 'help', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']}, 
+    {id: 8, inBottom: true, path: 'help', customClick: () => {}, text: 'PageName.Help', icon: 'help', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
     {id: 9, inBottom: true, path: '/admin/account-settings', text: 'PageName.AccountSettings', icon: 'settings', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
-    {id: 10, inBottom: true, path: 'about', customClick: () => {}, text: 'PageName.About', icon: 'info', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']}, 
+    {id: 10, inBottom: true, path: 'about', customClick: () => {}, text: 'PageName.About', icon: 'info', selected: false, roles: ['ROLE_CUSTOMER', 'ROLE_USER']},
   ];
 
   host: ConfigHost;
@@ -90,7 +91,7 @@ export class ConfigService {
       this.host.logofullUrl = window.location.protocol + '://' + window.location.host + (window.location.port || '') + '/assets/img/DNSSense-OnLightBG.svg';
       this.host.title = 'DNSSense';
       this.host.privacyUrl = 'https://www.dnssense.com/privacy-policy';
-      this.host.captcha_key = '6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
+      this.host.captcha_key = '6Le6ge0pAAAAANeH_OEyIPWUtiH1B7aBrfK49sh0';//'6LcjI3oUAAAAAAUW7egWmq0Q9dbLOcRPQUqcUD58';
       this.host.docUrl = 'https://www.dnssense.com/support';
       this.host.supportUrl = 'https://dnssense.com/support';
       this.host.termsOfServiceUrl = 'https://www.dnssense.com/application-terms-of-service';
@@ -99,6 +100,7 @@ export class ConfigService {
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
       this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
+      this.host.dnsServers = '45.129.19.19,45.129.19.20';
     } else if (window.location.host.indexOf('cyte') >= 0) {
       this.host.www = 'https://www.cybercyte.com';
       this.host.brand = 'CyberCyte';
@@ -117,6 +119,7 @@ export class ConfigService {
       this.host.onlineHelpUrl = 'https://docs.dnscyte.com';
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
+      this.host.dnsServers = '45.129.19.19,45.129.19.20';
     }  else if (window.location.host.indexOf('cmerp') >= 0) {
       this.host.www = 'https://www.cmerp.my';
       this.host.brand = 'CMERP';
@@ -135,6 +138,7 @@ export class ConfigService {
       this.host.onlineHelpUrl = 'https://www.cmerp.my';
       this.host.hiddenMenus = ['help']; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+60';
+      this.host.dnsServers = '45.129.19.19,45.129.19.20';
     } else if (window.location.host.indexOf('kvil') >= 0) {
       this.host.www = 'https://www.kvildns.ru';
       this.host.brand = 'kvildns';
@@ -153,10 +157,11 @@ export class ConfigService {
       this.host.portal = 'https://portal.kvildns.ru';
       this.host.supportUrl = 'https://kvildns.ru';
       this.host.onlineHelpUrl = 'https://kvildns.ru/faq';
-      this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
+      this.host.hiddenMenus = ['deployment/roaming-clients']; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+7';
       this.host.sidebarBgImage = '/assets/img/DNSCube_Sidebar.svg';
       this.host.spinnerImage = '/assets/img/DNSCube Logo Reveal.svg'
+      this.host.dnsServers = '62.76.89.149';
     } else {
       this.host.www = 'https://www.dnssense.com';
       this.host.brand = 'DNSSense';
@@ -180,7 +185,17 @@ export class ConfigService {
       this.host.hiddenMenus = []; // put paths to hide menu exp: ['settings/query-category', 'deployment/roaming-clients', 'deployment/devices'];
       this.host.defaultGSMCode = '+44';
       this.host.sidebarBgImage = '/assets/img/Dome_Sidebar_Logo.svg';
+      this.host.dnsServers = '45.129.19.19,45.129.19.20';
     }
+    ConfigService.menuItems = ConfigService.menuItems.filter(menuItem => {
+      if (this.host.hiddenMenus.includes(menuItem.path)) {return false}
+      if (menuItem.subMenu) {
+        menuItem.subMenu = menuItem.subMenu.filter(item => {
+          return !this.host.hiddenMenus.includes(item.path);
+        });
+      }
+      return true;
+    })
   }
   loadLanguage(userId: number): string | undefined {
     try {
@@ -220,7 +235,7 @@ export class ConfigService {
 
     let language = '';
     if (this.host.brand?.toLocaleLowerCase() === 'kvildns'){
-        language = 'ru'; 
+        language = 'ru';
     } else {
         language = this.loadLanguage(userId);
     }
