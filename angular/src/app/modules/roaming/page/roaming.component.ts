@@ -156,7 +156,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     sslBlockPageIp: string;
     uninstallPassword: string;
     disablePassword: string;
-    isEnableLocalDedect: number;
+    isEnableLocalDetect: boolean;
     isSSLBlockPageEnabled: boolean;
     localDetectDomain = '';
     localDetectIp = '';
@@ -477,7 +477,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                     this.disablePassword = boxConf.disablePassword;
                 }
 
-                this.isEnableLocalDedect = boxConf.isEnableLocalDedect;
+                this.isEnableLocalDetect = !!boxConf.isEnableLocalDedect;
                 this.isSSLBlockPageEnabled = !!boxConf.isEnableSslBlockPage;
 
                 if (this.isSSLBlockPageEnabled) {
@@ -571,7 +571,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     }
 
     checkLocalDetect(): boolean {
-      if (this.isEnableLocalDedect) {
+      if (this.isEnableLocalDetect) {
         const resultIp = isip(this.localDetectIp) ? this.localDetectIp : null;
         if (!resultIp) {
           this.notification.warning(this.staticMessageService.pleaseEnterValidIp);
@@ -602,7 +602,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             isEnableSslBlockPage: this.isSSLBlockPageEnabled,
             sslBlockPageIps: this.sslBlockPageIpCollection.values(),
             uninstallPassword: this.uninstallPassword,
-            isEnableLocalDedect: this.isEnableLocalDedect,
+            isEnableLocalDedect: this.isEnableLocalDetect ? 1 : 0,
             localDetectIp: this.localDetectIp,
             localDetectDomain: this.localDetectDomain,
             disablePassword: this.disablePassword,
@@ -1143,8 +1143,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         });
     }
 
-    onIsEnableLocalDetectChange(state: boolean) {
-        this.isEnableLocalDedect = (state) ? 1 : 0;
+    onIsEnableLocalDetectChange(value: boolean) {
+        this.isEnableLocalDetect = value;
     }
 
   onPageChange(pageNumber: number) {
