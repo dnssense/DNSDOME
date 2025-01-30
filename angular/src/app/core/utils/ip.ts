@@ -49,11 +49,11 @@ export class IpCollection {
         this.ips = [];
     }
 
-    set(ips: string[]) {
+    setFromArray(ips: string[]) {
         this.ips = ips.filter(t => isIp(t));
     }
 
-    fromString(ipsString: string) {
+    setFromString(ipsString: string) {
         this.ips = ipsString.split(',').map(t => t.trim()).filter(t => !!t && isIp(t)); 
     }
 

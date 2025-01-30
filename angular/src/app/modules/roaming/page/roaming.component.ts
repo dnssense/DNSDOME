@@ -458,15 +458,15 @@ export class RoamingComponent implements OnInit, AfterViewInit {
                 }
 
                 if (boxConf.donttouchips) {
-                    this.doNotTouchIpCollection.fromString(boxConf.donttouchips);
+                    this.doNotTouchIpCollection.setFromString(boxConf.donttouchips);
                 }
 
                 if (boxConf.localnetips) {
-                    this.localNetIpCollection.fromString(boxConf.localnetips);
+                    this.localNetIpCollection.setFromString(boxConf.localnetips);
                 }
 
                 if (boxConf.sslBlockPageIps) {
-                    this.sslBlockPageIpCollection.set(boxConf.sslBlockPageIps);
+                    this.sslBlockPageIpCollection.setFromArray(boxConf.sslBlockPageIps);
                 }
 
                 if (boxConf.uninstallPassword) {
@@ -1248,7 +1248,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
 
   private assignDefaultSSLBlockPageIps() {
     if (!this.sslBlockPageIpCollection.length) {
-        this.sslBlockPageIpCollection.set([DEFAULT_SSL_BLOCK_PAGE_IP])
+        this.sslBlockPageIpCollection.setFromArray([DEFAULT_SSL_BLOCK_PAGE_IP])
     }
   }
 
