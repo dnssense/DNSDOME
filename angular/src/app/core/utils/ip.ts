@@ -1,7 +1,8 @@
 import * as isIp from "is-ip";
+import { IpAddress } from "../types/ip";
 
 export class IpCollection {
-    private ips: string[] = [];
+    private ips: IpAddress[] = [];
 
     get length() {
         return this.ips.length;
@@ -24,7 +25,7 @@ export class IpCollection {
 
         if (this.length < this.options.maxCount) {  
             if (isIp(ip)) {
-                this.ips.push(ip);
+                this.ips.push(ip as IpAddress);
             } else {
                 this.options.onIpNotValid?.();
             }
@@ -50,11 +51,11 @@ export class IpCollection {
     }
 
     setFromArray(ips: string[]) {
-        this.ips = ips.filter(t => isIp(t));
+        this.ips = ips.filter(t => isIp(t)) as IpAddress[];
     }
 
     setFromString(ipsString: string) {
-        this.ips = ipsString.split(',').map(t => t.trim()).filter(t => !!t && isIp(t)); 
+        this.ips = ipsString.split(',').map(t => t.trim()).filter(t => !!t && isIp(t)) as IpAddress[]; 
     }
 
     toString() {

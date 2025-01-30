@@ -1,0 +1,1 @@
+export type IpAddress = `${number}.${number}.${number}.${number}`;
