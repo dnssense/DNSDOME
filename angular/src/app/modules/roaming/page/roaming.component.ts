@@ -27,8 +27,8 @@ import { ExcelService } from '../../../core/services/excelService'
 import { TranslatorService } from '../../../core/services/translator.service'
 import { GroupAgentModel } from '../../devices/page/devices.component'
 import { ProfileWizardComponent } from '../../shared/profile-wizard/page/profile-wizard.component'
-
-const DEFAULT_SSL_BLOCK_PAGE_IP = '176.53.43.54'
+import { ShowBlockPageMethod } from '../constants'
+import { smellShowBLockPageMethod } from '../utils'
 
 export interface BoxConf {
   donttouchdomains: string
@@ -75,7 +75,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
   ) {
     this.doNotTouchIpCollection = this.createIpCollection(20)
     this.localNetIpCollection = this.createIpCollection(10)
-    this.sslBlockPageIpCollection = this.createIpCollection(20)
   }
 
   isGroupedRadioButtonSelected = false
@@ -147,16 +146,15 @@ export class RoamingComponent implements OnInit, AfterViewInit {
   domain: string
   doNotTouchIp: string
   localNetIp: string
-  sslBlockPageIp: string
+  showBlockPageIp: string
   uninstallPassword: string
   disablePassword: string
   isEnableLocalDetect: boolean
-  isSSLBlockPageEnabled: boolean
+  showBlockPageMethod: ShowBlockPageMethod = ShowBlockPageMethod.ONLY_HTTP
   localDetectDomain = ''
   localDetectIp = ''
   doNotTouchIpCollection: IpCollection
   localNetIpCollection: IpCollection
-  sslBlockPageIpCollection: IpCollection
 
   alwaysActive = true
   disabledNetwork = false
@@ -450,6 +448,14 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     this.inputIpService.checkIPNumber(event, inputValue)
   }
 
+  onShowBlockPageMethodChange(value: ShowBlockPageMethod) {
+    this.showBlockPageMethod = value
+  }
+
+  onShowBlockPageIpChange(value: string) {
+    this.showBlockPageIp = value
+  }
+
   fillBoxDefaultSettings(virtualBox: Box) {
     this.dontDomains = []
     this.doNotTouchIpCollection.clear()
@@ -478,7 +484,7 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         }
 
         if (boxConf.sslBlockPageIps) {
-          this.sslBlockPageIpCollection.setFromArray(boxConf.sslBlockPageIps)
+          this.showBlockPageIp = boxConf.sslBlockPageIps[0] || ''
         }
 
         if (boxConf.uninstallPassword) {
@@ -490,11 +496,11 @@ export class RoamingComponent implements OnInit, AfterViewInit {
         }
 
         this.isEnableLocalDetect = !!boxConf.isEnableLocalDedect
-        this.isSSLBlockPageEnabled = !!boxConf.isEnableSslBlockPage
 
-        if (this.isSSLBlockPageEnabled) {
-          this.assignDefaultSSLBlockPageIps()
-        }
+        this.showBlockPageMethod = smellShowBLockPageMethod(
+          !!boxConf.isEnableSslBlockPage,
+          this.showBlockPageIp
+        )
 
         if (boxConf.localDetectDomain) {
           this.localDetectDomain = boxConf.localDetectDomain
@@ -609,8 +615,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
       donttouchdomains: domains,
       donttouchips: this.doNotTouchIpCollection.toString(),
       localnetips: this.localNetIpCollection.toString(),
-      isEnableSslBlockPage: this.isSSLBlockPageEnabled,
-      sslBlockPageIps: this.sslBlockPageIpCollection.values(),
+      isEnableSslBlockPage: this.showBlockPageMethod !== ShowBlockPageMethod.ONLY_HTTP,
+      sslBlockPageIps: [this.showBlockPageIp],
       uninstallPassword: this.uninstallPassword,
       isEnableLocalDedect: this.isEnableLocalDetect ? 1 : 0,
       localDetectIp: this.localDetectIp,
@@ -667,11 +673,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     this.dontDomains.splice(index, 1)
 
     // this.saveDomainChanges();
-  }
-
-  addToSSLBlockPageIps() {
-    this.sslBlockPageIpCollection.add(this.sslBlockPageIp)
-    this.sslBlockPageIp = ''
   }
 
   addIpToList() {
@@ -1052,8 +1053,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
       return ostype.includes('windows')
         ? '../../../../assets/img/windows.png'
         : ostype.includes('mac')
-          ? '../../../../assets/img/Ios.png'
-          : ''
+        ? '../../../../assets/img/Ios.png'
+        : ''
     }
     return null
   }
@@ -1164,12 +1165,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
     this.calculateTableHeight()
   }
 
-  onIsSSLBlockPageEnabledChange(value: boolean) {
-    if (value) {
-      this.assignDefaultSSLBlockPageIps()
-    }
-  }
-
   sort(col, name: string) {
     this.clientsForShow = this.clientsForShow.sort((a, b) => {
       if (name === 'agentGroup') {
@@ -1178,16 +1173,16 @@ export class RoamingComponent implements OnInit, AfterViewInit {
             ? 1
             : -1
           : a[name]?.groupName < b[name]?.groupName
-            ? 1
-            : -1
+          ? 1
+          : -1
       } else if (name === 'rootProfile') {
         return this.sortDirection === 'asc'
           ? a.rootProfile?.name > b.rootProfile?.name
             ? 1
             : -1
           : a.rootProfile?.name < b.rootProfile?.name
-            ? 1
-            : -1
+          ? 1
+          : -1
       } else if (name === 'isAlive') {
         let sortValue
         if (a.isAlive === b.isAlive) {
@@ -1203,8 +1198,8 @@ export class RoamingComponent implements OnInit, AfterViewInit {
           ? 1
           : -1
         : a[name] < b[name]
-          ? 1
-          : -1
+        ? 1
+        : -1
     })
     this.clientsForShow = [...this.clientsForShow]
 
@@ -1282,12 +1277,6 @@ export class RoamingComponent implements OnInit, AfterViewInit {
           'GroupedClientsReport-' + d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear()
         )
       }
-    }
-  }
-
-  private assignDefaultSSLBlockPageIps() {
-    if (!this.sslBlockPageIpCollection.length) {
-      this.sslBlockPageIpCollection.setFromArray([DEFAULT_SSL_BLOCK_PAGE_IP])
     }
   }
 
