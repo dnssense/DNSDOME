@@ -15,10 +15,7 @@
       </div>
       <ng-container *ngIf="method === ShowBlockPageMethod.HTTP_HTTPS">
         <div class="border tw-bg-black tw-mt-2 tw-p-2 tw-rounded-lg tw-text-[11px]">
-          <span
-            [innerHTML]="
-              'ShowBlockPageHttpsInfo' | translate : { link: SSL_CERT_HOW_TO_URL }
-            "></span>
+          <span [innerHTML]="'ShowBlockPageHttpsInfo' | translate"></span>
         </div>
         <a
           class="btn btn-icon btn-primary mt-2 tw-rounded-full tw-justify-center tw-w-full tw-cursor-pointer tw-p-1 text-decoration-none"

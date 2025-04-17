@@ -227,7 +227,7 @@
     "PleaseEnterValidIpAndMask": "Please enter a valid IP and mask.",
     "ShowBlockPage": "Show Block Page",
     "ShowBlockPageDescription": "Show a block page based on your selected method below",
-    "ShowBlockPageHttpsInfo": "This method requires downloading and installing an SSL certificate. To learn more about the installation process, <a href=\"{{link}}\" target=\"_blank\">click here</a>.",
+    "ShowBlockPageHttpsInfo": "This method requires downloading and installing an SSL certificate.",
     "ShowBlockPageOptionOnlyHTTP": "Only HTTP",
     "ShowBlockPageOptionHTTP_HTTPS": "HTTP/HTTPS",
     "ShowBlockPageOptionCustomIP": "Custom IP",

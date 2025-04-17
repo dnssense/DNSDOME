@@ -227,7 +227,7 @@
     "PleaseEnterValidIpAndMask"	:	 "Пожалуйста, введите действительный IP-адрес и маску.",
     "ShowBlockPage": "Показать страницу блокировки",
     "ShowBlockPageDescription": "Показать страницу блокировки в зависимости от выбранного ниже метода",
-    "ShowBlockPageHttpsInfo": "Этот метод требует загрузки и установки SSL-сертификата. Чтобы узнать больше о процессе установки, <a href=\"{{link}}\" target=\"_blank\">нажмите здесь</a>.",
+    "ShowBlockPageHttpsInfo": "Этот метод требует загрузки и установки SSL-сертификата.",
     "ShowBlockPageOptionOnlyHTTP": "Только HTTP",
     "ShowBlockPageOptionHTTP_HTTPS": "HTTP/HTTPS",
     "ShowBlockPageOptionCustomIP": "Пользовательский IP",
