@@ -12,7 +12,7 @@ import { RkSelectModel } from 'roksit-lib'
 import { InputIPService } from 'src/app/core/services/inputIPService'
 import { TranslatorService } from 'src/app/core/services/translator.service'
 import { DEFAULT_SHOW_BLOCK_PAGE_IP, ShowBlockPageMethod } from '../../constants'
-import { SSL_CERT_DOWNLOAD_URL, SSL_CERT_HOW_TO_URL } from './constants'
+import { SSL_CERT_DOWNLOAD_URL } from './constants'
 
 @Component({
   selector: 'app-show-block-page',
@@ -33,7 +33,6 @@ export class ShowBlockPageComponent implements OnChanges, OnInit {
 
   readonly ShowBlockPageMethod = ShowBlockPageMethod
   readonly SSL_CERT_URL = encodeURI(SSL_CERT_DOWNLOAD_URL)
-  readonly SSL_CERT_HOW_TO_URL = encodeURI(SSL_CERT_HOW_TO_URL)
 
   customIp = ''
 
