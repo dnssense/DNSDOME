@@ -17,12 +17,12 @@
         <div class="border tw-bg-black tw-mt-2 tw-p-2 tw-rounded-lg tw-text-[11px]">
           <span [innerHTML]="'ShowBlockPageHttpsInfo' | translate"></span>
         </div>
-        <a
+        <button
           class="btn btn-icon btn-primary mt-2 tw-rounded-full tw-justify-center tw-w-full tw-cursor-pointer tw-p-1 text-decoration-none"
-          [href]="SSL_CERT_URL">
+          (click)="onDownloadSSLCertClick()">
           <i-feather name="download" style="display: flex; width: 16px; height: 16px"></i-feather>
           {{ 'DownloadSSLCert' | translate }}
-        </a>
+        </button>
       </ng-container>
       <ng-container *ngIf="method === ShowBlockPageMethod.CUSTOM_IP">
         <input

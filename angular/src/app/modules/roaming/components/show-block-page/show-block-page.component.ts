@@ -32,7 +32,6 @@ export class ShowBlockPageComponent implements OnChanges, OnInit {
   onIpAddressChange = new EventEmitter<string>()
 
   readonly ShowBlockPageMethod = ShowBlockPageMethod
-  readonly SSL_CERT_URL = encodeURI(SSL_CERT_DOWNLOAD_URL)
 
   customIp = ''
 
@@ -79,6 +78,10 @@ export class ShowBlockPageComponent implements OnChanges, OnInit {
 
   onMethodSelectionChange(value: ShowBlockPageMethod) {
     this.onMethodChange.emit(value)
+  }
+
+  onDownloadSSLCertClick() {
+    window.open(SSL_CERT_DOWNLOAD_URL, '_blank')
   }
 
   checkIPNumber(event: KeyboardEvent, inputValue: string) {
