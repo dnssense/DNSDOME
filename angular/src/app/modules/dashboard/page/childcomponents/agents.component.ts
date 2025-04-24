@@ -9,6 +9,7 @@ import {RoamingService} from "../../../../core/services/roaming.service";
 import {DashBoardService, DistinctAgentResponse, DistinctBoxResponse} from "../../../../core/services/dashBoardService";
 import {Agent} from "../../../../core/models/Agent";
 import {Box} from "../../../../core/models/Box";
+import {ConfigHost, ConfigService} from "../../../../core/services/config.service";
 
 @Component({
   selector: 'app-dashboard-agents',
@@ -18,7 +19,7 @@ import {Box} from "../../../../core/models/Box";
 })
 export class AgentsComponent implements OnInit {
   constructor(private agentService: AgentService, private boxService: BoxService,
-              private roamingService: RoamingService, private dashboardService: DashBoardService) {
+              private roamingService: RoamingService, private dashboardService: DashBoardService, private configService: ConfigService) {
   }
   agentCounts: AgentCountModel[] = []
   ngOnInit() {
@@ -51,7 +52,16 @@ export class AgentsComponent implements OnInit {
 
       dnsrelay.activeCount = res.box.filter(x=>res.disBoxs.items.find(y=>x.serial === y.serial)).length
       dnsrelay.passiveCount = res.box.length - dnsrelay.activeCount;
-      cal([publicip,roamingclient,dnsrelay])
+      let menuItems = [publicip,roamingclient,dnsrelay]
+      menuItems = menuItems.filter(item => {
+        if (this.configService.host.hiddenMenus) {
+          return !this.configService.host.hiddenMenus.find(it => {
+            return it.length > 3 && item.link.includes(it);
+          })
+        }
+        return true
+      })
+      cal(menuItems)
     })
   }
   getAllAgentsService() {

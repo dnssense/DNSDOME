@@ -152,7 +152,7 @@ export class AccountSettingsComponent implements OnInit {
         this.userPhoneForm =
             this.formBuilder.group({
                 'gsmCode': ['', [Validators.required]],
-                'gsm': ['', [Validators.required, Validators.minLength(9), Validators.maxLength(11), Validators.pattern(number)]],
+                'gsm': ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12), Validators.pattern(number)]],
                 'smsCode': ['']
             });
 

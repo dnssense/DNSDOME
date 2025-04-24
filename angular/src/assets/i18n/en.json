@@ -87,7 +87,9 @@
     "DynamicIp": "Dynamic IP",
     "BlockPageLogo": "Block Page Logo",
     "IP": "IP",
+    "YourIPAddress": "Your IP Address",
     "Name": "Name",
+    "ShowName": "Shown Name",
     "DNSFQDN": "DNS FQDN",
     "SelectProfile": "Select Profile",
     "SinkHoleIp": "Sinkhole IP",
@@ -199,8 +201,8 @@
     "SecurityMode": "Security Mode",
     "PositiveSecurity": "POSITIVE SECURITY",
     "NegativeSecurity": "NEGATIVE SECURITY",
-    "PositiveSecurityDescription": "You can visit only safe domains, Firstly Seen domains are blocked. Firstly Seen domains will be categorized in 10 minutes. ",
-    "NegativeSecurityDescription": "You can visit Firstly Seen domains which can be dangerous. Firstly Seen domains will be categorized in 10 minutes. ",
+    "PositiveSecurityDescription": "You can visit only safe domains, Firstly Seen domains are blocked. Firstly Seen domains will be categorized in real-time.",
+    "NegativeSecurityDescription": "You can visit Firstly Seen domains, which can be dangerous. Firstly Seen domains will be categorized in real-time.",
     "SafeSearch": "Safe Search",
     "YouTubeRestrictMode": "YouTube Restrict Mode",
     "ClearAds": "Clear Ads",
@@ -223,6 +225,14 @@
     "ProfileCannotFind": "Cannot find the profile.",
     "PleaseEnterValidIp": "Please enter a valid IP.",
     "PleaseEnterValidIpAndMask": "Please enter a valid IP and mask.",
+    "ShowBlockPage": "Show Block Page",
+    "ShowBlockPageDescription": "Show a block page based on your selected method below",
+    "ShowBlockPageHttpsInfo": "This method requires downloading and installing an SSL certificate.",
+    "ShowBlockPageOptionOnlyHTTP": "Only HTTP",
+    "ShowBlockPageOptionHTTP_HTTPS": "HTTP/HTTPS",
+    "ShowBlockPageOptionCustomIP": "Custom IP",
+    "DownloadSSLCert": "Download the SSL Certificate",
+    "SinkholeIPAddress": "Sinkhole IP Address",
     "REPORT": {
         "SaveReport": "Save Report",
         "NewReport": "New Report",
@@ -640,7 +650,7 @@
         "ADGroups": "AD Groups",
         "DNSServerName": "DNS Server Name",
         "ClientCount": "Client Count",
-        "RuleKeyword": "Rule Keyword"        
+        "RuleKeyword": "Rule Keyword"
     },
     "Month": "Months",
     "Week": "Weeks",
@@ -675,6 +685,7 @@
         "6Hours": "Last 6 Hours",
         "LastDay": "Last Day",
         "Last1Hour": "Last 1 Hour",
+        "Last3Hour": "Last 3 Hours",
         "LastXHour": "Last {{X}} Hours",
         "Last1Day": "Last 1 Day",
         "LastXDay": "Last {{X}} Days",
@@ -1001,5 +1012,9 @@
    "ExpiresAt": "Expires at: {{arg}}",
    "Licences":"Licences",
    "About": "About",
-   "UIVersion": "UI Version"
+   "UIVersion": "UI Version",
+   "PublicIP": {
+     "OtherOption" : "Other Option",
+     "BrandDnsServers": "{{Brand}} DNS Server Ips: {{ips}}"
+   }
 }
