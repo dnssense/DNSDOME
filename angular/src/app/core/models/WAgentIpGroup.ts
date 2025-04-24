@@ -1,28 +1,28 @@
-import { Ip } from './Ip';
+import { IpAddress } from "../types/ip";
+
 export class WAgentIpGroup {
   public id = -1;
-  public ips: number[] = [];
-
-  public beginIpAddress: string;
-  public endIpAddress: string;
+  public ipNumbers: number[] = [];
+  public beginIpAddress: IpAddress | null = null;
+  public endIpAddress: IpAddress | null = null;
 
 
   public constructor() {
-    if (this.ips == null || this.ips.length === 0) {
-      this.ips = Ip.emptyIP();
+    if (this.ipNumbers == null || this.ipNumbers.length === 0) {
+      this.ipNumbers = []
     }
-    if (this.ips != null && this.ips.length > 0) {
+
+    if (this.ipNumbers != null && this.ipNumbers.length > 0) {
       this.initIpBlocks();
     }
 
   }
 
   public initIpBlocks() {
-    this.beginIpAddress = this.ips[0] + '.' + this.ips[1] + '.' + this.ips[2] + '.' + this.ips[3];
-    if (this.ips[3] != this.ips[4]) {
-      this.endIpAddress = this.ips[0] + '.' + this.ips[1] + '.' + this.ips[2] + '.' + this.ips[4];
-    } else {
-      this.endIpAddress = '';
+    this.beginIpAddress = `${this.ipNumbers[0]}.${this.ipNumbers[1]}.${this.ipNumbers[2]}.${this.ipNumbers[3]}`;
+
+    if (this.ipNumbers[3] != this.ipNumbers[4]) {
+      this.endIpAddress = `${this.ipNumbers[0]}.${this.ipNumbers[1]}.${this.ipNumbers[2]}.${this.ipNumbers[4]}`;
     }
   }
 

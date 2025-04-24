@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
-import { Ip } from '../models/Ip';
+import { UntypedFormGroup } from '@angular/forms';
 import * as validator from 'validator';
 import * as tldjs from 'tldjs';
 
