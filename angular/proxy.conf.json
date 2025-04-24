@@ -1,12 +1,12 @@
 {
   "/download/*/version.txt": {
-    "target": "https://beta.roksit.com",
+    "target": "https://portal.dnssense.com",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
   },
   "/api/*": {
-    "target": "https://beta.roksit.com",
+    "target": "https://portal.dnssense.com",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

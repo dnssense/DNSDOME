@@ -1,72 +1,99 @@
+import { CommonModule } from '@angular/common'
+import { Component, EventEmitter, inject, Output, TemplateRef, ViewChild } from '@angular/core'
+import { TranslateModule } from '@ngx-translate/core'
+import { FeatherModule } from 'angular-feather'
 import {
   BaseTrafficDataTable,
-  CategoryTextPipe, ColumnDef, FilterAddEventModel,
+  ColumnDef,
+  ColumnDefCustomTemplateContext,
   FilterBadgeValueV2,
-  IconStatsComponent,
-  RkTableV2Component, RkTranslatorService,
-  RoundedNumberPipe, RowDefaultItemComponent, RowItemBadgeComponent,
-  RowItemComponent, RowItemCountryComponent, RowItemDnsQueryComponent, RowItemLinkComponent,
-  RowItemProgressComponent,
+  FilterEvent,
+  RkTableV2Component,
+  RkTranslatorService,
+  RoundedNumberPipe,
+  RowDefaultItemComponent,
+  RowItemComponent,
+  RowItemDnsQueryComponent,
   RowItemTimeComponent,
-  RowTruncatedContainerComponent, RowTruncatedInfoComponent,
   StatsTagComponent,
   TrafficColumnNames,
-} from 'roksit-lib';
-import {CommonModule} from '@angular/common';
-import {Component, EventEmitter, inject, Output, TemplateRef, ViewChild} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
-import {Observable} from 'rxjs';
-import {NgbProgressbar} from '@ng-bootstrap/ng-bootstrap';
-import {FeatherModule} from 'angular-feather';
+} from 'roksit-lib'
+import { Observable } from 'rxjs'
 import {
   DnsTunnelLevel,
   DnsTunnelService,
   DnsTunnelSuspiciousEventsItem,
   DnsTunnelSuspiciousEventsUIRequest,
-  DnsTunnelSuspiciousEventsUIResponse
-} from '../../../../../core/services/dns-tunnel.service';
-import {DnsTunnelCommunicationService} from '../../services/dns-tunnel-communication.service';
-import {TunnelSeverityNamePipe} from '../../pipes/dns-tunnel-pipes';
+  DnsTunnelSuspiciousEventsUIResponse,
+} from '../../../../../core/services/dns-tunnel.service'
+import { TunnelSeverityNamePipe } from '../../pipes/dns-tunnel-pipes'
+import { DnsTunnelCommunicationService } from '../../services/dns-tunnel-communication.service'
 
 @Component({
   selector: 'dns-tunnel-event-report',
   standalone: true,
-  imports: [CommonModule, IconStatsComponent, RkTableV2Component, RowItemBadgeComponent, StatsTagComponent, TranslateModule, RowItemLinkComponent, RoundedNumberPipe, RowItemTimeComponent, RoundedNumberPipe, FeatherModule, RowTruncatedInfoComponent, RoundedNumberPipe, RowTruncatedContainerComponent, RowItemProgressComponent, NgbProgressbar, RoundedNumberPipe, RowItemLinkComponent, RowItemComponent, CategoryTextPipe, RowItemCountryComponent, TunnelSeverityNamePipe, RowItemDnsQueryComponent, RowDefaultItemComponent],
+  imports: [
+    CommonModule,
+    RkTableV2Component,
+    StatsTagComponent,
+    TranslateModule,
+    RoundedNumberPipe,
+    RowItemTimeComponent,
+    RoundedNumberPipe,
+    FeatherModule,
+    RoundedNumberPipe,
+    RoundedNumberPipe,
+    RowItemComponent,
+    TunnelSeverityNamePipe,
+    RowItemDnsQueryComponent,
+    RowDefaultItemComponent,
+  ],
   templateUrl: './dns-tunnel-event-report.component.html',
-  styleUrls: ['./dns-tunnel-event-report.component.scss']
+  styleUrls: ['./dns-tunnel-event-report.component.scss'],
 })
-export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunnelSuspiciousEventsUIResponse, DnsTunnelSuspiciousEventsItem, DnsTunnelSuspiciousEventsUIRequest> {
-  public tunnelLevels = DnsTunnelLevel;
+export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<
+  DnsTunnelSuspiciousEventsUIResponse,
+  DnsTunnelSuspiciousEventsItem,
+  DnsTunnelSuspiciousEventsUIRequest
+> {
+  public tunnelLevels = DnsTunnelLevel
   constructor() {
-    super();
+    super()
     this.tableConfig = {
       ...this.tableConfig,
       rowClickable: true,
       onRowClick: this.handleRowClick.bind(this),
       sortConfig: {
         sortColumn: 'event_start_date',
-        sortDirection: 'desc'
-      }
-    };
-    this.sortColumn = this.tableConfig.sortConfig.sortColumn;
-    this.isAscSort = false;
+        sortDirection: 'desc',
+      },
+    }
+    this.sortColumn = this.tableConfig.sortConfig.sortColumn
+    this.isAscSort = false
   }
-  tunnelService = inject(DnsTunnelService);
-  tunnelCommunicationService = inject(DnsTunnelCommunicationService);
-  translatorService = inject(RkTranslatorService);
-  @ViewChild('timestampTemplate', {static: true}) timestampTemplate: TemplateRef<HTMLElement>;
-  @ViewChild('severityTemplate', {static: true}) severityTemplate: TemplateRef<HTMLElement>;
-  @ViewChild('breakdownTemplate', {static: true}) breakdownTemplate: TemplateRef<HTMLElement>;
-  @ViewChild('arrayTemplate', {static: true}) arrayTemplate: TemplateRef<HTMLElement>;
-  @ViewChild('numberTemplate', {static: true}) numberTemplate: TemplateRef<HTMLElement>;
-  @Output() onTunnelEventDetailClick = new EventEmitter<DnsTunnelSuspiciousEventsItem>();
-  translationPrefix = 'DnsTunnel';
-  originColumns: ColumnDef[];
-  getServiceObservable(request: DnsTunnelSuspiciousEventsUIRequest): Observable<DnsTunnelSuspiciousEventsUIResponse> {
-    return this.tunnelService.getSuspiciousEvents(request);
+  tunnelService = inject(DnsTunnelService)
+  tunnelCommunicationService = inject(DnsTunnelCommunicationService)
+  translatorService = inject(RkTranslatorService)
+  @ViewChild('timestampTemplate', { static: true })
+  timestampTemplate: TemplateRef<ColumnDefCustomTemplateContext>
+  @ViewChild('severityTemplate', { static: true })
+  severityTemplate: TemplateRef<ColumnDefCustomTemplateContext>
+  @ViewChild('breakdownTemplate', { static: true })
+  breakdownTemplate: TemplateRef<ColumnDefCustomTemplateContext>
+  @ViewChild('arrayTemplate', { static: true })
+  arrayTemplate: TemplateRef<ColumnDefCustomTemplateContext>
+  @ViewChild('numberTemplate', { static: true })
+  numberTemplate: TemplateRef<ColumnDefCustomTemplateContext>
+  @Output() onTunnelEventDetailClick = new EventEmitter<DnsTunnelSuspiciousEventsItem>()
+  translationPrefix = 'DnsTunnel'
+  originColumns: ColumnDef[]
+  getServiceObservable(
+    request: DnsTunnelSuspiciousEventsUIRequest
+  ): Observable<DnsTunnelSuspiciousEventsUIResponse> {
+    return this.tunnelService.getSuspiciousEvents(request)
   }
   resetPage() {
-    super.resetPage();
+    super.resetPage()
   }
   initColumns() {
     this.originColumns = [
@@ -75,7 +102,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         translationKey: 'Columns.EventStartTime',
         sortable: true,
         maxTruncateLength: 20,
-        customTemplate: this.timestampTemplate
+        customTemplate: this.timestampTemplate,
       },
       {
         name: TrafficColumnNames.Domain,
@@ -89,7 +116,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         sortable: true,
         rangeFilterable: true,
         roundNumber: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company.fqdn_count',
@@ -97,7 +124,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         sortable: true,
         rangeFilterable: true,
         roundNumber: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'res_dga.ratio',
@@ -105,7 +132,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         sortable: true,
         rangeFilterable: true,
         roundNumber: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company.fqdn_hit_ratio',
@@ -113,12 +140,12 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         sortable: true,
         rangeFilterable: true,
         roundNumber: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'severity',
         translationKey: 'Columns.Severity',
-        customTemplate: this.severityTemplate
+        customTemplate: this.severityTemplate,
       },
       {
         name: 'fqdns_samples',
@@ -134,7 +161,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company_lw.hits',
@@ -143,7 +170,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company_lw.fqdn_hit_ratio',
@@ -152,7 +179,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company_lw.fail_ratio',
@@ -161,7 +188,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company_lw.fqdn_count',
@@ -170,7 +197,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company.fail_ratio',
@@ -179,7 +206,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company.fail_count',
@@ -188,7 +215,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company.success_count',
@@ -197,14 +224,14 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'query_types',
         translationKey: 'Columns.DNSQueryTypes',
         maxTruncateLength: 20,
         customTemplate: this.breakdownTemplate,
-        hidden: true
+        hidden: true,
       },
       {
         name: 'company.unique_response',
@@ -213,7 +240,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'company_lw.queried_before',
@@ -222,7 +249,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'other.fqdn_count',
@@ -231,7 +258,7 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'other.fail_ratio',
@@ -240,14 +267,14 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         rangeFilterable: true,
         roundNumber: true,
         hidden: true,
-        customTemplate: this.numberTemplate
+        customTemplate: this.numberTemplate,
       },
       {
         name: 'event_end_date',
         translationKey: 'Columns.EventEndTime',
         hidden: true,
         maxTruncateLength: 20,
-        customTemplate: this.timestampTemplate
+        customTemplate: this.timestampTemplate,
       },
       {
         name: TrafficColumnNames.SourceIp,
@@ -255,44 +282,40 @@ export class DnsTunnelEventReportComponent extends BaseTrafficDataTable<DnsTunne
         hidden: true,
         maxTruncateLength: 20,
       },
-    ];
-    this.availableColumns = [];
-    this.originColumns.forEach(col => {
-      this.availableColumns.push({...col});
-    });
+    ]
+    this.availableColumns = []
+    this.originColumns.forEach((col) => {
+      this.availableColumns.push({ ...col })
+    })
   }
 
-  override handleCustomFilterModels(event: FilterAddEventModel): FilterBadgeValueV2[] {
-    const list = [];
+  override handleCustomFilterModels(event: FilterEvent): FilterBadgeValueV2[] {
+    const list = []
     if (event.column.name === TrafficColumnNames.Category) {
-      (event.value as string[])?.forEach(v => {
-        list.push(new FilterBadgeValueV2(v));
-      });
+      ;(event.value as string[])?.forEach((v) => {
+        list.push(new FilterBadgeValueV2(v))
+      })
     } else if (event.column.name === TrafficColumnNames.CategoryGroup) {
-      (event.value as string[])?.forEach(v => {
-        const badgeValue = new FilterBadgeValueV2(v);
-        badgeValue.displayValue = this.translatorService.translate(v);
-        list.push(badgeValue);
-      });
+      ;(event.value as string[])?.forEach((v) => {
+        const badgeValue = new FilterBadgeValueV2(v)
+        badgeValue.displayValue = this.translatorService.translate(v)
+        list.push(badgeValue)
+      })
     } else if (typeof event.value === 'string') {
-      list.push(new FilterBadgeValueV2(event.value));
+      list.push(new FilterBadgeValueV2(event.value))
     }
-    return list;
+    return list
   }
-
 
   override onFilterChange() {
-    super.onFilterChange();
+    super.onFilterChange()
   }
 
   onInitPage() {
-    super.onInitPage();
+    super.onInitPage()
   }
 
   handleRowClick = (item: DnsTunnelSuspiciousEventsItem) => {
-    this.onTunnelEventDetailClick.emit(item);
+    this.onTunnelEventDetailClick.emit(item)
   }
-
-
 }
-

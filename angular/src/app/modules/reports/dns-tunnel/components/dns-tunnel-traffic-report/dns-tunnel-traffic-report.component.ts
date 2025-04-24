@@ -1,71 +1,84 @@
+import { CommonModule } from '@angular/common'
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core'
+import { TranslateModule } from '@ngx-translate/core'
+import { FeatherModule } from 'angular-feather'
 import {
   BaseTrafficDataTable,
-  CategoryTextPipe,
   ColumnDef,
-  FilterAddEventModel,
+  ColumnDefCustomTemplateContext,
   FilterBadgeValueV2,
-  IconStatsComponent,
-  RkPillComponent,
+  FilterEvent,
   RkTableV2Component,
   RkTranslatorService,
   RoundedNumberPipe,
-  RowItemBadgeComponent,
   RowItemComponent,
   RowItemCountryComponent,
-  RowItemDnsQueryComponent,
-  RowItemLinkComponent,
-  RowItemProgressComponent,
   RowItemTimeComponent,
-  RowTruncatedContainerComponent,
-  RowTruncatedInfoComponent,
   StatsTagComponent,
   TrafficColumnNames,
-} from 'roksit-lib';
-import {CommonModule} from '@angular/common';
-import {Component, inject, TemplateRef, ViewChild} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
-import {Observable} from 'rxjs';
-import {NgbProgressbar} from '@ng-bootstrap/ng-bootstrap';
-import {FeatherModule} from 'angular-feather';
+} from 'roksit-lib'
+import { Observable } from 'rxjs'
 import {
   DnsTunnelService,
   DnsTunnelSuspiciousTrafficItem,
   DnsTunnelSuspiciousTrafficUIRequest,
-  DnsTunnelSuspiciousTrafficUIResponse
-} from '../../../../../core/services/dns-tunnel.service';
-import {TunnelSeverityNamePipe} from '../../pipes/dns-tunnel-pipes';
+  DnsTunnelSuspiciousTrafficUIResponse,
+} from '../../../../../core/services/dns-tunnel.service'
 
 @Component({
   selector: 'dns-tunnel-traffic-report',
   standalone: true,
-  imports: [CommonModule, IconStatsComponent, RkTableV2Component, RowItemBadgeComponent, StatsTagComponent, TranslateModule, RowItemLinkComponent, RoundedNumberPipe, RowItemTimeComponent, RoundedNumberPipe, FeatherModule, RowTruncatedInfoComponent, RoundedNumberPipe, RowTruncatedContainerComponent, RowItemProgressComponent, NgbProgressbar, RoundedNumberPipe, RowItemLinkComponent, RowItemComponent, CategoryTextPipe, RowItemCountryComponent, TunnelSeverityNamePipe, RowItemDnsQueryComponent, RkPillComponent],
+  imports: [
+    CommonModule,
+    RkTableV2Component,
+    StatsTagComponent,
+    TranslateModule,
+    RoundedNumberPipe,
+    RowItemTimeComponent,
+    RoundedNumberPipe,
+    FeatherModule,
+    RoundedNumberPipe,
+    RoundedNumberPipe,
+    RowItemComponent,
+    RowItemCountryComponent,
+  ],
   templateUrl: './dns-tunnel-traffic-report.component.html',
   styleUrls: ['./dns-tunnel-traffic-report.component.scss'],
 })
-export class DnsTunnelTrafficReportComponent extends BaseTrafficDataTable<DnsTunnelSuspiciousTrafficUIResponse, DnsTunnelSuspiciousTrafficItem, DnsTunnelSuspiciousTrafficUIRequest> {
+export class DnsTunnelTrafficReportComponent extends BaseTrafficDataTable<
+  DnsTunnelSuspiciousTrafficUIResponse,
+  DnsTunnelSuspiciousTrafficItem,
+  DnsTunnelSuspiciousTrafficUIRequest
+> {
   constructor() {
-    super();
+    super()
     this.tableConfig = {
       ...this.tableConfig,
       rowClickable: true,
       sortConfig: {
         sortColumn: 'time',
-        sortDirection: 'desc'
-      }
-    };
-    this.sortColumn = this.tableConfig.sortConfig.sortColumn;
-    this.isAscSort = false;
+        sortDirection: 'desc',
+      },
+    }
+    this.sortColumn = this.tableConfig.sortConfig.sortColumn
+    this.isAscSort = false
   }
-  tunnelService = inject(DnsTunnelService);
-  translatorService = inject(RkTranslatorService);
-  @ViewChild('timestampTemplate', {static: true}) timestampTemplate: TemplateRef<HTMLElement>;
-  @ViewChild('arrayTemplate', {static: true}) arrayTemplate: TemplateRef<HTMLElement>;
-  @ViewChild('countryTemplate', {static: true}) countryTemplate: TemplateRef<HTMLElement>;
-  @ViewChild('actionTemplate', {static: true}) actionTemplate: TemplateRef<HTMLElement>;
-  translationPrefix = 'DnsTunnel';
-  originColumns: ColumnDef[];
-  getServiceObservable(request: DnsTunnelSuspiciousTrafficUIRequest): Observable<DnsTunnelSuspiciousTrafficUIResponse> {
-    return this.tunnelService.getSuspiciousTraffic(request);
+  tunnelService = inject(DnsTunnelService)
+  translatorService = inject(RkTranslatorService)
+  @ViewChild('timestampTemplate', { static: true })
+  timestampTemplate: TemplateRef<ColumnDefCustomTemplateContext>
+  @ViewChild('arrayTemplate', { static: true })
+  arrayTemplate: TemplateRef<ColumnDefCustomTemplateContext>
+  @ViewChild('countryTemplate', { static: true })
+  countryTemplate: TemplateRef<ColumnDefCustomTemplateContext>
+  @ViewChild('actionTemplate', { static: true })
+  actionTemplate: TemplateRef<ColumnDefCustomTemplateContext>
+  translationPrefix = 'DnsTunnel'
+  originColumns: ColumnDef[]
+  getServiceObservable(
+    request: DnsTunnelSuspiciousTrafficUIRequest
+  ): Observable<DnsTunnelSuspiciousTrafficUIResponse> {
+    return this.tunnelService.getSuspiciousTraffic(request)
   }
   initColumns() {
     this.originColumns = [
@@ -74,7 +87,7 @@ export class DnsTunnelTrafficReportComponent extends BaseTrafficDataTable<DnsTun
         translationKey: 'Columns.Time',
         sortable: true,
         maxTruncateLength: 20,
-        customTemplate: this.timestampTemplate
+        customTemplate: this.timestampTemplate,
       },
       {
         name: 'location',
@@ -99,7 +112,7 @@ export class DnsTunnelTrafficReportComponent extends BaseTrafficDataTable<DnsTun
         translationKey: 'Columns.Category',
         filterable: true,
         maxTruncateLength: 20,
-        customTemplate: this.arrayTemplate
+        customTemplate: this.arrayTemplate,
       },
       {
         name: TrafficColumnNames.Application,
@@ -112,7 +125,7 @@ export class DnsTunnelTrafficReportComponent extends BaseTrafficDataTable<DnsTun
         translationKey: 'Columns.Action',
         filterable: true,
         maxTruncateLength: 20,
-        customTemplate: this.actionTemplate
+        customTemplate: this.actionTemplate,
       },
       {
         name: TrafficColumnNames.SourceIp,
@@ -127,7 +140,7 @@ export class DnsTunnelTrafficReportComponent extends BaseTrafficDataTable<DnsTun
         filterable: true,
         hidden: true,
         maxTruncateLength: 20,
-        customTemplate: this.countryTemplate
+        customTemplate: this.countryTemplate,
       },
       {
         name: TrafficColumnNames.Domain,
@@ -149,32 +162,41 @@ export class DnsTunnelTrafficReportComponent extends BaseTrafficDataTable<DnsTun
         filterable: true,
         hidden: true,
         maxTruncateLength: 20,
-        customTemplate: this.countryTemplate
-      }
-    ];
-    this.availableColumns = [];
-    this.originColumns.forEach(col => {
-      this.availableColumns.push({...col});
-    });
+        customTemplate: this.countryTemplate,
+      },
+    ]
+    this.availableColumns = []
+    this.originColumns.forEach((col) => {
+      this.availableColumns.push({ ...col })
+    })
   }
 
-  override handleCustomFilterModels(event: FilterAddEventModel): FilterBadgeValueV2[] {
-    const list = [];
+  override handleCustomFilterModels(event: FilterEvent): FilterBadgeValueV2[] {
+    const list = []
     if (event.column.name === TrafficColumnNames.Category) {
-      (event.value as string[])?.forEach(v => {
-        list.push(new FilterBadgeValueV2(v));
-      });
+      ;(event.value as string[])?.forEach((v) => {
+        list.push(new FilterBadgeValueV2(v))
+      })
     } else if (event.column.name === TrafficColumnNames.CategoryGroup) {
-      (event.value as string[])?.forEach(v => {
-        const badgeValue = new FilterBadgeValueV2(v);
-        badgeValue.displayValue = this.translatorService.translate(v);
-        list.push(badgeValue);
-      });
-    }else if (event.column.name === TrafficColumnNames.Action) {
-      list.push(new FilterBadgeValueV2(event.value as string, false, true, event.value ? this.translatorService.translate('Allow') : this.translatorService.translate('Block')));
+      ;(event.value as string[])?.forEach((v) => {
+        const badgeValue = new FilterBadgeValueV2(v)
+        badgeValue.displayValue = this.translatorService.translate(v)
+        list.push(badgeValue)
+      })
+    } else if (event.column.name === TrafficColumnNames.Action) {
+      list.push(
+        new FilterBadgeValueV2(
+          event.value as string,
+          false,
+          true,
+          event.value
+            ? this.translatorService.translate('Allow')
+            : this.translatorService.translate('Block')
+        )
+      )
     } else if (typeof event.value === 'string') {
-      list.push(new FilterBadgeValueV2(event.value));
+      list.push(new FilterBadgeValueV2(event.value))
     }
-    return list;
+    return list
   }
 }
