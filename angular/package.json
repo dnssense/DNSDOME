@@ -83,7 +83,7 @@
     "odometer": "^0.4.8",
     "perfect-scrollbar": "1.1.0",
     "popper.js": "1.16.1",
-    "roksit-lib": "file:roksit-lib-0.2.12.tgz",
+    "roksit-lib": "file:local_modules/roksit-lib-0.3.10.tgz",
     "rxjs": "^6.5.5",
     "select2": "^4.0.5",
     "serve": "^11.3.0",
