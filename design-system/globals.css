@@ -1,0 +1,477 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  
+  /* Typography Variables */
+  --text-h1: 36px;
+  --text-h2: 32px;
+  --text-h3: 28px;
+  --text-h4: 24px;
+  --text-base: 14px;
+  --text-label: 12px;
+  --text-caption: 12px;
+  --text-section-heading: 10px;
+  
+  /* The default background color for the application. */
+  --background: rgba(247, 250, 252, 1);
+  /* The default color for elements or text that appears on top of the background. */
+  --foreground: rgba(68, 81, 101, 1);
+  /* The background color for cards, modals, and other containers. */
+  --card: rgba(255, 255, 255, 1);
+  /* The default color for text or elements that appear on top of cards, modals and other background containers. */
+  --card-foreground: rgba(68, 81, 101, 1);
+  /* The background color for dropdowns and tooltips. */
+  --popover: rgba(68, 81, 101, 1);
+  /* The default color for text or elements that appear on top of dropdowns and tooltips. */
+  --popover-foreground: rgba(255, 255, 255, 1);
+  /* The primary color used for buttons, links, and other interactive elements. */
+  --primary: rgba(19, 95, 130, 1);
+  /* The default color for text or elements that appear on top of primary colored elements. */
+  --primary-foreground: rgba(255, 255, 255, 1);
+  /* The secondary color used for secondary(but NOT-DESTRUCTIVE) buttons and interactive elements. */
+  --secondary: rgba(0, 0, 0, 0);
+  /* The default color for text or elements that appear on top of secondary colored elements. */
+  --secondary-foreground: rgba(68, 81, 101, 1);
+  /* The muted color used for less prominent elements, such as disabled buttons or disabled text. */
+  --muted: rgba(123, 138, 161, 1);
+  /* The default color for text or elements that appear on top of muted colored elements. */
+  --muted-foreground: rgba(255, 255, 255, 1);
+  /* Light gray background for subtle containers and notification bells */
+  --light-background: rgba(237, 241, 247, 1);
+  /* Gray color for read notification indicators */
+  --notification-read: rgba(126, 146, 179, 1);
+  /* The accent color used for highlights, links, and other interactive elements. */
+  --accent: rgba(69, 204, 152, 1);
+  /* Success color for positive actions and confirmations */
+  --success: rgba(40, 167, 69, 1);
+  /* Destructive/error color for dangerous actions */
+  --destructive: rgba(220, 53, 69, 1);
+  /* Disabled switch background color */
+  --switch-disabled: rgba(205, 212, 223, 1);
+  
+  /* ==================== CATEGORY COLORS ==================== */
+  /* Category: Total - Primary blue for total/all items */
+  --category-total: rgba(88, 133, 234, 1);
+  /* Category: RestrictedContent - Yellow for restricted/filtered content */
+  --category-restricted-content: rgba(255, 193, 7, 1);
+  /* Category: Malicious - Red for dangerous/malicious items */
+  --category-malicious: rgba(244, 67, 54, 1);
+  /* Category: Variable - Gray for variable/undetermined items */
+  --category-variable: rgba(158, 158, 158, 1);
+  /* Category: Safe - Green for safe/verified items */
+  --category-safe: rgba(76, 175, 80, 1);
+  /* Category: NEW-Variable - Orange for new variable items */
+  --category-new-variable: rgba(255, 152, 0, 1);
+  
+  /* ==================== INCIDENT COLORS ==================== */
+  /* Incident: High Risk - Red for critical incidents */
+  --incident-high-risk: rgba(244, 67, 54, 1);
+  /* Incident: Mid Risk - Orange for medium severity */
+  --incident-mid-risk: rgba(255, 152, 0, 1);
+  /* Incident: Suspicious - Yellow for suspicious activity */
+  --incident-suspicious: rgba(255, 235, 59, 1);
+  
+  /* ==================== STATUS COLORS ==================== */
+  /* Status: Error - Red for error states */
+  --status-error: rgba(244, 67, 54, 1);
+  /* Status: Warning - Orange for warnings */
+  --status-warning: rgba(255, 152, 0, 1);
+  /* Status: Up - Green for active/up status */
+  --status-up: rgba(76, 175, 80, 1);
+  /* Status: Down - Red for inactive/down status */
+  --status-down: rgba(244, 67, 54, 1);
+  /* Status: Stable - Yellow for stable status */
+  --status-stable: rgba(255, 193, 7, 1);
+  
+  /* ==================== BACKGROUND COLORS ==================== */
+  /* Background: Table Hover 50% */
+  --bg-table-hover-50: rgba(255, 255, 255, 0.5);
+  /* Background: Black 50% */
+  --bg-black-50: rgba(0, 0, 0, 0.5);
+  /* Background: Base background color */
+  --bg-background: rgba(48, 57, 75, 1);
+  /* Background: Table Zebra stripe */
+  --bg-table-zebra: rgba(60, 70, 90, 1);
+  /* Background: Background with 10% overlay */
+  --bg-background-10: rgba(48, 57, 75, 0.1);
+  /* Background: Hover state with 5% overlay */
+  --bg-hover-05: rgba(255, 255, 255, 0.05);
+  /* Background: White 50% */
+  --bg-white-50: rgba(255, 255, 255, 0.5);
+  /* Background: White full */
+  --bg-white: rgba(255, 255, 255, 1);
+  /* Background: Green 20% */
+  --bg-green-20: rgba(76, 175, 80, 0.2);
+  /* Background: Red 20% */
+  --bg-red-20: rgba(244, 67, 54, 0.2);
+  /* Background: White 20% */
+  --bg-white-20: rgba(255, 255, 255, 0.2);
+  /* Background: Table Hover */
+  --bg-table-hover: rgba(70, 80, 100, 1);
+  /* Background: Table Selected */
+  --bg-table-selected: rgba(80, 95, 120, 1);
+  /* Background: White 10% */
+  --bg-white-10: rgba(255, 255, 255, 0.1);
+  /* Background: Background with 50% overlay */
+  --bg-background-50: rgba(48, 57, 75, 0.5);
+  
+  /* ==================== TAG PALET COLORS ==================== */
+  /* TagPalet: Orange */
+  --tag-orange: rgba(255, 152, 0, 1);
+  /* TagPalet: Green */
+  --tag-green: rgba(76, 175, 80, 1);
+  /* TagPalet: Gray */
+  --tag-gray: rgba(158, 158, 158, 1);
+  /* TagPalet: RestrictedContent 10% */
+  --tag-restricted-content-10: rgba(255, 193, 7, 0.1);
+  /* TagPalet: Safe 10% */
+  --tag-safe-10: rgba(76, 175, 80, 0.1);
+  /* TagPalet: Malicious 10% */
+  --tag-malicious-10: rgba(244, 67, 54, 0.1);
+  /* TagPalet: Variable 10% */
+  --tag-variable-10: rgba(158, 158, 158, 0.1);
+  /* TagPalet: Gray 10% */
+  --tag-gray-10: rgba(158, 158, 158, 0.1);
+  /* TagPalet: Gray 20% */
+  --tag-gray-20: rgba(158, 158, 158, 0.2);
+  /* TagPalet: Prime 10 */
+  --tag-prime-10: rgba(97, 155, 187, 1);
+  /* TagPalet: Orange 10% */
+  --tag-orange-10: rgba(255, 152, 0, 0.1);
+  /* TagPalet: Orange 20% */
+  --tag-orange-20: rgba(255, 152, 0, 0.2);
+  /* TagPalet: Orange 30% */
+  --tag-orange-30: rgba(255, 152, 0, 0.3);
+  /* TagPalet: Prime 20% */
+  --tag-prime-20: rgba(97, 155, 187, 0.2);
+  /* TagPalet: Prime 06% */
+  --tag-prime-06: rgba(97, 155, 187, 0.06);
+  /* TagPalet: Prime 50% */
+  --tag-prime-50: rgba(97, 155, 187, 0.5);
+  
+  /* ==================== LINE COLORS ==================== */
+  /* Line: Blue */
+  --line-blue: rgba(100, 149, 237, 1);
+  /* Line: Gray */
+  --line-gray: rgba(158, 158, 158, 1);
+  /* Line: Blue 50% */
+  --line-blue-50: rgba(100, 149, 237, 0.5);
+  
+  /* ==================== BADGE COLORS ==================== */
+  /* Badge: Nature - Natural green badge */
+  --badge-nature: rgba(139, 195, 74, 1);
+  /* Badge: Green */
+  --badge-green: rgba(76, 175, 80, 1);
+  /* Badge: Blue */
+  --badge-blue: rgba(88, 133, 234, 1);
+  /* Badge: Orange */
+  --badge-orange: rgba(255, 152, 0, 1);
+  /* Badge: Purple */
+  --badge-purple: rgba(156, 39, 176, 1);
+  /* Badge: Red */
+  --badge-red: rgba(244, 67, 54, 1);
+  /* Badge: Yellow */
+  --badge-yellow: rgba(255, 235, 59, 1);
+  /* Badge: Teal */
+  --badge-teal: rgba(0, 188, 212, 1);
+  /* Badge: Gray 2 */
+  --badge-gray-2: rgba(189, 189, 189, 1);
+  
+  /* ==================== SELECTION COLORS ==================== */
+  /* Selection: Color/White */
+  --selection-color-white: rgba(255, 255, 255, 1);
+  /* Selection: Color/Dark */
+  --selection-color-dark: rgba(79, 90, 108, 1);
+  /* Selection: Color/Lite */
+  --selection-color-lite: rgba(189, 200, 220, 1);
+  /* Selection: Color/Litle - Alternative light variant */
+  --selection-color-litle: rgba(189, 200, 220, 1);
+  /* Selection: Status/Up */
+  --selection-status-up: rgba(76, 175, 80, 1);
+  /* Selection: Status/Down */
+  --selection-status-down: rgba(244, 67, 54, 1);
+  /* Selection: Background/White */
+  --selection-bg-white: rgba(255, 255, 255, 1);
+  /* Selection: Color/Prime */
+  --selection-color-prime: rgba(97, 155, 187, 1);
+  /* Selection: TagPalet/Green */
+  --selection-tag-green: rgba(76, 175, 80, 1);
+  /* Selection: Color/Gray */
+  --selection-color-gray: rgba(151, 171, 187, 1);
+  /* Selection: Color/gray (lowercase variant) */
+  --selection-color-gray-alt: rgba(151, 171, 187, 1);
+  
+  /* ==================== CELLA COLORS ==================== */
+  /* Cella: White */
+  --cella-white: rgba(255, 255, 255, 1);
+  /* Cella: Prime */
+  --cella-prime: rgba(97, 155, 187, 1);
+  /* Cella: Hover */
+  --cella-hover: rgba(100, 149, 237, 1);
+  /* Cella: Pressed */
+  --cella-pressed: rgba(64, 125, 224, 1);
+  /* Cella: Dark */
+  --cella-dark: rgba(68, 81, 101, 1);
+  /* Cella: Gray */
+  --cella-gray: rgba(158, 158, 158, 1);
+  /* Cella: Litle */
+  --cella-litle: rgba(189, 200, 220, 1);
+  /* Cella: Ice Blue */
+  --cella-ice-blue: rgba(232, 245, 253, 1);
+  
+  /* The default border color for elements such as inputs, buttons, and other containers. */
+  --border: rgba(205, 212, 223, 1);
+  /* The default background color for input fields once the text has been filled. Should be either transparent or match the input-background. */
+  --input: rgba(255, 255, 255, 1);
+  /* The default background color for input fields, text areas, and other input elements. */
+  --input-background: rgba(255, 255, 255, 1);
+  /* The default font weight for medium text. */
+  --font-weight-medium: 500;
+  /* The default font weight for normal text. */
+  --font-weight-normal: 400;
+  /* The color for focus rings, outlines, and other focus indicators. */
+  --ring: rgba(19, 95, 130, 1);
+  /* Shadow for small elevations, such as cards or modals. */
+  --elevation-sm: 0px 0px 1px 0px rgba(12,26,75,0.1), 0px 30px 40px 0px rgba(20,37,63,0.08);
+  /* Shadow level 1 - Subtle elevation */
+  --shadow-xs: 0px 0px 1px 0px rgba(12,26,75,0.24), 0px 3px 8px -1px rgba(50,50,71,0.05);
+  /* Shadow level 2 - Small cards */
+  --shadow-sm: 0px 0px 1px 0px rgba(12,26,75,0.1), 0px 4px 20px -2px rgba(50,50,71,0.08);
+  /* Shadow level 3 - Medium elevation */
+  --shadow-md: 0px 0px 1px 0px rgba(12,26,75,0.1), 0px 10px 16px 0px rgba(20,37,63,0.06);
+  /* Shadow level 4 - Large elevation */
+  --shadow-lg: 0px 0px 1px 0px rgba(12,26,75,0.1), 0px 20px 24px 0px rgba(20,37,63,0.06);
+  /* Shadow level 5 - Maximum elevation */
+  --shadow-xl: 0px 0px 1px 0px rgba(12,26,75,0.1), 0px 30px 40px 0px rgba(20,37,63,0.08);
+  /* Inner shadow for recessed elements */
+  --shadow-inner: inset 0px 2px 4px 0px rgba(0,0,0,0.06);
+  /* The color for chart elements, such as a bar or line in a chart. */
+  --chart-1: rgba(61, 212, 154, 1);
+  /* The color for another chart element, such as a bar or line in a chart. */
+  --chart-2: rgba(41, 190, 133, 1);
+  /* The color for another chart element, such as a bar or line in a chart. */
+  --chart-3: rgba(80, 125, 243, 1);
+  /* The color for another chart element, such as a bar or line in a chart. */
+  --chart-4: rgba(255, 135, 47, 1);
+  /* The color for another chart element, such as a bar or line in a chart. */
+  --chart-5: rgba(249, 86, 86, 1);
+  /* The default border radius for elements such as buttons, tooltip, and other containers. */
+  --radius: 6px;
+  /* The border radius for button elements. */
+  --radius-button: 200px;
+  /* The border radius for card elements. */
+  --radius-card: 12px;
+  /* The background color for sidebars, navigation menus, and other persistent elements. */
+  --sidebar: rgba(12, 75, 104, 1);
+  /* The default color for text or elements that appear on top of sidebars, navigation menus, and other persistent elements. */
+  --sidebar-foreground: rgba(255, 255, 255, 1);
+  /* The primary color used for buttons, links, and other interactive elements in sidebars and navigation menus. */
+  --sidebar-primary: rgba(22, 112, 153, 1);
+  /* The default color for text or elements that appear on top of primary colored elements in sidebars and navigation menus. */
+  --sidebar-primary-foreground: rgba(255, 255, 255, 1);
+  /* The accent color used for highlights, links, and other interactive elements in sidebars and navigation menus. */
+  --sidebar-accent: rgba(12, 173, 90, 1);
+  /* The default color for text or elements that appear on top of accent colored elements in sidebars and navigation menus. */
+  --sidebar-accent-foreground: rgba(255, 255, 255, 1);
+  /* The default border color for elements in sidebars and navigation menus. */
+  --sidebar-border: rgba(16, 103, 142, 1);
+  /* The default color for focus rings, outlines, and other focus indicators in sidebars and navigation menus. */
+  --sidebar-ring: rgba(22, 112, 153, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 6px);
+  --radius-xl: calc(var(--radius) + 12px);
+  --radius-button: var(--radius-button);
+  --radius-card: var(--radius-card);
+  --shadow-sm: var(--elevation-sm);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .bg-background { background-color: var(--background); }
+  .bg-foreground { background-color: var(--foreground); }
+  .bg-card { background-color: var(--card); }
+  .bg-card-foreground { background-color: var(--card-foreground); }
+  .bg-popover { background-color: var(--popover); }
+  .bg-popover-foreground { background-color: var(--popover-foreground); }
+  .bg-primary { background-color: var(--primary); }
+  .bg-primary-foreground { background-color: var(--primary-foreground); }
+  .bg-secondary { background-color: var(--secondary); }
+  .bg-secondary-foreground { background-color: var(--secondary-foreground); }
+  .bg-muted { background-color: var(--muted); }
+  .bg-muted-foreground { background-color: var(--muted-foreground); }
+  .bg-accent { background-color: var(--accent); }
+  .bg-accent-foreground { background-color: var(--accent-foreground); }
+  .bg-destructive { background-color: var(--destructive); }
+  .bg-destructive-foreground { background-color: var(--destructive-foreground); }
+  .bg-input { background-color: var(--input); }
+  .bg-input-background { background-color: var(--input-background); }
+  .bg-sidebar { background-color: var(--sidebar); }
+  .bg-sidebar-foreground { background-color: var(--sidebar-foreground); }
+  .bg-sidebar-primary { background-color: var(--sidebar-primary); }
+  .bg-sidebar-primary-foreground { background-color: var(--sidebar-primary-foreground); }
+  .bg-sidebar-accent { background-color: var(--sidebar-accent); }
+  .bg-sidebar-accent-foreground { background-color: var(--sidebar-accent-foreground); }
+  
+  .text-background { color: var(--background); }
+  .text-foreground { color: var(--foreground); }
+  .text-card { color: var(--card); }
+  .text-card-foreground { color: var(--card-foreground); }
+  .text-popover { color: var(--popover); }
+  .text-popover-foreground { color: var(--popover-foreground); }
+  .text-primary { color: var(--primary); }
+  .text-primary-foreground { color: var(--primary-foreground); }
+  .text-secondary { color: var(--secondary); }
+  .text-secondary-foreground { color: var(--secondary-foreground); }
+  .text-muted { color: var(--muted); }
+  .text-muted-foreground { color: var(--muted-foreground); }
+  .text-accent { color: var(--accent); }
+  .text-accent-foreground { color: var(--accent-foreground); }
+  .text-destructive { color: var(--destructive); }
+  .text-destructive-foreground { color: var(--destructive-foreground); }
+  .text-sidebar { color: var(--sidebar); }
+  .text-sidebar-foreground { color: var(--sidebar-foreground); }
+  .text-sidebar-primary { color: var(--sidebar-primary); }
+  .text-sidebar-primary-foreground { color: var(--sidebar-primary-foreground); }
+  .text-sidebar-accent { color: var(--sidebar-accent); }
+  .text-sidebar-accent-foreground { color: var(--sidebar-accent-foreground); }
+  
+  .border-border { border-color: var(--border); }
+  .border-input { border-color: var(--input); }
+  .border-ring { border-color: var(--ring); }
+  .border-primary { border-color: var(--primary); }
+  .border-sidebar-border { border-color: var(--sidebar-border); }
+  
+  .outline-ring\/50 { outline-color: rgba(var(--ring), 0.5); }
+  .hover\:bg-muted:hover { background-color: var(--muted); }
+  .hover\:bg-sidebar-primary:hover { background-color: var(--sidebar-primary); }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-h1);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-h2);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-h3);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-h4);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    p {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-label);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    .caption {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-caption);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    .section-heading {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--text-section-heading);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      text-transform: uppercase;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
